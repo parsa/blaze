@@ -1,3 +1,5 @@
 Makefile
+!src/math/Makefile
+!src/util/Makefile
 *.cfg
 
