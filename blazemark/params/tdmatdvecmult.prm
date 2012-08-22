@@ -1,0 +1,134 @@
+//=================================================================================================
+//
+//  Parameter file for the transpose dense matrix/dense vector multiplication benchmark
+//
+//  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
+//
+//  This file is part of the Blaze library. This library is free software; you can redistribute
+//  it and/or modify it under the terms of the GNU General Public License as published by the
+//  Free Software Foundation; either version 3, or (at your option) any later version.
+//
+//  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+//  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+//  See the GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License along with a special
+//  exception for linking and compiling against the Blaze library, the so-called "runtime
+//  exception"; see the file COPYING. If not, see http://www.gnu.org/licenses/.
+//
+//=================================================================================================
+
+
+//=================================================================================================
+// This parameter file configures the transpose dense matrix/dense vector multiplication benchmark
+// runs. The individual runs are specified via tuples of the form
+//
+//                                     ( <size> [, <steps>] ),
+//
+// where 'size' specifies the number of rows and columns of the matrix and the size of the vector
+// and the optional parameter 'steps' specifies the number of steps the benchmark is repeated. In
+// case 'steps' is omitted, the number of steps is automatically evaluated.
+//
+// Note that is possible to use comments. A single-line comment is started with '//', a multiline
+// comment is started with '/*' and ended with '*/'.
+//=================================================================================================
+
+// Selected matrix/vector sizes
+(   50)
+(  100)
+(  500)
+( 1000)
+( 5000)
+(10000)
+
+// Logarithmic performance graph
+/*
+(    1)
+(    2)
+(    3)
+(    4)
+(    5)
+(    6)
+(    7)
+(    8)
+(    9)
+(   10)
+(   11)
+(   12)
+(   13)
+(   14)
+(   15)
+(   16)
+(   17)
+(   18)
+(   19)
+(   20)
+(   22)
+(   24)
+(   26)
+(   28)
+(   30)
+(   33)
+(   36)
+(   39)
+(   42)
+(   46)
+(   50)
+(   55)
+(   60)
+(   66)
+(   72)
+(   79)
+(   86)
+(   94)
+(  103)
+(  113)
+(  124)
+(  136)
+(  149)
+(  163)
+(  179)
+(  196)
+(  215)
+(  236)
+(  259)
+(  284)
+(  312)
+(  343)
+(  377)
+(  414)
+(  455)
+(  500)
+(  550)
+(  605)
+(  665)
+(  731)
+(  804)
+(  884)
+(  972)
+( 1069)
+( 1175)
+( 1292)
+( 1421)
+( 1563)
+( 1719)
+( 1890)
+( 2079)
+( 2286)
+( 2514)
+( 2765)
+( 3041)
+( 3345)
+( 3679)
+( 4046)
+( 4450)
+( 4895)
+( 5384)
+( 5922)
+( 6514)
+( 7165)
+( 7881)
+( 8669)
+( 9535)
+(10000)
+*/

@@ -1,0 +1,40 @@
+//=================================================================================================
+//
+//  Parameter file for the 3-dimensional transpose matrix/transpose matrix multiplication benchmark
+//
+//  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
+//
+//  This file is part of the Blaze library. This library is free software; you can redistribute
+//  it and/or modify it under the terms of the GNU General Public License as published by the
+//  Free Software Foundation; either version 3, or (at your option) any later version.
+//
+//  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+//  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+//  See the GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License along with a special
+//  exception for linking and compiling against the Blaze library, the so-called "runtime
+//  exception"; see the file COPYING. If not, see http://www.gnu.org/licenses/.
+//
+//=================================================================================================
+
+
+//=================================================================================================
+// This parameter file configures the 3-dimensional transpose matrix/transpose matrix
+// multiplication benchmark runs. The individual runs are specified via tuples of the form
+//
+//                                     ( <size> [, <steps>] ),
+//
+// where 'size' specifies the number of 3x3 matrices to be computed (i.e. the size of the
+// according dynamic data structure) and the optional parameter 'steps' specifies the
+// number of steps the benchmark is repeated. In case 'steps' is omitted, the number of
+// steps is automatically evaluated.
+//
+// Note that is possible to use comments. A single-line comment is started with '//', a multiline
+// comment is started with '/*' and ended with '*/'.
+//=================================================================================================
+
+(   1)
+(  10)
+( 100)
+(1000)

@@ -1,0 +1,48 @@
+//=================================================================================================
+//
+//  Parameter file for the sparse vector/dense vector multiplication benchmark
+//
+//  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
+//
+//  This file is part of the Blaze library. This library is free software; you can redistribute
+//  it and/or modify it under the terms of the GNU General Public License as published by the
+//  Free Software Foundation; either version 3, or (at your option) any later version.
+//
+//  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+//  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+//  See the GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License along with a special
+//  exception for linking and compiling against the Blaze library, the so-called "runtime
+//  exception"; see the file COPYING. If not, see http://www.gnu.org/licenses/.
+//
+//=================================================================================================
+
+
+//=================================================================================================
+// This parameter file configures the sparse vector/dense vector multiplication benchmark runs.
+// The individual runs are specified via tuples of the form
+//
+//                               ( <size>, <nonzeros> [, <steps>] ),
+//
+// where 'size' specifies the size of the two vectors, 'nonzeros' specifies the number of non-zero
+// elements in the sparse vector, and the optional parameter 'steps' specifies the number of steps
+// the benchmark is repeated. The indices of the non-zero elements in the sparse vector are
+// randomly determined. In case 'steps' is omitted, the number of steps is automatically evaluated.
+//
+// Note that is possible to use comments. A single-line comment is started with '//', a multiline
+// comment is started with '/*' and ended with '*/'.
+//=================================================================================================
+
+(     100,      10)
+(     100,      40)
+(    1000,     100)
+(    1000,     400)
+(   10000,    1000)
+(   10000,    4000)
+(  100000,   10000)
+(  100000,   40000)
+( 1000000,  100000)
+( 1000000,  400000)
+(10000000, 1000000)
+(10000000, 4000000)

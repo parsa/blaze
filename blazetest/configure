@@ -1,0 +1,209 @@
+#!/bin/bash
+#==================================================================================================
+#
+#  Configuration script for the Blaze test suite
+#
+#  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
+#
+#  This file is part of the Blaze library. This library is free software; you can redistribute
+#  it and/or modify it under the terms of the GNU General Public License as published by the
+#  Free Software Foundation; either version 3, or (at your option) any later version.
+#
+#  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+#  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#  See the GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License along with a special
+#  exception for linking and compiling against the Blaze library, the so-called "runtime
+#  exception"; see the file COPYING. If not, see http://www.gnu.org/licenses/.
+#
+#==================================================================================================
+
+
+#######################################
+# Parsing the command line arguments
+
+# Checking the number of command line arguments
+if [ $# -ge 2 ]; then
+   echo "Invalid use of the Blaze configuration script. Type './configure -h' to display the help."
+   exit 1
+fi
+
+# Printing the help
+if [ "$1" = "--help" ] || [ "$1" = "-help" ] || [ "$1" = "-h" ]; then
+   echo
+   echo "Usage: ./configure [<config_file>]"
+   echo
+   echo "Configuration of the compilation process of the blaze test suite. The system-specific"
+   echo "settings are specified via the given configuration file <config_file>. In case no"
+   echo "<config_file> is specified, the settings of the default 'Configfile' are used."
+   echo
+   echo "Options:"
+   echo " -h, -help, --help  Displays this information"
+   echo
+   exit 0
+fi
+
+
+#####################################
+# Selecting the configuration file
+
+CONFIGFILE="Configfile"
+
+if [ $# = 1 ]; then
+   if [ ! -f "$1" ]; then
+      echo "Config file '$1' cannot be found."
+      exit 1
+   else
+      CONFIGFILE="$1"
+   fi
+fi
+
+source $CONFIGFILE
+
+
+##########################
+# Checking the settings
+
+# Checking the compiler settings
+if [ ! -n "$CXX" ]; then
+   echo "Compiler unspecified. Please select a compiler for the compilation process!"
+   exit 1
+fi
+
+# Checking the settings for the BLAS module
+if [ "$BLAS" != "yes" ] && [ "$BLAS" != "no" ]; then
+   echo "Invalid setting for the BLAS module."
+   exit 1
+fi
+
+
+################################
+# Blazemark specific settings
+
+INSTALL_PATH="$( cd "$( dirname "$0" )" && pwd )";
+BLAZE_PATH="${INSTALL_PATH%%/blazetest}"
+
+
+############################
+# Generating the Makefile
+
+# Configuration of the include paths
+CXXFLAGS="$CXXFLAGS -isystem $INSTALL_PATH -isystem $BLAZE_PATH"
+
+BOOST_INCLUDE_PATH=${BOOST_INCLUDE_PATH%"/"}
+if [ -n "$BOOST_INCLUDE_PATH" ]; then
+   if [[ ! "$CXXFLAGS" =~ "$BOOST_INCLUDE_PATH" ]]; then
+      CXXFLAGS="$CXXFLAGS -isystem $BOOST_INCLUDE_PATH"
+   fi
+fi
+
+BLAS_INCLUDE_PATH=${BLAS_INCLUDE_PATH%"/"}
+if [ "$BLAS" = "yes" ] && [ -n "$BLAS_INCLUDE_PATH" ]; then
+   if [[ ! "$CXXFLAGS" =~ "$BLAS_INCLUDE_PATH" ]]; then
+      CXXFLAGS="$CXXFLAGS -isystem $BLAS_INCLUDE_PATH"
+   fi
+fi
+
+# Configuration of the library path and link libraries
+LIBRARIES="-L$BLAZE_PATH/lib -lblaze"
+
+BOOST_LIBRARY_PATH=${BOOST_LIBRARY_PATH%"/"}
+if [ -n "$BOOST_LIBRARY_PATH" ] && [[ ! "$LIBRARIES" =~ "$BOOST_LIBRARY_PATH" ]]; then
+   LIBRARIES="$LIBRARIES -L$BOOST_LIBRARY_PATH"
+fi
+
+BOOST_THREAD_LIBRARY=${BOOST_THREAD_LIBRARY#"lib"}
+if [ -n "$BOOST_THREAD_LIBRARY" ]; then
+   LIBRARIES="$LIBRARIES -l$BOOST_THREAD_LIBRARY"
+else
+   LIBRARIES="$LIBRARIES -lboost_thread"
+fi
+
+BLAS_LIBRARY_PATH=${BLAS_LIBRARY_PATH%"/"}
+if [ "$BLAS" = "yes" ]; then
+   if [ -n "$BLAS_LIBRARY_PATH" ] && [[ ! "$LIBRARIES" =~ "$BLAS_LIBRARY_PATH" ]]; then
+      LIBRARIES="$LIBRARIES -L$BLAS_LIBRARY_PATH"
+   fi
+   if [ -n "$BLAS_LIBRARIES" ]; then
+      LIBRARIES="$LIBRARIES $BLAS_LIBRARIES"
+   fi
+fi
+
+
+############################
+# Generating the Makefile
+
+cat > Makefile <<EOF
+#==================================================================================================
+#
+#  Makefile for the Blaze test suite
+#
+#  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
+#
+#  This file is part of the Blaze library. This library is free software; you can redistribute
+#  it and/or modify it under the terms of the GNU General Public License as published by the
+#  Free Software Foundation; either version 3, or (at your option) any later version.
+#
+#  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+#  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#  See the GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License along with a special
+#  exception for linking and compiling against the Blaze library, the so-called "runtime
+#  exception"; see the file COPYING. If not, see http://www.gnu.org/licenses/.
+#
+#==================================================================================================
+
+
+# Build rules
+default: mathtest
+
+mathtest:
+	@echo
+	@\$(MAKE) --no-print-directory -C $INSTALL_PATH/src/mathtest
+	@echo
+
+# Clean up rules
+clean:
+	@echo "Cleaning up..."
+	@\$(MAKE) --no-print-directory -C $INSTALL_PATH/src/mathtest clean
+	@\$(RM) bin/* *.o
+
+# Setting the independent commands
+.PHONY: default clean
+EOF
+
+
+#######################################################
+# Generating the 'src/Makeconfig'
+
+cat > src/Makeconfig <<EOF
+#==================================================================================================
+#
+#  System configuration for the Makefiles of the Blaze test suite
+#
+#  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
+#
+#  This file is part of the Blaze library. This library is free software; you can redistribute
+#  it and/or modify it under the terms of the GNU General Public License as published by the
+#  Free Software Foundation; either version 3, or (at your option) any later version.
+#
+#  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+#  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#  See the GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License along with a special
+#  exception for linking and compiling against the Blaze library, the so-called "runtime
+#  exception"; see the file COPYING. If not, see http://www.gnu.org/licenses/.
+#
+#==================================================================================================
+
+
+# Compiler configuration
+CXX      = $CXX
+CXXFLAGS = $CXXFLAGS
+
+# Library configuration
+LIBRARIES = $LIBRARIES
+EOF

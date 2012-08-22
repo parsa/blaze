@@ -1,0 +1,111 @@
+//=================================================================================================
+//
+//  Parameter file for the conjugate gradient benchmark
+//
+//  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
+//
+//  This file is part of the Blaze library. This library is free software; you can redistribute
+//  it and/or modify it under the terms of the GNU General Public License as published by the
+//  Free Software Foundation; either version 3, or (at your option) any later version.
+//
+//  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+//  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+//  See the GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License along with a special
+//  exception for linking and compiling against the Blaze library, the so-called "runtime
+//  exception"; see the file COPYING. If not, see http://www.gnu.org/licenses/.
+//
+//=================================================================================================
+
+
+//=================================================================================================
+// This parameter file configures the conjugate gradient (CG) benchmark runs. The individual runs
+// are specified via tuples of the form
+//
+//                                     ( <size> [, <steps>, <iterations>] ),
+//
+// where 'size' specifies the number of unknowns in x- and y-direction in a 2-dimensional grid,
+// the optional parameter 'steps' specifies the number of steps the benchmark is repeated and
+// the second optional parameter 'iterations' specifies the number of iterations for the CG
+// algorithm. In case 'steps' or 'iterations' are omitted, the according value is automatically
+// evaluated.
+//
+// Note that is possible to use comments. A single-line comment is started with '//', a multiline
+// comment is started with '/*' and ended with '*/'.
+//=================================================================================================
+
+// Selected sizes
+(  50)
+( 100)
+( 200)
+( 500)
+(1000)
+
+// Logarithmic performance graph
+/*
+(   1)
+(   2)
+(   3)
+(   4)
+(   5)
+(   6)
+(   7)
+(   8)
+(   9)
+(  10)
+(  11)
+(  12)
+(  13)
+(  14)
+(  15)
+(  16)
+(  17)
+(  18)
+(  19)
+(  20)
+(  22)
+(  24)
+(  26)
+(  28)
+(  30)
+(  33)
+(  36)
+(  39)
+(  42)
+(  46)
+(  50)
+(  55)
+(  60)
+(  66)
+(  72)
+(  79)
+(  86)
+(  94)
+( 103)
+( 113)
+( 124)
+( 136)
+( 149)
+( 163)
+( 179)
+( 196)
+( 215)
+( 236)
+( 259)
+( 284)
+( 312)
+( 343)
+( 377)
+( 414)
+( 455)
+( 500)
+( 550)
+( 605)
+( 665)
+( 731)
+( 804)
+( 884)
+( 972)
+(1000)
+*/

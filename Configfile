@@ -1,0 +1,80 @@
+#==================================================================================================
+#
+#  Configfile file for the Blaze library
+#
+#  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
+#
+#  This file is part of the Blaze library. This library is free software; you can redistribute
+#  it and/or modify it under the terms of the GNU General Public License as published by the
+#  Free Software Foundation; either version 3, or (at your option) any later version.
+#
+#  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+#  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#  See the GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License along with a special
+#  exception for linking and compiling against the Blaze library, the so-called "runtime
+#  exception"; see the file COPYING. If not, see http://www.gnu.org/licenses/.
+#
+#==================================================================================================
+
+# Version of the Blaze library:
+#   debug  : Debug version
+#   release: Release version (default)
+VERSION="release"
+
+# Library configuration:
+# This selection configures which libraries are created during the compilation process. Note
+# that in case both the static and shared library are built the static library also consists
+# of position-independent code. Note also that any change of this setting may require a clean
+# up via 'make clean'.
+#   static: Only create the static Blaze library (default)
+#   shared: Only create the shared Blaze library
+#   both  : Create both static and shared library
+LIBRARY="static"
+
+# Compiler selection:
+#   gcc  : GCC compiler (default)
+#   intel: Intel compiler
+COMPILER="gcc"
+
+# Special compiler flags:
+# This setting offers the option to pass additional, specific flags to the compiler.
+COMPILER_FLAGS=
+
+# Specification of the cache size:
+# Via this setting it is possible to specify the size of the outermost cache level. It
+# influences the choice of the evaluation strategy of mathematical expression to achieve
+# the highest possible performance. The value must be given in Bytes. For instance, a
+# 3 MiByte cache must be specified as "3145728". If no cache size is specified, a cache
+# of 3 MiByte is assumed.
+CACHE_SIZE=
+
+# Configuration of the boost library
+# The boost library (see www.boost.org) is precondition for the Blaze library, i.e., it
+# is not possible to compile the library without boost. Blaze requires you to have at
+# least the boost version 1.39.0 or higher installed on your system. In case the boost
+# include directory is not set, it is assumed that the boost headers are installed in
+# standard paths (as for instance '/usr/include/boost').
+BOOST_INCLUDE_PATH=
+
+# Configuration of the BLAS library (optional)
+# The Blaze library offers the possibilty to use a BLAS library for certain basic linear
+# algebraic operations (such as for instance matrix-matrix multiplications). If the BLAS
+# switch is set to 'yes', the library expects the according headers in order to compile
+# properly. In case the BLAS include directory is not set, it is assumed that the header
+# file 'cblas.h' is installed in standard paths (as for instance '/usr/include/cblas.h').
+# Additionally, in case the name of the BLAS include file is not set, it is assumed that
+# the BLAS include file is named 'cblas.h'.
+BLAS="no"
+BLAS_INCLUDE_PATH=
+BLAS_INCLUDE_FILE=
+
+# Configuration of the MPI library (optional)
+# If set to 'yes' the MPI parallel execution of the Blaze library will be activated. If
+# set to 'yes' and in case the MPI include directory is not explicitly specified it is
+# assumed that the MPI headers are installed in standard paths.
+#   yes: Activation of the MPI parallelization
+#   no : Deactivation of the MPI parallelization (default)
+MPI="no"
+MPI_INCLUDE_PATH=

@@ -1,0 +1,481 @@
+#!/bin/bash
+#==================================================================================================
+#
+#  Configuration script for the Blaze library
+#
+#  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
+#
+#  This file is part of the Blaze library. This library is free software; you can redistribute
+#  it and/or modify it under the terms of the GNU General Public License as published by the
+#  Free Software Foundation; either version 3, or (at your option) any later version.
+#
+#  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+#  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#  See the GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License along with a special
+#  exception for linking and compiling against the Blaze library, the so-called "runtime
+#  exception"; see the file COPYING. If not, see http://www.gnu.org/licenses/.
+#
+#==================================================================================================
+
+
+#######################################
+# Parsing the command line arguments
+
+# Checking the number of command line arguments
+if [ $# -ge 2 ]; then
+   echo "Invalid use of the Blaze configuration script. Type './configure -h' to display the help."
+   exit 1
+fi
+
+# Printing the help
+if test "$1" = "--help" || test "$1" = "-help" || test "$1" = "-h"; then
+   echo
+   echo "Usage: ./configure [<config_file>]"
+   echo
+   echo "Configuration of the compilation process of the Blaze library. The system-specific"
+   echo "settings are specified via the given configuration file <config_file>. In case no"
+   echo "<config_file> is specified, the settings of the default 'Configfile' are used."
+   echo
+   echo "Options:"
+   echo " -h, -help, --help  Displays this information"
+   echo
+   exit 0
+fi
+
+
+#####################################
+# Selecting the configuration file
+
+CONFIGFILE="Configfile"
+
+if [ $# = 1 ]; then
+   if [ ! -f "$1" ]; then
+      echo "Config file '$1' cannot be found."
+      exit 1
+   else
+      CONFIGFILE="$1"
+   fi
+fi
+
+source $CONFIGFILE
+
+
+##########################
+# Checking the settings
+
+# Checking the version settings
+if test $VERSION != "debug" && test $VERSION != "release"; then
+   echo "Invalid version settings. Possible options are 'debug' and 'release'."
+   exit 1
+fi
+
+# Checking the library settings
+if test $LIBRARY != "static" && test $LIBRARY != "shared" && test $LIBRARY != "both"; then
+   echo "Invalid library settings. Possible options are 'static', 'shared' and 'both'."
+   exit 1
+fi
+
+# Checking the compiler settings
+if test $COMPILER != "gcc" && test $COMPILER != "intel"; then
+   echo "Unknown compiler selected. Choose either 'gcc' or 'intel'."
+   exit 1
+fi
+
+# Checking the settings for the BLAS module
+if test $BLAS != "yes" && test $BLAS != "no"; then
+   echo "Invalid setting for the BLAS module."
+   exit 1
+fi
+
+# Checking the settings for the MPI module
+if test $MPI != "yes" && test $MPI != "no"; then
+   echo "Invalid setting for the MPI module. "
+   exit 1
+fi
+
+
+############################
+# Blaze specific settings
+
+INSTALL_PATH="$( cd "$( dirname "$0" )" && pwd )"
+
+AR="ar crus"
+LIBDIR="\$(INSTALL_PATH)/lib"
+STATIC_LIB="libblaze.a"
+SHARED_LIB="libblaze.so"
+
+UTILDIR="\$(INSTALL_PATH)/src/util"
+MATHDIR="\$(INSTALL_PATH)/src/math"
+DOCDIR="\$(INSTALL_PATH)/doc"
+
+
+############################
+# Generating the Makefile
+
+if test $COMPILER = "gcc"; then
+   CXX="g++"
+   CXXFLAGS="-Werror -Wall -Wextra -Wshadow -Woverloaded-virtual -ansi --param inline-unit-growth=150 --param max-inline-insns-single=500 --param large-function-growth=600 -O3 $COMPILER_FLAGS"
+fi
+if test $COMPILER = "intel"; then
+   CXX="icpc"
+   CXXFLAGS="-Werror -Wshadow -w1 -ansi $COMPILER_FLAGS"
+fi
+if test $VERSION = "debug"; then
+   CXXFLAGS="$CXXFLAGS -g"
+else
+   CXXFLAGS="$CXXFLAGS -DNDEBUG"
+fi
+if test $LIBRARY = "shared" || test $LIBRARY = "both"; then
+   CXXFLAGS="$CXXFLAGS -fPIC"
+fi
+if test $BLAS = "yes"; then
+   if test $BLAS_INCLUDE_PATH; then
+      CXXFLAGS="$CXXFLAGS -isystem $BLAS_INCLUDE_PATH"
+   fi
+fi
+if test $MPI = "yes"; then
+   if test $MPI_INCLUDE_PATH; then
+      CXXFLAGS="$CXXFLAGS -isystem $MPI_INCLUDE_PATH"
+   fi
+fi
+
+if test $LIBRARY = "static"; then
+   LIBS="static"
+fi
+if test $LIBRARY = "shared"; then
+   LIBS="shared"
+fi
+if test $LIBRARY = "both"; then
+   LIBS="static shared"
+fi
+
+MODULES="util math"
+
+cat > Makefile <<EOF
+#==================================================================================================
+#
+#  Makefile for the Blaze library
+#
+#  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
+#
+#  This file is part of the Blaze library. This library is free software; you can redistribute
+#  it and/or modify it under the terms of the GNU General Public License as published by the
+#  Free Software Foundation; either version 3, or (at your option) any later version.
+#
+#  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+#  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#  See the GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License along with a special
+#  exception for linking and compiling against the Blaze library, the so-called "runtime
+#  exception"; see the file COPYING. If not, see http://www.gnu.org/licenses/.
+#
+#==================================================================================================
+
+
+# Compiler configuration
+export CXX      = $CXX
+export CXXFLAGS = $CXXFLAGS
+
+# Exporting the installation path and object path
+export INSTALL_PATH = $INSTALL_PATH
+export OBJECT_PATH  = $INSTALL_PATH/obj
+
+# Exporting the boost include path
+export BOOST_INCLUDE_PATH = $BOOST_INCLUDE_PATH
+EOF
+
+if test $BLAS = "yes"; then
+cat >> Makefile <<EOF
+
+# Exporting the BLAS include path
+export BLAS_INCLUDE_PATH = $BLAS_INCLUDE_PATH
+EOF
+fi
+
+if test $MPI = "yes"; then
+cat >> Makefile <<EOF
+
+# Exporting the MPI include path
+export MPI_INCLUDE_PATH = $MPI_INCLUDE_PATH
+EOF
+fi
+
+cat >> Makefile <<EOF
+
+
+# Build rules
+default: $LIBS
+
+static: $MODULES
+	@echo
+	@echo "Creating static library"
+	@$AR $LIBDIR/$STATIC_LIB \$(OBJECT_PATH)/*.o
+	@echo "... finished!"
+	@echo
+
+shared: $MODULES
+	@echo
+	@echo "Creating shared library"
+	@g++ -shared -o $LIBDIR/$SHARED_LIB \$(OBJECT_PATH)/*.o
+	@echo "... finished!"
+	@echo
+
+util:
+	@echo
+	@echo "Setup of the utility module..."
+	@\$(MAKE) --no-print-directory -C $UTILDIR
+	@echo "...Setup of the utility module complete!"
+
+math:
+	@echo
+	@echo "Setup of the math module..."
+	@\$(MAKE) --no-print-directory -C $MATHDIR
+	@echo "...Setup of the math module complete!"
+
+
+# Clean up rules
+clean:
+	@echo "Cleaning up..."
+	@\$(MAKE) --no-print-directory -C $UTILDIR clean
+	@\$(MAKE) --no-print-directory -C $MATHDIR clean
+	@\$(RM) $LIBDIR/$STATIC_LIB $LIBDIR/$SHARED_LIB \$(OBJECT_PATH)/*.o
+
+
+# Doxygen documentation
+doc:
+	@doxygen Doxyfile
+
+doc_clean:
+	@\$(RM) -r $DOCDIR/html/ $DOCDIR/latex/
+
+
+# Setting the independent commands
+.PHONY: default clean doc doc_clean
+EOF
+
+
+########################################
+# Generating the 'BLAS.h' header file
+
+cat > ./blaze/system/BLAS.h <<EOF
+//=================================================================================================
+/*!
+//  \file blaze/system/BLAS.h
+//  \brief System settings for the BLAS mode
+//
+//  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
+//
+//  This file is part of the Blaze library. This library is free software; you can redistribute
+//  it and/or modify it under the terms of the GNU General Public License as published by the
+//  Free Software Foundation; either version 3, or (at your option) any later version.
+//
+//  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+//  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+//  See the GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License along with a special
+//  exception for linking and compiling against the Blaze library, the so-called "runtime
+//  exception"; see the file COPYING. If not, see http://www.gnu.org/licenses/.
+*/
+//=================================================================================================
+
+#ifndef _BLAZE_SYSTEM_BLAS_H_
+#define _BLAZE_SYSTEM_BLAS_H_
+
+
+//=================================================================================================
+//
+//  BLAS MODE CONFIGURATION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Compilation switch for the BLAS mode.
+// \ingroup system
+//
+// This compilation switch enables/disables the BLAS mode. In case the BLAS mode is enabled,
+// several basic linear algebra functions (such as for instance matrix-matrix multiplications
+// between two dense matrices) are handled by performance optimized BLAS functions. Note that
+// in this case it is mandatory to provide the according BLAS header file for the compilation
+// of the Blaze library. In case the BLAS mode is disabled, all linear algebra functions use
+// the default implementations of the Blaze library and therefore BLAS is not a requirement
+// for the compilation process.
+//
+// Possible settings for the BLAS switch:
+//  - Deactivated: \b 0
+//  - Activated  : \b 1
+//
+// Note that changing the setting of the BLAS mode requires a recompilation of the Blaze
+// library. Also note that this switch is automatically set by the configuration script of
+// the Blaze library.
+*/
+EOF
+
+if test $BLAS = "yes"; then
+cat >> ./blaze/system/BLAS.h <<EOF
+#define BLAZE_BLAS_MODE 1
+EOF
+else
+cat >> ./blaze/system/BLAS.h <<EOF
+#define BLAZE_BLAS_MODE 0
+EOF
+fi
+
+cat >> ./blaze/system/BLAS.h <<EOF
+//*************************************************************************************************
+EOF
+
+if test $BLAS = "yes"; then
+cat >> ./blaze/system/BLAS.h <<EOF
+
+
+
+
+//=================================================================================================
+//
+//  BLAS INCLUDE FILE CONFIGURATION
+//
+//=================================================================================================
+
+#if BLAZE_BLAS_MODE
+extern "C" {
+#include <$BLAS_INCLUDE_FILE>
+}
+#endif
+
+#endif
+EOF
+else
+cat >> ./blaze/system/BLAS.h <<EOF
+
+#endif
+EOF
+fi
+
+
+#######################################
+# Generating the 'MPI.h' header file
+
+cat > ./blaze/system/MPI.h <<EOF
+//=================================================================================================
+/*!
+//  \file blaze/system/MPI.h
+//  \brief System settings for the MPI parallelization
+//
+//  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
+//
+//  This file is part of the Blaze library. This library is free software; you can redistribute
+//  it and/or modify it under the terms of the GNU General Public License as published by the
+//  Free Software Foundation; either version 3, or (at your option) any later version.
+//
+//  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+//  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+//  See the GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License along with a special
+//  exception for linking and compiling against the Blaze library, the so-called "runtime
+//  exception"; see the file COPYING. If not, see http://www.gnu.org/licenses/.
+*/
+//=================================================================================================
+
+#ifndef _BLAZE_SYSTEM_MPI_H_
+#define _BLAZE_SYSTEM_MPI_H_
+
+
+//=================================================================================================
+//
+//  MPI MODE CONFIGURATION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Compilation switch for the MPI parallelization.
+// \ingroup mpi
+//
+// This compilation switch enables/disables the MPI parallelization.
+//
+// Possible settings for the MPI switch:
+//  - Deactivated: \b 0
+//  - Activated  : \b 1
+//
+// Note that changing the setting of the MPI parallel mode requires a recompilation of the
+// Blaze library. Also note that this switch is automatically set by the configuration script
+// of the Blaze library.
+*/
+EOF
+
+if test $MPI = "yes"; then
+cat >> ./blaze/system/MPI.h <<EOF
+#define BLAZE_MPI_PARALLEL_MODE 1
+EOF
+else
+cat >> ./blaze/system/MPI.h <<EOF
+#define BLAZE_MPI_PARALLEL_MODE 0
+EOF
+fi
+
+cat >> ./blaze/system/MPI.h <<EOF
+//*************************************************************************************************
+
+#endif
+EOF
+
+
+#############################################
+# Generating the 'CacheSize.h' header file
+
+if test $CACHE_SIZE; then
+CACHE_SIZE=$CACHE_SIZE"UL"
+else
+CACHE_SIZE="3145728UL"
+fi
+
+cat > ./blaze/config/CacheSize.h <<EOF
+//=================================================================================================
+/*!
+//  \file blaze/config/CacheSize.h
+//  \brief Configuration of the cache size of the target architecture
+//
+//  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
+//
+//  This file is part of the Blaze library. This library is free software; you can redistribute
+//  it and/or modify it under the terms of the GNU General Public License as published by the
+//  Free Software Foundation; either version 3, or (at your option) any later version.
+//
+//  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+//  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+//  See the GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License along with a special
+//  exception for linking and compiling against the Blaze library, the so-called "runtime
+//  exception"; see the file COPYING. If not, see http://www.gnu.org/licenses/.
+*/
+//=================================================================================================
+
+
+namespace blaze {
+
+//*************************************************************************************************
+/*!\brief Cache size of the target architecture.
+// \ingroup config
+//
+// This setting specifies the available cache size in Byte of the used target architecture.
+// Several algorithms use this setting for an optimized evaluation.
+//
+// The size of the cache is specified in Byte. For instance, a cache of 3 MiByte must therefore
+// be specified as 3145728.
+*/
+const size_t cacheSize = $CACHE_SIZE;
+//*************************************************************************************************
+
+} // namespace blaze
+EOF
+
+
+#######################################
+# Clearing the object file directory
+
+rm -f obj/*

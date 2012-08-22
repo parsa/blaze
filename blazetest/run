@@ -1,0 +1,1848 @@
+#!/bin/bash
+#==================================================================================================
+#
+#  Run script for the Blaze test suite
+#
+#  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
+#
+#  This file is part of the Blaze library. This library is free software; you can redistribute
+#  it and/or modify it under the terms of the GNU General Public License as published by the
+#  Free Software Foundation; either version 3, or (at your option) any later version.
+#
+#  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+#  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#  See the GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License along with a special
+#  exception for linking and compiling against the Blaze library, the so-called "runtime
+#  exception"; see the file COPYING. If not, see http://www.gnu.org/licenses/.
+#
+#==================================================================================================
+
+
+#==================================================================================================
+# Dense vector/dense vector addition
+#==================================================================================================
+
+echo " Running dense vector/dense vector addition tests..." 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V2aV2a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V2aV2b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V2aVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V2aVDb 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V2bV2a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V2bV2b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V2bVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V2bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecdvecadd/V3aV3a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V3aV3b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V3aVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V3aVDb 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V3bV3a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V3bV3b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V3bVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V3bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecdvecadd/V4aV4a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V4aV4b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V4aVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V4aVDb 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V4bV4a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V4bV4b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V4bVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V4bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecdvecadd/V5aV5a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V5aV5b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V5aVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V5aVDb 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V5bV5a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V5bV5b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V5bVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V5bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecdvecadd/V6aV6a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V6aV6b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V6aVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V6aVDb 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V6bV6a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V6bV6b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V6bVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/V6bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecdvecadd/VDaV2a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/VDaV2b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/VDaV3a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/VDaV3b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/VDaV4a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/VDaV4b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/VDaV5a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/VDaV5b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/VDaV6a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/VDaV6b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/VDaVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/VDaVDb 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/VDbV2a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/VDbV2b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/VDbV3a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/VDbV3b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/VDbV4a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/VDbV4b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/VDbV5a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/VDbV5b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/VDbV6a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/VDbV6b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/VDbVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecadd/VDbVDb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Dense vector/sparse vector addition
+#==================================================================================================
+
+echo " Running dense vector/sparse vector addition tests..." 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecadd/V2aVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecadd/V2aVCb 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecadd/V2bVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecadd/V2bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecsvecadd/V3aVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecadd/V3aVCb 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecadd/V3bVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecadd/V3bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecsvecadd/V4aVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecadd/V4aVCb 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecadd/V4bVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecadd/V4bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecsvecadd/V5aVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecadd/V5aVCb 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecadd/V5bVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecadd/V5bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecsvecadd/V6aVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecadd/V6aVCb 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecadd/V6bVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecadd/V6bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecsvecadd/VDaVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecadd/VDaVCb 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecadd/VDbVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecadd/VDbVCb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Sparse vector/dense vector addition
+#==================================================================================================
+
+echo " Running sparse vector/dense vector addition tests..." 2>&1 | tee -a result.txt
+src/mathtest/svecdvecadd/VCaV2a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecadd/VCaV2b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecadd/VCaV3a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecadd/VCaV3b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecadd/VCaV4a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecadd/VCaV4b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecadd/VCaV5a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecadd/VCaV5b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecadd/VCaV6a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecadd/VCaV6b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecadd/VCaVDa 2>&1 | tee -a result.txt
+src/mathtest/svecdvecadd/VCaVDb 2>&1 | tee -a result.txt
+
+src/mathtest/svecdvecadd/VCbV2a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecadd/VCbV2b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecadd/VCbV3a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecadd/VCbV3b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecadd/VCbV4a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecadd/VCbV4b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecadd/VCbV5a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecadd/VCbV5b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecadd/VCbV6a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecadd/VCbV6b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecadd/VCbVDa 2>&1 | tee -a result.txt
+src/mathtest/svecdvecadd/VCbVDb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Sparse vector/sparse vector addition
+#==================================================================================================
+
+echo " Running sparse vector/sparse vector addition tests..." 2>&1 | tee -a result.txt
+src/mathtest/svecsvecadd/VCaVCa 2>&1 | tee -a result.txt
+src/mathtest/svecsvecadd/VCaVCb 2>&1 | tee -a result.txt
+src/mathtest/svecsvecadd/VCbVCa 2>&1 | tee -a result.txt
+src/mathtest/svecsvecadd/VCbVCb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Dense vector/dense vector subtraction
+#==================================================================================================
+
+echo " Running dense vector/dense vector subtraction tests..." 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V2aV2a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V2aV2b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V2aVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V2aVDb 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V2bV2a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V2bV2b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V2bVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V2bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecdvecsub/V3aV3a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V3aV3b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V3aVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V3aVDb 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V3bV3a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V3bV3b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V3bVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V3bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecdvecsub/V4aV4a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V4aV4b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V4aVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V4aVDb 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V4bV4a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V4bV4b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V4bVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V4bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecdvecsub/V5aV5a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V5aV5b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V5aVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V5aVDb 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V5bV5a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V5bV5b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V5bVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V5bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecdvecsub/V6aV6a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V6aV6b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V6aVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V6aVDb 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V6bV6a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V6bV6b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V6bVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/V6bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecdvecsub/VDaV2a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/VDaV2b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/VDaV3a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/VDaV3b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/VDaV4a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/VDaV4b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/VDaV5a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/VDaV5b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/VDaV6a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/VDaV6b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/VDaVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/VDaVDb 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/VDbV2a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/VDbV2b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/VDbV3a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/VDbV3b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/VDbV4a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/VDbV4b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/VDbV5a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/VDbV5b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/VDbV6a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/VDbV6b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/VDbVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecsub/VDbVDb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Dense vector/sparse vector subtraction
+#==================================================================================================
+
+echo " Running dense vector/sparse vector subtraction tests..." 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecsub/V2aVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecsub/V2aVCb 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecsub/V2bVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecsub/V2bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecsvecsub/V3aVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecsub/V3aVCb 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecsub/V3bVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecsub/V3bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecsvecsub/V4aVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecsub/V4aVCb 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecsub/V4bVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecsub/V4bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecsvecsub/V5aVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecsub/V5aVCb 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecsub/V5bVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecsub/V5bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecsvecsub/V6aVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecsub/V6aVCb 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecsub/V6bVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecsub/V6bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecsvecsub/VDaVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecsub/VDaVCb 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecsub/VDbVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecsub/VDbVCb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Sparse vector/dense vector subtraction
+#==================================================================================================
+
+echo " Running sparse vector/dense vector subtraction tests..." 2>&1 | tee -a result.txt
+src/mathtest/svecdvecsub/VCaV2a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecsub/VCaV2b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecsub/VCaV3a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecsub/VCaV3b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecsub/VCaV4a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecsub/VCaV4b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecsub/VCaV5a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecsub/VCaV5b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecsub/VCaV6a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecsub/VCaV6b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecsub/VCaVDa 2>&1 | tee -a result.txt
+src/mathtest/svecdvecsub/VCaVDb 2>&1 | tee -a result.txt
+
+src/mathtest/svecdvecsub/VCbV2a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecsub/VCbV2b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecsub/VCbV3a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecsub/VCbV3b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecsub/VCbV4a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecsub/VCbV4b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecsub/VCbV5a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecsub/VCbV5b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecsub/VCbV6a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecsub/VCbV6b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecsub/VCbVDa 2>&1 | tee -a result.txt
+src/mathtest/svecdvecsub/VCbVDb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Sparse vector/sparse vector subtraction
+#==================================================================================================
+
+echo " Running sparse vector/sparse vector subtraction tests..." 2>&1 | tee -a result.txt
+src/mathtest/svecsvecsub/VCaVCa 2>&1 | tee -a result.txt
+src/mathtest/svecsvecsub/VCaVCb 2>&1 | tee -a result.txt
+src/mathtest/svecsvecsub/VCbVCa 2>&1 | tee -a result.txt
+src/mathtest/svecsvecsub/VCbVCb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Dense vector/dense vector multiplication
+#==================================================================================================
+
+echo " Running dense vector/dense vector multiplication tests..." 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V2aV2a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V2aV2b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V2aVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V2aVDb 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V2bV2a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V2bV2b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V2bVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V2bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecdvecmult/V3aV3a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V3aV3b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V3aVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V3aVDb 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V3bV3a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V3bV3b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V3bVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V3bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecdvecmult/V4aV4a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V4aV4b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V4aVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V4aVDb 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V4bV4a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V4bV4b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V4bVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V4bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecdvecmult/V5aV5a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V5aV5b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V5aVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V5aVDb 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V5bV5a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V5bV5b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V5bVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V5bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecdvecmult/V6aV6a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V6aV6b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V6aVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V6aVDb 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V6bV6a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V6bV6b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V6bVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/V6bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecdvecmult/VDaV2a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/VDaV2b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/VDaV3a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/VDaV3b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/VDaV4a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/VDaV4b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/VDaV5a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/VDaV5b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/VDaV6a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/VDaV6b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/VDaVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/VDaVDb 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/VDbV2a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/VDbV2b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/VDbV3a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/VDbV3b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/VDbV4a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/VDbV4b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/VDbV5a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/VDbV5b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/VDbV6a 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/VDbV6b 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/VDbVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdvecmult/VDbVDb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Dense vector/sparse vector multiplication
+#==================================================================================================
+
+echo " Running dense vector/sparse vector multiplication tests..." 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecmult/V2aVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecmult/V2aVCb 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecmult/V2bVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecmult/V2bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecsvecmult/V3aVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecmult/V3aVCb 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecmult/V3bVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecmult/V3bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecsvecmult/V4aVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecmult/V4aVCb 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecmult/V4bVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecmult/V4bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecsvecmult/V5aVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecmult/V5aVCb 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecmult/V5bVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecmult/V5bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecsvecmult/V6aVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecmult/V6aVCb 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecmult/V6bVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecmult/V6bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecsvecmult/VDaVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecmult/VDaVCb 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecmult/VDbVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsvecmult/VDbVCb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Sparse vector/dense vector multiplication
+#==================================================================================================
+
+echo " Running sparse vector/dense vector multiplication tests..." 2>&1 | tee -a result.txt
+src/mathtest/svecdvecmult/VCaV2a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecmult/VCaV2b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecmult/VCaV3a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecmult/VCaV3b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecmult/VCaV4a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecmult/VCaV4b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecmult/VCaV5a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecmult/VCaV5b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecmult/VCaV6a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecmult/VCaV6b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecmult/VCaVDa 2>&1 | tee -a result.txt
+src/mathtest/svecdvecmult/VCaVDb 2>&1 | tee -a result.txt
+
+src/mathtest/svecdvecmult/VCbV2a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecmult/VCbV2b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecmult/VCbV3a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecmult/VCbV3b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecmult/VCbV4a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecmult/VCbV4b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecmult/VCbV5a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecmult/VCbV5b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecmult/VCbV6a 2>&1 | tee -a result.txt
+src/mathtest/svecdvecmult/VCbV6b 2>&1 | tee -a result.txt
+src/mathtest/svecdvecmult/VCbVDa 2>&1 | tee -a result.txt
+src/mathtest/svecdvecmult/VCbVDb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Sparse vector/sparse vector multiplication
+#==================================================================================================
+
+echo " Running sparse vector/sparse vector multiplication tests..." 2>&1 | tee -a result.txt
+src/mathtest/svecsvecmult/VCaVCa 2>&1 | tee -a result.txt
+src/mathtest/svecsvecmult/VCaVCb 2>&1 | tee -a result.txt
+src/mathtest/svecsvecmult/VCbVCa 2>&1 | tee -a result.txt
+src/mathtest/svecsvecmult/VCbVCb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Dense vector/dense vector inner product
+#==================================================================================================
+
+echo " Running dense vector/dense vector inner product tests..." 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V2aV2a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V2aV2b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V2aVDa 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V2aVDb 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V2bV2a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V2bV2b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V2bVDa 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V2bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/tdvecdvecmult/V3aV3a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V3aV3b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V3aVDa 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V3aVDb 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V3bV3a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V3bV3b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V3bVDa 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V3bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/tdvecdvecmult/V4aV4a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V4aV4b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V4aVDa 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V4aVDb 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V4bV4a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V4bV4b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V4bVDa 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V4bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/tdvecdvecmult/V5aV5a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V5aV5b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V5aVDa 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V5aVDb 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V5bV5a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V5bV5b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V5bVDa 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V5bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/tdvecdvecmult/V6aV6a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V6aV6b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V6aVDa 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V6aVDb 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V6bV6a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V6bV6b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V6bVDa 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/V6bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/tdvecdvecmult/VDaV2a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/VDaV2b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/VDaV3a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/VDaV3b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/VDaV4a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/VDaV4b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/VDaV5a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/VDaV5b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/VDaV6a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/VDaV6b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/VDaVDa 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/VDaVDb 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/VDbV2a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/VDbV2b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/VDbV3a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/VDbV3b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/VDbV4a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/VDbV4b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/VDbV5a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/VDbV5b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/VDbV6a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/VDbV6b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/VDbVDa 2>&1 | tee -a result.txt
+src/mathtest/tdvecdvecmult/VDbVDb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Dense vector/sparse vector inner product
+#==================================================================================================
+
+echo " Running dense vector/sparse vector inner product tests..." 2>&1 | tee -a result.txt
+src/mathtest/tdvecsvecmult/V2aVCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsvecmult/V2aVCb 2>&1 | tee -a result.txt
+src/mathtest/tdvecsvecmult/V2bVCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsvecmult/V2bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/tdvecsvecmult/V3aVCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsvecmult/V3aVCb 2>&1 | tee -a result.txt
+src/mathtest/tdvecsvecmult/V3bVCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsvecmult/V3bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/tdvecsvecmult/V4aVCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsvecmult/V4aVCb 2>&1 | tee -a result.txt
+src/mathtest/tdvecsvecmult/V4bVCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsvecmult/V4bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/tdvecsvecmult/V5aVCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsvecmult/V5aVCb 2>&1 | tee -a result.txt
+src/mathtest/tdvecsvecmult/V5bVCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsvecmult/V5bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/tdvecsvecmult/V6aVCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsvecmult/V6aVCb 2>&1 | tee -a result.txt
+src/mathtest/tdvecsvecmult/V6bVCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsvecmult/V6bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/tdvecsvecmult/VDaVCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsvecmult/VDaVCb 2>&1 | tee -a result.txt
+src/mathtest/tdvecsvecmult/VDbVCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsvecmult/VDbVCb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Sparse vector/dense vector inner product
+#==================================================================================================
+
+echo " Running sparse vector/dense vector inner product tests..." 2>&1 | tee -a result.txt
+src/mathtest/tsvecdvecmult/VCaV2a 2>&1 | tee -a result.txt
+src/mathtest/tsvecdvecmult/VCaV2b 2>&1 | tee -a result.txt
+src/mathtest/tsvecdvecmult/VCbV2a 2>&1 | tee -a result.txt
+src/mathtest/tsvecdvecmult/VCbV2b 2>&1 | tee -a result.txt
+
+src/mathtest/tsvecdvecmult/VCaV3a 2>&1 | tee -a result.txt
+src/mathtest/tsvecdvecmult/VCaV3b 2>&1 | tee -a result.txt
+src/mathtest/tsvecdvecmult/VCbV3a 2>&1 | tee -a result.txt
+src/mathtest/tsvecdvecmult/VCbV3b 2>&1 | tee -a result.txt
+
+src/mathtest/tsvecdvecmult/VCaV4a 2>&1 | tee -a result.txt
+src/mathtest/tsvecdvecmult/VCaV4b 2>&1 | tee -a result.txt
+src/mathtest/tsvecdvecmult/VCbV4a 2>&1 | tee -a result.txt
+src/mathtest/tsvecdvecmult/VCbV4b 2>&1 | tee -a result.txt
+
+src/mathtest/tsvecdvecmult/VCaV5a 2>&1 | tee -a result.txt
+src/mathtest/tsvecdvecmult/VCaV5b 2>&1 | tee -a result.txt
+src/mathtest/tsvecdvecmult/VCbV5a 2>&1 | tee -a result.txt
+src/mathtest/tsvecdvecmult/VCbV5b 2>&1 | tee -a result.txt
+
+src/mathtest/tsvecdvecmult/VCaV6a 2>&1 | tee -a result.txt
+src/mathtest/tsvecdvecmult/VCaV6b 2>&1 | tee -a result.txt
+src/mathtest/tsvecdvecmult/VCbV6a 2>&1 | tee -a result.txt
+src/mathtest/tsvecdvecmult/VCbV6b 2>&1 | tee -a result.txt
+
+src/mathtest/tsvecdvecmult/VCaVDa 2>&1 | tee -a result.txt
+src/mathtest/tsvecdvecmult/VCaVDb 2>&1 | tee -a result.txt
+src/mathtest/tsvecdvecmult/VCbVDa 2>&1 | tee -a result.txt
+src/mathtest/tsvecdvecmult/VCbVDb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Sparse vector/sparse vector inner product
+#==================================================================================================
+
+echo " Running sparse vector/sparse vector inner product tests..." 2>&1 | tee -a result.txt
+src/mathtest/tsvecsvecmult/VCaVCa 2>&1 | tee -a result.txt
+src/mathtest/tsvecsvecmult/VCaVCb 2>&1 | tee -a result.txt
+src/mathtest/tsvecsvecmult/VCbVCa 2>&1 | tee -a result.txt
+src/mathtest/tsvecsvecmult/VCbVCb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Dense vector/dense vector outer product
+#==================================================================================================
+
+echo " Running dense vector/dense vector outer product tests..." 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2aV2a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2aV2b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2aV3a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2aV3b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2aV4a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2aV4b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2aV5a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2aV5b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2aV6a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2aV6b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2aVDa 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2aVDb 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2bV2a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2bV2b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2bV3a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2bV3b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2bV4a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2bV4b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2bV5a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2bV5b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2bV6a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2bV6b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2bVDa 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V2bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dvectdvecmult/V3aV2a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V3aV2b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V3aV3a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V3aV3b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V3aV4a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V3aV4b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V3aV5a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V3aV5b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V3aV6a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V3aV6b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V3aVDa 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V3aVDb 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V3bV2a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V3bV2b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V3bV3a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V3bV3b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V3bV4a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V3bV4b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V3bV5a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V3bV5b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V3bV6a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V3bV6b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V3bVDa 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V3bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dvectdvecmult/V4aV2a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V4aV2b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V4aV3a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V4aV3b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V4aV4a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V4aV4b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V4aV5a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V4aV5b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V4aV6a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V4aV6b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V4aVDa 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V4aVDb 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V4bV2a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V4bV2b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V4bV3a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V4bV3b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V4bV4a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V4bV4b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V4bV5a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V4bV5b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V4bV6a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V4bV6b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V4bVDa 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V4bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dvectdvecmult/V5aV2a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V5aV2b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V5aV3a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V5aV3b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V5aV4a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V5aV4b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V5aV5a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V5aV5b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V5aV6a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V5aV6b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V5aVDa 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V5aVDb 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V5bV2a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V5bV2b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V5bV3a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V5bV3b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V5bV4a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V5bV4b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V5bV5a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V5bV5b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V5bV6a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V5bV6b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V5bVDa 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V5bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dvectdvecmult/V6aV2a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V6aV2b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V6aV3a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V6aV3b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V6aV4a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V6aV4b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V6aV5a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V6aV5b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V6aV6a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V6aV6b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V6aVDa 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V6aVDb 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V6bV2a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V6bV2b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V6bV3a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V6bV3b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V6bV4a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V6bV4b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V6bV5a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V6bV5b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V6bV6a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V6bV6b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V6bVDa 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/V6bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dvectdvecmult/VDaV2a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/VDaV2b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/VDaV3a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/VDaV3b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/VDaV4a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/VDaV4b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/VDaV5a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/VDaV5b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/VDaV6a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/VDaV6b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/VDaVDa 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/VDaVDb 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/VDbV2a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/VDbV2b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/VDbV3a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/VDbV3b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/VDbV4a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/VDbV4b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/VDbV5a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/VDbV5b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/VDbV6a 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/VDbV6b 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/VDbVDa 2>&1 | tee -a result.txt
+src/mathtest/dvectdvecmult/VDbVDb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Dense vector/sparse vector outer product
+#==================================================================================================
+
+echo " Running dense vector/sparse vector outer product tests..." 2>&1 | tee -a result.txt
+src/mathtest/dvectsvecmult/V2aVCa 2>&1 | tee -a result.txt
+src/mathtest/dvectsvecmult/V2aVCb 2>&1 | tee -a result.txt
+src/mathtest/dvectsvecmult/V2bVCa 2>&1 | tee -a result.txt
+src/mathtest/dvectsvecmult/V2bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dvectsvecmult/V3aVCa 2>&1 | tee -a result.txt
+src/mathtest/dvectsvecmult/V3aVCb 2>&1 | tee -a result.txt
+src/mathtest/dvectsvecmult/V3bVCa 2>&1 | tee -a result.txt
+src/mathtest/dvectsvecmult/V3bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dvectsvecmult/V4aVCa 2>&1 | tee -a result.txt
+src/mathtest/dvectsvecmult/V4aVCb 2>&1 | tee -a result.txt
+src/mathtest/dvectsvecmult/V4bVCa 2>&1 | tee -a result.txt
+src/mathtest/dvectsvecmult/V4bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dvectsvecmult/V5aVCa 2>&1 | tee -a result.txt
+src/mathtest/dvectsvecmult/V5aVCb 2>&1 | tee -a result.txt
+src/mathtest/dvectsvecmult/V5bVCa 2>&1 | tee -a result.txt
+src/mathtest/dvectsvecmult/V5bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dvectsvecmult/V6aVCa 2>&1 | tee -a result.txt
+src/mathtest/dvectsvecmult/V6aVCb 2>&1 | tee -a result.txt
+src/mathtest/dvectsvecmult/V6bVCa 2>&1 | tee -a result.txt
+src/mathtest/dvectsvecmult/V6bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dvectsvecmult/VDaVCa 2>&1 | tee -a result.txt
+src/mathtest/dvectsvecmult/VDaVCb 2>&1 | tee -a result.txt
+src/mathtest/dvectsvecmult/VDbVCa 2>&1 | tee -a result.txt
+src/mathtest/dvectsvecmult/VDbVCb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Sparse vector/dense vector outer product
+#==================================================================================================
+
+echo " Running sparse vector/dense vector outer product tests..." 2>&1 | tee -a result.txt
+src/mathtest/svectdvecmult/VCaV2a 2>&1 | tee -a result.txt
+src/mathtest/svectdvecmult/VCaV2b 2>&1 | tee -a result.txt
+src/mathtest/svectdvecmult/VCaV3a 2>&1 | tee -a result.txt
+src/mathtest/svectdvecmult/VCaV3b 2>&1 | tee -a result.txt
+src/mathtest/svectdvecmult/VCaV4a 2>&1 | tee -a result.txt
+src/mathtest/svectdvecmult/VCaV4b 2>&1 | tee -a result.txt
+src/mathtest/svectdvecmult/VCaV5a 2>&1 | tee -a result.txt
+src/mathtest/svectdvecmult/VCaV5b 2>&1 | tee -a result.txt
+src/mathtest/svectdvecmult/VCaV6a 2>&1 | tee -a result.txt
+src/mathtest/svectdvecmult/VCaV6b 2>&1 | tee -a result.txt
+src/mathtest/svectdvecmult/VCaVDa 2>&1 | tee -a result.txt
+src/mathtest/svectdvecmult/VCaVDb 2>&1 | tee -a result.txt
+
+src/mathtest/svectdvecmult/VCbV2a 2>&1 | tee -a result.txt
+src/mathtest/svectdvecmult/VCbV2b 2>&1 | tee -a result.txt
+src/mathtest/svectdvecmult/VCbV3a 2>&1 | tee -a result.txt
+src/mathtest/svectdvecmult/VCbV3b 2>&1 | tee -a result.txt
+src/mathtest/svectdvecmult/VCbV4a 2>&1 | tee -a result.txt
+src/mathtest/svectdvecmult/VCbV4b 2>&1 | tee -a result.txt
+src/mathtest/svectdvecmult/VCbV5a 2>&1 | tee -a result.txt
+src/mathtest/svectdvecmult/VCbV5b 2>&1 | tee -a result.txt
+src/mathtest/svectdvecmult/VCbV6a 2>&1 | tee -a result.txt
+src/mathtest/svectdvecmult/VCbV6b 2>&1 | tee -a result.txt
+src/mathtest/svectdvecmult/VCbVDa 2>&1 | tee -a result.txt
+src/mathtest/svectdvecmult/VCbVDb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Sparse vector/sparse vector outer product
+#==================================================================================================
+
+echo " Running sparse vector/sparse vector outer product tests..." 2>&1 | tee -a result.txt
+src/mathtest/svectsvecmult/VCaVCa 2>&1 | tee -a result.txt
+src/mathtest/svectsvecmult/VCaVCb 2>&1 | tee -a result.txt
+src/mathtest/svectsvecmult/VCbVCa 2>&1 | tee -a result.txt
+src/mathtest/svectsvecmult/VCbVCb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Dense matrix/dense vector multiplication
+#==================================================================================================
+
+echo " Running dense matrix/dense vector multiplication tests..." 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M2x2aV2a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M2x2aV2b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M2x2aVDa 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M2x2aVDb 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M2x2bV2a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M2x2bV2b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M2x2bVDa 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M2x2bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatdvecmult/M3x3aV3a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M3x3aV3b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M3x3aVDa 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M3x3aVDb 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M3x3bV3a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M3x3bV3b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M3x3bVDa 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M3x3bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatdvecmult/M4x4aV4a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M4x4aV4b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M4x4aVDa 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M4x4aVDb 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M4x4bV4a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M4x4bV4b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M4x4bVDa 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M4x4bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatdvecmult/M5x5aV5a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M5x5aV5b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M5x5aVDa 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M5x5aVDb 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M5x5bV5a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M5x5bV5b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M5x5bVDa 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M5x5bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatdvecmult/M6x6aV6a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M6x6aV6b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M6x6aVDa 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M6x6aVDb 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M6x6bV6a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M6x6bV6b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M6x6bVDa 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M6x6bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatdvecmult/M7x13aV13a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M7x13aV13b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M7x13aVDa  2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M7x13aVDb  2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M7x13bV13a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M7x13bV13b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M7x13bVDa  2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M7x13bVDb  2>&1 | tee -a result.txt
+
+src/mathtest/dmatdvecmult/M16x8aV8a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M16x8aV8b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M16x8aVDa 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M16x8aVDb 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M16x8bV8a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M16x8bV8b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M16x8bVDa 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/M16x8bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatdvecmult/MDaV2a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/MDaV2b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/MDaV3a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/MDaV3b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/MDaV4a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/MDaV4b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/MDaV5a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/MDaV5b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/MDaV6a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/MDaV6b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/MDaVDa 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/MDaVDb 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/MDbV2a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/MDbV2b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/MDbV3a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/MDbV3b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/MDbV4a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/MDbV4b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/MDbV5a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/MDbV5b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/MDbV6a 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/MDbV6b 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/MDbVDa 2>&1 | tee -a result.txt
+src/mathtest/dmatdvecmult/MDbVDb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Dense matrix/sparse vector multiplication
+#==================================================================================================
+
+echo " Running dense matrix/sparse vector multiplication tests..." 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/M2x2aVCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/M2x2aVCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/M2x2bVCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/M2x2bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsvecmult/M3x3aVCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/M3x3aVCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/M3x3bVCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/M3x3bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsvecmult/M4x4aVCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/M4x4aVCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/M4x4bVCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/M4x4bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsvecmult/M5x5aVCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/M5x5aVCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/M5x5bVCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/M5x5bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsvecmult/M6x6aVCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/M6x6aVCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/M6x6bVCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/M6x6bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsvecmult/M7x13aVCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/M7x13aVCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/M7x13bVCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/M7x13bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsvecmult/M16x8aVCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/M16x8aVCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/M16x8bVCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/M16x8bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsvecmult/MDaVCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/MDaVCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/MDbVCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsvecmult/MDbVCb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Sparse matrix/dense vector multiplication
+#==================================================================================================
+
+echo " Running sparse matrix/dense vector multiplication tests..." 2>&1 | tee -a result.txt
+src/mathtest/smatdvecmult/MCaV2a 2>&1 | tee -a result.txt
+src/mathtest/smatdvecmult/MCaV2b 2>&1 | tee -a result.txt
+src/mathtest/smatdvecmult/MCaV3a 2>&1 | tee -a result.txt
+src/mathtest/smatdvecmult/MCaV3b 2>&1 | tee -a result.txt
+src/mathtest/smatdvecmult/MCaV4a 2>&1 | tee -a result.txt
+src/mathtest/smatdvecmult/MCaV4b 2>&1 | tee -a result.txt
+src/mathtest/smatdvecmult/MCaV5a 2>&1 | tee -a result.txt
+src/mathtest/smatdvecmult/MCaV5b 2>&1 | tee -a result.txt
+src/mathtest/smatdvecmult/MCaV6a 2>&1 | tee -a result.txt
+src/mathtest/smatdvecmult/MCaV6b 2>&1 | tee -a result.txt
+src/mathtest/smatdvecmult/MCaVDa 2>&1 | tee -a result.txt
+src/mathtest/smatdvecmult/MCaVDb 2>&1 | tee -a result.txt
+
+src/mathtest/smatdvecmult/MCbV2a 2>&1 | tee -a result.txt
+src/mathtest/smatdvecmult/MCbV2b 2>&1 | tee -a result.txt
+src/mathtest/smatdvecmult/MCbV3a 2>&1 | tee -a result.txt
+src/mathtest/smatdvecmult/MCbV3b 2>&1 | tee -a result.txt
+src/mathtest/smatdvecmult/MCbV4a 2>&1 | tee -a result.txt
+src/mathtest/smatdvecmult/MCbV4b 2>&1 | tee -a result.txt
+src/mathtest/smatdvecmult/MCbV5a 2>&1 | tee -a result.txt
+src/mathtest/smatdvecmult/MCbV5b 2>&1 | tee -a result.txt
+src/mathtest/smatdvecmult/MCbV6a 2>&1 | tee -a result.txt
+src/mathtest/smatdvecmult/MCbV6b 2>&1 | tee -a result.txt
+src/mathtest/smatdvecmult/MCbVDa 2>&1 | tee -a result.txt
+src/mathtest/smatdvecmult/MCbVDb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Sparse matrix/sparse vector multiplication
+#==================================================================================================
+
+echo " Running sparse matrix/sparse vector multiplication tests..." 2>&1 | tee -a result.txt
+src/mathtest/smatsvecmult/MCaVCa 2>&1 | tee -a result.txt
+src/mathtest/smatsvecmult/MCaVCb 2>&1 | tee -a result.txt
+src/mathtest/smatsvecmult/MCbVCa 2>&1 | tee -a result.txt
+src/mathtest/smatsvecmult/MCbVCb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Dense vector/dense matrix multiplication
+#==================================================================================================
+
+echo " Running dense vector/dense matrix multiplication tests..." 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V2aM2x2a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V2aM2x2b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V2aMDa   2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V2aMDb   2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V2bM2x2a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V2bM2x2b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V2bMDa   2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V2bMDb   2>&1 | tee -a result.txt
+
+src/mathtest/tdvecdmatmult/V3aM3x3a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V3aM3x3b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V3aMDa   2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V3aMDb   2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V3bM3x3a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V3bM3x3b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V3bMDa   2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V3bMDb   2>&1 | tee -a result.txt
+
+src/mathtest/tdvecdmatmult/V4aM4x4a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V4aM4x4b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V4aMDa   2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V4aMDb   2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V4bM4x4a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V4bM4x4b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V4bMDa   2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V4bMDb   2>&1 | tee -a result.txt
+
+src/mathtest/tdvecdmatmult/V5aM5x5a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V5aM5x5b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V5aMDa   2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V5aMDb   2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V5bM5x5a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V5bM5x5b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V5bMDa   2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V5bMDb   2>&1 | tee -a result.txt
+
+src/mathtest/tdvecdmatmult/V6aM6x6a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V6aM6x6b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V6aMDa   2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V6aMDb   2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V6bM6x6a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V6bM6x6b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V6bMDa   2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V6bMDb   2>&1 | tee -a result.txt
+
+src/mathtest/tdvecdmatmult/V7aM7x13a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V7aM7x13b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V7bM7x13a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V7bM7x13b 2>&1 | tee -a result.txt
+
+src/mathtest/tdvecdmatmult/V16aM16x8a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V16aM16x8b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V16bM16x8a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/V16bM16x8b 2>&1 | tee -a result.txt
+
+src/mathtest/tdvecdmatmult/VDaM2x2a  2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDaM2x2b  2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDaM3x3a  2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDaM3x3b  2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDaM4x4a  2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDaM4x4b  2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDaM5x5a  2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDaM5x5b  2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDaM6x6a  2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDaM6x6b  2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDaM7x13a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDaM7x13b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDaM16x8a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDaM16x8b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDaMDa    2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDaMDb    2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDbM2x2a  2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDbM2x2b  2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDbM3x3a  2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDbM3x3b  2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDbM4x4a  2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDbM4x4b  2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDbM5x5a  2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDbM5x5b  2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDbM6x6a  2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDbM6x6b  2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDbM7x13a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDbM7x13b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDbM16x8a 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDbM16x8b 2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDbMDa    2>&1 | tee -a result.txt
+src/mathtest/tdvecdmatmult/VDbMDb    2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Sparse vector/dense matrix multiplication
+#==================================================================================================
+
+echo " Running sparse vector/dense matrix multiplication tests..." 2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCaM2x2a  2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCaM2x2b  2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCaM3x3a  2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCaM3x3b  2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCaM4x4a  2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCaM4x4b  2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCaM5x5a  2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCaM5x5b  2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCaM6x6a  2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCaM6x6b  2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCaM7x13a 2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCaM7x13b 2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCaM16x8a 2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCaM16x8b 2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCaMDa    2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCaMDb    2>&1 | tee -a result.txt
+
+src/mathtest/tsvecdmatmult/VCbM2x2a  2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCbM2x2b  2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCbM3x3a  2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCbM3x3b  2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCbM4x4a  2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCbM4x4b  2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCbM5x5a  2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCbM5x5b  2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCbM6x6a  2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCbM6x6b  2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCbM7x13a 2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCbM7x13b 2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCbM16x8a 2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCbM16x8b 2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCbMDa    2>&1 | tee -a result.txt
+src/mathtest/tsvecdmatmult/VCbMDb    2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Dense vector/sparse matrix multiplication
+#==================================================================================================
+
+echo " Running dense vector/sparse matrix multiplication tests..." 2>&1 | tee -a result.txt
+src/mathtest/tdvecsmatmult/V2aMCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsmatmult/V2aMCb 2>&1 | tee -a result.txt
+src/mathtest/tdvecsmatmult/V2bMCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsmatmult/V2bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/tdvecsmatmult/V3aMCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsmatmult/V3aMCb 2>&1 | tee -a result.txt
+src/mathtest/tdvecsmatmult/V3bMCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsmatmult/V3bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/tdvecsmatmult/V4aMCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsmatmult/V4aMCb 2>&1 | tee -a result.txt
+src/mathtest/tdvecsmatmult/V4bMCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsmatmult/V4bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/tdvecsmatmult/V5aMCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsmatmult/V5aMCb 2>&1 | tee -a result.txt
+src/mathtest/tdvecsmatmult/V5bMCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsmatmult/V5bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/tdvecsmatmult/V6aMCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsmatmult/V6aMCb 2>&1 | tee -a result.txt
+src/mathtest/tdvecsmatmult/V6bMCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsmatmult/V6bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/tdvecsmatmult/VDaMCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsmatmult/VDaMCb 2>&1 | tee -a result.txt
+src/mathtest/tdvecsmatmult/VDbMCa 2>&1 | tee -a result.txt
+src/mathtest/tdvecsmatmult/VDbMCb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Sparse vector/sparse matrix multiplication
+#==================================================================================================
+
+echo " Running sparse vector/sparse matrix multiplication tests..." 2>&1 | tee -a result.txt
+src/mathtest/tsvecsmatmult/VCaMCa 2>&1 | tee -a result.txt
+src/mathtest/tsvecsmatmult/VCaMCb 2>&1 | tee -a result.txt
+src/mathtest/tsvecsmatmult/VCbMCa 2>&1 | tee -a result.txt
+src/mathtest/tsvecsmatmult/VCbMCb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Dense matrix/dense matrix addition
+#==================================================================================================
+
+echo " Running dense matrix/dense matrix addition tests..." 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M2x2aM2x2a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M2x2aM2x2b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M2x2aMDa   2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M2x2aMDb   2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M2x2bM2x2a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M2x2bM2x2b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M2x2bMDa   2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M2x2bMDb   2>&1 | tee -a result.txt
+
+src/mathtest/dmatdmatadd/M3x3aM3x3a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M3x3aM3x3b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M3x3aMDa   2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M3x3aMDb   2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M3x3bM3x3a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M3x3bM3x3b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M3x3bMDa   2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M3x3bMDb   2>&1 | tee -a result.txt
+
+src/mathtest/dmatdmatadd/M4x4aM4x4a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M4x4aM4x4b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M4x4aMDa   2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M4x4aMDb   2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M4x4bM4x4a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M4x4bM4x4b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M4x4bMDa   2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M4x4bMDb   2>&1 | tee -a result.txt
+
+src/mathtest/dmatdmatadd/M5x5aM5x5a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M5x5aM5x5b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M5x5aMDa   2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M5x5aMDb   2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M5x5bM5x5a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M5x5bM5x5b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M5x5bMDa   2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M5x5bMDb   2>&1 | tee -a result.txt
+
+src/mathtest/dmatdmatadd/M6x6aM6x6a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M6x6aM6x6b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M6x6aMDa   2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M6x6aMDb   2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M6x6bM6x6a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M6x6bM6x6b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M6x6bMDa   2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M6x6bMDb   2>&1 | tee -a result.txt
+
+src/mathtest/dmatdmatadd/M7x13aM7x13a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M7x13aM7x13b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M7x13aMDa    2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M7x13aMDb    2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M7x13bM7x13a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M7x13bM7x13b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M7x13bMDa    2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M7x13bMDb    2>&1 | tee -a result.txt
+
+src/mathtest/dmatdmatadd/M16x8aM16x8a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M16x8aM16x8b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M16x8aMDa    2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M16x8aMDb    2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M16x8bM16x8a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M16x8bM16x8b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M16x8bMDa    2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/M16x8bMDb    2>&1 | tee -a result.txt
+
+src/mathtest/dmatdmatadd/MDaM2x2a  2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDaM2x2b  2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDaM3x3a  2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDaM3x3b  2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDaM4x4a  2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDaM4x4b  2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDaM5x5a  2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDaM5x5b  2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDaM6x6a  2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDaM6x6b  2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDaM7x13a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDaM7x13b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDaM16x8a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDaM16x8b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDaMDa    2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDaMDb    2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDbM2x2a  2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDbM2x2b  2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDbM3x3a  2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDbM3x3b  2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDbM4x4a  2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDbM4x4b  2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDbM5x5a  2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDbM5x5b  2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDbM6x6a  2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDbM6x6b  2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDbM7x13a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDbM7x13b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDbM16x8a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDbM16x8b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDbMDa    2>&1 | tee -a result.txt
+src/mathtest/dmatdmatadd/MDbMDb    2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Dense matrix/sparse matrix addition
+#==================================================================================================
+
+echo " Running dense matrix/sparse matrix addition tests..." 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/M2x2aMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/M2x2aMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/M2x2bMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/M2x2bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsmatadd/M3x3aMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/M3x3aMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/M3x3bMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/M3x3bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsmatadd/M4x4aMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/M4x4aMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/M4x4bMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/M4x4bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsmatadd/M5x5aMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/M5x5aMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/M5x5bMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/M5x5bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsmatadd/M6x6aMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/M6x6aMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/M6x6bMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/M6x6bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsmatadd/M7x13aMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/M7x13aMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/M7x13bMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/M7x13bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsmatadd/M16x8aMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/M16x8aMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/M16x8bMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/M16x8bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsmatadd/MDaMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/MDaMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/MDbMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatadd/MDbMCb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Sparse matrix/dense matrix addition
+#==================================================================================================
+
+echo " Running sparse matrix/dense matrix addition tests..." 2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCaM2x2a  2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCaM2x2b  2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCaM3x3a  2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCaM3x3b  2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCaM4x4a  2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCaM4x4b  2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCaM5x5a  2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCaM5x5b  2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCaM6x6a  2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCaM6x6b  2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCaM7x13a 2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCaM7x13b 2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCaM16x8a 2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCaM16x8b 2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCaMDa    2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCaMDb    2>&1 | tee -a result.txt
+
+src/mathtest/smatdmatadd/MCbM2x2a  2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCbM2x2b  2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCbM3x3a  2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCbM3x3b  2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCbM4x4a  2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCbM4x4b  2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCbM5x5a  2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCbM5x5b  2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCbM6x6a  2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCbM6x6b  2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCbM7x13a 2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCbM7x13b 2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCbM16x8a 2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCbM16x8b 2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCbMDa    2>&1 | tee -a result.txt
+src/mathtest/smatdmatadd/MCbMDb    2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Sparse matrix/sparse matrix addition
+#==================================================================================================
+
+echo " Running sparse matrix/sparse matrix addition tests..." 2>&1 | tee -a result.txt
+src/mathtest/smatsmatadd/MCaMCa 2>&1 | tee -a result.txt
+src/mathtest/smatsmatadd/MCaMCb 2>&1 | tee -a result.txt
+src/mathtest/smatsmatadd/MCbMCa 2>&1 | tee -a result.txt
+src/mathtest/smatsmatadd/MCbMCb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Dense matrix/dense matrix subtraction
+#==================================================================================================
+
+echo " Running dense matrix/dense matrix subtraction tests..." 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M2x2aM2x2a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M2x2aM2x2b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M2x2aMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatsub/M2x2aMDb 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatsub/M2x2bM2x2a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M2x2bM2x2b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M2x2bMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatsub/M2x2bMDb 2>&1   | tee -a result.txt
+
+src/mathtest/dmatdmatsub/M3x3aM3x3a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M3x3aM3x3b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M3x3aMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatsub/M3x3aMDb 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatsub/M3x3bM3x3a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M3x3bM3x3b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M3x3bMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatsub/M3x3bMDb 2>&1   | tee -a result.txt
+
+src/mathtest/dmatdmatsub/M4x4aM4x4a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M4x4aM4x4b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M4x4aMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatsub/M4x4aMDb 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatsub/M4x4bM4x4a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M4x4bM4x4b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M4x4bMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatsub/M4x4bMDb 2>&1   | tee -a result.txt
+
+src/mathtest/dmatdmatsub/M5x5aM5x5a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M5x5aM5x5b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M5x5aMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatsub/M5x5aMDb 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatsub/M5x5bM5x5a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M5x5bM5x5b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M5x5bMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatsub/M5x5bMDb 2>&1   | tee -a result.txt
+
+src/mathtest/dmatdmatsub/M6x6aM6x6a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M6x6aM6x6b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M6x6aMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatsub/M6x6aMDb 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatsub/M6x6bM6x6a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M6x6bM6x6b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M6x6bMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatsub/M6x6bMDb 2>&1   | tee -a result.txt
+
+src/mathtest/dmatdmatsub/M7x13aM7x13a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M7x13aM7x13b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M7x13aMDa 2>&1    | tee -a result.txt
+src/mathtest/dmatdmatsub/M7x13aMDb 2>&1    | tee -a result.txt
+src/mathtest/dmatdmatsub/M7x13bM7x13a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M7x13bM7x13b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M7x13bMDa 2>&1    | tee -a result.txt
+src/mathtest/dmatdmatsub/M7x13bMDb 2>&1    | tee -a result.txt
+
+src/mathtest/dmatdmatsub/M16x8aM16x8a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M16x8aM16x8b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M16x8aMDa 2>&1    | tee -a result.txt
+src/mathtest/dmatdmatsub/M16x8aMDb 2>&1    | tee -a result.txt
+src/mathtest/dmatdmatsub/M16x8bM16x8a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M16x8bM16x8b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/M16x8bMDa 2>&1    | tee -a result.txt
+src/mathtest/dmatdmatsub/M16x8bMDb 2>&1    | tee -a result.txt
+
+src/mathtest/dmatdmatsub/MDaM2x2a 2>&1  | tee -a result.txt
+src/mathtest/dmatdmatsub/MDaM2x2b 2>&1  | tee -a result.txt
+src/mathtest/dmatdmatsub/MDaM3x3a 2>&1  | tee -a result.txt
+src/mathtest/dmatdmatsub/MDaM3x3b 2>&1  | tee -a result.txt
+src/mathtest/dmatdmatsub/MDaM4x4a 2>&1  | tee -a result.txt
+src/mathtest/dmatdmatsub/MDaM4x4b 2>&1  | tee -a result.txt
+src/mathtest/dmatdmatsub/MDaM5x5a 2>&1  | tee -a result.txt
+src/mathtest/dmatdmatsub/MDaM5x5b 2>&1  | tee -a result.txt
+src/mathtest/dmatdmatsub/MDaM6x6a 2>&1  | tee -a result.txt
+src/mathtest/dmatdmatsub/MDaM6x6b 2>&1  | tee -a result.txt
+src/mathtest/dmatdmatsub/MDaM7x13a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/MDaM7x13b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/MDaM16x8a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/MDaM16x8b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/MDaMDa 2>&1    | tee -a result.txt
+src/mathtest/dmatdmatsub/MDaMDb 2>&1    | tee -a result.txt
+src/mathtest/dmatdmatsub/MDbM2x2a 2>&1  | tee -a result.txt
+src/mathtest/dmatdmatsub/MDbM2x2b 2>&1  | tee -a result.txt
+src/mathtest/dmatdmatsub/MDbM3x3a 2>&1  | tee -a result.txt
+src/mathtest/dmatdmatsub/MDbM3x3b 2>&1  | tee -a result.txt
+src/mathtest/dmatdmatsub/MDbM4x4a 2>&1  | tee -a result.txt
+src/mathtest/dmatdmatsub/MDbM4x4b 2>&1  | tee -a result.txt
+src/mathtest/dmatdmatsub/MDbM5x5a 2>&1  | tee -a result.txt
+src/mathtest/dmatdmatsub/MDbM5x5b 2>&1  | tee -a result.txt
+src/mathtest/dmatdmatsub/MDbM6x6a 2>&1  | tee -a result.txt
+src/mathtest/dmatdmatsub/MDbM6x6b 2>&1  | tee -a result.txt
+src/mathtest/dmatdmatsub/MDbM7x13a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/MDbM7x13b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/MDbM16x8a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/MDbM16x8b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatsub/MDbMDa 2>&1    | tee -a result.txt
+src/mathtest/dmatdmatsub/MDbMDb 2>&1    | tee -a result.txt
+
+
+#==================================================================================================
+# Dense matrix/sparse matrix subtraction
+#==================================================================================================
+
+echo " Running dense matrix/sparse matrix subtraction tests..." 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/M2x2aMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/M2x2aMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/M2x2bMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/M2x2bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsmatsub/M3x3aMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/M3x3aMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/M3x3bMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/M3x3bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsmatsub/M4x4aMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/M4x4aMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/M4x4bMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/M4x4bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsmatsub/M5x5aMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/M5x5aMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/M5x5bMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/M5x5bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsmatsub/M6x6aMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/M6x6aMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/M6x6bMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/M6x6bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsmatsub/M7x13aMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/M7x13aMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/M7x13bMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/M7x13bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsmatsub/M16x8aMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/M16x8aMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/M16x8bMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/M16x8bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsmatsub/MDaMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/MDaMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/MDbMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatsub/MDbMCb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Sparse matrix/dense matrix subtraction
+#==================================================================================================
+
+echo " Running sparse matrix/dense matrix subtraction tests..." 2>&1 | tee -a result.txt
+src/mathtest/smatdmatsub/MCaM2x2a 2>&1  | tee -a result.txt
+src/mathtest/smatdmatsub/MCaM2x2b 2>&1  | tee -a result.txt
+src/mathtest/smatdmatsub/MCaM3x3a 2>&1  | tee -a result.txt
+src/mathtest/smatdmatsub/MCaM3x3b 2>&1  | tee -a result.txt
+src/mathtest/smatdmatsub/MCaM4x4a 2>&1  | tee -a result.txt
+src/mathtest/smatdmatsub/MCaM4x4b 2>&1  | tee -a result.txt
+src/mathtest/smatdmatsub/MCaM5x5a 2>&1  | tee -a result.txt
+src/mathtest/smatdmatsub/MCaM5x5b 2>&1  | tee -a result.txt
+src/mathtest/smatdmatsub/MCaM6x6a 2>&1  | tee -a result.txt
+src/mathtest/smatdmatsub/MCaM6x6b 2>&1  | tee -a result.txt
+src/mathtest/smatdmatsub/MCaM7x13a 2>&1 | tee -a result.txt
+src/mathtest/smatdmatsub/MCaM7x13b 2>&1 | tee -a result.txt
+src/mathtest/smatdmatsub/MCaM16x8a 2>&1 | tee -a result.txt
+src/mathtest/smatdmatsub/MCaM16x8b 2>&1 | tee -a result.txt
+src/mathtest/smatdmatsub/MCaMDa 2>&1    | tee -a result.txt
+src/mathtest/smatdmatsub/MCaMDb 2>&1    | tee -a result.txt
+
+src/mathtest/smatdmatsub/MCbM2x2a 2>&1  | tee -a result.txt
+src/mathtest/smatdmatsub/MCbM2x2b 2>&1  | tee -a result.txt
+src/mathtest/smatdmatsub/MCbM3x3a 2>&1  | tee -a result.txt
+src/mathtest/smatdmatsub/MCbM3x3b 2>&1  | tee -a result.txt
+src/mathtest/smatdmatsub/MCbM4x4a 2>&1  | tee -a result.txt
+src/mathtest/smatdmatsub/MCbM4x4b 2>&1  | tee -a result.txt
+src/mathtest/smatdmatsub/MCbM5x5a 2>&1  | tee -a result.txt
+src/mathtest/smatdmatsub/MCbM5x5b 2>&1  | tee -a result.txt
+src/mathtest/smatdmatsub/MCbM6x6a 2>&1  | tee -a result.txt
+src/mathtest/smatdmatsub/MCbM6x6b 2>&1  | tee -a result.txt
+src/mathtest/smatdmatsub/MCbM7x13a 2>&1 | tee -a result.txt
+src/mathtest/smatdmatsub/MCbM7x13b 2>&1 | tee -a result.txt
+src/mathtest/smatdmatsub/MCbM16x8a 2>&1 | tee -a result.txt
+src/mathtest/smatdmatsub/MCbM16x8b 2>&1 | tee -a result.txt
+src/mathtest/smatdmatsub/MCbMDa 2>&1    | tee -a result.txt
+src/mathtest/smatdmatsub/MCbMDb 2>&1    | tee -a result.txt
+
+
+#==================================================================================================
+# Sparse matrix/sparse matrix subtraction
+#==================================================================================================
+
+echo " Running sparse matrix/sparse matrix subtraction tests..." 2>&1 | tee -a result.txt
+src/mathtest/smatsmatsub/MCaMCa 2>&1 | tee -a result.txt
+src/mathtest/smatsmatsub/MCaMCb 2>&1 | tee -a result.txt
+src/mathtest/smatsmatsub/MCbMCa 2>&1 | tee -a result.txt
+src/mathtest/smatsmatsub/MCbMCb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Dense matrix/dense matrix multiplication
+#==================================================================================================
+
+echo " Running dense matrix/dense matrix multiplication tests..." 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M2x2aM2x2a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M2x2aM2x2b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M2x2aMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/M2x2aMDb 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/M2x2bM2x2a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M2x2bM2x2b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M2x2bMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/M2x2bMDb 2>&1   | tee -a result.txt
+
+src/mathtest/dmatdmatmult/M3x3aM3x3a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M3x3aM3x3b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M3x3aMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/M3x3aMDb 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/M3x3bM3x3a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M3x3bM3x3b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M3x3bMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/M3x3bMDb 2>&1   | tee -a result.txt
+
+src/mathtest/dmatdmatmult/M4x4aM4x4a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M4x4aM4x4b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M4x4aMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/M4x4aMDb 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/M4x4bM4x4a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M4x4bM4x4b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M4x4bMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/M4x4bMDb 2>&1   | tee -a result.txt
+
+src/mathtest/dmatdmatmult/M5x5aM5x5a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M5x5aM5x5b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M5x5aMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/M5x5aMDb 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/M5x5bM5x5a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M5x5bM5x5b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M5x5bMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/M5x5bMDb 2>&1   | tee -a result.txt
+
+src/mathtest/dmatdmatmult/M5x7aM7x5a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M5x7aM7x5b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M5x7aM7x9a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M5x7aM7x9b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M5x7aMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/M5x7aMDb 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/M5x7bM7x5a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M5x7bM7x5b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M5x7bM7x9a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M5x7bM7x9b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M5x7bMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/M5x7bMDb 2>&1   | tee -a result.txt
+
+src/mathtest/dmatdmatmult/M6x6aM6x6a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M6x6aM6x6b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M6x6aMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/M6x6aMDb 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/M6x6bM6x6a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M6x6bM6x6b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M6x6bMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/M6x6bMDb 2>&1   | tee -a result.txt
+
+src/mathtest/dmatdmatmult/M9x7aM7x5a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M9x7aM7x5b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M9x7aM7x9a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M9x7aM7x9b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M9x7aMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/M9x7aMDb 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/M9x7bM7x5a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M9x7bM7x5b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M9x7bM7x9a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M9x7bM7x9b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/M9x7bMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/M9x7bMDb 2>&1   | tee -a result.txt
+
+src/mathtest/dmatdmatmult/MDaM2x2a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDaM2x2b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDaM3x3a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDaM3x3b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDaM4x4a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDaM4x4b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDaM5x5a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDaM5x5b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDaM6x6a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDaM6x6b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDaM7x5a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDaM7x5b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDaM7x9a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDaM7x9b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDaMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/MDaMDb 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/MDbM2x2a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDbM2x2b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDbM3x3a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDbM3x3b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDbM4x4a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDbM4x4b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDbM5x5a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDbM5x5b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDbM6x6a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDbM6x6b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDbM7x5a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDbM7x5b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDbM7x9a 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDbM7x9b 2>&1 | tee -a result.txt
+src/mathtest/dmatdmatmult/MDbMDa 2>&1   | tee -a result.txt
+src/mathtest/dmatdmatmult/MDbMDb 2>&1   | tee -a result.txt
+
+
+#==================================================================================================
+# Dense matrix/sparse matrix multiplication
+#==================================================================================================
+
+echo " Running dense matrix/sparse matrix multiplication tests..." 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/M2x2aMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/M2x2aMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/M2x2bMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/M2x2bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsmatmult/M3x3aMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/M3x3aMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/M3x3bMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/M3x3bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsmatmult/M4x4aMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/M4x4aMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/M4x4bMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/M4x4bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsmatmult/M5x5aMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/M5x5aMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/M5x5bMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/M5x5bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsmatmult/M6x6aMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/M6x6aMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/M6x6bMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/M6x6bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsmatmult/M7x13aMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/M7x13aMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/M7x13bMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/M7x13bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsmatmult/M16x8aMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/M16x8aMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/M16x8bMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/M16x8bMCb 2>&1 | tee -a result.txt
+
+src/mathtest/dmatsmatmult/MDaMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/MDaMCb 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/MDbMCa 2>&1 | tee -a result.txt
+src/mathtest/dmatsmatmult/MDbMCb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Sparse matrix/dense matrix multiplication
+#==================================================================================================
+
+echo " Running sparse matrix/dense matrix multiplication tests..." 2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCaM2x2a  2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCaM2x2b  2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCaM3x3a  2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCaM3x3b  2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCaM4x4a  2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCaM4x4b  2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCaM5x5a  2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCaM5x5b  2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCaM6x6a  2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCaM6x6b  2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCaM7x13a 2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCaM7x13b 2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCaM16x8a 2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCaM16x8b 2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCaMDa    2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCaMDb    2>&1 | tee -a result.txt
+
+src/mathtest/smatdmatmult/MCbM2x2a  2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCbM2x2b  2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCbM3x3a  2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCbM3x3b  2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCbM4x4a  2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCbM4x4b  2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCbM5x5a  2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCbM5x5b  2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCbM6x6a  2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCbM6x6b  2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCbM7x13a 2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCbM7x13b 2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCbM16x8a 2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCbM16x8b 2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCbMDa    2>&1 | tee -a result.txt
+src/mathtest/smatdmatmult/MCbMDb    2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Sparse matrix/sparse matrix multiplication
+#==================================================================================================
+
+echo " Running sparse matrix/sparse matrix multiplication tests..." 2>&1 | tee -a result.txt
+src/mathtest/smatsmatmult/MCaMCa 2>&1 | tee -a result.txt
+src/mathtest/smatsmatmult/MCaMCb 2>&1 | tee -a result.txt
+src/mathtest/smatsmatmult/MCbMCa 2>&1 | tee -a result.txt
+src/mathtest/smatsmatmult/MCbMCb 2>&1 | tee -a result.txt

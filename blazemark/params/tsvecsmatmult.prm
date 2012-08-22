@@ -1,0 +1,50 @@
+//=================================================================================================
+//
+//  Parameter file for the transpose sparse vector/sparse matrix multiplication benchmark
+//
+//  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
+//
+//  This file is part of the Blaze library. This library is free software; you can redistribute
+//  it and/or modify it under the terms of the GNU General Public License as published by the
+//  Free Software Foundation; either version 3, or (at your option) any later version.
+//
+//  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+//  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+//  See the GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License along with a special
+//  exception for linking and compiling against the Blaze library, the so-called "runtime
+//  exception"; see the file COPYING. If not, see http://www.gnu.org/licenses/.
+//
+//=================================================================================================
+
+
+//=================================================================================================
+// This parameter file configures the transpose sparse vector/sparse matrix multiplication
+// benchmark runs. The individual runs are specified via tuples of the form
+//
+//                               ( <size>, <nonzeros> [, <steps>] ),
+//
+// where 'size' specifies the number of rows and columns of the matrix and the size of the vector,
+// 'nonzeros' specifies the number of non-zero elements in each row of the sparse matrix and the
+// number of non-zero elements in the vector. The optional parameter 'steps' specifies the number
+// of steps the benchmark is repeated. The indices of the non-zero elements in each row of the
+// sparse matrix and in the vector are randomly determined. In case 'steps' is omitted, the number
+// of steps is automatically evaluated.
+//
+// Note that is possible to use comments. A single-line comment is started with '//', a multiline
+// comment is started with '/*' and ended with '*/'.
+//=================================================================================================
+
+(   50,    5)
+(   50,   20)
+(  100,   10)
+(  100,   40)
+(  500,   50)
+(  500,  200)
+( 1000,  100)
+( 1000,  400)
+( 5000,  500)
+( 5000, 2000)
+(10000, 1000)
+(10000, 4000)
