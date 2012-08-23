@@ -1,4 +1,5 @@
 *.d
+*.o
 VCaVCa
 VCaVCb
 VCbVCa

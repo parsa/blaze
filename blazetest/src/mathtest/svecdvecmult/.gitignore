@@ -1,4 +1,5 @@
 *.d
+*.o
 VCaV2a
 VCaV2b
 VCaV3a

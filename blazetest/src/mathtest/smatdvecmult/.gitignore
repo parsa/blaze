@@ -1,4 +1,5 @@
 *.d
+*.o
 MCaV2a
 MCaV2b
 MCaV3a
