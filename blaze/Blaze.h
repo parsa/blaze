@@ -118,9 +118,20 @@ namespace blaze {}
 // Boost version 1.39. If you don't have Boost installed on your system, you can download it for
 // free from 'http://www.boost.org'.
 //
+// Additionally, for maximum performance \b Blaze expects you to have a BLAS library installed
+// (<a href="http://software.intel.com/en-us/articles/intel-mkl/">Intel MKL</a>,
+// <a href="http://developer.amd.com/libraries/acml/">ACML</a>,
+// <a href="http://math-atlas.sourceforge.net">Atlas</a>,
+// <a href="http://www.tacc.utexas.edu/tacc-projects/gotoblas2">Goto</a>, ...). If you don't
+// have a BLAS library installed on your system, *Blaze* will still work and will not be reduced
+// in functionality, but performance may be severely limited. Thus it is strongly recommended to
+// install a BLAS library.
+//
 //
 // \n \section step_1_configuration Step 1: Configuration
 // <hr>
+//
+// \subsection step_1_configuration_unix Linux/MacOSX User
 //
 // The first step is to adapt the \c Configfile in the \b Blaze home directory to the local
 // configuration. Any text editor can be used for this task:
@@ -143,9 +154,21 @@ namespace blaze {}
 // script, \b Blaze assumes that no BLAS library is installed on the system and cannot use BLAS
 // functionality for instance for the matrix/matrix multiplication.
 //
+// In order to further customize the \b Blaze library the header files in the <em>./blaze/config/</em>
+// subdirectory can be adapted. For instance, in the header file <em>./blaze/config/StorageOrder.h</em>
+// the default matrix storage order (i.e. row-major or column-major) can be specified.
+//
+// \n \subsection step_1_configuration_windows Windows User
+//
+// Unfortunately, for Windows users there is no \c configure script available (yet). Therefore
+// Windows user have to manually configure the \b Blaze library in the <em>./blaze/config/</em>
+// subdirectory.
+//
 //
 // \n \section step_2_installation Step 2: Installation
 // <hr>
+//
+// \subsection step_2_configuration_unix Linux/MacOSX User
 //
 // The second step is the installation of the header files. Since \b Blaze mainly consists of
 // header files, the <em>./blaze</em> subdirectory can be simply copied to a standard include
@@ -173,8 +196,21 @@ namespace blaze {}
    g++ -I/usr/home/misterX/blaze -o BlazeTest BlazeTest.cpp
    \endcode
 
+// \n \subsection step_2_configuration_windows Windows User
+//
+// Windows doesn't have a standard include directory. Therefore the \b Blaze header files can be
+// copied to any other directory or simply left in the default \b Blaze directory. However, the
+// chosen include directory has to be explicitly specified as include path. In Visual Studio,
+// this is done via the project property pages, configuration properties, C/C++, General settings.
+// Here the additional include directories can be specified. Note that there are small differences
+// between VS2008 and VS2010:
+// <a href="http://blogs.msdn.com/b/vsproject/archive/2009/07/07/vc-directories.aspx">VC++ Directories</a>.
+//
+//
 // \n \section step_3_compilation Step 3 (Optional): Compilation
 // <hr>
+//
+// \subsection step_3_configuration_unix Linux/MacOSX User
 //
 // If certain extended functionality, such as for instance blaze::ThreadPool or the blaze::logging
 // functionality, is required, it is necessary to create the \b Blaze library files. For that
@@ -202,6 +238,11 @@ namespace blaze {}
    export LD_LIBRARY_PATH
    \endcode
 
+// \n \subsection step_3_configuration_windows Windows User
+//
+// For Windows users, a comfortable compilation of the extended \b Blaze features is not (yet)
+// supported.
+//
 // \n <center> Next: \ref getting_started </center>
 */
 //*************************************************************************************************
