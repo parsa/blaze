@@ -50,10 +50,10 @@ namespace logging {
 // The Logger class represents the core of the logging functionality. It is responsible for
 // commiting logging messages immediately to the according log file(s). The logger works for
 // both serial as well as MPI parallel environments. In case of a non-MPI-parallel simulation
-// the Logger creates the log file 'pe.log', which contains all logging information from all
+// the Logger creates the log file 'blaze.log', which contains all logging information from all
 // logging levels. In case of a MPI parallel simulation, each process creates his own individual
-// log file called 'peX.log', where 'X' is replaced by the according rank the process has in the
-// MPI_COMM_WORLD communicator.\n
+// log file called 'blazeX.log', where 'X' is replaced by the according rank the process has in
+// the MPI_COMM_WORLD communicator.\n
 // Note that the log file(s) are only created in case any logging information is created. This
 // might for instance result in only a small number of log file(s) in MPI parallel simulations
 // when only some of the processes encounter errors/warnings/etc.\n
