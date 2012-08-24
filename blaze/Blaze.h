@@ -161,8 +161,11 @@ namespace blaze {}
 // \n \subsection step_1_configuration_windows Windows User
 //
 // Unfortunately, for Windows users there is no \c configure script available (yet). Therefore
-// Windows user have to manually configure the \b Blaze library in the <em>./blaze/config/</em>
-// subdirectory.
+// Windows user have to manually configure the \b Blaze library. Most configuration headers are
+// located in the <em>./blaze/config/</em> subdirectory. The one exception is the \c BLAS.h
+// header in the <em>./blaze/system/</em> subdirectory that contains the configuration of the
+// BLAS functionality. Note that in case the \c BLAZE_BLAS_MODE symbol is set to 1, the correct
+// BLAS header file has to be specified!
 //
 //
 // \n \section step_2_installation Step 2: Installation
@@ -212,10 +215,10 @@ namespace blaze {}
 //
 // \subsection step_3_configuration_unix Linux/MacOSX User
 //
-// If certain extended functionality, such as for instance blaze::ThreadPool or the blaze::logging
-// functionality, is required, it is necessary to create the \b Blaze library files. For that
-// purpose, the \c configure script has created a \c Makefile that can be used for the compilation
-// process:
+// Next to the math library, \b Blaze also contains a small number of additional (sub-)libraries.
+// If these libraries, such as blaze::ThreadPool or the blaze::logging functionality, are required
+// it is necessary to create the \b Blaze library files. For that purpose, the \c configure script
+// has created a \c Makefile that can be used for the compilation process:
 
    \code
    make
