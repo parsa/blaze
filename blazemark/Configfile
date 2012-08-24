@@ -66,39 +66,43 @@ BLAS_LIBRARIES=
 # kernels are included in the compilation process. In case the Blitz++ include directory
 # is not set, Blaze expects the according headers in the subdirectory 'blitz' in standard
 # paths (for example '/usr/include/blitz'). In case the Blitz++ library path is not
-# specified, Blaze expects the library in standard paths (as for instance '/usr/lib')
+# specified, Blaze expects the library in standard paths (as for instance '/usr/lib').
 BLITZ="no"
 BLITZ_INCLUDE_PATH=
 BLITZ_LIBRARY_PATH=
 
 # Configuration of the GMM++ library (optional)
-# This switch configures the GMM++ benchmarks. If this switch is set to 'yes' all GMM++
-# kernels are included in the compilation process. If the ATLAS BLAS library is installed
-# some of GMM's algorithms can be accelerated by optimized ATLAS routines. In case the
-# GMM++ include directory is not set, Blaze expects the according headers in the standard
-# paths (for example '/usr/include/gmm').
+# This switch configures the GMM++ benchmarks. At least GMM++ 4.1 is required for the
+# compilation of the GMM++ benchmarks. If this switch is set to 'yes' all GMM++ kernels
+# are included in the compilation process. If the ATLAS BLAS library is installed some
+# of GMM's algorithms can be accelerated by optimized ATLAS routines. In case the GMM++
+# include directory is not set, Blaze expects the according headers in the standard paths
+# (for example '/usr/include/gmm').
 GMM="no"
 GMM_ATLAS_INSTALLED="no"
 GMM_INCLUDE_PATH=
 
 # Configuration of the Armadillo library (optional)
 # The following switch includes or excludes all benchmark kernels for the Armadillo
-# library. If set to 'yes' all Armadillo kernels are included in the compilation process.
-# In case the Armadillo include directory is not set, Blaze expects the according headers
-# in the standard paths (as for instance '/usr/include/').
+# library. For a correct compilation, at least Armadillo 2.4.2 is required. If the switch
+# is set to 'yes' all Armadillo kernels are included in the compilation process. In case
+# the Armadillo include directory is not set, Blaze expects the according headers in the
+# standard paths (as for instance '/usr/include/').
 ARMADILLO="no"
 ARMADILLO_INCLUDE_PATH=
 
 # Configuration of the MTL library (optional)
 # This setting triggers the compilation of all benchmark kernels for the MTL library.
-# If the switch is set to 'yes' all MTL kernels are included in the compilation process.
-# In case the MTL include directory is not set, Blaze expects the according headers in
-# the boost directories (as for instance 'boost/numeric/mtl').
+# The Blaze benchmark suite requires at least MTL 4.0 in order compile. If the switch
+# is set to 'yes' all MTL kernels are included in the compilation process. In case the
+# MTL include directory is not set, Blaze expects the according headers in the boost
+# directories (as for instance 'boost/numeric/mtl').
 MTL="no"
 MTL_INCLUDE_PATH=
 
 # Configuration of the Eigen library (optional)
-# This switch includes or excludes all benchmark kernels for the Eigen library. If
+# This switch includes or excludes all benchmark kernels for the Eigen library. The Blaze
+# benchmark suite requires at least Eigen 3.1, but also works with any newer version. If
 # the switch is set to 'yes' all Eigen kernels are included in the compilation process.
 # In case the Intel MKL is installed, some of Eigen's algorithms are silently substituted
 # with calls to Intel MKL routines. In case the Eigen include directory is not set, Blaze
