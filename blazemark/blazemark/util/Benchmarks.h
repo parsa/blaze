@@ -169,34 +169,34 @@ inline Benchmarks::Benchmarks()
 // structure. The following command line options will be recognized:
 //
 //   - \a -clike: Activates the C-like kernels.
-//   - \a -no-clike: Deactives the C-like kernels.
+//   - \a -no-clike: Deactivates the C-like kernels.
 //   - \a -only-clike: Activates the C-like kernels and deactivates all other.
 //   - \a -classic: Activates the classic kernels.
-//   - \a -no-classic: Deactives the classic kernels.
+//   - \a -no-classic: Deactivates the classic kernels.
 //   - \a -only-classic: Activates the classic kernels and deactivates all other.
 //   - \a -blas: Activates the BLAS kernels.
 //   - \a -no-blas: Deactivates the BLAS kernels.
 //   - \a -only-blas: Activates the BLAS kernels and deactivates all other.
 //   - \a -blaze: Activates the Blaze kernels.
-//   - \a -no-blaze: Deactives the Blaze kernels.
+//   - \a -no-blaze: Deactivates the Blaze kernels.
 //   - \a -only-blaze: Activates the Blaze kernels and deactivates all other.
 //   - \a -boost: Activates the Boost kernels.
-//   - \a -no-boost: Deactives the Boost kernels.
+//   - \a -no-boost: Deactivates the Boost kernels.
 //   - \a -only-boost: Activates the Boost kernels and deactivates all other.
 //   - \a -blitz: Activates the Blitz kernels.
-//   - \a -no-blitz: Deactives the Blitz kernels.
+//   - \a -no-blitz: Deactivates the Blitz kernels.
 //   - \a -only-blitz: Activates the Blitz kernels and deactivates all other.
 //   - \a -gmm: Activates the GMM kernels.
-//   - \a -no-gmm: Deactives the GMM kernels.
+//   - \a -no-gmm: Deactivates the GMM kernels.
 //   - \a -only-gmm: Activates the GMM kernels and deactivates all other.
 //   - \a -armadillo: Activates the Armadillo kernels.
-//   - \a -no-armadillo: Deactives the Armadillo kernels.
+//   - \a -no-armadillo: Deactivates the Armadillo kernels.
 //   - \a -only-armadillo: Activates the Armadillo kernels and deactivates all other.
 //   - \a -mtl: Activates the MTL kernels.
-//   - \a -no-mtl: Deactives the MTL kernels.
+//   - \a -no-mtl: Deactivates the MTL kernels.
 //   - \a -only-mtl: Activates the MTL kernels and deactivates all other.
 //   - \a -eigen: Activates the Eigen kernels.
-//   - \a -no-eigen: Deactives the Eigen kernels.
+//   - \a -no-eigen: Deactivates the Eigen kernels.
 //   - \a -only-eigen: Activates the Eigen kernels and deactivates all other.
 */
 inline void parseCommandLineArguments( int argc, char** argv, Benchmarks& benchmarks )
