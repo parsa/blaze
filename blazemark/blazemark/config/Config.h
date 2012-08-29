@@ -20,37 +20,76 @@
 //=================================================================================================
 
 
+//=================================================================================================
+//
+//  BENCHMARK CONFIGURATION
+//
+//=================================================================================================
+
 //*************************************************************************************************
-// Benchmark configuration
+const bool runClike     ( true );  //!< C-like, manual implementation
+const bool runClassic   ( true );  //!< Classical operator overloading benchmark tests
+const bool runBLAS      ( true );  //!< BLAS benchmark tests
+const bool runBlaze     ( true );  //!< Blaze benchmark tests
+const bool runBoost     ( true );  //!< Boost uBLAS benchmark tests
+const bool runBlitz     ( true );  //!< Blitz++ benchmark tests
+const bool runGMM       ( true );  //!< GMM++ benchmark tests
+const bool runArmadillo ( true );  //!< Armadillo benchmark tests
+const bool runMTL       ( true );  //!< MTL benchmark tests
+const bool runEigen     ( true );  //!< Eigen benchmark tests
 //*************************************************************************************************
-
-const bool runClike     ( true );  // C-like, manual implementation
-const bool runClassic   ( true );  // Classical operator overloading benchmark tests
-const bool runBLAS      ( true );  // BLAS benchmark tests
-const bool runBlaze     ( true );  // Blaze benchmark tests
-const bool runBoost     ( true );  // Boost uBLAS benchmark tests
-const bool runBlitz     ( true );  // Blitz++ benchmark tests
-const bool runGMM       ( true );  // GMM++ benchmark tests
-const bool runArmadillo ( true );  // Armadillo benchmark tests
-const bool runMTL       ( true );  // MTL benchmark tests
-const bool runEigen     ( true );  // Eigen benchmark tests
-
-const size_t reps     ( 3     );  // Configuration of the number of benchmark repetitions
-const double runtime  ( 2.0   );  // Target runtime for a benchmark measurement
-const double maxtime  ( 600.0 );  // Maximum runtime of a single benchmark measurement [s]
-
-const double deviation( 5.0 );  // Maximum allowed deviation of the average benchmark time from the minimum time
 
 
 //*************************************************************************************************
-// Random number configuration
+const size_t reps     ( 3     );  //!< Configuration of the number of benchmark repetitions
+const double runtime  ( 2.0   );  //!< Target runtime for a benchmark measurement
+const double maxtime  ( 600.0 );  //!< Maximum runtime of a single benchmark measurement [s]
 //*************************************************************************************************
 
-const size_t seed( 128753984 );
+
+//*************************************************************************************************
+const double deviation( 5.0 );  //!< Maximum allowed deviation of the average benchmark time from the minimum time
+//*************************************************************************************************
 
 
 //*************************************************************************************************
-// Eigen configuration
+/*!\brief Element type for all benchmarks.
+//
+// This type definition specifies the data type used as element type for all dense and sparse
+// vectors and matrices in all benchmarks. The type is restricted to numerical data types, i.e.
+// all built-in data types except <a>bool, char, signed char, unsigned char, and wchar_t</a>.
+*/
+typedef double  element_t;
 //*************************************************************************************************
 
+
+
+
+
+//=================================================================================================
+//
+//  RANDOM NUMBER CONFIGURATION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+const size_t seed( 128753984 );  //!< Seed for the random number generator.
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  EIGEN CONFIGURATION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Index data type for the Eigen sparse matrices.
+//
+// This type definition offers the possibility to specify the index type for the sparse matrices
+// in all Eigen benchmarks.
+*/
 typedef int  EigenSparseIndexType;
+//*************************************************************************************************

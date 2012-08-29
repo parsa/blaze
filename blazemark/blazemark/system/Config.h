@@ -27,6 +27,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/StaticAssert.h>
 
 
@@ -54,6 +55,7 @@ namespace blazemark {
 namespace {
 
 BLAZE_STATIC_ASSERT( reps > 0 );
+BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( element_t );
 
 }
 /*! \endcond */
