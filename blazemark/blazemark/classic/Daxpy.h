@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blazemark/blaze/Daxpy.h
+//  \file blazemark/classic/Daxpy.h
 //  \brief Header file for the classic daxpy product kernel
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
