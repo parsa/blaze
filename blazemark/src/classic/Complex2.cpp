@@ -25,13 +25,13 @@
 //*************************************************************************************************
 
 #include <iostream>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/classic/Complex2.h>
+#include <blazemark/classic/init/Matrix.h>
+#include <blazemark/classic/init/Vector.h>
 #include <blazemark/classic/Matrix.h>
 #include <blazemark/classic/Vector.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,25 +56,18 @@ namespace classic {
 */
 double complex2( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   ::blazemark::classic::Matrix<real,true> A( N, N );
-   ::blazemark::classic::Vector<real> a( N ), b( N ), c( N ), d( N );
+   ::blazemark::classic::Matrix<element_t,true> A( N, N );
+   ::blazemark::classic::Vector<element_t> a( N ), b( N ), c( N ), d( N );
    ::blaze::timing::WcTimer timer;
 
-   for( size_t j=0UL; j<N; ++j ) {
-      for( size_t i=0UL; i<N; ++i ) {
-         A(i,j) = ::blaze::rand<real>();
-      }
-   }
-
-   for( size_t i=0UL; i<N; ++i ) {
-      a[i] = ::blaze::rand<real>();
-      b[i] = ::blaze::rand<real>();
-      c[i] = ::blaze::rand<real>();
-   }
+   init( A );
+   init( a );
+   init( b );
+   init( c );
 
    d = A * ( a + b + c );
 

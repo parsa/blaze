@@ -25,12 +25,11 @@
 //*************************************************************************************************
 
 #include <iostream>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/classic/Daxpy.h>
+#include <blazemark/classic/init/Vector.h>
 #include <blazemark/classic/Vector.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -54,23 +53,21 @@ namespace classic {
 */
 double daxpy( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   ::blazemark::classic::Vector<real> a( N ), b( N );
+   ::blazemark::classic::Vector<element_t> a( N ), b( N );
    ::blaze::timing::WcTimer timer;
 
-   for( size_t i=0UL; i<N; ++i ) {
-      a[i] = ::blaze::rand<real>();
-      b[i] = real(0);
-   }
+   init( a );
+   b.reset();
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         b += a * real(0.001);
+         b += a * element_t(0.001);
       }
       timer.end();
 

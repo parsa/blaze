@@ -25,12 +25,11 @@
 //*************************************************************************************************
 
 #include <iostream>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/classic/DMatDMatAdd.h>
+#include <blazemark/classic/init/Matrix.h>
 #include <blazemark/classic/Matrix.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -55,19 +54,15 @@ namespace classic {
 */
 double dmatdmatadd( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   ::blazemark::classic::Matrix<real,false> A( N, N ), B( N, N ), C( N, N );
+   ::blazemark::classic::Matrix<element_t,false> A( N, N ), B( N, N ), C( N, N );
    ::blaze::timing::WcTimer timer;
 
-   for( size_t i=0UL; i<N; ++i ) {
-      for( size_t j=0UL; j<N; ++j ) {
-         A(i,j) = ::blaze::rand<real>();
-         B(i,j) = ::blaze::rand<real>();
-      }
-   }
+   init( A );
+   init( B );
 
    C = A + B;
 

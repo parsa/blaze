@@ -25,12 +25,11 @@
 //*************************************************************************************************
 
 #include <iostream>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/classic/Complex8.h>
+#include <blazemark/classic/init/Matrix.h>
 #include <blazemark/classic/Matrix.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -55,26 +54,22 @@ namespace classic {
 */
 double complex8( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   ::blazemark::classic::Matrix<real,true> A( N, N ), B( N, N ), C( N, N );
+   ::blazemark::classic::Matrix<element_t,true> A( N, N ), B( N, N ), C( N, N );
    ::blaze::timing::WcTimer timer;
 
-   for( size_t j=0UL; j<N; ++j ) {
-      for( size_t i=0UL; i<N; ++i ) {
-         A(i,j) = ::blaze::rand<real>();
-         B(i,j) = ::blaze::rand<real>();
-         C(i,j) = real(0);
-      }
-   }
+   init( A );
+   init( B );
+   C.reset();
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         C += real(2.2) * A * B;
+         C += element_t(2.2) * A * B;
       }
       timer.end();
 
