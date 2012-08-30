@@ -94,6 +94,7 @@ class Vector
    /*!\name Operators */
    //@{
    inline size_t size() const;
+   inline void   reset();
    inline void   resize( size_t n, bool preserve );
    //@}
    //**********************************************************************************************
@@ -306,6 +307,20 @@ template< typename Type >  // Data type of the vector
 inline size_t Vector<Type>::size() const
 {
    return n_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Reset to the default initial values.
+//
+// \return void
+*/
+template< typename Type >  // Data type of the vector
+inline void Vector<Type>::reset()
+{
+   for( size_t i=0UL; i<n_; ++i )
+      v_[i] = Type();
 }
 //*************************************************************************************************
 

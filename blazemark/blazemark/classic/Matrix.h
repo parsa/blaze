@@ -106,7 +106,8 @@ class Matrix
    //@{
    inline size_t rows   () const;
    inline size_t columns() const;
-   inline void   resize( size_t m, size_t n, bool preserve );
+   inline void   reset  ();
+   inline void   resize ( size_t m, size_t n, bool preserve );
    //@}
    //**********************************************************************************************
 
@@ -409,6 +410,22 @@ template< typename Type  // Data type of the matrix
 inline size_t Matrix<Type,SO>::columns() const
 {
    return n_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Reset to the default initial values.
+//
+// \return void
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline void Matrix<Type,SO>::reset()
+{
+   const size_t sqrsize( m_*n_ );
+   for( size_t i=0UL; i<sqrsize; ++i )
+      v_[i] = Type();
 }
 //*************************************************************************************************
 
