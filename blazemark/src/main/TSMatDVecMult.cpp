@@ -44,7 +44,6 @@
 #include <blazemark/system/Eigen.h>
 #include <blazemark/system/GMM.h>
 #include <blazemark/system/MTL.h>
-#include <blazemark/system/Precision.h>
 #include <blazemark/system/Types.h>
 #include <blazemark/util/Benchmarks.h>
 #include <blazemark/util/Indices.h>
@@ -80,15 +79,15 @@ using blazemark::SparseRun;
 */
 void estimateSteps( SparseRun& run )
 {
-   using blazemark::real;
+   using blazemark::element_t;
    using blaze::columnVector;
    using blaze::columnMajor;
 
    const size_t N( run.getSize() );
    const size_t F( run.getNonZeros() );
 
-   blaze::CompressedMatrix<real,columnMajor> A( N, N, N*F );
-   blaze::DynamicVector<real,columnVector> a( N, 0.1 ), b( N );
+   blaze::CompressedMatrix<element_t,columnMajor> A( N, N, N*F );
+   blaze::DynamicVector<element_t,columnVector> a( N, 0.1 ), b( N );
    blaze::timing::WcTimer timer;
    double wct( 0.0 );
    size_t steps( 1UL );
@@ -97,7 +96,7 @@ void estimateSteps( SparseRun& run )
       A.reserve( j, F );
       blazemark::Indices indices( N, F );
       for( blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         A.append( *it, j, real(0.1) );
+         A.append( *it, j, element_t(0.1) );
       }
    }
 

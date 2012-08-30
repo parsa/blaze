@@ -42,7 +42,6 @@
 #include <blazemark/system/Armadillo.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/Eigen.h>
-#include <blazemark/system/Precision.h>
 #include <blazemark/system/Types.h>
 #include <blazemark/util/Benchmarks.h>
 #include <blazemark/util/DenseRun.h>
@@ -77,16 +76,16 @@ using blazemark::Parser;
 */
 void estimateSteps( DenseRun& run )
 {
-   using blazemark::real;
+   using blazemark::element_t;
    using blaze::rowVector;
    using blaze::columnMajor;
 
    const size_t N( run.getSize() );
 
-   blaze::StaticVector<real,3UL,rowVector> vec( 0.1 );
-   blaze::StaticMatrix<real,3UL,3UL,columnMajor> mat( 0.1 );
-   std::vector< blaze::StaticVector<real,3UL,rowVector> > a( N, vec ), b( N );
-   std::vector< blaze::StaticMatrix<real,3UL,3UL,columnMajor> > A( N, mat );
+   blaze::StaticVector<element_t,3UL,rowVector> vec( 0.1 );
+   blaze::StaticMatrix<element_t,3UL,3UL,columnMajor> mat( 0.1 );
+   std::vector< blaze::StaticVector<element_t,3UL,rowVector> > a( N, vec ), b( N );
+   std::vector< blaze::StaticMatrix<element_t,3UL,3UL,columnMajor> > A( N, mat );
    blaze::timing::WcTimer timer;
    double wct( 0.0 );
    size_t steps( 1UL );
@@ -104,7 +103,7 @@ void estimateSteps( DenseRun& run )
    }
 
    for( size_t i=0UL; i<N; ++i )
-      if( b[i][0] < real(0) )
+      if( b[i][0] < element_t(0) )
          std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
    run.setSteps( blaze::max( 1UL, ( blazemark::runtime * steps ) / timer.last() ) );

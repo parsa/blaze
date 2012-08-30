@@ -48,7 +48,6 @@
 #include <blazemark/system/Eigen.h>
 #include <blazemark/system/GMM.h>
 #include <blazemark/system/MTL.h>
-#include <blazemark/system/Precision.h>
 #include <blazemark/system/Types.h>
 #include <blazemark/util/Benchmarks.h>
 #include <blazemark/util/DenseRun.h>
@@ -83,15 +82,15 @@ using blazemark::Parser;
 */
 void estimateSteps( DenseRun& run )
 {
-   using blazemark::real;
+   using blazemark::element_t;
    using blaze::rowVector;
    using blaze::columnVector;
 
    const size_t N( run.getSize() );
 
-   blaze::DynamicVector<real,rowVector> a( N, 0.1 );
-   blaze::DynamicVector<real,columnVector> b( N, 0.1 );
-   real scalar( 0 );
+   blaze::DynamicVector<element_t,rowVector> a( N, 0.1 );
+   blaze::DynamicVector<element_t,columnVector> b( N, 0.1 );
+   element_t scalar( 0 );
    blaze::timing::WcTimer timer;
    double wct( 0.0 );
    size_t steps( 1UL );
@@ -107,7 +106,7 @@ void estimateSteps( DenseRun& run )
       steps *= 2UL;
    }
 
-   if( scalar < real(0) )
+   if( scalar < element_t(0) )
       std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
    run.setSteps( blaze::max( 1UL, ( blazemark::runtime * steps ) / timer.last() ) );

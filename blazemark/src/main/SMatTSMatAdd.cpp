@@ -41,7 +41,6 @@
 #include <blazemark/system/Config.h>
 #include <blazemark/system/GMM.h>
 #include <blazemark/system/MTL.h>
-#include <blazemark/system/Precision.h>
 #include <blazemark/system/Types.h>
 #include <blazemark/util/Benchmarks.h>
 #include <blazemark/util/Indices.h>
@@ -77,15 +76,15 @@ using blazemark::SparseRun;
 */
 void estimateSteps( SparseRun& run )
 {
-   using blazemark::real;
+   using blazemark::element_t;
    using blaze::rowMajor;
    using blaze::columnMajor;
 
    const size_t N( run.getSize() );
    const size_t F( run.getNonZeros() );
 
-   blaze::CompressedMatrix<real,rowMajor> A( N, N, N*F ), C( N, N );
-   blaze::CompressedMatrix<real,columnMajor> B( N, N, N*F );
+   blaze::CompressedMatrix<element_t,rowMajor> A( N, N, N*F ), C( N, N );
+   blaze::CompressedMatrix<element_t,columnMajor> B( N, N, N*F );
    blaze::timing::WcTimer timer;
    double wct( 0.0 );
    size_t steps( 1UL );
@@ -94,7 +93,7 @@ void estimateSteps( SparseRun& run )
       A.reserve( i, F );
       blazemark::Indices indices( N, F );
       for( blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         A.append( i, *it, real(0.1) );
+         A.append( i, *it, element_t(0.1) );
       }
    }
 
@@ -102,7 +101,7 @@ void estimateSteps( SparseRun& run )
       B.reserve( j, F );
       blazemark::Indices indices( N, F );
       for( blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         B.append( *it, j, real(0.1) );
+         B.append( *it, j, element_t(0.1) );
       }
    }
 

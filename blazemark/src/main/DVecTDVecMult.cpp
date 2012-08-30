@@ -44,7 +44,6 @@
 #include <blazemark/system/Blitz.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/Eigen.h>
-#include <blazemark/system/Precision.h>
 #include <blazemark/system/Types.h>
 #include <blazemark/util/Benchmarks.h>
 #include <blazemark/util/DenseRun.h>
@@ -79,16 +78,16 @@ using blazemark::Parser;
 */
 void estimateSteps( DenseRun& run )
 {
-   using blazemark::real;
+   using blazemark::element_t;
    using blaze::rowVector;
    using blaze::columnVector;
    using blaze::rowMajor;
 
    const size_t N( run.getSize() );
 
-   blaze::DynamicVector<real,columnVector> a( N, 0.1 );
-   blaze::DynamicVector<real,rowVector> b( N, 0.1 );
-   blaze::DynamicMatrix<real,rowMajor> A( N, N );
+   blaze::DynamicVector<element_t,columnVector> a( N, 0.1 );
+   blaze::DynamicVector<element_t,rowVector> b( N, 0.1 );
+   blaze::DynamicMatrix<element_t,rowMajor> A( N, N );
    blaze::timing::WcTimer timer;
    double wct( 0.0 );
    size_t steps( 1UL );

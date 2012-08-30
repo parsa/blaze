@@ -39,7 +39,6 @@
 #include <blazemark/gmm/TSVecSVecMult.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/GMM.h>
-#include <blazemark/system/Precision.h>
 #include <blazemark/system/Types.h>
 #include <blazemark/util/Benchmarks.h>
 #include <blazemark/util/Indices.h>
@@ -75,16 +74,16 @@ using blazemark::SparseRun;
 */
 void estimateSteps( SparseRun& run )
 {
-   using blazemark::real;
+   using blazemark::element_t;
    using blaze::rowVector;
    using blaze::columnVector;
 
    const size_t N( run.getSize() );
    const size_t F( run.getNonZeros() );
 
-   blaze::CompressedVector<real,rowVector> a( N, F );
-   blaze::CompressedVector<real,columnVector> b( N, F );
-   real scalar( 0 );
+   blaze::CompressedVector<element_t,rowVector> a( N, F );
+   blaze::CompressedVector<element_t,columnVector> b( N, F );
+   element_t scalar( 0 );
    blaze::timing::WcTimer timer;
    double wct( 0.0 );
    size_t steps( 1UL );
@@ -92,14 +91,14 @@ void estimateSteps( SparseRun& run )
    {
       blazemark::Indices indices( N, F );
       for( blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         a[*it] = real(0.1);
+         a[*it] = element_t(0.1);
       }
    }
 
    {
       blazemark::Indices indices( N, F );
       for( blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         b[*it] = real(0.1);
+         b[*it] = element_t(0.1);
       }
    }
 
@@ -114,7 +113,7 @@ void estimateSteps( SparseRun& run )
       steps *= 2UL;
    }
 
-   if( scalar < real(0) )
+   if( scalar < element_t(0) )
       std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
    run.setSteps( blaze::max( 1UL, ( blazemark::runtime * steps ) / timer.last() ) );

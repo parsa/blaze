@@ -44,7 +44,6 @@
 #include <blazemark/system/Eigen.h>
 #include <blazemark/system/GMM.h>
 #include <blazemark/system/MTL.h>
-#include <blazemark/system/Precision.h>
 #include <blazemark/system/Types.h>
 #include <blazemark/util/Benchmarks.h>
 #include <blazemark/util/Parser.h>
@@ -79,7 +78,7 @@ using blazemark::SolverRun;
 */
 void estimateSteps( SolverRun& run )
 {
-   using blazemark::real;
+   using blazemark::element_t;
    using blaze::columnVector;
    using blaze::rowMajor;
 
@@ -99,9 +98,9 @@ void estimateSteps( SolverRun& run )
       }
    }
 
-   ::blaze::CompressedMatrix<real,rowMajor> A( NN, NN, nnz );
-   ::blaze::DynamicVector<real,columnVector> x( NN ), b( NN, 0 ), r( NN ), d( NN ), h( NN );
-   real alpha, beta, delta;
+   ::blaze::CompressedMatrix<element_t,rowMajor> A( NN, NN, nnz );
+   ::blaze::DynamicVector<element_t,columnVector> x( NN ), b( NN, 0 ), r( NN ), d( NN ), h( NN );
+   element_t alpha, beta, delta;
    size_t iteration( 0UL );
    ::blaze::timing::WcTimer timer;
 
@@ -118,7 +117,7 @@ void estimateSteps( SolverRun& run )
    ::blaze::setSeed( ::blazemark::seed );
 
    for( size_t i=0UL; i<NN; ++i ) {
-      x[i] = ::blaze::rand<real>();
+      x[i] = ::blaze::rand<element_t>();
    }
 
    timer.start();

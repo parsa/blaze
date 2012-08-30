@@ -39,7 +39,6 @@
 #include <blazemark/blaze/DMatSVecMult.h>
 #include <blazemark/boost/DMatSVecMult.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 #include <blazemark/system/Types.h>
 #include <blazemark/util/Benchmarks.h>
 #include <blazemark/util/Indices.h>
@@ -75,16 +74,16 @@ using blazemark::SparseRun;
 */
 void estimateSteps( SparseRun& run )
 {
-   using blazemark::real;
+   using blazemark::element_t;
    using blaze::columnVector;
    using blaze::rowMajor;
 
    const size_t N( run.getSize() );
    const size_t F( run.getNonZeros() );
 
-   blaze::DynamicMatrix<real,rowMajor> A( N, N, 0.1 );
-   blaze::CompressedVector<real,columnVector> a( N, F );
-   blaze::DynamicVector<real,columnVector> b( N );
+   blaze::DynamicMatrix<element_t,rowMajor> A( N, N, 0.1 );
+   blaze::CompressedVector<element_t,columnVector> a( N, F );
+   blaze::DynamicVector<element_t,columnVector> b( N );
    blaze::timing::WcTimer timer;
    double wct( 0.0 );
    size_t steps( 1UL );
@@ -92,7 +91,7 @@ void estimateSteps( SparseRun& run )
    {
       blazemark::Indices indices( N, F );
       for( blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         a[*it] = real(0.1);
+         a[*it] = element_t(0.1);
       }
    }
 

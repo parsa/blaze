@@ -43,7 +43,6 @@
 #include <blazemark/system/Eigen.h>
 #include <blazemark/system/GMM.h>
 #include <blazemark/system/MTL.h>
-#include <blazemark/system/Precision.h>
 #include <blazemark/system/Types.h>
 #include <blazemark/util/Benchmarks.h>
 #include <blazemark/util/DenseRun.h>
@@ -78,12 +77,12 @@ using blazemark::Parser;
 */
 void estimateSteps( DenseRun& run )
 {
-   using blazemark::real;
+   using blazemark::element_t;
    using blaze::rowMajor;
 
    const size_t N( run.getSteps() );
 
-   blaze::DynamicMatrix<real,rowMajor> A( N, N, 0.1 ), B( N, N );
+   blaze::DynamicMatrix<element_t,rowMajor> A( N, N, 0.1 ), B( N, N );
    blaze::timing::WcTimer timer;
    double wct( 0.0 );
    size_t steps( 1UL );

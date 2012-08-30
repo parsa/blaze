@@ -51,7 +51,6 @@
 #include <blazemark/system/Eigen.h>
 #include <blazemark/system/GMM.h>
 #include <blazemark/system/MTL.h>
-#include <blazemark/system/Precision.h>
 #include <blazemark/system/Types.h>
 #include <blazemark/util/Benchmarks.h>
 #include <blazemark/util/DenseRun.h>
@@ -86,12 +85,12 @@ using blazemark::Parser;
 */
 void estimateSteps( DenseRun& run )
 {
-   using blazemark::real;
+   using blazemark::element_t;
    using blaze::columnVector;
 
    const size_t N( run.getSize() );
 
-   blaze::DynamicVector<real,columnVector> a( N, 0.1 ), b( N, 0.0 );
+   blaze::DynamicVector<element_t,columnVector> a( N, 0.1 ), b( N, 0.0 );
    blaze::timing::WcTimer timer;
    double wct( 0.0 );
    size_t steps( 1UL );
@@ -99,7 +98,7 @@ void estimateSteps( DenseRun& run )
    while( true ) {
       timer.start();
       for( size_t i=0UL; i<steps; ++i ) {
-         b += a * real(0.001);
+         b += a * element_t(0.001);
       }
       timer.end();
       wct = timer.last();
