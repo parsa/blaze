@@ -26,11 +26,10 @@
 
 #include <iostream>
 #include <armadillo>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/armadillo/Custom.h>
+#include <blazemark/armadillo/Init.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,7 +55,7 @@ namespace armadillo {
 */
 double custom( size_t /*N*/, size_t /*F*/, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 

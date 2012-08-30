@@ -26,11 +26,10 @@
 
 #include <iostream>
 #include <armadillo>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/armadillo/init/Mat.h>
 #include <blazemark/armadillo/TDMatTDMatAdd.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -55,19 +54,15 @@ namespace armadillo {
 */
 double tdmattdmatadd( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   ::arma::Mat<real> A( N, N ), B( N, N ), C( N, N );
+   ::arma::Mat<element_t> A( N, N ), B( N, N ), C( N, N );
    ::blaze::timing::WcTimer timer;
 
-   for( size_t j=0UL; j<N; ++j ) {
-      for( size_t i=0UL; i<N; ++i ) {
-         A(i,j) = ::blaze::rand<real>();
-         B(i,j) = ::blaze::rand<real>();
-      }
-   }
+   init( A );
+   init( B );
 
    C = A + B;
 

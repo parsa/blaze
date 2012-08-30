@@ -27,11 +27,10 @@
 #include <iostream>
 #include <vector>
 #include <armadillo>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/armadillo/init/Mat.h>
 #include <blazemark/armadillo/TMat3TMat3Mult.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,23 +55,19 @@ namespace armadillo {
 */
 double tmat3tmat3mult( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   ::std::vector< ::arma::Mat<real> > A( N ), B( N ), C( N );
+   ::std::vector< ::arma::Mat<element_t> > A( N ), B( N ), C( N );
    ::blaze::timing::WcTimer timer;
 
    for( size_t i=0UL; i<N; ++i ) {
       A[i].resize( 3UL, 3UL );
       B[i].resize( 3UL, 3UL );
       C[i].resize( 3UL, 3UL );
-      for( size_t k=0UL; k<3UL; ++k ) {
-         for( size_t j=0UL; j<3UL; ++j ) {
-            A[i](j,k) = ::blaze::rand<real>();
-            B[i](j,k) = ::blaze::rand<real>();
-         }
-      }
+      init( A[i] );
+      init( B[i] );
    }
 
    for( size_t i=0UL; i<N; ++i ) {
@@ -89,7 +84,7 @@ double tmat3tmat3mult( size_t N, size_t steps )
       timer.end();
 
       for( size_t i=0UL; i<N; ++i )
-         if( C[i](0,0) < real(0) )
+         if( C[i](0,0) < element_t(0) )
             std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
       if( timer.last() > maxtime )
