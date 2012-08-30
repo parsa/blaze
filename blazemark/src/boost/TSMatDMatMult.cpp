@@ -28,12 +28,11 @@
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_sparse.hpp>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/boost/init/CompressedMatrix.h>
+#include <blazemark/boost/init/Matrix.h>
 #include <blazemark/boost/TSMatDMatMult.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
-#include <blazemark/util/Indices.h>
 
 
 namespace blazemark {
@@ -59,29 +58,19 @@ namespace boost {
 */
 double tsmatdmatmult( size_t N, size_t F, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::boost::numeric::ublas::row_major;
    using ::boost::numeric::ublas::column_major;
 
    ::blaze::setSeed( seed );
 
-   ::boost::numeric::ublas::compressed_matrix<real,column_major> A( N, N );
-   ::boost::numeric::ublas::matrix<real,row_major> B( N, N );
-   ::boost::numeric::ublas::matrix<real,column_major> C( N, N );
+   ::boost::numeric::ublas::compressed_matrix<element_t,column_major> A( N, N );
+   ::boost::numeric::ublas::matrix<element_t,row_major> B( N, N );
+   ::boost::numeric::ublas::matrix<element_t,column_major> C( N, N );
    ::blaze::timing::WcTimer timer;
 
-   for( size_t j=0UL; j<N; ++j ) {
-      ::blazemark::Indices indices( N, F );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         A(*it,j) = ::blaze::rand<real>();
-      }
-   }
-
-   for( size_t i=0UL; i<N; ++i ) {
-      for( size_t j=0UL; j<N; ++j ) {
-         B(i,j) = ::blaze::rand<real>();
-      }
-   }
+   init( A, F );
+   init( B );
 
    noalias( C ) = prod( A, B );
 

@@ -27,11 +27,10 @@
 #include <iostream>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/boost/Complex8.h>
+#include <blazemark/boost/init/Matrix.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,19 +55,20 @@ namespace boost {
 */
 double complex8( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::boost::numeric::ublas::column_major;
 
    ::blaze::setSeed( seed );
 
-   ::boost::numeric::ublas::matrix<real,column_major> A( N, N ), B( N, N ), C( N, N );
+   ::boost::numeric::ublas::matrix<element_t,column_major> A( N, N ), B( N, N ), C( N, N );
    ::blaze::timing::WcTimer timer;
+
+   init( A );
+   init( B );
 
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<N; ++i ) {
-         A(i,j) = ::blaze::rand<real>();
-         B(i,j) = ::blaze::rand<real>();
-         C(i,j) = real(0);
+         C(i,j) = element_t(0);
       }
    }
 
@@ -76,7 +76,7 @@ double complex8( size_t N, size_t steps )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         noalias( C ) += real(2.2) * prod( A, B );
+         noalias( C ) += element_t(2.2) * prod( A, B );
       }
       timer.end();
 

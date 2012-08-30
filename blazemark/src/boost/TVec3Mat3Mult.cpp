@@ -29,11 +29,11 @@
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/vector.hpp>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/boost/init/Matrix.h>
+#include <blazemark/boost/init/Vector.h>
 #include <blazemark/boost/TVec3Mat3Mult.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -58,30 +58,21 @@ namespace boost {
 */
 double tvec3mat3mult( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::boost::numeric::ublas::row_major;
 
    ::blaze::setSeed( seed );
 
-   ::std::vector< ::boost::numeric::ublas::vector<real> > a( N ), b( N );
-   ::std::vector< ::boost::numeric::ublas::matrix<real,row_major> > A( N );
+   ::std::vector< ::boost::numeric::ublas::vector<element_t> > a( N ), b( N );
+   ::std::vector< ::boost::numeric::ublas::matrix<element_t,row_major> > A( N );
    ::blaze::timing::WcTimer timer;
 
    for( size_t i=0UL; i<N; ++i ) {
       a[i].resize( 3UL );
       b[i].resize( 3UL );
-      for( size_t j=0UL; j<3UL; ++j ) {
-         a[i][j] = ::blaze::rand<real>();
-      }
-   }
-   
-   for( size_t i=0UL; i<N; ++i ) {
       A[i].resize( 3UL, 3UL );
-      for( size_t j=0UL; j<3UL; ++j ) {
-         for( size_t k=0UL; k<3UL; ++k ) {
-            A[i](j,k) = ::blaze::rand<real>();
-         }
-      }
+      init( a[i] );
+      init( A[i] );
    }
 
    for( size_t i=0UL; i<N; ++i ) {
@@ -98,7 +89,7 @@ double tvec3mat3mult( size_t N, size_t steps )
       timer.end();
 
       for( size_t i=0UL; i<N; ++i )
-         if( b[i][0] < real(0) )
+         if( b[i][0] < element_t(0) )
             std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
       if( timer.last() > maxtime )

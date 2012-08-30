@@ -28,12 +28,11 @@
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/vector_sparse.hpp>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/boost/init/CompressedVector.h>
+#include <blazemark/boost/init/Vector.h>
 #include <blazemark/boost/TDVecSVecMult.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
-#include <blazemark/util/Indices.h>
 
 
 namespace blazemark {
@@ -59,25 +58,17 @@ namespace boost {
 */
 double tdvecsvecmult( size_t N, size_t F, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   ::boost::numeric::ublas::vector<real> a( N );
-   ::boost::numeric::ublas::compressed_vector<real> b( N );
-   real scalar( 0 );
+   ::boost::numeric::ublas::vector<element_t> a( N );
+   ::boost::numeric::ublas::compressed_vector<element_t> b( N );
+   element_t scalar( 0 );
    ::blaze::timing::WcTimer timer;
 
-   for( size_t i=0UL; i<N; ++i ) {
-      a[i] = ::blaze::rand<real>();
-   }
-
-   {
-      ::blazemark::Indices indices( N, F );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         b[*it] = ::blaze::rand<real>();
-      }
-   }
+   init( a );
+   init( b, F );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
@@ -87,7 +78,7 @@ double tdvecsvecmult( size_t N, size_t F, size_t steps )
       }
       timer.end();
 
-      if( scalar < real(0) )
+      if( scalar < element_t(0) )
          std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
       if( timer.last() > maxtime )

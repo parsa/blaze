@@ -27,11 +27,10 @@
 #include <iostream>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/vector.hpp>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/boost/DVecDVecMult.h>
+#include <blazemark/boost/init/Vector.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,17 +55,15 @@ namespace boost {
 */
 double dvecdvecmult( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   ::boost::numeric::ublas::vector<real> a( N ), b( N ), c( N );
+   ::boost::numeric::ublas::vector<element_t> a( N ), b( N ), c( N );
    ::blaze::timing::WcTimer timer;
 
-   for( size_t i=0UL; i<N; ++i ) {
-      a[i] = ::blaze::rand<real>();
-      b[i] = ::blaze::rand<real>();
-   }
+   init( a );
+   init( b );
 
    noalias( c ) = element_prod( a, b );
 

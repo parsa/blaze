@@ -27,11 +27,10 @@
 #include <iostream>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/boost/DMatTrans.h>
+#include <blazemark/boost/init/Matrix.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,19 +55,15 @@ namespace boost {
 */
 double dmattrans( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::boost::numeric::ublas::row_major;
 
    ::blaze::setSeed( seed );
 
-   ::boost::numeric::ublas::matrix<real,row_major> A( N, N ), B( N, N );
+   ::boost::numeric::ublas::matrix<element_t,row_major> A( N, N ), B( N, N );
    ::blaze::timing::WcTimer timer;
 
-   for( size_t i=0UL; i<N; ++i ) {
-      for( size_t j=0UL; j<N; ++j ) {
-         A(i,j) = ::blaze::rand<real>();
-      }
-   }
+   init( A );
 
    noalias( B ) = trans( A );
 

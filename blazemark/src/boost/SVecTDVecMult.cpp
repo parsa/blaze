@@ -29,12 +29,11 @@
 #include <boost/numeric/ublas/matrix_sparse.hpp>
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/vector_sparse.hpp>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/boost/init/CompressedVector.h>
+#include <blazemark/boost/init/Vector.h>
 #include <blazemark/boost/SVecTDVecMult.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
-#include <blazemark/util/Indices.h>
 
 
 namespace blazemark {
@@ -60,26 +59,18 @@ namespace boost {
 */
 double svectdvecmult( size_t N, size_t F, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::boost::numeric::ublas::row_major;
 
    ::blaze::setSeed( seed );
 
-   ::boost::numeric::ublas::compressed_vector<real> a( N );
-   ::boost::numeric::ublas::vector<real> b( N );
-   ::boost::numeric::ublas::compressed_matrix<real,row_major> A( N, N );
+   ::boost::numeric::ublas::compressed_vector<element_t> a( N );
+   ::boost::numeric::ublas::vector<element_t> b( N );
+   ::boost::numeric::ublas::compressed_matrix<element_t,row_major> A( N, N );
    ::blaze::timing::WcTimer timer;
 
-   {
-      ::blazemark::Indices indices( N, F );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         a[*it] = ::blaze::rand<real>();
-      }
-   }
-
-   for( size_t i=0UL; i<N; ++i ) {
-      b[i] = ::blaze::rand<real>();
-   }
+   init( a, F );
+   init( b );
 
    noalias( A ) = outer_prod( a, b );
 

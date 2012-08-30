@@ -28,11 +28,10 @@
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/matrix_sparse.hpp>
 #include <boost/numeric/ublas/vector.hpp>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/boost/CG.h>
+#include <blazemark/boost/init/Vector.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -58,16 +57,16 @@ namespace boost {
 */
 double cg( size_t N, size_t steps, size_t iterations )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::boost::numeric::ublas::row_major;
 
    ::blaze::setSeed( seed );
 
    const size_t NN( N*N );
 
-   ::boost::numeric::ublas::compressed_matrix<real,row_major> A( NN, NN );
-   ::boost::numeric::ublas::vector<real> x( NN ), b( NN ), r( NN ), d( NN ), h( NN ), init( NN );
-   real alpha, beta, delta;
+   ::boost::numeric::ublas::compressed_matrix<element_t,row_major> A( NN, NN );
+   ::boost::numeric::ublas::vector<element_t> x( NN ), b( NN ), r( NN ), d( NN ), h( NN ), start( NN );
+   element_t alpha, beta, delta;
    ::blaze::timing::WcTimer timer;
 
    for( size_t i=0UL; i<N; ++i ) {
@@ -81,16 +80,17 @@ double cg( size_t N, size_t steps, size_t iterations )
    }
 
    for( size_t i=0UL; i<NN; ++i ) {
-      b[i]    = real(0);
-      init[i] = ::blaze::rand<real>();
+      b[i] = element_t(0);
    }
+
+   init( start );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step )
       {
-         x = init;
+         x = start;
          r = prod( A, x ) - b;
          delta = inner_prod( r, r );
          d = -r;

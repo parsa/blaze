@@ -28,11 +28,10 @@
 #include <vector>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/vector.hpp>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/boost/init/Vector.h>
 #include <blazemark/boost/Vec3Vec3Add.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -57,21 +56,19 @@ namespace boost {
 */
 double vec3vec3add( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   ::std::vector< ::boost::numeric::ublas::vector<real> > a( N ), b( N ), c( N );
+   ::std::vector< ::boost::numeric::ublas::vector<element_t> > a( N ), b( N ), c( N );
    ::blaze::timing::WcTimer timer;
 
    for( size_t i=0UL; i<N; ++i ) {
       a[i].resize( 3UL );
       b[i].resize( 3UL );
       c[i].resize( 3UL );
-      for( size_t j=0UL; j<3UL; ++j ) {
-         a[i][j] = ::blaze::rand<real>();
-         b[i][j] = ::blaze::rand<real>();
-      }
+      init( a[i] );
+      init( b[i] );
    }
 
    for( size_t i=0UL; i<N; ++i ) {
@@ -88,7 +85,7 @@ double vec3vec3add( size_t N, size_t steps )
       timer.end();
 
       for( size_t i=0UL; i<N; ++i )
-         if( c[i][0] < real(0) )
+         if( c[i][0] < element_t(0) )
             std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
       if( timer.last() > maxtime )

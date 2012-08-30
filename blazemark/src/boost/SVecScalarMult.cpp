@@ -27,12 +27,10 @@
 #include <iostream>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/vector_sparse.hpp>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/boost/init/CompressedVector.h>
 #include <blazemark/boost/SVecScalarMult.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
-#include <blazemark/util/Indices.h>
 
 
 namespace blazemark {
@@ -58,27 +56,22 @@ namespace boost {
 */
 double svecscalarmult( size_t N, size_t F, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   ::boost::numeric::ublas::compressed_vector<real> a( N ), b( N );
+   ::boost::numeric::ublas::compressed_vector<element_t> a( N ), b( N );
    ::blaze::timing::WcTimer timer;
 
-   {
-      ::blazemark::Indices indices( N, F );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         a[*it] = ::blaze::rand<real>();
-      }
-   }
+   init( a, F );
 
-   noalias( b ) = a * real(2.2);
+   noalias( b ) = a * element_t(2.2);
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         noalias( b ) = a * real(2.2);
+         noalias( b ) = a * element_t(2.2);
       }
       timer.end();
 

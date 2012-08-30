@@ -27,12 +27,10 @@
 #include <iostream>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/vector_sparse.hpp>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/boost/init/CompressedVector.h>
 #include <blazemark/boost/SVecSVecAdd.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
-#include <blazemark/util/Indices.h>
 
 
 namespace blazemark {
@@ -58,26 +56,15 @@ namespace boost {
 */
 double svecsvecadd( size_t N, size_t F, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   ::boost::numeric::ublas::compressed_vector<real> a( N ), b( N ), c( N );
+   ::boost::numeric::ublas::compressed_vector<element_t> a( N ), b( N ), c( N );
    ::blaze::timing::WcTimer timer;
 
-   {
-      ::blazemark::Indices indices( N, F );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         a[*it] = ::blaze::rand<real>();
-      }
-   }
-
-   {
-      ::blazemark::Indices indices( N, F );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         b[*it] = ::blaze::rand<real>();
-      }
-   }
+   init( a, F );
+   init( b, F );
 
    noalias( c ) = a + b;
 
