@@ -26,11 +26,10 @@
 
 #include <iostream>
 #include <gmm/gmm.h>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/gmm/DMatScalarMult.h>
+#include <blazemark/gmm/init/DenseMatrix.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -55,26 +54,22 @@ namespace gmm {
 */
 double dmatscalarmult( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   ::gmm::dense_matrix<real> A( N, N ), B( N, N );
+   ::gmm::dense_matrix<element_t> A( N, N ), B( N, N );
    ::blaze::timing::WcTimer timer;
 
-   for( size_t j=0UL; j<N; ++j ) {
-      for( size_t i=0UL; i<N; ++i ) {
-         A(i,j) = ::blaze::rand<real>();
-      }
-   }
+   init( A );
 
-   copy( scaled( A, real(2.2) ), B );
+   copy( scaled( A, element_t(2.2) ), B );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         copy( scaled( A, real(2.2) ), B );
+         copy( scaled( A, element_t(2.2) ), B );
       }
       timer.end();
 

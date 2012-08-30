@@ -26,11 +26,10 @@
 
 #include <iostream>
 #include <gmm/gmm.h>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/gmm/CG.h>
+#include <blazemark/gmm/init/Vector.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,16 +55,16 @@ namespace gmm {
 */
 double cg( size_t N, size_t steps, size_t iterations )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
    const size_t NN( N*N );
 
-   ::gmm::row_matrix< ::gmm::wsvector<double> > T( NN, NN );
-   ::gmm::csr_matrix<real> A( NN, NN );
-   ::std::vector<real> x( NN ), b( NN ), r( NN ), d( NN ), h( NN ), init( NN );
-   real alpha, beta, delta;
+   ::gmm::row_matrix< ::gmm::wsvector<element_t> > T( NN, NN );
+   ::gmm::csr_matrix<element_t> A( NN, NN );
+   ::std::vector<element_t> x( NN ), b( NN ), r( NN ), d( NN ), h( NN ), start( NN );
+   element_t alpha, beta, delta;
    ::blaze::timing::WcTimer timer;
 
    for( size_t i=0UL; i<N; ++i ) {
@@ -80,21 +79,19 @@ double cg( size_t N, size_t steps, size_t iterations )
 
    copy( T, A );
 
-   for( size_t i=0UL; i<NN; ++i ) {
-      b[i]    = real(0);
-      init[i] = ::blaze::rand<real>();
-   }
+   ::gmm::clear( b );
+   init( start );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step )
       {
-         x = init;
+         x = start;
          mult( A, x, r );
-         ::gmm::add( ::gmm::scaled( b, real(-1) ), r );
+         ::gmm::add( ::gmm::scaled( b, element_t(-1) ), r );
          delta = ::gmm::vect_sp( r, r );
-         copy( ::gmm::scaled( r, real(-1) ), d );
+         copy( ::gmm::scaled( r, element_t(-1) ), d );
 
          for( size_t iteration=0UL; iteration<iterations; ++iteration )
          {
@@ -103,7 +100,7 @@ double cg( size_t N, size_t steps, size_t iterations )
             ::gmm::add( ::gmm::scaled( d, alpha ), x, x );
             ::gmm::add( ::gmm::scaled( h, alpha ), r, r );
             beta = ::gmm::vect_sp( r, r );
-            ::gmm::add( ::gmm::scaled( r, real(-1) ), ::gmm::scaled( d, beta / delta ), d );
+            ::gmm::add( ::gmm::scaled( r, element_t(-1) ), ::gmm::scaled( d, beta / delta ), d );
             delta = beta;
          }
       }

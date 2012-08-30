@@ -27,11 +27,10 @@
 #include <iostream>
 #include <vector>
 #include <gmm/gmm.h>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/gmm/init/DenseMatrix.h>
 #include <blazemark/gmm/TMat6TMat6Add.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,23 +55,19 @@ namespace gmm {
 */
 double tmat6tmat6add( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   ::std::vector< ::gmm::dense_matrix<real> > A( N ), B( N ), C( N );
+   ::std::vector< ::gmm::dense_matrix<element_t> > A( N ), B( N ), C( N );
    ::blaze::timing::WcTimer timer;
 
    for( size_t i=0UL; i<N; ++i ) {
       ::gmm::resize( A[i], 6UL, 6UL );
       ::gmm::resize( B[i], 6UL, 6UL );
       ::gmm::resize( C[i], 6UL, 6UL );
-      for( size_t k=0UL; k<6UL; ++k ) {
-         for( size_t j=0UL; j<6UL; ++j ) {
-            A[i](j,k) = ::blaze::rand<real>();
-            B[i](j,k) = ::blaze::rand<real>();
-         }
-      }
+      init( A[i] );
+      init( B[i] );
    }
 
    for( size_t i=0UL; i<N; ++i ) {
@@ -89,7 +84,7 @@ double tmat6tmat6add( size_t N, size_t steps )
       timer.end();
 
       for( size_t i=0UL; i<N; ++i )
-         if( C[i](0,0) < real(0) )
+         if( C[i](0,0) < element_t(0) )
             std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
       if( timer.last() > maxtime )

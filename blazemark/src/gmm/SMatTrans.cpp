@@ -26,12 +26,10 @@
 
 #include <iostream>
 #include <gmm/gmm.h>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/gmm/init/CSRMatrix.h>
 #include <blazemark/gmm/SMatTrans.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
-#include <blazemark/util/Indices.h>
 
 
 namespace blazemark {
@@ -56,22 +54,14 @@ namespace gmm {
 */
 double smattrans( size_t N, size_t F, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   ::gmm::row_matrix< ::gmm::wsvector<double> > T( N, N );
-   ::gmm::csr_matrix<real> A( N, N ), B( N, N );
+   ::gmm::csr_matrix<element_t> A( N, N ), B( N, N );
    ::blaze::timing::WcTimer timer;
 
-   for( size_t i=0UL; i<N; ++i ) {
-      ::blazemark::Indices indices( N, F );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         T(i,*it) = ::blaze::rand<real>();
-      }
-   }
-
-   copy( T, A );
+   init( A, F );
 
    copy( transposed( A ), B );
 

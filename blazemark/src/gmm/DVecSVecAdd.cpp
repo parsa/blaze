@@ -26,12 +26,11 @@
 
 #include <iostream>
 #include <gmm/gmm.h>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/gmm/DVecSVecAdd.h>
+#include <blazemark/gmm/init/RSVector.h>
+#include <blazemark/gmm/init/Vector.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
-#include <blazemark/util/Indices.h>
 
 
 namespace blazemark {
@@ -57,24 +56,16 @@ namespace gmm {
 */
 double dvecsvecadd( size_t N, size_t F, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   ::std::vector<real> a( N ), c( N );
-   ::gmm::rsvector<real> b( N );
+   ::std::vector<element_t> a( N ), c( N );
+   ::gmm::rsvector<element_t> b( N );
    ::blaze::timing::WcTimer timer;
 
-   for( size_t i=0UL; i<N; ++i ) {
-      a[i] = ::blaze::rand<real>();
-   }
-
-   {
-      ::blazemark::Indices indices( N, F );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         b[*it] = ::blaze::rand<real>();
-      }
-   }
+   init( a );
+   init( b, F );
 
    ::gmm::add( a, b, c );
 

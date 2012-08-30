@@ -27,11 +27,11 @@
 #include <iostream>
 #include <vector>
 #include <gmm/gmm.h>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/gmm/init/DenseMatrix.h>
+#include <blazemark/gmm/init/Vector.h>
 #include <blazemark/gmm/TDMatDVecMult.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,29 +56,20 @@ namespace gmm {
 */
 double tmat6vec6mult( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   ::std::vector< ::gmm::dense_matrix<real> > A( N );
-   ::std::vector< ::std::vector<real> > a( N ), b( N );
+   ::std::vector< ::gmm::dense_matrix<element_t> > A( N );
+   ::std::vector< ::std::vector<element_t> > a( N ), b( N );
    ::blaze::timing::WcTimer timer;
 
    for( size_t i=0UL; i<N; ++i ) {
       ::gmm::resize( A[i], 6UL, 6UL );
-      for( size_t k=0UL; k<6UL; ++k ) {
-         for( size_t j=0UL; j<6UL; ++j ) {
-            A[i](j,k) = ::blaze::rand<real>();
-         }
-      }
-   }
-
-   for( size_t i=0UL; i<N; ++i ) {
       ::gmm::resize( a[i], 6UL );
       ::gmm::resize( b[i], 6UL );
-      for( size_t j=0UL; j<6UL; ++j ) {
-         a[i][j] = ::blaze::rand<real>();
-      }
+      init( A[i] );
+      init( a[i] );
    }
 
    for( size_t i=0UL; i<N; ++i ) {
@@ -95,7 +86,7 @@ double tmat6vec6mult( size_t N, size_t steps )
       timer.end();
 
       for( size_t i=0UL; i<N; ++i )
-         if( b[i][0] < real(0) )
+         if( b[i][0] < element_t(0) )
             std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
       if( timer.last() > maxtime )
