@@ -29,7 +29,6 @@
 #include <blaze/util/Timing.h>
 #include <blazemark/clike/DVecDVecSub.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -54,18 +53,18 @@ namespace clike {
 */
 double dvecdvecsub( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   real* a = new real[N];
-   real* b = new real[N];
-   real* c = new real[N];
+   element_t* a = new element_t[N];
+   element_t* b = new element_t[N];
+   element_t* c = new element_t[N];
    ::blaze::timing::WcTimer timer;
 
    for( size_t i=0UL; i<N; ++i ) {
-      a[i] = ::blaze::rand<real>();
-      b[i] = ::blaze::rand<real>();
+      a[i] = ::blaze::rand<element_t>();
+      b[i] = ::blaze::rand<element_t>();
    }
 
    for( size_t i=0UL; i<N; ++i )
@@ -80,7 +79,7 @@ double dvecdvecsub( size_t N, size_t steps )
       }
       timer.end();
 
-      if( c[0] < real(0) )
+      if( c[0] < element_t(0) )
          std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
       if( timer.last() > maxtime )

@@ -29,7 +29,6 @@
 #include <blaze/util/Timing.h>
 #include <blazemark/clike/SMatDVecMult.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 #include <blazemark/util/Indices.h>
 
 
@@ -56,22 +55,22 @@ namespace clike {
 */
 double smatdvecmult( size_t N, size_t F, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   real* value = new real[F*N];
+   element_t* value = new element_t[F*N];
    size_t* index = new size_t[F*N];
    size_t* row = new size_t[N+1UL];
-   real* a = new real[N];
-   real* b = new real[N];
+   element_t* a = new element_t[N];
+   element_t* b = new element_t[N];
    ::blaze::timing::WcTimer timer;
    size_t counter( 0 );
 
    for( size_t i=0UL; i<N; ++i ) {
       ::blazemark::Indices indices( N, F );
       for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         value[counter] = ::blaze::rand<real>();
+         value[counter] = ::blaze::rand<element_t>();
          index[counter] = *it;
          ++counter;
       }
@@ -80,11 +79,11 @@ double smatdvecmult( size_t N, size_t F, size_t steps )
    row[N] = N*F;
 
    for( size_t i=0UL; i<N; ++i ) {
-      a[i] = ::blaze::rand<real>();
+      a[i] = ::blaze::rand<element_t>();
    }
 
    for( size_t i=0UL; i<N; ++i ) {
-      b[i] = real(0);
+      b[i] = element_t(0);
       const size_t begin( row[i    ] );
       const size_t end  ( row[i+1UL] );
       for( size_t j=begin; j!=end; ++j ) {
@@ -97,7 +96,7 @@ double smatdvecmult( size_t N, size_t F, size_t steps )
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
          for( size_t i=0UL; i<N; ++i ) {
-            b[i] = real(0);
+            b[i] = element_t(0);
             const size_t begin( row[i    ] );
             const size_t end  ( row[i+1UL] );
             for( size_t j=begin; j!=end; ++j ) {
@@ -107,7 +106,7 @@ double smatdvecmult( size_t N, size_t F, size_t steps )
       }
       timer.end();
 
-      if( b[0] < real(0) )
+      if( b[0] < element_t(0) )
          std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
       if( timer.last() > maxtime )
