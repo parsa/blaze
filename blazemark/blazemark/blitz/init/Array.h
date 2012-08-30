@@ -88,8 +88,8 @@ void init( ::blitz::Array<Type,1>& v )
 template< typename Type >  // Data type of the matrix
 void initRowMajorMatrix( ::blitz::Array<Type,2>& m )
 {
-   const size_t M( m.rows() );
-   const size_t N( m.cols() );
+   const int M( m.rows() );
+   const int N( m.cols() );
 
    for( int i=0; i<M; ++i ) {
       for( int j=0; j<N; ++j ) {
@@ -111,8 +111,8 @@ void initRowMajorMatrix( ::blitz::Array<Type,2>& m )
 template< typename Type >  // Data type of the matrix
 void initColumnMajorMatrix( ::blitz::Array<Type,2>& m )
 {
-   const size_t M( m.rows() );
-   const size_t N( m.cols() );
+   const int M( m.rows() );
+   const int N( m.cols() );
 
    for( int j=1; j<=N; ++j ) {
       for( int i=1; i<=M; ++i ) {
