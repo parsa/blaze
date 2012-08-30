@@ -28,11 +28,10 @@
 #include <boost/cast.hpp>
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/eigen/Custom.h>
+#include <blazemark/eigen/Init.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -58,7 +57,7 @@ namespace eigen {
 */
 double custom( size_t /*N*/, size_t /*F*/, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::boost::numeric_cast;
    using ::Eigen::Dynamic;
    using ::Eigen::RowMajor;

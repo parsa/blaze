@@ -28,11 +28,10 @@
 #include <boost/cast.hpp>
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/eigen/CG.h>
+#include <blazemark/eigen/init/Matrix.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -58,7 +57,7 @@ namespace eigen {
 */
 double cg( size_t N, size_t steps, size_t iterations )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::boost::numeric_cast;
    using ::Eigen::Dynamic;
    using ::Eigen::RowMajor;
@@ -67,9 +66,9 @@ double cg( size_t N, size_t steps, size_t iterations )
 
    const size_t NN( N*N );
 
-   ::Eigen::SparseMatrix<real,RowMajor,EigenSparseIndexType> A( NN, NN );
-   ::Eigen::Matrix<real,Dynamic,1> x( NN ), b( NN ), r( NN ), d( NN ), h( NN ), init( NN );
-   real alpha, beta, delta;
+   ::Eigen::SparseMatrix<element_t,RowMajor,EigenSparseIndexType> A( NN, NN );
+   ::Eigen::Matrix<element_t,Dynamic,1> x( NN ), b( NN ), r( NN ), d( NN ), h( NN ), start( NN );
+   element_t alpha, beta, delta;
    ::blaze::timing::WcTimer timer;
 
    A.reserve( NN*5UL );
@@ -88,16 +87,17 @@ double cg( size_t N, size_t steps, size_t iterations )
    A.finalize();
 
    for( size_t i=0UL; i<NN; ++i ) {
-      b[i]    = real(0);
-      init[i] = ::blaze::rand<real>();
+      b[i] = element_t(0);
    }
+
+   init( start );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step )
       {
-         x.noalias() = init;
+         x.noalias() = start;
          r.noalias() = A * x - b;
          delta = r.transpose() * r;
          d.noalias() = -r;

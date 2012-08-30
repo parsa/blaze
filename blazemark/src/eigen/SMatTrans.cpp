@@ -27,12 +27,10 @@
 #include <iostream>
 #include <boost/cast.hpp>
 #include <Eigen/Sparse>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/eigen/init/SparseMatrix.h>
 #include <blazemark/eigen/SMatTrans.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
-#include <blazemark/util/Indices.h>
 
 
 namespace blazemark {
@@ -57,26 +55,16 @@ namespace eigen {
 */
 double smattrans( size_t N, size_t F, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::boost::numeric_cast;
    using ::Eigen::RowMajor;
 
    ::blaze::setSeed( seed );
 
-   ::Eigen::SparseMatrix<real,RowMajor,EigenSparseIndexType> A( N, N ), B( N, N );
+   ::Eigen::SparseMatrix<element_t,RowMajor,EigenSparseIndexType> A( N, N ), B( N, N );
    ::blaze::timing::WcTimer timer;
 
-   A.reserve( N*F );
-
-   for( size_t i=0UL; i<N; ++i ) {
-      A.startVec( i );
-      ::blazemark::Indices indices( N, F );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         A.insertBack(i,*it) = ::blaze::rand<real>();
-      }
-   }
-
-   A.finalize();
+   init( A, F );
 
    B = A.transpose();
 

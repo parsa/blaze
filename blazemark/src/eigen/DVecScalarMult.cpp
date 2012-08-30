@@ -27,11 +27,10 @@
 #include <iostream>
 #include <boost/cast.hpp>
 #include <Eigen/Dense>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/eigen/DVecScalarMult.h>
+#include <blazemark/eigen/init/Matrix.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,26 +55,24 @@ namespace eigen {
 */
 double dvecscalarmult( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::boost::numeric_cast;
    using ::Eigen::Dynamic;
 
    ::blaze::setSeed( seed );
 
-   ::Eigen::Matrix<real,Dynamic,1> a( N ), b( N );
+   ::Eigen::Matrix<element_t,Dynamic,1> a( N ), b( N );
    ::blaze::timing::WcTimer timer;
 
-   for( size_t i=0UL; i<N; ++i ) {
-      a[i] = ::blaze::rand<real>();
-   }
+   init( a );
 
-   b.noalias() = a * real(2.2);
+   b.noalias() = a * element_t(2.2);
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         b.noalias() = a * real(2.2);
+         b.noalias() = a * element_t(2.2);
       }
       timer.end();
 

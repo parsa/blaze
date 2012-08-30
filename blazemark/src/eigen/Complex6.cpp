@@ -27,11 +27,10 @@
 #include <iostream>
 #include <boost/cast.hpp>
 #include <Eigen/Dense>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/eigen/Complex6.h>
+#include <blazemark/eigen/init/Matrix.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,23 +55,19 @@ namespace eigen {
 */
 double complex6( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::boost::numeric_cast;
    using ::Eigen::Dynamic;
    using ::Eigen::ColMajor;
 
    ::blaze::setSeed( seed );
 
-   ::Eigen::Matrix<real,Dynamic,Dynamic,ColMajor> A( N, N ), B( N, N ), C( N, N ), D( N, N );
+   ::Eigen::Matrix<element_t,Dynamic,Dynamic,ColMajor> A( N, N ), B( N, N ), C( N, N ), D( N, N );
    ::blaze::timing::WcTimer timer;
 
-   for( size_t j=0UL; j<N; ++j ) {
-      for( size_t i=0UL; i<N; ++i ) {
-         A(i,j) = ::blaze::rand<real>();
-         B(i,j) = ::blaze::rand<real>();
-         C(i,j) = ::blaze::rand<real>();
-      }
-   }
+   init( A );
+   init( B );
+   init( C );
 
    D.noalias() = A * B * C;
 

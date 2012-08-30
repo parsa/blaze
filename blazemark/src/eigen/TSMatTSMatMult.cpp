@@ -27,12 +27,10 @@
 #include <iostream>
 #include <boost/cast.hpp>
 #include <Eigen/Sparse>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/eigen/init/SparseMatrix.h>
 #include <blazemark/eigen/TSMatTSMatMult.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
-#include <blazemark/util/Indices.h>
 
 
 namespace blazemark {
@@ -58,36 +56,17 @@ namespace eigen {
 */
 double tsmattsmatmult( size_t N, size_t F, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::boost::numeric_cast;
    using ::Eigen::ColMajor;
 
    ::blaze::setSeed( seed );
 
-   ::Eigen::SparseMatrix<real,ColMajor,EigenSparseIndexType> A( N, N ), B( N, N ), C( N, N );
+   ::Eigen::SparseMatrix<element_t,ColMajor,EigenSparseIndexType> A( N, N ), B( N, N ), C( N, N );
    ::blaze::timing::WcTimer timer;
 
-   A.reserve( N*F );
-   B.reserve( N*F );
-
-   for( size_t j=0UL; j<N; ++j ) {
-      A.startVec( j );
-      ::blazemark::Indices indices( N, F );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         A.insertBack(*it,j) = ::blaze::rand<real>();
-      }
-   }
-
-   for( size_t j=0UL; j<N; ++j ) {
-      B.startVec( j );
-      ::blazemark::Indices indices( N, F );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         B.insertBack(*it,j) = ::blaze::rand<real>();
-      }
-   }
-
-   A.finalize();
-   B.finalize();
+   init( A, F );
+   init( B, F );
 
    C = A * B;
 

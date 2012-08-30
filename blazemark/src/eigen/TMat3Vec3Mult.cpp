@@ -28,11 +28,10 @@
 #include <vector>
 #include <boost/cast.hpp>
 #include <Eigen/Dense>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/eigen/init/Matrix.h>
 #include <blazemark/eigen/TMat3Vec3Mult.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -57,29 +56,20 @@ namespace eigen {
 */
 double tmat3vec3mult( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::boost::numeric_cast;
    using ::Eigen::Dynamic;
    using ::Eigen::ColMajor;
 
    ::blaze::setSeed( seed );
 
-   ::std::vector< ::Eigen::Matrix<real,3,3,ColMajor> > A( N );
-   ::std::vector< ::Eigen::Matrix<real,3,1> > a( N ), b( N );
+   ::std::vector< ::Eigen::Matrix<element_t,3,3,ColMajor> > A( N );
+   ::std::vector< ::Eigen::Matrix<element_t,3,1> > a( N ), b( N );
    ::blaze::timing::WcTimer timer;
 
    for( size_t i=0UL; i<N; ++i ) {
-      for( size_t k=0UL; k<3UL; ++k ) {
-         for( size_t j=0UL; j<3UL; ++j ) {
-            A[i](j,k) = ::blaze::rand<real>();
-         }
-      }
-   }
-
-   for( size_t i=0UL; i<N; ++i ) {
-      for( size_t j=0UL; j<3UL; ++j ) {
-         a[i][j] = ::blaze::rand<real>();
-      }
+      init( A[i] );
+      init( a[i] );
    }
 
    for( size_t i=0UL; i<N; ++i ) {
@@ -96,7 +86,7 @@ double tmat3vec3mult( size_t N, size_t steps )
       timer.end();
 
       for( size_t i=0UL; i<N; ++i )
-         if( b[i][0] < real(0) )
+         if( b[i][0] < element_t(0) )
             std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
       if( timer.last() > maxtime )

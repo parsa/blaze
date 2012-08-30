@@ -27,11 +27,10 @@
 #include <iostream>
 #include <boost/cast.hpp>
 #include <Eigen/Dense>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/eigen/Complex8.h>
+#include <blazemark/eigen/init/Matrix.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,21 +55,22 @@ namespace eigen {
 */
 double complex8( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::boost::numeric_cast;
    using ::Eigen::Dynamic;
    using ::Eigen::ColMajor;
 
    ::blaze::setSeed( seed );
 
-   ::Eigen::Matrix<real,Dynamic,Dynamic,ColMajor> A( N, N ), B( N, N ), C( N, N );
+   ::Eigen::Matrix<element_t,Dynamic,Dynamic,ColMajor> A( N, N ), B( N, N ), C( N, N );
    ::blaze::timing::WcTimer timer;
+
+   init( A );
+   init( B );
 
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<N; ++i ) {
-         A(i,j) = ::blaze::rand<real>();
-         B(i,j) = ::blaze::rand<real>();
-         C(i,j) = real(0);
+         C(i,j) = element_t(0);
       }
    }
 
@@ -78,7 +78,7 @@ double complex8( size_t N, size_t steps )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         C.noalias() += real(2.2) * A * B;
+         C.noalias() += element_t(2.2) * A * B;
       }
       timer.end();
 
