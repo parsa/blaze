@@ -69,8 +69,10 @@ void init( ::Eigen::SparseMatrix<Type,::Eigen::ColMajor,EigenSparseIndexType>& m
 template< typename Type >  // Data type of the matrix
 void init( ::Eigen::SparseMatrix<Type,::Eigen::RowMajor,EigenSparseIndexType>& m, size_t nonzeros )
 {
-   const size_t M( m.rows() );
-   const size_t N( m.cols() );
+   const int M( m.rows() );
+   const int N( m.cols() );
+
+   m.reserve( M*nonzeros );
 
    for( int i=0UL; i<M; ++i ) {
       m.startVec( i );
@@ -79,6 +81,8 @@ void init( ::Eigen::SparseMatrix<Type,::Eigen::RowMajor,EigenSparseIndexType>& m
          m.insertBack(i,*it) = ::blaze::rand<Type>();
       }
    }
+
+   m.finalize();
 }
 //*************************************************************************************************
 
@@ -96,8 +100,10 @@ void init( ::Eigen::SparseMatrix<Type,::Eigen::RowMajor,EigenSparseIndexType>& m
 template< typename Type >  // Data type of the matrix
 void init( ::Eigen::SparseMatrix<Type,::Eigen::ColMajor,EigenSparseIndexType>& m, size_t nonzeros )
 {
-   const size_t M( m.rows() );
-   const size_t N( m.cols() );
+   const int M( m.rows() );
+   const int N( m.cols() );
+
+   m.reserve( N*nonzeros );
 
    for( int j=0UL; j<N; ++j ) {
       m.startVec( j );
@@ -106,6 +112,8 @@ void init( ::Eigen::SparseMatrix<Type,::Eigen::ColMajor,EigenSparseIndexType>& m
          m.insertBack(*it,j) = ::blaze::rand<Type>();
       }
    }
+
+   m.finalize();
 }
 //*************************************************************************************************
 
