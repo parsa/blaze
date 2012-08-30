@@ -28,5 +28,6 @@
 //*************************************************************************************************
 
 #include <blazemark/blitz/init/Array.h>
+#include <blazemark/blitz/init/TinyVector.h>
 
 #endif
