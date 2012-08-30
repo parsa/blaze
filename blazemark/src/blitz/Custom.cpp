@@ -27,11 +27,10 @@
 #include <iostream>
 #include <blitz/array.h>
 #include <blitz/tinyvec2.h>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blitz/Custom.h>
+#include <blazemark/blitz/Init.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -57,7 +56,7 @@ namespace blitz {
 */
 double custom( size_t /*N*/, size_t /*F*/, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 

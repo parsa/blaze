@@ -27,11 +27,10 @@
 #include <iostream>
 #include <vector>
 #include <blitz/array.h>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/blitz/init/Array.h>
 #include <blazemark/blitz/Mat3Vec3Mult.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,31 +55,22 @@ namespace blitz {
 */
 double mat3vec3mult( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   ::std::vector< ::blitz::Array<real,2> > A( N );
-   ::std::vector< ::blitz::Array<real,1> > a( N ), b( N );
+   ::std::vector< ::blitz::Array<element_t,2> > A( N );
+   ::std::vector< ::blitz::Array<element_t,1> > a( N ), b( N );
    ::blitz::firstIndex i;
    ::blitz::secondIndex j;
    ::blaze::timing::WcTimer timer;
 
    for( size_t l=0UL; l<N; ++l ) {
       A[l].resize( 3, 3 );
-      for( int m=0; m<3; ++m ) {
-         for( int n=0; n<3; ++n ) {
-            A[l](m,n) = ::blaze::rand<real>();
-         }
-      }
-   }
-
-   for( size_t l=0UL; l<N; ++l ) {
       a[l].resize( 3 );
       b[l].resize( 3 );
-      for( int m=0; m<3; ++m ) {
-         a[l](m) = ::blaze::rand<real>();
-      }
+      initRowMajorMatrix( A[l] );
+      init( a[l] );
    }
 
    for( size_t l=0UL; l<N; ++l ) {
@@ -97,7 +87,7 @@ double mat3vec3mult( size_t N, size_t steps )
       timer.end();
 
       for( size_t l=0UL; l<N; ++l )
-         if( b[l](0) < real(0) )
+         if( b[l](0) < element_t(0) )
             std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
       if( timer.last() > maxtime )

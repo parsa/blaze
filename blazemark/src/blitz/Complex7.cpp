@@ -27,11 +27,10 @@
 #include <iostream>
 #include <blitz/array.h>
 #include <boost/cast.hpp>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blitz/Complex7.h>
+#include <blazemark/blitz/init/Array.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,33 +55,29 @@ namespace blitz {
 */
 double complex7( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::boost::numeric_cast;
 
    ::blaze::setSeed( seed );
 
-   ::blitz::Array<real,2> A( N, N, ::blitz::fortranArray );
-   ::blitz::Array<real,2> B( N, N, ::blitz::fortranArray );
-   ::blitz::Array<real,2> C( N, N, ::blitz::fortranArray );
-   ::blitz::Array<real,2> D( N, N, ::blitz::fortranArray );
-   ::blitz::Array<real,2> E( N, N, ::blitz::fortranArray );
+   ::blitz::Array<element_t,2> A( N, N, ::blitz::fortranArray );
+   ::blitz::Array<element_t,2> B( N, N, ::blitz::fortranArray );
+   ::blitz::Array<element_t,2> C( N, N, ::blitz::fortranArray );
+   ::blitz::Array<element_t,2> D( N, N, ::blitz::fortranArray );
+   ::blitz::Array<element_t,2> E( N, N, ::blitz::fortranArray );
    ::blitz::firstIndex i;
    ::blitz::secondIndex j;
    ::blitz::thirdIndex k;
    ::blaze::timing::WcTimer timer;
 
-   for( int n=1; n<=static_cast<int>( N ); ++n ) {
-      for( int m=1; m<=static_cast<int>( N ); ++m ) {
-         A(m,n) = ::blaze::rand<real>();
-         B(m,n) = ::blaze::rand<real>();
-         C(m,n) = ::blaze::rand<real>();
-         D(m,n) = ::blaze::rand<real>();
-      }
-   }
+   initColumnMajorMatrix( A );
+   initColumnMajorMatrix( B );
+   initColumnMajorMatrix( C );
+   initColumnMajorMatrix( D );
 
    {
-      ::blitz::Array<real,2> T1( A + B );
-      ::blitz::Array<real,2> T2( C - D );
+      ::blitz::Array<element_t,2> T1( A + B );
+      ::blitz::Array<element_t,2> T2( C - D );
       E = sum( T1(i,k) * T2(k,j), k );
    }
 
@@ -90,8 +85,8 @@ double complex7( size_t N, size_t steps )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         ::blitz::Array<real,2> T1( A + B );
-         ::blitz::Array<real,2> T2( C - D );
+         ::blitz::Array<element_t,2> T1( A + B );
+         ::blitz::Array<element_t,2> T2( C - D );
          E = sum( T1(i,k) * T2(k,j), k );
       }
       timer.end();

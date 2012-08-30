@@ -27,11 +27,10 @@
 #include <iostream>
 #include <vector>
 #include <blitz/array.h>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/blitz/init/Array.h>
 #include <blazemark/blitz/TMat6Mat6Mult.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,32 +55,21 @@ namespace blitz {
 */
 double tmat6mat6mult( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   ::std::vector< ::blitz::Array<real,2> > A( N, ::blitz::Array<real,2>( ::blitz::fortranArray ) );
-   ::std::vector< ::blitz::Array<real,2> > B( N );
-   ::std::vector< ::blitz::Array<real,2> > C( N, ::blitz::Array<real,2>( ::blitz::fortranArray ) );
+   ::std::vector< ::blitz::Array<element_t,2> > A( N, ::blitz::Array<element_t,2>( ::blitz::fortranArray ) );
+   ::std::vector< ::blitz::Array<element_t,2> > B( N );
+   ::std::vector< ::blitz::Array<element_t,2> > C( N, ::blitz::Array<element_t,2>( ::blitz::fortranArray ) );
    ::blaze::timing::WcTimer timer;
 
    for( size_t l=0; l<N; ++l ) {
       A[l].resize( 6, 6 );
-      C[l].resize( 6, 6 );
-      for( int n=1; n<=6; ++n ) {
-         for( int m=1; m<=6; ++m ) {
-            A[l](m,n) = ::blaze::rand<real>();
-         }
-      }
-   }
-
-   for( size_t l=0; l<N; ++l ) {
       B[l].resize( 6, 6 );
-      for( int m=0; m<6; ++m ) {
-         for( int n=0; n<6; ++n ) {
-            B[l](m,n) = ::blaze::rand<real>();
-         }
-      }
+      C[l].resize( 6, 6 );
+      initColumnMajorMatrix( A[l] );
+      initRowMajorMatrix   ( B[l] );
    }
 
    for( size_t l=0UL; l<N; ++l ) {
@@ -98,7 +86,7 @@ double tmat6mat6mult( size_t N, size_t steps )
       timer.end();
 
       for( size_t l=0UL; l<N; ++l )
-         if( C[l](0,0) < real(0) )
+         if( C[l](0,0) < element_t(0) )
             std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
       if( timer.last() > maxtime )

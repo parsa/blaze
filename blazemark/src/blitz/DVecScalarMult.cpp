@@ -27,11 +27,10 @@
 #include <iostream>
 #include <blitz/array.h>
 #include <boost/cast.hpp>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blitz/DVecScalarMult.h>
+#include <blazemark/blitz/init/Array.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,25 +55,23 @@ namespace blitz {
 */
 double dvecscalarmult( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::boost::numeric_cast;
 
    ::blaze::setSeed( seed );
 
-   ::blitz::Array<real,1> a( N ), b( N );
+   ::blitz::Array<element_t,1> a( N ), b( N );
    ::blaze::timing::WcTimer timer;
 
-   for( int i=0; i<static_cast<int>( N ); ++i ) {
-      a(i) = ::blaze::rand<real>();
-   }
+   init( a );
 
-   b = a * real(2.2);
+   b = a * element_t(2.2);
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         b = a * real(2.2);
+         b = a * element_t(2.2);
       }
       timer.end();
 

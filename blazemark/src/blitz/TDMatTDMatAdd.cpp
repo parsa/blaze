@@ -27,11 +27,10 @@
 #include <iostream>
 #include <blitz/array.h>
 #include <boost/cast.hpp>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/blitz/init/Array.h>
 #include <blazemark/blitz/TDMatTDMatAdd.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,22 +55,18 @@ namespace blitz {
 */
 double tdmattdmatadd( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::boost::numeric_cast;
 
    ::blaze::setSeed( seed );
 
-   ::blitz::Array<real,2> A( N, N, ::blitz::fortranArray );
-   ::blitz::Array<real,2> B( N, N, ::blitz::fortranArray );
-   ::blitz::Array<real,2> C( N, N, ::blitz::fortranArray );
+   ::blitz::Array<element_t,2> A( N, N, ::blitz::fortranArray );
+   ::blitz::Array<element_t,2> B( N, N, ::blitz::fortranArray );
+   ::blitz::Array<element_t,2> C( N, N, ::blitz::fortranArray );
    ::blaze::timing::WcTimer timer;
 
-   for( int n=1; n<=static_cast<int>( N ); ++n ) {
-      for( int m=1; m<=static_cast<int>( N ); ++m ) {
-         A(m,n) = ::blaze::rand<real>();
-         B(m,n) = ::blaze::rand<real>();
-      }
-   }
+   initColumnMajorMatrix( A );
+   initColumnMajorMatrix( B );
 
    C = A + B;
 

@@ -27,11 +27,10 @@
 #include <iostream>
 #include <blitz/array.h>
 #include <boost/cast.hpp>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blitz/Complex8.h>
+#include <blazemark/blitz/init/Array.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,34 +55,29 @@ namespace blitz {
 */
 double complex8( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::boost::numeric_cast;
 
    ::blaze::setSeed( seed );
 
-   ::blitz::Array<real,2> A( N, N, ::blitz::fortranArray );
-   ::blitz::Array<real,2> B( N, N, ::blitz::fortranArray );
-   ::blitz::Array<real,2> C( N, N, ::blitz::fortranArray );
+   ::blitz::Array<element_t,2> A( N, N, ::blitz::fortranArray );
+   ::blitz::Array<element_t,2> B( N, N, ::blitz::fortranArray );
+   ::blitz::Array<element_t,2> C( N, N, ::blitz::fortranArray );
    ::blitz::firstIndex i;
    ::blitz::secondIndex j;
    ::blitz::thirdIndex k;
    ::blaze::timing::WcTimer timer;
 
-   for( int n=1; n<=static_cast<int>( N ); ++n ) {
-      for( int m=1; m<=static_cast<int>( N ); ++m ) {
-         A(m,n) = ::blaze::rand<real>();
-         B(m,n) = ::blaze::rand<real>();
-      }
-   }
-
-   C = real(0);
+   initColumnMajorMatrix( A );
+   initColumnMajorMatrix( B );
+   C = element_t(0);
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         ::blitz::Array<real,2> T( sum( A(i,k) * B(k,j), k ) );
-         C += real(2.2) * T;
+         ::blitz::Array<element_t,2> T( sum( A(i,k) * B(k,j), k ) );
+         C += element_t(2.2) * T;
       }
       timer.end();
 
