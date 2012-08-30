@@ -26,12 +26,11 @@
 
 #include <iostream>
 #include <blaze/math/DynamicMatrix.h>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/blas/init/DynamicMatrix.h>
 #include <blazemark/blas/TDMatDMatMult.h>
 #include <blazemark/system/BLAS.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -122,37 +121,28 @@ inline void gemm( const CBLAS_ORDER Order, const CBLAS_TRANSPOSE TransA,
 */
 double tdmatdmatmult( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::blaze::rowMajor;
    using ::blaze::columnMajor;
 
    ::blaze::setSeed( seed );
 
-   ::blaze::DynamicMatrix<real,columnMajor> A( N, N ), C( N, N );
-   ::blaze::DynamicMatrix<real,rowMajor> B( N, N );
+   ::blaze::DynamicMatrix<element_t,columnMajor> A( N, N ), C( N, N );
+   ::blaze::DynamicMatrix<element_t,rowMajor> B( N, N );
    ::blaze::timing::WcTimer timer;
 
-   for( size_t j=0UL; j<N; ++j ) {
-      for( size_t i=0UL; i<N; ++i ) {
-         A(i,j) = ::blaze::rand<real>();
-      }
-   }
+   init( A );
+   init( B );
 
-   for( size_t i=0UL; i<N; ++i ) {
-      for( size_t j=0UL; j<N; ++j ) {
-         B(i,j) = ::blaze::rand<real>();
-      }
-   }
-
-   gemm( CblasColMajor, CblasNoTrans, CblasTrans, N, N, N, real(1),
-         A.data(), A.spacing(), B.data(), B.spacing(), real(0), C.data(), C.spacing() );
+   gemm( CblasColMajor, CblasNoTrans, CblasTrans, N, N, N, element_t(1),
+         A.data(), A.spacing(), B.data(), B.spacing(), element_t(0), C.data(), C.spacing() );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         gemm( CblasColMajor, CblasNoTrans, CblasTrans, N, N, N, real(1),
-               A.data(), A.spacing(), B.data(), B.spacing(), real(0), C.data(), C.spacing() );
+         gemm( CblasColMajor, CblasNoTrans, CblasTrans, N, N, N, element_t(1),
+               A.data(), A.spacing(), B.data(), B.spacing(), element_t(0), C.data(), C.spacing() );
       }
       timer.end();
 
