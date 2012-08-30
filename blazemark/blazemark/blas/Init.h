@@ -27,7 +27,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blazemark/blas/DynamicMatrix.h>
-#include <blazemark/blas/DynamicVector.h>
+#include <blazemark/blas/init/DynamicMatrix.h>
+#include <blazemark/blas/init/DynamicVector.h>
 
 #endif
