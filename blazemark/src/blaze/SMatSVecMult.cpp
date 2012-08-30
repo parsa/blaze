@@ -27,12 +27,11 @@
 #include <iostream>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/blaze/init/CompressedMatrix.h>
+#include <blazemark/blaze/init/CompressedVector.h>
 #include <blazemark/blaze/SMatSVecMult.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
-#include <blazemark/util/Indices.h>
 
 
 namespace blazemark {
@@ -58,30 +57,18 @@ namespace blaze {
 */
 double smatsvecmult( size_t N, size_t F, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::blaze::columnVector;
    using ::blaze::rowMajor;
 
    ::blaze::setSeed( seed );
 
-   ::blaze::CompressedMatrix<real,rowMajor> A( N, N, N*F );
-   ::blaze::CompressedVector<real,columnVector> a( N ), b( N );
+   ::blaze::CompressedMatrix<element_t,rowMajor> A( N, N, N*F );
+   ::blaze::CompressedVector<element_t,columnVector> a( N ), b( N );
    ::blaze::timing::WcTimer timer;
 
-   for( size_t i=0UL; i<N; ++i ) {
-      A.reserve( i, F );
-      ::blazemark::Indices indices( N, F );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         A.append( i, *it, ::blaze::rand<real>() );
-      }
-   }
-
-   {
-      ::blazemark::Indices indices( N, F );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         a[*it] = ::blaze::rand<real>();
-      }
-   }
+   init( A, F );
+   init( a, F );
 
    b = A * a;
 

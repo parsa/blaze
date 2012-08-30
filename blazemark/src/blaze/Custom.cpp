@@ -26,11 +26,10 @@
 
 #include <iostream>
 #include <blaze/Math.h>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blaze/Custom.h>
+#include <blazemark/blaze/Init.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,7 +55,7 @@ namespace blaze {
 */
 double custom( size_t /*N*/, size_t /*F*/, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::blaze::rowVector;
    using ::blaze::columnVector;
    using ::blaze::rowMajor;

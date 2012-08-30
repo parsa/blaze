@@ -26,12 +26,10 @@
 
 #include <iostream>
 #include <blaze/math/CompressedVector.h>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/blaze/init/CompressedVector.h>
 #include <blazemark/blaze/TSVecSVecMult.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
-#include <blazemark/util/Indices.h>
 
 
 namespace blazemark {
@@ -57,30 +55,19 @@ namespace blaze {
 */
 double tsvecsvecmult( size_t N, size_t F, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::blaze::rowVector;
    using ::blaze::columnVector;
 
    ::blaze::setSeed( seed );
 
-   ::blaze::CompressedVector<real,rowVector> a( N );
-   ::blaze::CompressedVector<real,columnVector> b( N );
-   real scalar( 0 );
+   ::blaze::CompressedVector<element_t,rowVector> a( N );
+   ::blaze::CompressedVector<element_t,columnVector> b( N );
+   element_t scalar( 0 );
    ::blaze::timing::WcTimer timer;
 
-   {
-      ::blazemark::Indices indices( N, F );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         a[*it] = ::blaze::rand<real>();
-      }
-   }
-
-   {
-      ::blazemark::Indices indices( N, F );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         b[*it] = ::blaze::rand<real>();
-      }
-   }
+   init( a, F );
+   init( b, F );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
@@ -90,7 +77,7 @@ double tsvecsvecmult( size_t N, size_t F, size_t steps )
       }
       timer.end();
 
-      if( scalar < real(0) )
+      if( scalar < element_t(0) )
          std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
       if( timer.last() > maxtime )

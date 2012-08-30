@@ -27,11 +27,11 @@
 #include <iostream>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blaze/Complex4.h>
+#include <blazemark/blaze/init/DynamicMatrix.h>
+#include <blazemark/blaze/init/DynamicVector.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,33 +56,26 @@ namespace blaze {
 */
 double complex4( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::blaze::columnVector;
    using ::blaze::columnMajor;
 
    ::blaze::setSeed( seed );
 
-   ::blaze::DynamicMatrix<real,columnMajor> A( N, N );
-   ::blaze::DynamicVector<real,columnVector> a( N ), b( N );
+   ::blaze::DynamicMatrix<element_t,columnMajor> A( N, N );
+   ::blaze::DynamicVector<element_t,columnVector> a( N ), b( N );
    ::blaze::timing::WcTimer timer;
 
-   for( size_t j=0UL; j<N; ++j ) {
-      for( size_t i=0UL; i<N; ++i ) {
-         A(i,j) = ::blaze::rand<real>();
-      }
-   }
+   init( A );
+   init( a );
 
-   for( size_t i=0UL; i<N; ++i ) {
-      a[i] = ::blaze::rand<real>();
-   }
-
-   b = real(0);
+   b = element_t(0);
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         b += real(2.2) * A * a;
+         b += element_t(2.2) * A * a;
       }
       timer.end();
 

@@ -27,12 +27,11 @@
 #include <iostream>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/DynamicVector.h>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/blaze/init/CompressedVector.h>
+#include <blazemark/blaze/init/DynamicVector.h>
 #include <blazemark/blaze/SVecDVecAdd.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
-#include <blazemark/util/Indices.h>
 
 
 namespace blazemark {
@@ -58,25 +57,17 @@ namespace blaze {
 */
 double svecdvecadd( size_t N, size_t F, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::blaze::columnVector;
 
    ::blaze::setSeed( seed );
 
-   ::blaze::CompressedVector<real,columnVector> a( N );
-   ::blaze::DynamicVector<real,columnVector> b( N ), c( N );
+   ::blaze::CompressedVector<element_t,columnVector> a( N );
+   ::blaze::DynamicVector<element_t,columnVector> b( N ), c( N );
    ::blaze::timing::WcTimer timer;
 
-   {
-      ::blazemark::Indices indices( N, F );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         a[*it] = ::blaze::rand<real>();
-      }
-   }
-
-   for( size_t i=0UL; i<N; ++i ) {
-      b[i] = ::blaze::rand<real>();
-   }
+   init( a, F );
+   init( b );
 
    c = a + b;
 

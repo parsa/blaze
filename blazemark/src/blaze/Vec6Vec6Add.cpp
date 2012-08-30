@@ -27,11 +27,10 @@
 #include <iostream>
 #include <vector>
 #include <blaze/math/StaticVector.h>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/blaze/init/StaticVector.h>
 #include <blazemark/blaze/Vec6Vec6Add.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,19 +55,17 @@ namespace blaze {
 */
 double vec6vec6add( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::blaze::columnVector;
 
    ::blaze::setSeed( seed );
 
-   ::std::vector< ::blaze::StaticVector<real,6UL,columnVector> > a( N ), b( N ), c( N );
+   ::std::vector< ::blaze::StaticVector<element_t,6UL,columnVector> > a( N ), b( N ), c( N );
    ::blaze::timing::WcTimer timer;
 
    for( size_t i=0UL; i<N; ++i ) {
-      for( size_t j=0UL; j<6UL; ++j ) {
-         a[i][j] = ::blaze::rand<real>();
-         b[i][j] = ::blaze::rand<real>();
-      }
+      init( a[i] );
+      init( b[i] );
    }
 
    for( size_t i=0UL; i<N; ++i ) {
@@ -85,7 +82,7 @@ double vec6vec6add( size_t N, size_t steps )
       timer.end();
 
       for( size_t i=0UL; i<N; ++i )
-         if( c[i][0] < real(0) )
+         if( c[i][0] < element_t(0) )
             std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
       if( timer.last() > maxtime )

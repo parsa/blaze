@@ -26,11 +26,10 @@
 
 #include <iostream>
 #include <blaze/math/DynamicMatrix.h>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blaze/Complex8.h>
+#include <blazemark/blaze/init/DynamicMatrix.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -55,28 +54,24 @@ namespace blaze {
 */
 double complex8( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::blaze::columnMajor;
 
    ::blaze::setSeed( seed );
 
-   ::blaze::DynamicMatrix<real,columnMajor> A( N, N ), B( N, N ), C( N, N );
+   ::blaze::DynamicMatrix<element_t,columnMajor> A( N, N ), B( N, N ), C( N, N );
    ::blaze::timing::WcTimer timer;
 
-   for( size_t j=0UL; j<N; ++j ) {
-      for( size_t i=0UL; i<N; ++i ) {
-         A(i,j) = ::blaze::rand<real>();
-         B(i,j) = ::blaze::rand<real>();
-      }
-   }
+   init( A );
+   init( B );
 
-   C = real(0);
+   C = element_t(0);
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         C += real(2.2) * A * B;
+         C += element_t(2.2) * A * B;
       }
       timer.end();
 

@@ -26,11 +26,10 @@
 
 #include <iostream>
 #include <blaze/math/DynamicVector.h>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/blaze/init/DynamicVector.h>
 #include <blazemark/blaze/TDVecDVecMult.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -55,21 +54,19 @@ namespace blaze {
 */
 double tdvecdvecmult( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::blaze::rowVector;
    using ::blaze::columnVector;
 
    ::blaze::setSeed( seed );
 
-   ::blaze::DynamicVector<real,rowVector> a( N );
-   ::blaze::DynamicVector<real,columnVector> b( N );
-   real scalar( 0 );
+   ::blaze::DynamicVector<element_t,rowVector> a( N );
+   ::blaze::DynamicVector<element_t,columnVector> b( N );
+   element_t scalar( 0 );
    ::blaze::timing::WcTimer timer;
 
-   for( size_t i=0UL; i<N; ++i ) {
-      a[i] = ::blaze::rand<real>();
-      b[i] = ::blaze::rand<real>();
-   }
+   init( a );
+   init( b );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
@@ -79,7 +76,7 @@ double tdvecdvecmult( size_t N, size_t steps )
       }
       timer.end();
 
-      if( scalar < real(0) )
+      if( scalar < element_t(0) )
          std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
       if( timer.last() > maxtime )

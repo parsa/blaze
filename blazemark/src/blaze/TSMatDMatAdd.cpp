@@ -27,12 +27,11 @@
 #include <iostream>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/blaze/init/CompressedMatrix.h>
+#include <blazemark/blaze/init/DynamicMatrix.h>
 #include <blazemark/blaze/TSMatDMatAdd.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
-#include <blazemark/util/Indices.h>
 
 
 namespace blazemark {
@@ -58,29 +57,18 @@ namespace blaze {
 */
 double tsmatdmatadd( size_t N, size_t F, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::blaze::rowMajor;
    using ::blaze::columnMajor;
 
    ::blaze::setSeed( seed );
 
-   ::blaze::CompressedMatrix<real,columnMajor> A( N, N, N*F );
-   ::blaze::DynamicMatrix<real,rowMajor> B( N, N ), C( N, N );
+   ::blaze::CompressedMatrix<element_t,columnMajor> A( N, N, N*F );
+   ::blaze::DynamicMatrix<element_t,rowMajor> B( N, N ), C( N, N );
    ::blaze::timing::WcTimer timer;
 
-   for( size_t j=0UL; j<N; ++j ) {
-      A.reserve( j, F );
-      ::blazemark::Indices indices( N, F );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         A.append( *it, j, ::blaze::rand<real>() );
-      }
-   }
-
-   for( size_t i=0UL; i<N; ++i ) {
-      for( size_t j=0UL; j<N; ++j ) {
-         B(i,j) = ::blaze::rand<real>();
-      }
-   }
+   init( A, F );
+   init( B );
 
    C = A + B;
 

@@ -26,12 +26,10 @@
 
 #include <iostream>
 #include <blaze/math/CompressedVector.h>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/blaze/init/CompressedVector.h>
 #include <blazemark/blaze/SVecScalarMult.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
-#include <blazemark/util/Indices.h>
 
 
 namespace blazemark {
@@ -57,28 +55,23 @@ namespace blaze {
 */
 double svecscalarmult( size_t N, size_t F, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::blaze::columnVector;
 
    ::blaze::setSeed( seed );
 
-   ::blaze::CompressedVector<real,columnVector> a( N ), b( N );
+   ::blaze::CompressedVector<element_t,columnVector> a( N ), b( N );
    ::blaze::timing::WcTimer timer;
 
-   {
-      ::blazemark::Indices indices( N, F );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         a[*it] = ::blaze::rand<real>();
-      }
-   }
+   init( a, F );
 
-   b = a * real(2.2);
+   b = a * element_t(2.2);
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         b = a * real(2.2);
+         b = a * element_t(2.2);
       }
       timer.end();
 

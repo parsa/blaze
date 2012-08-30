@@ -28,11 +28,10 @@
 #include <vector>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/DynamicVector.h>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blaze/CG.h>
+#include <blazemark/blaze/init/DynamicVector.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -58,7 +57,7 @@ namespace blaze {
 */
 double cg( size_t N, size_t steps, size_t iterations )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
    using ::blaze::columnVector;
    using ::blaze::rowMajor;
 
@@ -74,9 +73,9 @@ double cg( size_t N, size_t steps, size_t iterations )
       }
    }
 
-   ::blaze::CompressedMatrix<real,rowMajor> A( NN, NN, nnz );
-   ::blaze::DynamicVector<real,columnVector> x( NN ), b( NN ), r( NN ), d( NN ), h( NN ), init( NN );
-   real alpha, beta, delta;
+   ::blaze::CompressedMatrix<element_t,rowMajor> A( NN, NN, nnz );
+   ::blaze::DynamicVector<element_t,columnVector> x( NN ), b( NN ), r( NN ), d( NN ), h( NN ), start( NN );
+   element_t alpha, beta, delta;
    ::blaze::timing::WcTimer timer;
 
    for( size_t i=0UL; i<N; ++i ) {
@@ -89,17 +88,15 @@ double cg( size_t N, size_t steps, size_t iterations )
       }
    }
 
-   for( size_t i=0UL; i<NN; ++i ) {
-      b[i]    = real(0);
-      init[i] = ::blaze::rand<real>();
-   }
+   reset( b );
+   init( start );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step )
       {
-         x = init;
+         x = start;
          r = A * x - b;
          delta = trans(r) * r;
          d = -r;
