@@ -26,11 +26,10 @@
 
 #include <iostream>
 #include <boost/numeric/mtl/mtl.hpp>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/mtl/Custom.h>
+#include <blazemark/mtl/Init.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,7 +55,7 @@ namespace mtl {
 */
 double custom( size_t /*N*/, size_t /*F*/, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    typedef ::mtl::tag::row_major  row_major;
    typedef ::mtl::tag::col_major  col_major;

@@ -27,11 +27,10 @@
 #include <iostream>
 #include <vector>
 #include <boost/numeric/mtl/mtl.hpp>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/mtl/init/Dense2D.h>
 #include <blazemark/mtl/TMat6Mat6Mult.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,14 +55,14 @@ namespace mtl {
 */
 double tmat6mat6mult( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    typedef ::mtl::tag::row_major  row_major;
    typedef ::mtl::tag::col_major  col_major;
    typedef ::mtl::matrix::parameters<row_major>  row_parameters;
    typedef ::mtl::matrix::parameters<col_major>  col_parameters;
-   typedef ::mtl::dense2D<real,row_parameters>  row_dense2D;
-   typedef ::mtl::dense2D<real,col_parameters>  col_dense2D;
+   typedef ::mtl::dense2D<element_t,row_parameters>  row_dense2D;
+   typedef ::mtl::dense2D<element_t,col_parameters>  col_dense2D;
 
    ::blaze::setSeed( seed );
 
@@ -75,12 +74,8 @@ double tmat6mat6mult( size_t N, size_t steps )
       A[i].change_dim( 6UL, 6UL );
       B[i].change_dim( 6UL, 6UL );
       C[i].change_dim( 6UL, 6UL );
-      for( size_t k=0UL; k<6UL; ++k ) {
-         for( size_t j=0UL; j<6UL; ++j ) {
-            A[i](j,k) = ::blaze::rand<real>();
-            B[i](j,k) = ::blaze::rand<real>();
-         }
-      }
+      init( A[i] );
+      init( B[i] );
    }
 
    for( size_t i=0UL; i<N; ++i ) {
@@ -97,7 +92,7 @@ double tmat6mat6mult( size_t N, size_t steps )
       timer.end();
 
       for( size_t i=0UL; i<N; ++i )
-         if( C[i](0,0) < real(0) )
+         if( C[i](0,0) < element_t(0) )
             std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
       if( timer.last() > maxtime )

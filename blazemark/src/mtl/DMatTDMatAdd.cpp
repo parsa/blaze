@@ -26,11 +26,10 @@
 
 #include <iostream>
 #include <boost/numeric/mtl/mtl.hpp>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/mtl/DMatTDMatAdd.h>
+#include <blazemark/mtl/init/Dense2D.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -55,7 +54,7 @@ namespace mtl {
 */
 double dmattdmatadd( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    typedef ::mtl::tag::row_major  row_major;
    typedef ::mtl::tag::col_major  col_major;
@@ -64,22 +63,12 @@ double dmattdmatadd( size_t N, size_t steps )
 
    ::blaze::setSeed( seed );
 
-   ::mtl::dense2D<real,row_parameters> A( N, N ), C( N, N );
-   ::mtl::dense2D<real,col_parameters> B( N, N );
-
+   ::mtl::dense2D<element_t,row_parameters> A( N, N ), C( N, N );
+   ::mtl::dense2D<element_t,col_parameters> B( N, N );
    ::blaze::timing::WcTimer timer;
 
-   for( size_t i=0UL; i<N; ++i ) {
-      for( size_t j=0UL; j<N; ++j ) {
-         A(i,j) = ::blaze::rand<real>();
-      }
-   }
-
-   for( size_t j=0UL; j<N; ++j ) {
-      for( size_t i=0UL; i<N; ++i ) {
-         B(i,j) = ::blaze::rand<real>();
-      }
-   }
+   init( A );
+   init( B );
 
    C = A + B;
 

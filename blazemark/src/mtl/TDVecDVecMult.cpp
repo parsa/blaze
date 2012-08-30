@@ -26,11 +26,10 @@
 
 #include <iostream>
 #include <boost/numeric/mtl/mtl.hpp>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/mtl/init/DenseVector.h>
 #include <blazemark/mtl/TDVecDVecMult.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -55,18 +54,16 @@ namespace mtl {
 */
 double tdvecdvecmult( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   ::mtl::dense_vector<real> a( N ), b( N );
-   real scalar( 0 );
+   ::mtl::dense_vector<element_t> a( N ), b( N );
+   element_t scalar( 0 );
    ::blaze::timing::WcTimer timer;
 
-   for( size_t i=0UL; i<N; ++i ) {
-      a[i] = ::blaze::rand<real>();
-      b[i] = ::blaze::rand<real>();
-   }
+   init( a );
+   init( b );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
@@ -76,7 +73,7 @@ double tdvecdvecmult( size_t N, size_t steps )
       }
       timer.end();
 
-      if( scalar < real(0) )
+      if( scalar < element_t(0) )
          std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
       if( timer.last() > maxtime )

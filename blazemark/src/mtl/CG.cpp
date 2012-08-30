@@ -26,11 +26,10 @@
 
 #include <iostream>
 #include <boost/numeric/mtl/mtl.hpp>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blaze/CG.h>
+#include <blazemark/mtl/init/DenseVector.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,12 +55,12 @@ namespace mtl {
 */
 double cg( size_t N, size_t steps, size_t iterations )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
-   typedef ::mtl::dense_vector<real>  dense_vector;
+   typedef ::mtl::dense_vector<element_t>  dense_vector;
    typedef ::mtl::tag::row_major  row_major;
    typedef ::mtl::matrix::parameters<row_major>  parameters;
-   typedef ::mtl::compressed2D<real,parameters>  compressed2D;
+   typedef ::mtl::compressed2D<element_t,parameters>  compressed2D;
    typedef ::mtl::matrix::inserter<compressed2D>  inserter;
 
    ::blaze::setSeed( seed );
@@ -69,8 +68,8 @@ double cg( size_t N, size_t steps, size_t iterations )
    const size_t NN( N*N );
 
    compressed2D A( NN, NN );
-   dense_vector x( NN ), b( NN ), r( NN ), d( NN ), h( NN ), init( NN );
-   real alpha, beta, delta;
+   dense_vector x( NN ), b( NN ), r( NN ), d( NN ), h( NN ), start( NN );
+   element_t alpha, beta, delta;
    ::blaze::timing::WcTimer timer;
 
    {
@@ -87,17 +86,15 @@ double cg( size_t N, size_t steps, size_t iterations )
       }
    }
 
-   for( size_t i=0UL; i<NN; ++i ) {
-      b[i]    = real(0);
-      init[i] = ::blaze::rand<real>();
-   }
+   b = element_t(0);
+   init( start );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step )
       {
-         x = init;
+         x = start;
          r = A * x - b;
          delta = trans(r) * r;
          d = -r;

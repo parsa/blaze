@@ -26,12 +26,11 @@
 
 #include <iostream>
 #include <boost/numeric/mtl/mtl.hpp>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/mtl/init/Compressed2D.h>
+#include <blazemark/mtl/init/DenseVector.h>
 #include <blazemark/mtl/TSMatDVecMult.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
-#include <blazemark/util/Indices.h>
 
 
 namespace blazemark {
@@ -57,12 +56,12 @@ namespace mtl {
 */
 double tsmatdvecmult( size_t N, size_t F, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
-   typedef ::mtl::dense_vector<real>  dense_vector;
+   typedef ::mtl::dense_vector<element_t>  dense_vector;
    typedef ::mtl::tag::col_major  col_major;
    typedef ::mtl::matrix::parameters<col_major>  parameters;
-   typedef ::mtl::compressed2D<real,parameters>  compressed2D;
+   typedef ::mtl::compressed2D<element_t,parameters>  compressed2D;
    typedef ::mtl::matrix::inserter<compressed2D>  inserter;
 
    ::blaze::setSeed( seed );
@@ -71,20 +70,8 @@ double tsmatdvecmult( size_t N, size_t F, size_t steps )
    dense_vector a( N ), b( N );
    ::blaze::timing::WcTimer timer;
 
-   {
-      inserter ins( A );
-
-      for( size_t j=0UL; j<N; ++j ) {
-         ::blazemark::Indices indices( N, F );
-         for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-            ins[*it][j] = ::blaze::rand<real>();
-         }
-      }
-   }
-
-   for( size_t i=0UL; i<N; ++i ) {
-      a[i] = ::blaze::rand<real>();
-   }
+   init( A, F );
+   init( a );
 
    b = A * a;
 

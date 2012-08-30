@@ -26,11 +26,11 @@
 
 #include <iostream>
 #include <boost/numeric/mtl/mtl.hpp>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/mtl/init/Dense2D.h>
+#include <blazemark/mtl/init/DenseVector.h>
 #include <blazemark/mtl/TDMatDVecMult.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -55,27 +55,20 @@ namespace mtl {
 */
 double tdmatdvecmult( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    typedef ::mtl::tag::col_major  col_major;
    typedef ::mtl::matrix::parameters<col_major>  parameters;
-   typedef ::mtl::dense2D<real,parameters>  dense2D;
+   typedef ::mtl::dense2D<element_t,parameters>  dense2D;
 
    ::blaze::setSeed( seed );
 
    dense2D A( N, N );
-   ::mtl::dense_vector<real> a( N ), b( N );
+   ::mtl::dense_vector<element_t> a( N ), b( N );
    ::blaze::timing::WcTimer timer;
 
-   for( size_t j=0UL; j<N; ++j ) {
-      for( size_t i=0UL; i<N; ++i ) {
-         A(i,j) = ::blaze::rand<real>();
-      }
-   }
-
-   for( size_t i=0UL; i<N; ++i ) {
-      a[i] = ::blaze::rand<real>();
-   }
+   init( A );
+   init( a );
 
    b = A * a;
 

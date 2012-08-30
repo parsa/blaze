@@ -27,11 +27,11 @@
 #include <iostream>
 #include <vector>
 #include <boost/numeric/mtl/mtl.hpp>
-#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/mtl/init/Dense2D.h>
+#include <blazemark/mtl/init/DenseVector.h>
 #include <blazemark/mtl/Mat3Vec3Mult.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/system/Precision.h>
 
 
 namespace blazemark {
@@ -56,12 +56,12 @@ namespace mtl {
 */
 double mat3vec3mult( size_t N, size_t steps )
 {
-   using ::blazemark::real;
+   using ::blazemark::element_t;
 
    typedef ::mtl::tag::row_major  row_major;
    typedef ::mtl::matrix::parameters<row_major>  parameters;
-   typedef ::mtl::dense2D<real,parameters>  dense2D;
-   typedef ::mtl::dense_vector<real>  dense_vector;
+   typedef ::mtl::dense2D<element_t,parameters>  dense2D;
+   typedef ::mtl::dense_vector<element_t>  dense_vector;
 
    ::blaze::setSeed( seed );
 
@@ -71,19 +71,10 @@ double mat3vec3mult( size_t N, size_t steps )
 
    for( size_t i=0UL; i<N; ++i ) {
       A[i].change_dim( 3UL, 3UL );
-      for( size_t j=0UL; j<3UL; ++j ) {
-         for( size_t k=0UL; k<3UL; ++k ) {
-            A[i](j,k) = ::blaze::rand<real>();
-         }
-      }
-   }
-
-   for( size_t i=0UL; i<N; ++i ) {
       a[i].change_dim( 3UL );
       b[i].change_dim( 3UL );
-      for( size_t j=0UL; j<3UL; ++j ) {
-         a[i][j] = ::blaze::rand<real>();
-      }
+      init( A[i] );
+      init( a[i] );
    }
 
    for( size_t i=0UL; i<N; ++i ) {
@@ -100,7 +91,7 @@ double mat3vec3mult( size_t N, size_t steps )
       timer.end();
 
       for( size_t i=0UL; i<N; ++i )
-         if( b[i][0] < real(0) )
+         if( b[i][0] < element_t(0) )
             std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
       if( timer.last() > maxtime )
