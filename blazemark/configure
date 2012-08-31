@@ -102,6 +102,12 @@ if [ "$ARMADILLO" != "yes" ] && [ "$ARMADILLO" != "no" ]; then
    exit 1
 fi
 
+# Checking the settings for the FLENS library
+if [ "$FLENS" != "yes" ] && [ "$FLENS" != "no" ]; then
+   echo "Invalid setting for the FLENS library."
+   exit 1
+fi
+
 # Checking the settings for the MTL library
 if [ "$MTL" != "yes" ] && [ "$MTL" != "no" ]; then
    echo "Invalid setting for the MTL library."
@@ -132,11 +138,17 @@ BLAZE_PATH="${INSTALL_PATH%%/blazemark}"
 # Generating the Makefile
 
 # Configuration of the compiler flags
-if [ "$MTL" = "yes" ] && [ "$BLAS" = "yes" ]; then
-   CXXFLAGS="$CXXFLAGS -DMTL_HAS_BLAS"
-fi
 if [ "$GMM" = "yes" ] && [ "$GMM_ATLAS_INSTALLED" = "yes" ]; then
    CXXFLAGS="$CXXFLAGS -DGMM_USES_LAPACK"
+fi
+if [ "$FLENS" = "yes" ] && [ "FLENS_ATLAS_INSTALLED" = "yes" ]; then
+   CXXFLAGS="$CXXFLAGS -DWITH_ATLAS"
+fi
+if [ "$FLENS" = "yes" ] && [ "FLENS_GOTO_INSTALLED" = "yes" ]; then
+   CXXFLAGS="$CXXFLAGS -DWITH_GOTOBLAS"
+fi
+if [ "$MTL" = "yes" ] && [ "$BLAS" = "yes" ]; then
+   CXXFLAGS="$CXXFLAGS -DMTL_HAS_BLAS"
 fi
 if [ "$EIGEN" = "yes" ] && [ "$EIGEN_MKL_INSTALLED" = "yes" ]; then
    CXXFLAGS="$CXXFLAGS -DEIGEN_USE_BLAS"
@@ -175,6 +187,13 @@ ARMADILLO_INCLUDE_PATH=${ARMADILLO_INCLUDE_PATH%"/"}
 if [ "$ARMADILLO" = "yes" ]; then
    if [ -n "$ARMADILLO_INCLUDE_PATH" ] && [[ ! "$INCLUDES" =~ "$ARMADILLO_INCLUDE_PATH" ]]; then
       INCLUDES="$INCLUDES -isystem $ARMADILLO_INCLUDE_PATH"
+   fi
+fi
+
+FLENS_INCLUDE_PATH=${FLENS_INCLUDE_PATH%"/"}
+if [ "$FLENS" = "yes" ]; then
+   if [ -n "$FLENS_INCLUDE_PATH" ] && [[ ! "$INCLUDES" =~ "$FLENS_INCLUDE_PATH" ]]; then
+      INCLUDES="$INCLUDES -isystem $FLENS_INCLUDE_PATH"
    fi
 fi
 
@@ -237,6 +256,9 @@ if [ "$GMM" = "yes" ]; then
 fi
 if [ "$ARMADILLO" = "yes" ]; then
    MODULES="$MODULES armadillo"
+fi
+if [ "$FLENS" = "yes" ]; then
+   MODULES="$MODULES flens"
 fi
 if [ "$MTL" = "yes" ]; then
    MODULES="$MODULES mtl"
@@ -1618,6 +1640,14 @@ export ARMADILLO_INCLUDE_PATH = $ARMADILLO_INCLUDE_PATH
 EOF
 fi
 
+if [ -n "$FLENS_INCLUDE_PATH" ]; then
+cat >> Makefile <<EOF
+
+# Exporting the FLENS include path
+export FLENS_INCLUDE_PATH = $FLENS_INCLUDE_PATH
+EOF
+fi
+
 if [ -n "$MTL_INCLUDE_PATH" ]; then
 cat >> Makefile <<EOF
 
@@ -1714,6 +1744,17 @@ cat >> Makefile <<EOF
 armadillo:
 	@echo "Building the Armadillo kernels..."
 	@\$(MAKE) --no-print-directory -C \$(INSTALL_PATH)/src/armadillo
+	@echo "... finished!"
+	@echo
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+
+flens:
+	@echo "Building the FLENS kernels..."
+	@\$(MAKE) --no-print-directory -C \$(INSTALL_PATH)/src/flens
 	@echo "... finished!"
 	@echo
 EOF
@@ -2019,6 +2060,14 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/ARMADILLO_DVecDVecAdd.o:
 	@echo "  Building the Armadillo kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/ARMADILLO_DVecDVecAdd.o \$(INSTALL_PATH)/src/armadillo/DVecDVecAdd.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_DVecDVecAdd.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_DVecDVecAdd.o \$(INSTALL_PATH)/src/flens/DVecDVecAdd.cpp \$(INCLUDES)
 EOF
 fi
 
@@ -7083,6 +7132,7 @@ clean:
 	@\$(MAKE) --no-print-directory -C \$(INSTALL_PATH)/src/blitz clean
 	@\$(MAKE) --no-print-directory -C \$(INSTALL_PATH)/src/gmm clean
 	@\$(MAKE) --no-print-directory -C \$(INSTALL_PATH)/src/armadillo clean
+	@\$(MAKE) --no-print-directory -C \$(INSTALL_PATH)/src/flens clean
 	@\$(MAKE) --no-print-directory -C \$(INSTALL_PATH)/src/mtl clean
 	@\$(MAKE) --no-print-directory -C \$(INSTALL_PATH)/src/eigen clean
 	@\$(MAKE) --no-print-directory -C \$(INSTALL_PATH)/src/main clean
@@ -7488,6 +7538,73 @@ EOF
 fi
 
 cat >> ./blazemark/system/Armadillo.h <<EOF
+//*************************************************************************************************
+
+#endif
+EOF
+
+
+#########################################
+# Generating the 'FLENS.h' header file
+
+cat > ./blazemark/system/FLENS.h <<EOF
+//=================================================================================================
+/*!
+//  \file blazemark/system/FLENS.h
+//  \brief System settings for the FLENS performance benchmarks
+//
+//  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
+//
+//  This file is part of the Blaze library. This library is free software; you can redistribute
+//  it and/or modify it under the terms of the GNU General Public License as published by the
+//  Free Software Foundation; either version 3, or (at your option) any later version.
+//
+//  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+//  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+//  See the GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License along with a special
+//  exception for linking and compiling against the Blaze library, the so-called "runtime
+//  exception"; see the file COPYING. If not, see http://www.gnu.org/licenses/.
+*/
+//=================================================================================================
+
+#ifndef _BLAZEMARK_SYSTEM_FLENS_H_
+#define _BLAZEMARK_SYSTEM_FLENS_H_
+
+
+//=================================================================================================
+//
+//  FLENS CONFIGURATION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Compilation switch for the FLENS performance benchmarks.
+//
+// This compilation switch enables/disables the FLENS library performance benchmarks.
+//
+// Possible settings for the FLENS switch:
+//  - Deactivated: \b 0
+//  - Activated  : \b 1
+//
+// Note that changing this setting requires a recompilation of the Blaze benchmark suite. Also
+// note that this switch is automatically set by the configuration script of the Blaze benchmark
+// suite.
+*/
+EOF
+
+if [ "$FLENS" = "yes" ]; then
+cat >> ./blazemark/system/FLENS.h <<EOF
+#define BLAZEMARK_FLENS_MODE 1
+EOF
+else
+cat >> ./blazemark/system/FLENS.h <<EOF
+#define BLAZEMARK_FLENS_MODE 0
+EOF
+fi
+
+cat >> ./blazemark/system/FLENS.h <<EOF
 //*************************************************************************************************
 
 #endif

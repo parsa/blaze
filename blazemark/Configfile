@@ -91,6 +91,21 @@ GMM_INCLUDE_PATH=
 ARMADILLO="no"
 ARMADILLO_INCLUDE_PATH=
 
+# Configuration of the FLENS library (optional)
+# This switch includes all FLENS (Flexible Library for Efficient Numerical Solutions)
+# benchmarks kernels in the compilation process. The Blaze benchmark suite requires you
+# to install at least FLENS-2012-08-28. If the switch is set to 'yes' all FLENS kernels
+# are included in the compilation process. Note that in this case you are required to
+# use a C++-11 conform compiler (such as for instance GCC 4.7 or Intel 12.1.2). If either
+# the ATLAS or GOTO BLAS library is installed the according switch can be set to 'yes'
+# in order to accelerate several of FLENS kernels by an optimized BLAS implementation.
+# In case the FLENS include directory is not set, Blaze expects the according headers
+# in the standard paths (for example '/usr/include/flens').
+FLENS="no"
+FLENS_ATLAS_INSTALLED="no"
+FLENS_GOTO_INSTALLED="no"
+FLENS_INCLUDE_PATH=
+
 # Configuration of the MTL library (optional)
 # This setting triggers the compilation of all benchmark kernels for the MTL library.
 # The Blaze benchmark suite requires at least MTL 4.0 in order compile. If the switch
