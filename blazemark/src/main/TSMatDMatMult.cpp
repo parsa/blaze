@@ -250,7 +250,14 @@ int main( int argc, char** argv )
    std::cout << "\n Transpose Sparse Matrix/Dense Matrix Multiplication:\n";
 
    Benchmarks benchmarks;
-   parseCommandLineArguments( argc, argv, benchmarks );
+
+   try {
+      parseCommandLineArguments( argc, argv, benchmarks );
+   }
+   catch( std::exception& ex ) {
+      std::cerr << "   " << ex.what() << "\n";
+      return EXIT_FAILURE;
+   }
 
    const std::string installPath( INSTALL_PATH );
    const std::string parameterFile( installPath + "/params/tsmatdmatmult.prm" );

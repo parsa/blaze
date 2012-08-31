@@ -220,7 +220,14 @@ int main( int argc, char** argv )
    std::cout << "\n 3-Dimensional Transpose Vector/Transpose Matrix Multiplication:\n";
 
    Benchmarks benchmarks;
-   parseCommandLineArguments( argc, argv, benchmarks );
+
+   try {
+      parseCommandLineArguments( argc, argv, benchmarks );
+   }
+   catch( std::exception& ex ) {
+      std::cerr << "   " << ex.what() << "\n";
+      return EXIT_FAILURE;
+   }
 
    const std::string installPath( INSTALL_PATH );
    const std::string parameterFile( installPath + "/params/tvec3tmat3mult.prm" );
