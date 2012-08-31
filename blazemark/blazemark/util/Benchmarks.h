@@ -28,6 +28,8 @@
 //*************************************************************************************************
 
 #include <cstring>
+#include <sstream>
+#include <stdexcept>
 #include <blazemark/system/Config.h>
 
 
@@ -103,10 +105,15 @@ struct Benchmarks
                             benchmark tests. In case the runGMM flag is set to \a false, the
                             GMM kernel will be skipped.*/
    bool runArmadillo;  //!< Flag value for the Armadillo benchmark kernels.
-                       /*!< In case the runArmadillo flag is set to \a true and in case a Armadillo
+                       /*!< In case the runArmadillo flag is set to \a true and in case an Armadillo
                             kernel is available for a particular benchmark, the kernel is included
                             in the benchmark tests. In case the runArmadillo flag is set to \a false,
                             the Armadillo kernel will be skipped.*/
+   bool runFLENS;      //!< Flag value for the FLENS benchmark kernels.
+                       /*!< In case the runFLENS flag is set to \a true and in case a FLENS kernel
+                            is available for a particular benchmark, the kernel is included in the
+                            benchmark tests. In case the runFlENS flag is set to \a false, the
+                            FLENS kernel will be skipped. */
    bool runMTL;        //!< Flag value for the MTL benchmark kernels.
                        /*!< In case the runMTL flag is set to \a true and in case a MTL kernel
                             is available for a particular benchmark, the kernel is included in the
@@ -143,6 +150,7 @@ inline Benchmarks::Benchmarks()
    , runBlitz    ( blazemark::runBlitz     )  // Flag value for the Blitz benchmark kernels
    , runGMM      ( blazemark::runGMM       )  // Flag value for the GMM benchmark kernels
    , runArmadillo( blazemark::runArmadillo )  // Flag value for the Armadillo benchmark kernels
+   , runFLENS    ( blazemark::runFLENS     )  // Flag value for the FLENS benchmark kernels
    , runMTL      ( blazemark::runMTL       )  // Flag value for the MTL benchmark kernels
    , runEigen    ( blazemark::runEigen     )  // Flag value for the Eigen benchmark kernels
 {}
@@ -164,6 +172,7 @@ inline Benchmarks::Benchmarks()
 // \param argv The array of command line arguments.
 // \param benchmarks The benchmark data structure to be configured.
 // \return void
+// \exception std::invalid_argument Unknown command line argument.
 //
 // This function parses the command line arguments to configure the given benchmarks data
 // structure. The following command line options will be recognized:
@@ -192,12 +201,18 @@ inline Benchmarks::Benchmarks()
 //   - \a -armadillo: Activates the Armadillo kernels.
 //   - \a -no-armadillo: Deactivates the Armadillo kernels.
 //   - \a -only-armadillo: Activates the Armadillo kernels and deactivates all other.
+//   - \a -flens: Activates the FLENS kernels.
+//   - \a -no-flens: Deactivates the FLENS kernels.
+//   - \a -only-flens: Activates the FLENS kernels and deactivates all other.
 //   - \a -mtl: Activates the MTL kernels.
 //   - \a -no-mtl: Deactivates the MTL kernels.
 //   - \a -only-mtl: Activates the MTL kernels and deactivates all other.
 //   - \a -eigen: Activates the Eigen kernels.
 //   - \a -no-eigen: Deactivates the Eigen kernels.
 //   - \a -only-eigen: Activates the Eigen kernels and deactivates all other.
+//
+// In case an unknown command line option is encountered, a \a std::invalid_argument exception
+// is thrown.
 */
 inline void parseCommandLineArguments( int argc, char** argv, Benchmarks& benchmarks )
 {
@@ -218,6 +233,7 @@ inline void parseCommandLineArguments( int argc, char** argv, Benchmarks& benchm
          benchmarks.runBlitz     = false;
          benchmarks.runGMM       = false;
          benchmarks.runArmadillo = false;
+         benchmarks.runFLENS     = false;
          benchmarks.runMTL       = false;
          benchmarks.runEigen     = false;
       }
@@ -236,6 +252,7 @@ inline void parseCommandLineArguments( int argc, char** argv, Benchmarks& benchm
          benchmarks.runBlitz     = false;
          benchmarks.runGMM       = false;
          benchmarks.runArmadillo = false;
+         benchmarks.runFLENS     = false;
          benchmarks.runMTL       = false;
          benchmarks.runEigen     = false;
       }
@@ -254,6 +271,7 @@ inline void parseCommandLineArguments( int argc, char** argv, Benchmarks& benchm
          benchmarks.runBlitz     = false;
          benchmarks.runGMM       = false;
          benchmarks.runArmadillo = false;
+         benchmarks.runFLENS     = false;
          benchmarks.runMTL       = false;
          benchmarks.runEigen     = false;
       }
@@ -272,6 +290,7 @@ inline void parseCommandLineArguments( int argc, char** argv, Benchmarks& benchm
          benchmarks.runBlitz     = false;
          benchmarks.runGMM       = false;
          benchmarks.runArmadillo = false;
+         benchmarks.runFLENS     = false;
          benchmarks.runMTL       = false;
          benchmarks.runEigen     = false;
       }
@@ -290,6 +309,7 @@ inline void parseCommandLineArguments( int argc, char** argv, Benchmarks& benchm
          benchmarks.runBlitz     = false;
          benchmarks.runGMM       = false;
          benchmarks.runArmadillo = false;
+         benchmarks.runFLENS     = false;
          benchmarks.runMTL       = false;
          benchmarks.runEigen     = false;
       }
@@ -308,6 +328,7 @@ inline void parseCommandLineArguments( int argc, char** argv, Benchmarks& benchm
          benchmarks.runBlitz     = true;
          benchmarks.runGMM       = false;
          benchmarks.runArmadillo = false;
+         benchmarks.runFLENS     = false;
          benchmarks.runMTL       = false;
          benchmarks.runEigen     = false;
       }
@@ -326,6 +347,7 @@ inline void parseCommandLineArguments( int argc, char** argv, Benchmarks& benchm
          benchmarks.runBlitz     = false;
          benchmarks.runGMM       = true;
          benchmarks.runArmadillo = false;
+         benchmarks.runFLENS     = false;
          benchmarks.runMTL       = false;
          benchmarks.runEigen     = false;
       }
@@ -344,6 +366,26 @@ inline void parseCommandLineArguments( int argc, char** argv, Benchmarks& benchm
          benchmarks.runBlitz     = false;
          benchmarks.runGMM       = false;
          benchmarks.runArmadillo = true;
+         benchmarks.runFLENS     = false;
+         benchmarks.runMTL       = false;
+         benchmarks.runEigen     = false;
+      }
+      else if( std::strcmp( argv[i], "-flens" ) == 0 ) {
+         benchmarks.runFLENS = true;
+      }
+      else if( std::strcmp( argv[i], "-no-flens" ) == 0 ) {
+         benchmarks.runFLENS = false;
+      }
+      else if( std::strcmp( argv[i], "-only-flens" ) == 0 ) {
+         benchmarks.runClike     = false;
+         benchmarks.runClassic   = false;
+         benchmarks.runBLAS      = false;
+         benchmarks.runBlaze     = false;
+         benchmarks.runBoost     = false;
+         benchmarks.runBlitz     = false;
+         benchmarks.runGMM       = false;
+         benchmarks.runArmadillo = false;
+         benchmarks.runFLENS     = true;
          benchmarks.runMTL       = false;
          benchmarks.runEigen     = false;
       }
@@ -362,6 +404,7 @@ inline void parseCommandLineArguments( int argc, char** argv, Benchmarks& benchm
          benchmarks.runBlitz     = false;
          benchmarks.runGMM       = false;
          benchmarks.runArmadillo = false;
+         benchmarks.runFLENS     = false;
          benchmarks.runMTL       = true;
          benchmarks.runEigen     = false;
       }
@@ -380,8 +423,14 @@ inline void parseCommandLineArguments( int argc, char** argv, Benchmarks& benchm
          benchmarks.runBlitz     = false;
          benchmarks.runGMM       = false;
          benchmarks.runArmadillo = false;
+         benchmarks.runFLENS     = false;
          benchmarks.runMTL       = false;
          benchmarks.runEigen     = true;
+      }
+      else {
+         std::ostringstream oss;
+         oss << " Unknown command line argument: '" << argv[i] << "'";
+         throw std::invalid_argument( oss.str() );
       }
    }
 }

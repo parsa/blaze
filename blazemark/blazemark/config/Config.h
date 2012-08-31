@@ -35,6 +35,7 @@ const bool runBoost     ( true );  //!< Boost uBLAS benchmark tests
 const bool runBlitz     ( true );  //!< Blitz++ benchmark tests
 const bool runGMM       ( true );  //!< GMM++ benchmark tests
 const bool runArmadillo ( true );  //!< Armadillo benchmark tests
+const bool runFLENS     ( true );  //!< FLENS benchmark tests
 const bool runMTL       ( true );  //!< MTL benchmark tests
 const bool runEigen     ( true );  //!< Eigen benchmark tests
 //*************************************************************************************************
