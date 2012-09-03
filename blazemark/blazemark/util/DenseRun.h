@@ -92,6 +92,7 @@ class DenseRun
    inline double getBlitzResult    () const;
    inline double getGMMResult      () const;
    inline double getArmadilloResult() const;
+   inline double getFLENSResult    () const;
    inline double getMTLResult      () const;
    inline double getEigenResult    () const;
 
@@ -105,6 +106,7 @@ class DenseRun
    inline void   setBlitzResult    ( double result );
    inline void   setGMMResult      ( double result );
    inline void   setArmadilloResult( double result );
+   inline void   setFLENSResult    ( double result );
    inline void   setMTLResult      ( double result );
    inline void   setEigenResult    ( double result );
    //@}
@@ -130,6 +132,7 @@ class DenseRun
    double blitz_;      //!< Benchmark result of the Blitz++ library.
    double gmm_;        //!< Benchmark result of the GMM++ library.
    double armadillo_;  //!< Benchmark result of the Armadillo library.
+   double flens_;      //!< Benchmark result of the FLENS library.
    double mtl_;        //!< Benchmark result of the MTL4 library.
    double eigen_;      //!< Benchmark result of the Eigen3 library.
    //@}
@@ -168,6 +171,7 @@ inline DenseRun::DenseRun()
    , blitz_    ( 0.0 )  // Benchmark result of the Blitz++ library
    , gmm_      ( 0.0 )  // Benchmark result of the GMM++ library
    , armadillo_( 0.0 )  // Benchmark result of the Armadillo library
+   , flens_    ( 0.0 )  // Benchmark result of the FLENS library
    , mtl_      ( 0.0 )  // Benchmark result of the MTL4 library
    , eigen_    ( 0.0 )  // Benchmark result of the Eigen3 library
 {}
@@ -196,6 +200,7 @@ inline DenseRun::DenseRun( size_t size )
    , blitz_    ( 0.0  )  // Benchmark result of the Blitz++ library
    , gmm_      ( 0.0  )  // Benchmark result of the GMM++ library
    , armadillo_( 0.0  )  // Benchmark result of the Armadillo library
+   , flens_    ( 0.0  )  // Benchmark result of the FLENS library
    , mtl_      ( 0.0  )  // Benchmark result of the MTL4 library
    , eigen_    ( 0.0  )  // Benchmark result of the Eigen3 library
 {
@@ -230,6 +235,7 @@ inline DenseRun::DenseRun( size_t size, size_t steps )
    , blitz_    ( 0.0   )  // Benchmark result of the Blitz++ library
    , gmm_      ( 0.0   )  // Benchmark result of the GMM++ library
    , armadillo_( 0.0   )  // Benchmark result of the Armadillo library
+   , flens_    ( 0.0   )  // Benchmark result of the FLENS library
    , mtl_      ( 0.0   )  // Benchmark result of the MTL4 library
    , eigen_    ( 0.0   )  // Benchmark result of the Eigen3 library
 {
@@ -364,6 +370,18 @@ inline double DenseRun::getGMMResult() const
 inline double DenseRun::getArmadilloResult() const
 {
    return armadillo_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the benchmark result of the FLENS library.
+//
+// \return The result of the FLENS library.
+*/
+inline double DenseRun::getFLENSResult() const
+{
+   return flens_;
 }
 //*************************************************************************************************
 
@@ -550,6 +568,22 @@ inline void DenseRun::setArmadilloResult( double result )
 
 
 //*************************************************************************************************
+/*!\brief Setting the benchmark result of the FLENS library.
+//
+// \param result The result of the FLENS library.
+// \return void
+// \exception std::invalid_argument Invalid result value.
+*/
+inline void DenseRun::setFLENSResult( double result )
+{
+   if( result < 0.0 )
+      throw std::invalid_argument( "Invalid result value" );
+   flens_ = result;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Setting the benchmark result of the MTL4 library.
 //
 // \param result The result of the MTL4 library.
@@ -628,6 +662,7 @@ inline std::ostream& operator<<( std::ostream& os, const DenseRun& run )
    const double blitz    ( run.getBlitzResult()     );
    const double gmm      ( run.getGMMResult()       );
    const double armadillo( run.getArmadilloResult() );
+   const double flens    ( run.getFLENSResult()     );
    const double mtl      ( run.getMTLResult()       );
    const double eigen    ( run.getEigenResult()     );
 
@@ -641,6 +676,7 @@ inline std::ostream& operator<<( std::ostream& os, const DenseRun& run )
    if( blitz     != 0.0 ) minTime = ::blaze::min( minTime, blitz     );
    if( gmm       != 0.0 ) minTime = ::blaze::min( minTime, gmm       );
    if( armadillo != 0.0 ) minTime = ::blaze::min( minTime, armadillo );
+   if( flens     != 0.0 ) minTime = ::blaze::min( minTime, flens     );
    if( mtl       != 0.0 ) minTime = ::blaze::min( minTime, mtl       );
    if( eigen     != 0.0 ) minTime = ::blaze::min( minTime, eigen     );
 
@@ -652,6 +688,7 @@ inline std::ostream& operator<<( std::ostream& os, const DenseRun& run )
    if( blitz     != 0.0 ) os << "     Blitz++     = " << std::setw(8) << ( blitz     / minTime ) << " (" << blitz     << ")\n";
    if( gmm       != 0.0 ) os << "     GMM++       = " << std::setw(8) << ( gmm       / minTime ) << " (" << gmm       << ")\n";
    if( armadillo != 0.0 ) os << "     Armadillo   = " << std::setw(8) << ( armadillo / minTime ) << " (" << armadillo << ")\n";
+   if( flens     != 0.0 ) os << "     FLENS       = " << std::setw(8) << ( flens     / minTime ) << " (" << flens     << ")\n";
    if( mtl       != 0.0 ) os << "     MTL         = " << std::setw(8) << ( mtl       / minTime ) << " (" << mtl       << ")\n";
    if( eigen     != 0.0 ) os << "     Eigen       = " << std::setw(8) << ( eigen     / minTime ) << " (" << eigen     << ")\n";
 

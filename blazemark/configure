@@ -279,6 +279,9 @@ fi
 if [ "$ARMADILLO" = "yes" ]; then
    DVECDVECADD="$DVECDVECADD \$(OBJECT_PATH)/ARMADILLO_DVecDVecAdd.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   DVECDVECADD="$DVECDVECADD \$(OBJECT_PATH)/FLENS_DVecDVecAdd.o"
+fi
 if [ "$MTL" = "yes" ]; then
    DVECDVECADD="$DVECDVECADD \$(OBJECT_PATH)/MTL_DVecDVecAdd.o"
 fi
@@ -319,6 +322,9 @@ fi
 if [ "$ARMADILLO" = "yes" ]; then
    DVECDVECSUB="$DVECDVECSUB \$(OBJECT_PATH)/ARMADILLO_DVecDVecSub.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   DVECDVECSUB="$DVECDVECSUB \$(OBJECT_PATH)/FLENS_DVecDVecSub.o"
+fi
 if [ "$MTL" = "yes" ]; then
    DVECDVECSUB="$DVECDVECSUB \$(OBJECT_PATH)/MTL_DVecDVecSub.o"
 fi
@@ -334,6 +340,12 @@ if [ "$BLITZ" = "yes" ]; then
 fi
 if [ "$GMM" = "yes" ]; then
    DVECSCALARMULT="$DVECSCALARMULT \$(OBJECT_PATH)/GMM_DVecScalarMult.o"
+fi
+if [ "$ARMADILLO" = "yes" ]; then
+   DVECSCALARMULT="$DVECSCALARMULT \$(OBJECT_PATH)/ARMADILLO_DVecScalarMult.o"
+fi
+if [ "$FLENS" = "yes" ]; then
+   DVECSCALARMULT="$DVECSCALARMULT \$(OBJECT_PATH)/FLENS_DVecScalarMult.o"
 fi
 if [ "$MTL" = "yes" ]; then
    DVECSCALARMULT="$DVECSCALARMULT \$(OBJECT_PATH)/MTL_DVecScalarMult.o"
@@ -387,6 +399,9 @@ fi
 if [ "$ARMADILLO" = "yes" ]; then
    DAXPY="$DAXPY \$(OBJECT_PATH)/ARMADILLO_Daxpy.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   DAXPY="$DAXPY \$(OBJECT_PATH)/FLENS_Daxpy.o"
+fi
 if [ "$MTL" = "yes" ]; then
    DAXPY="$DAXPY \$(OBJECT_PATH)/MTL_Daxpy.o"
 fi
@@ -406,6 +421,9 @@ fi
 if [ "$ARMADILLO" = "yes" ]; then
    DVECNORM="$DVECNORM \$(OBJECT_PATH)/ARMADILLO_DVecNorm.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   DVECNORM="$DVECNORM \$(OBJECT_PATH)/FLENS_DVecNorm.o"
+fi
 if [ "$MTL" = "yes" ]; then
    DVECNORM="$DVECNORM \$(OBJECT_PATH)/MTL_DVecNorm.o"
 fi
@@ -419,11 +437,14 @@ TDVECDVECMULT="\$(OBJECT_PATH)/CLASSIC_TDVecDVecMult.o \$(OBJECT_PATH)/BLAZE_TDV
 if [ "$BLITZ" = "yes" ]; then
    TDVECDVECMULT="$TDVECDVECMULT \$(OBJECT_PATH)/BLITZ_TDVecDVecMult.o"
 fi
+if [ "$GMM" = "yes" ]; then
+   TDVECDVECMULT="$TDVECDVECMULT \$(OBJECT_PATH)/GMM_TDVecDVecMult.o"
+fi
 if [ "$ARMADILLO" = "yes" ]; then
    TDVECDVECMULT="$TDVECDVECMULT \$(OBJECT_PATH)/ARMADILLO_TDVecDVecMult.o"
 fi
-if [ "$GMM" = "yes" ]; then
-   TDVECDVECMULT="$TDVECDVECMULT \$(OBJECT_PATH)/GMM_TDVecDVecMult.o"
+if [ "$FLENS" = "yes" ]; then
+   TDVECDVECMULT="$TDVECDVECMULT \$(OBJECT_PATH)/FLENS_TDVecDVecMult.o"
 fi
 if [ "$MTL" = "yes" ]; then
    TDVECDVECMULT="$TDVECDVECMULT \$(OBJECT_PATH)/MTL_TDVecDVecMult.o"
@@ -482,6 +503,9 @@ DMATDVECMULT="$DMATDVECMULT \$(OBJECT_PATH)/BLAZE_DMatDVecMult.o \$(OBJECT_PATH)
 if [ "$BLITZ" = "yes" ]; then
    DMATDVECMULT="$DMATDVECMULT \$(OBJECT_PATH)/BLITZ_DMatDVecMult.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   DMATDVECMULT="$DMATDVECMULT \$(OBJECT_PATH)/FLENS_DMatDVecMult.o"
+fi
 if [ "$MTL" = "yes" ]; then
    DMATDVECMULT="$DMATDVECMULT \$(OBJECT_PATH)/MTL_DMatDVecMult.o"
 fi
@@ -504,6 +528,9 @@ if [ "$GMM" = "yes" ]; then
 fi
 if [ "$ARMADILLO" = "yes" ]; then
    TDMATDVECMULT="$TDMATDVECMULT \$(OBJECT_PATH)/ARMADILLO_TDMatDVecMult.o"
+fi
+if [ "$FLENS" = "yes" ]; then
+   TDMATDVECMULT="$TDMATDVECMULT \$(OBJECT_PATH)/FLENS_TDMatDVecMult.o"
 fi
 if [ "$MTL" = "yes" ]; then
    TDMATDVECMULT="$TDMATDVECMULT \$(OBJECT_PATH)/MTL_TDMatDVecMult.o"
@@ -572,6 +599,9 @@ TDVECDMATMULT="$TDVECDMATMULT \$(OBJECT_PATH)/BLAZE_TDVecDMatMult.o \$(OBJECT_PA
 if [ "$BLITZ" = "yes" ]; then
    TDVECDMATMULT="$TDVECDMATMULT \$(OBJECT_PATH)/BLITZ_TDVecDMatMult.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   TDVECDMATMULT="$TDVECDMATMULT \$(OBJECT_PATH)/FLENS_TDVecDMatMult.o"
+fi
 if [ "$EIGEN" = "yes" ]; then
    TDVECDMATMULT="$TDVECDMATMULT \$(OBJECT_PATH)/EIGEN_TDVecDMatMult.o"
 fi
@@ -585,6 +615,9 @@ fi
 TDVECTDMATMULT="$TDVECTDMATMULT \$(OBJECT_PATH)/BLAZE_TDVecTDMatMult.o \$(OBJECT_PATH)/BOOST_TDVecTDMatMult.o"
 if [ "$ARMADILLO" = "yes" ]; then
    TDVECTDMATMULT="$TDVECTDMATMULT \$(OBJECT_PATH)/ARMADILLO_TDVecTDMatMult.o"
+fi
+if [ "$FLENS" = "yes" ]; then
+   TDVECTDMATMULT="$TDVECTDMATMULT \$(OBJECT_PATH)/FLENS_TDVecTDMatMult.o"
 fi
 if [ "$EIGEN" = "yes" ]; then
    TDVECTDMATMULT="$TDVECTDMATMULT \$(OBJECT_PATH)/EIGEN_TDVecTDMatMult.o"
@@ -622,6 +655,9 @@ DMATTRANS="\$(OBJECT_PATH)/BLAZE_DMatTrans.o \$(OBJECT_PATH)/BOOST_DMatTrans.o"
 if [ "$GMM" = "yes" ]; then
    DMATTRANS="$DMATTRANS \$(OBJECT_PATH)/GMM_DMatTrans.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   DMATTRANS="$DMATTRANS \$(OBJECT_PATH)/FLENS_DMatTrans.o"
+fi
 if [ "$MTL" = "yes" ]; then
    DMATTRANS="$DMATTRANS \$(OBJECT_PATH)/MTL_DMatTrans.o"
 fi
@@ -648,6 +684,9 @@ DMATDMATADD="\$(OBJECT_PATH)/CLASSIC_DMatDMatAdd.o \$(OBJECT_PATH)/BLAZE_DMatDMa
 if [ "$BLITZ" = "yes" ]; then
    DMATDMATADD="$DMATDMATADD \$(OBJECT_PATH)/BLITZ_DMatDMatAdd.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   DMATDMATADD="$DMATDMATADD \$(OBJECT_PATH)/FLENS_DMatDMatAdd.o"
+fi
 if [ "$MTL" = "yes" ]; then
    DMATDMATADD="$DMATDMATADD \$(OBJECT_PATH)/MTL_DMatDMatAdd.o"
 fi
@@ -661,6 +700,9 @@ DMATTDMATADD="\$(OBJECT_PATH)/BLAZE_DMatTDMatAdd.o \$(OBJECT_PATH)/BOOST_DMatTDM
 if [ "$BLITZ" = "yes" ]; then
    DMATTDMATADD="$DMATTDMATADD \$(OBJECT_PATH)/BLITZ_DMatTDMatAdd.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   DMATTDMATADD="$DMATTDMATADD \$(OBJECT_PATH)/FLENS_DMatTDMatAdd.o"
+fi
 if [ "$MTL" = "yes" ]; then
    DMATTDMATADD="$DMATTDMATADD \$(OBJECT_PATH)/MTL_DMatTDMatAdd.o"
 fi
@@ -673,6 +715,9 @@ DMATTDMATADD="$DMATTDMATADD \$(OBJECT_PATH)/MAIN_DMatTDMatAdd.o"
 TDMATDMATADD="\$(OBJECT_PATH)/BLAZE_TDMatDMatAdd.o \$(OBJECT_PATH)/BOOST_TDMatDMatAdd.o"
 if [ "$BLITZ" = "yes" ]; then
    TDMATDMATADD="$TDMATDMATADD \$(OBJECT_PATH)/BLITZ_TDMatDMatAdd.o"
+fi
+if [ "$FLENS" = "yes" ]; then
+   TDMATDMATADD="$TDMATDMATADD \$(OBJECT_PATH)/FLENS_TDMatDMatAdd.o"
 fi
 if [ "$MTL" = "yes" ]; then
    TDMATDMATADD="$TDMATDMATADD \$(OBJECT_PATH)/MTL_TDMatDMatAdd.o"
@@ -692,6 +737,9 @@ if [ "$GMM" = "yes" ]; then
 fi
 if [ "$ARMADILLO" = "yes" ]; then
    TDMATTDMATADD="$TDMATTDMATADD \$(OBJECT_PATH)/ARMADILLO_TDMatTDMatAdd.o"
+fi
+if [ "$FLENS" = "yes" ]; then
+   TDMATTDMATADD="$TDMATTDMATADD \$(OBJECT_PATH)/FLENS_TDMatTDMatAdd.o"
 fi
 if [ "$MTL" = "yes" ]; then
    TDMATTDMATADD="$TDMATTDMATADD \$(OBJECT_PATH)/MTL_TDMatTDMatAdd.o"
@@ -820,6 +868,9 @@ DMATDMATSUB="\$(OBJECT_PATH)/CLASSIC_DMatDMatSub.o \$(OBJECT_PATH)/BLAZE_DMatDMa
 if [ "$BLITZ" = "yes" ]; then
    DMATDMATSUB="$DMATDMATSUB \$(OBJECT_PATH)/BLITZ_DMatDMatSub.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   DMATDMATSUB="$DMATDMATSUB \$(OBJECT_PATH)/FLENS_DMatDMatSub.o"
+fi
 if [ "$MTL" = "yes" ]; then
    DMATDMATSUB="$DMATDMATSUB \$(OBJECT_PATH)/MTL_DMatDMatSub.o"
 fi
@@ -835,6 +886,12 @@ if [ "$BLITZ" = "yes" ]; then
 fi
 if [ "$GMM" = "yes" ]; then
    DMATSCALARMULT="$DMATSCALARMULT \$(OBJECT_PATH)/GMM_DMatScalarMult.o"
+fi
+if [ "$ARMADILLO" = "yes" ]; then
+   DMATSCALARMULT="$DMATSCALARMULT \$(OBJECT_PATH)/ARMADILLO_DMatScalarMult.o"
+fi
+if [ "$FLENS" = "yes" ]; then
+   DMATSCALARMULT="$DMATSCALARMULT \$(OBJECT_PATH)/FLENS_DMatScalarMult.o"
 fi
 if [ "$MTL" = "yes" ]; then
    DMATSCALARMULT="$DMATSCALARMULT \$(OBJECT_PATH)/MTL_DMatScalarMult.o"
@@ -866,6 +923,9 @@ DMATDMATMULT="$DMATDMATMULT \$(OBJECT_PATH)/BLAZE_DMatDMatMult.o \$(OBJECT_PATH)
 if [ "$BLITZ" = "yes" ]; then
    DMATDMATMULT="$DMATDMATMULT \$(OBJECT_PATH)/BLITZ_DMatDMatMult.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   DMATDMATMULT="$DMATDMATMULT \$(OBJECT_PATH)/FLENS_DMatDMatMult.o"
+fi
 if [ "$MTL" = "yes" ]; then
    DMATDMATMULT="$DMATDMATMULT \$(OBJECT_PATH)/MTL_DMatDMatMult.o"
 fi
@@ -880,6 +940,9 @@ if [ "$BLAS" = "yes" ]; then
    DMATTDMATMULT="$DMATTDMATMULT \$(OBJECT_PATH)/BLAS_DMatTDMatMult.o"
 fi
 DMATTDMATMULT="$DMATTDMATMULT \$(OBJECT_PATH)/BLAZE_DMatTDMatMult.o \$(OBJECT_PATH)/BOOST_DMatTDMatMult.o"
+if [ "$FLENS" = "yes" ]; then
+   DMATTDMATMULT="$DMATTDMATMULT \$(OBJECT_PATH)/FLENS_DMatTDMatMult.o"
+fi
 if [ "$MTL" = "yes" ]; then
    DMATTDMATMULT="$DMATTDMATMULT \$(OBJECT_PATH)/MTL_DMatTDMatMult.o"
 fi
@@ -894,6 +957,9 @@ if [ "$BLAS" = "yes" ]; then
    TDMATDMATMULT="$TDMATDMATMULT \$(OBJECT_PATH)/BLAS_TDMatDMatMult.o"
 fi
 TDMATDMATMULT="$TDMATDMATMULT \$(OBJECT_PATH)/BLAZE_TDMatDMatMult.o \$(OBJECT_PATH)/BOOST_TDMatDMatMult.o"
+if [ "$FLENS" = "yes" ]; then
+   TDMATDMATMULT="$TDMATDMATMULT \$(OBJECT_PATH)/FLENS_TDMatDMatMult.o"
+fi
 if [ "$MTL" = "yes" ]; then
    TDMATDMATMULT="$TDMATDMATMULT \$(OBJECT_PATH)/MTL_TDMatDMatMult.o"
 fi
@@ -916,6 +982,9 @@ if [ "$GMM" = "yes" ]; then
 fi
 if [ "$ARMADILLO" = "yes" ]; then
    TDMATTDMATMULT="$TDMATTDMATMULT \$(OBJECT_PATH)/ARMADILLO_TDMatTDMatMult.o"
+fi
+if [ "$FLENS" = "yes" ]; then
+   TDMATTDMATMULT="$TDMATTDMATMULT \$(OBJECT_PATH)/FLENS_TDMatTDMatMult.o"
 fi
 if [ "$MTL" = "yes" ]; then
    TDMATTDMATMULT="$TDMATTDMATMULT \$(OBJECT_PATH)/MTL_TDMatTDMatMult.o"
@@ -1080,6 +1149,9 @@ fi
 if [ "$ARMADILLO" = "yes" ]; then
    VEC3VEC3ADD="$VEC3VEC3ADD \$(OBJECT_PATH)/ARMADILLO_Vec3Vec3Add.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   VEC3VEC3ADD="$VEC3VEC3ADD \$(OBJECT_PATH)/FLENS_Vec3Vec3Add.o"
+fi
 if [ "$MTL" = "yes" ]; then
    VEC3VEC3ADD="$VEC3VEC3ADD \$(OBJECT_PATH)/MTL_Vec3Vec3Add.o"
 fi
@@ -1099,6 +1171,9 @@ fi
 if [ "$ARMADILLO" = "yes" ]; then
    VEC6VEC6ADD="$VEC6VEC6ADD \$(OBJECT_PATH)/ARMADILLO_Vec6Vec6Add.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   VEC6VEC6ADD="$VEC6VEC6ADD \$(OBJECT_PATH)/FLENS_Vec6Vec6Add.o"
+fi
 if [ "$MTL" = "yes" ]; then
    VEC6VEC6ADD="$VEC6VEC6ADD \$(OBJECT_PATH)/MTL_Vec6Vec6Add.o"
 fi
@@ -1111,6 +1186,9 @@ VEC6VEC6ADD="$VEC6VEC6ADD \$(OBJECT_PATH)/MAIN_Vec6Vec6Add.o"
 MAT3VEC3MULT="\$(OBJECT_PATH)/BLAZE_Mat3Vec3Mult.o \$(OBJECT_PATH)/BOOST_Mat3Vec3Mult.o"
 if [ "$BLITZ" = "yes" ]; then
    MAT3VEC3MULT="$MAT3VEC3MULT \$(OBJECT_PATH)/BLITZ_Mat3Vec3Mult.o"
+fi
+if [ "$FLENS" = "yes" ]; then
+   MAT3VEC3MULT="$MAT3VEC3MULT \$(OBJECT_PATH)/FLENS_Mat3Vec3Mult.o"
 fi
 if [ "$MTL" = "yes" ]; then
    MAT3VEC3MULT="$MAT3VEC3MULT \$(OBJECT_PATH)/MTL_Mat3Vec3Mult.o"
@@ -1128,6 +1206,9 @@ fi
 if [ "$ARMADILLO" = "yes" ]; then
    TMAT3VEC3MULT="$TMAT3VEC3MULT \$(OBJECT_PATH)/ARMADILLO_TMat3Vec3Mult.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   TMAT3VEC3MULT="$TMAT3VEC3MULT \$(OBJECT_PATH)/FLENS_TMat3Vec3Mult.o"
+fi
 if [ "$MTL" = "yes" ]; then
    TMAT3VEC3MULT="$TMAT3VEC3MULT \$(OBJECT_PATH)/MTL_TMat3Vec3Mult.o"
 fi
@@ -1140,6 +1221,9 @@ TMAT3VEC3MULT="$TMAT3VEC3MULT \$(OBJECT_PATH)/MAIN_TMat3Vec3Mult.o"
 MAT6VEC6MULT="\$(OBJECT_PATH)/BLAZE_Mat6Vec6Mult.o \$(OBJECT_PATH)/BOOST_Mat6Vec6Mult.o"
 if [ "$BLITZ" = "yes" ]; then
    MAT6VEC6MULT="$MAT6VEC6MULT \$(OBJECT_PATH)/BLITZ_Mat6Vec6Mult.o"
+fi
+if [ "$FLENS" = "yes" ]; then
+   MAT6VEC6MULT="$MAT6VEC6MULT \$(OBJECT_PATH)/FLENS_Mat6Vec6Mult.o"
 fi
 if [ "$MTL" = "yes" ]; then
    MAT6VEC6MULT="$MAT6VEC6MULT \$(OBJECT_PATH)/MTL_Mat6Vec6Mult.o"
@@ -1157,6 +1241,9 @@ fi
 if [ "$ARMADILLO" = "yes" ]; then
    TMAT6VEC6MULT="$TMAT6VEC6MULT \$(OBJECT_PATH)/ARMADILLO_TMat6Vec6Mult.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   TMAT6VEC6MULT="$TMAT6VEC6MULT \$(OBJECT_PATH)/FLENS_TMat6Vec6Mult.o"
+fi
 if [ "$MTL" = "yes" ]; then
    TMAT6VEC6MULT="$TMAT6VEC6MULT \$(OBJECT_PATH)/MTL_TMat6Vec6Mult.o"
 fi
@@ -1170,6 +1257,9 @@ TVEC3MAT3MULT="\$(OBJECT_PATH)/BLAZE_TVec3Mat3Mult.o \$(OBJECT_PATH)/BOOST_TVec3
 if [ "$BLITZ" = "yes" ]; then
    TVEC3MAT3MULT="$TVEC3MAT3MULT \$(OBJECT_PATH)/BLITZ_TVec3Mat3Mult.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   TVEC3MAT3MULT="$TVEC3MAT3MULT \$(OBJECT_PATH)/FLENS_TVec3Mat3Mult.o"
+fi
 if [ "$EIGEN" = "yes" ]; then
    TVEC3MAT3MULT="$TVEC3MAT3MULT \$(OBJECT_PATH)/EIGEN_TVec3Mat3Mult.o"
 fi
@@ -1179,6 +1269,9 @@ TVEC3MAT3MULT="$TVEC3MAT3MULT \$(OBJECT_PATH)/MAIN_TVec3Mat3Mult.o"
 TVEC3TMAT3MULT="\$(OBJECT_PATH)/BLAZE_TVec3TMat3Mult.o \$(OBJECT_PATH)/BOOST_TVec3TMat3Mult.o"
 if [ "$ARMADILLO" = "yes" ]; then
    TVEC3TMAT3MULT="$TVEC3TMAT3MULT \$(OBJECT_PATH)/ARMADILLO_TVec3TMat3Mult.o"
+fi
+if [ "$FLENS" = "yes" ]; then
+   TVEC3TMAT3MULT="$TVEC3TMAT3MULT \$(OBJECT_PATH)/FLENS_TVec3TMat3Mult.o"
 fi
 if [ "$EIGEN" = "yes" ]; then
    TVEC3TMAT3MULT="$TVEC3TMAT3MULT \$(OBJECT_PATH)/EIGEN_TVec3TMat3Mult.o"
@@ -1193,12 +1286,18 @@ fi
 if [ "$EIGEN" = "yes" ]; then
    TVEC6MAT6MULT="$TVEC6MAT6MULT \$(OBJECT_PATH)/EIGEN_TVec6Mat6Mult.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   TVEC6MAT6MULT="$TVEC6MAT6MULT \$(OBJECT_PATH)/FLENS_TVec6Mat6Mult.o"
+fi
 TVEC6MAT6MULT="$TVEC6MAT6MULT \$(OBJECT_PATH)/MAIN_TVec6Mat6Mult.o"
 
 # Configuration of the 6-dimensional transpose vector/transpose matrix multiplication benchmark
 TVEC6TMAT6MULT="\$(OBJECT_PATH)/BLAZE_TVec6TMat6Mult.o \$(OBJECT_PATH)/BOOST_TVec6TMat6Mult.o"
 if [ "$ARMADILLO" = "yes" ]; then
    TVEC6TMAT6MULT="$TVEC6TMAT6MULT \$(OBJECT_PATH)/ARMADILLO_TVec6TMat6Mult.o"
+fi
+if [ "$FLENS" = "yes" ]; then
+   TVEC6TMAT6MULT="$TVEC6TMAT6MULT \$(OBJECT_PATH)/FLENS_TVec6TMat6Mult.o"
 fi
 if [ "$EIGEN" = "yes" ]; then
    TVEC6TMAT6MULT="$TVEC6TMAT6MULT \$(OBJECT_PATH)/EIGEN_TVec6TMat6Mult.o"
@@ -1209,6 +1308,9 @@ TVEC6TMAT6MULT="$TVEC6TMAT6MULT \$(OBJECT_PATH)/MAIN_TVec6TMat6Mult.o"
 MAT3MAT3ADD="\$(OBJECT_PATH)/BLAZE_Mat3Mat3Add.o \$(OBJECT_PATH)/BOOST_Mat3Mat3Add.o"
 if [ "$BLITZ" = "yes" ]; then
    MAT3MAT3ADD="$MAT3MAT3ADD \$(OBJECT_PATH)/BLITZ_Mat3Mat3Add.o"
+fi
+if [ "$FLENS" = "yes" ]; then
+   MAT3MAT3ADD="$MAT3MAT3ADD \$(OBJECT_PATH)/FLENS_Mat3Mat3Add.o"
 fi
 if [ "$MTL" = "yes" ]; then
    MAT3MAT3ADD="$MAT3MAT3ADD \$(OBJECT_PATH)/MTL_Mat3Mat3Add.o"
@@ -1229,6 +1331,9 @@ fi
 if [ "$ARMADILLO" = "yes" ]; then
    TMAT3TMAT3ADD="$TMAT3TMAT3ADD \$(OBJECT_PATH)/ARMADILLO_TMat3TMat3Add.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   TMAT3TMAT3ADD="$TMAT3TMAT3ADD \$(OBJECT_PATH)/FLENS_TMat3TMat3Add.o"
+fi
 if [ "$MTL" = "yes" ]; then
    TMAT3TMAT3ADD="$TMAT3TMAT3ADD \$(OBJECT_PATH)/MTL_TMat3TMat3Add.o"
 fi
@@ -1241,6 +1346,9 @@ TMAT3TMAT3ADD="$TMAT3TMAT3ADD \$(OBJECT_PATH)/MAIN_TMat3TMat3Add.o"
 MAT6MAT6ADD="\$(OBJECT_PATH)/BLAZE_Mat6Mat6Add.o \$(OBJECT_PATH)/BOOST_Mat6Mat6Add.o"
 if [ "$BLITZ" = "yes" ]; then
    MAT6MAT6ADD="$MAT6MAT6ADD \$(OBJECT_PATH)/BLITZ_Mat6Mat6Add.o"
+fi
+if [ "$FLENS" = "yes" ]; then
+   MAT6MAT6ADD="$MAT6MAT6ADD \$(OBJECT_PATH)/FLENS_Mat6Mat6Add.o"
 fi
 if [ "$MTL" = "yes" ]; then
    MAT6MAT6ADD="$MAT6MAT6ADD \$(OBJECT_PATH)/MTL_Mat6Mat6Add.o"
@@ -1261,6 +1369,9 @@ fi
 if [ "$ARMADILLO" = "yes" ]; then
    TMAT6TMAT6ADD="$TMAT6TMAT6ADD \$(OBJECT_PATH)/ARMADILLO_TMat6TMat6Add.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   TMAT6TMAT6ADD="$TMAT6TMAT6ADD \$(OBJECT_PATH)/FLENS_TMat6TMat6Add.o"
+fi
 if [ "$MTL" = "yes" ]; then
    TMAT6TMAT6ADD="$TMAT6TMAT6ADD \$(OBJECT_PATH)/MTL_TMat6TMat6Add.o"
 fi
@@ -1273,6 +1384,9 @@ TMAT6TMAT6ADD="$TMAT6TMAT6ADD \$(OBJECT_PATH)/MAIN_TMat6TMat6Add.o"
 MAT3MAT3MULT="\$(OBJECT_PATH)/BLAZE_Mat3Mat3Mult.o \$(OBJECT_PATH)/BOOST_Mat3Mat3Mult.o"
 if [ "$BLITZ" = "yes" ]; then
    MAT3MAT3MULT="$MAT3MAT3MULT \$(OBJECT_PATH)/BLITZ_Mat3Mat3Mult.o"
+fi
+if [ "$FLENS" = "yes" ]; then
+   MAT3MAT3MULT="$MAT3MAT3MULT \$(OBJECT_PATH)/FLENS_Mat3Mat3Mult.o"
 fi
 if [ "$MTL" = "yes" ]; then
    MAT3MAT3MULT="$MAT3MAT3MULT \$(OBJECT_PATH)/MTL_Mat3Mat3Mult.o"
@@ -1287,6 +1401,9 @@ MAT3TMAT3MULT="\$(OBJECT_PATH)/BLAZE_Mat3TMat3Mult.o \$(OBJECT_PATH)/BOOST_Mat3T
 if [ "$BLITZ" = "yes" ]; then
    MAT3TMAT3MULT="$MAT3TMAT3MULT \$(OBJECT_PATH)/BLITZ_Mat3TMat3Mult.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   MAT3TMAT3MULT="$MAT3TMAT3MULT \$(OBJECT_PATH)/FLENS_Mat3TMat3Mult.o"
+fi
 if [ "$MTL" = "yes" ]; then
    MAT3TMAT3MULT="$MAT3TMAT3MULT \$(OBJECT_PATH)/MTL_Mat3TMat3Mult.o"
 fi
@@ -1299,6 +1416,9 @@ MAT3TMAT3MULT="$MAT3TMAT3MULT \$(OBJECT_PATH)/MAIN_Mat3TMat3Mult.o"
 TMAT3MAT3MULT="\$(OBJECT_PATH)/BLAZE_TMat3Mat3Mult.o \$(OBJECT_PATH)/BOOST_TMat3Mat3Mult.o"
 if [ "$BLITZ" = "yes" ]; then
    TMAT3MAT3MULT="$TMAT3MAT3MULT \$(OBJECT_PATH)/BLITZ_TMat3Mat3Mult.o"
+fi
+if [ "$FLENS" = "yes" ]; then
+   TMAT3MAT3MULT="$TMAT3MAT3MULT \$(OBJECT_PATH)/FLENS_TMat3Mat3Mult.o"
 fi
 if [ "$MTL" = "yes" ]; then
    TMAT3MAT3MULT="$TMAT3MAT3MULT \$(OBJECT_PATH)/MTL_TMat3Mat3Mult.o"
@@ -1319,6 +1439,9 @@ fi
 if [ "$ARMADILLO" = "yes" ]; then
    TMAT3TMAT3MULT="$TMAT3TMAT3MULT \$(OBJECT_PATH)/ARMADILLO_TMat3TMat3Mult.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   TMAT3TMAT3MULT="$TMAT3TMAT3MULT \$(OBJECT_PATH)/FLENS_TMat3TMat3Mult.o"
+fi
 if [ "$MTL" = "yes" ]; then
    TMAT3TMAT3MULT="$TMAT3TMAT3MULT \$(OBJECT_PATH)/MTL_TMat3TMat3Mult.o"
 fi
@@ -1331,6 +1454,9 @@ TMAT3TMAT3MULT="$TMAT3TMAT3MULT \$(OBJECT_PATH)/MAIN_TMat3TMat3Mult.o"
 MAT6MAT6MULT="\$(OBJECT_PATH)/BLAZE_Mat6Mat6Mult.o \$(OBJECT_PATH)/BOOST_Mat6Mat6Mult.o"
 if [ "$BLITZ" = "yes" ]; then
    MAT6MAT6MULT="$MAT6MAT6MULT \$(OBJECT_PATH)/BLITZ_Mat6Mat6Mult.o"
+fi
+if [ "$FLENS" = "yes" ]; then
+   MAT6MAT6MULT="$MAT6MAT6MULT \$(OBJECT_PATH)/FLENS_Mat6Mat6Mult.o"
 fi
 if [ "$MTL" = "yes" ]; then
    MAT6MAT6MULT="$MAT6MAT6MULT \$(OBJECT_PATH)/MTL_Mat6Mat6Mult.o"
@@ -1345,6 +1471,9 @@ MAT6TMAT6MULT="\$(OBJECT_PATH)/BLAZE_Mat6TMat6Mult.o \$(OBJECT_PATH)/BOOST_Mat6T
 if [ "$BLITZ" = "yes" ]; then
    MAT6TMAT6MULT="$MAT6TMAT6MULT \$(OBJECT_PATH)/BLITZ_Mat6TMat6Mult.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   MAT6TMAT6MULT="$MAT6TMAT6MULT \$(OBJECT_PATH)/FLENS_Mat6TMat6Mult.o"
+fi
 if [ "$MTL" = "yes" ]; then
    MAT6TMAT6MULT="$MAT6TMAT6MULT \$(OBJECT_PATH)/MTL_Mat6TMat6Mult.o"
 fi
@@ -1357,6 +1486,9 @@ MAT6TMAT6MULT="$MAT6TMAT6MULT \$(OBJECT_PATH)/MAIN_Mat6TMat6Mult.o"
 TMAT6MAT6MULT="\$(OBJECT_PATH)/BLAZE_TMat6Mat6Mult.o \$(OBJECT_PATH)/BOOST_TMat6Mat6Mult.o"
 if [ "$BLITZ" = "yes" ]; then
    TMAT6MAT6MULT="$TMAT6MAT6MULT \$(OBJECT_PATH)/BLITZ_TMat6Mat6Mult.o"
+fi
+if [ "$FLENS" = "yes" ]; then
+   TMAT6MAT6MULT="$TMAT6MAT6MULT \$(OBJECT_PATH)/FLENS_TMat6Mat6Mult.o"
 fi
 if [ "$MTL" = "yes" ]; then
    TMAT6MAT6MULT="$TMAT6MAT6MULT \$(OBJECT_PATH)/MTL_TMat6Mat6Mult.o"
@@ -1377,6 +1509,9 @@ fi
 if [ "$ARMADILLO" = "yes" ]; then
    TMAT6TMAT6MULT="$TMAT6TMAT6MULT \$(OBJECT_PATH)/ARMADILLO_TMat6TMat6Mult.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   TMAT6TMAT6MULT="$TMAT6TMAT6MULT \$(OBJECT_PATH)/FLENS_TMat6TMat6Mult.o"
+fi
 if [ "$MTL" = "yes" ]; then
    TMAT6TMAT6MULT="$TMAT6TMAT6MULT \$(OBJECT_PATH)/MTL_TMat6TMat6Mult.o"
 fi
@@ -1395,6 +1530,9 @@ if [ "$GMM" = "yes" ]; then
 fi
 if [ "$ARMADILLO" = "yes" ]; then
    COMPLEX1="$COMPLEX1 \$(OBJECT_PATH)/ARMADILLO_Complex1.o"
+fi
+if [ "$FLENS" = "yes" ]; then
+   COMPLEX1="$COMPLEX1 \$(OBJECT_PATH)/FLENS_Complex1.o"
 fi
 if [ "$MTL" = "yes" ]; then
    COMPLEX1="$COMPLEX1 \$(OBJECT_PATH)/MTL_Complex1.o"
@@ -1415,6 +1553,9 @@ fi
 if [ "$ARMADILLO" = "yes" ]; then
    COMPLEX2="$COMPLEX2 \$(OBJECT_PATH)/ARMADILLO_Complex2.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   COMPLEX2="$COMPLEX2 \$(OBJECT_PATH)/FLENS_Complex2.o"
+fi
 if [ "$MTL" = "yes" ]; then
    COMPLEX2="$COMPLEX2 \$(OBJECT_PATH)/MTL_Complex2.o"
 fi
@@ -1433,6 +1574,9 @@ if [ "$GMM" = "yes" ]; then
 fi
 if [ "$ARMADILLO" = "yes" ]; then
    COMPLEX3="$COMPLEX3 \$(OBJECT_PATH)/ARMADILLO_Complex3.o"
+fi
+if [ "$FLENS" = "yes" ]; then
+   COMPLEX3="$COMPLEX3 \$(OBJECT_PATH)/FLENS_Complex3.o"
 fi
 if [ "$MTL" = "yes" ]; then
    COMPLEX3="$COMPLEX3 \$(OBJECT_PATH)/MTL_Complex3.o"
@@ -1453,6 +1597,9 @@ fi
 if [ "$ARMADILLO" = "yes" ]; then
    COMPLEX4="$COMPLEX4 \$(OBJECT_PATH)/ARMADILLO_Complex4.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   COMPLEX4="$COMPLEX4 \$(OBJECT_PATH)/FLENS_Complex4.o"
+fi
 if [ "$MTL" = "yes" ]; then
    COMPLEX4="$COMPLEX4 \$(OBJECT_PATH)/MTL_Complex4.o"
 fi
@@ -1471,6 +1618,9 @@ if [ "$GMM" = "yes" ]; then
 fi
 if [ "$ARMADILLO" = "yes" ]; then
    COMPLEX5="$COMPLEX5 \$(OBJECT_PATH)/ARMADILLO_Complex5.o"
+fi
+if [ "$FLENS" = "yes" ]; then
+   COMPLEX5="$COMPLEX5 \$(OBJECT_PATH)/FLENS_Complex5.o"
 fi
 if [ "$MTL" = "yes" ]; then
    COMPLEX5="$COMPLEX5 \$(OBJECT_PATH)/MTL_Complex5.o"
@@ -1491,6 +1641,9 @@ fi
 if [ "$ARMADILLO" = "yes" ]; then
    COMPLEX6="$COMPLEX6 \$(OBJECT_PATH)/ARMADILLO_Complex6.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   COMPLEX6="$COMPLEX6 \$(OBJECT_PATH)/FLENS_Complex6.o"
+fi
 if [ "$MTL" = "yes" ]; then
    COMPLEX6="$COMPLEX6 \$(OBJECT_PATH)/MTL_Complex6.o"
 fi
@@ -1510,6 +1663,9 @@ fi
 if [ "$ARMADILLO" = "yes" ]; then
    COMPLEX7="$COMPLEX7 \$(OBJECT_PATH)/ARMADILLO_Complex7.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   COMPLEX7="$COMPLEX7 \$(OBJECT_PATH)/FLENS_Complex7.o"
+fi
 if [ "$MTL" = "yes" ]; then
    COMPLEX7="$COMPLEX7 \$(OBJECT_PATH)/MTL_Complex7.o"
 fi
@@ -1528,6 +1684,9 @@ if [ "$GMM" = "yes" ]; then
 fi
 if [ "$ARMADILLO" = "yes" ]; then
    COMPLEX8="$COMPLEX8 \$(OBJECT_PATH)/ARMADILLO_Complex8.o"
+fi
+if [ "$FLENS" = "yes" ]; then
+   COMPLEX8="$COMPLEX8 \$(OBJECT_PATH)/FLENS_Complex8.o"
 fi
 if [ "$MTL" = "yes" ]; then
    COMPLEX8="$COMPLEX8 \$(OBJECT_PATH)/MTL_Complex8.o"
@@ -2241,6 +2400,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_DVecDVecSub.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_DVecDVecSub.o \$(INSTALL_PATH)/src/flens/DVecDVecSub.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_DVecDVecSub.o:
@@ -2298,6 +2465,22 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/GMM_DVecScalarMult.o:
 	@echo "  Building the GMM++ kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/GMM_DVecScalarMult.o \$(INSTALL_PATH)/src/gmm/DVecScalarMult.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$ARMADILLO" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/ARMADILLO_DVecScalarMult.o:
+	@echo "  Building the Armadillo kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/ARMADILLO_DVecScalarMult.o \$(INSTALL_PATH)/src/armadillo/DVecScalarMult.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_DVecScalarMult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_DVecScalarMult.o \$(INSTALL_PATH)/src/flens/DVecScalarMult.cpp \$(INCLUDES)
 EOF
 fi
 
@@ -2537,6 +2720,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_Daxpy.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_Daxpy.o \$(INSTALL_PATH)/src/flens/Daxpy.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_Daxpy.o:
@@ -2605,6 +2796,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_DVecNorm.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_DVecNorm.o \$(INSTALL_PATH)/src/flens/DVecNorm.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_DVecNorm.o:
@@ -2657,6 +2856,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$GMM" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/GMM_TDVecDVecMult.o:
+	@echo "  Building the GMM++ kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/GMM_TDVecDVecMult.o \$(INSTALL_PATH)/src/gmm/TDVecDVecMult.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$ARMADILLO" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/ARMADILLO_TDVecDVecMult.o:
@@ -2665,11 +2872,11 @@ cat >> Makefile <<EOF
 EOF
 fi
 
-if [ "$GMM" = "yes" ]; then
+if [ "$FLENS" = "yes" ]; then
 cat >> Makefile <<EOF
-\$(OBJECT_PATH)/GMM_TDVecDVecMult.o:
-	@echo "  Building the GMM++ kernel..."
-	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/GMM_TDVecDVecMult.o \$(INSTALL_PATH)/src/gmm/TDVecDVecMult.cpp \$(INCLUDES)
+\$(OBJECT_PATH)/FLENS_TDVecDVecMult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_TDVecDVecMult.o \$(INSTALL_PATH)/src/flens/TDVecDVecMult.cpp \$(INCLUDES)
 EOF
 fi
 
@@ -2945,6 +3152,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_DMatDVecMult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_DMatDVecMult.o \$(INSTALL_PATH)/src/flens/DMatDVecMult.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_DMatDVecMult.o:
@@ -3021,6 +3236,14 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/ARMADILLO_TDMatDVecMult.o:
 	@echo "  Building the Armadillo kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/ARMADILLO_TDMatDVecMult.o \$(INSTALL_PATH)/src/armadillo/TDMatDVecMult.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_TDMatDVecMult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_TDMatDVecMult.o \$(INSTALL_PATH)/src/flens/TDMatDVecMult.cpp \$(INCLUDES)
 EOF
 fi
 
@@ -3309,6 +3532,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_TDVecDMatMult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_TDVecDMatMult.o \$(INSTALL_PATH)/src/flens/TDVecDMatMult.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$EIGEN" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/EIGEN_TDVecDMatMult.o:
@@ -3366,6 +3597,14 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/ARMADILLO_TDVecTDMatMult.o:
 	@echo "  Building the Armadillo kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/ARMADILLO_TDVecTDMatMult.o \$(INSTALL_PATH)/src/armadillo/TDVecTDMatMult.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_TDVecTDMatMult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_TDVecTDMatMult.o \$(INSTALL_PATH)/src/flens/TDVecTDMatMult.cpp \$(INCLUDES)
 EOF
 fi
 
@@ -3564,6 +3803,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_DMatTrans.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_DMatTrans.o \$(INSTALL_PATH)/src/flens/DMatTrans.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_DMatTrans.o:
@@ -3665,6 +3912,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_DMatDMatAdd.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_DMatDMatAdd.o \$(INSTALL_PATH)/src/flens/DMatDMatAdd.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_DMatDMatAdd.o:
@@ -3714,6 +3969,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_DMatTDMatAdd.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_DMatTDMatAdd.o \$(INSTALL_PATH)/src/flens/DMatTDMatAdd.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_DMatTDMatAdd.o:
@@ -3760,6 +4023,14 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/BLITZ_TDMatDMatAdd.o:
 	@echo "  Building the Blitz++ kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLITZ_TDMatDMatAdd.o \$(INSTALL_PATH)/src/blitz/TDMatDMatAdd.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_TDMatDMatAdd.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_TDMatDMatAdd.o \$(INSTALL_PATH)/src/flens/TDMatDMatAdd.cpp \$(INCLUDES)
 EOF
 fi
 
@@ -3825,6 +4096,14 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/ARMADILLO_TDMatTDMatAdd.o:
 	@echo "  Building the Armadillo kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/ARMADILLO_TDMatTDMatAdd.o \$(INSTALL_PATH)/src/armadillo/TDMatTDMatAdd.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_TDMatTDMatAdd.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_TDMatTDMatAdd.o \$(INSTALL_PATH)/src/flens/TDMatTDMatAdd.cpp \$(INCLUDES)
 EOF
 fi
 
@@ -4356,6 +4635,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_DMatDMatSub.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_DMatDMatSub.o \$(INSTALL_PATH)/src/flens/DMatDMatSub.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_DMatDMatSub.o:
@@ -4413,6 +4700,22 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/GMM_DMatScalarMult.o:
 	@echo "  Building the GMM++ kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/GMM_DMatScalarMult.o \$(INSTALL_PATH)/src/gmm/DMatScalarMult.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$ARMADILLO" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/ARMADILLO_DMatScalarMult.o:
+	@echo "  Building the Armadillo kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/ARMADILLO_DMatScalarMult.o \$(INSTALL_PATH)/src/armadillo/DMatScalarMult.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_DMatScalarMult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_DMatScalarMult.o \$(INSTALL_PATH)/src/flens/DMatScalarMult.cpp \$(INCLUDES)
 EOF
 fi
 
@@ -4528,6 +4831,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_DMatDMatMult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_DMatDMatMult.o \$(INSTALL_PATH)/src/flens/DMatDMatMult.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_DMatDMatMult.o:
@@ -4588,6 +4899,14 @@ cat >> Makefile <<EOF
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BOOST_DMatTDMatMult.o \$(INSTALL_PATH)/src/boost/DMatTDMatMult.cpp \$(INCLUDES)
 EOF
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_DMatTDMatMult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_DMatTDMatMult.o \$(INSTALL_PATH)/src/flens/DMatTDMatMult.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_DMatTDMatMult.o:
@@ -4647,6 +4966,14 @@ cat >> Makefile <<EOF
 	@echo "  Building the Boost uBLAS kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BOOST_TDMatDMatMult.o \$(INSTALL_PATH)/src/boost/TDMatDMatMult.cpp \$(INCLUDES)
 EOF
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_TDMatDMatMult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_TDMatDMatMult.o \$(INSTALL_PATH)/src/flens/TDMatDMatMult.cpp \$(INCLUDES)
+EOF
+fi
 
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
@@ -4724,6 +5051,14 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/ARMADILLO_TDMatTDMatMult.o:
 	@echo "  Building the Armadillo kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/ARMADILLO_TDMatTDMatMult.o \$(INSTALL_PATH)/src/armadillo/TDMatTDMatMult.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_TDMatTDMatMult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_TDMatTDMatMult.o \$(INSTALL_PATH)/src/flens/TDMatTDMatMult.cpp \$(INCLUDES)
 EOF
 fi
 
@@ -5348,6 +5683,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_Vec3Vec3Add.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_Vec3Vec3Add.o \$(INSTALL_PATH)/src/flens/Vec3Vec3Add.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_Vec3Vec3Add.o:
@@ -5413,6 +5756,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_Vec6Vec6Add.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_Vec6Vec6Add.o \$(INSTALL_PATH)/src/flens/Vec6Vec6Add.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_Vec6Vec6Add.o:
@@ -5459,6 +5810,14 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/BLITZ_Mat3Vec3Mult.o:
 	@echo "  Building the Blitz++ kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLITZ_Mat3Vec3Mult.o \$(INSTALL_PATH)/src/blitz/Mat3Vec3Mult.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_Mat3Vec3Mult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_Mat3Vec3Mult.o \$(INSTALL_PATH)/src/flens/Mat3Vec3Mult.cpp \$(INCLUDES)
 EOF
 fi
 
@@ -5519,6 +5878,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_TMat3Vec3Mult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_TMat3Vec3Mult.o \$(INSTALL_PATH)/src/flens/TMat3Vec3Mult.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_TMat3Vec3Mult.o:
@@ -5565,6 +5932,14 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/BLITZ_Mat6Vec6Mult.o:
 	@echo "  Building the Blitz++ kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLITZ_Mat6Vec6Mult.o \$(INSTALL_PATH)/src/blitz/Mat6Vec6Mult.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_Mat6Vec6Mult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_Mat6Vec6Mult.o \$(INSTALL_PATH)/src/flens/Mat6Vec6Mult.cpp \$(INCLUDES)
 EOF
 fi
 
@@ -5625,6 +6000,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_TMat6Vec6Mult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_TMat6Vec6Mult.o \$(INSTALL_PATH)/src/flens/TMat6Vec6Mult.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_TMat6Vec6Mult.o:
@@ -5674,6 +6057,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_TVec3Mat3Mult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_TVec3Mat3Mult.o \$(INSTALL_PATH)/src/flens/TVec3Mat3Mult.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$EIGEN" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/EIGEN_TVec3Mat3Mult.o:
@@ -5712,6 +6103,14 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/ARMADILLO_TVec3TMat3Mult.o:
 	@echo "  Building the Armadillo kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/ARMADILLO_TVec3TMat3Mult.o \$(INSTALL_PATH)/src/armadillo/TVec3TMat3Mult.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_TVec3TMat3Mult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_TVec3TMat3Mult.o \$(INSTALL_PATH)/src/flens/TVec3TMat3Mult.cpp \$(INCLUDES)
 EOF
 fi
 
@@ -5756,6 +6155,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_TVec6Mat6Mult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_TVec6Mat6Mult.o \$(INSTALL_PATH)/src/flens/TVec6Mat6Mult.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$EIGEN" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/EIGEN_TVec6Mat6Mult.o:
@@ -5797,6 +6204,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_TVec6TMat6Mult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_TVec6TMat6Mult.o \$(INSTALL_PATH)/src/flens/TVec6TMat6Mult.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$EIGEN" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/EIGEN_TVec6TMat6Mult.o:
@@ -5835,6 +6250,14 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/BLITZ_Mat3Mat3Add.o:
 	@echo "  Building the Blitz++ kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLITZ_Mat3Mat3Add.o \$(INSTALL_PATH)/src/blitz/Mat3Mat3Add.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_Mat3Mat3Add.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_Mat3Mat3Add.o \$(INSTALL_PATH)/src/flens/Mat3Mat3Add.cpp \$(INCLUDES)
 EOF
 fi
 
@@ -5903,6 +6326,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_TMat3TMat3Add.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_TMat3TMat3Add.o \$(INSTALL_PATH)/src/flens/TMat3TMat3Add.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_TMat3TMat3Add.o:
@@ -5949,6 +6380,14 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/BLITZ_Mat6Mat6Add.o:
 	@echo "  Building the Blitz++ kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLITZ_Mat6Mat6Add.o \$(INSTALL_PATH)/src/blitz/Mat6Mat6Add.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_Mat6Mat6Add.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_Mat6Mat6Add.o \$(INSTALL_PATH)/src/flens/Mat6Mat6Add.cpp \$(INCLUDES)
 EOF
 fi
 
@@ -6017,6 +6456,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_TMat6TMat6Add.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_TMat6TMat6Add.o \$(INSTALL_PATH)/src/flens/TMat6TMat6Add.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_TMat6TMat6Add.o:
@@ -6063,6 +6510,14 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/BLITZ_Mat3Mat3Mult.o:
 	@echo "  Building the Blitz++ kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLITZ_Mat3Mat3Mult.o \$(INSTALL_PATH)/src/blitz/Mat3Mat3Mult.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_Mat3Mat3Mult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_Mat3Mat3Mult.o \$(INSTALL_PATH)/src/flens/Mat3Mat3Mult.cpp \$(INCLUDES)
 EOF
 fi
 
@@ -6115,6 +6570,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_Mat3TMat3Mult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_Mat3TMat3Mult.o \$(INSTALL_PATH)/src/flens/Mat3TMat3Mult.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_Mat3TMat3Mult.o:
@@ -6161,6 +6624,14 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/BLITZ_TMat3Mat3Mult.o:
 	@echo "  Building the Blitz++ kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLITZ_TMat3Mat3Mult.o \$(INSTALL_PATH)/src/blitz/TMat3Mat3Mult.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_TMat3Mat3Mult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_TMat3Mat3Mult.o \$(INSTALL_PATH)/src/flens/TMat3Mat3Mult.cpp \$(INCLUDES)
 EOF
 fi
 
@@ -6229,6 +6700,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_TMat3TMat3Mult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_TMat3TMat3Mult.o \$(INSTALL_PATH)/src/flens/TMat3TMat3Mult.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_TMat3TMat3Mult.o:
@@ -6275,6 +6754,14 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/BLITZ_Mat6Mat6Mult.o:
 	@echo "  Building the Blitz++ kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLITZ_Mat6Mat6Mult.o \$(INSTALL_PATH)/src/blitz/Mat6Mat6Mult.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_Mat6Mat6Mult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_Mat6Mat6Mult.o \$(INSTALL_PATH)/src/flens/Mat6Mat6Mult.cpp \$(INCLUDES)
 EOF
 fi
 
@@ -6327,6 +6814,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_Mat6TMat6Mult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_Mat6TMat6Mult.o \$(INSTALL_PATH)/src/flens/Mat6TMat6Mult.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_Mat6TMat6Mult.o:
@@ -6373,6 +6868,14 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/BLITZ_TMat6Mat6Mult.o:
 	@echo "  Building the Blitz++ kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLITZ_TMat6Mat6Mult.o \$(INSTALL_PATH)/src/blitz/TMat6Mat6Mult.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_TMat6Mat6Mult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_TMat6Mat6Mult.o \$(INSTALL_PATH)/src/flens/TMat6Mat6Mult.cpp \$(INCLUDES)
 EOF
 fi
 
@@ -6438,6 +6941,14 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/ARMADILLO_TMat6TMat6Mult.o:
 	@echo "  Building the Armadillo kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/ARMADILLO_TMat6TMat6Mult.o \$(INSTALL_PATH)/src/armadillo/TMat6TMat6Mult.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_TMat6TMat6Mult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_TMat6TMat6Mult.o \$(INSTALL_PATH)/src/flens/TMat6TMat6Mult.cpp \$(INCLUDES)
 EOF
 fi
 
@@ -6509,6 +7020,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_Complex1.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_Complex1.o \$(INSTALL_PATH)/src/flens/Complex1.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_Complex1.o:
@@ -6574,6 +7093,14 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/ARMADILLO_Complex2.o:
 	@echo "  Building the Armadillo kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/ARMADILLO_Complex2.o \$(INSTALL_PATH)/src/armadillo/Complex2.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_Complex2.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_Complex2.o \$(INSTALL_PATH)/src/flens/Complex2.cpp \$(INCLUDES)
 EOF
 fi
 
@@ -6645,6 +7172,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_Complex3.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_Complex3.o \$(INSTALL_PATH)/src/flens/Complex3.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_Complex3.o:
@@ -6710,6 +7245,14 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/ARMADILLO_Complex4.o:
 	@echo "  Building the Armadillo kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/ARMADILLO_Complex4.o \$(INSTALL_PATH)/src/armadillo/Complex4.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_Complex4.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_Complex4.o \$(INSTALL_PATH)/src/flens/Complex4.cpp \$(INCLUDES)
 EOF
 fi
 
@@ -6781,6 +7324,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_Complex5.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_Complex5.o \$(INSTALL_PATH)/src/flens/Complex5.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_Complex5.o:
@@ -6846,6 +7397,14 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/ARMADILLO_Complex6.o:
 	@echo "  Building the Armadillo kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/ARMADILLO_Complex6.o \$(INSTALL_PATH)/src/armadillo/Complex6.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_Complex6.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_Complex6.o \$(INSTALL_PATH)/src/flens/Complex6.cpp \$(INCLUDES)
 EOF
 fi
 
@@ -6917,6 +7476,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_Complex7.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_Complex7.o \$(INSTALL_PATH)/src/flens/Complex7.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_Complex7.o:
@@ -6982,6 +7549,14 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/ARMADILLO_Complex8.o:
 	@echo "  Building the Armadillo kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/ARMADILLO_Complex8.o \$(INSTALL_PATH)/src/armadillo/Complex8.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_Complex8.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_Complex8.o \$(INSTALL_PATH)/src/flens/Complex8.cpp \$(INCLUDES)
 EOF
 fi
 
