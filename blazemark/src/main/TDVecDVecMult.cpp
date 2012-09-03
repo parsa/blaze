@@ -40,12 +40,14 @@
 #include <blazemark/boost/TDVecDVecMult.h>
 #include <blazemark/classic/TDVecDVecMult.h>
 #include <blazemark/eigen/TDVecDVecMult.h>
+#include <blazemark/flens/TDVecDVecMult.h>
 #include <blazemark/gmm/TDVecDVecMult.h>
 #include <blazemark/mtl/TDVecDVecMult.h>
 #include <blazemark/system/Armadillo.h>
 #include <blazemark/system/Blitz.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/Eigen.h>
+#include <blazemark/system/FLENS.h>
 #include <blazemark/system/GMM.h>
 #include <blazemark/system/MTL.h>
 #include <blazemark/system/Types.h>
@@ -214,6 +216,19 @@ void tdvecdvecmult( std::vector<DenseRun>& runs, Benchmarks benchmarks )
          const size_t steps( run->getSteps() );
          run->setGMMResult( blazemark::gmm::tdvecdvecmult( N, steps ) );
          const double mflops( ( 2UL*N-1UL ) * steps / run->getGMMResult() / 1E6 );
+         std::cout << "     " << std::setw(12) << N << mflops << std::endl;
+      }
+   }
+#endif
+
+#if BLAZEMARK_FLENS_MODE
+   if( benchmarks.runFLENS ) {
+      std::cout << "   FLENS [MFlop/s]:\n";
+      for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+         const size_t N    ( run->getSize()  );
+         const size_t steps( run->getSteps() );
+         run->setFLENSResult( blazemark::flens::tdvecdvecmult( N, steps ) );
+         const double mflops( ( 2UL*N-1UL ) * steps / run->getFLENSResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }

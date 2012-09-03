@@ -34,16 +34,20 @@
 #include <blaze/math/Functions.h>
 #include <blaze/math/Infinity.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/armadillo/DVecScalarMult.h>
 #include <blazemark/blaze/DVecScalarMult.h>
 #include <blazemark/blitz/DVecScalarMult.h>
 #include <blazemark/boost/DVecScalarMult.h>
 #include <blazemark/classic/DVecScalarMult.h>
 #include <blazemark/eigen/DVecScalarMult.h>
+#include <blazemark/flens/DVecScalarMult.h>
 #include <blazemark/gmm/DVecScalarMult.h>
 #include <blazemark/mtl/DVecScalarMult.h>
+#include <blazemark/system/Armadillo.h>
 #include <blazemark/system/Blitz.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/Eigen.h>
+#include <blazemark/system/FLENS.h>
 #include <blazemark/system/GMM.h>
 #include <blazemark/system/MTL.h>
 #include <blazemark/system/Types.h>
@@ -196,6 +200,32 @@ void dvecscalarmult( std::vector<DenseRun>& runs, Benchmarks benchmarks )
          const size_t steps( run->getSteps() );
          run->setGMMResult( blazemark::gmm::dvecscalarmult( N, steps ) );
          const double mflops( ( N ) * steps / run->getGMMResult() / 1E6 );
+         std::cout << "     " << std::setw(12) << N << mflops << std::endl;
+      }
+   }
+#endif
+
+#if BLAZEMARK_ARMADILLO_MODE
+   if( benchmarks.runArmadillo ) {
+      std::cout << "   Armadillo [MFlop/s]:\n";
+      for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+         const size_t N    ( run->getSize()  );
+         const size_t steps( run->getSteps() );
+         run->setArmadilloResult( blazemark::armadillo::dvecscalarmult( N, steps ) );
+         const double mflops( ( N ) * steps / run->getArmadilloResult() / 1E6 );
+         std::cout << "     " << std::setw(12) << N << mflops << std::endl;
+      }
+   }
+#endif
+
+#if BLAZEMARK_FLENS_MODE
+   if( benchmarks.runFLENS ) {
+      std::cout << "   FLENS [MFlop/s]:\n";
+      for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+         const size_t N    ( run->getSize()  );
+         const size_t steps( run->getSteps() );
+         run->setFLENSResult( blazemark::flens::dvecscalarmult( N, steps ) );
+         const double mflops( ( N ) * steps / run->getFLENSResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }

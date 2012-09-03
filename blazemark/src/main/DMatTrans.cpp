@@ -37,10 +37,12 @@
 #include <blazemark/blaze/DMatTrans.h>
 #include <blazemark/boost/DMatTrans.h>
 #include <blazemark/eigen/DMatTrans.h>
+#include <blazemark/flens/DMatTrans.h>
 #include <blazemark/gmm/DMatTrans.h>
 #include <blazemark/mtl/DMatTrans.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/Eigen.h>
+#include <blazemark/system/FLENS.h>
 #include <blazemark/system/GMM.h>
 #include <blazemark/system/MTL.h>
 #include <blazemark/system/Types.h>
@@ -169,6 +171,19 @@ void dmattrans( std::vector<DenseRun>& runs, Benchmarks benchmarks )
          const size_t steps( run->getSteps() );
          run->setGMMResult( blazemark::gmm::dmattrans( N, steps ) );
          const double runtime( run->getGMMResult() / steps );
+         std::cout << "     " << std::setw(12) << N << runtime << std::endl;
+      }
+   }
+#endif
+
+#if BLAZEMARK_FLENS_MODE
+   if( benchmarks.runFLENS ) {
+      std::cout << "   FLENS (Seconds):\n";
+      for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+         const size_t N    ( run->getSize()  );
+         const size_t steps( run->getSteps() );
+         run->setFLENSResult( blazemark::flens::dmattrans( N, steps ) );
+         const double runtime( run->getFLENSResult() / steps );
          std::cout << "     " << std::setw(12) << N << runtime << std::endl;
       }
    }

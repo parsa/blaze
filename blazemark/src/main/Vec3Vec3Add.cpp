@@ -39,12 +39,14 @@
 #include <blazemark/blitz/Vec3Vec3Add.h>
 #include <blazemark/boost/Vec3Vec3Add.h>
 #include <blazemark/eigen/Vec3Vec3Add.h>
+#include <blazemark/flens/Vec3Vec3Add.h>
 #include <blazemark/gmm/Vec3Vec3Add.h>
 #include <blazemark/mtl/Vec3Vec3Add.h>
 #include <blazemark/system/Armadillo.h>
 #include <blazemark/system/Blitz.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/Eigen.h>
+#include <blazemark/system/FLENS.h>
 #include <blazemark/system/GMM.h>
 #include <blazemark/system/MTL.h>
 #include <blazemark/system/Types.h>
@@ -202,6 +204,19 @@ void vec3vec3add( std::vector<DenseRun>& runs, Benchmarks benchmarks )
          const size_t steps( run->getSteps() );
          run->setArmadilloResult( blazemark::armadillo::vec3vec3add( N, steps ) );
          const double mflops( 3UL * steps / run->getArmadilloResult() / 1E6 );
+         std::cout << "     " << std::setw(12) << N << mflops << std::endl;
+      }
+   }
+#endif
+
+#if BLAZEMARK_FLENS_MODE
+   if( benchmarks.runFLENS ) {
+      std::cout << "   FLENS [MFlop/s]:\n";
+      for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+         const size_t N    ( run->getSize()  );
+         const size_t steps( run->getSteps() );
+         run->setFLENSResult( blazemark::flens::vec3vec3add( N, steps ) );
+         const double mflops( 3UL * steps / run->getFLENSResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }

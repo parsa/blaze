@@ -42,12 +42,14 @@
 #include <blazemark/boost/Complex1.h>
 #include <blazemark/classic/Complex1.h>
 #include <blazemark/eigen/Complex1.h>
+#include <blazemark/flens/Complex1.h>
 #include <blazemark/gmm/Complex1.h>
 #include <blazemark/mtl/Complex1.h>
 #include <blazemark/system/Armadillo.h>
 #include <blazemark/system/Blitz.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/Eigen.h>
+#include <blazemark/system/Flens.h>
 #include <blazemark/system/GMM.h>
 #include <blazemark/system/MTL.h>
 #include <blazemark/system/Types.h>
@@ -215,6 +217,19 @@ void complex1( std::vector<DenseRun>& runs, Benchmarks benchmarks )
          const size_t steps( run->getSteps() );
          run->setArmadilloResult( blazemark::armadillo::complex1( N, steps ) );
          const double mflops( ( 2UL*N*N ) * steps / run->getArmadilloResult() / 1E6 );
+         std::cout << "     " << std::setw(12) << run->getSize() << mflops << std::endl;
+      }
+   }
+#endif
+
+#if BLAZEMARK_FLENS_MODE
+   if( benchmarks.runFLENS ) {
+      std::cout << "   FLENS [MFlop/s]:\n";
+      for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+         const size_t N    ( run->getSize()  );
+         const size_t steps( run->getSteps() );
+         run->setFLENSResult( blazemark::flens::complex1( N, steps ) );
+         const double mflops( ( 2UL*N*N ) * steps / run->getFLENSResult() / 1E6 );
          std::cout << "     " << std::setw(12) << run->getSize() << mflops << std::endl;
       }
    }

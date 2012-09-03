@@ -41,11 +41,13 @@
 #include <blazemark/boost/DMatDVecMult.h>
 #include <blazemark/classic/DMatDVecMult.h>
 #include <blazemark/eigen/DMatDVecMult.h>
+#include <blazemark/flens/DMatDVecMult.h>
 #include <blazemark/mtl/DMatDVecMult.h>
 #include <blazemark/system/BLAS.h>
 #include <blazemark/system/Blitz.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/Eigen.h>
+#include <blazemark/system/FLENS.h>
 #include <blazemark/system/MTL.h>
 #include <blazemark/system/Types.h>
 #include <blazemark/util/Benchmarks.h>
@@ -199,6 +201,19 @@ void dmatdvecmult( std::vector<DenseRun>& runs, Benchmarks benchmarks )
          const size_t steps( run->getSteps() );
          run->setBlitzResult( blazemark::blitz::dmatdvecmult( N, steps ) );
          const double mflops( ( 2UL*N*N - N ) * steps / run->getBlitzResult() / 1E6 );
+         std::cout << "     " << std::setw(12) << N << mflops << std::endl;
+      }
+   }
+#endif
+
+#if BLAZEMARK_FLENS_MODE
+   if( benchmarks.runFLENS ) {
+      std::cout << "   FLENS [MFlop/s]:\n";
+      for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+         const size_t N    ( run->getSize()  );
+         const size_t steps( run->getSteps() );
+         run->setFLENSResult( blazemark::flens::dmatdvecmult( N, steps ) );
+         const double mflops( ( 2UL*N*N - N ) * steps / run->getFLENSResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
