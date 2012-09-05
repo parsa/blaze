@@ -73,6 +73,8 @@ class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
    //**Type definitions****************************************************************************
    typedef typename VT1::ResultType     RT1;  //!< Result type of the left-hand side dense vector expression.
    typedef typename VT2::ResultType     RT2;  //!< Result type of the right-hand side sparse vector expression.
+   typedef typename VT1::ReturnType     RN1;  //!< Return type of the left-hand side dense vector expression.
+   typedef typename VT2::ReturnType     RN2;  //!< Return type of the right-hand side sparse vector expression.
    typedef typename VT1::CompositeType  CT1;  //!< Composite type of the left-hand side dense vector expression.
    typedef typename VT2::CompositeType  CT2;  //!< Composite type of the right-hand side sparse vector expression.
    typedef typename VT1::TransposeType  TT1;  //!< Transpose type of the left-hand side dense vector expression.
@@ -81,10 +83,11 @@ class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DVecSVecAddExpr<VT1,VT2,TF>           This;           //!< Type of this DVecSVecAddExpr instance.
-   typedef typename MathTrait<RT1,RT2>::AddType  ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::TransposeType    TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType      ElementType;    //!< Resulting element type.
+   typedef DVecSVecAddExpr<VT1,VT2,TF>                 This;           //!< Type of this DVecSVecAddExpr instance.
+   typedef typename MathTrait<RT1,RT2>::AddType        ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
+   typedef const typename AddExprTrait<RN1,RN2>::Type  ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef const ResultType  CompositeType;
@@ -123,9 +126,9 @@ class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
    /*!\brief Subscript operator for the direct access to the vector elements.
    //
    // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
-   // \return The accessed value.
+   // \return The resulting value.
    */
-   inline const ElementType operator[]( size_t index ) const {
+   inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < lhs_.size(), "Invalid vector access index" );
       return lhs_[index] + rhs_[index];
    }

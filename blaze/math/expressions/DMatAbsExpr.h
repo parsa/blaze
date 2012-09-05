@@ -97,6 +97,7 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
    typedef typename MT::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef typename MT::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename MT::ElementType    ElementType;    //!< Resulting element type.
+   typedef const ElementType           ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef typename SelectType< useAssign, const ResultType, const DMatAbsExpr& >::Type  CompositeType;
@@ -128,9 +129,9 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
    //
    // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
-   // \return Reference to the accessed value.
+   // \return The resulting value.
    */
-   inline const ElementType operator()( size_t i, size_t j ) const {
+   inline ReturnType operator()( size_t i, size_t j ) const {
       using std::abs;
       BLAZE_INTERNAL_ASSERT( i < dm_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < dm_.columns(), "Invalid column access index" );

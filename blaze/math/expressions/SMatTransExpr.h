@@ -100,6 +100,7 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
    typedef typename MT::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef typename MT::ResultType     TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename MT::ElementType    ElementType;    //!< Resulting element type.
+   typedef typename MT::ReturnType     ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef typename SelectType< useAssign, const ResultType, const SMatTransExpr& >::Type  CompositeType;
@@ -176,6 +177,26 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
       }
       //*******************************************************************************************
 
+      //**Value function***************************************************************************
+      /*!\brief Access to the current value of the sparse element.
+      //
+      // \return The current value of the sparse element.
+      */
+      inline ReturnType value() const {
+         return it_->value();
+      }
+      //*******************************************************************************************
+
+      //**Index function***************************************************************************
+      /*!\brief Access to the current index of the sparse element.
+      //
+      // \return The current index of the sparse element.
+      */
+      inline size_t index() const {
+         return it_->index();
+      }
+      //*******************************************************************************************
+
       //**Equality operator************************************************************************
       /*!\brief Equality comparison between two ConstIterator objects.
       //
@@ -231,9 +252,9 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
    //
    // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
-   // \return Reference to the accessed value.
+   // \return The resulting value.
    */
-   inline const ElementType operator()( size_t i, size_t j ) const {
+   inline ReturnType operator()( size_t i, size_t j ) const {
       BLAZE_INTERNAL_ASSERT( i < sm_.columns(), "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < sm_.rows()   , "Invalid column access index" );
       return sm_(j,i);

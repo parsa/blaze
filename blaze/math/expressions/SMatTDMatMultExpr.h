@@ -92,6 +92,7 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
    typedef typename ResultType::OppositeType      OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef typename ResultType::TransposeType     TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename ResultType::ElementType       ElementType;    //!< Resulting element type.
+   typedef const ElementType                      ReturnType;     //!< Return type for expression template evaluations.
    typedef const ResultType                       CompositeType;  //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side sparse matrix expression.
@@ -134,9 +135,9 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
    //
    // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
-   // \return Reference to the accessed value.
+   // \return The resulting value.
    */
-   inline const ElementType operator()( size_t i, size_t j ) const {
+   inline ReturnType operator()( size_t i, size_t j ) const {
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < rhs_.columns(), "Invalid column access index" );
 
@@ -270,7 +271,7 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
       BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
       const size_t block( 256UL );
-      
+
       BLAZE_INTERNAL_ASSERT( ( B.columns() - ( B.columns() % 4UL ) ) == ( B.columns() & size_t(-4) ), "Invalid end calculation" );
       const size_t jend( B.columns() & size_t(-4) );
 

@@ -39,6 +39,7 @@
 #include <blaze/math/MathTrait.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/sparse/SparseElement.h>
+#include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/util/Assert.h>
@@ -72,10 +73,12 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
    //**Type definitions****************************************************************************
    typedef typename VT1::ResultType     RT1;  //!< Result type of the left-hand side sparse vector expression.
    typedef typename VT2::ResultType     RT2;  //!< Result type of the right-hand side dense vector expression.
+   typedef typename VT1::ReturnType     RN1;  //!< Return type of the left-hand side sparse vector expression.
+   typedef typename VT2::ReturnType     RN2;  //!< Return type of the right-hand side dense vector expression.
    typedef typename VT1::CompositeType  CT1;  //!< Composite type of the left-hand side sparse vector expression.
    typedef typename VT2::CompositeType  CT2;  //!< Composite type of the right-hand side dense vector expression.
-   typedef typename VT1::ElementType    ET1;  //!< Element type of the left-hand side dense vector expression.
-   typedef typename VT2::ElementType    ET2;  //!< Element type of the right-hand side sparse vector expression.
+   typedef typename VT1::ElementType    ET1;  //!< Element type of the left-hand side sparse vector expression.
+   typedef typename VT2::ElementType    ET2;  //!< Element type of the right-hand side dense vector expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -102,11 +105,12 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
 
  public:
    //**Type definitions****************************************************************************
-   typedef SVecTDVecMultExpr<VT1,VT2>             This;           //!< Type of this SVecTDVecMultExpr instance.
-   typedef typename MathTrait<RT1,RT2>::MultType  ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType      OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType     TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType       ElementType;    //!< Resulting element type.
+   typedef SVecTDVecMultExpr<VT1,VT2>                   This;           //!< Type of this SVecTDVecMultExpr instance.
+   typedef typename MathTrait<RT1,RT2>::MultType        ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::OppositeType            OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef typename ResultType::TransposeType           TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename ResultType::ElementType             ElementType;    //!< Resulting element type.
+   typedef const typename MultExprTrait<RN1,RN2>::Type  ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef typename SelectType< useAssign, const ResultType, const SVecTDVecMultExpr& >::Type  CompositeType;
@@ -204,7 +208,7 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
       //
       // \return The current value of the sparse element.
       */
-      inline ElementType value() const {
+      inline ReturnType value() const {
          return it_->value() * v_;
       }
       //*******************************************************************************************
@@ -277,9 +281,9 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
    //
    // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
-   // \return Reference to the accessed value.
+   // \return The resulting value.
    */
-   inline const ElementType operator()( size_t i, size_t j ) const {
+   inline ReturnType operator()( size_t i, size_t j ) const {
       BLAZE_INTERNAL_ASSERT( i < lhs_.size(), "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < rhs_.size(), "Invalid column access index" );
 

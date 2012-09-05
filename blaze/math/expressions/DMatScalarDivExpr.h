@@ -33,6 +33,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/MathTrait.h>
+#include <blaze/math/traits/DivExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/CanAlias.h>
@@ -128,6 +129,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
  private:
    //**Type definitions****************************************************************************
    typedef typename MT::ResultType     RT;  //!< Result type of the dense matrix expression.
+   typedef typename MT::ReturnType     RN;  //!< Return type of the dense matrix expression.
    typedef typename MT::CompositeType  CT;  //!< Composite type of the dense matrix expression.
    //**********************************************************************************************
 
@@ -154,11 +156,12 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DMatScalarDivExpr<MT,ST,SO>         This;           //!< Type of this DMatScalarDivExpr instance.
-   typedef typename MathTrait<RT,ST>::DivType  ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
+   typedef DMatScalarDivExpr<MT,ST,SO>               This;           //!< Type of this DMatScalarDivExpr instance.
+   typedef typename MathTrait<RT,ST>::DivType        ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::OppositeType         OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef typename ResultType::TransposeType        TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename ResultType::ElementType          ElementType;    //!< Resulting element type.
+   typedef const typename DivExprTrait<RN,ST>::Type  ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef typename SelectType< useAssign, const ResultType, const DMatScalarDivExpr& >::Type  CompositeType;
@@ -195,9 +198,9 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    //
    // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
-   // \return Reference to the accessed value.
+   // \return The resulting value.
    */
-   inline const ElementType operator()( size_t i, size_t j ) const {
+   inline ReturnType operator()( size_t i, size_t j ) const {
       BLAZE_INTERNAL_ASSERT( i < matrix_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < matrix_.columns(), "Invalid column access index" );
       return matrix_(i,j) / scalar_;

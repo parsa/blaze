@@ -85,8 +85,8 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
  private:
    //**Type definitions****************************************************************************
    typedef typename VT::ResultType     RT;  //!< Result type of the sparse vector expression.
+   typedef typename VT::ReturnType     RN;  //!< Return type of the sparse vector expression.
    typedef typename VT::CompositeType  CT;  //!< Composite type of the sparse vector expression.
-   typedef typename VT::TransposeType  TT;  //!< Transpose type of the sparse vector expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -112,10 +112,11 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
 
  public:
    //**Type definitions****************************************************************************
-   typedef SVecScalarMultExpr<VT,ST,TF>         This;           //!< Type of this SVecScalarMultExpr instance.
-   typedef typename MathTrait<RT,ST>::MultType  ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::TransposeType   TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType     ElementType;    //!< Resulting element type.
+   typedef SVecScalarMultExpr<VT,ST,TF>               This;           //!< Type of this SVecScalarMultExpr instance.
+   typedef typename MathTrait<RT,ST>::MultType        ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::TransposeType         TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename ResultType::ElementType           ElementType;    //!< Resulting element type.
+   typedef const typename MultExprTrait<RN,ST>::Type  ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef typename SelectType< useAssign, const ResultType, const SVecScalarMultExpr& >::Type  CompositeType;
@@ -204,7 +205,7 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
       //
       // \return The current value of the sparse element.
       */
-      inline ElementType value() const {
+      inline ReturnType value() const {
          return vector_->value() * scalar_;
       }
       //*******************************************************************************************
@@ -276,9 +277,9 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
    /*!\brief Subscript operator for the direct access to the vector elements.
    //
    // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
-   // \return The accessed value.
+   // \return The resulting value.
    */
-   inline const ElementType operator[]( size_t index ) const {
+   inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < vector_.size(), "Invalid vector access index" );
       return vector_[index] * scalar_;
    }

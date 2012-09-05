@@ -35,6 +35,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/MathTrait.h>
+#include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/util/Assert.h>
@@ -69,12 +70,14 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT1::ResultType     RT1;  //!< Result type of the left-hand side dense matrix expression.
-   typedef typename MT2::ResultType     RT2;  //!< Result type of the right-hand side dense matrix expression.
-   typedef typename MT1::CompositeType  CT1;  //!< Composite type of the left-hand side dense matrix expression.
-   typedef typename MT2::CompositeType  CT2;  //!< Composite type of the right-hand side dense matrix expression.
-   typedef typename MT1::ElementType    ET1;  //!< Element type of the left-hand side dense matrix expression.
-   typedef typename MT2::ElementType    ET2;  //!< Element type of the right-hand side dense matrix expression.
+   typedef typename MT1::ResultType      RT1;  //!< Result type of the left-hand side dense matrix expression.
+   typedef typename MT2::ResultType      RT2;  //!< Result type of the right-hand side dense matrix expression.
+   typedef typename MT1::ReturnType      RN1;  //!< Return type of the left-hand side dense matrix expression.
+   typedef typename MT2::ReturnType      RN2;  //!< Return type of the right-hand side dense matrix expression.
+   typedef typename MT1::CompositeType   CT1;  //!< Composite type of the left-hand side dense matrix expression.
+   typedef typename MT2::CompositeType   CT2;  //!< Composite type of the right-hand side dense matrix expression.
+   typedef typename MT1::ElementType     ET1;  //!< Element type of the left-hand side dense matrix expression.
+   typedef typename MT2::ElementType     ET2;  //!< Element type of the right-hand side dense matrix expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -106,6 +109,7 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
    typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
    typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
+   typedef const typename AddExprTrait<RN1,RN2>::Type  ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef typename SelectType< useAssign, const ResultType, const DMatDMatAddExpr& >::Type  CompositeType;
@@ -148,9 +152,9 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
    //
    // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
-   // \return Reference to the accessed value.
+   // \return The resulting value.
    */
-   inline const ElementType operator()( size_t i, size_t j ) const {
+   inline ReturnType operator()( size_t i, size_t j ) const {
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < lhs_.columns(), "Invalid column access index" );
       return lhs_(i,j) + rhs_(i,j);

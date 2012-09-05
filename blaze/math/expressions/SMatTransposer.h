@@ -55,14 +55,17 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef SMatTransposer<MT,SO>       This;           //!< Type of this SMatTransposer instance.
-   typedef typename MT::TransposeType  ResultType;     //!< Result type for expression template evaluations.
-   typedef MT                          OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename MT::ResultType     TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType    ElementType;    //!< Resulting element type.
-   typedef const This&                 CompositeType;  //!< Data type for composite expression templates.
-   typedef typename MT::Iterator       Iterator;       //!< Iterator over non-constant elements.
-   typedef typename MT::ConstIterator  ConstIterator;  //!< Iterator over constant elements.
+   typedef SMatTransposer<MT,SO>        This;            //!< Type of this SMatTransposer instance.
+   typedef typename MT::TransposeType   ResultType;      //!< Result type for expression template evaluations.
+   typedef MT                           OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
+   typedef typename MT::ResultType      TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef typename MT::ElementType     ElementType;     //!< Resulting element type.
+   typedef typename MT::ReturnType      ReturnType;      //!< Return type for expression template evaluations.
+   typedef const This&                  CompositeType;   //!< Data type for composite expression templates.
+   typedef typename MT::Reference       Reference;       //!< Reference to a non-constant matrix value.
+   typedef typename MT::ConstReference  ConstReference;  //!< Reference to a constant matrix value.
+   typedef typename MT::Iterator        Iterator;        //!< Iterator over non-constant elements.
+   typedef typename MT::ConstIterator   ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -82,7 +85,7 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed value.
    */
-   inline const ElementType operator()( size_t i, size_t j ) const {
+   inline Reference operator()( size_t i, size_t j ) const {
       BLAZE_INTERNAL_ASSERT( i < sm_.columns(), "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < sm_.row()    , "Invalid column access index" );
       return sm_(j,i);
@@ -363,14 +366,17 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
 {
  public:
    //**Type definitions****************************************************************************
-   typedef SMatTransposer<MT,true>     This;           //!< Type of this SMatTransposer instance.
-   typedef typename MT::TransposeType  ResultType;     //!< Result type for expression template evaluations.
-   typedef MT                          OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename MT::ResultType     TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType    ElementType;    //!< Resulting element type.
-   typedef const This&                 CompositeType;  //!< Data type for composite expression templates.
-   typedef typename MT::Iterator       Iterator;       //!< Iterator over non-constant elements.
-   typedef typename MT::ConstIterator  ConstIterator;  //!< Iterator over constant elements.
+   typedef SMatTransposer<MT,true>      This;            //!< Type of this SMatTransposer instance.
+   typedef typename MT::TransposeType   ResultType;      //!< Result type for expression template evaluations.
+   typedef MT                           OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
+   typedef typename MT::ResultType      TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef typename MT::ElementType     ElementType;     //!< Resulting element type.
+   typedef typename MT::ReturnType      ReturnType;      //!< Return type for expression template evaluations.
+   typedef const This&                  CompositeType;   //!< Data type for composite expression templates.
+   typedef typename MT::Reference       Reference;       //!< Reference to a non-constant matrix value.
+   typedef typename MT::ConstReference  ConstReference;  //!< Reference to a constant matrix value.
+   typedef typename MT::Iterator        Iterator;        //!< Iterator over non-constant elements.
+   typedef typename MT::ConstIterator   ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -390,7 +396,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed value.
    */
-   inline const ElementType operator()( size_t i, size_t j ) const {
+   inline Reference operator()( size_t i, size_t j ) const {
       BLAZE_INTERNAL_ASSERT( i < sm_.columns(), "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < sm_.row()    , "Invalid column access index" );
       return sm_(j,i);

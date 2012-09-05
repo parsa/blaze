@@ -36,6 +36,7 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/MathTrait.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
@@ -67,17 +68,20 @@ class SVecTSVecMultExpr : public SparseMatrix< SVecTSVecMultExpr<VT1,VT2>, false
    //**Type definitions****************************************************************************
    typedef typename VT1::ResultType     RT1;  //!< Result type of the left-hand side sparse vector expression.
    typedef typename VT2::ResultType     RT2;  //!< Result type of the right-hand side sparse vector expression.
+   typedef typename VT1::ReturnType     RN1;  //!< Return type of the left-hand side sparse vector expression.
+   typedef typename VT2::ReturnType     RN2;  //!< Return type of the right-hand side sparse vector expression.
    typedef typename VT1::CompositeType  CT1;  //!< Composite type of the left-hand side sparse vector expression.
    typedef typename VT2::CompositeType  CT2;  //!< Composite type of the right-hand side sparse vector expression.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef SVecTSVecMultExpr<VT1,VT2>             This;           //!< Type of this SVecTSVecMultExpr instance.
-   typedef typename MathTrait<RT1,RT2>::MultType  ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType      OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType     TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType       ElementType;    //!< Resulting element type.
+   typedef SVecTSVecMultExpr<VT1,VT2>                   This;           //!< Type of this SVecTSVecMultExpr instance.
+   typedef typename MathTrait<RT1,RT2>::MultType        ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::OppositeType            OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef typename ResultType::TransposeType           TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename ResultType::ElementType             ElementType;    //!< Resulting element type.
+   typedef const typename MultExprTrait<RN1,RN2>::Type  ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef const ResultType  CompositeType;
@@ -117,9 +121,9 @@ class SVecTSVecMultExpr : public SparseMatrix< SVecTSVecMultExpr<VT1,VT2>, false
    //
    // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
-   // \return Reference to the accessed value.
+   // \return The resulting value.
    */
-   inline const ElementType operator()( size_t i, size_t j ) const {
+   inline ReturnType operator()( size_t i, size_t j ) const {
       BLAZE_INTERNAL_ASSERT( i < lhs_.size(), "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < rhs_.size(), "Invalid column access index" );
 
@@ -610,7 +614,7 @@ class SVecTSVecMultExpr : public SparseMatrix< SVecTSVecMultExpr<VT1,VT2>, false
    \code
    using blaze::columnVector;
    using blaze::rowMajor;
-   
+
    blaze::CompressedVector<double,columnVector> a, b;
    blaze::CompressedMatrix<double,rowMajor> A;
    // ... Resizing and initialization

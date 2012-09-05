@@ -55,11 +55,14 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef DVecTransposer<VT,TF>       This;           //!< Type of this DVecTransposer instance.
-   typedef typename VT::TransposeType  ResultType;     //!< Result type for expression template evaluations.
-   typedef typename VT::ResultType     TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename VT::ElementType    ElementType;    //!< Resulting element type.
-   typedef const This&                 CompositeType;  //!< Data type for composite expression templates.
+   typedef DVecTransposer<VT,TF>        This;            //!< Type of this DVecTransposer instance.
+   typedef typename VT::TransposeType   ResultType;      //!< Result type for expression template evaluations.
+   typedef typename VT::ResultType      TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef typename VT::ElementType     ElementType;     //!< Resulting element type.
+   typedef typename VT::ReturnType      ReturnType;      //!< Return type for expression template evaluations.
+   typedef const This&                  CompositeType;   //!< Data type for composite expression templates.
+   typedef typename VT::Reference       Reference;       //!< Reference to a non-constant matrix value.
+   typedef typename VT::ConstReference  ConstReference;  //!< Reference to a constant matrix value.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -86,7 +89,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed value.
    */
-   inline ElementType& operator[]( size_t index ) {
+   inline Reference operator[]( size_t index ) {
       BLAZE_USER_ASSERT( index < dv_.size(), "Invalid vector access index" );
       return dv_[index];
    }

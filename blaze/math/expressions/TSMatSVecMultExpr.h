@@ -85,6 +85,7 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
    typedef typename MathTrait<MRT,VRT>::MultType  ResultType;     //!< Result type for expression template evaluations.
    typedef typename ResultType::TransposeType     TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename ResultType::ElementType       ElementType;    //!< Resulting element type.
+   typedef const ElementType                      ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef const ResultType  CompositeType;
@@ -126,9 +127,9 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
    /*!\brief Subscript operator for the direct access to the vector elements.
    //
    // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
-   // \return The accessed value.
+   // \return The resulting value.
    */
-   inline const ElementType operator[]( size_t index ) const {
+   inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.rows(), "Invalid vector access index" );
 
       typedef typename boost::remove_reference<MCT>::type::ConstIterator  MatrixIterator;

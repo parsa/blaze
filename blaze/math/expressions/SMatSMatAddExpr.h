@@ -35,6 +35,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/MathTrait.h>
+#include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -69,16 +70,19 @@ class SMatSMatAddExpr : public SparseMatrix< SMatSMatAddExpr<MT1,MT2>, false >
    typedef typename MT2::ResultType     RT2;  //!< Result type of the right-hand side sparse matrix expression.
    typedef typename MT1::CompositeType  CT1;  //!< Composite type of the left-hand side sparse matrix expression.
    typedef typename MT2::CompositeType  CT2;  //!< Composite type of the right-hand side sparse matrix expression.
+   typedef typename MT1::ReturnType     RN1;  //!< Return type of the left-hand side sparse matrix expression.
+   typedef typename MT2::ReturnType     RN2;  //!< Return type of the right-hand side sparse matrix expression.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef SMatSMatAddExpr<MT1,MT2>              This;           //!< Type of this SMatSMatAddExpr instance.
-   typedef typename MathTrait<RT1,RT2>::AddType  ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType     OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType    TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType      ElementType;    //!< Resulting element type.
-   typedef const ResultType                      CompositeType;  //!< Data type for composite expression templates.
+   typedef SMatSMatAddExpr<MT1,MT2>                    This;           //!< Type of this SMatSMatAddExpr instance.
+   typedef typename MathTrait<RT1,RT2>::AddType        ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::OppositeType           OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
+   typedef const typename AddExprTrait<RN1,RN2>::Type  ReturnType;     //!< Return type for expression template evaluations.
+   typedef const ResultType                            CompositeType;  //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side sparse matrix expression.
    typedef typename SelectType< IsExpression<MT1>::value, const MT1, const MT1& >::Type  LeftOperand;
@@ -113,9 +117,9 @@ class SMatSMatAddExpr : public SparseMatrix< SMatSMatAddExpr<MT1,MT2>, false >
    //
    // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
-   // \return Reference to the accessed value.
+   // \return The resulting value.
    */
-   inline const ElementType operator()( size_t i, size_t j ) const {
+   inline ReturnType operator()( size_t i, size_t j ) const {
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < lhs_.columns(), "Invalid column access index" );
       return lhs_(i,j) + rhs_(i,j);

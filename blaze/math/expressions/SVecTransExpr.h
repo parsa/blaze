@@ -97,6 +97,7 @@ class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
    typedef typename VT::TransposeType  ResultType;     //!< Result type for expression template evaluations.
    typedef typename VT::ResultType     TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename VT::ElementType    ElementType;    //!< Resulting element type.
+   typedef typename VT::ReturnType     ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef typename SelectType< useAssign, const ResultType, const SVecTransExpr& >::Type  CompositeType;
@@ -178,7 +179,7 @@ class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
       //
       // \return The current value of the sparse element.
       */
-      inline ElementType value() const {
+      inline ReturnType value() const {
          return it_->value();
       }
       //*******************************************************************************************
@@ -247,9 +248,9 @@ class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
    /*!\brief Subscript operator for the direct access to the vector elements.
    //
    // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
-   // \return The accessed value.
+   // \return The resulting value.
    */
-   inline const ElementType operator[]( size_t index ) const {
+   inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < sv_.size(), "Invalid vector access index" );
       return sv_[index];
    }

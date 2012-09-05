@@ -61,12 +61,6 @@ template< typename MT  // Type of the dense matrix
 class DMatEvalExpr : public DenseMatrix< DMatEvalExpr<MT,SO>, SO >
                    , private Expression
 {
- private:
-   //**Type definitions****************************************************************************
-   typedef typename MT::ResultType     RT;  //!< Result type of the dense matrix expression.
-   typedef typename MT::CompositeType  CT;  //!< Composite type of the dense matrix expression.
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    typedef DMatEvalExpr<MT,SO>         This;           //!< Type of this DMatEvalExpr instance.
@@ -74,6 +68,7 @@ class DMatEvalExpr : public DenseMatrix< DMatEvalExpr<MT,SO>, SO >
    typedef typename MT::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef typename MT::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename MT::ElementType    ElementType;    //!< Resulting element type.
+   typedef typename MT::ReturnType     ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef const ResultType  CompositeType;
@@ -105,9 +100,9 @@ class DMatEvalExpr : public DenseMatrix< DMatEvalExpr<MT,SO>, SO >
    //
    // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
-   // \return Reference to the accessed value.
+   // \return The resulting value.
    */
-   inline const ElementType operator()( size_t i, size_t j ) const {
+   inline ReturnType operator()( size_t i, size_t j ) const {
       BLAZE_INTERNAL_ASSERT( i < dm_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < dm_.columns(), "Invalid column access index" );
       return dm_(i,j);

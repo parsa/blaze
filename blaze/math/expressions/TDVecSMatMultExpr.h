@@ -85,6 +85,7 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
    typedef typename MathTrait<VRT,MRT>::MultType  ResultType;     //!< Result type for expression template evaluations.
    typedef typename ResultType::TransposeType     TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename ResultType::ElementType       ElementType;    //!< Resulting element type.
+   typedef const ElementType                      ReturnType;     //!< Return type for expression template evaluations.
    typedef const ResultType                       CompositeType;  //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense vector expression.
@@ -124,9 +125,9 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
    /*!\brief Subscript operator for the direct access to the vector elements.
    //
    // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
-   // \return The accessed value.
+   // \return The resulting value.
    */
-   inline const ElementType operator[]( size_t index ) const {
+   inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.columns(), "Invalid vector access index" );
 
       ElementType res;

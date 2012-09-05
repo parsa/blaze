@@ -127,9 +127,8 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
  private:
    //**Type definitions****************************************************************************
    typedef typename VT::ResultType     RT;  //!< Result type of the dense vector expression.
+   typedef typename VT::ReturnType     RN;  //!< Return type of the dense vector expression.
    typedef typename VT::CompositeType  CT;  //!< Composite type of the dense vector expression.
-   typedef typename VT::TransposeType  TT;  //!< Transpose type of the dense vector expression.
-   typedef typename VT::ElementType    ET;  //!< Element type of the dense vector expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -155,13 +154,12 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DVecScalarDivExpr<VT,ST,TF>         This;           //!< Type of this DVecScalarDivExpr instance.
-   typedef typename MathTrait<RT,ST>::DivType  ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
-
-   //! Resulting intrinsic element type.
-   typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;
+   typedef DVecScalarDivExpr<VT,ST,TF>                 This;           //!< Type of this DVecScalarDivExpr instance.
+   typedef typename MathTrait<RT,ST>::DivType          ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
+   typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
+   typedef const typename DivExprTrait<RN,ST>::Type    ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef typename SelectType< useAssign, const ResultType, const DVecScalarDivExpr& >::Type  CompositeType;
@@ -197,9 +195,9 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    /*!\brief Subscript operator for the direct access to the vector elements.
    //
    // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
-   // \return The accessed value.
+   // \return The resulting value.
    */
-   inline const ElementType operator[]( size_t index ) const {
+   inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < vector_.size(), "Invalid vector access index" );
       return vector_[index] / scalar_;
    }
