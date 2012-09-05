@@ -33,6 +33,11 @@
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/SelectType.h>
+#include <blaze/util/typetraits/IsConst.h>
+#include <blaze/util/typetraits/IsReference.h>
+#include <blaze/util/typetraits/IsVolatile.h>
+#include <blaze/util/typetraits/RemoveCV.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -59,12 +64,29 @@ template< typename MT1    // Type of the left-hand side column-major sparse matr
         , typename MT2 >  // Type of the right-hand side column-major dense matrix
 struct TSMatTDMatMultTrait
 {
+ private:
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   enum { qualified = IsConst<MT1>::value || IsVolatile<MT1>::value || IsReference<MT1>::value ||
+                      IsConst<MT2>::value || IsVolatile<MT2>::value || IsReference<MT2>::value };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   typedef SelectType< IsSparseMatrix<MT1>::value && IsColumnMajorMatrix<MT1>::value &&
+                       IsDenseMatrix<MT2>::value  && IsColumnMajorMatrix<MT2>::value
+                     , TSMatTDMatMultExpr<MT1,MT2>, INVALID_TYPE >  Tmp;
+
+   typedef typename RemoveReference< typename RemoveCV<MT1>::Type >::Type  Type1;
+   typedef typename RemoveReference< typename RemoveCV<MT2>::Type >::Type  Type2;
+   /*! \endcond */
+   //**********************************************************************************************
+
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< IsSparseMatrix<MT1>::value && IsColumnMajorMatrix<MT1>::value &&
-                                IsDenseMatrix<MT2>::value  && IsColumnMajorMatrix<MT2>::value
-                              , TSMatTDMatMultExpr<MT1,MT2>, INVALID_TYPE >::Type  Type;
+   typedef typename SelectType< qualified, TSMatTDMatMultTrait<Type1,Type2>, Tmp >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

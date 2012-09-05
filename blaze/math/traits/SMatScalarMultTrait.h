@@ -33,7 +33,12 @@
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/util/InvalidType.h>
+#include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/IsReference.h>
+#include <blaze/util/typetraits/IsVolatile.h>
+#include <blaze/util/typetraits/RemoveCV.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -103,15 +108,27 @@ struct SMatScalarMultTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
+   enum { qualified = IsConst<MT>::value || IsVolatile<MT>::value || IsReference<MT>::value ||
+                      IsConst<ST>::value || IsVolatile<ST>::value || IsReference<ST>::value };
+
    enum { condition = IsSparseMatrix<MT>::value && IsRowMajorMatrix<MT>::value &&
                       IsNumeric<ST>::value };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   typedef SMatScalarMultTraitHelper<MT,ST,condition>  Tmp;
+
+   typedef typename RemoveReference< typename RemoveCV<MT>::Type >::Type  Type1;
+   typedef typename RemoveReference< typename RemoveCV<ST>::Type >::Type  Type2;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SMatScalarMultTraitHelper<MT,ST,condition>::Type  Type;
+   typedef typename SelectType< qualified, SMatScalarMultTrait<Type1,Type2>, Tmp >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

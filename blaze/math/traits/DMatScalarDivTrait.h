@@ -34,8 +34,13 @@
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/SelectType.h>
+#include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/IsReference.h>
+#include <blaze/util/typetraits/IsVolatile.h>
+#include <blaze/util/typetraits/RemoveCV.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -107,15 +112,27 @@ struct DMatScalarDivTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
+   enum { qualified = IsConst<MT>::value || IsVolatile<MT>::value || IsReference<MT>::value ||
+                      IsConst<ST>::value || IsVolatile<ST>::value || IsReference<ST>::value };
+
    enum { condition = IsDenseMatrix<MT>::value && IsRowMajorMatrix<MT>::value &&
                       IsNumeric<ST>::value };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   typedef DMatScalarDivTraitHelper<MT,ST,condition>  Tmp;
+
+   typedef typename RemoveReference< typename RemoveCV<MT>::Type >::Type  Type1;
+   typedef typename RemoveReference< typename RemoveCV<ST>::Type >::Type  Type2;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename DMatScalarDivTraitHelper<MT,ST,condition>::Type  Type;
+   typedef typename SelectType< qualified, DMatScalarDivTrait<Type1,Type2>, Tmp >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

@@ -43,7 +43,12 @@
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/IsReference.h>
+#include <blaze/util/typetraits/IsVolatile.h>
+#include <blaze/util/typetraits/RemoveCV.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -82,7 +87,13 @@ struct DivExprTrait
    /*! \endcond */
    //**********************************************************************************************
 
- public:
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   enum { qualified = IsConst<T1>::value || IsVolatile<T1>::value || IsReference<T1>::value ||
+                      IsConst<T2>::value || IsVolatile<T2>::value || IsReference<T2>::value };
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    typedef typename If< IsMatrix<T1>
@@ -139,7 +150,17 @@ struct DivExprTrait
                                                 , Failure
                                                 >::Type
                                    >::Type
-                      >::Type::Type  Type;
+                      >::Type  Tmp;
+
+   typedef typename RemoveReference< typename RemoveCV<T1>::Type >::Type  Type1;
+   typedef typename RemoveReference< typename RemoveCV<T2>::Type >::Type  Type2;
+   /*! \endcond */
+   //**********************************************************************************************
+
+ public:
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   typedef typename SelectType< qualified, DivExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

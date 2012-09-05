@@ -34,6 +34,11 @@
 #include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/SelectType.h>
+#include <blaze/util/typetraits/IsConst.h>
+#include <blaze/util/typetraits/IsReference.h>
+#include <blaze/util/typetraits/IsVolatile.h>
+#include <blaze/util/typetraits/RemoveCV.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -59,12 +64,29 @@ template< typename MT    // Type of the left-hand side column-major sparse matri
         , typename VT >  // Type of the right-hand side non-transpose sparse vector
 struct TSMatSVecMultTrait
 {
+ private:
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   enum { qualified = IsConst<MT>::value || IsVolatile<MT>::value || IsReference<MT>::value ||
+                      IsConst<VT>::value || IsVolatile<VT>::value || IsReference<VT>::value };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   typedef SelectType< IsSparseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value &&
+                       IsSparseVector<VT>::value && !IsTransposeVector<VT>::value
+                     , TSMatSVecMultExpr<MT,VT>, INVALID_TYPE >  Tmp;
+
+   typedef typename RemoveReference< typename RemoveCV<MT>::Type >::Type  Type1;
+   typedef typename RemoveReference< typename RemoveCV<VT>::Type >::Type  Type2;
+   /*! \endcond */
+   //**********************************************************************************************
+
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< IsSparseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value &&
-                                IsSparseVector<VT>::value && !IsTransposeVector<VT>::value
-                              , TSMatSVecMultExpr<MT,VT>, INVALID_TYPE >::Type  Type;
+   typedef typename SelectType< qualified, TSMatSVecMultTrait<Type1,Type2>, Tmp >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

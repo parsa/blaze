@@ -32,6 +32,11 @@
 #include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/SelectType.h>
+#include <blaze/util/typetraits/IsConst.h>
+#include <blaze/util/typetraits/IsReference.h>
+#include <blaze/util/typetraits/IsVolatile.h>
+#include <blaze/util/typetraits/RemoveCV.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -57,12 +62,29 @@ template< typename VT1    // Type of the left-hand side transpose dense vector
         , typename VT2 >  // Type of the right-hand side transpose dense vector
 struct TDVecTDVecSubTrait
 {
+ private:
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   enum { qualified = IsConst<VT1>::value || IsVolatile<VT1>::value || IsReference<VT1>::value ||
+                      IsConst<VT2>::value || IsVolatile<VT2>::value || IsReference<VT2>::value };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   typedef SelectType< IsDenseVector<VT1>::value && IsTransposeVector<VT1>::value &&
+                       IsDenseVector<VT2>::value && IsTransposeVector<VT2>::value
+                     , DVecDVecSubExpr<VT1,VT2,true>, INVALID_TYPE >  Tmp;
+
+   typedef typename RemoveReference< typename RemoveCV<VT1>::Type >::Type  Type1;
+   typedef typename RemoveReference< typename RemoveCV<VT2>::Type >::Type  Type2;
+   /*! \endcond */
+   //**********************************************************************************************
+
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< IsDenseVector<VT1>::value && IsTransposeVector<VT1>::value &&
-                                IsDenseVector<VT2>::value && IsTransposeVector<VT2>::value
-                              , DVecDVecSubExpr<VT1,VT2,true>, INVALID_TYPE >::Type  Type;
+   typedef typename SelectType< qualified, TDVecTDVecSubTrait<Type1,Type2>, Tmp >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };
