@@ -33,6 +33,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/MathTrait.h>
+#include <blaze/math/traits/DivExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/CanAlias.h>
