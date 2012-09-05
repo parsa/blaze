@@ -30,11 +30,8 @@
 #include <stdexcept>
 #include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/constraints/DenseMatrix.h>
-#include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/SparseMatrix.h>
-#include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/StorageOrder.h>
-#include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/Expression.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
@@ -47,9 +44,17 @@
 #include <blaze/math/traits/TDVecDMatMultTrait.h>
 #include <blaze/math/traits/TDVecTSMatMultTrait.h>
 #include <blaze/math/traits/TSVecDMatMultTrait.h>
+#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
+#include <blaze/math/typetraits/IsDenseMatrix.h>
+#include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsSparseMatrix.h>
+#include <blaze/math/typetraits/IsSparseVector.h>
+#include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
+#include <blaze/util/InvalidType.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -500,17 +505,11 @@ struct DMatDVecMultTrait< DMatTSMatMultExpr<MT1,MT2>, VT >
 {
  public:
    //**********************************************************************************************
-   typedef typename DMatDVecMultTrait< MT1, typename TSMatDVecMultTrait<MT2,VT>::Type >::Type  Type;
-   //**********************************************************************************************
-
- private:
-   //**Compile time checks*************************************************************************
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT2 );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( VT );
-   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( VT );
+   typedef typename SelectType< IsDenseMatrix<MT1>::value  && IsRowMajorMatrix<MT1>::value    &&
+                                IsSparseMatrix<MT2>::value && IsColumnMajorMatrix<MT2>::value &&
+                                IsDenseVector<VT>::value   && !IsTransposeVector<VT>::value
+                              , typename DMatDVecMultTrait< MT1, typename TSMatDVecMultTrait<MT2,VT>::Type >::Type
+                              , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -524,17 +523,11 @@ struct DMatSVecMultTrait< DMatTSMatMultExpr<MT1,MT2>, VT >
 {
  public:
    //**********************************************************************************************
-   typedef typename DMatSVecMultTrait< MT1, typename TSMatSVecMultTrait<MT2,VT>::Type >::Type  Type;
-   //**********************************************************************************************
-
- private:
-   //**Compile time checks*************************************************************************
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT2 );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT );
-   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( VT );
+   typedef typename SelectType< IsDenseMatrix<MT1>::value  && IsRowMajorMatrix<MT1>::value    &&
+                                IsSparseMatrix<MT2>::value && IsColumnMajorMatrix<MT2>::value &&
+                                IsSparseVector<VT>::value  && !IsTransposeVector<VT>::value
+                              , typename DMatSVecMultTrait< MT1, typename TSMatSVecMultTrait<MT2,VT>::Type >::Type
+                              , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -548,17 +541,11 @@ struct TDVecDMatMultTrait< VT, DMatTSMatMultExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   typedef typename TDVecTSMatMultTrait< typename TDVecDMatMultTrait<VT,MT1>::Type, MT2 >::Type  Type;
-   //**********************************************************************************************
-
- private:
-   //**Compile time checks*************************************************************************
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( VT );
-   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( VT );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT2 );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
+   typedef typename SelectType< IsDenseVector<VT>::value   && IsTransposeVector<VT>::value &&
+                                IsDenseMatrix<MT1>::value  && IsRowMajorMatrix<MT1>::value &&
+                                IsSparseMatrix<MT2>::value && IsColumnMajorMatrix<MT2>::value
+                              , typename TDVecTSMatMultTrait< typename TDVecDMatMultTrait<VT,MT1>::Type, MT2 >::Type
+                              , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -572,17 +559,11 @@ struct TSVecDMatMultTrait< VT, DMatTSMatMultExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   typedef typename TDVecTSMatMultTrait< typename TSVecDMatMultTrait<VT,MT1>::Type, MT2 >::Type  Type;
-   //**********************************************************************************************
-
- private:
-   //**Compile time checks*************************************************************************
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT );
-   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( VT );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT2 );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
+   typedef typename SelectType< IsSparseVector<VT>::value  && IsTransposeVector<VT>::value &&
+                                IsDenseMatrix<MT1>::value  && IsRowMajorMatrix<MT1>::value &&
+                                IsSparseMatrix<MT2>::value && IsColumnMajorMatrix<MT2>::value
+                              , typename TDVecTSMatMultTrait< typename TSVecDMatMultTrait<VT,MT1>::Type, MT2 >::Type
+                              , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
