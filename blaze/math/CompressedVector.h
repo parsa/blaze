@@ -215,9 +215,10 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    typedef This                        ResultType;      //!< Result type for expression template evaluations.
    typedef CompressedVector<Type,!TF>  TransposeType;   //!< Transpose type for expression template evaluations.
    typedef Type                        ElementType;     //!< Type of the compressed vector elements.
+   typedef const Type&                 ReturnType;      //!< Return type for expression template evaluations.
    typedef const CompressedVector&     CompositeType;   //!< Data type for composite expression templates.
-   typedef VectorAccessProxy<This>     Reference;       //!< Reference to a compressed vector value.
-   typedef const Type&                 ConstReference;  //!< Reference to a constant compressed vector value.
+   typedef VectorAccessProxy<This>     Reference;       //!< Reference to a non-constant vector value.
+   typedef const Type&                 ConstReference;  //!< Reference to a constant vector value.
    typedef Element*                    Iterator;        //!< Iterator over non-constant elements.
    typedef const Element*              ConstIterator;   //!< Iterator over constant elements.
 

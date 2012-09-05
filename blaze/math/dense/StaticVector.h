@@ -163,12 +163,15 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef StaticVector<Type,N,TF>   This;           //!< Type of this StaticVector instance.
-   typedef This                      ResultType;     //!< Result type for expression template evaluations.
-   typedef StaticVector<Type,N,!TF>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef Type                      ElementType;    //!< Type of the vector elements.
-   typedef typename IT::Type         IntrinsicType;  //!< Intrinsic type of the vector elements.
-   typedef const StaticVector&       CompositeType;  //!< Data type for composite expression templates.
+   typedef StaticVector<Type,N,TF>   This;            //!< Type of this StaticVector instance.
+   typedef This                      ResultType;      //!< Result type for expression template evaluations.
+   typedef StaticVector<Type,N,!TF>  TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef Type                      ElementType;     //!< Type of the vector elements.
+   typedef typename IT::Type         IntrinsicType;   //!< Intrinsic type of the vector elements.
+   typedef const Type&               ReturnType;      //!< Return type for expression template evaluations.
+   typedef const StaticVector&       CompositeType;   //!< Data type for composite expression templates.
+   typedef Type&                     Reference;       //!< Reference to a non-constant vector value.
+   typedef const Type&               ConstReference;  //!< Reference to a constant vector value.
 
    //! Vector length return type.
    /*! Return type of the StaticVector<Type,N,TF>::length function. */
@@ -217,10 +220,10 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Type&       operator[]( size_t index );
-   inline const Type& operator[]( size_t index ) const;
-   inline Type*       data();
-   inline const Type* data() const;
+   inline Reference      operator[]( size_t index );
+   inline ConstReference operator[]( size_t index ) const;
+   inline Type*          data();
+   inline const Type*    data() const;
    //@}
    //**********************************************************************************************
 
@@ -745,7 +748,8 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, co
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline Type& StaticVector<Type,N,TF>::operator[]( size_t index )
+inline typename StaticVector<Type,N,TF>::Reference
+   StaticVector<Type,N,TF>::operator[]( size_t index )
 {
    BLAZE_USER_ASSERT( index < N, "Invalid vector access index" );
    return v_[index];
@@ -764,7 +768,8 @@ inline Type& StaticVector<Type,N,TF>::operator[]( size_t index )
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline const Type& StaticVector<Type,N,TF>::operator[]( size_t index ) const
+inline typename StaticVector<Type,N,TF>::ConstReference
+   StaticVector<Type,N,TF>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < N, "Invalid vector access index" );
    return v_[index];

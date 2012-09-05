@@ -180,13 +180,16 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef StaticMatrix<Type,M,N,SO>   This;           //!< Type of this StaticMatrix instance.
-   typedef This                        ResultType;     //!< Result type for expression template evaluations.
-   typedef StaticMatrix<Type,M,N,!SO>  OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef StaticMatrix<Type,N,M,!SO>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef Type                        ElementType;    //!< Type of the matrix elements.
-   typedef typename IT::Type           IntrinsicType;  //!< Intrinsic type of the matrix elements.
-   typedef const This&                 CompositeType;  //!< Data type for composite expression templates.
+   typedef StaticMatrix<Type,M,N,SO>   This;            //!< Type of this StaticMatrix instance.
+   typedef This                        ResultType;      //!< Result type for expression template evaluations.
+   typedef StaticMatrix<Type,M,N,!SO>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
+   typedef StaticMatrix<Type,N,M,!SO>  TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef Type                        ElementType;     //!< Type of the matrix elements.
+   typedef typename IT::Type           IntrinsicType;   //!< Intrinsic type of the matrix elements.
+   typedef const Type&                 ReturnType;      //!< Return type for expression template evaluations.
+   typedef const This&                 CompositeType;   //!< Data type for composite expression templates.
+   typedef Type&                       Reference;       //!< Reference to a non-constant matrix value.
+   typedef const Type&                 ConstReference;  //!< Reference to a constant matrix value.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -238,10 +241,10 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Type&       operator()( size_t i, size_t j );
-   inline const Type& operator()( size_t i, size_t j ) const;
-   inline Type*       data();
-   inline const Type* data() const;
+   inline Reference      operator()( size_t i, size_t j );
+   inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Type*          data();
+   inline const Type*    data() const;
    //@}
    //**********************************************************************************************
 
@@ -1212,7 +1215,8 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline Type& StaticMatrix<Type,M,N,SO>::operator()( size_t i, size_t j )
+inline typename StaticMatrix<Type,M,N,SO>::Reference
+   StaticMatrix<Type,M,N,SO>::operator()( size_t i, size_t j )
 {
    BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
@@ -1232,7 +1236,8 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline const Type& StaticMatrix<Type,M,N,SO>::operator()( size_t i, size_t j ) const
+inline typename StaticMatrix<Type,M,N,SO>::ConstReference
+   StaticMatrix<Type,M,N,SO>::operator()( size_t i, size_t j ) const
 {
    BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
@@ -2271,13 +2276,16 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
 
  public:
    //**Type definitions****************************************************************************
-   typedef StaticMatrix<Type,M,N,true>   This;           //!< Type of this StaticMatrix instance.
-   typedef This                          ResultType;     //!< Result type for expression template evaluations.
-   typedef StaticMatrix<Type,M,N,false>  OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef StaticMatrix<Type,N,M,false>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef Type                          ElementType;    //!< Type of the matrix elements.
-   typedef typename IT::Type             IntrinsicType;  //!< Intrinsic type of the matrix elements.
-   typedef const This&                   CompositeType;  //!< Data type for composite expression templates.
+   typedef StaticMatrix<Type,M,N,true>   This;            //!< Type of this StaticMatrix instance.
+   typedef This                          ResultType;      //!< Result type for expression template evaluations.
+   typedef StaticMatrix<Type,M,N,false>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
+   typedef StaticMatrix<Type,N,M,false>  TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef Type                          ElementType;     //!< Type of the matrix elements.
+   typedef typename IT::Type             IntrinsicType;   //!< Intrinsic type of the matrix elements.
+   typedef const Type&                   ReturnType;      //!< Return type for expression template evaluations.
+   typedef const This&                   CompositeType;   //!< Data type for composite expression templates.
+   typedef Type&                         Reference;       //!< Reference to a non-constant matrix value.
+   typedef const Type&                   ConstReference;  //!< Reference to a constant matrix value.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2329,10 +2337,10 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Type&       operator()( size_t i, size_t j );
-   inline const Type& operator()( size_t i, size_t j ) const;
-   inline Type*       data();
-   inline const Type* data() const;
+   inline Reference      operator()( size_t i, size_t j );
+   inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Type*          data();
+   inline const Type*    data() const;
    //@}
    //**********************************************************************************************
 
@@ -3304,7 +3312,8 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline Type& StaticMatrix<Type,M,N,true>::operator()( size_t i, size_t j )
+inline typename StaticMatrix<Type,M,N,true>::Reference
+   StaticMatrix<Type,M,N,true>::operator()( size_t i, size_t j )
 {
    BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
@@ -3325,7 +3334,8 @@ inline Type& StaticMatrix<Type,M,N,true>::operator()( size_t i, size_t j )
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline const Type& StaticMatrix<Type,M,N,true>::operator()( size_t i, size_t j ) const
+inline typename StaticMatrix<Type,M,N,true>::ConstReference
+   StaticMatrix<Type,M,N,true>::operator()( size_t i, size_t j ) const
 {
    BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<N, "Invalid column access index" );

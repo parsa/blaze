@@ -170,13 +170,16 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DynamicMatrix<Type,SO>   This;           //!< Type of this DynamicMatrix instance.
-   typedef This                     ResultType;     //!< Result type for expression template evaluations.
-   typedef DynamicMatrix<Type,!SO>  OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef DynamicMatrix<Type,!SO>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef Type                     ElementType;    //!< Type of the matrix elements.
-   typedef typename IT::Type        IntrinsicType;  //!< Intrinsic type of the matrix elements.
-   typedef const This&              CompositeType;  //!< Data type for composite expression templates.
+   typedef DynamicMatrix<Type,SO>   This;            //!< Type of this DynamicMatrix instance.
+   typedef This                     ResultType;      //!< Result type for expression template evaluations.
+   typedef DynamicMatrix<Type,!SO>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
+   typedef DynamicMatrix<Type,!SO>  TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef Type                     ElementType;     //!< Type of the matrix elements.
+   typedef const Type&              ReturnType;      //!< Return type for expression template evaluations.
+   typedef typename IT::Type        IntrinsicType;   //!< Intrinsic type of the matrix elements.
+   typedef const This&              CompositeType;   //!< Data type for composite expression templates.
+   typedef Type&                    Reference;       //!< Reference to a non-constant matrix value.
+   typedef const Type&              ConstReference;  //!< Reference to a constant matrix value.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -218,10 +221,10 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Type&       operator()( size_t i, size_t j );
-   inline const Type& operator()( size_t i, size_t j ) const;
-   inline Type*       data();
-   inline const Type* data() const;
+   inline Reference      operator()( size_t i, size_t j );
+   inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Type*          data();
+   inline const Type*    data() const;
    //@}
    //**********************************************************************************************
 
@@ -609,7 +612,8 @@ inline DynamicMatrix<Type,SO>::~DynamicMatrix()
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline Type& DynamicMatrix<Type,SO>::operator()( size_t i, size_t j )
+inline typename DynamicMatrix<Type,SO>::Reference
+   DynamicMatrix<Type,SO>::operator()( size_t i, size_t j )
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -627,7 +631,8 @@ inline Type& DynamicMatrix<Type,SO>::operator()( size_t i, size_t j )
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline const Type& DynamicMatrix<Type,SO>::operator()( size_t i, size_t j ) const
+inline typename DynamicMatrix<Type,SO>::ConstReference
+   DynamicMatrix<Type,SO>::operator()( size_t i, size_t j ) const
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -1975,13 +1980,16 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
 
  public:
    //**Type definitions****************************************************************************
-   typedef DynamicMatrix<Type,true>   This;           //!< Type of this DynamicMatrix instance.
-   typedef This                       ResultType;     //!< Result type for expression template evaluations.
-   typedef DynamicMatrix<Type,false>  OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef DynamicMatrix<Type,false>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef Type                       ElementType;    //!< Type of the matrix elements.
-   typedef typename IT::Type          IntrinsicType;  //!< Intrinsic type of the matrix elements.
-   typedef const This&                CompositeType;  //!< Data type for composite expression templates.
+   typedef DynamicMatrix<Type,true>   This;            //!< Type of this DynamicMatrix instance.
+   typedef This                       ResultType;      //!< Result type for expression template evaluations.
+   typedef DynamicMatrix<Type,false>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
+   typedef DynamicMatrix<Type,false>  TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef Type                       ElementType;     //!< Type of the matrix elements.
+   typedef const Type&                ReturnType;      //!< Return type for expression template evaluations.
+   typedef typename IT::Type          IntrinsicType;   //!< Intrinsic type of the matrix elements.
+   typedef const This&                CompositeType;   //!< Data type for composite expression templates.
+   typedef Type&                      Reference;       //!< Reference to a non-constant matrix value.
+   typedef const Type&                ConstReference;  //!< Reference to a constant matrix value.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2023,10 +2031,10 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Type&       operator()( size_t i, size_t j );
-   inline const Type& operator()( size_t i, size_t j ) const;
-   inline Type*       data();
-   inline const Type* data() const;
+   inline Reference      operator()( size_t i, size_t j );
+   inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Type*          data();
+   inline const Type*    data() const;
    //@}
    //**********************************************************************************************
 
@@ -2416,7 +2424,8 @@ inline DynamicMatrix<Type,true>::~DynamicMatrix()
 // \return Reference to the accessed value.
 */
 template< typename Type >  // Data type of the matrix
-inline Type& DynamicMatrix<Type,true>::operator()( size_t i, size_t j )
+inline typename DynamicMatrix<Type,true>::Reference
+   DynamicMatrix<Type,true>::operator()( size_t i, size_t j )
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -2435,7 +2444,8 @@ inline Type& DynamicMatrix<Type,true>::operator()( size_t i, size_t j )
 // \return Reference to the accessed value.
 */
 template< typename Type >  // Data type of the matrix
-inline const Type& DynamicMatrix<Type,true>::operator()( size_t i, size_t j ) const
+inline typename DynamicMatrix<Type,true>::ConstReference
+   DynamicMatrix<Type,true>::operator()( size_t i, size_t j ) const
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );

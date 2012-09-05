@@ -160,12 +160,15 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DynamicVector<Type,TF>   This;           //!< Type of this DynamicVector instance.
-   typedef This                     ResultType;     //!< Result type for expression template evaluations.
-   typedef DynamicVector<Type,!TF>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef Type                     ElementType;    //!< Type of the vector elements.
-   typedef typename IT::Type        IntrinsicType;  //!< Intrinsic type of the vector elements.
-   typedef const DynamicVector&     CompositeType;  //!< Data type for composite expression templates.
+   typedef DynamicVector<Type,TF>   This;            //!< Type of this DynamicVector instance.
+   typedef This                     ResultType;      //!< Result type for expression template evaluations.
+   typedef DynamicVector<Type,!TF>  TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef Type                     ElementType;     //!< Type of the vector elements.
+   typedef typename IT::Type        IntrinsicType;   //!< Intrinsic type of the vector elements.
+   typedef const Type&              ReturnType;      //!< Return type for expression template evaluations
+   typedef const DynamicVector&     CompositeType;   //!< Data type for composite expression templates.
+   typedef Type&                    Reference;       //!< Reference to a non-constant vector value.
+   typedef const Type&              ConstReference;  //!< Reference to a constant vector value.
 
    //! Vector length return type.
    /*! Return type of the DynamicVector<Type,TF>::length function. */
@@ -211,10 +214,10 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Type&       operator[]( size_t index );
-   inline const Type& operator[]( size_t index ) const;
-   inline Type*       data();
-   inline const Type* data() const;
+   inline Reference      operator[]( size_t index );
+   inline ConstReference operator[]( size_t index ) const;
+   inline Type*          data();
+   inline const Type*    data() const;
    //@}
    //**********************************************************************************************
 
@@ -591,7 +594,8 @@ inline DynamicVector<Type,TF>::~DynamicVector()
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline Type& DynamicVector<Type,TF>::operator[]( size_t index )
+inline typename DynamicVector<Type,TF>::Reference
+   DynamicVector<Type,TF>::operator[]( size_t index )
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
    return v_[index];
@@ -607,7 +611,8 @@ inline Type& DynamicVector<Type,TF>::operator[]( size_t index )
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline const Type& DynamicVector<Type,TF>::operator[]( size_t index ) const
+inline typename DynamicVector<Type,TF>::ConstReference
+   DynamicVector<Type,TF>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
    return v_[index];

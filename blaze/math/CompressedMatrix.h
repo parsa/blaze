@@ -215,6 +215,7 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
    typedef CompressedMatrix<Type,!SO>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
    typedef CompressedMatrix<Type,!SO>  TransposeType;   //!< Transpose type for expression template evaluations.
    typedef Type                        ElementType;     //!< Type of the sparse matrix elements.
+   typedef const Type&                 ReturnType;      //!< Return type for expression template evaluations.
    typedef const This&                 CompositeType;   //!< Data type for composite expression templates.
    typedef MatrixAccessProxy<This>     Reference;       //!< Reference to a sparse matrix value.
    typedef const Type&                 ConstReference;  //!< Reference to a constant sparse matrix value.
@@ -2016,9 +2017,10 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
    typedef CompressedMatrix<Type,false>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
    typedef CompressedMatrix<Type,false>  TransposeType;   //!< Transpose type for expression template evaluations.
    typedef Type                          ElementType;     //!< Type of the sparse matrix elements.
+   typedef const Type&                   ReturnType;      //!< Return type for expression template evaluations.
    typedef const This&                   CompositeType;   //!< Data type for composite expression templates.
-   typedef MatrixAccessProxy<This>       Reference;       //!< Reference to a sparse matrix value.
-   typedef const Type&                   ConstReference;  //!< Reference to a constant sparse matrix value.
+   typedef MatrixAccessProxy<This>       Reference;       //!< Reference to a non-constant matrix value.
+   typedef const Type&                   ConstReference;  //!< Reference to a constant matrix value.
    typedef Element*                      Iterator;        //!< Iterator over non-constant elements.
    typedef const Element*                ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
