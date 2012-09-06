@@ -27,8 +27,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <iomanip>
-#include <ostream>
 #include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DMatAbsExpr.h>
@@ -139,9 +137,6 @@ inline typename EnableIf< IsNumeric<T2>, bool >::Type
 template< typename T1, typename T2, bool SO >
 inline typename EnableIf< IsNumeric<T2>, bool >::Type
    operator!=( T1 scalar, const DenseMatrix<T2,SO>& mat );
-
-template< typename MT, bool SO >
-inline std::ostream& operator<<( std::ostream& os, const DenseMatrix<MT,SO>& dm );
 //@}
 //*************************************************************************************************
 
@@ -570,31 +565,6 @@ inline typename EnableIf< IsNumeric<T1>, bool >::Type
    operator!=( T1 scalar, const DenseMatrix<T2,SO>& mat )
 {
    return !( mat == scalar );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Global output operator for dense MxN matrices.
-// \ingroup dense_matrix
-//
-// \param os Reference to the output stream.
-// \param dm Reference to a constant dense matrix object.
-// \return Reference to the output stream.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline std::ostream& operator<<( std::ostream& os, const DenseMatrix<MT,SO>& dm )
-{
-   for( size_t i=0; i<(~dm).rows(); ++i ) {
-      os << "( ";
-      for( size_t j=0; j<(~dm).columns(); ++j ) {
-         os << std::setw(14) << (~dm)(i,j) << " ";
-      }
-      os << ")\n";
-   }
-
-   return os;
 }
 //*************************************************************************************************
 

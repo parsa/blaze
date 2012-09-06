@@ -27,8 +27,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <iomanip>
-#include <ostream>
 #include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DVecTSVecMultExpr.h>
@@ -89,9 +87,6 @@ inline bool operator==( const SparseMatrix<T1,SO>& lhs, const SparseMatrix<T2,!S
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 inline bool operator!=( const SparseMatrix<T1,SO1>& lhs, const SparseMatrix<T2,SO2>& rhs );
-
-template< typename MT, bool SO >
-std::ostream& operator<<( std::ostream& os, const SparseMatrix<MT,SO>& sm );
 //@}
 //*************************************************************************************************
 
@@ -250,31 +245,6 @@ template< typename T1  // Type of the left-hand side sparse matrix
 inline bool operator!=( const SparseMatrix<T1,SO1>& lhs, const SparseMatrix<T2,SO2>& rhs )
 {
    return !( lhs == rhs );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Global output operator for sparse MxN matrices.
-// \ingroup sparse_matrix
-//
-// \param os Reference to the output stream.
-// \param sm Reference to a constant sparse matrix object.
-// \return Reference to the output stream.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-std::ostream& operator<<( std::ostream& os, const SparseMatrix<MT,SO>& sm )
-{
-   for( size_t i=0; i<(~sm).rows(); ++i ) {
-      os << "( ";
-      for( size_t j=0; j<(~sm).columns(); ++j ) {
-         os << std::setw(14) << (~sm)(i,j) << " ";
-      }
-      os << ")\n";
-   }
-
-   return os;
 }
 //*************************************************************************************************
 

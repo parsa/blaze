@@ -27,7 +27,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <ostream>
 #include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/DVecAbsExpr.h>
@@ -46,6 +45,7 @@
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/TransposeFlag.h>
 #include <blaze/math/Vector.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -97,9 +97,6 @@ inline typename EnableIf< IsNumeric<T2>, bool >::Type
 template< typename T1, typename T2, bool TF >
 inline typename EnableIf< IsNumeric<T1>, bool >::Type
    operator!=( T1 scalar, const DenseVector<T2,TF>& vec );
-
-template< typename VT, bool TF >
-inline std::ostream& operator<<( std::ostream& os, const DenseVector<VT,TF>& dv );
 //@}
 //*************************************************************************************************
 
@@ -354,25 +351,6 @@ inline typename EnableIf< IsNumeric<T1>, bool >::Type
    operator!=( T1 scalar, const DenseVector<T2,TF>& vec )
 {
    return !( vec == scalar );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Global output operator for arbitrary sized dense vectors.
-// \ingroup dense_vector
-//
-// \param os Reference to the output stream.
-// \param dv Reference to a constant dense vector object.
-// \return Reference to the output stream.
-*/
-template< typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
-inline std::ostream& operator<<( std::ostream& os, const DenseVector<VT,TF>& dv )
-{
-   for( size_t i=0; i<(~dv).size(); ++i )
-      os << (~dv)[i] << "\n";
-   return os;
 }
 //*************************************************************************************************
 

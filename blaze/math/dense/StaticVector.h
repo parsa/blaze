@@ -29,7 +29,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <ostream>
 #include <stdexcept>
 #include <blaze/math/CMathTrait.h>
 #include <blaze/math/DenseVector.h>
@@ -1821,9 +1820,6 @@ class StaticVector<Type,0UL,TF>;
 /*!\name StaticVector operators */
 //@{
 template< typename Type, size_t N, bool TF >
-std::ostream& operator<<( std::ostream& os, const StaticVector<Type,N,TF>& v );
-
-template< typename Type, size_t N, bool TF >
 inline bool isnan( const StaticVector<Type,N,TF>& v );
 
 template< typename Type, size_t N, bool TF >
@@ -1848,27 +1844,6 @@ inline const StaticVector<Type,3UL,TF> perp( const StaticVector<Type,3UL,TF>& v 
 template< typename Type, size_t N, bool TF >
 inline void swap( StaticVector<Type,N,TF>& a, StaticVector<Type,N,TF>& b ) /* throw() */;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Global output operator for static vectors.
-// \ingroup static_vector
-//
-// \param os Reference to the output stream.
-// \param v Reference to a constant vector object.
-// \return Reference to the output stream.
-*/
-template< typename Type  // Data type of the vector
-        , size_t N       // Number of elements
-        , bool TF >      // Transpose flag
-std::ostream& operator<<( std::ostream& os, const StaticVector<Type,N,TF>& v )
-{
-   os << "(" << v[0UL];
-   for( size_t i=1UL; i<N; ++i )
-      os << "," << v[i];
-   return os << ")";
-}
 //*************************************************************************************************
 
 

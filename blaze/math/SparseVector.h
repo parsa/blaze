@@ -27,7 +27,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <ostream>
 #include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/DVecSVecMultExpr.h>
@@ -46,6 +45,7 @@
 #include <blaze/math/expressions/TSVecDVecMultExpr.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/TransposeFlag.h>
 #include <blaze/math/Vector.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Types.h>
@@ -67,9 +67,6 @@ inline bool operator==( const SparseVector<T1,TF1>& lhs, const SparseVector<T2,T
 
 template< typename T1, bool TF1, typename T2, bool TF2 >
 inline bool operator!=( const SparseVector<T1,TF1>& lhs, const SparseVector<T2,TF2>& rhs );
-
-template< typename VT, bool TF >
-inline std::ostream& operator<<( std::ostream& os, const SparseVector<VT,TF>& sv );
 //@}
 //*************************************************************************************************
 
@@ -154,25 +151,6 @@ template< typename T1  // Type of the left-hand side sparse vector
 inline bool operator!=( const SparseVector<T1,TF1>& lhs, const SparseVector<T2,TF2>& rhs )
 {
    return !( lhs == rhs );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Global output operator for sparse vectors.
-// \ingroup sparse_vector
-//
-// \param os Reference to the output stream.
-// \param sv Reference to a constant sparse vector object.
-// \return Reference to the output stream.
-*/
-template< typename VT  // Type of the sparse vector
-        , bool TF >    // Transpose flag
-inline std::ostream& operator<<( std::ostream& os, const SparseVector<VT,TF>& sv )
-{
-   for( size_t i=0; i<(~sv).size(); ++i )
-      os << (~sv)[i] << "\n";
-   return os;
 }
 //*************************************************************************************************
 

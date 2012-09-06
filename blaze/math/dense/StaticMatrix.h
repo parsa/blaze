@@ -29,7 +29,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <ostream>
 #include <stdexcept>
 #include <blaze/math/DenseMatrix.h>
 #include <blaze/math/Intrinsics.h>
@@ -4451,9 +4450,6 @@ class StaticMatrix<Type,0UL,0UL,SO>;
 /*!\name StaticMatrix operators */
 //@{
 template< typename Type, size_t M, size_t N, bool SO >
-std::ostream& operator<<( std::ostream& os, const StaticMatrix<Type,M,N,SO>& m );
-
-template< typename Type, size_t M, size_t N, bool SO >
 inline bool isnan( const StaticMatrix<Type,M,N,SO>& m );
 
 template< typename Type, size_t M, size_t N, bool SO >
@@ -4472,32 +4468,6 @@ inline const DMatDMatMultExpr< StaticMatrix<Type,M,N,SO>, StaticMatrix<Type,M,N,
 template< typename Type, size_t M, size_t N, bool SO >
 inline void swap( StaticMatrix<Type,M,N,SO>& a, StaticMatrix<Type,M,N,SO>& b ) /* throw() */;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Global output operator for static matrices.
-// \ingroup static_matrix
-//
-// \param os Reference to the output stream.
-// \param m Reference to a constant matrix object.
-// \return Reference to the output stream.
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-std::ostream& operator<<( std::ostream& os, const StaticMatrix<Type,M,N,SO>& m )
-{
-   for( size_t i=0UL; i<M; ++i ) {
-      os << "( ";
-      for( size_t j=0UL; j<N; ++j )
-         os << m(i,j) << " ";
-      os << ")\n";
-   }
-
-   return os;
-}
 //*************************************************************************************************
 
 

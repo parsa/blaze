@@ -27,6 +27,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <iomanip>
+#include <ostream>
 #include <blaze/math/expressions/Vector.h>
 #include <blaze/math/MathTrait.h>
 #include <blaze/util/Assert.h>
@@ -58,6 +60,9 @@ inline const typename MathTrait<typename T1::ElementType,typename T2::ElementTyp
 template< typename T1, typename T2 >
 inline const typename MathTrait<typename T1::ElementType,typename T2::ElementType>::MultType
    operator,( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs );
+
+template< typename VT, bool TF >
+inline std::ostream& operator<<( std::ostream& os, const Vector<VT,TF>& dv );
 //@}
 //*************************************************************************************************
 
@@ -134,6 +139,37 @@ inline const typename MathTrait<typename T1::ElementType,typename T2::ElementTyp
    operator,( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs )
 {
    return (~lhs) * trans(~rhs);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Global output operator for dense and sparse vectors.
+// \ingroup vector
+//
+// \param os Reference to the output stream.
+// \param dv Reference to a constant vector object.
+// \return Reference to the output stream.
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag
+inline std::ostream& operator<<( std::ostream& os, const Vector<VT,TF>& v )
+{
+   if( (~v).size() == 0UL ) {
+      os << "( )\n";
+   }
+   else if( TF == rowVector ) {
+      os << "(";
+      for( size_t i=0UL; i<(~v).size(); ++i )
+         os << " " << (~v)[i];
+      os << " )\n";
+   }
+   else {
+      for( size_t i=0UL; i<(~v).size(); ++i )
+         os << "( " << std::setw( 11UL ) << (~v)[i] << " )\n";
+   }
+
+   return os;
 }
 //*************************************************************************************************
 

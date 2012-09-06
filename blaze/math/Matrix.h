@@ -27,11 +27,55 @@
 // Includes
 //*************************************************************************************************
 
+#include <iomanip>
+#include <ostream>
 #include <blaze/math/expressions/Matrix.h>
 #include <blaze/util/Assert.h>
 
 
 namespace blaze {
+
+//=================================================================================================
+//
+//  GLOBAL OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\name Matrix operators */
+//@{
+template< typename MT, bool SO >
+inline std::ostream& operator<<( std::ostream& os, const Matrix<MT,SO>& dv );
+//@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Global output operator for dense and sparse matrices.
+// \ingroup matrix
+//
+// \param os Reference to the output stream.
+// \param dm Reference to a constant matrix object.
+// \return Reference to the output stream.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline std::ostream& operator<<( std::ostream& os, const Matrix<MT,SO>& m )
+{
+   for( size_t i=0UL; i<(~m).rows(); ++i ) {
+      os << "( ";
+      for( size_t j=0UL; j<(~m).columns(); ++j ) {
+         os << std::setw(12) << (~m)(i,j) << " ";
+      }
+      os << ")\n";
+   }
+
+   return os;
+}
+//*************************************************************************************************
+
+
+
 
 //=================================================================================================
 //
