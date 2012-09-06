@@ -19,10 +19,20 @@
 #==================================================================================================
 
 # Compiler selection
+# This variable specifies the compiler used for the compilation of all benchmarks.
 CXX=
 
 # Special compiler flags
+# This variable specifies the compiler flags used for the compilation of all benchmarks.
 CXXFLAGS=
+
+# Special include directives
+# This variable can be used to specify special/additional include-related compiler directives.
+INCLUDE_DIRECTIVES=
+
+# Special library directives
+# This variable can be used to specify special/additional library-related compiler directives.
+LIBRARY_DIRECTIVES=
 
 # Configuration of the boost library
 # The boost library (see www.boost.org) is precondition for the Blaze library and the

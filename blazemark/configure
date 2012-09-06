@@ -155,7 +155,7 @@ if [ "$EIGEN" = "yes" ] && [ "$EIGEN_MKL_INSTALLED" = "yes" ]; then
 fi
 
 # Configuration of the include paths
-INCLUDES="-isystem $INSTALL_PATH -isystem $BLAZE_PATH"
+INCLUDES="$INCLUDE_DIRECTIVES -isystem $INSTALL_PATH -isystem $BLAZE_PATH"
 
 BOOST_INCLUDE_PATH=${BOOST_INCLUDE_PATH%"/"}
 if [ -n "$BOOST_INCLUDE_PATH" ] && [[ ! "$INCLUDES" =~ "$BOOST_INCLUDE_PATH" ]]; then
@@ -212,7 +212,7 @@ if [ "$EIGEN" = "yes" ]; then
 fi
 
 # Configuration of the library path and link libraries
-LIBRARIES="-L$BLAZE_PATH/lib -lblaze"
+LIBRARIES="$LIBRARY_DIRECTIVES -L$BLAZE_PATH/lib -lblaze"
 
 BOOST_LIBRARY_PATH=${BOOST_LIBRARY_PATH%"/"}
 if [ -n "$BOOST_LIBRARY_PATH" ] && [[ ! "$LIBRARIES" =~ "$BOOST_LIBRARY_PATH" ]]; then
