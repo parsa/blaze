@@ -70,7 +70,7 @@ double complex5( size_t N, size_t steps )
    init( C );
 
    {
-      const GeMatrix T( A * B );
+      const ColGeMatrix T( A * B );
       D = T + C;
    }
 
@@ -78,7 +78,7 @@ double complex5( size_t N, size_t steps )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         const GeMatrix T( A * B );
+         const ColGeMatrix T( A * B );
          D = T + C;
       }
       timer.end();

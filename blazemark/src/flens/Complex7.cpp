@@ -71,8 +71,8 @@ double complex7( size_t N, size_t steps )
    init( D );
 
    {
-      const GeMatrix T1( A + B );
-      const GeMatrix T2( C - D );
+      const ColGeMatrix T1( A + B );
+      const ColGeMatrix T2( C - D );
       E = T1 * T2;
    }
 
@@ -80,8 +80,8 @@ double complex7( size_t N, size_t steps )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         const GeMatrix T1( A + B );
-         const GeMatrix T2( C - D );
+         const ColGeMatrix T1( A + B );
+         const ColGeMatrix T2( C - D );
          E = T1 * T2;
       }
       timer.end();
