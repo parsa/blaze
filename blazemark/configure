@@ -147,6 +147,9 @@ fi
 if [ "$FLENS" = "yes" ] && [ "FLENS_GOTO_INSTALLED" = "yes" ]; then
    CXXFLAGS="$CXXFLAGS -DWITH_GOTOBLAS"
 fi
+if [ "$FLENS" = "yes" ] && [ "FLENS_MKL_INSTALLED" = "yes" ]; then
+   CXXFLAGS="$CXXFLAGS -DWITH_MKL"
+fi
 if [ "$MTL" = "yes" ] && [ "$BLAS" = "yes" ]; then
    CXXFLAGS="$CXXFLAGS -DMTL_HAS_BLAS"
 fi
@@ -155,92 +158,94 @@ if [ "$EIGEN" = "yes" ] && [ "$EIGEN_MKL_INSTALLED" = "yes" ]; then
 fi
 
 # Configuration of the include paths
-INCLUDES="$INCLUDE_DIRECTIVES -isystem $INSTALL_PATH -isystem $BLAZE_PATH"
+INCLUDES="$INCLUDE_DIRECTIVES -isystem $INSTALL_PATH -isystem $BLAZE_PATH "
 
 BOOST_INCLUDE_PATH=${BOOST_INCLUDE_PATH%"/"}
-if [ -n "$BOOST_INCLUDE_PATH" ] && [[ ! "$INCLUDES" =~ "$BOOST_INCLUDE_PATH" ]]; then
-   INCLUDES="$INCLUDES -isystem $BOOST_INCLUDE_PATH"
+if [ -n "$BOOST_INCLUDE_PATH" ] && [[ ! "$INCLUDES" =~ "$BOOST_INCLUDE_PATH " ]]; then
+   INCLUDES="${INCLUDES%" "} -isystem $BOOST_INCLUDE_PATH "
 fi
 
 BLAS_INCLUDE_PATH=${BLAS_INCLUDE_PATH%"/"}
 if [ "$BLAS" = "yes" ]; then
-   if [ -n "$BLAS_INCLUDE_PATH" ] && [[ ! "$INCLUDES" =~ "$BLAS_INCLUDE_PATH" ]]; then
-      INCLUDES="$INCLUDES -isystem $BLAS_INCLUDE_PATH"
+   if [ -n "$BLAS_INCLUDE_PATH" ] && [[ ! "$INCLUDES" =~ "$BLAS_INCLUDE_PATH " ]]; then
+      INCLUDES="${INCLUDES%" "} -isystem $BLAS_INCLUDE_PATH "
    fi
 fi
 
 BLITZ_INCLUDE_PATH=${BLITZ_INCLUDE_PATH%"/"}
 if [ "$BLITZ" = "yes" ]; then
-   if [ -n "$BLITZ_INCLUDE_PATH" ] && [[ ! "$INCLUDES" =~ "$BLITZ_INCLUDE_PATH" ]]; then
-      INCLUDES="$INCLUDES -isystem $BLITZ_INCLUDE_PATH"
+   if [ -n "$BLITZ_INCLUDE_PATH" ] && [[ ! "$INCLUDES" =~ "$BLITZ_INCLUDE_PATH " ]]; then
+      INCLUDES="${INCLUDES%" "} -isystem $BLITZ_INCLUDE_PATH "
    fi
 fi
 
 GMM_INCLUDE_PATH=${GMM_INCLUDE_PATH%"/"}
 if [ "$GMM" = "yes" ]; then
-   if [ -n "$GMM_INCLUDE_PATH" ] && [[ ! "$INCLUDES" =~ "$GMM_INCLUDE_PATH" ]]; then
-      INCLUDES="$INCLUDES -isystem $GMM_INCLUDE_PATH"
+   if [ -n "$GMM_INCLUDE_PATH" ] && [[ ! "$INCLUDES" =~ "$GMM_INCLUDE_PATH " ]]; then
+      INCLUDES="${INCLUDES%" "} -isystem $GMM_INCLUDE_PATH "
    fi
 fi
 
 ARMADILLO_INCLUDE_PATH=${ARMADILLO_INCLUDE_PATH%"/"}
 if [ "$ARMADILLO" = "yes" ]; then
-   if [ -n "$ARMADILLO_INCLUDE_PATH" ] && [[ ! "$INCLUDES" =~ "$ARMADILLO_INCLUDE_PATH" ]]; then
-      INCLUDES="$INCLUDES -isystem $ARMADILLO_INCLUDE_PATH"
+   if [ -n "$ARMADILLO_INCLUDE_PATH" ] && [[ ! "$INCLUDES" =~ "$ARMADILLO_INCLUDE_PATH " ]]; then
+      INCLUDES="${INCLUDES%" "} -isystem $ARMADILLO_INCLUDE_PATH "
    fi
 fi
 
 FLENS_INCLUDE_PATH=${FLENS_INCLUDE_PATH%"/"}
 if [ "$FLENS" = "yes" ]; then
-   if [ -n "$FLENS_INCLUDE_PATH" ] && [[ ! "$INCLUDES" =~ "$FLENS_INCLUDE_PATH" ]]; then
-      INCLUDES="$INCLUDES -isystem $FLENS_INCLUDE_PATH"
+   if [ -n "$FLENS_INCLUDE_PATH" ] && [[ ! "$INCLUDES" =~ "$FLENS_INCLUDE_PATH " ]]; then
+      INCLUDES="${INCLUDES%" "} -isystem $FLENS_INCLUDE_PATH "
    fi
 fi
 
 MTL_INCLUDE_PATH=${MTL_INCLUDE_PATH%"/"}
 if [ "$MTL" = "yes" ]; then
-   if [ -n "$MTL_INCLUDE_PATH" ] && [[ ! "$INCLUDES" =~ "$MTL_INCLUDE_PATH" ]]; then
-      INCLUDES="$INCLUDES -isystem $MTL_INCLUDE_PATH"
+   if [ -n "$MTL_INCLUDE_PATH" ] && [[ ! "$INCLUDES" =~ "$MTL_INCLUDE_PATH " ]]; then
+      INCLUDES="${INCLUDES%" "} -isystem $MTL_INCLUDE_PATH "
    fi
 fi
 
 EIGEN_INCLUDE_PATH=${EIGEN_INCLUDE_PATH%"/"}
 if [ "$EIGEN" = "yes" ]; then
-   if [ -n "$EIGEN_INCLUDE_PATH" ] && [[ ! "$INCLUDES" =~ "$EIGEN_INCLUDE_PATH" ]]; then
-      INCLUDES="$INCLUDES -isystem $EIGEN_INCLUDE_PATH"
+   if [ -n "$EIGEN_INCLUDE_PATH" ] && [[ ! "$INCLUDES" =~ "$EIGEN_INCLUDE_PATH " ]]; then
+      INCLUDES="${INCLUDES%" "} -isystem $EIGEN_INCLUDE_PATH "
    fi
 fi
 
 # Configuration of the library path and link libraries
-LIBRARIES="$LIBRARY_DIRECTIVES -L$BLAZE_PATH/lib -lblaze"
+LIBRARIES="$LIBRARY_DIRECTIVES -L$BLAZE_PATH/lib -lblaze "
 
 BOOST_LIBRARY_PATH=${BOOST_LIBRARY_PATH%"/"}
-if [ -n "$BOOST_LIBRARY_PATH" ] && [[ ! "$LIBRARIES" =~ "$BOOST_LIBRARY_PATH" ]]; then
-   LIBRARIES="$LIBRARIES -L$BOOST_LIBRARY_PATH"
+if [ -n "$BOOST_LIBRARY_PATH" ] && [[ ! "$LIBRARIES" =~ "$BOOST_LIBRARY_PATH " ]]; then
+   LIBRARIES="${LIBRARIES%" "} -L$BOOST_LIBRARY_PATH "
 fi
 
 BOOST_THREAD_LIBRARY=${BOOST_THREAD_LIBRARY#"lib"}
 if [ -n "$BOOST_THREAD_LIBRARY" ]; then
-   LIBRARIES="$LIBRARIES -l$BOOST_THREAD_LIBRARY"
+   LIBRARIES="${LIBRARIES%" "} -l$BOOST_THREAD_LIBRARY "
 else
-   LIBRARIES="$LIBRARIES -lboost_thread"
+   LIBRARIES="${LIBRARIES%" "} -lboost_thread"
 fi
 
 if [ "$BLAS" = "yes" ]; then
-   if [ -n "$BLAS_LIBRARY_PATH" ] && [[ ! "$LIBRARIES" =~ "$BLAS_LIBRARY_PATH" ]]; then
-      LIBRARIES="$LIBRARIES -L$BLAS_LIBRARY_PATH"
+   if [ -n "$BLAS_LIBRARY_PATH" ] && [[ ! "$LIBRARIES" =~ "$BLAS_LIBRARY_PATH " ]]; then
+      LIBRARIES="${LIBRARIES%" "} -L$BLAS_LIBRARY_PATH "
    fi
    if [ -n "$BLAS_LIBRARIES" ]; then
-      LIBRARIES="$LIBRARIES $BLAS_LIBRARIES"
+      LIBRARIES="${LIBRARIES%" "} $BLAS_LIBRARIES"
    fi
 fi
 
 if [ "$BLITZ" = "yes" ]; then
-   if [ -n "$BLITZ_LIBRARY_PATH" ] && [[ ! "$LIBRARIES" =~ "$BLITZ_LIBRARY_PATH" ]]; then
-      LIBRARIES="$LIBRARIES -L$BLITZ_LIBRARY_PATH"
+   if [ -n "$BLITZ_LIBRARY_PATH" ] && [[ ! "$LIBRARIES" =~ "$BLITZ_LIBRARY_PATH " ]]; then
+      LIBRARIES="${LIBRARIES%" "} -L$BLITZ_LIBRARY_PATH "
    fi
-   LIBRARIES="$LIBRARIES -lblitz"
+   LIBRARIES="${LIBRARIES%" "} -lblitz"
 fi
+
+LIBRARIES=${LIBRARIES%" "}
 
 # Configuration of the modules
 MODULES="clike classic"
