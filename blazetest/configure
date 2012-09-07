@@ -89,46 +89,50 @@ BLAZE_PATH="${INSTALL_PATH%%/blazetest}"
 # Generating the Makefile
 
 # Configuration of the include paths
-CXXFLAGS="$CXXFLAGS -isystem $INSTALL_PATH -isystem $BLAZE_PATH"
+CXXFLAGS="$CXXFLAGS -isystem $INSTALL_PATH -isystem $BLAZE_PATH "
 
 BOOST_INCLUDE_PATH=${BOOST_INCLUDE_PATH%"/"}
 if [ -n "$BOOST_INCLUDE_PATH" ]; then
-   if [[ ! "$CXXFLAGS" =~ "$BOOST_INCLUDE_PATH" ]]; then
-      CXXFLAGS="$CXXFLAGS -isystem $BOOST_INCLUDE_PATH"
+   if [[ ! "$CXXFLAGS" =~ "$BOOST_INCLUDE_PATH " ]]; then
+      CXXFLAGS="${CXXFLAGS%" "} -isystem $BOOST_INCLUDE_PATH "
    fi
 fi
 
 BLAS_INCLUDE_PATH=${BLAS_INCLUDE_PATH%"/"}
 if [ "$BLAS" = "yes" ] && [ -n "$BLAS_INCLUDE_PATH" ]; then
    if [[ ! "$CXXFLAGS" =~ "$BLAS_INCLUDE_PATH" ]]; then
-      CXXFLAGS="$CXXFLAGS -isystem $BLAS_INCLUDE_PATH"
+      CXXFLAGS="${CXXFLAGS%" "} -isystem $BLAS_INCLUDE_PATH "
    fi
 fi
+
+CXXFLAGS=${CXXFLAGS%" "}
 
 # Configuration of the library path and link libraries
 LIBRARIES="-L$BLAZE_PATH/lib -lblaze"
 
 BOOST_LIBRARY_PATH=${BOOST_LIBRARY_PATH%"/"}
-if [ -n "$BOOST_LIBRARY_PATH" ] && [[ ! "$LIBRARIES" =~ "$BOOST_LIBRARY_PATH" ]]; then
-   LIBRARIES="$LIBRARIES -L$BOOST_LIBRARY_PATH"
+if [ -n "$BOOST_LIBRARY_PATH" ] && [[ ! "$LIBRARIES" =~ "$BOOST_LIBRARY_PATH " ]]; then
+   LIBRARIES="${LIBRARIES%" "} -L$BOOST_LIBRARY_PATH "
 fi
 
 BOOST_THREAD_LIBRARY=${BOOST_THREAD_LIBRARY#"lib"}
 if [ -n "$BOOST_THREAD_LIBRARY" ]; then
-   LIBRARIES="$LIBRARIES -l$BOOST_THREAD_LIBRARY"
+   LIBRARIES="${LIBRARIES%" "} -l$BOOST_THREAD_LIBRARY"
 else
-   LIBRARIES="$LIBRARIES -lboost_thread"
+   LIBRARIES="${LIBRARIES%" "} -lboost_thread"
 fi
 
 BLAS_LIBRARY_PATH=${BLAS_LIBRARY_PATH%"/"}
 if [ "$BLAS" = "yes" ]; then
-   if [ -n "$BLAS_LIBRARY_PATH" ] && [[ ! "$LIBRARIES" =~ "$BLAS_LIBRARY_PATH" ]]; then
-      LIBRARIES="$LIBRARIES -L$BLAS_LIBRARY_PATH"
+   if [ -n "$BLAS_LIBRARY_PATH" ] && [[ ! "$LIBRARIES" =~ "$BLAS_LIBRARY_PATH " ]]; then
+      LIBRARIES="${LIBRARIES%" "} -L$BLAS_LIBRARY_PATH "
    fi
    if [ -n "$BLAS_LIBRARIES" ]; then
-      LIBRARIES="$LIBRARIES $BLAS_LIBRARIES"
+      LIBRARIES="${LIBRARIES%" "} $BLAS_LIBRARIES "
    fi
 fi
+
+LIBRARIES=${LIBRARIES%" "}
 
 
 ############################
