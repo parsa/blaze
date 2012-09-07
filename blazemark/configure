@@ -214,8 +214,10 @@ if [ "$EIGEN" = "yes" ]; then
    fi
 fi
 
+INCLUDES=${INCLUDES%" "}
+
 # Configuration of the library path and link libraries
-LIBRARIES="$LIBRARY_DIRECTIVES -L$BLAZE_PATH/lib -lblaze "
+LIBRARIES="$LIBRARY_DIRECTIVES -L$BLAZE_PATH/lib -lblaze"
 
 BOOST_LIBRARY_PATH=${BOOST_LIBRARY_PATH%"/"}
 if [ -n "$BOOST_LIBRARY_PATH" ] && [[ ! "$LIBRARIES" =~ "$BOOST_LIBRARY_PATH " ]]; then
@@ -224,7 +226,7 @@ fi
 
 BOOST_THREAD_LIBRARY=${BOOST_THREAD_LIBRARY#"lib"}
 if [ -n "$BOOST_THREAD_LIBRARY" ]; then
-   LIBRARIES="${LIBRARIES%" "} -l$BOOST_THREAD_LIBRARY "
+   LIBRARIES="${LIBRARIES%" "} -l$BOOST_THREAD_LIBRARY"
 else
    LIBRARIES="${LIBRARIES%" "} -lboost_thread"
 fi
