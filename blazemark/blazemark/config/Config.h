@@ -57,8 +57,10 @@ const double deviation( 5.0 );  //!< Maximum allowed deviation of the average be
 /*!\brief Element type for all benchmarks.
 //
 // This type definition specifies the data type used as element type for all dense and sparse
-// vectors and matrices in all benchmarks. The type is currently restricted to floating point
-// data types, i.e. <a>float, double, and long double</a>.
+// vectors and matrices in all benchmarks. Possible settings for this type are <a>char, signed
+// char, unsigned char, wchar_t, short, unsigned short, int, unsigned int, long, unsigned long,
+// float, double, long double and complex</a> with the previously named types as element type.
+// The default setting is \a double.
 */
 typedef double  element_t;
 //*************************************************************************************************
