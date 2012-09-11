@@ -557,13 +557,13 @@ namespace blaze {}
                                             // All elements are initialized to 0.
    StaticVector<long,3UL,columnVector> v2;  // Instantiation of a 3D long integer column vector.
                                             // Again, all elements are initialized to 0L.
-   DynamicVector<float> v3;                 // Instantiation of a dynamic single-precision column
+   DynamicVector<float> v3;                 // Instantiation of a dynamic single precision column
                                             // vector of size 0.
-   DynamicVector<double,rowVector> v4;      // Instantiation of a dynamic double-precision row
+   DynamicVector<double,rowVector> v4;      // Instantiation of a dynamic double precision row
                                             // vector of size 0.
    CompressedVector<int> v5;                // Instantiation of a compressed integer column
                                             // vector of size 0.
-   CompressedVector<double,rowVector> v6;   // Instantiation of a compressed double-precision row
+   CompressedVector<double,rowVector> v6;   // Instantiation of a compressed double precision row
                                             // vector of size 0.
    \endcode
 
@@ -593,10 +593,10 @@ namespace blaze {}
    \code
    StaticVector<int,3UL,rowVector> v10( 2 );            // Instantiation of a 3D integer row vector.
                                                         // All elements are initialized to 2.
-   DynamicVector<float> v11( 3UL, 7.0F );               // Instantiation of a dynamic single-precision
+   DynamicVector<float> v11( 3UL, 7.0F );               // Instantiation of a dynamic single precision
                                                         // column vector of size 3. All elements are
                                                         // set to 7.0F.
-   CompressedVector<float,rowVector> v12( 15UL, 3UL );  // Instantiation of a single-precision column
+   CompressedVector<float,rowVector> v12( 15UL, 3UL );  // Instantiation of a single precision column
                                                         // vector of size 15, which provides enough
                                                         // space for at least 3 non-zero elements.
    \endcode
@@ -659,7 +659,7 @@ namespace blaze {}
    // Setting all integer elements of the StaticVector to 2
    v1 = 2;
 
-   // Setting all double-precision elements of the DynamicVector to 5.0
+   // Setting all double precision elements of the DynamicVector to 5.0
    v2 = 5.0;
    \endcode
 
@@ -922,7 +922,7 @@ namespace blaze {}
 // In order to reset all elements of a vector, the \c reset() function can be used:
 
    \code
-   // Setup of a single-precision column vector, whose elements are initialized with 2.0F.
+   // Setup of a single precision column vector, whose elements are initialized with 2.0F.
    blaze::DynamicVector<float> v1( 3UL, 2.0F );
 
    // Resetting all elements to 0.0F. Only the elements are reset, the size of the vector is unchanged.
@@ -934,7 +934,7 @@ namespace blaze {}
 // vector), the \c clear() function can be used:
 
    \code
-   // Setup of a single-precision column vector, whose elements are initialized with -1.0F.
+   // Setup of a single precision column vector, whose elements are initialized with -1.0F.
    blaze::DynamicVector<float> v1( 5, -1.0F );
 
    // Resetting the entire vector.
@@ -1094,15 +1094,15 @@ namespace blaze {}
    // a StaticMatrix is fixed via the second and third template
    // parameter, the initial size of a constructed DynamicMatrix
    // or CompressedMatrix is 0.
-   StaticMatrix<int,2UL,2UL> M1;           // Instantiation of a 2x2 single-precision row-major
+   StaticMatrix<int,2UL,2UL> M1;           // Instantiation of a 2x2 single precision row-major
                                            // matrix. All elements are initialized to 0.
-   DynamicMatrix<float> M2;                // Instantiation of a single-precision dynamic
+   DynamicMatrix<float> M2;                // Instantiation of a single precision dynamic
                                            // row-major matrix with 0 rows and 0 columns.
-   DynamicMatrix<double,columnMajor> M3;   // Instantiation of a double-precision dynamic
+   DynamicMatrix<double,columnMajor> M3;   // Instantiation of a double precision dynamic
                                            // column-major matrix with 0 rows and 0 columns.
    CompressedMatrix<int> M4;               // Instantiation of a compressed integer
                                            // row-major matrix of size 0x0.
-   CompressedMatrix<double,rowVector> M5;  // Instantiation of a compressed double-precision
+   CompressedMatrix<double,rowVector> M5;  // Instantiation of a compressed double precision
                                            // column-major matrix of size 0x0.
    \endcode
 
@@ -1134,7 +1134,7 @@ namespace blaze {}
    \code
    StaticMatrix<int,4UL,3UL,columnMajor> M9( 7 );  // Instantiation of a 4x3 integer row-major
                                                     // matrix. All elements are initialized to 7.
-   DynamicMatrix<float> M10( 2UL, 5UL, 2.0F );      // Instantiation of a 2x5 single-precision row-major
+   DynamicMatrix<float> M10( 2UL, 5UL, 2.0F );      // Instantiation of a 2x5 single precision row-major
                                                     // matrix. All elements are initialized to 2.0F.
    CompressedMatrix<int> M11( 3UL, 4UL, 4 );        // Instantiation of a 3x4 integer column-major
                                                     // matrix. All elements are initialized to 4.
@@ -1198,7 +1198,7 @@ namespace blaze {}
    // Setting all integer elements of the StaticMatrix to 4
    M1 = 4;
 
-   // Setting all double-precision elements of the DynamicMatrix to 3.5
+   // Setting all double precision elements of the DynamicMatrix to 3.5
    M2 = 3.5
    \endcode
 
@@ -1541,7 +1541,7 @@ namespace blaze {}
 // The number of rows and columns of the matrix are preserved:
 
    \code
-   // Setting up a single-precision row-major matrix, whose elements are initialized with 2.0F.
+   // Setting up a single precision row-major matrix, whose elements are initialized with 2.0F.
    blaze::DynamicMatrix<float> M1( 4UL, 5UL, 2.0F );
 
    // Resetting all elements to 0.0F.
@@ -1553,7 +1553,7 @@ namespace blaze {}
 // matrix), the clear() function can be used:
 
    \code
-   // Setting up a single-precision row-major matrix, whose elements are initialized with 2.0F.
+   // Setting up a single precision row-major matrix, whose elements are initialized with 2.0F.
    blaze::DynamicMatrix<float> M1( 4UL, 5UL, 2.0F );
 
    // Resetting all elements to 0.0F.
@@ -1632,7 +1632,7 @@ namespace blaze {}
 
    // ... Initialization of the vectors
 
-   v3 = v1 + v2;  // Vectorized addition of two double-precision vectors
+   v3 = v1 + v2;  // Vectorized addition of two double precision vectors
    \endcode
 
    \code
@@ -1640,7 +1640,7 @@ namespace blaze {}
 
    // ... Initialization of the matrices
 
-   M3 = M1 + M2;  // Vectorized addition of two row-major, single-precision dense matrices
+   M3 = M1 + M2;  // Vectorized addition of two row-major, single precision dense matrices
    \endcode
 
 // \n <center> Previous: \ref matrix_operations &nbsp; &nbsp; Next: \ref subtraction </center>
@@ -1698,14 +1698,14 @@ namespace blaze {}
 
    // ... Initialization of the vectors
 
-   v3 = v1 - v2;  // Vectorized subtraction of two double-precision vectors
+   v3 = v1 - v2;  // Vectorized subtraction of two double precision vectors
 
 
    blaze::DynamicMatrix<float> M1( 50UL, 70UL ), M2( 50UL, 70UL ), M3;
 
    // ... Initialization of the matrices
 
-   M3 = M1 - M2;  // Vectorized subtraction of two row-major, single-precision dense matrices
+   M3 = M1 - M2;  // Vectorized subtraction of two row-major, single precision dense matrices
    \endcode
 
 // \n <center> Previous: \ref addition &nbsp; &nbsp; Next: \ref scalar_multiplication </center>

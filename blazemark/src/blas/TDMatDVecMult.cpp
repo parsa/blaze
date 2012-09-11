@@ -45,7 +45,7 @@ namespace blas {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Kernel function for single-precision vectors and matrices.
+/*!\brief Kernel function for single precision vectors and matrices.
 //
 // \param Order Whether the matrix is row major order (C-Style) for column major order (Fortran-style).
 // \param TransA Whether to transpose matrix A.
@@ -72,7 +72,7 @@ inline void gemv( const CBLAS_ORDER Order, const CBLAS_TRANSPOSE TransA,
 
 
 //*************************************************************************************************
-/*!\brief Kernel function for double-precision vectors and matrices.
+/*!\brief Kernel function for double precision vectors and matrices.
 //
 // \param Order Whether the matrix is row major order (C-Style) for column major order (Fortran-style).
 // \param TransA Whether to transpose matrix A.

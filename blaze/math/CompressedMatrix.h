@@ -4229,7 +4229,7 @@ struct MathTrait< CompressedMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief MxN single-precision matrix.
+/*!\brief MxN single precision matrix.
 // \ingroup compressed_matrix
 */
 typedef CompressedMatrix<float,false>  CMatMxNf;
@@ -4237,7 +4237,7 @@ typedef CompressedMatrix<float,false>  CMatMxNf;
 
 
 //*************************************************************************************************
-/*!\brief MxN double-precision matrix.
+/*!\brief MxN double precision matrix.
 // \ingroup compressed_matrix
 */
 typedef CompressedMatrix<double,false>  CMatMxNd;

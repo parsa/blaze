@@ -40,7 +40,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief 2-dimensional single-precision vector.
+/*!\brief 2-dimensional single precision vector.
 // \ingroup static_vector_2
 */
 typedef StaticVector<float,2UL,false>  Vec2f;
@@ -48,7 +48,7 @@ typedef StaticVector<float,2UL,false>  Vec2f;
 
 
 //*************************************************************************************************
-/*!\brief 2-dimensional double-precision vector.
+/*!\brief 2-dimensional double precision vector.
 // \ingroup static_vector_2
 */
 typedef StaticVector<double,2UL,false>  Vec2d;
@@ -64,7 +64,7 @@ typedef StaticVector<real,2UL,false>  Vec2;
 
 
 //*************************************************************************************************
-/*!\brief 3-dimensional single-precision vector.
+/*!\brief 3-dimensional single precision vector.
 // \ingroup static_vector_3
 */
 typedef StaticVector<float,3UL,false>  Vec3f;
@@ -72,7 +72,7 @@ typedef StaticVector<float,3UL,false>  Vec3f;
 
 
 //*************************************************************************************************
-/*!\brief 3-dimensional double-precision vector.
+/*!\brief 3-dimensional double precision vector.
 // \ingroup static_vector_3
 */
 typedef StaticVector<double,3UL,false>  Vec3d;
@@ -88,7 +88,7 @@ typedef StaticVector<real,3UL,false>  Vec3;
 
 
 //*************************************************************************************************
-/*!\brief 6-dimensional single-precision vector.
+/*!\brief 6-dimensional single precision vector.
 // \ingroup static_vector_6
 */
 typedef StaticVector<float,6UL,false>  Vec6f;
@@ -96,7 +96,7 @@ typedef StaticVector<float,6UL,false>  Vec6f;
 
 
 //*************************************************************************************************
-/*!\brief 6-dimensional double-precision vector.
+/*!\brief 6-dimensional double precision vector.
 // \ingroup static_vector_6
 */
 typedef StaticVector<double,6UL,false>  Vec6d;

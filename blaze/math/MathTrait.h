@@ -158,10 +158,10 @@ namespace blaze {
 // between any combination of the supported data types:
 
    \code
-   // Vector of 3x3 single-precision matrices
+   // Vector of 3x3 single precision matrices
    typedef blaze::DynamicVector< blaze::StaticMatrix<float,3UL,3UL> >  VectorOfMatrices;
 
-   // Vector of 3D double-precision vectors
+   // Vector of 3D double precision vectors
    typedef blaze::DynamicVector< blaze::StaticVector<double,3UL> >  VectorOfVectors;
 
    VectorOfMatrices vm;  // Setup of a vector of matrices

@@ -4206,7 +4206,7 @@ struct MathTrait< DynamicMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief MxN single-precision matrix.
+/*!\brief MxN single precision matrix.
 // \ingroup dynamic_matrix
 */
 typedef DynamicMatrix<float,false>  MatMxNf;
@@ -4214,7 +4214,7 @@ typedef DynamicMatrix<float,false>  MatMxNf;
 
 
 //*************************************************************************************************
-/*!\brief MxN double-precision matrix.
+/*!\brief MxN double precision matrix.
 // \ingroup dynamic_matrix
 */
 typedef DynamicMatrix<double,false>  MatMxNd;

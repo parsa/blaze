@@ -1953,7 +1953,7 @@ struct MathTrait< CompressedVector<T1,false>, CompressedVector<T2,true> >
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Compressed single-precision vector.
+/*!\brief Compressed single precision vector.
 // \ingroup compressed_vector
 */
 typedef CompressedVector<float,false>  CVecNf;
@@ -1961,7 +1961,7 @@ typedef CompressedVector<float,false>  CVecNf;
 
 
 //*************************************************************************************************
-/*!\brief Compressed double-precision vector.
+/*!\brief Compressed double precision vector.
 // \ingroup compressed_vector
 */
 typedef CompressedVector<double,false>  CVecNd;

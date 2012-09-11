@@ -40,7 +40,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief 2x2 single-precision matrix.
+/*!\brief 2x2 single precision matrix.
 // \ingroup static_matrix_2x2
 */
 typedef StaticMatrix<float,2UL,2UL,false>  Mat2x2f;
@@ -48,7 +48,7 @@ typedef StaticMatrix<float,2UL,2UL,false>  Mat2x2f;
 
 
 //*************************************************************************************************
-/*!\brief 2x2 double-precision matrix.
+/*!\brief 2x2 double precision matrix.
 // \ingroup static_matrix_2x2
 */
 typedef StaticMatrix<double,2UL,2UL,false>  Mat2x2d;
@@ -64,7 +64,7 @@ typedef StaticMatrix<real,2UL,2UL,false>  Mat2x2;
 
 
 //*************************************************************************************************
-/*!\brief 3x3 single-precision matrix.
+/*!\brief 3x3 single precision matrix.
 // \ingroup static_matrix_3x3
 */
 typedef StaticMatrix<float,3UL,3UL,false>  Mat3x3f;
@@ -72,7 +72,7 @@ typedef StaticMatrix<float,3UL,3UL,false>  Mat3x3f;
 
 
 //*************************************************************************************************
-/*!\brief 3x3 double-precision matrix.
+/*!\brief 3x3 double precision matrix.
 // \ingroup static_matrix_3x3
 */
 typedef StaticMatrix<double,3UL,3UL,false>  Mat3x3d;
@@ -88,7 +88,7 @@ typedef StaticMatrix<real,3UL,3UL,false>  Mat3x3;
 
 
 //*************************************************************************************************
-/*!\brief 4x4 single-precision matrix.
+/*!\brief 4x4 single precision matrix.
 // \ingroup static_matrix_4x4
 */
 typedef StaticMatrix<float,4UL,4UL,false>  Mat4x4f;
@@ -96,7 +96,7 @@ typedef StaticMatrix<float,4UL,4UL,false>  Mat4x4f;
 
 
 //*************************************************************************************************
-/*!\brief 4x4 double-precision matrix.
+/*!\brief 4x4 double precision matrix.
 // \ingroup static_matrix_4x4
 */
 typedef StaticMatrix<double,4UL,4UL,false>  Mat4x4d;
@@ -112,7 +112,7 @@ typedef StaticMatrix<real,4UL,4UL,false>  Mat4x4;
 
 
 //*************************************************************************************************
-/*!\brief 5x5 single-precision matrix.
+/*!\brief 5x5 single precision matrix.
 // \ingroup static_matrix_5x5
 */
 typedef StaticMatrix<float,5UL,5UL,false>  Mat5x5f;
@@ -120,7 +120,7 @@ typedef StaticMatrix<float,5UL,5UL,false>  Mat5x5f;
 
 
 //*************************************************************************************************
-/*!\brief 5x5 double-precision matrix.
+/*!\brief 5x5 double precision matrix.
 // \ingroup static_matrix_5x5
 */
 typedef StaticMatrix<double,5UL,5UL,false>  Mat5x5d;
@@ -136,7 +136,7 @@ typedef StaticMatrix<real,5UL,5UL,false>  Mat5x5;
 
 
 //*************************************************************************************************
-/*!\brief 6x6 single-precision matrix.
+/*!\brief 6x6 single precision matrix.
 // \ingroup static_matrix_6x6
 */
 typedef StaticMatrix<float,6UL,6UL,false>  Mat6x6f;
@@ -144,7 +144,7 @@ typedef StaticMatrix<float,6UL,6UL,false>  Mat6x6f;
 
 
 //*************************************************************************************************
-/*!\brief 6x6 double-precision matrix.
+/*!\brief 6x6 double precision matrix.
 // \ingroup static_matrix_6x6
 */
 typedef StaticMatrix<double,6UL,6UL,false>  Mat6x6d;

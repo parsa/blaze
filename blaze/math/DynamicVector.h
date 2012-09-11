@@ -2199,7 +2199,7 @@ struct MathTrait< DynamicVector<T1,false>, DynamicVector<T2,true> >
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief N-dimensional single-precision vector.
+/*!\brief N-dimensional single precision vector.
 // \ingroup dynamic_vector
 */
 typedef DynamicVector<float,false>  VecNf;
@@ -2207,7 +2207,7 @@ typedef DynamicVector<float,false>  VecNf;
 
 
 //*************************************************************************************************
-/*!\brief N-dimensional double-precision vector.
+/*!\brief N-dimensional double precision vector.
 // \ingroup dynamic_vector
 */
 typedef DynamicVector<double,false>  VecNd;

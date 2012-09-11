@@ -44,7 +44,7 @@ namespace blas {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Kernel function for single-precision vectors.
+/*!\brief Kernel function for single precision vectors.
 //
 // \param N Size of the vectors.
 // \param alpha Scalar factor for \f$ \alpha op(x) \f$.
@@ -63,7 +63,7 @@ inline void daxpy( const int N, const float alpha,
 
 
 //*************************************************************************************************
-/*!\brief Kernel function for double-precision vectors.
+/*!\brief Kernel function for double precision vectors.
 //
 // \param N Size of the vectors.
 // \param alpha Scalar factor for \f$ \alpha op(x) \f$.

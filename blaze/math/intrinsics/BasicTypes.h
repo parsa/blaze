@@ -140,7 +140,7 @@ union sse_int64_t {
 
 //*************************************************************************************************
 /*!\class blaze::sse_float_t
-// \brief Intrinsic type for 32-bit single-precision floating point data values.
+// \brief Intrinsic type for 32-bit single precision floating point data values.
 // \ingroup intrinsics
 */
 /*! \cond BLAZE_INTERNAL */
@@ -172,7 +172,7 @@ union sse_float_t {
 
 //*************************************************************************************************
 /*!\class blaze::sse_double_t
-// \brief Intrinsic type for 64-bit double-precision floating point data values.
+// \brief Intrinsic type for 64-bit double precision floating point data values.
 // \ingroup intrinsics
 */
 /*! \cond BLAZE_INTERNAL */

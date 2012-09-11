@@ -748,7 +748,7 @@ inline void setzero( sse_int64_t& value )
 
 
 //*************************************************************************************************
-/*!\brief Setting a floating point intrinsic type with 4 32-bit single-precision data values to zero.
+/*!\brief Setting a floating point intrinsic type with 4 32-bit single precision data values to zero.
 // \ingroup intrinsics
 //
 // \param value The value to be set to zero.
@@ -768,7 +768,7 @@ inline void setzero( sse_float_t& value )
 
 
 //*************************************************************************************************
-/*!\brief Setting a floating point intrinsic type with 4 32-bit double-precision data values to zero.
+/*!\brief Setting a floating point intrinsic type with 4 32-bit double precision data values to zero.
 // \ingroup intrinsics
 //
 // \param value The value to be set to zero.
@@ -869,7 +869,7 @@ inline sse_int64_t operator+( sse_int64_t a, sse_int64_t b )
 
 //*************************************************************************************************
 /*!\fn sse_float_t operator+( sse_float_t, sse_float_t )
-// \brief Addition of two vectors of single-precision floating point values.
+// \brief Addition of two vectors of single precision floating point values.
 // \ingroup intrinsics
 //
 // \param a The left-hand side operand.
@@ -892,7 +892,7 @@ inline sse_float_t operator+( sse_float_t a, sse_float_t b )
 
 //*************************************************************************************************
 /*!\fn sse_double_t operator+( sse_double_t, sse_double_t )
-// \brief Addition of two vectors of double-precision floating point values.
+// \brief Addition of two vectors of double precision floating point values.
 // \ingroup intrinsics
 //
 // \param a The left-hand side operand.
@@ -995,7 +995,7 @@ inline sse_int64_t operator-( sse_int64_t a, sse_int64_t b )
 
 //*************************************************************************************************
 /*!\fn sse_float_t operator-( sse_float_t, sse_float_t )
-// \brief Subtraction of two vectors of single-precision floating point values.
+// \brief Subtraction of two vectors of single precision floating point values.
 // \ingroup intrinsics
 //
 // \param a The left-hand side operand.
@@ -1018,7 +1018,7 @@ inline sse_float_t operator-( sse_float_t a, sse_float_t b )
 
 //*************************************************************************************************
 /*!\fn sse_double_t operator-( sse_double_t, sse_double_t )
-// \brief Subtraction of two vectors of double-precision floating point values.
+// \brief Subtraction of two vectors of double precision floating point values.
 // \ingroup intrinsics
 //
 // \param a The left-hand side operand.
@@ -1085,7 +1085,7 @@ inline sse_int32_t operator*( sse_int32_t a, sse_int32_t b )
 
 //*************************************************************************************************
 /*!\fn sse_float_t operator*( sse_float_t, sse_float_t )
-// \brief Multiplication of two vectors of single-precision floating point values.
+// \brief Multiplication of two vectors of single precision floating point values.
 // \ingroup intrinsics
 //
 // \param a The left-hand side operand.
@@ -1108,7 +1108,7 @@ inline sse_float_t operator*( sse_float_t a, sse_float_t b )
 
 //*************************************************************************************************
 /*!\fn sse_double_t operator*( sse_double_t, sse_double_t )
-// \brief Multiplication of two vectors of double-precision floating point values.
+// \brief Multiplication of two vectors of double precision floating point values.
 // \ingroup intrinsics
 //
 // \param a The left-hand side operand.
@@ -1139,7 +1139,7 @@ inline sse_double_t operator*( sse_double_t a, sse_double_t b )
 
 //*************************************************************************************************
 /*!\fn sse_float_t operator/( sse_float_t, sse_float_t )
-// \brief Division of two vectors of single-precision floating point values.
+// \brief Division of two vectors of single precision floating point values.
 // \ingroup intrinsics
 //
 // \param a The left-hand side operand.
@@ -1162,7 +1162,7 @@ inline sse_float_t operator/( sse_float_t a, sse_float_t b )
 
 //*************************************************************************************************
 /*!\fn sse_double_t operator/( sse_double_t, sse_double_t )
-// \brief Division of two vectors of double-precision floating point values.
+// \brief Division of two vectors of double precision floating point values.
 // \ingroup intrinsics
 //
 // \param a The left-hand side operand.
@@ -1192,7 +1192,7 @@ inline sse_double_t operator/( sse_double_t a, sse_double_t b )
 //=================================================================================================
 
 //*************************************************************************************************
-/*\brief Dot product of two vectors of single-precision floating point values.
+/*\brief Dot product of two vectors of single precision floating point values.
 // \ingroup intrinsics
 //
 // \param a The left-hand side operand.
@@ -1216,7 +1216,7 @@ inline sse_double_t operator/( sse_double_t a, sse_double_t b )
 
 
 //*************************************************************************************************
-/*\brief Dot product of two vectors of double-precision floating point values.
+/*\brief Dot product of two vectors of double precision floating point values.
 // \ingroup intrinsics
 //
 // \param a The left-hand side operand.
@@ -1294,7 +1294,7 @@ inline int32_t sum( sse_int32_t a )
 
 
 //*************************************************************************************************
-/*!\brief Returns the sum of all elements in the single-precision floating point intrinsic vector.
+/*!\brief Returns the sum of all elements in the single precision floating point intrinsic vector.
 // \ingroup intrinsics
 //
 // \param a The vector to be sumed up.
@@ -1321,7 +1321,7 @@ inline float sum( sse_float_t a )
 
 
 //*************************************************************************************************
-/*!\brief Returns the sum of all elements in the double-precision floating point intrinsic vector.
+/*!\brief Returns the sum of all elements in the double precision floating point intrinsic vector.
 // \ingroup intrinsics
 //
 // \param a The vector to be sumed up.
