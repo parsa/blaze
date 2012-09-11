@@ -117,15 +117,26 @@ namespace blaze {
 
    // A very efficient way to add new elements to a sparse matrix is the append() function.
    // Note that append() requires that the appended element's index is strictly larger than
-   // the currently largest non-zero index of the specified row and that the rows's capacity
+   // the currently largest non-zero index of the specified row and that the matrix's capacity
    // is large enough to hold the new element.
    A.reserve( 3, 2 );       // Reserving space for 2 non-zero elements in row 3
    A.append( 3, 1, -2.1 );  // Appending the value -2.1 at column index 1 in row 3
    A.append( 3, 2,  1.4 );  // Appending the value 1.4 at column index 2 in row 3
 
+   // The most efficient way to fill a (newly created) sparse matrix with elements, however, is
+   // a combination of reserve(), append(), and the finalize() function.
+   CompressedMatrix<double,rowMajor> B( 4, 3 );
+   B.reserve( 3 );       // Reserving enough space for 3 non-zero elements
+   B.append( 0, 1, 1 );  // Appending the value 1 in row 0 with column index 1
+   B.finalize( 0 );      // Finalizing row 0
+   B.append( 1, 1, 2 );  // Appending the value 2 in row 1 with column index 1
+   B.finalize( 1 );      // Finalizing row 1
+   B.append( 2, 0, 3 );  // Appending the value 3 in row 2 with column index 0
+   B.finalize( 2 );      // Finalizing row 2
+
    // In order to traverse all non-zero elements currently stored in the matrix, the begin()
    // and end() functions can be used. In the example, all non-zero elements of the 2nd row
-   // are traversed.
+   // of A are traversed.
    for( CompressedMatrix<double,rowMajor>::Iterator i=A.begin(1); i!=A.end(1); ++i ) {
       ... = i->value();  // Access to the value of the non-zero element
       ... = i->index();  // Access to the index of the non-zero element
@@ -1668,11 +1679,25 @@ void CompressedMatrix<Type,SO>::reserveElements( size_t nonzeros )
 //
 //  - the index of the new element must be strictly larger than the largest index of non-zero
 //    elements in the specified row/column of the sparse matrix
-//  - the current number of non-zero elements in row/column \a i must be smaller than the capacity
-//    of row/column \a i.
+//  - the current number of non-zero elements in the matrix must be smaller than the capacity
+//    of the matrix
 //
 // Ignoring these preconditions might result in undefined behavior!
 //
+// In combination with the reserve() and the finalize() function, append() provides the most
+// efficient way to add new elements to a (new created) sparse matrix:
+
+   \code
+   blaze::CompressedMatrix<double,rowMajor> A( 4, 3 );
+   A.reserve( 3 );       // Reserving enough space for 3 non-zero elements
+   A.append( 0, 1, 1 );  // Appending the value 1 in row 0 with column index 1
+   A.finalize( 0 );      // Finalizing row 0
+   A.append( 1, 1, 2 );  // Appending the value 2 in row 1 with column index 1
+   A.finalize( 1 );      // Finalizing row 1
+   A.append( 2, 0, 3 );  // Appending the value 3 in row 2 with column index 0
+   A.finalize( 2 );      // Finalizing row 2
+   \endcode
+
 // \b Note: Although append() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
@@ -3482,11 +3507,25 @@ void CompressedMatrix<Type,true>::reserveElements( size_t nonzeros )
 //
 //  - the index of the new element must be strictly larger than the largest index of non-zero
 //    elements in the specified column of the sparse matrix
-//  - the current number of non-zero elements in column \a j must be smaller than the capacity of
-//    column \a j.
+//  - the current number of non-zero elements in the matrix must be smaller than the capacity of
+//    the matrix.
 //
 // Ignoring these preconditions might result in undefined behavior!
 //
+// In combination with the reserve() and the finalize() function, append() provides the most
+// efficient way to add new elements to a (new created) sparse matrix:
+
+   \code
+   blaze::CompressedMatrix<double,columnMajor> A( 3, 4 );
+   A.reserve( 3 );       // Reserving enough space for 3 non-zero elements
+   A.append( 1, 0, 1 );  // Appending the value 1 in column 0 with row index 1
+   A.finalize( 0 );      // Finalizing column 0
+   A.append( 1, 1, 2 );  // Appending the value 2 in column 1 with row index 1
+   A.finalize( 1 );      // Finalizing column 1
+   A.append( 0, 2, 3 );  // Appending the value 3 in column 2 with row index 0
+   A.finalize( 2 );      // Finalizing column 2
+   \endcode
+
 // \b Note: Although append() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
