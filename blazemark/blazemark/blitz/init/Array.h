@@ -71,7 +71,7 @@ void init( ::blitz::Array<Type,1>& v )
    const size_t N( v.size() );
 
    for( size_t i=0; i<N; ++i ) {
-      v(i) = ::blaze::rand<Type>();
+      v(i) = ::blaze::rand<Type>( 0, 10 );
    }
 }
 //*************************************************************************************************
@@ -93,7 +93,7 @@ void initRowMajorMatrix( ::blitz::Array<Type,2>& m )
 
    for( int i=0; i<M; ++i ) {
       for( int j=0; j<N; ++j ) {
-         m(i,j) = ::blaze::rand<Type>();
+         m(i,j) = ::blaze::rand<Type>( 0, 10 );
       }
    }
 }
@@ -116,7 +116,7 @@ void initColumnMajorMatrix( ::blitz::Array<Type,2>& m )
 
    for( int j=1; j<=N; ++j ) {
       for( int i=1; i<=M; ++i ) {
-         m(i,j) = ::blaze::rand<Type>();
+         m(i,j) = ::blaze::rand<Type>( 0, 10 );
       }
    }
 }

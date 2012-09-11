@@ -78,7 +78,7 @@ void init( ::Eigen::SparseMatrix<Type,::Eigen::RowMajor,EigenSparseIndexType>& m
       m.startVec( i );
       ::blazemark::Indices indices( N, nonzeros );
       for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         m.insertBack(i,*it) = ::blaze::rand<Type>();
+         m.insertBack(i,*it) = ::blaze::rand<Type>( 0, 10 );
       }
    }
 
@@ -109,7 +109,7 @@ void init( ::Eigen::SparseMatrix<Type,::Eigen::ColMajor,EigenSparseIndexType>& m
       m.startVec( j );
       ::blazemark::Indices indices( M, nonzeros );
       for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         m.insertBack(*it,j) = ::blaze::rand<Type>();
+         m.insertBack(*it,j) = ::blaze::rand<Type>( 0, 10 );
       }
    }
 

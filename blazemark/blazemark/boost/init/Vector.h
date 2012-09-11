@@ -65,7 +65,7 @@ void init( ::boost::numeric::ublas::vector<Type>& v )
    const size_t N( v.size() );
 
    for( size_t i=0UL; i<N; ++i ) {
-      v[i] = ::blaze::rand<Type>();
+      v[i] = ::blaze::rand<Type>( 0, 10 );
    }
 }
 //*************************************************************************************************

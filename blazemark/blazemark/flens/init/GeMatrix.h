@@ -69,7 +69,7 @@ void init( ::flens::GeMatrix< ::flens::FullStorage<Type,::flens::RowMajor> >& m 
 
    for( IndexType i=m.firstRow(); i<=m.lastRow(); ++i ) {
       for( IndexType j=m.firstCol(); j<=m.lastCol(); ++j ) {
-         m(i,j) = ::blaze::rand<Type>();
+         m(i,j) = ::blaze::rand<Type>( 0, 10 );
       }
    }
 }
@@ -91,7 +91,7 @@ void init( ::flens::GeMatrix< ::flens::FullStorage<Type,::flens::ColMajor> >& m 
 
    for( IndexType j=m.firstCol(); j<=m.lastCol(); ++j ) {
       for( IndexType i=m.firstRow(); i<=m.lastRow(); ++i ) {
-         m(i,j) = ::blaze::rand<Type>();
+         m(i,j) = ::blaze::rand<Type>( 0, 10 );
       }
    }
 }

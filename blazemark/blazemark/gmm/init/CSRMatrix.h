@@ -73,7 +73,7 @@ void init( ::gmm::csr_matrix<Type>& m, size_t nonzeros )
    for( size_t i=0UL; i<M; ++i ) {
       ::blazemark::Indices indices( N, nonzeros );
       for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         tmp(i,*it) = ::blaze::rand<Type>();
+         tmp(i,*it) = ::blaze::rand<Type>( 0, 10 );
       }
    }
 

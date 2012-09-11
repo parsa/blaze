@@ -65,7 +65,7 @@ template< typename Type  // Data type of the vector
 void init( ::blaze::StaticVector<Type,N,TF>& v )
 {
    for( size_t i=0UL; i<N; ++i ) {
-      v[i] = ::blaze::rand<Type>();
+      v[i] = ::blaze::rand<Type>( 0, 10 );
    }
 }
 //*************************************************************************************************

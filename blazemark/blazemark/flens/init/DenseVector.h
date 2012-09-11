@@ -65,7 +65,7 @@ void init( ::flens::DenseVector< ::flens::Array<Type> >& v )
    typedef typename ::flens::DenseVector< ::flens::Array<Type> >::IndexType  IndexType;
 
    for( IndexType i=v.firstIndex(); i<=v.lastIndex(); ++i ) {
-      v(i) = ::blaze::rand<Type>();
+      v(i) = ::blaze::rand<Type>( 0, 10 );
    }
 }
 //*************************************************************************************************

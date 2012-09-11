@@ -65,7 +65,7 @@ void init( ::mtl::dense_vector<Type>& v )
    const size_t N( size( v ) );
 
    for( size_t i=0UL; i<N; ++i ) {
-      v[i] = ::blaze::rand<Type>();
+      v[i] = ::blaze::rand<Type>( 0, 10 );
    }
 }
 //*************************************************************************************************

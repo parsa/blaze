@@ -76,7 +76,7 @@ void init( ::blaze::CompressedMatrix<Type,::blaze::rowMajor>& m, size_t nonzeros
       m.reserve( i, nonzeros );
       ::blazemark::Indices indices( N, nonzeros );
       for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         m.append( i, *it, ::blaze::rand<Type>() );
+         m.append( i, *it, ::blaze::rand<Type>( 0, 10 ) );
       }
    }
 }
@@ -104,7 +104,7 @@ void init( ::blaze::CompressedMatrix<Type,::blaze::columnMajor>& m, size_t nonze
       m.reserve( j, nonzeros );
       ::blazemark::Indices indices( M, nonzeros );
       for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         m.append( *it, j, ::blaze::rand<Type>() );
+         m.append( *it, j, ::blaze::rand<Type>( 0, 10 ) );
       }
    }
 }

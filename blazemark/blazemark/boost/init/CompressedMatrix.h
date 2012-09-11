@@ -78,7 +78,7 @@ void init( ::boost::numeric::ublas::compressed_matrix<Type,::boost::numeric::ubl
    for( size_t i=0UL; i<M; ++i ) {
       ::blazemark::Indices indices( N, nonzeros );
       for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         m(i,*it) = ::blaze::rand<Type>();
+         m(i,*it) = ::blaze::rand<Type>( 0, 10 );
       }
    }
 }
@@ -106,7 +106,7 @@ void init( ::boost::numeric::ublas::compressed_matrix<Type,::boost::numeric::ubl
    for( size_t j=0UL; j<N; ++j ) {
       ::blazemark::Indices indices( M, nonzeros );
       for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         m(*it,j) = ::blaze::rand<Type>();
+         m(*it,j) = ::blaze::rand<Type>( 0, 10 );
       }
    }
 }

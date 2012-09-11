@@ -85,7 +85,7 @@ void init( ::mtl::compressed2D< Type, ::mtl::matrix::parameters< ::mtl::tag::row
    for( size_t i=0UL; i<M; ++i ) {
       ::blazemark::Indices indices( N, nonzeros );
       for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         ins[i][*it] = ::blaze::rand<Type>();
+         ins[i][*it] = ::blaze::rand<Type>( 0, 10 );
       }
    }
 }
@@ -120,7 +120,7 @@ void init( ::mtl::compressed2D< Type, ::mtl::matrix::parameters< ::mtl::tag::col
    for( size_t j=0UL; j<N; ++j ) {
       ::blazemark::Indices indices( M, nonzeros );
       for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         ins[*it][j] = ::blaze::rand<Type>();
+         ins[*it][j] = ::blaze::rand<Type>( 0, 10 );
       }
    }
 }

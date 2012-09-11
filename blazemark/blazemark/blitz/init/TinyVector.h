@@ -64,7 +64,7 @@ template< typename Type  // Data type of the vector
 void init( ::blitz::TinyVector<Type,N>& v )
 {
    for( int i=0; i<N; ++i ) {
-      v(i) = ::blaze::rand<Type>();
+      v(i) = ::blaze::rand<Type>( 0, 10 );
    }
 }
 //*************************************************************************************************

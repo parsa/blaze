@@ -74,7 +74,7 @@ void init( ::gmm::csc_matrix<Type>& m, size_t nonzeros )
    for( size_t j=0UL; j<N; ++j ) {
       ::blazemark::Indices indices( M, nonzeros );
       for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         tmp(*it,j) = ::blaze::rand<Type>();
+         tmp(*it,j) = ::blaze::rand<Type>( 0, 10 );
       }
    }
 

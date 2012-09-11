@@ -87,7 +87,7 @@ template< typename Type >  // Data type of the vector
 void init( ::Eigen::Matrix<Type,3,1>& v )
 {
    for( int i=0; i<3; ++i ) {
-      v[i] = ::blaze::rand<Type>();
+      v[i] = ::blaze::rand<Type>( 0, 10 );
    }
 }
 //*************************************************************************************************
@@ -105,7 +105,7 @@ template< typename Type >  // Data type of the vector
 void init( ::Eigen::Matrix<Type,6,1>& v )
 {
    for( int i=0; i<6; ++i ) {
-      v[i] = ::blaze::rand<Type>();
+      v[i] = ::blaze::rand<Type>( 0, 10 );
    }
 }
 //*************************************************************************************************
@@ -125,7 +125,7 @@ void init( ::Eigen::Matrix<Type,::Eigen::Dynamic,1>& v )
    const int N( v.size() );
 
    for( int i=0; i<N; ++i ) {
-      v[i] = ::blaze::rand<Type>();
+      v[i] = ::blaze::rand<Type>( 0, 10 );
    }
 }
 //*************************************************************************************************
@@ -144,7 +144,7 @@ void init( ::Eigen::Matrix<Type,3,3,::Eigen::RowMajor>& m )
 {
    for( int i=0; i<3; ++i ) {
       for( int j=0; j<3; ++j ) {
-         m(i,j) = ::blaze::rand<Type>();
+         m(i,j) = ::blaze::rand<Type>( 0, 10 );
       }
    }
 }
@@ -164,7 +164,7 @@ void init( ::Eigen::Matrix<Type,3,3,::Eigen::ColMajor>& m )
 {
    for( int i=0; i<3; ++i ) {
       for( int j=0; j<3; ++j ) {
-         m(i,j) = ::blaze::rand<Type>();
+         m(i,j) = ::blaze::rand<Type>( 0, 10 );
       }
    }
 }
@@ -184,7 +184,7 @@ void init( ::Eigen::Matrix<Type,6,6,::Eigen::RowMajor>& m )
 {
    for( int i=0; i<6; ++i ) {
       for( int j=0; j<6; ++j ) {
-         m(i,j) = ::blaze::rand<Type>();
+         m(i,j) = ::blaze::rand<Type>( 0, 10 );
       }
    }
 }
@@ -204,7 +204,7 @@ void init( ::Eigen::Matrix<Type,6,6,::Eigen::ColMajor>& m )
 {
    for( int i=0; i<6; ++i ) {
       for( int j=0; j<6; ++j ) {
-         m(i,j) = ::blaze::rand<Type>();
+         m(i,j) = ::blaze::rand<Type>( 0, 10 );
       }
    }
 }
@@ -227,7 +227,7 @@ void init( ::Eigen::Matrix<Type,::Eigen::Dynamic,::Eigen::Dynamic,::Eigen::RowMa
 
    for( int i=0; i<M; ++i ) {
       for( int j=0; j<N; ++j ) {
-         m(i,j) = ::blaze::rand<Type>();
+         m(i,j) = ::blaze::rand<Type>( 0, 10 );
       }
    }
 }
@@ -250,7 +250,7 @@ void init( ::Eigen::Matrix<Type,::Eigen::Dynamic,::Eigen::Dynamic,::Eigen::ColMa
 
    for( int j=0; j<N; ++j ) {
       for( int i=0; i<M; ++i ) {
-         m(i,j) = ::blaze::rand<Type>();
+         m(i,j) = ::blaze::rand<Type>( 0, 10 );
       }
    }
 }

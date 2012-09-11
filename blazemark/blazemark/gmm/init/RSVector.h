@@ -69,7 +69,7 @@ void init( ::gmm::rsvector<Type>& v, size_t nonzeros )
 
    ::blazemark::Indices indices( N, nonzeros );
    for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-      v[*it] = ::blaze::rand<Type>();
+      v[*it] = ::blaze::rand<Type>( 0, 10 );
    }
 }
 //*************************************************************************************************

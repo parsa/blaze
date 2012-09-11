@@ -70,7 +70,7 @@ void init( ::boost::numeric::ublas::matrix<Type,::boost::numeric::ublas::row_maj
 
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; ++j ) {
-         m(i,j) = ::blaze::rand<Type>();
+         m(i,j) = ::blaze::rand<Type>( 0, 10 );
       }
    }
 }
@@ -93,7 +93,7 @@ void init( ::boost::numeric::ublas::matrix<Type,::boost::numeric::ublas::column_
 
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; ++i ) {
-         m(i,j) = ::blaze::rand<Type>();
+         m(i,j) = ::blaze::rand<Type>( 0, 10 );
       }
    }
 }
