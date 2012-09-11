@@ -70,7 +70,7 @@ double daxpy( size_t N, size_t steps )
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
          for( size_t i=0UL; i<N; ++i )
-            b[i] += a[i] * element_t(0.001);
+            b[i] += a[i] * element_t(3);
       }
       timer.end();
 

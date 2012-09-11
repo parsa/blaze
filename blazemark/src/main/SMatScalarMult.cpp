@@ -100,7 +100,7 @@ void estimateSteps( SparseRun& run )
    while( true ) {
       timer.start();
       for( size_t i=0UL; i<steps; ++i ) {
-         B = A * element_t(2.2);
+         B = A * element_t(3);
       }
       timer.end();
       wct = timer.last();

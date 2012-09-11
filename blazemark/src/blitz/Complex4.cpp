@@ -75,7 +75,7 @@ double complex4( size_t N, size_t steps )
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
          ::blitz::Array<element_t,1> tmp( sum( A(i,j) * a(j), j ) );
-         b += element_t(2.2) * tmp;
+         b += element_t(3) * tmp;
       }
       timer.end();
 

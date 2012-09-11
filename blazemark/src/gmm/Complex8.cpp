@@ -69,7 +69,7 @@ double complex8( size_t N, size_t steps )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         ::gmm::mult( ::gmm::scaled( A, element_t(2.2) ), B, T );
+         ::gmm::mult( ::gmm::scaled( A, element_t(3) ), B, T );
          ::gmm::add( T, C );
       }
       timer.end();

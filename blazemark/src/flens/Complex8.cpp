@@ -73,7 +73,7 @@ double complex8( size_t N, size_t steps )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         C += element_t(2.2) * A * B;
+         C += element_t(3) * A * B;
       }
       timer.end();
 

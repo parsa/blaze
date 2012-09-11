@@ -64,13 +64,13 @@ double svecscalarmult( size_t N, size_t F, size_t steps )
 
    init( a, F );
 
-   ::gmm::copy( ::gmm::scaled( a, element_t(2.2) ), b );
+   ::gmm::copy( ::gmm::scaled( a, element_t(3) ), b );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         ::gmm::copy( ::gmm::scaled( a, element_t(2.2) ), b );
+         ::gmm::copy( ::gmm::scaled( a, element_t(3) ), b );
       }
       timer.end();
 

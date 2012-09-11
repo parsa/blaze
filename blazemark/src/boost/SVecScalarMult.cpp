@@ -65,13 +65,13 @@ double svecscalarmult( size_t N, size_t F, size_t steps )
 
    init( a, F );
 
-   noalias( b ) = a * element_t(2.2);
+   noalias( b ) = a * element_t(3);
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         noalias( b ) = a * element_t(2.2);
+         noalias( b ) = a * element_t(3);
       }
       timer.end();
 

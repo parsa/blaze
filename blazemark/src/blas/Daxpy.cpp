@@ -114,7 +114,7 @@ double daxpy( size_t N, size_t steps )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         daxpy( N, element_t(0.001), a.data(), 1, b.data(), 1 );
+         daxpy( N, element_t(3), a.data(), 1, b.data(), 1 );
       }
       timer.end();
 

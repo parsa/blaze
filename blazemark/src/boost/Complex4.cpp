@@ -77,7 +77,7 @@ double complex4( size_t N, size_t steps )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         noalias( b ) += element_t(2.2) * prod( A, a );
+         noalias( b ) += element_t(3) * prod( A, a );
       }
       timer.end();
 

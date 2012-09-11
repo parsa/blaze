@@ -97,7 +97,7 @@ void estimateSteps( DenseRun& run )
    while( true ) {
       timer.start();
       for( size_t i=0UL; i<steps; ++i ) {
-         C += element_t(2.2) * A * B;
+         C += element_t(3) * A * B;
       }
       timer.end();
       wct = timer.last();

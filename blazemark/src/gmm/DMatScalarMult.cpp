@@ -63,13 +63,13 @@ double dmatscalarmult( size_t N, size_t steps )
 
    init( A );
 
-   copy( scaled( A, element_t(2.2) ), B );
+   copy( scaled( A, element_t(3) ), B );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         copy( scaled( A, element_t(2.2) ), B );
+         copy( scaled( A, element_t(3) ), B );
       }
       timer.end();
 

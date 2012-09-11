@@ -76,7 +76,7 @@ double complex8( size_t N, size_t steps )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         noalias( C ) += element_t(2.2) * prod( A, B );
+         noalias( C ) += element_t(3) * prod( A, B );
       }
       timer.end();
 

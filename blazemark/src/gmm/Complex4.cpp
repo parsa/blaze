@@ -72,7 +72,7 @@ double complex4( size_t N, size_t steps )
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
          ::gmm::mult( A, a, tmp );
-         ::gmm::add( ::gmm::scaled( tmp, element_t(2.2) ), b );
+         ::gmm::add( ::gmm::scaled( tmp, element_t(3) ), b );
       }
       timer.end();
 

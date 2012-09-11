@@ -77,7 +77,7 @@ double complex4( size_t N, size_t steps )
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
          const DenseVector tmp( A * a );
-         b += element_t(2.2) * tmp;
+         b += element_t(3) * tmp;
       }
       timer.end();
 
