@@ -1384,11 +1384,17 @@ inline void CompressedVector<Type,TF>::assign( const DenseVector<VT,TF>& rhs )
 
    size_t nonzeros( 0UL );
 
-   for( size_t i=0UL; i<size_; ++i ) {
-      if( !isDefault( (~rhs)[i] ) ) {
-         if( nonzeros++ == capacity_ )
-            reserve( extendCapacity() );
-         append( i, (~rhs)[i] );
+   for( size_t i=0UL; i<size_; ++i )
+   {
+      if( nonzeros == capacity_ )
+         reserve( extendCapacity() );
+
+      end_->value_ = (~rhs)[i];
+
+      if( !isDefault( end_->value_ ) ) {
+         end_->index_ = i;
+         ++end_;
+         ++nonzeros;
       }
    }
 }

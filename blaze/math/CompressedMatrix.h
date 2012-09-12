@@ -1793,14 +1793,20 @@ inline void CompressedMatrix<Type,SO>::assign( const DenseMatrix<MT,SO2>& rhs )
    {
       begin_[i] = end_[i] = begin_[0UL]+nonzeros;
 
-      for( size_t j=0UL; j<n_; ++j ) {
-         if( !isDefault( (~rhs)(i,j) ) ) {
-            if( nonzeros++ == capacity() ) {
-               reserveElements( extendCapacity() );
-               for( size_t k=i+1UL; k<=m_; ++k )
-                  begin_[k] = end_[k] = end_[m_];
-            }
-            append( i, j, (~rhs)(i,j) );
+      for( size_t j=0UL; j<n_; ++j )
+      {
+         if( nonzeros == capacity() ) {
+            reserveElements( extendCapacity() );
+            for( size_t k=i+1UL; k<=m_; ++k )
+               begin_[k] = end_[k] = end_[m_];
+         }
+
+         end_[i]->value_ = (~rhs)(i,j);
+
+         if( !isDefault( end_[i]->value_ ) ) {
+            end_[i]->index_ = j;
+            ++end_[i];
+            ++nonzeros;
          }
       }
    }
@@ -3623,14 +3629,20 @@ inline void CompressedMatrix<Type,true>::assign( const DenseMatrix<MT,SO>& rhs )
    {
       begin_[j] = end_[j] = begin_[0UL]+nonzeros;
 
-      for( size_t i=0UL; i<m_; ++i ) {
-         if( !isDefault( (~rhs)(i,j) ) ) {
-            if( nonzeros++ == capacity() ) {
-               reserveElements( extendCapacity() );
-               for( size_t k=j+1UL; k<=n_; ++k )
-                  begin_[k] = end_[k] = end_[n_];
-            }
-            append( i, j, (~rhs)(i,j) );
+      for( size_t i=0UL; i<m_; ++i )
+      {
+         if( nonzeros == capacity() ) {
+            reserveElements( extendCapacity() );
+            for( size_t k=j+1UL; k<=n_; ++k )
+               begin_[k] = end_[k] = end_[n_];
+         }
+
+         end_[j]->value_ = (~rhs)(i,j);
+
+         if( !isDefault( end_[j]->value_ ) ) {
+            end_[j]->index_ = i;
+            ++end_[j];
+            ++nonzeros;
          }
       }
    }
