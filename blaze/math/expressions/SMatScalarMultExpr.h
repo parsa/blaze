@@ -649,6 +649,38 @@ inline const typename EnableIf< IsNumeric<T1>, typename MultExprTrait<T1,T2>::Ty
 
 //=================================================================================================
 //
+//  GLOBAL RESTRUCTURING UNARY ARITHMETIC OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Unary minus operator for the negation of a sparse matrix-scalar multiplication
+//        (\f$ A = -(B*s) \f$).
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix-scalar multiplication to be negated.
+// \return The negation of the sparse matrix-scalar multiplication.
+//
+// This operator implements a performance optimized treatment of the negation of a sparse matrix-
+// scalar multiplication expression.
+*/
+template< typename VT  // Type of the sparse matrix
+        , typename ST  // Type of the scalar
+        , bool TF >    // Transpose flag
+inline const SMatScalarMultExpr<VT,ST,TF>
+   operator-( const SMatScalarMultExpr<VT,ST,TF>& sm )
+{
+   return SMatScalarMultExpr<VT,ST,TF>( sm.leftOperand(), -sm.rightOperand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  GLOBAL RESTRUCTURING BINARY ARITHMETIC OPERATORS
 //
 //=================================================================================================

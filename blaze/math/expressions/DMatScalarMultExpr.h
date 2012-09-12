@@ -562,6 +562,38 @@ inline const typename EnableIf< IsNumeric<T1>, typename MultExprTrait<T1,T2>::Ty
 
 //=================================================================================================
 //
+//  GLOBAL RESTRUCTURING UNARY ARITHMETIC OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Unary minus operator for the negation of a dense matrix-scalar multiplication
+//        (\f$ A = -(B*s) \f$).
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix-scalar multiplication to be negated.
+// \return The negation of the dense matrix-scalar multiplication.
+//
+// This operator implements a performance optimized treatment of the negation of a dense matrix-
+// scalar multiplication expression.
+*/
+template< typename VT  // Type of the dense matrix
+        , typename ST  // Type of the scalar
+        , bool TF >    // Transpose flag
+inline const DMatScalarMultExpr<VT,ST,TF>
+   operator-( const DMatScalarMultExpr<VT,ST,TF>& dm )
+{
+   return DMatScalarMultExpr<VT,ST,TF>( dm.leftOperand(), -dm.rightOperand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  GLOBAL RESTRUCTURING BINARY ARITHMETIC OPERATORS
 //
 //=================================================================================================

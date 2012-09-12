@@ -520,6 +520,38 @@ inline const typename EnableIf< IsNumeric<T1>, typename MultExprTrait<T1,T2>::Ty
 
 //=================================================================================================
 //
+//  GLOBAL RESTRUCTURING UNARY ARITHMETIC OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Unary minus operator for the negation of a dense vector-scalar multiplication
+//        (\f$ \vec{a} = -(\vec{b} * s) \f$).
+// \ingroup dense_vector
+//
+// \param dv The dense vector-scalar multiplication to be negated.
+// \return The negation of the dense vector-scalar multiplication.
+//
+// This operator implements a performance optimized treatment of the negation of a dense vector-
+// scalar multiplication expression.
+*/
+template< typename VT  // Type of the dense vector
+        , typename ST  // Type of the scalar
+        , bool TF >    // Transpose flag
+inline const DVecScalarMultExpr<VT,ST,TF>
+   operator-( const DVecScalarMultExpr<VT,ST,TF>& dv )
+{
+   return DVecScalarMultExpr<VT,ST,TF>( dv.leftOperand(), -dv.rightOperand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  GLOBAL RESTRUCTURING BINARY ARITHMETIC OPERATORS
 //
 //=================================================================================================
