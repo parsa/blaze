@@ -648,11 +648,21 @@ inline const typename EnableIf< IsNumeric<ST2>
 template< typename MT, typename ST1, typename ST2 >
 struct DMatScalarMultTrait< DMatScalarDivExpr<MT,ST1,false>, ST2 >
 {
+ private:
+   //**********************************************************************************************
+   enum { condition = IsFloatingPoint<typename MathTrait<ST1,ST2>::DivType>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   typedef typename DMatScalarMultTrait<MT,typename MathTrait<ST1,ST2>::DivType>::Type  T1;
+   typedef DMatScalarMultExpr< DMatScalarDivExpr<MT,ST1,false>, ST2, false >            T2;
+   //**********************************************************************************************
+
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT>::value && IsRowMajorMatrix<MT>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename DMatScalarMultTrait<MT,typename MathTrait<ST2,ST1>::DivType>::Type
+                              , typename SelectType<condition,T1,T2>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -673,11 +683,21 @@ struct DMatScalarMultTrait< DMatScalarDivExpr<MT,ST1,false>, ST2 >
 template< typename MT, typename ST1, typename ST2 >
 struct TDMatScalarMultTrait< DMatScalarDivExpr<MT,ST1,true>, ST2 >
 {
+ private:
+   //**********************************************************************************************
+   enum { condition = IsFloatingPoint<typename MathTrait<ST1,ST2>::DivType>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   typedef typename DMatScalarMultTrait<MT,typename MathTrait<ST1,ST2>::DivType>::Type  T1;
+   typedef DMatScalarMultExpr< DMatScalarDivExpr<MT,ST1,true>, ST2, true >              T2;
+   //**********************************************************************************************
+
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename TDMatScalarMultTrait<MT,typename MathTrait<ST2,ST1>::DivType>::Type
+                              , typename SelectType<condition,T1,T2>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };

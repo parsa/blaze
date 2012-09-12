@@ -591,11 +591,21 @@ inline const typename EnableIf< IsNumeric<ST2>
 template< typename VT, typename ST1, typename ST2 >
 struct DVecScalarMultTrait< DVecScalarDivExpr<VT,ST1,false>, ST2 >
 {
+ private:
+   //**********************************************************************************************
+   enum { condition = IsFloatingPoint<typename MathTrait<ST1,ST2>::DivType>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   typedef typename DVecScalarMultTrait<VT,typename MathTrait<ST1,ST2>::DivType>::Type  T1;
+   typedef DVecScalarMultExpr< DVecScalarDivExpr<VT,ST1,false>, ST2, false >            T2;
+   //**********************************************************************************************
+
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseVector<VT>::value && !IsTransposeVector<VT>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename DVecScalarMultTrait<VT,typename MathTrait<ST2,ST1>::DivType>::Type
+                              , typename SelectType<condition,T1,T2>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -616,11 +626,21 @@ struct DVecScalarMultTrait< DVecScalarDivExpr<VT,ST1,false>, ST2 >
 template< typename VT, typename ST1, typename ST2 >
 struct TDVecScalarMultTrait< DVecScalarDivExpr<VT,ST1,true>, ST2 >
 {
+ private:
+   //**********************************************************************************************
+   enum { condition = IsFloatingPoint<typename MathTrait<ST1,ST2>::DivType>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   typedef typename DVecScalarMultTrait<VT,typename MathTrait<ST1,ST2>::DivType>::Type  T1;
+   typedef DVecScalarMultExpr< DVecScalarDivExpr<VT,ST1,true>, ST2, true >              T2;
+   //**********************************************************************************************
+
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseVector<VT>::value && IsTransposeVector<VT>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename TDVecScalarMultTrait<VT,typename MathTrait<ST2,ST1>::DivType>::Type
+                              , typename SelectType<condition,T1,T2>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
