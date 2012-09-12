@@ -54,7 +54,7 @@ namespace blaze {
 template< typename Type >
 inline bool isDefault( const Type& v )
 {
-   return v == Type(0);
+   return v == Type();
 }
 //*************************************************************************************************
 
