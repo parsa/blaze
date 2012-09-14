@@ -596,6 +596,35 @@ inline const SMatAbsExpr<MT,SO> abs( const SparseMatrix<MT,SO>& sm )
 }
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Absolute value operator for absolute value sparse matrix expressions.
+// \ingroup sparse_matrix
+//
+// \param sm The absolute value sparse matrix expression.
+// \return The absolute value of each single element of \a sm.
+//
+// This operator implements a performance optimized treatment of the absolute value operation
+// on a sparse matrix absolute value expression.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool TF >    // Transpose flag
+inline const SMatAbsExpr<MT,TF>& abs( const SMatAbsExpr<MT,TF>& sm )
+{
+   return sm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -545,6 +545,35 @@ inline const SVecAbsExpr<VT,TF> abs( const SparseVector<VT,TF>& sv )
 }
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Absolute value operator for absolute value sparse vector expressions.
+// \ingroup sparse_vector
+//
+// \param sv The absolute value sparse vector expression.
+// \return The absolute value of each single element of \a sv.
+//
+// This operator implements a performance optimized treatment of the absolute value operation
+// on a sparse vector absolute value expression.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecAbsExpr<VT,TF>& abs( const SVecAbsExpr<VT,TF>& sv )
+{
+   return sv;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

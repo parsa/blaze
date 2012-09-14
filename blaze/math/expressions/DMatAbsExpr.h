@@ -422,6 +422,35 @@ inline const DMatAbsExpr<MT,SO> abs( const DenseMatrix<MT,SO>& dm )
 }
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Absolute value operator for absolute value dense matrix expressions.
+// \ingroup dense_matrix
+//
+// \param dm The absolute value dense matrix expression.
+// \return The absolute value of each single element of \a dm.
+//
+// This operator implements a performance optimized treatment of the absolute value operation
+// on a dense matrix absolute value expression.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool TF >    // Transpose flag
+inline const DMatAbsExpr<MT,TF>& abs( const DMatAbsExpr<MT,TF>& dm )
+{
+   return dm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -384,6 +384,35 @@ inline const DVecAbsExpr<VT,TF> abs( const DenseVector<VT,TF>& dv )
 }
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Absolute value operator for absolute value dense vector expressions.
+// \ingroup dense_vector
+//
+// \param dv The absolute value dense vector expression.
+// \return The absolute value of each single element of \a dv.
+//
+// This operator implements a performance optimized treatment of the absolute value operation
+// on a dense vector absolute value expression.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecAbsExpr<VT,TF>& abs( const DVecAbsExpr<VT,TF>& dv )
+{
+   return dv;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
