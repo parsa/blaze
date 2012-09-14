@@ -33,6 +33,7 @@
 #include <blaze/math/Expression.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/traits/AbsExprTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/util/Assert.h>
@@ -66,6 +67,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
  private:
    //**Type definitions****************************************************************************
    typedef typename VT::ResultType     RT;  //!< Result type of the dense vector expression.
+   typedef typename VT::ReturnType     RN;  //!< Return type of the dense vector expression.
    typedef typename VT::CompositeType  CT;  //!< Composite type of the dense vector expression.
    typedef typename VT::TransposeType  TT;  //!< Transpose type of the dense vector expression.
    typedef typename VT::ElementType    ET;  //!< Element type of the dense vector expression.
@@ -94,11 +96,11 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DVecAbsExpr<VT,TF>  This;           //!< Type of this DVecAbsExpr instance.
-   typedef RT                  ResultType;     //!< Result type for expression template evaluations.
-   typedef TT                  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ET                  ElementType;    //!< Resulting element type.
-   typedef const ElementType   ReturnType;     //!< Return type for expression template evaluations.
+   typedef DVecAbsExpr<VT,TF>                     This;           //!< Type of this DVecAbsExpr instance.
+   typedef RT                                     ResultType;     //!< Result type for expression template evaluations.
+   typedef TT                                     TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ET                                     ElementType;    //!< Resulting element type.
+   typedef const typename AbsExprTrait<RN>::Type  ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef typename SelectType< useAssign, const ResultType, const DVecAbsExpr& >::Type  CompositeType;

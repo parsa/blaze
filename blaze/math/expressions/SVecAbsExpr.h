@@ -36,6 +36,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/sparse/SparseElement.h>
+#include <blaze/math/traits/AbsExprTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/util/Assert.h>
@@ -69,6 +70,7 @@ class SVecAbsExpr : public SparseVector< SVecAbsExpr<VT,TF>, TF >
  private:
    //**Type definitions****************************************************************************
    typedef typename VT::ResultType     RT;  //!< Result type of the sparse vector expression.
+   typedef typename VT::ReturnType     RN;  //!< Return type of the sparse vector expression.
    typedef typename VT::CompositeType  CT;  //!< Composite type of the sparse vector expression.
    typedef typename VT::TransposeType  TT;  //!< Transpose type of the left-hand side sparse vector expression.
    //**********************************************************************************************
@@ -96,11 +98,11 @@ class SVecAbsExpr : public SparseVector< SVecAbsExpr<VT,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SVecAbsExpr<VT,TF>          This;           //!< Type of this SVecAbsExpr instance.
-   typedef typename VT::ResultType     ResultType;     //!< Result type for expression template evaluations.
-   typedef typename VT::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename VT::ElementType    ElementType;    //!< Resulting element type.
-   typedef const ElementType           ReturnType;     //!< Return type for expression template evaluations.
+   typedef SVecAbsExpr<VT,TF>                     This;           //!< Type of this SVecAbsExpr instance.
+   typedef typename VT::ResultType                ResultType;     //!< Result type for expression template evaluations.
+   typedef typename VT::TransposeType             TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename VT::ElementType               ElementType;    //!< Resulting element type.
+   typedef const typename SVecAbsTrait<RN>::Type  ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef typename SelectType< useAssign, const ResultType, const SVecAbsExpr& >::Type  CompositeType;

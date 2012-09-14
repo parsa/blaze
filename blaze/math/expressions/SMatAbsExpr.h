@@ -36,6 +36,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/sparse/SparseElement.h>
+#include <blaze/math/traits/AbsExprTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/util/Assert.h>
@@ -69,6 +70,7 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
  private:
    //**Type definitions****************************************************************************
    typedef typename MT::ResultType     RT;  //!< Result type of the sparse matrix expression.
+   typedef typename MT::ReturnType     RN;  //!< Return type of the sparse matrix expression.
    typedef typename MT::CompositeType  CT;  //!< Composite type of the sparse matrix expression.
    //**********************************************************************************************
 
@@ -95,12 +97,12 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SMatAbsExpr<MT,SO>          This;           //!< Type of this SMatAbsExpr instance.
-   typedef typename MT::ResultType     ResultType;     //!< Result type for expression template evaluations.
-   typedef typename MT::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename MT::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType    ElementType;    //!< Resulting element type.
-   typedef const ElementType           ReturnType;     //!< Return type for expression template evaluations.
+   typedef SMatAbsExpr<MT,SO>                     This;           //!< Type of this SMatAbsExpr instance.
+   typedef typename MT::ResultType                ResultType;     //!< Result type for expression template evaluations.
+   typedef typename MT::OppositeType              OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef typename MT::TransposeType             TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename MT::ElementType               ElementType;    //!< Resulting element type.
+   typedef const typename AbsExprTrait<RN>::Type  ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef typename SelectType< useAssign, const ResultType, const SMatAbsExpr& >::Type  CompositeType;
