@@ -1766,6 +1766,7 @@ struct MathTrait< CompressedVector<T1,TF>, T2 >
    typedef INVALID_TYPE                                                 AddType;
    typedef INVALID_TYPE                                                 SubType;
    typedef CompressedVector< typename MathTrait<T1,T2>::MultType, TF >  MultType;
+   typedef INVALID_TYPE                                                 CrossType;
    typedef CompressedVector< typename MathTrait<T1,T2>::DivType , TF >  DivType;
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
 };
@@ -1778,6 +1779,7 @@ struct MathTrait< T1, CompressedVector<T2,TF> >
    typedef INVALID_TYPE                                                 AddType;
    typedef INVALID_TYPE                                                 SubType;
    typedef CompressedVector< typename MathTrait<T1,T2>::MultType, TF >  MultType;
+   typedef INVALID_TYPE                                                 CrossType;
    typedef INVALID_TYPE                                                 DivType;
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T1 );
 };
@@ -1790,18 +1792,24 @@ struct MathTrait< CompressedVector<T1,TF>, StaticVector<T2,N,TF> >
    typedef StaticVector< typename MathTrait<T1,T2>::AddType, N, TF >    AddType;
    typedef StaticVector< typename MathTrait<T1,T2>::SubType, N, TF >    SubType;
    typedef CompressedVector< typename MathTrait<T1,T2>::MultType, TF >  MultType;
+   typedef INVALID_TYPE                                                 CrossType;
    typedef INVALID_TYPE                                                 DivType;
 };
 
-template< typename T1, typename T2, size_t N >
-struct MathTrait< CompressedVector<T1,true>, StaticVector<T2,N,false> >
+template< typename T1, typename T2 >
+struct MathTrait< CompressedVector<T1,false>, StaticVector<T2,3UL,false> >
 {
-   typedef INVALID_TYPE                         HighType;
-   typedef INVALID_TYPE                         LowType;
-   typedef INVALID_TYPE                         AddType;
-   typedef INVALID_TYPE                         SubType;
-   typedef typename MathTrait<T1,T2>::MultType  MultType;
-   typedef INVALID_TYPE                         DivType;
+ private:
+   typedef typename MathTrait<T1,T2>::MultType  T;
+
+ public:
+   typedef INVALID_TYPE                                                    HighType;
+   typedef INVALID_TYPE                                                    LowType;
+   typedef StaticVector< typename MathTrait<T1,T2>::AddType, 3UL, false >  AddType;
+   typedef StaticVector< typename MathTrait<T1,T2>::SubType, 3UL, false >  SubType;
+   typedef CompressedVector< typename MathTrait<T1,T2>::MultType, false >  MultType;
+   typedef StaticVector< typename MathTrait<T,T>::SubType  , 3UL, false >  CrossType;
+   typedef INVALID_TYPE                                                    DivType;
 };
 
 template< typename T1, typename T2, size_t N >
@@ -1812,7 +1820,20 @@ struct MathTrait< CompressedVector<T1,false>, StaticVector<T2,N,true> >
    typedef INVALID_TYPE                                                   AddType;
    typedef INVALID_TYPE                                                   SubType;
    typedef CompressedMatrix< typename MathTrait<T1,T2>::MultType, true >  MultType;
+   typedef INVALID_TYPE                                                   CrossType;
    typedef INVALID_TYPE                                                   DivType;
+};
+
+template< typename T1, typename T2, size_t N >
+struct MathTrait< CompressedVector<T1,true>, StaticVector<T2,N,false> >
+{
+   typedef INVALID_TYPE                         HighType;
+   typedef INVALID_TYPE                         LowType;
+   typedef INVALID_TYPE                         AddType;
+   typedef INVALID_TYPE                         SubType;
+   typedef typename MathTrait<T1,T2>::MultType  MultType;
+   typedef INVALID_TYPE                         CrossType;
+   typedef INVALID_TYPE                         DivType;
 };
 
 template< typename T1, size_t N, bool TF, typename T2 >
@@ -1823,18 +1844,24 @@ struct MathTrait< StaticVector<T1,N,TF>, CompressedVector<T2,TF> >
    typedef StaticVector< typename MathTrait<T1,T2>::AddType, N, TF >    AddType;
    typedef StaticVector< typename MathTrait<T1,T2>::SubType, N, TF >    SubType;
    typedef CompressedVector< typename MathTrait<T1,T2>::MultType, TF >  MultType;
+   typedef INVALID_TYPE                                                 CrossType;
    typedef INVALID_TYPE                                                 DivType;
 };
 
-template< typename T1, size_t N, typename T2 >
-struct MathTrait< StaticVector<T1,N,true>, CompressedVector<T2,false> >
+template< typename T1, typename T2 >
+struct MathTrait< StaticVector<T1,3UL,false>, CompressedVector<T2,false> >
 {
-   typedef INVALID_TYPE                         HighType;
-   typedef INVALID_TYPE                         LowType;
-   typedef INVALID_TYPE                         AddType;
-   typedef INVALID_TYPE                         SubType;
-   typedef typename MathTrait<T1,T2>::MultType  MultType;
-   typedef INVALID_TYPE                         DivType;
+ private:
+   typedef typename MathTrait<T1,T2>::MultType  T;
+
+ public:
+   typedef INVALID_TYPE                                                    HighType;
+   typedef INVALID_TYPE                                                    LowType;
+   typedef StaticVector< typename MathTrait<T1,T2>::AddType, 3UL, false >  AddType;
+   typedef StaticVector< typename MathTrait<T1,T2>::SubType, 3UL, false >  SubType;
+   typedef CompressedVector< typename MathTrait<T1,T2>::MultType, false >  MultType;
+   typedef StaticVector< typename MathTrait<T,T>::SubType  , 3UL, false >  CrossType;
+   typedef INVALID_TYPE                                                    DivType;
 };
 
 template< typename T1, size_t N, typename T2 >
@@ -1845,29 +1872,36 @@ struct MathTrait< StaticVector<T1,N,false>, CompressedVector<T2,true> >
    typedef INVALID_TYPE                                                    AddType;
    typedef INVALID_TYPE                                                    SubType;
    typedef CompressedMatrix< typename MathTrait<T1,T2>::MultType, false >  MultType;
+   typedef INVALID_TYPE                                                    CrossType;
    typedef INVALID_TYPE                                                    DivType;
 };
 
-template< typename T1, bool TF, typename T2 >
-struct MathTrait< CompressedVector<T1,TF>, DynamicVector<T2,TF> >
-{
-   typedef INVALID_TYPE                                                 HighType;
-   typedef INVALID_TYPE                                                 LowType;
-   typedef DynamicVector< typename MathTrait<T1,T2>::AddType , TF >     AddType;
-   typedef DynamicVector< typename MathTrait<T1,T2>::SubType , TF >     SubType;
-   typedef CompressedVector< typename MathTrait<T1,T2>::MultType, TF >  MultType;
-   typedef INVALID_TYPE                                                 DivType;
-};
-
-template< typename T1, typename T2 >
-struct MathTrait< CompressedVector<T1,true>, DynamicVector<T2,false> >
+template< typename T1, size_t N, typename T2 >
+struct MathTrait< StaticVector<T1,N,true>, CompressedVector<T2,false> >
 {
    typedef INVALID_TYPE                         HighType;
    typedef INVALID_TYPE                         LowType;
    typedef INVALID_TYPE                         AddType;
    typedef INVALID_TYPE                         SubType;
    typedef typename MathTrait<T1,T2>::MultType  MultType;
+   typedef INVALID_TYPE                         CrossType;
    typedef INVALID_TYPE                         DivType;
+};
+
+template< typename T1, typename T2 >
+struct MathTrait< CompressedVector<T1,false>, DynamicVector<T2,false> >
+{
+ private:
+   typedef typename MathTrait<T1,T2>::MultType  T;
+
+ public:
+   typedef INVALID_TYPE                                                    HighType;
+   typedef INVALID_TYPE                                                    LowType;
+   typedef DynamicVector< typename MathTrait<T1,T2>::AddType , false >     AddType;
+   typedef DynamicVector< typename MathTrait<T1,T2>::SubType , false >     SubType;
+   typedef CompressedVector< typename MathTrait<T1,T2>::MultType, false >  MultType;
+   typedef StaticVector< typename MathTrait<T,T>::SubType, 3UL, false >    CrossType;
+   typedef INVALID_TYPE                                                    DivType;
 };
 
 template< typename T1, typename T2 >
@@ -1878,29 +1912,48 @@ struct MathTrait< CompressedVector<T1,false>, DynamicVector<T2,true> >
    typedef INVALID_TYPE                                                   AddType;
    typedef INVALID_TYPE                                                   SubType;
    typedef CompressedMatrix< typename MathTrait<T1,T2>::MultType, true >  MultType;
+   typedef INVALID_TYPE                                                   CrossType;
    typedef INVALID_TYPE                                                   DivType;
 };
 
-template< typename T1, bool TF, typename T2 >
-struct MathTrait< DynamicVector<T1,TF>, CompressedVector<T2,TF> >
-{
-   typedef INVALID_TYPE                                                 HighType;
-   typedef INVALID_TYPE                                                 LowType;
-   typedef DynamicVector< typename MathTrait<T1,T2>::AddType , TF >     AddType;
-   typedef DynamicVector< typename MathTrait<T1,T2>::SubType , TF >     SubType;
-   typedef CompressedVector< typename MathTrait<T1,T2>::MultType, TF >  MultType;
-   typedef INVALID_TYPE                                                 DivType;
-};
-
 template< typename T1, typename T2 >
-struct MathTrait< DynamicVector<T1,true>, CompressedVector<T2,false> >
+struct MathTrait< CompressedVector<T1,true>, DynamicVector<T2,false> >
 {
    typedef INVALID_TYPE                         HighType;
    typedef INVALID_TYPE                         LowType;
    typedef INVALID_TYPE                         AddType;
    typedef INVALID_TYPE                         SubType;
    typedef typename MathTrait<T1,T2>::MultType  MultType;
+   typedef INVALID_TYPE                         CrossType;
    typedef INVALID_TYPE                         DivType;
+};
+
+template< typename T1, typename T2 >
+struct MathTrait< CompressedVector<T1,true>, DynamicVector<T2,true> >
+{
+   typedef INVALID_TYPE                                                   HighType;
+   typedef INVALID_TYPE                                                   LowType;
+   typedef DynamicVector< typename MathTrait<T1,T2>::AddType , true >     AddType;
+   typedef DynamicVector< typename MathTrait<T1,T2>::SubType , true >     SubType;
+   typedef CompressedVector< typename MathTrait<T1,T2>::MultType, true >  MultType;
+   typedef INVALID_TYPE                                                   CrossType;
+   typedef INVALID_TYPE                                                   DivType;
+};
+
+template< typename T1, typename T2 >
+struct MathTrait< DynamicVector<T1,false>, CompressedVector<T2,false> >
+{
+ public:
+   typedef typename MathTrait<T1,T2>::MultType  T;
+
+ private:
+   typedef INVALID_TYPE                                                    HighType;
+   typedef INVALID_TYPE                                                    LowType;
+   typedef DynamicVector< typename MathTrait<T1,T2>::AddType, false >      AddType;
+   typedef DynamicVector< typename MathTrait<T1,T2>::SubType, false >      SubType;
+   typedef CompressedVector< typename MathTrait<T1,T2>::MultType, false >  MultType;
+   typedef StaticVector< typename MathTrait<T,T>::SubType, 3UL, false >    CrossType;
+   typedef INVALID_TYPE                                                    DivType;
 };
 
 template< typename T1, typename T2 >
@@ -1911,29 +1964,48 @@ struct MathTrait< DynamicVector<T1,false>, CompressedVector<T2,true> >
    typedef INVALID_TYPE                                                    AddType;
    typedef INVALID_TYPE                                                    SubType;
    typedef CompressedMatrix< typename MathTrait<T1,T2>::MultType, false >  MultType;
+   typedef INVALID_TYPE                                                    CrossType;
    typedef INVALID_TYPE                                                    DivType;
 };
 
-template< typename T1, bool TF, typename T2 >
-struct MathTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
-{
-   typedef CompressedVector< typename MathTrait<T1,T2>::HighType, TF >  HighType;
-   typedef CompressedVector< typename MathTrait<T1,T2>::LowType , TF >  LowType;
-   typedef CompressedVector< typename MathTrait<T1,T2>::AddType , TF >  AddType;
-   typedef CompressedVector< typename MathTrait<T1,T2>::SubType , TF >  SubType;
-   typedef CompressedVector< typename MathTrait<T1,T2>::MultType, TF >  MultType;
-   typedef INVALID_TYPE                                                 DivType;
-};
-
 template< typename T1, typename T2 >
-struct MathTrait< CompressedVector<T1,true>, CompressedVector<T2,false> >
+struct MathTrait< DynamicVector<T1,true>, CompressedVector<T2,false> >
 {
    typedef INVALID_TYPE                         HighType;
    typedef INVALID_TYPE                         LowType;
    typedef INVALID_TYPE                         AddType;
    typedef INVALID_TYPE                         SubType;
    typedef typename MathTrait<T1,T2>::MultType  MultType;
+   typedef INVALID_TYPE                         CrossType;
    typedef INVALID_TYPE                         DivType;
+};
+
+template< typename T1, typename T2 >
+struct MathTrait< DynamicVector<T1,true>, CompressedVector<T2,true> >
+{
+   typedef INVALID_TYPE                                                   HighType;
+   typedef INVALID_TYPE                                                   LowType;
+   typedef DynamicVector< typename MathTrait<T1,T2>::AddType, true >      AddType;
+   typedef DynamicVector< typename MathTrait<T1,T2>::SubType, true >      SubType;
+   typedef CompressedVector< typename MathTrait<T1,T2>::MultType, true >  MultType;
+   typedef INVALID_TYPE                                                   CrossType;
+   typedef INVALID_TYPE                                                   DivType;
+};
+
+template< typename T1, typename T2 >
+struct MathTrait< CompressedVector<T1,false>, CompressedVector<T2,false> >
+{
+ public:
+   typedef typename MathTrait<T1,T2>::MultType  T;
+
+ private:
+   typedef CompressedVector< typename MathTrait<T1,T2>::HighType, false >  HighType;
+   typedef CompressedVector< typename MathTrait<T1,T2>::LowType , false >  LowType;
+   typedef CompressedVector< typename MathTrait<T1,T2>::AddType , false >  AddType;
+   typedef CompressedVector< typename MathTrait<T1,T2>::SubType , false >  SubType;
+   typedef CompressedVector< typename MathTrait<T1,T2>::MultType, false >  MultType;
+   typedef StaticVector< typename MathTrait<T,T>::SubType, 3UL, false >    CrossType;
+   typedef INVALID_TYPE                                                    DivType;
 };
 
 template< typename T1, typename T2 >
@@ -1944,7 +2016,32 @@ struct MathTrait< CompressedVector<T1,false>, CompressedVector<T2,true> >
    typedef INVALID_TYPE                                                    AddType;
    typedef INVALID_TYPE                                                    SubType;
    typedef CompressedMatrix< typename MathTrait<T1,T2>::MultType, false >  MultType;
+   typedef INVALID_TYPE                                                    CrossType;
    typedef INVALID_TYPE                                                    DivType;
+};
+
+template< typename T1, typename T2 >
+struct MathTrait< CompressedVector<T1,true>, CompressedVector<T2,false> >
+{
+   typedef INVALID_TYPE                         HighType;
+   typedef INVALID_TYPE                         LowType;
+   typedef INVALID_TYPE                         AddType;
+   typedef INVALID_TYPE                         SubType;
+   typedef typename MathTrait<T1,T2>::MultType  MultType;
+   typedef INVALID_TYPE                         CrossType;
+   typedef INVALID_TYPE                         DivType;
+};
+
+template< typename T1, typename T2 >
+struct MathTrait< CompressedVector<T1,true>, CompressedVector<T2,true> >
+{
+   typedef CompressedVector< typename MathTrait<T1,T2>::HighType, true >  HighType;
+   typedef CompressedVector< typename MathTrait<T1,T2>::LowType , true >  LowType;
+   typedef CompressedVector< typename MathTrait<T1,T2>::AddType , true >  AddType;
+   typedef CompressedVector< typename MathTrait<T1,T2>::SubType , true >  SubType;
+   typedef CompressedVector< typename MathTrait<T1,T2>::MultType, true >  MultType;
+   typedef INVALID_TYPE                                                   CrossType;
+   typedef INVALID_TYPE                                                   DivType;
 };
 /*! \endcond */
 //*************************************************************************************************

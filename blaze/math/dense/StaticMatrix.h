@@ -4615,6 +4615,7 @@ struct MathTrait< StaticMatrix<T1,M,N,SO>, T2 >
    typedef INVALID_TYPE                                                   AddType;
    typedef INVALID_TYPE                                                   SubType;
    typedef StaticMatrix< typename MathTrait<T1,T2>::MultType, M, N, SO >  MultType;
+   typedef INVALID_TYPE                                                   CrossType;
    typedef StaticMatrix< typename MathTrait<T1,T2>::DivType , M, N, SO >  DivType;
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
 };
@@ -4627,6 +4628,7 @@ struct MathTrait< T1, StaticMatrix<T2,M,N,SO> >
    typedef INVALID_TYPE                                                   AddType;
    typedef INVALID_TYPE                                                   SubType;
    typedef StaticMatrix< typename MathTrait<T1,T2>::MultType, M, N, SO >  MultType;
+   typedef INVALID_TYPE                                                   CrossType;
    typedef INVALID_TYPE                                                   DivType;
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T1 );
 };
@@ -4639,6 +4641,7 @@ struct MathTrait< StaticMatrix<T1,M,N,SO>, StaticVector<T2,N,false> >
    typedef INVALID_TYPE                                                   AddType;
    typedef INVALID_TYPE                                                   SubType;
    typedef StaticVector< typename MathTrait<T1,T2>::MultType, M, false >  MultType;
+   typedef INVALID_TYPE                                                   CrossType;
    typedef INVALID_TYPE                                                   DivType;
 };
 
@@ -4650,6 +4653,7 @@ struct MathTrait< StaticVector<T1,M,true>, StaticMatrix<T2,M,N,SO> >
    typedef INVALID_TYPE                                                  AddType;
    typedef INVALID_TYPE                                                  SubType;
    typedef StaticVector< typename MathTrait<T1,T2>::MultType, N, true >  MultType;
+   typedef INVALID_TYPE                                                  CrossType;
    typedef INVALID_TYPE                                                  DivType;
 };
 
@@ -4661,6 +4665,7 @@ struct MathTrait< StaticMatrix<T1,M,N,SO>, DynamicVector<T2,false> >
    typedef INVALID_TYPE                                                   AddType;
    typedef INVALID_TYPE                                                   SubType;
    typedef StaticVector< typename MathTrait<T1,T2>::MultType, M, false >  MultType;
+   typedef INVALID_TYPE                                                   CrossType;
    typedef INVALID_TYPE                                                   DivType;
 };
 
@@ -4672,6 +4677,7 @@ struct MathTrait< DynamicVector<T1,true>, StaticMatrix<T2,M,N,SO> >
    typedef INVALID_TYPE                                                  AddType;
    typedef INVALID_TYPE                                                  SubType;
    typedef StaticVector< typename MathTrait<T1,T2>::MultType, N, true >  MultType;
+   typedef INVALID_TYPE                                                  CrossType;
    typedef INVALID_TYPE                                                  DivType;
 };
 
@@ -4683,6 +4689,7 @@ struct MathTrait< StaticMatrix<T1,M,N,SO>, CompressedVector<T2,false> >
    typedef INVALID_TYPE                                                   AddType;
    typedef INVALID_TYPE                                                   SubType;
    typedef StaticVector< typename MathTrait<T1,T2>::MultType, M, false >  MultType;
+   typedef INVALID_TYPE                                                   CrossType;
    typedef INVALID_TYPE                                                   DivType;
 };
 
@@ -4694,6 +4701,7 @@ struct MathTrait< CompressedVector<T1,true>, StaticMatrix<T2,M,N,SO> >
    typedef INVALID_TYPE                                                  AddType;
    typedef INVALID_TYPE                                                  SubType;
    typedef StaticVector< typename MathTrait<T1,T2>::MultType, N, true >  MultType;
+   typedef INVALID_TYPE                                                  CrossType;
    typedef INVALID_TYPE                                                  DivType;
 };
 
@@ -4705,6 +4713,7 @@ struct MathTrait< StaticMatrix<T1,N,N,SO>, StaticMatrix<T2,N,N,SO> >
    typedef StaticMatrix< typename MathTrait<T1,T2>::AddType , N, N, SO >  AddType;
    typedef StaticMatrix< typename MathTrait<T1,T2>::SubType , N, N, SO >  SubType;
    typedef StaticMatrix< typename MathTrait<T1,T2>::MultType, N, N, SO >  MultType;
+   typedef INVALID_TYPE                                                   CrossType;
    typedef INVALID_TYPE                                                   DivType;
 };
 
@@ -4716,6 +4725,7 @@ struct MathTrait< StaticMatrix<T1,N,N,SO1>, StaticMatrix<T2,N,N,SO2> >
    typedef StaticMatrix< typename MathTrait<T1,T2>::AddType , N, N, false >  AddType;
    typedef StaticMatrix< typename MathTrait<T1,T2>::SubType , N, N, false >  SubType;
    typedef StaticMatrix< typename MathTrait<T1,T2>::MultType, N, N, SO1 >    MultType;
+   typedef INVALID_TYPE                                                      CrossType;
    typedef INVALID_TYPE                                                      DivType;
 };
 
@@ -4727,6 +4737,7 @@ struct MathTrait< StaticMatrix<T1,M,N,SO>, StaticMatrix<T2,M,N,SO> >
    typedef StaticMatrix< typename MathTrait<T1,T2>::AddType , M, N, SO >  AddType;
    typedef StaticMatrix< typename MathTrait<T1,T2>::SubType , M, N, SO >  SubType;
    typedef INVALID_TYPE                                                   MultType;
+   typedef INVALID_TYPE                                                   CrossType;
    typedef INVALID_TYPE                                                   DivType;
 };
 
@@ -4738,6 +4749,7 @@ struct MathTrait< StaticMatrix<T1,M,N,SO1>, StaticMatrix<T2,M,N,SO2> >
    typedef StaticMatrix< typename MathTrait<T1,T2>::AddType , M, N, false >  AddType;
    typedef StaticMatrix< typename MathTrait<T1,T2>::SubType , M, N, false >  SubType;
    typedef INVALID_TYPE                                                      MultType;
+   typedef INVALID_TYPE                                                      CrossType;
    typedef INVALID_TYPE                                                      DivType;
 };
 
@@ -4749,6 +4761,7 @@ struct MathTrait< StaticMatrix<T1,M,K,SO1>, StaticMatrix<T2,K,N,SO2> >
    typedef INVALID_TYPE                                                    AddType;
    typedef INVALID_TYPE                                                    SubType;
    typedef StaticMatrix< typename MathTrait<T1,T2>::MultType, M, N, SO1 >  MultType;
+   typedef INVALID_TYPE                                                    CrossType;
    typedef INVALID_TYPE                                                    DivType;
 };
 /*! \endcond */

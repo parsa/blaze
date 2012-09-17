@@ -2072,6 +2072,7 @@ struct MathTrait< DynamicVector<T1,TF>, T2 >
    typedef INVALID_TYPE                                              AddType;
    typedef INVALID_TYPE                                              SubType;
    typedef DynamicVector< typename MathTrait<T1,T2>::MultType, TF >  MultType;
+   typedef INVALID_TYPE                                              CrossType;
    typedef DynamicVector< typename MathTrait<T1,T2>::DivType , TF >  DivType;
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
 };
@@ -2084,6 +2085,7 @@ struct MathTrait< T1, DynamicVector<T2,TF> >
    typedef INVALID_TYPE                                              AddType;
    typedef INVALID_TYPE                                              SubType;
    typedef DynamicVector< typename MathTrait<T1,T2>::MultType, TF >  MultType;
+   typedef INVALID_TYPE                                              CrossType;
    typedef INVALID_TYPE                                              DivType;
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T1 );
 };
@@ -2096,18 +2098,24 @@ struct MathTrait< DynamicVector<T1,TF>, StaticVector<T2,N,TF> >
    typedef StaticVector< typename MathTrait<T1,T2>::AddType , N, TF >  AddType;
    typedef StaticVector< typename MathTrait<T1,T2>::SubType , N, TF >  SubType;
    typedef StaticVector< typename MathTrait<T1,T2>::MultType, N, TF >  MultType;
+   typedef INVALID_TYPE                                                CrossType;
    typedef INVALID_TYPE                                                DivType;
 };
 
-template< typename T1, typename T2, size_t N >
-struct MathTrait< DynamicVector<T1,true>, StaticVector<T2,N,false> >
+template< typename T1, typename T2 >
+struct MathTrait< DynamicVector<T1,false>, StaticVector<T2,3UL,false> >
 {
-   typedef INVALID_TYPE                         HighType;
-   typedef INVALID_TYPE                         LowType;
-   typedef INVALID_TYPE                         AddType;
-   typedef INVALID_TYPE                         SubType;
-   typedef typename MathTrait<T1,T2>::MultType  MultType;
-   typedef INVALID_TYPE                         DivType;
+ private:
+   typedef typename MathTrait<T1,T2>::MultType  T;
+
+ public:
+   typedef INVALID_TYPE                                                     HighType;
+   typedef INVALID_TYPE                                                     LowType;
+   typedef StaticVector< typename MathTrait<T1,T2>::AddType , 3UL, false >  AddType;
+   typedef StaticVector< typename MathTrait<T1,T2>::SubType , 3UL, false >  SubType;
+   typedef StaticVector< typename MathTrait<T1,T2>::MultType, 3UL, false >  MultType;
+   typedef StaticVector< typename MathTrait<T,T>::SubType   , 3UL, false >  CrossType;
+   typedef INVALID_TYPE                                                     DivType;
 };
 
 template< typename T1, typename T2, size_t N >
@@ -2118,7 +2126,20 @@ struct MathTrait< DynamicVector<T1,false>, StaticVector<T2,N,true> >
    typedef INVALID_TYPE                                                 AddType;
    typedef INVALID_TYPE                                                 SubType;
    typedef DynamicMatrix< typename MathTrait<T1,T2>::MultType, false >  MultType;
+   typedef INVALID_TYPE                                                 CrossType;
    typedef INVALID_TYPE                                                 DivType;
+};
+
+template< typename T1, typename T2, size_t N >
+struct MathTrait< DynamicVector<T1,true>, StaticVector<T2,N,false> >
+{
+   typedef INVALID_TYPE                         HighType;
+   typedef INVALID_TYPE                         LowType;
+   typedef INVALID_TYPE                         AddType;
+   typedef INVALID_TYPE                         SubType;
+   typedef typename MathTrait<T1,T2>::MultType  MultType;
+   typedef INVALID_TYPE                         CrossType;
+   typedef INVALID_TYPE                         DivType;
 };
 
 template< typename T1, size_t N, bool TF, typename T2 >
@@ -2129,18 +2150,24 @@ struct MathTrait< StaticVector<T1,N,TF>, DynamicVector<T2,TF> >
    typedef StaticVector< typename MathTrait<T1,T2>::AddType , N, TF >  AddType;
    typedef StaticVector< typename MathTrait<T1,T2>::SubType , N, TF >  SubType;
    typedef StaticVector< typename MathTrait<T1,T2>::MultType, N, TF >  MultType;
+   typedef INVALID_TYPE                                                CrossType;
    typedef INVALID_TYPE                                                DivType;
 };
 
-template< typename T1, size_t N, typename T2 >
-struct MathTrait< StaticVector<T1,N,true>, DynamicVector<T2,false> >
+template< typename T1, typename T2 >
+struct MathTrait< StaticVector<T1,3UL,false>, DynamicVector<T2,false> >
 {
-   typedef INVALID_TYPE                         HighType;
-   typedef INVALID_TYPE                         LowType;
-   typedef INVALID_TYPE                         AddType;
-   typedef INVALID_TYPE                         SubType;
-   typedef typename MathTrait<T1,T2>::MultType  MultType;
-   typedef INVALID_TYPE                         DivType;
+ private:
+   typedef typename MathTrait<T1,T2>::MultType  T;
+
+ public:
+   typedef INVALID_TYPE                                                     HighType;
+   typedef INVALID_TYPE                                                     LowType;
+   typedef StaticVector< typename MathTrait<T1,T2>::AddType , 3UL, false >  AddType;
+   typedef StaticVector< typename MathTrait<T1,T2>::SubType , 3UL, false >  SubType;
+   typedef StaticVector< typename MathTrait<T1,T2>::MultType, 3UL, false >  MultType;
+   typedef StaticVector< typename MathTrait<T,T>::SubType   , 3UL, false >  CrossType;
+   typedef INVALID_TYPE                                                     DivType;
 };
 
 template< typename T1, size_t N, typename T2 >
@@ -2151,29 +2178,36 @@ struct MathTrait< StaticVector<T1,N,false>, DynamicVector<T2,true> >
    typedef INVALID_TYPE                                                 AddType;
    typedef INVALID_TYPE                                                 SubType;
    typedef DynamicMatrix< typename MathTrait<T1,T2>::MultType, false >  MultType;
+   typedef INVALID_TYPE                                                 CrossType;
    typedef INVALID_TYPE                                                 DivType;
 };
 
-template< typename T1, bool TF, typename T2 >
-struct MathTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
-{
-   typedef DynamicVector< typename MathTrait<T1,T2>::HighType, TF >  HighType;
-   typedef DynamicVector< typename MathTrait<T1,T2>::LowType , TF >  LowType;
-   typedef DynamicVector< typename MathTrait<T1,T2>::AddType , TF >  AddType;
-   typedef DynamicVector< typename MathTrait<T1,T2>::SubType , TF >  SubType;
-   typedef DynamicVector< typename MathTrait<T1,T2>::MultType, TF >  MultType;
-   typedef INVALID_TYPE                                              DivType;
-};
-
-template< typename T1, typename T2 >
-struct MathTrait< DynamicVector<T1,true>, DynamicVector<T2,false> >
+template< typename T1, size_t N, typename T2 >
+struct MathTrait< StaticVector<T1,N,true>, DynamicVector<T2,false> >
 {
    typedef INVALID_TYPE                         HighType;
    typedef INVALID_TYPE                         LowType;
    typedef INVALID_TYPE                         AddType;
    typedef INVALID_TYPE                         SubType;
    typedef typename MathTrait<T1,T2>::MultType  MultType;
+   typedef INVALID_TYPE                         CrossType;
    typedef INVALID_TYPE                         DivType;
+};
+
+template< typename T1, typename T2 >
+struct MathTrait< DynamicVector<T1,false>, DynamicVector<T2,false> >
+{
+ private:
+   typedef typename MathTrait<T1,T2>::MultType  T;
+
+ public:
+   typedef DynamicVector< typename MathTrait<T1,T2>::HighType , false >  HighType;
+   typedef DynamicVector< typename MathTrait<T1,T2>::LowType  , false >  LowType;
+   typedef DynamicVector< typename MathTrait<T1,T2>::AddType  , false >  AddType;
+   typedef DynamicVector< typename MathTrait<T1,T2>::SubType  , false >  SubType;
+   typedef DynamicVector< typename MathTrait<T1,T2>::MultType , false >  MultType;
+   typedef StaticVector< typename MathTrait<T,T>::SubType, 3UL, false >  CrossType;
+   typedef INVALID_TYPE                                                  DivType;
 };
 
 template< typename T1, typename T2 >
@@ -2184,7 +2218,32 @@ struct MathTrait< DynamicVector<T1,false>, DynamicVector<T2,true> >
    typedef INVALID_TYPE                                                 AddType;
    typedef INVALID_TYPE                                                 SubType;
    typedef DynamicMatrix< typename MathTrait<T1,T2>::MultType, false >  MultType;
+   typedef INVALID_TYPE                                                 CrossType;
    typedef INVALID_TYPE                                                 DivType;
+};
+
+template< typename T1, typename T2 >
+struct MathTrait< DynamicVector<T1,true>, DynamicVector<T2,false> >
+{
+   typedef INVALID_TYPE                         HighType;
+   typedef INVALID_TYPE                         LowType;
+   typedef INVALID_TYPE                         AddType;
+   typedef INVALID_TYPE                         SubType;
+   typedef typename MathTrait<T1,T2>::MultType  MultType;
+   typedef INVALID_TYPE                         CrossType;
+   typedef INVALID_TYPE                         DivType;
+};
+
+template< typename T1, typename T2 >
+struct MathTrait< DynamicVector<T1,true>, DynamicVector<T2,true> >
+{
+   typedef DynamicVector< typename MathTrait<T1,T2>::HighType, true >  HighType;
+   typedef DynamicVector< typename MathTrait<T1,T2>::LowType , true >  LowType;
+   typedef DynamicVector< typename MathTrait<T1,T2>::AddType , true >  AddType;
+   typedef DynamicVector< typename MathTrait<T1,T2>::SubType , true >  SubType;
+   typedef DynamicVector< typename MathTrait<T1,T2>::MultType, true >  MultType;
+   typedef INVALID_TYPE                                                CrossType;
+   typedef INVALID_TYPE                                                DivType;
 };
 /*! \endcond */
 //*************************************************************************************************

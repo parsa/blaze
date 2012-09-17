@@ -1120,6 +1120,7 @@ struct MathTrait< Quaternion<T1>, Quaternion<T2> >
    typedef INVALID_TYPE                                       AddType;
    typedef INVALID_TYPE                                       SubType;
    typedef Quaternion< typename MathTrait<T1,T2>::MultType >  MultType;
+   typedef INVALID_TYPE                                       CrossType;
    typedef INVALID_TYPE                                       DivType;
 };
 /*! \endcond */

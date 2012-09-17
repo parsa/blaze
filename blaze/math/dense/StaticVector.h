@@ -2041,6 +2041,7 @@ struct MathTrait< StaticVector<T1,N,TF>, T2 >
    typedef INVALID_TYPE                                                AddType;
    typedef INVALID_TYPE                                                SubType;
    typedef StaticVector< typename MathTrait<T1,T2>::MultType, N, TF >  MultType;
+   typedef INVALID_TYPE                                                CrossType;
    typedef StaticVector< typename MathTrait<T1,T2>::DivType , N, TF >  DivType;
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
 };
@@ -2053,6 +2054,7 @@ struct MathTrait< T1, StaticVector<T2,N,TF> >
    typedef INVALID_TYPE                                                AddType;
    typedef INVALID_TYPE                                                SubType;
    typedef StaticVector< typename MathTrait<T1,T2>::MultType, N, TF >  MultType;
+   typedef INVALID_TYPE                                                CrossType;
    typedef INVALID_TYPE                                                DivType;
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T1 );
 };
@@ -2065,18 +2067,24 @@ struct MathTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
    typedef StaticVector< typename MathTrait<T1,T2>::AddType , N, TF >  AddType;
    typedef StaticVector< typename MathTrait<T1,T2>::SubType , N, TF >  SubType;
    typedef StaticVector< typename MathTrait<T1,T2>::MultType, N, TF >  MultType;
+   typedef INVALID_TYPE                                                CrossType;
    typedef INVALID_TYPE                                                DivType;
 };
 
-template< typename T1, size_t N, typename T2 >
-struct MathTrait< StaticVector<T1,N,true>, StaticVector<T2,N,false> >
+template< typename T1, typename T2 >
+struct MathTrait< StaticVector<T1,3UL,false>, StaticVector<T2,3UL,false> >
 {
-   typedef INVALID_TYPE                         HighType;
-   typedef INVALID_TYPE                         LowType;
-   typedef INVALID_TYPE                         AddType;
-   typedef INVALID_TYPE                         SubType;
-   typedef typename MathTrait<T1,T2>::MultType  MultType;
-   typedef INVALID_TYPE                         DivType;
+ private:
+   typedef typename MathTrait<T1,T2>::MultType  T;
+
+ public:
+   typedef StaticVector< typename MathTrait<T1,T2>::HighType, 3UL, false >  HighType;
+   typedef StaticVector< typename MathTrait<T1,T2>::LowType , 3UL, false >  LowType;
+   typedef StaticVector< typename MathTrait<T1,T2>::AddType , 3UL, false >  AddType;
+   typedef StaticVector< typename MathTrait<T1,T2>::SubType , 3UL, false >  SubType;
+   typedef StaticVector< typename MathTrait<T1,T2>::MultType, 3UL, false >  MultType;
+   typedef StaticVector< typename MathTrait<T,T>::SubType   , 3UL, false >  CrossType;
+   typedef INVALID_TYPE                                                     DivType;
 };
 
 template< typename T1, size_t M, typename T2, size_t N >
@@ -2087,7 +2095,20 @@ struct MathTrait< StaticVector<T1,M,false>, StaticVector<T2,N,true> >
    typedef INVALID_TYPE                                                      AddType;
    typedef INVALID_TYPE                                                      SubType;
    typedef StaticMatrix< typename MathTrait<T1,T2>::MultType, M, N, false >  MultType;
+   typedef INVALID_TYPE                                                      CrossType;
    typedef INVALID_TYPE                                                      DivType;
+};
+
+template< typename T1, size_t N, typename T2 >
+struct MathTrait< StaticVector<T1,N,true>, StaticVector<T2,N,false> >
+{
+   typedef INVALID_TYPE                         HighType;
+   typedef INVALID_TYPE                         LowType;
+   typedef INVALID_TYPE                         AddType;
+   typedef INVALID_TYPE                         SubType;
+   typedef typename MathTrait<T1,T2>::MultType  MultType;
+   typedef INVALID_TYPE                         CrossType;
+   typedef INVALID_TYPE                         DivType;
 };
 /*! \endcond */
 //*************************************************************************************************
