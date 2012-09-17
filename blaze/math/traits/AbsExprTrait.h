@@ -73,7 +73,7 @@ template< typename T >  // Type of the absolute value operand
 struct AbsExprTrait
 {
  private:
-   //**struct ScalarAdd****************************************************************************
+   //**struct ScalarAbs****************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename ST >
    struct ScalarAbs { typedef T  Type; };
