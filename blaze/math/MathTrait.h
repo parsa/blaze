@@ -30,6 +30,12 @@
 #include <cstddef>
 #include <blaze/util/Complex.h>
 #include <blaze/util/InvalidType.h>
+#include <blaze/util/SelectType.h>
+#include <blaze/util/typetraits/IsConst.h>
+#include <blaze/util/typetraits/IsReference.h>
+#include <blaze/util/typetraits/IsVolatile.h>
+#include <blaze/util/typetraits/RemoveCV.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -47,34 +53,46 @@ namespace blaze {
 //
 // \section mathtrait_general General
 //
-// The MathTrait class template offers the possibility to select the resulting data type
-// of a generic mathematical operation. In case of operations between built-in data types,
-// the MathTrait class defines the more significant data type as the resulting data type.
-// For this selection, signed data types are given a higher significance. In case of
-// operations involving user-defined data types, the MathTrait template specifies the
-// resulting data type of this operation. \a const and \a volatile qualifiers are
-// generally ignored.\n
-// Specifying the resulting data type for a specific operation is done by specializing
-// the MathTrait template for this particular type combination. In case a certain type
-// combination is not defined in a MathTrait specialization, the base template is selected,
-// which defines no resulting types and therefore stops the compilation process. Each
-// specialization defines the data types \a HighType that represents the high-order data
-// type of the two given data types and \a LowType that represents the low-order data type.
-// Additionally, each specialization defines the types \a AddType, \a SubType, \a MultType
-// and \a DivType, that represent the type of the resulting data type of the corresponding
-// mathematical operation. The following example shows the specialization for operations
-// between the double and the integer type:
+// The MathTrait class template offers the possibility to select the resulting data type of
+// a generic mathematical operation between the two given types \a T1 and \a T2. In case of
+// operations between built-in data types, the MathTrait class defines the more significant
+// data type as the resulting data type. For this selection, larger and/or signed data types
+// are given a higher significance. In case of operations involving user-defined data types,
+// the MathTrait template specifies the resulting data type of this operation. \a const and
+// \a volatile qualifiers and reference modifiers are generally ignored.\n
+//
+// MathTrait defines the following nested types:
+//
+//   - \a HighType : Represents the higher-order, more significant data type of the two
+//                   given data types.
+//   - \a LowType  : Represents the lower-order, less significant data type of the two
+//                   given data types.
+//   - \a AddType  : Represents the result of an addition operation.
+//   - \a SubType  : Represents the result of a subtraction operation.
+//   - \a MultType : Represents the result of a multiplication operation.
+//   - \a CrossType: Represents the result of a cross product operation.
+//   - \a DivType  : Represents the result of a division operation.
+//
+// If a certain mathematical operation is not possible and/or not defined between the two
+// given data types, the according type is set to \a INVALID_TYPE.\n
+//
+// Specifying the resulting data type for a specific operation is done by specializing the
+// MathTrait template for this particular type combination. In case a certain type combination
+// is not defined in a MathTrait specialization, the base template is selected, which sets all
+// nested types to \a INVALID_TYPE and therefore stops the compilation process. The following
+// example shows the specialization for operations between the double and the integer type:
 
    \code
    template<>
    struct MathTrait< double, int >
    {
-      typedef double  HighType;
-      typedef int     LowType;
-      typedef double  AddType;
-      typedef double  SubType;
-      typedef double  MultType;
-      typedef double  DivType;
+      typedef double        HighType;
+      typedef int           LowType;
+      typedef double        AddType;
+      typedef double        SubType;
+      typedef double        MultType;
+      typedef INVALID_TYPE  CrossType;
+      typedef double        DivType;
    };
    \endcode
 
@@ -131,12 +149,13 @@ namespace blaze {
    {
       typedef typename typename MathTrait<T1,T2>::MultType  MT;
 
-      typedef INVALID_TYPE                HighType;  // Invalid, no common high data type
-      typedef INVALID_TYPE                LowType;   // Invalid, no common low data type
-      typedef INVALID_TYPE                AddType;   // Invalid, cannot add a matrix and a vector
-      typedef INVALID_TYPE                SubType;   // Invalid, cannot subtract a vector from a matrix
-      typedef StaticVector<MT,3UL,false>  MultType;  // Multiplication between a matrix and a vector
-      typedef INVALID_TYPE                DivType;   // Invalid, cannot divide a matrix by a vector
+      typedef INVALID_TYPE                HighType;   // Invalid, no common high data type
+      typedef INVALID_TYPE                LowType;    // Invalid, no common low data type
+      typedef INVALID_TYPE                AddType;    // Invalid, cannot add a matrix and a vector
+      typedef INVALID_TYPE                SubType;    // Invalid, cannot subtract a vector from a matrix
+      typedef StaticVector<MT,3UL,false>  MultType;   // Multiplication between a matrix and a vector
+      typedef INVALID_TYPE                CrossType;  // Invalid, cannot compute a matrix/vector cross product
+      typedef INVALID_TYPE                DivType;    // Invalid, cannot divide a matrix by a vector
    };
    \endcode
 
@@ -173,7 +192,51 @@ namespace blaze {
    \endcode
 */
 template< typename T1, typename T2 >
-struct MathTrait;
+struct MathTrait
+{
+ private:
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   struct Failure {
+      typedef INVALID_TYPE  HighType;
+      typedef INVALID_TYPE  LowType;
+      typedef INVALID_TYPE  AddType;
+      typedef INVALID_TYPE  SubType;
+      typedef INVALID_TYPE  MultType;
+      typedef INVALID_TYPE  CrossType;
+      typedef INVALID_TYPE  DivType;
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   enum { qualified = IsConst<T1>::value || IsVolatile<T1>::value || IsReference<T1>::value ||
+                      IsConst<T2>::value || IsVolatile<T2>::value || IsReference<T2>::value };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   typedef typename RemoveReference< typename RemoveCV<T1>::Type >::Type  Type1;
+   typedef typename RemoveReference< typename RemoveCV<T2>::Type >::Type  Type2;
+   typedef MathTrait<Type1,Type2>  Helper;
+   /*! \endcond */
+   //**********************************************************************************************
+
+ public:
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   typedef typename SelectType< qualified, Helper, Failure >::Type::HighType   HighType;
+   typedef typename SelectType< qualified, Helper, Failure >::Type::LowType    LowType;
+   typedef typename SelectType< qualified, Helper, Failure >::Type::AddType    AddType;
+   typedef typename SelectType< qualified, Helper, Failure >::Type::SubType    SubType;
+   typedef typename SelectType< qualified, Helper, Failure >::Type::MultType   MultType;
+   typedef typename SelectType< qualified, Helper, Failure >::Type::CrossType  CrossType;
+   typedef typename SelectType< qualified, Helper, Failure >::Type::DivType    DivType;
+   /*! \endcond */
+   //**********************************************************************************************
+};
 //*************************************************************************************************
 
 
@@ -187,29 +250,6 @@ struct MathTrait;
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the creation of MathTrait specializations involving cv-qualified types.
-// \ingroup math
-//
-// This macro is used for the setup of the MathTrait specializations required for cv-qualified
-// types.
-*/
-#define BLAZE_CREATE_CV_MATHTRAIT_SPECIALIZATION( CV1, CV2 ) \
-   template< typename T1, typename T2 > \
-   struct MathTrait< CV1 T1, CV2 T2 > \
-   { \
-      typedef typename MathTrait<T1,T2>::HighType  HighType; \
-      typedef typename MathTrait<T1,T2>::LowType   LowType;  \
-      typedef typename MathTrait<T1,T2>::AddType   AddType;  \
-      typedef typename MathTrait<T1,T2>::SubType   SubType;  \
-      typedef typename MathTrait<T1,T2>::MultType  MultType; \
-      typedef typename MathTrait<T1,T2>::DivType   DivType;  \
-   }
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the creation of MathTrait specializations for the built-in data types.
 // \ingroup math
 //
@@ -219,12 +259,13 @@ struct MathTrait;
    template<> \
    struct MathTrait< T1, T2 > \
    { \
-      typedef HIGH  HighType; \
-      typedef LOW   LowType;  \
-      typedef HIGH  AddType;  \
-      typedef HIGH  SubType;  \
-      typedef HIGH  MultType; \
-      typedef HIGH  DivType;  \
+      typedef HIGH          HighType; \
+      typedef LOW           LowType;  \
+      typedef HIGH          AddType;  \
+      typedef HIGH          SubType;  \
+      typedef HIGH          MultType; \
+      typedef INVALID_TYPE  CrossType; \
+      typedef HIGH          DivType;  \
    }
 /*! \endcond */
 //*************************************************************************************************
@@ -238,55 +279,28 @@ struct MathTrait;
 // This macro is used for the setup of the MathTrait specializations for the complex data type.
 */
 #define BLAZE_CREATE_COMPLEX_MATHTRAIT_SPECIALIZATION( T1 ) \
-   template< typename T > \
-   struct MathTrait< complex<T>, T1 > \
+   template< typename T2 > \
+   struct MathTrait< T1, complex<T2> > \
    { \
-      typedef complex<T>  HighType; \
-      typedef T1          LowType;  \
-      typedef complex<T>  AddType;  \
-      typedef complex<T>  SubType;  \
-      typedef complex<T>  MultType; \
-      typedef complex<T>  DivType;  \
+      typedef complex<T2>   HighType; \
+      typedef T1            LowType;  \
+      typedef complex<T2>   AddType;  \
+      typedef complex<T2>   SubType;  \
+      typedef complex<T2>   MultType; \
+      typedef INVALID_TYPE  CrossType; \
+      typedef complex<T2>   DivType;  \
    }; \
-   template< typename T > \
-   struct MathTrait< T1, complex<T> > \
+   template< typename T2 > \
+   struct MathTrait< complex<T2>, T1 > \
    { \
-      typedef complex<T>  HighType; \
-      typedef T1          LowType;  \
-      typedef complex<T>  AddType;  \
-      typedef complex<T>  SubType;  \
-      typedef complex<T>  MultType; \
-      typedef complex<T>  DivType;  \
+      typedef complex<T2>   HighType; \
+      typedef T1            LowType;  \
+      typedef complex<T2>   AddType;  \
+      typedef complex<T2>   SubType;  \
+      typedef complex<T2>   MultType; \
+      typedef INVALID_TYPE  CrossType; \
+      typedef complex<T2>   DivType;  \
    }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  CONST/VOLATILE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-BLAZE_CREATE_CV_MATHTRAIT_SPECIALIZATION(               , const          );
-BLAZE_CREATE_CV_MATHTRAIT_SPECIALIZATION(               , volatile       );
-BLAZE_CREATE_CV_MATHTRAIT_SPECIALIZATION(               , const volatile );
-BLAZE_CREATE_CV_MATHTRAIT_SPECIALIZATION( const         ,                );
-BLAZE_CREATE_CV_MATHTRAIT_SPECIALIZATION( const         , const          );
-BLAZE_CREATE_CV_MATHTRAIT_SPECIALIZATION( const         , volatile       );
-BLAZE_CREATE_CV_MATHTRAIT_SPECIALIZATION( const         , const volatile );
-BLAZE_CREATE_CV_MATHTRAIT_SPECIALIZATION( volatile      ,                );
-BLAZE_CREATE_CV_MATHTRAIT_SPECIALIZATION( volatile      , const          );
-BLAZE_CREATE_CV_MATHTRAIT_SPECIALIZATION( volatile      , volatile       );
-BLAZE_CREATE_CV_MATHTRAIT_SPECIALIZATION( volatile      , const volatile );
-BLAZE_CREATE_CV_MATHTRAIT_SPECIALIZATION( const volatile,                );
-BLAZE_CREATE_CV_MATHTRAIT_SPECIALIZATION( const volatile, const          );
-BLAZE_CREATE_CV_MATHTRAIT_SPECIALIZATION( const volatile, volatile       );
-BLAZE_CREATE_CV_MATHTRAIT_SPECIALIZATION( const volatile, const volatile );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -634,9 +648,42 @@ BLAZE_CREATE_BUILTIN_MATHTRAIT_SPECIALIZATION( std::size_t   , int           , s
 BLAZE_CREATE_BUILTIN_MATHTRAIT_SPECIALIZATION( std::size_t   , unsigned long , std::size_t   , unsigned long  );
 BLAZE_CREATE_BUILTIN_MATHTRAIT_SPECIALIZATION( std::size_t   , long          , std::size_t   , long           );
 BLAZE_CREATE_BUILTIN_MATHTRAIT_SPECIALIZATION( std::size_t   , std::size_t   , std::size_t   , std::size_t    );
+BLAZE_CREATE_BUILTIN_MATHTRAIT_SPECIALIZATION( std::size_t   , std::ptrdiff_t, std::ptrdiff_t, std::size_t    );
 BLAZE_CREATE_BUILTIN_MATHTRAIT_SPECIALIZATION( std::size_t   , float         , float         , std::size_t    );
 BLAZE_CREATE_BUILTIN_MATHTRAIT_SPECIALIZATION( std::size_t   , double        , double        , std::size_t    );
 BLAZE_CREATE_BUILTIN_MATHTRAIT_SPECIALIZATION( std::size_t   , long double   , long double   , std::size_t    );
+/*! \endcond */
+#endif
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  PTRDIFF_T SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+#if defined(_WIN64)
+/*! \cond BLAZE_INTERNAL */
+//                                             Type 1          Type 2          High type       Low type
+BLAZE_CREATE_BUILTIN_MATHTRAIT_SPECIALIZATION( std::ptrdiff_t, unsigned char , std::ptrdiff_t, unsigned char  );
+BLAZE_CREATE_BUILTIN_MATHTRAIT_SPECIALIZATION( std::ptrdiff_t, char          , std::ptrdiff_t, char           );
+BLAZE_CREATE_BUILTIN_MATHTRAIT_SPECIALIZATION( std::ptrdiff_t, signed char   , std::ptrdiff_t, signed char    );
+BLAZE_CREATE_BUILTIN_MATHTRAIT_SPECIALIZATION( std::ptrdiff_t, wchar_t       , std::ptrdiff_t, wchar_t        );
+BLAZE_CREATE_BUILTIN_MATHTRAIT_SPECIALIZATION( std::ptrdiff_t, unsigned short, std::ptrdiff_t, unsigned short );
+BLAZE_CREATE_BUILTIN_MATHTRAIT_SPECIALIZATION( std::ptrdiff_t, short         , std::ptrdiff_t, short          );
+BLAZE_CREATE_BUILTIN_MATHTRAIT_SPECIALIZATION( std::ptrdiff_t, unsigned int  , std::ptrdiff_t, unsigned int   );
+BLAZE_CREATE_BUILTIN_MATHTRAIT_SPECIALIZATION( std::ptrdiff_t, int           , std::ptrdiff_t, int            );
+BLAZE_CREATE_BUILTIN_MATHTRAIT_SPECIALIZATION( std::ptrdiff_t, unsigned long , std::ptrdiff_t, unsigned long  );
+BLAZE_CREATE_BUILTIN_MATHTRAIT_SPECIALIZATION( std::ptrdiff_t, long          , std::ptrdiff_t, long           );
+BLAZE_CREATE_BUILTIN_MATHTRAIT_SPECIALIZATION( std::ptrdiff_t, std::size_t   , std::ptrdiff_t, std::size_t    );
+BLAZE_CREATE_BUILTIN_MATHTRAIT_SPECIALIZATION( std::ptrdiff_t, std::ptrdiff_t, std::ptrdiff_t, std::ptrdiff_t );
+BLAZE_CREATE_BUILTIN_MATHTRAIT_SPECIALIZATION( std::ptrdiff_t, float         , float         , std::ptrdiff_t );
+BLAZE_CREATE_BUILTIN_MATHTRAIT_SPECIALIZATION( std::ptrdiff_t, double        , double        , std::ptrdiff_t );
+BLAZE_CREATE_BUILTIN_MATHTRAIT_SPECIALIZATION( std::ptrdiff_t, long double   , long double   , std::ptrdiff_t );
 /*! \endcond */
 #endif
 //*************************************************************************************************
