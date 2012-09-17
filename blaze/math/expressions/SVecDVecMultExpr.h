@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/expressions/SVecDVecMultExpr.h
-//  \brief Header file for the sparse vector/sparse vector addition expression
+//  \brief Header file for the sparse vector/sparse vector multiplication expression
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
