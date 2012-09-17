@@ -102,7 +102,7 @@ class SVecAbsExpr : public SparseVector< SVecAbsExpr<VT,TF>, TF >
    typedef typename VT::ResultType                ResultType;     //!< Result type for expression template evaluations.
    typedef typename VT::TransposeType             TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename VT::ElementType               ElementType;    //!< Resulting element type.
-   typedef const typename SVecAbsTrait<RN>::Type  ReturnType;     //!< Return type for expression template evaluations.
+   typedef const typename AbsExprTrait<RN>::Type  ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef typename SelectType< useAssign, const ResultType, const SVecAbsExpr& >::Type  CompositeType;
