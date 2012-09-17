@@ -1943,10 +1943,10 @@ struct MathTrait< CompressedVector<T1,true>, DynamicVector<T2,true> >
 template< typename T1, typename T2 >
 struct MathTrait< DynamicVector<T1,false>, CompressedVector<T2,false> >
 {
- public:
+ private:
    typedef typename MathTrait<T1,T2>::MultType  T;
 
- private:
+ public:
    typedef INVALID_TYPE                                                    HighType;
    typedef INVALID_TYPE                                                    LowType;
    typedef DynamicVector< typename MathTrait<T1,T2>::AddType, false >      AddType;
@@ -1995,10 +1995,10 @@ struct MathTrait< DynamicVector<T1,true>, CompressedVector<T2,true> >
 template< typename T1, typename T2 >
 struct MathTrait< CompressedVector<T1,false>, CompressedVector<T2,false> >
 {
- public:
+ private:
    typedef typename MathTrait<T1,T2>::MultType  T;
 
- private:
+ public:
    typedef CompressedVector< typename MathTrait<T1,T2>::HighType, false >  HighType;
    typedef CompressedVector< typename MathTrait<T1,T2>::LowType , false >  LowType;
    typedef CompressedVector< typename MathTrait<T1,T2>::AddType , false >  AddType;
