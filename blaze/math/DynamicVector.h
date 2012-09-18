@@ -2213,7 +2213,7 @@ struct MultTrait< DynamicVector<T1,true>, DynamicVector<T2,false> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
-struct MathTrait< DynamicVector<T1,false>, StaticVector<T2,3UL,false> >
+struct CrossTrait< DynamicVector<T1,false>, StaticVector<T2,3UL,false> >
 {
  private:
    typedef typename MultTrait<T1,T2>::Type  T;
@@ -2223,7 +2223,7 @@ struct MathTrait< DynamicVector<T1,false>, StaticVector<T2,3UL,false> >
 };
 
 template< typename T1, typename T2 >
-struct MathTrait< StaticVector<T1,3UL,false>, DynamicVector<T2,false> >
+struct CrossTrait< StaticVector<T1,3UL,false>, DynamicVector<T2,false> >
 {
  private:
    typedef typename MultTrait<T1,T2>::Type  T;
@@ -2233,7 +2233,7 @@ struct MathTrait< StaticVector<T1,3UL,false>, DynamicVector<T2,false> >
 };
 
 template< typename T1, typename T2 >
-struct MathTrait< DynamicVector<T1,false>, DynamicVector<T2,false> >
+struct CrossTrait< DynamicVector<T1,false>, DynamicVector<T2,false> >
 {
  private:
    typedef typename MultTrait<T1,T2>::Type  T;

@@ -2013,7 +2013,7 @@ struct CrossTrait< CompressedVector<T1,false>, CompressedVector<T2,false> >
    typedef typename MultTrait<T1,T2>::Type  T;
 
  public:
-   typedef StaticVector< typename Trait<T,T>::Type, 3UL, false >  CrossType;
+   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  CrossType;
 };
 /*! \endcond */
 //*************************************************************************************************
