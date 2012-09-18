@@ -44,6 +44,7 @@
 #include <blaze/math/SparseVector.h>
 #include <blaze/math/Types.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
@@ -1950,6 +1951,69 @@ template< typename T1, typename T2 >
 struct MultTrait< CompressedVector<T1,true>, CompressedVector<T2,false> >
 {
    typedef typename MultTrait<T1,T2>::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CROSSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2 >
+struct CrossTrait< CompressedVector<T1,false>, StaticVector<T2,3UL,false> >
+{
+ private:
+   typedef typename MultTrait<T1,T2>::Type  T;
+
+ public:
+   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  CrossType;
+};
+
+template< typename T1, typename T2 >
+struct CrossTrait< StaticVector<T1,3UL,false>, CompressedVector<T2,false> >
+{
+ private:
+   typedef typename MultTrait<T1,T2>::Type  T;
+
+ public:
+   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  CrossType;
+};
+
+template< typename T1, typename T2 >
+struct CrossTrait< CompressedVector<T1,false>, DynamicVector<T2,false> >
+{
+ private:
+   typedef typename MultTrait<T1,T2>::Type  T;
+
+ public:
+   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  CrossType;
+};
+
+template< typename T1, typename T2 >
+struct CrossTrait< DynamicVector<T1,false>, CompressedVector<T2,false> >
+{
+ private:
+   typedef typename MultTrait<T1,T2>::Type  T;
+
+ public:
+   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  CrossType;
+};
+
+template< typename T1, typename T2 >
+struct CrossTrait< CompressedVector<T1,false>, CompressedVector<T2,false> >
+{
+ private:
+   typedef typename MultTrait<T1,T2>::Type  T;
+
+ public:
+   typedef StaticVector< typename Trait<T,T>::Type, 3UL, false >  CrossType;
 };
 /*! \endcond */
 //*************************************************************************************************

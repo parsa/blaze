@@ -39,6 +39,7 @@
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
@@ -2105,6 +2106,29 @@ template< typename T1, size_t N, typename T2 >
 struct MultTrait< StaticVector<T1,N,true>, StaticVector<T2,N,false> >
 {
    typedef typename MultTrait<T1,T2>::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CROSSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2 >
+struct CrossTrait< StaticVector<T1,3UL,false>, StaticVector<T2,3UL,false> >
+{
+ private:
+   typedef typename MultTrait<T1,T2>::Type  T;
+
+ public:
+   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  CrossType;
 };
 /*! \endcond */
 //*************************************************************************************************
