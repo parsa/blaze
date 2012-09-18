@@ -39,6 +39,7 @@
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/Types.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
@@ -2038,6 +2039,25 @@ template< typename T1, size_t N, bool TF, typename T2 >
 struct AddTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 {
    typedef StaticVector< typename MathTrait<T1,T2>::AddType , N, TF >  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, size_t N, bool TF, typename T2 >
+struct SubTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
+{
+   typedef StaticVector< typename MathTrait<T1,T2>::SubType , N, TF >  Type;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -39,6 +39,7 @@
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/Types.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -4073,6 +4074,55 @@ template< typename T1, bool SO1, typename T2, bool SO2 >
 struct AddTrait< DynamicMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 {
    typedef DynamicMatrix< typename AddTrait<T1,T2>::Type , false >  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, bool SO, typename T2, size_t M, size_t N >
+struct SubTrait< DynamicMatrix<T1,SO>, StaticMatrix<T2,M,N,SO> >
+{
+   typedef StaticMatrix< typename SubTrait<T1,T2>::Type, M, N, SO >  Type;
+};
+
+template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
+struct SubTrait< DynamicMatrix<T1,SO1>, StaticMatrix<T2,M,N,SO2> >
+{
+   typedef StaticMatrix< typename SubTrait<T1,T2>::Type, M, N, false >  Type;
+};
+
+template< typename T1, size_t M, size_t N, bool SO, typename T2 >
+struct SubTrait< StaticMatrix<T1,M,N,SO>, DynamicMatrix<T2,SO> >
+{
+   typedef StaticMatrix< typename SubTrait<T1,T2>::Type, M, N, SO >  Type;
+};
+
+template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
+struct SubTrait< StaticMatrix<T1,M,N,SO1>, DynamicMatrix<T2,SO2> >
+{
+   typedef StaticMatrix< typename SubTrait<T1,T2>::Type, M, N, false >  Type;
+};
+
+template< typename T1, bool SO, typename T2 >
+struct SubTrait< DynamicMatrix<T1,SO>, DynamicMatrix<T2,SO> >
+{
+   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type , SO >  Type;
+};
+
+template< typename T1, bool SO1, typename T2, bool SO2 >
+struct SubTrait< DynamicMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
+{
+   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type , false >  Type;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -78,6 +78,7 @@
 #include <blaze/math/traits/SMatTSMatMultTrait.h>
 #include <blaze/math/traits/SMatTSMatSubTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
+#include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SVecAbsTrait.h>
 #include <blaze/math/traits/SVecDVecAddTrait.h>
 #include <blaze/math/traits/SVecDVecMultTrait.h>

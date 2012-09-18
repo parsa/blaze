@@ -42,6 +42,7 @@
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/Types.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -2081,6 +2082,37 @@ template< typename T1, bool TF, typename T2 >
 struct AddTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
 {
    typedef DynamicVector< typename AddTrait<T1,T2>::Type, TF >  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, bool TF, typename T2, size_t N >
+struct SubTrait< DynamicVector<T1,TF>, StaticVector<T2,N,TF> >
+{
+   typedef StaticVector< typename SubTrait<T1,T2>::Type, N, TF >  Type;
+};
+
+template< typename T1, size_t N, bool TF, typename T2 >
+struct SubTrait< StaticVector<T1,N,TF>, DynamicVector<T2,TF> >
+{
+   typedef StaticVector< typename SubTrait<T1,T2>::Type, N, TF >  Type;
+};
+
+template< typename T1, bool TF, typename T2 >
+struct SubTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
+{
+   typedef DynamicVector< typename SubTrait<T1,T2>::Type, TF >  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
