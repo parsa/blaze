@@ -39,6 +39,7 @@
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/Types.h>
 #include <blaze/system/Precision.h>
 #include <blaze/util/Assert.h>
@@ -1424,7 +1425,98 @@ inline const RotationMatrix< typename MathTrait<T1,T2>::MultType >
 
 //=================================================================================================
 //
-//  ROTATIONMATRIX SPECIALIZATIONS
+//  MULTTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2 >
+struct MultTrait< RotationMatrix<T1>, StaticVector<T2,3UL,false> >
+{
+   typedef StaticVector< typename MultTrait<T1,T2>::Type, 3UL, false >  Type;
+};
+
+template< typename T1, typename T2 >
+struct MultTrait< StaticVector<T1,3UL,true>, RotationMatrix<T2> >
+{
+   typedef StaticVector< typename MultTrait<T1,T2>::Type, 3UL, true >  Type;
+};
+
+template< typename T1, typename T2 >
+struct MultTrait< RotationMatrix<T1>, DynamicVector<T2,false> >
+{
+   typedef StaticVector< typename MultTrait<T1,T2>::Type, 3UL, false >  Type;
+};
+
+template< typename T1, typename T2 >
+struct MultTrait< DynamicVector<T1,true>, RotationMatrix<T2> >
+{
+   typedef StaticVector< typename MultTrait<T1,T2>::Type, 3UL, true >  Type;
+};
+
+template< typename T1, typename T2 >
+struct MultTrait< RotationMatrix<T1>, CompressedVector<T2,false> >
+{
+   typedef StaticVector< typename MultTrait<T1,T2>::Type, 3UL, false >  Type;
+};
+
+template< typename T1, typename T2 >
+struct MultTrait< CompressedVector<T1,true>, RotationMatrix<T2> >
+{
+   typedef StaticVector< typename MultTrait<T1,T2>::Type, 3UL, true >  Type;
+};
+
+template< typename T1, typename T2 >
+struct MultTrait< RotationMatrix<T1>, StaticMatrix<T2,3UL,3UL,false> >
+{
+   typedef StaticMatrix< typename MultTrait<T1,T2>::Type, 3UL, 3UL, false >  Type;
+};
+
+template< typename T1, typename T2 >
+struct MultTrait< StaticMatrix<T1,3UL,3UL,false>, RotationMatrix<T2> >
+{
+   typedef StaticMatrix< typename MultTrait<T1,T2>::Type, 3UL, 3UL, false >  Type;
+};
+
+template< typename T1, typename T2, bool SO >
+struct MultTrait< RotationMatrix<T1>, DynamicMatrix<T2,SO> >
+{
+   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+};
+
+template< typename T1, bool SO, typename T2 >
+struct MultTrait< DynamicMatrix<T1,SO>, RotationMatrix<T2> >
+{
+   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+};
+
+template< typename T1, typename T2, bool SO >
+struct MultTrait< RotationMatrix<T1>, CompressedMatrix<T2,SO> >
+{
+   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+};
+
+template< typename T1, bool SO, typename T2 >
+struct MultTrait< CompressedMatrix<T1,SO>, RotationMatrix<T2> >
+{
+   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+};
+
+template< typename T1, typename T2 >
+struct MultTrait< RotationMatrix<T1>, RotationMatrix<T2> >
+{
+   typedef RotationMatrix< typename MultTrait<T1,T2>::Type >  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MATHTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 

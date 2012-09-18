@@ -40,6 +40,7 @@
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/Types.h>
 #include <blaze/math/typetraits/CanAlias.h>
@@ -2059,6 +2060,51 @@ template< typename T1, size_t N, bool TF, typename T2 >
 struct SubTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 {
    typedef StaticVector< typename MathTrait<T1,T2>::SubType, N, TF >  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MULTTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, size_t N, bool TF, typename T2 >
+struct MultTrait< StaticVector<T1,N,TF>, T2 >
+{
+   typedef StaticVector< typename MultTrait<T1,T2>::Type, N, TF >  Type;
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
+};
+
+template< typename T1, typename T2, size_t N, bool TF >
+struct MultTrait< T1, StaticVector<T2,N,TF> >
+{
+   typedef StaticVector< typename MultTrait<T1,T2>::Type, N, TF >  Type;
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T1 );
+};
+
+template< typename T1, size_t N, bool TF, typename T2 >
+struct MultTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
+{
+   typedef StaticVector< typename MultTrait<T1,T2>::Type, N, TF >  Type;
+};
+
+template< typename T1, size_t M, typename T2, size_t N >
+struct MultTrait< StaticVector<T1,M,false>, StaticVector<T2,N,true> >
+{
+   typedef StaticMatrix< typename MultTrait<T1,T2>::Type, M, N, false >  Type;
+};
+
+template< typename T1, size_t N, typename T2 >
+struct MultTrait< StaticVector<T1,N,true>, StaticVector<T2,N,false> >
+{
+   typedef typename MultTrait<T1,T2>::Type  Type;
 };
 /*! \endcond */
 //*************************************************************************************************

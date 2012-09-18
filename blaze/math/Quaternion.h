@@ -35,6 +35,7 @@
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/Types.h>
 #include <blaze/system/Precision.h>
 #include <blaze/util/Assert.h>
@@ -1099,6 +1100,25 @@ inline const Quaternion< typename MathTrait<T1,T2>::MultType >
       return Quaternion<MT>( r*ilen, i*ilen, j*ilen, k*ilen );
    }
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MULTTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2 >
+struct MultTrait< Quaternion<T1>, Quaternion<T2> >
+{
+   typedef Quaternion< typename MathTrait<T1,T2>::MultType >  MultType;
+};
+/*! \endcond */
 //*************************************************************************************************
 
 

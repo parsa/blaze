@@ -40,6 +40,7 @@
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/Types.h>
 #include <blaze/math/typetraits/CanAlias.h>
@@ -4124,6 +4125,87 @@ template< typename T1, bool SO1, typename T2, bool SO2 >
 struct SubTrait< DynamicMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 {
    typedef DynamicMatrix< typename SubTrait<T1,T2>::Type , false >  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MULTTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, bool SO, typename T2 >
+struct MultTrait< DynamicMatrix<T1,SO>, T2 >
+{
+   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO >  Type;
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
+};
+
+template< typename T1, typename T2, bool SO >
+struct MultTrait< T1, DynamicMatrix<T2,SO> >
+{
+   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO >  Type;
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T1 );
+};
+
+template< typename T1, bool SO, typename T2, size_t N >
+struct MultTrait< DynamicMatrix<T1,SO>, StaticVector<T2,N,false> >
+{
+   typedef DynamicVector< typename MultTrait<T1,T2>::Type, false >  Type;
+};
+
+template< typename T1, size_t N, typename T2, bool SO >
+struct MultTrait< StaticVector<T1,N,true>, DynamicMatrix<T2,SO> >
+{
+   typedef DynamicVector< typename MultTrait<T1,T2>::Type, true >  Type;
+};
+
+template< typename T1, bool SO, typename T2 >
+struct MultTrait< DynamicMatrix<T1,SO>, DynamicVector<T2,false> >
+{
+   typedef DynamicVector< typename MultTrait<T1,T2>::Type, false >  Type;
+};
+
+template< typename T1, typename T2, bool SO >
+struct MultTrait< DynamicVector<T1,true>, DynamicMatrix<T2,SO> >
+{
+   typedef DynamicVector< typename MultTrait<T1,T2>::Type, true >  Type;
+};
+
+template< typename T1, bool SO, typename T2 >
+struct MultTrait< DynamicMatrix<T1,SO>, CompressedVector<T2,false> >
+{
+   typedef DynamicVector< typename MultTrait<T1,T2>::Type, false >  Type;
+};
+
+template< typename T1, typename T2, bool SO >
+struct MultTrait< CompressedVector<T1,true>, DynamicMatrix<T2,SO> >
+{
+   typedef DynamicVector< typename MultTrait<T1,T2>::Type, true >  Type;
+};
+
+template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
+struct MultTrait< DynamicMatrix<T1,SO1>, StaticMatrix<T2,M,N,SO2> >
+{
+   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO1 >  Type;
+};
+
+template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
+struct MultTrait< StaticMatrix<T1,M,N,SO1>, DynamicMatrix<T2,SO2> >
+{
+   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO1 >  Type;
+};
+
+template< typename T1, bool SO1, typename T2, bool SO2 >
+struct MultTrait< DynamicMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
+{
+   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO1 >  Type;
 };
 /*! \endcond */
 //*************************************************************************************************

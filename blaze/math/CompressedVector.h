@@ -45,6 +45,7 @@
 #include <blaze/math/Types.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -1832,6 +1833,123 @@ template< typename T1, bool TF, typename T2 >
 struct SubTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 {
    typedef CompressedVector< typename SubTrait<T1,T2>::Type, TF >  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MULTTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, bool TF, typename T2 >
+struct MultTrait< CompressedVector<T1,TF>, T2 >
+{
+   typedef CompressedVector< typename MultTrait<T1,T2>::Type, TF >  Type;
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
+};
+
+template< typename T1, typename T2, bool TF >
+struct MultTrait< T1, CompressedVector<T2,TF> >
+{
+   typedef CompressedVector< typename MultTrait<T1,T2>::Type, TF >  Type;
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T1 );
+};
+
+template< typename T1, bool TF, typename T2, size_t N >
+struct MultTrait< CompressedVector<T1,TF>, StaticVector<T2,N,TF> >
+{
+   typedef CompressedVector< typename MultTrait<T1,T2>::Type, TF >  Type;
+};
+
+template< typename T1, typename T2, size_t N >
+struct MultTrait< CompressedVector<T1,false>, StaticVector<T2,N,true> >
+{
+   typedef CompressedMatrix< typename MultTrait<T1,T2>::Type, true >  Type;
+};
+
+template< typename T1, typename T2, size_t N >
+struct MultTrait< CompressedVector<T1,true>, StaticVector<T2,N,false> >
+{
+   typedef typename MultTrait<T1,T2>::Type  Type;
+};
+
+template< typename T1, size_t N, bool TF, typename T2 >
+struct MultTrait< StaticVector<T1,N,TF>, CompressedVector<T2,TF> >
+{
+   typedef CompressedVector< typename MultTrait<T1,T2>::Type, TF >  Type;
+};
+
+template< typename T1, size_t N, typename T2 >
+struct MultTrait< StaticVector<T1,N,false>, CompressedVector<T2,true> >
+{
+   typedef CompressedMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+};
+
+template< typename T1, size_t N, typename T2 >
+struct MultTrait< StaticVector<T1,N,true>, CompressedVector<T2,false> >
+{
+   typedef typename MultTrait<T1,T2>::Type  Type;
+};
+
+template< typename T1, bool TF, typename T2 >
+struct MultTrait< CompressedVector<T1,TF>, DynamicVector<T2,TF> >
+{
+   typedef CompressedVector< typename MultTrait<T1,T2>::Type, TF >  Type;
+};
+
+template< typename T1, typename T2 >
+struct MultTrait< CompressedVector<T1,false>, DynamicVector<T2,true> >
+{
+   typedef CompressedMatrix< typename MultTrait<T1,T2>::Type, true >  Type;
+};
+
+template< typename T1, typename T2 >
+struct MultTrait< CompressedVector<T1,true>, DynamicVector<T2,false> >
+{
+   typedef typename MultTrait<T1,T2>::Type  Type;
+};
+
+template< typename T1, bool TF, typename T2 >
+struct MultTrait< DynamicVector<T1,TF>, CompressedVector<T2,TF> >
+{
+   typedef CompressedVector< typename MultTrait<T1,T2>::Type, false >  Type;
+};
+
+template< typename T1, typename T2 >
+struct MultTrait< DynamicVector<T1,false>, CompressedVector<T2,true> >
+{
+   typedef CompressedMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+};
+
+template< typename T1, typename T2 >
+struct MultTrait< DynamicVector<T1,true>, CompressedVector<T2,false> >
+{
+   typedef typename MultTrait<T1,T2>::Type  Type;
+};
+
+template< typename T1, bool TF, typename T2 >
+struct MultTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
+{
+   typedef CompressedVector< typename MultTrait<T1,T2>::Type, false >  Type;
+};
+
+template< typename T1, typename T2 >
+struct MultTrait< CompressedVector<T1,false>, CompressedVector<T2,true> >
+{
+   typedef CompressedMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+};
+
+template< typename T1, typename T2 >
+struct MultTrait< CompressedVector<T1,true>, CompressedVector<T2,false> >
+{
+   typedef typename MultTrait<T1,T2>::Type  Type;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -61,6 +61,7 @@
 #include <blaze/math/traits/DVecTDVecMultTrait.h>
 #include <blaze/math/traits/DVecTSVecMultTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SMatAbsTrait.h>
 #include <blaze/math/traits/SMatDMatAddTrait.h>
 #include <blaze/math/traits/SMatDMatMultTrait.h>
