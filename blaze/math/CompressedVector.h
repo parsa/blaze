@@ -44,6 +44,7 @@
 #include <blaze/math/SparseVector.h>
 #include <blaze/math/Types.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -1831,6 +1832,26 @@ template< typename T1, bool TF, typename T2 >
 struct SubTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 {
    typedef CompressedVector< typename SubTrait<T1,T2>::Type, TF >  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DIVTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, bool TF, typename T2 >
+struct DivTrait< CompressedVector<T1,TF>, T2 >
+{
+   typedef CompressedVector< typename DivTrait<T1,T2>::Type, TF >  Type;
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
 };
 /*! \endcond */
 //*************************************************************************************************

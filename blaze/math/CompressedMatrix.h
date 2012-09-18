@@ -42,6 +42,7 @@
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/SparseMatrix.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/Types.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -4210,6 +4211,26 @@ struct SubTrait< CompressedMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
 
 //=================================================================================================
 //
+//  DIVTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, bool SO, typename T2 >
+struct DivTrait< CompressedMatrix<T1,SO>, T2 >
+{
+   typedef CompressedMatrix< typename DivTrait<T1,T2>::Type, SO >  Type;
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  MATHTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
@@ -4262,7 +4283,7 @@ struct MathTrait< StaticVector<T1,N,true>, CompressedMatrix<T2,SO> >
    typedef INVALID_TYPE                                                AddType;
    typedef INVALID_TYPE                                                SubType;
    typedef DynamicVector< typename MathTrait<T1,T2>::MultType, true >  MultType;
-   typedef INVALID_TYPE                                                 CrossType;
+   typedef INVALID_TYPE                                                CrossType;
    typedef INVALID_TYPE                                                DivType;
 };
 

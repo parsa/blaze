@@ -38,6 +38,7 @@
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/Types.h>
 #include <blaze/math/typetraits/CanAlias.h>
@@ -4644,6 +4645,26 @@ template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct SubTrait< StaticMatrix<T1,M,N,SO1>, StaticMatrix<T2,M,N,SO2> >
 {
    typedef StaticMatrix< typename SubTrait<T1,T2>::Type, M, N, false >  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DIVTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, size_t M, size_t N, bool SO, typename T2 >
+struct DivTrait< StaticMatrix<T1,M,N,SO>, T2 >
+{
+   typedef StaticMatrix< typename DivTrait<T1,T2>::Type, M, N, SO >  Type;
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
 };
 /*! \endcond */
 //*************************************************************************************************

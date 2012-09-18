@@ -42,6 +42,7 @@
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/Types.h>
 #include <blaze/math/typetraits/CanAlias.h>
@@ -2113,6 +2114,26 @@ template< typename T1, bool TF, typename T2 >
 struct SubTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
 {
    typedef DynamicVector< typename SubTrait<T1,T2>::Type, TF >  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DIVTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, bool TF, typename T2 >
+struct DivTrait< DynamicVector<T1,TF>, T2 >
+{
+   typedef DynamicVector< typename DivTrait<T1,T2>::Type, TF >  Type;
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
 };
 /*! \endcond */
 //*************************************************************************************************
