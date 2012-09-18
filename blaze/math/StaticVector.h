@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_STATIC_VECTOR_H_
-#define _BLAZE_MATH_STATIC_VECTOR_H_
+#ifndef _BLAZE_MATH_STATICVECTOR_H_
+#define _BLAZE_MATH_STATICVECTOR_H_
 
 
 //*************************************************************************************************
