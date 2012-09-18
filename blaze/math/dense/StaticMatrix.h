@@ -37,6 +37,7 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/Types.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
@@ -4594,6 +4595,31 @@ inline void swap( StaticMatrix<Type,M,N,SO>& a, StaticMatrix<Type,M,N,SO>& b ) /
 {
    a.swap( b );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ADDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, size_t M, size_t N, bool SO, typename T2 >
+struct AddTrait< StaticMatrix<T1,M,N,SO>, StaticMatrix<T2,M,N,SO> >
+{
+   typedef StaticMatrix< typename AddTrait<T1,T2>::Type, M, N, SO >  Type;
+};
+
+template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
+struct AddTrait< StaticMatrix<T1,M,N,SO1>, StaticMatrix<T2,M,N,SO2> >
+{
+   typedef StaticMatrix< typename AddTrait<T1,T2>::Type, M, N, false >  Type;
+};
+/*! \endcond */
 //*************************************************************************************************
 
 

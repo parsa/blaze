@@ -29,6 +29,7 @@
 
 #include <blaze/math/traits/AbsExprTrait.h>
 #include <blaze/math/traits/AddExprTrait.h>
+#include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/DivExprTrait.h>
 #include <blaze/math/traits/DMatAbsTrait.h>
 #include <blaze/math/traits/DMatDMatAddTrait.h>

@@ -38,6 +38,7 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/Types.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
@@ -2020,6 +2021,25 @@ inline void swap( StaticVector<Type,N,TF>& a, StaticVector<Type,N,TF>& b ) /* th
 {
    a.swap( b );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ADDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, size_t N, bool TF, typename T2 >
+struct AddTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
+{
+   typedef StaticVector< typename MathTrait<T1,T2>::AddType , N, TF >  Type;
+};
+/*! \endcond */
 //*************************************************************************************************
 
 
