@@ -36,9 +36,9 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/DynamicVector.h>
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
@@ -72,10 +72,10 @@ class DVecDVecAdd
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename VT1::TransposeType                    TVT1;  //!< Transpose vector type 1
-   typedef typename VT2::TransposeType                    TVT2;  //!< Transpose vector type 2
-   typedef typename blaze::MathTrait<VT1,VT2>::AddType    RE;    //!< Default result type
-   typedef typename blaze::MathTrait<TVT1,TVT2>::AddType  TRE;   //!< Transpose default result type
+   typedef typename VT1::TransposeType                TVT1;  //!< Transpose vector type 1
+   typedef typename VT2::TransposeType                TVT2;  //!< Transpose vector type 2
+   typedef typename blaze::AddTrait<VT1,VT2>::Type    RE;    //!< Default result type
+   typedef typename blaze::AddTrait<TVT1,TVT2>::Type  TRE;   //!< Transpose default result type
    //**********************************************************************************************
 
    //**Enumerations********************************************************************************

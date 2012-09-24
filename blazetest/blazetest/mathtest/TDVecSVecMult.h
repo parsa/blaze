@@ -36,8 +36,8 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/DynamicVector.h>
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blazetest/system/MathTest.h>
@@ -70,9 +70,9 @@ class TDVecSVecMult
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename VT1::TransposeType                    TVT1;  //!< Transpose vector type 1
-   typedef typename VT2::TransposeType                    TVT2;  //!< Transpose vector type 2
-   typedef typename blaze::MathTrait<TVT1,VT2>::MultType  RE;    //!< Default result type
+   typedef typename VT1::TransposeType                TVT1;  //!< Transpose vector type 1
+   typedef typename VT2::TransposeType                TVT2;  //!< Transpose vector type 2
+   typedef typename blaze::MultTrait<TVT1,VT2>::Type  RE;    //!< Default result type
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************

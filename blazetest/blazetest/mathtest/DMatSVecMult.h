@@ -39,8 +39,8 @@
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/StaticMatrix.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
@@ -74,11 +74,11 @@ class DMatSVecMult
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT::OppositeType                   OMT;  //!< Matrix type with opposite storage order
-   typedef typename MT::TransposeType                  TMT;  //!< Transpose matrix type
-   typedef typename VT::TransposeType                  TVT;  //!< Transpose vector type
-   typedef typename blaze::MathTrait<MT,VT>::MultType  RE;   //!< Default result type
-   typedef typename RE::TransposeType                  TRE;  //!< Transpose default result type
+   typedef typename MT::OppositeType               OMT;  //!< Matrix type with opposite storage order
+   typedef typename MT::TransposeType              TMT;  //!< Transpose matrix type
+   typedef typename VT::TransposeType              TVT;  //!< Transpose vector type
+   typedef typename blaze::MultTrait<MT,VT>::Type  RE;   //!< Default result type
+   typedef typename RE::TransposeType              TRE;  //!< Transpose default result type
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************

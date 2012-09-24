@@ -36,9 +36,9 @@
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/StaticMatrix.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
@@ -72,14 +72,14 @@ class DMatSMatMult
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT1::OppositeType                    OMT1;  //!< Matrix type 1 with opposite storage order
-   typedef typename MT2::OppositeType                    OMT2;  //!< Matrix type 2 with opposite storage order
-   typedef typename MT1::TransposeType                   TMT1;  //!< Transpose matrix type 1
-   typedef typename MT2::TransposeType                   TMT2;  //!< Transpose matrix type 2
-   typedef typename blaze::MathTrait<MT1,MT2>::MultType  RE;    //!< Default result type
-   typedef typename RE::OppositeType                     ORE;   //!< Default result type with opposite storage order
-   typedef typename RE::TransposeType                    TRE;   //!< Transpose default result type
-   typedef typename ORE::TransposeType                   TORE;  //!< Transpose default result type with opposite storage order
+   typedef typename MT1::OppositeType                OMT1;  //!< Matrix type 1 with opposite storage order
+   typedef typename MT2::OppositeType                OMT2;  //!< Matrix type 2 with opposite storage order
+   typedef typename MT1::TransposeType               TMT1;  //!< Transpose matrix type 1
+   typedef typename MT2::TransposeType               TMT2;  //!< Transpose matrix type 2
+   typedef typename blaze::MultTrait<MT1,MT2>::Type  RE;    //!< Default result type
+   typedef typename RE::OppositeType                 ORE;   //!< Default result type with opposite storage order
+   typedef typename RE::TransposeType                TRE;   //!< Transpose default result type
+   typedef typename ORE::TransposeType               TORE;  //!< Transpose default result type with opposite storage order
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
