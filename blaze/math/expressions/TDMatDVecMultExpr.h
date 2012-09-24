@@ -37,8 +37,8 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/Intrinsics.h>
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsBlasCompatible.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -195,7 +195,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
  public:
    //**Type definitions****************************************************************************
    typedef TDMatDVecMultExpr<MT,VT>                    This;           //!< Type of this TDMatDVecMultExpr instance.
-   typedef typename MathTrait<MRT,VRT>::MultType       ResultType;     //!< Result type for expression template evaluations.
+   typedef typename MultTrait<MRT,VRT>::Type           ResultType;     //!< Result type for expression template evaluations.
    typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
    typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
@@ -1641,7 +1641,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
  public:
    //**Type definitions****************************************************************************
    typedef DVecScalarMultExpr<MVM,ST,false>            This;           //!< Type of this DVecScalarMultExpr instance.
-   typedef typename MathTrait<RES,ST>::MultType        ResultType;     //!< Result type for expression template evaluations.
+   typedef typename MultTrait<RES,ST>::Type            ResultType;     //!< Result type for expression template evaluations.
    typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
    typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
@@ -2934,7 +2934,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 // The operator returns an expression representing a dense vector of the higher-order element
 // type of the two involved element types \a T1::ElementType and \a T2::ElementType. Both the
 // dense matrix type \a T1 and the dense vector type \a T2 as well as the two element types
-// \a T1::ElementType and \a T2::ElementType have to be supported by the MathTrait class
+// \a T1::ElementType and \a T2::ElementType have to be supported by the MultTrait class
 // template.\n
 // In case the current size of the vector \a vec doesn't match the current number of columns
 // of the matrix \a mat, a \a std::invalid_argument is thrown.

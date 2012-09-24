@@ -31,7 +31,7 @@
 #include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/Intrinsics.h>
-#include <blaze/math/MathTrait.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
@@ -105,24 +105,24 @@ struct TDVecDVecMultExprHelper
 // The operator returns a scalar value of the higher-order element type of the two involved
 // vector element types \a T1::ElementType and \a T2::ElementType. Both vector types \a T1
 // and \a T2 as well as the two element types \a T1::ElementType and \a T2::ElementType have
-// to be supported by the MathTrait class template.\n
+// to be supported by the MultTrait class template.\n
 // In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
 // is thrown.
 */
 template< typename T1    // Type of the left-hand side dense vector
         , typename T2 >  // Type of the right-hand side dense vector
 inline typename DisableIf< TDVecDVecMultExprHelper<T1,T2>,
-                           const typename MathTrait<typename T1::ElementType,typename T2::ElementType>::MultType >::Type
+                           const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type >::Type
    operator*( const DenseVector<T1,true>& lhs, const DenseVector<T2,false>& rhs )
 {
    if( (~lhs).size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   typedef typename T1::CompositeType             Lhs;
-   typedef typename T2::CompositeType             Rhs;
-   typedef typename T1::ElementType               ET1;
-   typedef typename T2::ElementType               ET2;
-   typedef typename MathTrait<ET1,ET2>::MultType  MultType;
+   typedef typename T1::CompositeType         Lhs;
+   typedef typename T2::CompositeType         Rhs;
+   typedef typename T1::ElementType           ET1;
+   typedef typename T2::ElementType           ET2;
+   typedef typename MultTrait<ET1,ET2>::Type  MultType;
 
    if( (~lhs).size() == 0UL ) return MultType();
 
@@ -163,25 +163,25 @@ inline typename DisableIf< TDVecDVecMultExprHelper<T1,T2>,
 // The operator returns a scalar value of the higher-order element type of the two involved
 // vector element types \a T1::ElementType and \a T2::ElementType. Both vector types \a T1
 // and \a T2 as well as the two element types \a T1::ElementType and \a T2::ElementType have
-// to be supported by the MathTrait class template.\n
+// to be supported by the MultTrait class template.\n
 // In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
 // is thrown.
 */
 template< typename T1    // Type of the left-hand side dense vector
         , typename T2 >  // Type of the right-hand side dense vector
 inline typename EnableIf< TDVecDVecMultExprHelper<T1,T2>,
-                          const typename MathTrait<typename T1::ElementType,typename T2::ElementType>::MultType >::Type
+                          const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type >::Type
    operator*( const DenseVector<T1,true>& lhs, const DenseVector<T2,false>& rhs )
 {
    if( (~lhs).size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   typedef typename T1::CompositeType             Lhs;
-   typedef typename T2::CompositeType             Rhs;
-   typedef typename T1::ElementType               ET1;
-   typedef typename T2::ElementType               ET2;
-   typedef typename MathTrait<ET1,ET2>::MultType  MultType;
-   typedef IntrinsicTrait<MultType>               IT;
+   typedef typename T1::CompositeType         Lhs;
+   typedef typename T2::CompositeType         Rhs;
+   typedef typename T1::ElementType           ET1;
+   typedef typename T2::ElementType           ET2;
+   typedef typename MultTrait<ET1,ET2>::Type  MultType;
+   typedef IntrinsicTrait<MultType>           IT;
 
    if( (~lhs).size() == 0UL ) return MultType();
 

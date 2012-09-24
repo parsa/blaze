@@ -37,9 +37,9 @@
 #include <blaze/math/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseVector.h>
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -81,11 +81,11 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
 
  public:
    //**Type definitions****************************************************************************
-   typedef TSMatSVecMultExpr<MT,VT>               This;           //!< Type of this TSMatSVecMultExpr instance.
-   typedef typename MathTrait<MRT,VRT>::MultType  ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::TransposeType     TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType       ElementType;    //!< Resulting element type.
-   typedef const ElementType                      ReturnType;     //!< Return type for expression template evaluations.
+   typedef TSMatSVecMultExpr<MT,VT>            This;           //!< Type of this TSMatSVecMultExpr instance.
+   typedef typename MultTrait<MRT,VRT>::Type   ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
+   typedef const ElementType                   ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef const ResultType  CompositeType;
@@ -588,7 +588,7 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
 // The operator returns an expression representing a sparse vector of the higher-order element
 // type of the two involved element types \a T1::ElementType and \a T2::ElementType. Both the
 // sparse matrix type \a T1 and the sparse vector type \a T2 as well as the two element types
-// \a T1::ElementType and \a T2::ElementType have to be supported by the MathTrait class
+// \a T1::ElementType and \a T2::ElementType have to be supported by the MultTrait class
 // template.\n
 // In case the current size of the vector \a vec doesn't match the current number of columns
 // of the matrix \a mat, a \a std::invalid_argument is thrown.

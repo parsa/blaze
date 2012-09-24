@@ -37,10 +37,10 @@
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/Intrinsics.h>
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/DMatDVecMultTrait.h>
 #include <blaze/math/traits/DMatSVecMultTrait.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/TDVecDMatMultTrait.h>
 #include <blaze/math/traits/TSVecDMatMultTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
@@ -194,7 +194,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
  public:
    //**Type definitions****************************************************************************
    typedef DMatDMatMultExpr<MT1,MT2>                   This;           //!< Type of this DMatDMatMultExpr instance.
-   typedef typename MathTrait<RT1,RT2>::MultType       ResultType;     //!< Result type for expression template evaluations.
+   typedef typename MultTrait<RT1,RT2>::Type           ResultType;     //!< Result type for expression template evaluations.
    typedef typename ResultType::OppositeType           OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
@@ -2000,7 +2000,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
  public:
    //**Type definitions****************************************************************************
    typedef DMatScalarMultExpr<MMM,ST,false>            This;           //!< Type of this DMatScalarMultExpr instance.
-   typedef typename MathTrait<RES,ST>::MultType        ResultType;     //!< Result type for expression template evaluations.
+   typedef typename MultTrait<RES,ST>::Type            ResultType;     //!< Result type for expression template evaluations.
    typedef typename ResultType::OppositeType           OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
@@ -3640,7 +3640,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 // The operator returns an expression representing a dense matrix of the higher-order element
 // type of the two involved matrix element types \a T1::ElementType and \a T2::ElementType.
 // Both matrix types \a T1 and \a T2 as well as the two element types \a T1::ElementType and
-// \a T2::ElementType have to be supported by the MathTrait class template.\n
+// \a T2::ElementType have to be supported by the MultTrait class template.\n
 // In case the current number of columns of \a lhs and the current number of rows of \a rhs
 // don't match, a \a std::invalid_argument is thrown.
 */

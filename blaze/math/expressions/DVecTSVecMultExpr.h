@@ -36,10 +36,10 @@
 #include <blaze/math/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/MultExprTrait.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/util/Assert.h>
@@ -107,7 +107,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
  public:
    //**Type definitions****************************************************************************
    typedef DVecTSVecMultExpr<VT1,VT2>                   This;           //!< Type of this DVecTSVecMultExpr instance.
-   typedef typename MathTrait<RT1,RT2>::MultType        ResultType;     //!< Result type for expression template evaluations.
+   typedef typename MultTrait<RT1,RT2>::Type            ResultType;     //!< Result type for expression template evaluations.
    typedef typename ResultType::OppositeType            OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef typename ResultType::TransposeType           TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename ResultType::ElementType             ElementType;    //!< Resulting element type.
@@ -805,7 +805,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
 // The operator returns an expression representing a sparse matrix of the higher-order element
 // type of the two involved element types \a T1::ElementType and \a T2::ElementType. Both
 // vector types \a T1 and \a T2 as well as the two element types \a T1::ElementType and
-// \a T2::ElementType have to be supported by the MathTrait class template.
+// \a T2::ElementType have to be supported by the MultTrait class template.
 */
 template< typename T1    // Type of the left-hand side dense vector
         , typename T2 >  // Type of the right-hand side sparse vector

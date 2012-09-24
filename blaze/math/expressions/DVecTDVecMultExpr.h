@@ -34,8 +34,8 @@
 #include <blaze/math/Expression.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/util/Assert.h>
@@ -100,7 +100,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
  public:
    //**Type definitions****************************************************************************
    typedef DVecTDVecMultExpr<VT1,VT2>                   This;           //!< Type of this DVecTDVecMultExpr instance.
-   typedef typename MathTrait<RT1,RT2>::MultType        ResultType;     //!< Result type for expression template evaluations.
+   typedef typename MultTrait<RT1,RT2>::Type            ResultType;     //!< Result type for expression template evaluations.
    typedef typename ResultType::OppositeType            OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef typename ResultType::TransposeType           TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename ResultType::ElementType             ElementType;    //!< Resulting element type.
@@ -594,7 +594,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
 // The operator returns an expression representing a dense matrix of the higher-order element
 // type of the two involved element types \a T1::ElementType and \a T2::ElementType. Both
 // dense vector types \a T1 and \a T2 as well as the two element types \a T1::ElementType
-// and \a T2::ElementType have to be supported by the MathTrait class template.
+// and \a T2::ElementType have to be supported by the MultTrait class template.
 */
 template< typename T1    // Type of the left-hand side dense vector
         , typename T2 >  // Type of the right-hand side dense vector

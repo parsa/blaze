@@ -34,10 +34,11 @@
 #include <blaze/math/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseVector.h>
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/DivExprTrait.h>
+#include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
@@ -113,7 +114,7 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
  public:
    //**Type definitions****************************************************************************
    typedef SVecScalarMultExpr<VT,ST,TF>               This;           //!< Type of this SVecScalarMultExpr instance.
-   typedef typename MathTrait<RT,ST>::MultType        ResultType;     //!< Result type for expression template evaluations.
+   typedef typename MultTrait<RT,ST>::Type            ResultType;     //!< Result type for expression template evaluations.
    typedef typename ResultType::TransposeType         TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename ResultType::ElementType           ElementType;    //!< Resulting element type.
    typedef const typename MultExprTrait<RN,ST>::Type  ReturnType;     //!< Return type for expression template evaluations.
@@ -125,7 +126,7 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
    typedef typename SelectType< IsExpression<VT>::value, const VT, const VT& >::Type  LeftOperand;
 
    //! Composite type of the right-hand side scalar value.
-   typedef typename MathTrait< typename BaseElementType<VT>::Type, ST >::MultType  RightOperand;
+   typedef typename MultTrait< typename BaseElementType<VT>::Type, ST >::Type  RightOperand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -758,7 +759,7 @@ template< typename VT     // Type of the dense vector of the left-hand side expr
         , typename ST1    // Type of the scalar of the left-hand side expression
         , bool TF         // Transpose flag of the dense vector
         , typename ST2 >  // Type of the right-hand side scalar
-inline const typename EnableIf< IsFloatingPoint<typename MathTrait<ST1,ST2>::DivType>
+inline const typename EnableIf< IsFloatingPoint<typename DivTrait<ST1,ST2>::Type>
                               , typename DivExprTrait< SVecScalarMultExpr<VT,ST1,TF>, ST2 >::Type >::Type
    operator/( const SVecScalarMultExpr<VT,ST1,TF>& vec, ST2 scalar )
 {
@@ -1160,7 +1161,7 @@ struct SVecScalarMultTrait< SVecScalarMultExpr<VT,ST1,false>, ST2 >
    //**********************************************************************************************
    typedef typename SelectType< IsSparseVector<VT>::value && !IsTransposeVector<VT>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename SVecScalarMultTrait<VT,typename MathTrait<ST1,ST2>::MultType>::Type
+                              , typename SVecScalarMultTrait<VT,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1185,7 +1186,7 @@ struct TSVecScalarMultTrait< SVecScalarMultExpr<VT,ST1,true>, ST2 >
    //**********************************************************************************************
    typedef typename SelectType< IsSparseVector<VT>::value && IsTransposeVector<VT>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename TSVecScalarMultTrait<VT,typename MathTrait<ST1,ST2>::MultType>::Type
+                              , typename TSVecScalarMultTrait<VT,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1208,12 +1209,12 @@ struct SVecScalarDivTrait< SVecScalarMultExpr<VT,ST1,false>, ST2 >
 {
  private:
    //**********************************************************************************************
-   enum { condition = IsFloatingPoint<typename MathTrait<ST1,ST2>::DivType>::value };
+   enum { condition = IsFloatingPoint<typename DivTrait<ST1,ST2>::Type>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
-   typedef typename SVecScalarMultTrait<VT,typename MathTrait<ST1,ST2>::DivType>::Type  T1;
-   typedef typename SVecScalarDivTrait<VT,typename MathTrait<ST1,ST2>::DivType>::Type   T2;
+   typedef typename SVecScalarMultTrait<VT,typename DivTrait<ST1,ST2>::Type>::Type  T1;
+   typedef typename SVecScalarDivTrait<VT,typename DivTrait<ST1,ST2>::Type>::Type   T2;
    //**********************************************************************************************
 
  public:
@@ -1243,12 +1244,12 @@ struct TSVecScalarDivTrait< SVecScalarMultExpr<VT,ST1,true>, ST2 >
 {
  private:
    //**********************************************************************************************
-   enum { condition = IsFloatingPoint<typename MathTrait<ST1,ST2>::DivType>::value };
+   enum { condition = IsFloatingPoint<typename DivTrait<ST1,ST2>::Type>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
-   typedef typename TSVecScalarMultTrait<VT,typename MathTrait<ST1,ST2>::DivType>::Type  T1;
-   typedef typename TSVecScalarDivTrait<VT,typename MathTrait<ST1,ST2>::DivType>::Type   T2;
+   typedef typename TSVecScalarMultTrait<VT,typename DivTrait<ST1,ST2>::Type>::Type  T1;
+   typedef typename TSVecScalarDivTrait<VT,typename DivTrait<ST1,ST2>::Type>::Type   T2;
    //**********************************************************************************************
 
  public:
@@ -1473,7 +1474,7 @@ struct SVecSVecMultTrait< SVecScalarMultExpr<VT1,ST1,false>, SVecScalarMultExpr<
    typedef typename SelectType< IsSparseVector<VT1>::value && !IsTransposeVector<VT1>::value &&
                                 IsSparseVector<VT2>::value && !IsTransposeVector<VT2>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename SVecScalarMultTrait<typename SVecSVecMultTrait<VT1,VT2>::Type,typename MathTrait<ST1,ST2>::MultType>::Type
+                              , typename SVecScalarMultTrait<typename SVecSVecMultTrait<VT1,VT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1535,7 +1536,7 @@ struct SVecTSVecMultTrait< SVecScalarMultExpr<VT1,ST1,false>, SVecScalarMultExpr
    typedef typename SelectType< IsSparseVector<VT1>::value && !IsTransposeVector<VT1>::value &&
                                 IsSparseVector<VT2>::value && IsTransposeVector<VT2>::value  &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename SMatScalarMultTrait<typename SVecTSVecMultTrait<VT1,VT2>::Type,typename MathTrait<ST1,ST2>::MultType>::Type
+                              , typename SMatScalarMultTrait<typename SVecTSVecMultTrait<VT1,VT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1597,7 +1598,7 @@ struct TSVecTSVecMultTrait< SVecScalarMultExpr<VT1,ST1,true>, SVecScalarMultExpr
    typedef typename SelectType< IsSparseVector<VT1>::value && IsTransposeVector<VT1>::value &&
                                 IsSparseVector<VT2>::value && IsTransposeVector<VT2>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename TSVecScalarMultTrait<typename TSVecTSVecMultTrait<VT1,VT2>::Type,typename MathTrait<ST1,ST2>::MultType>::Type
+                              , typename TSVecScalarMultTrait<typename TSVecTSVecMultTrait<VT1,VT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
