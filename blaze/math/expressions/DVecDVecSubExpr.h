@@ -34,8 +34,8 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/Intrinsics.h>
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
+#include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/util/Assert.h>
@@ -104,7 +104,7 @@ class DVecDVecSubExpr : public DenseVector< DVecDVecSubExpr<VT1,VT2,TF>, TF >
  public:
    //**Type definitions****************************************************************************
    typedef DVecDVecSubExpr<VT1,VT2,TF>                 This;           //!< Type of this DVecDVecSubExpr instance.
-   typedef typename MathTrait<RT1,RT2>::SubType        ResultType;     //!< Result type for expression template evaluations.
+   typedef typename SubTrait<RT1,RT2>::Type            ResultType;     //!< Result type for expression template evaluations.
    typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
    typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
@@ -411,7 +411,7 @@ class DVecDVecSubExpr : public DenseVector< DVecDVecSubExpr<VT1,VT2,TF>, TF >
 // The operator returns an expression representing a dense vector of the higher-order element
 // type of the two involved vector element types \a T1::ElementType and \a T2::ElementType.
 // Both vector types \a T1 and \a T2 as well as the two element types \a T1::ElementType and
-// \a T2::ElementType have to be supported by the MathTrait class template.\n
+// \a T2::ElementType have to be supported by the SubTrait class template.\n
 // In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
 // is thrown.
 */
