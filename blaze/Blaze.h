@@ -458,12 +458,7 @@ namespace blaze {}
    \endcode
 
 //  - Type: specifies the type of the vector elements. StaticVector can be used with any
-//          non-cv-qualified element type. The arithmetic operators for vector/vector and
-//          vector/element operations with the same element type work for any element type
-//          as long as the element type supports the arithmetic operation. Arithmetic operations
-//          between vectors and elements of different element types are only supported for
-//          all data types supported by the MathTrait class template (for details see the
-//          blaze::MathTrait class description).
+//          non-cv-qualified, non-reference, non-pointer element type.
 //  - N   : specifies the total number of vector elements. It is expected that StaticVector is
 //          only used for tiny and small vectors.
 //  - TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
@@ -483,12 +478,7 @@ namespace blaze {}
    \endcode
 
 //  - Type: specifies the type of the vector elements. DynamicVector can be used with any
-//          non-cv-qualified element type. The arithmetic operators for vector/vector and
-//          vector/element operations with the same element type work for any element type
-//          as long as the element type supports the arithmetic operation. Arithmetic operations
-//          between vectors and elements of different element types are only supported for
-//          all data types supported by the MathTrait class template (for details see the
-//          blaze::MathTrait class description).
+//          non-cv-qualified, non-reference, non-pointer element type.
 //  - TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
 //          vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
 //
@@ -506,12 +496,7 @@ namespace blaze {}
    \endcode
 
 //  - Type: specifies the type of the vector elements. CompressedVector can be used with any
-//          non-cv-qualified element type. The arithmetic operators for vector/vector and
-//          vector/element operations with the same element type work for any element type
-//          as long as the element type supports the arithmetic operation. Arithmetic operations
-//          between vectors and elements of different element types are only supported for
-//          all data types supported by the MathTrait class template (for details see the
-//          blaze::MathTrait class description).
+//          non-cv-qualified, non-reference, non-pointer element type.
 //  - TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
 //          vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
 //
@@ -998,12 +983,7 @@ namespace blaze {}
    \endcode
 
 //  - Type: specifies the type of the matrix elements. StaticMatrix can be used with any
-//          non-cv-qualified element type. The arithmetic operators for matrix/matrix,
-//          matrix/vector and matrix/element operations with the same element type work
-//          for any element type as long as the element type supports the arithmetic
-//          operation. Arithmetic operations between matrices, vectors and elements of
-//          different element types are only supported for all data types supported by
-//          the MathTrait class template (for details see the MathTrait class description).
+//          non-cv-qualified, non-reference element type.
 //  - M   : specifies the total number of rows of the matrix.
 //  - N   : specifies the total number of columns of the matrix. Note that it is expected
 //          that StaticMatrix is only used for tiny and small matrices.
@@ -1024,12 +1004,7 @@ namespace blaze {}
    \endcode
 
 //  - Type: specifies the type of the matrix elements. DynamicMatrix can be used with any
-//          non-cv-qualified element type. The arithmetic operators for matrix/matrix,
-//          matrix/vector and matrix/element operations with the same element type work
-//          for any element type as long as the element type supports the arithmetic
-//          operation. Arithmetic operations between matrices, vectors and elements of
-//          different element types are only supported for all data types supported by
-//          the MathTrait class template (for details see the MathTrait class description).
+//          non-cv-qualified, non-reference element type.
 //  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
 //          The default value is blaze::rowMajor.
 //
@@ -1047,12 +1022,7 @@ namespace blaze {}
    \endcode
 
 //  - Type: specifies the type of the matrix elements. CompressedMatrix can be used with
-//          any non-cv-qualified element type. The arithmetic operators for matrix/matrix,
-//          matrix/vector and matrix/element operations with the same element type work
-//          for any element type as long as the element type supports the arithmetic
-//          operation. Arithmetic operations between matrices, vectors and elements of
-//          different element types are only supported for all data types supported by
-//          the MathTrait class template (for details see the MathTrait class description).
+//          any non-cv-qualified, non-reference, non-pointer element type.
 //  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
 //          The default value is blaze::rowMajor.
 //
