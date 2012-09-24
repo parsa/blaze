@@ -32,9 +32,10 @@
 #include <blaze/math/Expression.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/traits/DivExprTrait.h>
+#include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
@@ -77,7 +78,7 @@ struct DVecScalarDivExprHelper
  public:
    //**Type definitions****************************************************************************
    //! Scalar type for the instantiation of the resulting expression object.
-   typedef typename MathTrait< typename BaseElementType<VT>::Type, ST >::DivType  ScalarType;
+   typedef typename DivTrait< typename BaseElementType<VT>::Type, ST >::Type  ScalarType;
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -157,7 +158,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
  public:
    //**Type definitions****************************************************************************
    typedef DVecScalarDivExpr<VT,ST,TF>                 This;           //!< Type of this DVecScalarDivExpr instance.
-   typedef typename MathTrait<RT,ST>::DivType          ResultType;     //!< Result type for expression template evaluations.
+   typedef typename DivTrait<RT,ST>::Type              ResultType;     //!< Result type for expression template evaluations.
    typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
    typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
@@ -170,7 +171,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    typedef typename SelectType< IsExpression<VT>::value, const VT, const VT& >::Type  LeftOperand;
 
    //! Composite type of the right-hand side scalar value.
-   typedef typename MathTrait< typename BaseElementType<VT>::Type, ST >::DivType  RightOperand;
+   typedef typename DivTrait< typename BaseElementType<VT>::Type, ST >::Type  RightOperand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -452,7 +453,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
 
 // The operator returns an expression representing a dense vector of the higher-order
 // element type of the involved data types \a T1::ElementType and \a T2. Both data types
-// \a T1::ElementType and \a T2 have to be supported by the MathTrait class template.
+// \a T1::ElementType and \a T2 have to be supported by the DivTrait class template.
 // Note that this operator only works for scalar values of built-in data type.
 //
 // \b Note: A division by zero is only checked by an user assert.
@@ -504,7 +505,7 @@ template< typename VT     // Type of the dense vector of the left-hand side expr
         , typename ST1    // Type of the scalar of the left-hand side expression
         , bool TF         // Transpose flag of the dense vector
         , typename ST2 >  // Type of the right-hand side scalar
-inline const typename EnableIf< IsFloatingPoint< typename MathTrait<ST2,ST1>::DivType >
+inline const typename EnableIf< IsFloatingPoint< typename DivTrait<ST2,ST1>::Type >
                               , typename MultExprTrait< DVecScalarDivExpr<VT,ST1,TF>, ST2 >::Type >::Type
    operator*( const DVecScalarDivExpr<VT,ST1,TF>& vec, ST2 scalar )
 {
@@ -531,7 +532,7 @@ template< typename ST1  // Type of the left-hand side scalar
         , typename VT   // Type of the dense vector of the right-hand side expression
         , typename ST2  // Type of the scalar of the right-hand side expression
         , bool TF >     // Transpose flag of the dense vector
-inline const typename EnableIf< IsFloatingPoint< typename MathTrait<ST1,ST2>::DivType >
+inline const typename EnableIf< IsFloatingPoint< typename DivTrait<ST1,ST2>::Type >
                               , typename MultExprTrait< ST1, DVecScalarDivExpr<VT,ST2,TF> >::Type >::Type
    operator*( ST1 scalar, const DVecScalarDivExpr<VT,ST2,TF>& vec )
 {
@@ -559,12 +560,12 @@ template< typename VT     // Type of the dense vector of the left-hand side expr
         , bool TF         // Transpose flag of the dense vector
         , typename ST2 >  // Type of the right-hand side scalar
 inline const typename EnableIf< IsNumeric<ST2>
-                              , typename DVecScalarDivExprHelper<VT,typename MathTrait<ST1,ST2>::MultType,TF>::Type >::Type
+                              , typename DVecScalarDivExprHelper<VT,typename MultTrait<ST1,ST2>::Type,TF>::Type >::Type
    operator/( const DVecScalarDivExpr<VT,ST1,TF>& vec, ST2 scalar )
 {
    BLAZE_USER_ASSERT( scalar != ST2(0), "Division by zero detected" );
 
-   typedef typename MathTrait<ST1,ST2>::MultType    MultType;
+   typedef typename MultTrait<ST1,ST2>::Type        MultType;
    typedef DVecScalarDivExprHelper<VT,MultType,TF>  Helper;
 
    if( Helper::value ) {
@@ -593,12 +594,12 @@ struct DVecScalarMultTrait< DVecScalarDivExpr<VT,ST1,false>, ST2 >
 {
  private:
    //**********************************************************************************************
-   enum { condition = IsFloatingPoint<typename MathTrait<ST1,ST2>::DivType>::value };
+   enum { condition = IsFloatingPoint<typename DivTrait<ST1,ST2>::Type>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
-   typedef typename DVecScalarMultTrait<VT,typename MathTrait<ST1,ST2>::DivType>::Type  T1;
-   typedef DVecScalarMultExpr< DVecScalarDivExpr<VT,ST1,false>, ST2, false >            T2;
+   typedef typename DVecScalarMultTrait<VT,typename DivTrait<ST1,ST2>::Type>::Type  T1;
+   typedef DVecScalarMultExpr< DVecScalarDivExpr<VT,ST1,false>, ST2, false >        T2;
    //**********************************************************************************************
 
  public:
@@ -628,12 +629,12 @@ struct TDVecScalarMultTrait< DVecScalarDivExpr<VT,ST1,true>, ST2 >
 {
  private:
    //**********************************************************************************************
-   enum { condition = IsFloatingPoint<typename MathTrait<ST1,ST2>::DivType>::value };
+   enum { condition = IsFloatingPoint<typename DivTrait<ST1,ST2>::Type>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
-   typedef typename DVecScalarMultTrait<VT,typename MathTrait<ST1,ST2>::DivType>::Type  T1;
-   typedef DVecScalarMultExpr< DVecScalarDivExpr<VT,ST1,true>, ST2, true >              T2;
+   typedef typename DVecScalarMultTrait<VT,typename DivTrait<ST1,ST2>::Type>::Type  T1;
+   typedef DVecScalarMultExpr< DVecScalarDivExpr<VT,ST1,true>, ST2, true >          T2;
    //**********************************************************************************************
 
  public:

@@ -34,10 +34,11 @@
 #include <blaze/math/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/DivExprTrait.h>
+#include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
@@ -81,7 +82,7 @@ struct SMatScalarDivExprHelper
  public:
    //**Type definitions****************************************************************************
    //! Scalar type for the instantiation of the resulting expression object.
-   typedef typename MathTrait< typename BaseElementType<MT>::Type, ST >::DivType  ScalarType;
+   typedef typename DivTrait< typename BaseElementType<MT>::Type, ST >::Type  ScalarType;
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -161,7 +162,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
  public:
    //**Type definitions****************************************************************************
    typedef SMatScalarDivExpr<MT,ST,SO>               This;           //!< Type of this SMatScalarDivExpr instance.
-   typedef typename MathTrait<RT,ST>::MultType       ResultType;     //!< Result type for expression template evaluations.
+   typedef typename MultTrait<RT,ST>::Type           ResultType;     //!< Result type for expression template evaluations.
    typedef typename ResultType::OppositeType         OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef typename ResultType::TransposeType        TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename ResultType::ElementType          ElementType;    //!< Resulting element type.
@@ -174,7 +175,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
    typedef typename SelectType< IsExpression<MT>::value, const MT, const MT& >::Type  LeftOperand;
 
    //! Composite type of the right-hand side scalar value.
-   typedef typename MathTrait< typename BaseElementType<MT>::Type, ST >::DivType  RightOperand;
+   typedef typename DivTrait< typename BaseElementType<MT>::Type, ST >::Type  RightOperand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -662,7 +663,7 @@ template< typename MT     // Type of the sparse matrix of the left-hand side exp
         , typename ST1    // Type of the scalar of the left-hand side expression
         , bool SO         // Storage order of the sparse matrix
         , typename ST2 >  // Type of the right-hand side scalar
-inline const typename EnableIf< IsFloatingPoint< typename MathTrait<ST2,ST1>::DivType >
+inline const typename EnableIf< IsFloatingPoint< typename DivTrait<ST2,ST1>::Type >
                               , typename MultExprTrait< SMatScalarDivExpr<MT,ST1,SO>, ST2 >::Type >::Type
    operator*( const SMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
 {
@@ -689,7 +690,7 @@ template< typename ST1  // Type of the left-hand side scalar
         , typename MT   // Type of the sparse matrix of the right-hand side expression
         , typename ST2  // Type of the scalar of the right-hand side expression
         , bool SO >     // Storage order of the sparse matrix
-inline const typename EnableIf< IsFloatingPoint< typename MathTrait<ST1,ST2>::DivType >
+inline const typename EnableIf< IsFloatingPoint< typename DivTrait<ST1,ST2>::Type >
                               , typename MultExprTrait< ST1, SMatScalarDivExpr<MT,ST2,SO> >::Type >::Type
    operator*( ST1 scalar, const SMatScalarDivExpr<MT,ST2,SO>& mat )
 {
@@ -717,12 +718,12 @@ template< typename MT     // Type of the sparse matrix of the left-hand side exp
         , bool SO         // Storage order of the sparse matrix
         , typename ST2 >  // Type of the right-hand side scalar
 inline const typename EnableIf< IsNumeric<ST2>
-                              , typename SMatScalarDivExprHelper<MT,typename MathTrait<ST1,ST2>::MultType,SO>::Type >::Type
+                              , typename SMatScalarDivExprHelper<MT,typename MultTrait<ST1,ST2>::Type,SO>::Type >::Type
    operator/( const SMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
 {
    BLAZE_USER_ASSERT( scalar != ST2(0), "Division by zero detected" );
 
-   typedef typename MathTrait<ST1,ST2>::MultType    MultType;
+   typedef typename MultTrait<ST1,ST2>::Type        MultType;
    typedef SMatScalarDivExprHelper<MT,MultType,SO>  Helper;
 
    if( Helper::value ) {
@@ -751,12 +752,12 @@ struct SMatScalarMultTrait< SMatScalarDivExpr<MT,ST1,false>, ST2 >
 {
  private:
    //**********************************************************************************************
-   enum { condition = IsFloatingPoint<typename MathTrait<ST1,ST2>::DivType>::value };
+   enum { condition = IsFloatingPoint<typename DivTrait<ST1,ST2>::Type>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
-   typedef typename SMatScalarMultTrait<MT,typename MathTrait<ST1,ST2>::DivType>::Type  T1;
-   typedef SMatScalarMultExpr< SMatScalarDivExpr<MT,ST1,false>, ST2, false >            T2;
+   typedef typename SMatScalarMultTrait<MT,typename DivTrait<ST1,ST2>::Type>::Type  T1;
+   typedef SMatScalarMultExpr< SMatScalarDivExpr<MT,ST1,false>, ST2, false >        T2;
    //**********************************************************************************************
 
  public:
@@ -786,12 +787,12 @@ struct TSMatScalarMultTrait< SMatScalarDivExpr<MT,ST1,true>, ST2 >
 {
  private:
    //**********************************************************************************************
-   enum { condition = IsFloatingPoint<typename MathTrait<ST1,ST2>::DivType>::value };
+   enum { condition = IsFloatingPoint<typename DivTrait<ST1,ST2>::Type>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
-   typedef typename SMatScalarMultTrait<MT,typename MathTrait<ST1,ST2>::DivType>::Type  T1;
-   typedef SMatScalarMultExpr< SMatScalarDivExpr<MT,ST1,true>, ST2, true >              T2;
+   typedef typename SMatScalarMultTrait<MT,typename DivTrait<ST1,ST2>::Type>::Type  T1;
+   typedef SMatScalarMultExpr< SMatScalarDivExpr<MT,ST1,true>, ST2, true >          T2;
    //**********************************************************************************************
 
  public:
