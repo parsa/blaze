@@ -27,7 +27,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/MathTrait.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsTransposeVector.h>
@@ -76,7 +76,7 @@ template< typename VT1
 struct TSVecDVecMultTraitHelper<VT1,VT2,true>
 {
    //**********************************************************************************************
-   typedef typename MathTrait<typename VT1::ElementType,typename VT2::ElementType>::MultType  Type;
+   typedef typename MultTrait<typename VT1::ElementType,typename VT2::ElementType>::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
