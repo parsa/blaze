@@ -28,7 +28,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/Forward.h>
-#include <blaze/math/MathTrait.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
@@ -61,7 +61,7 @@ struct TDMatScalarMultTraitHelper
 {
  private:
    //**********************************************************************************************
-   typedef typename MathTrait<typename BaseElementType<MT>::Type,ST>::MultType  ElementType;
+   typedef typename MultTrait<typename BaseElementType<MT>::Type,ST>::Type  ElementType;
    //**********************************************************************************************
 
  public:

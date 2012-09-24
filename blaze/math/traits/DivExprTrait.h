@@ -27,7 +27,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/MathTrait.h>
+#include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/DMatScalarDivTrait.h>
 #include <blaze/math/traits/DVecScalarDivTrait.h>
 #include <blaze/math/traits/SMatScalarDivTrait.h>
@@ -74,13 +74,6 @@ template< typename T1    // Type of the left-hand side division operand
 struct DivExprTrait
 {
  private:
-   //**struct ScalarAdd****************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   template< typename ST1, typename ST2 >
-   struct ScalarDiv { typedef typename MathTrait<ST1,ST2>::DivType  Type; };
-   /*! \endcond */
-   //**********************************************************************************************
-
    //**struct Failure******************************************************************************
    /*! \cond BLAZE_INTERNAL */
    struct Failure { typedef INVALID_TYPE  Type; };
@@ -144,7 +137,7 @@ struct DivExprTrait
                                                 >::Type
                                    , typename If< IsNumeric<T1>
                                                 , typename If< IsNumeric<T2>
-                                                             , ScalarDiv<T1,T2>
+                                                             , DivTrait<T1,T2>
                                                              , Failure
                                                              >::Type
                                                 , Failure

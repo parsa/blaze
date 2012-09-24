@@ -27,7 +27,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/MathTrait.h>
+#include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/DMatDMatAddTrait.h>
 #include <blaze/math/traits/DMatSMatAddTrait.h>
 #include <blaze/math/traits/DMatTDMatAddTrait.h>
@@ -90,13 +90,6 @@ template< typename T1    // Type of the left-hand side addition operand
 struct AddExprTrait
 {
  private:
-   //**struct ScalarAdd****************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   template< typename ST1, typename ST2 >
-   struct ScalarAdd { typedef typename MathTrait<ST1,ST2>::AddType  Type; };
-   /*! \endcond */
-   //**********************************************************************************************
-
    //**struct Failure******************************************************************************
    /*! \cond BLAZE_INTERNAL */
    struct Failure { typedef INVALID_TYPE  Type; };
@@ -214,7 +207,7 @@ struct AddExprTrait
                                                 >::Type
                                    , typename If< IsNumeric<T1>
                                                 , typename If< IsNumeric<T2>
-                                                             , ScalarAdd<T1,T2>
+                                                             , AddTrait<T1,T2>
                                                              , Failure
                                                              >::Type
                                                 , Failure

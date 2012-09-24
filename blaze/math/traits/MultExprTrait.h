@@ -27,7 +27,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/traits/DMatDMatMultTrait.h>
 #include <blaze/math/traits/DMatDVecMultTrait.h>
 #include <blaze/math/traits/DMatScalarMultTrait.h>
@@ -40,6 +39,7 @@
 #include <blaze/math/traits/DVecSVecMultTrait.h>
 #include <blaze/math/traits/DVecTDVecMultTrait.h>
 #include <blaze/math/traits/DVecTSVecMultTrait.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SMatDMatMultTrait.h>
 #include <blaze/math/traits/SMatDVecMultTrait.h>
 #include <blaze/math/traits/SMatScalarMultTrait.h>
@@ -124,13 +124,6 @@ template< typename T1    // Type of the left-hand side multiplication operand
 struct MultExprTrait
 {
  private:
-   //**struct ScalarAdd****************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   template< typename ST1, typename ST2 >
-   struct ScalarMult { typedef typename MathTrait<ST1,ST2>::MultType  Type; };
-   /*! \endcond */
-   //**********************************************************************************************
-
    //**struct Failure******************************************************************************
    /*! \cond BLAZE_INTERNAL */
    struct Failure { typedef INVALID_TYPE  Type; };
@@ -384,7 +377,7 @@ struct MultExprTrait
                                                                                            >::Type
                                                                               >::Type
                                                                  , typename If< IsNumeric<T2>
-                                                                              , ScalarMult<T1,T2>
+                                                                              , MultTrait<T1,T2>
                                                                               , Failure
                                                                               >::Type
                                                                  >::Type

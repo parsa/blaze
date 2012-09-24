@@ -28,7 +28,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/Forward.h>
-#include <blaze/math/MathTrait.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsTransposeVector.h>
@@ -61,7 +61,7 @@ struct SVecScalarMultTraitHelper
 {
  private:
    //**********************************************************************************************
-   typedef typename MathTrait<typename BaseElementType<VT>::Type,ST>::MultType  ElementType;
+   typedef typename MultTrait<typename BaseElementType<VT>::Type,ST>::Type  ElementType;
    //**********************************************************************************************
 
  public:

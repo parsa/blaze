@@ -27,7 +27,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/traits/DMatDMatSubTrait.h>
 #include <blaze/math/traits/DMatSMatSubTrait.h>
 #include <blaze/math/traits/DMatTDMatSubTrait.h>
@@ -38,6 +37,7 @@
 #include <blaze/math/traits/SMatSMatSubTrait.h>
 #include <blaze/math/traits/SMatTDMatSubTrait.h>
 #include <blaze/math/traits/SMatTSMatSubTrait.h>
+#include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SVecDVecSubTrait.h>
 #include <blaze/math/traits/SVecSVecSubTrait.h>
 #include <blaze/math/traits/TDMatDMatSubTrait.h>
@@ -90,13 +90,6 @@ template< typename T1    // Type of the left-hand side subtraction operand
 struct SubExprTrait
 {
  private:
-   //**struct ScalarSub****************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   template< typename ST1, typename ST2 >
-   struct ScalarSub { typedef typename MathTrait<ST1,ST2>::SubType  Type; };
-   /*! \endcond */
-   //**********************************************************************************************
-
    //**struct Failure******************************************************************************
    /*! \cond BLAZE_INTERNAL */
    struct Failure { typedef INVALID_TYPE  Type; };
@@ -215,7 +208,7 @@ struct SubExprTrait
                                                 >::Type
                                    , typename If< IsNumeric<T1>
                                                 , typename If< IsNumeric<T2>
-                                                             , ScalarSub<T1,T2>
+                                                             , SubTrait<T1,T2>
                                                              , Failure
                                                              >::Type
                                                 , Failure

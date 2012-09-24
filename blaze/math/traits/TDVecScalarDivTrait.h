@@ -28,7 +28,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/Forward.h>
-#include <blaze/math/MathTrait.h>
+#include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsTransposeVector.h>
@@ -63,7 +63,7 @@ struct TDVecScalarDivTraitHelper
 {
  private:
    //**********************************************************************************************
-   typedef typename MathTrait<typename BaseElementType<VT>::Type,ST>::DivType  ElementType;
+   typedef typename DivTrait<typename BaseElementType<VT>::Type,ST>::Type  ElementType;
    //**********************************************************************************************
 
  public:

@@ -28,7 +28,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/Forward.h>
-#include <blaze/math/MathTrait.h>
+#include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
@@ -63,7 +63,7 @@ struct SMatScalarDivTraitHelper
 {
  private:
    //**********************************************************************************************
-   typedef typename MathTrait<typename BaseElementType<MT>::Type,ST>::DivType  ElementType;
+   typedef typename DivTrait<typename BaseElementType<MT>::Type,ST>::Type  ElementType;
    //**********************************************************************************************
 
  public:
