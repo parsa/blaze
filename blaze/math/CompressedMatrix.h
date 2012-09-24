@@ -34,7 +34,6 @@
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
@@ -91,12 +90,7 @@ namespace blaze {
    \endcode
 
 //  - Type: specifies the type of the matrix elements. CompressedMatrix can be used with
-//          any non-cv-qualified element type. The arithmetic operators for matrix/matrix,
-//          matrix/vector and matrix/element operations with the same element type work
-//          for any element type as long as the element type supports the arithmetic
-//          operation. Arithmetic operations between matrices, vectors and elements of
-//          different element types are only supported for all data types supported by
-//          the MathTrait class template (for details see the MathTrait class description).
+//          any non-cv-qualified, non-reference, non-pointer element type.
 //  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
 //          The default value is blaze::rowMajor.
 //
@@ -987,7 +981,7 @@ inline typename EnableIf< IsNumeric<Other>, CompressedMatrix<Type,SO> >::Type&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef typename MathTrait<Type,Other>::DivType  DT;
+   typedef typename DivTrait<Type,Other>::Type  DT;
    typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a
@@ -2810,7 +2804,7 @@ inline typename EnableIf< IsNumeric<Other>, CompressedMatrix<Type,true> >::Type&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef typename MathTrait<Type,Other>::DivType  DT;
+   typedef typename DivTrait<Type,Other>::Type  DT;
    typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a

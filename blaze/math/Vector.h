@@ -30,7 +30,7 @@
 #include <iomanip>
 #include <ostream>
 #include <blaze/math/expressions/Vector.h>
-#include <blaze/math/MathTrait.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/util/Assert.h>
 
 
@@ -46,19 +46,19 @@ namespace blaze {
 /*!\name Vector operators */
 //@{
 template< typename T1, typename T2 >
-inline const typename MathTrait<typename T1::ElementType,typename T2::ElementType>::MultType
+inline const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type
    operator,( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs );
 
 template< typename T1, typename T2 >
-inline const typename MathTrait<typename T1::ElementType,typename T2::ElementType>::MultType
+inline const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type
    operator,( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs );
 
 template< typename T1, typename T2 >
-inline const typename MathTrait<typename T1::ElementType,typename T2::ElementType>::MultType
+inline const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type
    operator,( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs );
 
 template< typename T1, typename T2 >
-inline const typename MathTrait<typename T1::ElementType,typename T2::ElementType>::MultType
+inline const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type
    operator,( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs );
 
 template< typename VT, bool TF >
@@ -78,7 +78,7 @@ inline std::ostream& operator<<( std::ostream& os, const Vector<VT,TF>& dv );
 */
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
-inline const typename MathTrait<typename T1::ElementType,typename T2::ElementType>::MultType
+inline const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type
    operator,( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs )
 {
    return trans(~lhs) * (~rhs);
@@ -97,7 +97,7 @@ inline const typename MathTrait<typename T1::ElementType,typename T2::ElementTyp
 */
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
-inline const typename MathTrait<typename T1::ElementType,typename T2::ElementType>::MultType
+inline const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type
    operator,( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs )
 {
    return trans(~lhs) * trans(~rhs);
@@ -116,7 +116,7 @@ inline const typename MathTrait<typename T1::ElementType,typename T2::ElementTyp
 */
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
-inline const typename MathTrait<typename T1::ElementType,typename T2::ElementType>::MultType
+inline const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type
    operator,( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs )
 {
    return (~lhs) * (~rhs);
@@ -135,7 +135,7 @@ inline const typename MathTrait<typename T1::ElementType,typename T2::ElementTyp
 */
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
-inline const typename MathTrait<typename T1::ElementType,typename T2::ElementType>::MultType
+inline const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type
    operator,( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs )
 {
    return (~lhs) * trans(~rhs);

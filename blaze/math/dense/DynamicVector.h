@@ -36,7 +36,6 @@
 #include <blaze/math/DenseVector.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/Reset.h>
@@ -100,12 +99,7 @@ namespace blaze {
    \endcode
 
 //  - Type: specifies the type of the vector elements. DynamicVector can be used with any
-//          non-cv-qualified element type. The arithmetic operators for vector/vector and
-//          vector/element operations with the same element type work for any element type
-//          as long as the element type supports the arithmetic operation. Arithmetic operations
-//          between vectors and elements of different element types are only supported for
-//          all data types supported by the MathTrait class template (for details see the
-//          MathTrait class description).
+//          non-cv-qualified, non-reference, non-pointer element type.
 //  - TF  : specifies whether the vector is a row vector (\a blaze::rowVector) or a column
 //          vector (\a blaze::columnVector). The default value is \a blaze::columnVector.
 //
@@ -903,7 +897,7 @@ inline typename EnableIf< IsNumeric<Other>, DynamicVector<Type,TF> >::Type&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef typename MathTrait<Type,Other>::DivType  DT;
+   typedef typename DivTrait<Type,Other>::Type  DT;
    typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a

@@ -36,7 +36,6 @@
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/Functions.h>
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/sparse/SparseElement.h>
@@ -95,12 +94,7 @@ namespace blaze {
    \endcode
 
 //  - Type: specifies the type of the vector elements. CompressedVector can be used with any
-//          non-cv-qualified element type. The arithmetic operators for vector/vector and
-//          vector/element operations with the same element type work for any element type
-//          as long as the element type supports the arithmetic operation. Arithmetic operations
-//          between vectors and elements of different element types are only supported for
-//          all data types supported by the MathTrait class template (for details see the
-//          MathTrait class description).
+//          non-cv-qualified, non-reference, non-pointer element type.
 //  - TF  : specifies whether the vector is a row vector (\a blaze::rowVector) or a column
 //          vector (\a blaze::columnVector). The default value is \a blaze::columnVector.
 //
@@ -854,7 +848,7 @@ inline typename EnableIf< IsNumeric<Other>, CompressedVector<Type,TF> >::Type&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef typename MathTrait<Type,Other>::DivType  DT;
+   typedef typename DivTrait<Type,Other>::Type  DT;
    typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a
@@ -1452,7 +1446,7 @@ template< typename Type  // Data type of the vector
 template< typename VT >  // Type of the right-hand side dense vector
 inline void CompressedVector<Type,TF>::addAssign( const DenseVector<VT,TF>& rhs )
 {
-   typedef typename MathTrait<This,typename VT::ResultType>::AddType  AddType;
+   typedef typename AddTrait<This,typename VT::ResultType>::Type  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( AddType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
@@ -1507,7 +1501,7 @@ template< typename Type  // Data type of the vector
 template< typename VT >  // Type of the right-hand side dense vector
 inline void CompressedVector<Type,TF>::subAssign( const DenseVector<VT,TF>& rhs )
 {
-   typedef typename MathTrait<This,typename VT::ResultType>::SubType  SubType;
+   typedef typename SubTrait<This,typename VT::ResultType>::Type  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( SubType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
@@ -1570,7 +1564,7 @@ template< typename Type, bool TF >
 inline bool isDefault( const CompressedVector<Type,TF>& v );
 
 template< typename Type, bool TF >
-inline const typename MathTrait<Type,Type>::MultType sq( const CompressedVector<Type,TF>& v );
+inline const typename MultTrait<Type,Type>::Type sq( const CompressedVector<Type,TF>& v );
 
 template< typename Type, bool TF >
 inline void swap( CompressedVector<Type,TF>& a, CompressedVector<Type,TF>& b ) /* throw() */;
@@ -1686,7 +1680,7 @@ inline bool isDefault( const CompressedVector<Type,TF>& v )
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline const CompressedVector< typename MathTrait<Type,Type>::MultType, TF >
+inline const CompressedVector< typename MultTrait<Type,Type>::Type, TF >
    sq( const CompressedVector<Type>& v )
 {
    return v * v;

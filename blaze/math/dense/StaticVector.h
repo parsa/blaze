@@ -34,7 +34,6 @@
 #include <blaze/math/DenseVector.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/Reset.h>
@@ -95,12 +94,7 @@ namespace blaze {
    \endcode
 
 //  - Type: specifies the type of the vector elements. StaticVector can be used with any
-//          non-cv-qualified element type. The arithmetic operators for vector/vector and
-//          vector/element operations with the same element type work for any element type
-//          as long as the element type supports the arithmetic operation. Arithmetic operations
-//          between vectors and elements of different element types are only supported for
-//          all data types supported by the MathTrait class template (for details see the
-//          MathTrait class description).
+//          non-cv-qualified, non-reference, non-pointer element type.
 //  - N   : specifies the total number of vector elements. It is expected that StaticVector is
 //          only used for tiny and small vectors.
 //  - TF  : specifies whether the vector is a row vector (\a blaze::rowVector) or a column
@@ -1095,7 +1089,7 @@ inline typename EnableIf< IsNumeric<Other>, StaticVector<Type,N,TF> >::Type&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef typename MathTrait<Type,Other>::DivType  DT;
+   typedef typename DivTrait<Type,Other>::Type  DT;
    typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a
@@ -2041,7 +2035,7 @@ inline void swap( StaticVector<Type,N,TF>& a, StaticVector<Type,N,TF>& b ) /* th
 template< typename T1, size_t N, bool TF, typename T2 >
 struct AddTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 {
-   typedef StaticVector< typename MathTrait<T1,T2>::AddType, N, TF >  Type;
+   typedef StaticVector< typename AddTrait<T1,T2>::Type, N, TF >  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2060,7 +2054,7 @@ struct AddTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 template< typename T1, size_t N, bool TF, typename T2 >
 struct SubTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 {
-   typedef StaticVector< typename MathTrait<T1,T2>::SubType, N, TF >  Type;
+   typedef StaticVector< typename SubTrait<T1,T2>::Type, N, TF >  Type;
 };
 /*! \endcond */
 //*************************************************************************************************

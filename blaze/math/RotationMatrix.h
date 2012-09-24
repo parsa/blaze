@@ -33,7 +33,6 @@
 #include <limits>
 #include <blaze/math/Accuracy.h>
 #include <blaze/math/DenseMatrix.h>
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
@@ -199,18 +198,14 @@ class RotationMatrix : public DenseMatrix< RotationMatrix<Type>, false >
    //**********************************************************************************************
 
    //**Math functions******************************************************************************
-   /*!\name Math functions
-   //
-   // The return type of the math functions depends on the involved data types of the
-   // matrices and vectors (for further detail see the MathTrait class description).
-   */
+   /*!\name Math functions */
    //@{
    template< typename Other >
-   inline const StaticMatrix< typename MathTrait<Type,Other>::MultType, 3UL, 3UL, false >
+   inline const StaticMatrix< typename MultTrait<Type,Other>::Type, 3UL, 3UL, false >
       rotate( const StaticMatrix<Other,3UL,3UL,false>& m ) const;
 
    template< typename Other >
-   inline const StaticMatrix< typename MathTrait<Type,Other>::MultType, 3UL, 3UL, false >
+   inline const StaticMatrix< typename MultTrait<Type,Other>::Type, 3UL, 3UL, false >
       diagRotate( const StaticMatrix<Other,3UL,3UL,false>& m ) const;
    //@}
    //**********************************************************************************************
@@ -276,7 +271,7 @@ class RotationMatrix : public DenseMatrix< RotationMatrix<Type>, false >
    friend const RotationMatrix<Other> inv( const RotationMatrix<Other>& m );
 
    template< typename T1, typename T2 >
-   friend const RotationMatrix< typename MathTrait<T1,T2>::MultType >
+   friend const RotationMatrix< typename MultTrait<T1,T2>::Type >
       operator*( const RotationMatrix<T1>& lhs, const RotationMatrix<T2>& rhs );
    /*! \endcond */
    //**********************************************************************************************
@@ -723,7 +718,7 @@ inline bool RotationMatrix<Type>::isAliased( const Other* alias ) const
 // \return The rotated matrix.
 //
 // The function is selected for matrices of different data type (in case \a Type and \a Other
-// are supported by the MathTrait class). The function returns a matrix of the higher-order
+// are supported by the MultTrait class). The function returns a matrix of the higher-order
 // data type of the two involved data types.
 //
 // \b Note: This function is only defined for matrices of floating point type. The attempt to
@@ -731,12 +726,12 @@ inline bool RotationMatrix<Type>::isAliased( const Other* alias ) const
 */
 template< typename Type >   // Data type of the rotation matrix
 template< typename Other >  // Data type of the standard matrix
-inline const StaticMatrix< typename MathTrait<Type,Other>::MultType, 3UL, 3UL, false >
+inline const StaticMatrix< typename MultTrait<Type,Other>::Type, 3UL, 3UL, false >
    RotationMatrix<Type>::rotate( const StaticMatrix<Other,3UL,3UL,false>& m ) const
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( Other );
 
-   typedef StaticMatrix<typename MathTrait<Type,Other>::MultType,3UL,3UL,false>  MT;
+   typedef StaticMatrix<typename MultTrait<Type,Other>::Type,3UL,3UL,false>  MT;
 
    //--Multiplication in two steps (number of FLOP = 90, 1 additional temporary matrix)------------
 
@@ -787,7 +782,7 @@ inline const StaticMatrix< typename MathTrait<Type,Other>::MultType, 3UL, 3UL, f
 // The DiagRotate function is a special case of the rotate function. The matrix is assumed to
 // be a diagonal matrix, which reduces the number of floating point operations of the rotation.
 // The function is selected for matrices of different data type (in case \a Type and \a Other
-// are supported by the MathTrait class). The function returns a matrix of the higher-order
+// are supported by the MultTrait class). The function returns a matrix of the higher-order
 // data type of the two involved data types.
 //
 // \b Note: This function is only defined for matrices of floating point type. The attempt to
@@ -795,12 +790,12 @@ inline const StaticMatrix< typename MathTrait<Type,Other>::MultType, 3UL, 3UL, f
 */
 template< typename Type >   // Data type of the rotation matrix
 template< typename Other >  // Data type of the diagonal standard matrix
-inline const StaticMatrix< typename MathTrait<Type,Other>::MultType, 3UL, 3UL, false >
+inline const StaticMatrix< typename MultTrait<Type,Other>::Type, 3UL, 3UL, false >
    RotationMatrix<Type>::diagRotate( const StaticMatrix<Other,3UL,3UL,false>& m ) const
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( Other );
 
-   typedef StaticMatrix<typename MathTrait<Type,Other>::MultType,3UL,3UL,false>  MT;
+   typedef StaticMatrix<typename MultTrait<Type,Other>::Type,3UL,3UL,false>  MT;
 
    // Precalculating tmp = m * R(-1)
    const MT tmp( m.v_[0]*v_[0], m.v_[0]*v_[3], m.v_[0]*v_[6],
@@ -1245,30 +1240,26 @@ inline void swap( RotationMatrix<Type>& a, RotationMatrix<Type>& b ) /* throw() 
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name RotationMatrix arithmetic operators
-//
-// These operators support operations between matrices of different element types. They work
-// for all element types supported by the MathTrait class template.
-*/
+/*!\name RotationMatrix arithmetic operators */
 //@{
 template< typename T1, typename T2 >
-inline const StaticVector< typename MathTrait<T1,T2>::MultType, 3UL, false >
+inline const StaticVector< typename MultTrait<T1,T2>::Type, 3UL, false >
    operator*( const RotationMatrix<T1>& lhs, const StaticVector<T2,3UL,false>& rhs );
 
 template< typename T1, typename T2 >
-inline const StaticVector< typename MathTrait<T1,T2>::MultType, 3UL, true >
+inline const StaticVector< typename MultTrait<T1,T2>::Type, 3UL, true >
    operator*( const StaticVector<T1,3UL,true>& lhs, const RotationMatrix<T2>& rhs );
 
 template< typename T1, typename T2 >
-inline const StaticMatrix< typename MathTrait<T1,T2>::MultType, 3UL, 3UL, false >
+inline const StaticMatrix< typename MultTrait<T1,T2>::Type, 3UL, 3UL, false >
    operator*( const RotationMatrix<T1>& lhs, const StaticMatrix<T2,3UL,3UL,false>& rhs );
 
 template< typename T1, typename T2 >
-inline const StaticMatrix< typename MathTrait<T1,T2>::MultType, 3UL, 3UL, false >
+inline const StaticMatrix< typename MultTrait<T1,T2>::Type, 3UL, 3UL, false >
    operator*( const StaticMatrix<T1,3UL,3UL,false>& lhs, const RotationMatrix<T2>& rhs );
 
 template< typename T1, typename T2 >
-inline const RotationMatrix< typename MathTrait<T1,T2>::MultType >
+inline const RotationMatrix< typename MultTrait<T1,T2>::Type >
    operator*( const RotationMatrix<T1>& lhs, const RotationMatrix<T2>& rhs );
 //@}
 //*************************************************************************************************
@@ -1284,15 +1275,15 @@ inline const RotationMatrix< typename MathTrait<T1,T2>::MultType >
 // \return The resulting vector.
 //
 // This operator is selected for multiplications between rotation matrices and vectors of two
-// different data types \a T1 and \a T2, which are supported by the MathTrait class. The operator
+// different data types \a T1 and \a T2, which are supported by the MultTrait class. The operator
 // returns a vector of the higher-order data type of the two involved data types.
 */
 template< typename T1    // Data type of the left-hand side rotation matrix
         , typename T2 >  // Data type of the right-hand side vector
-inline const StaticVector< typename MathTrait<T1,T2>::MultType, 3UL, false >
+inline const StaticVector< typename MultTrait<T1,T2>::Type, 3UL, false >
    operator*( const RotationMatrix<T1>& lhs, const StaticVector<T2,3UL,false>& rhs )
 {
-   typedef typename MathTrait<T1,T2>::MultType  MT;
+   typedef typename MultTrait<T1,T2>::Type  MT;
    return StaticVector<MT,3UL,false>( lhs[0]*rhs[0] + lhs[1]*rhs[1] + lhs[2]*rhs[2],
                                       lhs[3]*rhs[0] + lhs[4]*rhs[1] + lhs[5]*rhs[2],
                                       lhs[6]*rhs[0] + lhs[7]*rhs[1] + lhs[8]*rhs[2] );
@@ -1310,15 +1301,15 @@ inline const StaticVector< typename MathTrait<T1,T2>::MultType, 3UL, false >
 // \return The resulting vector.
 //
 // This operator is selected for multiplications between rotation matrices and vectors of two
-// different data types \a T1 and \a T2, which are supported by the MathTrait class. The operator
+// different data types \a T1 and \a T2, which are supported by the MultTrait class. The operator
 // returns a vector of the higher-order data type of the two involved data types.
 */
 template< typename T1    // Data type of the left-hand side vector
         , typename T2 >  // Data type of the right-hand side rotation matrix
-inline const StaticVector< typename MathTrait<T1,T2>::MultType, 3UL, true >
+inline const StaticVector< typename MultTrait<T1,T2>::Type, 3UL, true >
    operator*( const StaticVector<T1,3UL,true>& lhs, const RotationMatrix<T2>& rhs )
 {
-   typedef typename MathTrait<T1,T2>::MultType  MT;
+   typedef typename MultTrait<T1,T2>::Type  MT;
    return StaticVector<MT,3UL,true>( lhs[0]*rhs[0] + lhs[1]*rhs[3] + lhs[2]*rhs[6],
                                      lhs[0]*rhs[1] + lhs[1]*rhs[4] + lhs[2]*rhs[7],
                                      lhs[0]*rhs[2] + lhs[1]*rhs[5] + lhs[2]*rhs[8] );
@@ -1336,15 +1327,15 @@ inline const StaticVector< typename MathTrait<T1,T2>::MultType, 3UL, true >
 // \return The resulting matrix.
 //
 // This operator is selected for multiplications between matrices of two different data types
-// \a T1 and \a T2, which are supported by the MathTrait class. The operator returns a matrix
+// \a T1 and \a T2, which are supported by the MultTrait class. The operator returns a matrix
 // of the higher-order data type of the two involved matrix data types.
 */
 template< typename T1    // Data type of the left-hand side rotation matrix
         , typename T2 >  // Data type of the right-hand side standard matrix
-inline const StaticMatrix< typename MathTrait<T1,T2>::MultType, 3UL, 3UL, false >
+inline const StaticMatrix< typename MultTrait<T1,T2>::Type, 3UL, 3UL, false >
    operator*( const RotationMatrix<T1>& lhs, const StaticMatrix<T2,3UL,3UL,false>& rhs )
 {
-   typedef StaticMatrix<typename MathTrait<T1,T2>::MultType,3UL,3UL,false>  MT;
+   typedef StaticMatrix<typename MultTrait<T1,T2>::Type,3UL,3UL,false>  MT;
    return MT( lhs[0]*rhs[0] + lhs[1]*rhs[3] + lhs[2]*rhs[6],
               lhs[0]*rhs[1] + lhs[1]*rhs[4] + lhs[2]*rhs[7],
               lhs[0]*rhs[2] + lhs[1]*rhs[5] + lhs[2]*rhs[8],
@@ -1368,15 +1359,15 @@ inline const StaticMatrix< typename MathTrait<T1,T2>::MultType, 3UL, 3UL, false 
 // \return The resulting matrix.
 //
 // This operator is selected for multiplications between matrices of two different data types
-// \a T1 and \a T2, which are supported by the MathTrait class. The operator returns a matrix
+// \a T1 and \a T2, which are supported by the MultTrait class. The operator returns a matrix
 // of the higher-order data type of the two involved matrix data types.
 */
 template< typename T1    // Data type of the left-hand side standard matrix
         , typename T2 >  // Data type of the right-hand side rotation matrix
-inline const StaticMatrix< typename MathTrait<T1,T2>::MultType, 3UL, 3UL, false >
+inline const StaticMatrix< typename MultTrait<T1,T2>::Type, 3UL, 3UL, false >
    operator*( const StaticMatrix<T1,3UL,3UL,false>& lhs, const RotationMatrix<T2>& rhs )
 {
-   typedef StaticMatrix<typename MathTrait<T1,T2>::MultType,3UL,3UL,false>  MT;
+   typedef StaticMatrix<typename MultTrait<T1,T2>::Type,3UL,3UL,false>  MT;
    return MT( lhs[0]*rhs[0] + lhs[1]*rhs[3] + lhs[2]*rhs[6],
               lhs[0]*rhs[1] + lhs[1]*rhs[4] + lhs[2]*rhs[7],
               lhs[0]*rhs[2] + lhs[1]*rhs[5] + lhs[2]*rhs[8],
@@ -1399,15 +1390,15 @@ inline const StaticMatrix< typename MathTrait<T1,T2>::MultType, 3UL, 3UL, false 
 // \return The resulting rotation matrix.
 //
 // This operator is selected for multiplications between rotation matrices of two different
-// data types \a T1 and \a T2, which are supported by the MathTrait class. The operator
+// data types \a T1 and \a T2, which are supported by the MultTrait class. The operator
 // returns a matrix of the higher-order data type of the two involved matrix data types.
 */
 template< typename T1    // Data type of the left-hand side rotation matrix
         , typename T2 >  // Data type of the right-hand side rotation matrix
-inline const RotationMatrix< typename MathTrait<T1,T2>::MultType >
+inline const RotationMatrix< typename MultTrait<T1,T2>::Type >
    operator*( const RotationMatrix<T1>& lhs, const RotationMatrix<T2>& rhs )
 {
-   typedef typename MathTrait<T1,T2>::MultType  MT;
+   typedef typename MultTrait<T1,T2>::Type  MT;
    return RotationMatrix<MT>( lhs.v_[0]*rhs.v_[0] + lhs.v_[1]*rhs.v_[3] + lhs.v_[2]*rhs.v_[6],
                               lhs.v_[0]*rhs.v_[1] + lhs.v_[1]*rhs.v_[4] + lhs.v_[2]*rhs.v_[7],
                               lhs.v_[0]*rhs.v_[2] + lhs.v_[1]*rhs.v_[5] + lhs.v_[2]*rhs.v_[8],

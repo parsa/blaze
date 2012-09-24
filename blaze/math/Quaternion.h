@@ -147,23 +147,18 @@ class Quaternion
    //**********************************************************************************************
 
    //**Math functions******************************************************************************
-   /*!\name Math functions
-   //
-   // The return type of the math functions depends on the involved data types of the
-   // quaternions, matrices and vectors (for further detail see the MathTrait class
-   // description).
-   */
+   /*!\name Math functions */
    //@{
    template< typename Other, bool TF >
-   inline const StaticVector<typename MathTrait<Type,Other>::MultType,3UL,false>
+   inline const StaticVector<typename MultTrait<Type,Other>::Type,3UL,false>
       rotate( const StaticVector<Other,3UL,TF>& v ) const;
 
    template< typename Other >
-   inline const StaticMatrix<typename MathTrait<Type,Other>::MultType,3UL,3UL,false>
+   inline const StaticMatrix<typename MultTrait<Type,Other>::Type,3UL,3UL,false>
       rotate( const StaticMatrix<Other,3UL,3UL,false>& m ) const;
 
    template< typename Other >
-   inline const StaticMatrix<typename MathTrait<Type,Other>::MultType,3UL,3UL,false>
+   inline const StaticMatrix<typename MultTrait<Type,Other>::Type,3UL,3UL,false>
       diagRotate( const StaticMatrix<Other,3UL,3UL,false>& m ) const;
 
    template< typename Other >
@@ -673,16 +668,16 @@ inline void Quaternion<Type>::swap( Quaternion& q ) /* throw() */
 // \return The rotated vector.
 //
 // The function is selected for vectors of different data type (in case \a Type and \a Other
-// are supported by the MathTrait class). The function returns a vector of the higher-order
+// are supported by the MultTrait class). The function returns a vector of the higher-order
 // data type of the two involved data types.
 */
 template< typename Type >  // Data type of the quaternion
 template< typename Other   // Data type of the vector
         , bool TF >        // Transpose flag
-inline const StaticVector<typename MathTrait<Type,Other>::MultType,3UL,false>
+inline const StaticVector<typename MultTrait<Type,Other>::Type,3UL,false>
    Quaternion<Type>::rotate( const StaticVector<Other,3UL,TF>& v ) const
 {
-   typedef typename MathTrait<Type,Other>::MultType  MT;
+   typedef typename MultTrait<Type,Other>::Type  MT;
 
    // Multiplication in two steps
    const MT w( v_[1]*v[0] + v_[2]*v[1] + v_[3]*v[2] );
@@ -716,15 +711,15 @@ inline const StaticVector<typename MathTrait<Type,Other>::MultType,3UL,false>
 // \return The rotated matrix.
 //
 // The function is selected for matrices of different data type (in case \a Type and \a Other
-// are supported by the MathTrait class). The function returns a matrix of the higher-order
+// are supported by the MultTrait class). The function returns a matrix of the higher-order
 // data type of the two involved data types.
 */
 template< typename Type >   // Data type of the quaternion
 template< typename Other >  // Data type of the matrix
-inline const StaticMatrix< typename MathTrait<Type,Other>::MultType, 3UL, 3UL, false >
+inline const StaticMatrix< typename MultTrait<Type,Other>::Type, 3UL, 3UL, false >
    Quaternion<Type>::rotate( const StaticMatrix<Other,3UL,3UL,false>& m ) const
 {
-   typedef typename MathTrait<Type,Other>::MultType  MT;
+   typedef typename MultTrait<Type,Other>::Type  MT;
    const RotationMatrix<MT> R( this->toRotationMatrix() );
    return R.rotate( m );
 }
@@ -740,15 +735,15 @@ inline const StaticMatrix< typename MathTrait<Type,Other>::MultType, 3UL, 3UL, f
 // The DiagRotate function is a special case of the rotate function. The matrix is assumed to
 // be a diagonal matrix, which reduces the number of floating point operations of the rotation.
 // The function is selected for matrices of different data type (in case \a Type and \a Other
-// are supported by the MathTrait class). The function returns a matrix of the higher-order
+// are supported by the MultTrait class). The function returns a matrix of the higher-order
 // data type of the two involved data types.
 */
 template< typename Type >   // Data type of the quaternion
 template< typename Other >  // Data type of the diagonal matrix
-inline const StaticMatrix< typename MathTrait<Type,Other>::MultType, 3UL, 3UL, false >
+inline const StaticMatrix< typename MultTrait<Type,Other>::Type, 3UL, 3UL, false >
    Quaternion<Type>::diagRotate( const StaticMatrix<Other,3UL,3UL,false>& m ) const
 {
-   typedef typename MathTrait<Type,Other>::MultType  MT;
+   typedef typename MultTrait<Type,Other>::Type  MT;
    const RotationMatrix<MT> R( this->toRotationMatrix() );
    return R.diagRotate( m );
 }
@@ -1056,14 +1051,10 @@ inline void swap( Quaternion<Type>& a, Quaternion<Type>& b ) /* throw() */
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name Quaternion arithmetic operators
-//
-// These operators support operations between quaternions of different element types. They work
-// for all element types supported by the MathTrait class template.
-*/
+/*!\name Quaternion arithmetic operators */
 //@{
 template< typename T1, typename T2 >
-inline const Quaternion< typename MathTrait<T1,T2>::MultType >
+inline const Quaternion< typename MultTrait<T1,T2>::Type >
    operator*( const Quaternion<T1>& lhs, const Quaternion<T2>& rhs );
 //@}
 //*************************************************************************************************
@@ -1080,10 +1071,10 @@ inline const Quaternion< typename MathTrait<T1,T2>::MultType >
 */
 template< typename T1    // Data type of the left-hand side quaternion
         , typename T2 >  // Data type of the right-hand side quaternion
-inline const Quaternion< typename MathTrait<T1,T2>::MultType >
+inline const Quaternion< typename MultTrait<T1,T2>::Type >
    operator*( const Quaternion<T1>& lhs, const Quaternion<T2>& rhs )
 {
-   typedef typename MathTrait<T1,T2>::MultType  MT;
+   typedef typename MultTrait<T1,T2>::Type  MT;
 
    const MT r( lhs[0]*rhs[0] - lhs[1]*rhs[1] - lhs[2]*rhs[2] - lhs[3]*rhs[3] );
    const MT i( lhs[0]*rhs[1] + lhs[1]*rhs[0] + lhs[2]*rhs[3] - lhs[3]*rhs[2] );
@@ -1116,7 +1107,7 @@ inline const Quaternion< typename MathTrait<T1,T2>::MultType >
 template< typename T1, typename T2 >
 struct MultTrait< Quaternion<T1>, Quaternion<T2> >
 {
-   typedef Quaternion< typename MathTrait<T1,T2>::MultType >  MultType;
+   typedef Quaternion< typename MultTrait<T1,T2>::Type >  MultType;
 };
 /*! \endcond */
 //*************************************************************************************************

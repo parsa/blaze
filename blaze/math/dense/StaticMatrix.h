@@ -32,7 +32,6 @@
 #include <stdexcept>
 #include <blaze/math/DenseMatrix.h>
 #include <blaze/math/Intrinsics.h>
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
@@ -94,12 +93,7 @@ namespace blaze {
    \endcode
 
 //  - Type: specifies the type of the matrix elements. StaticMatrix can be used with any
-//          non-cv-qualified element type. The arithmetic operators for matrix/matrix,
-//          matrix/vector and matrix/element operations with the same element type work
-//          for any element type as long as the element type supports the arithmetic
-//          operation. Arithmetic operations between matrices, vectors and elements of
-//          different element types are only supported for all data types supported by
-//          the MathTrait class template (for details see the MathTrait class description).
+//          non-cv-qualified, non-reference, non-pointer element type.
 //  - M   : specifies the total number of rows of the matrix.
 //  - N   : specifies the total number of columns of the matrix. Note that it is expected
 //          that StaticMatrix is only used for tiny and small matrices.
@@ -1538,7 +1532,7 @@ inline typename EnableIf< IsNumeric<Other>, StaticMatrix<Type,M,N,SO> >::Type&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef typename MathTrait<Type,Other>::DivType  DT;
+   typedef typename DivTrait<Type,Other>::Type  DT;
    typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a
@@ -3649,7 +3643,7 @@ inline typename EnableIf< IsNumeric<Other>, StaticMatrix<Type,M,N,true> >::Type&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef typename MathTrait<Type,Other>::DivType  DT;
+   typedef typename DivTrait<Type,Other>::Type  DT;
    typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a

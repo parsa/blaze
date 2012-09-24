@@ -32,7 +32,6 @@
 #include <blaze/math/DenseMatrix.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
@@ -46,7 +45,6 @@
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/system/CacheSize.h>
-#include <blaze/system/Precision.h>
 #include <blaze/system/Restrict.h>
 #include <blaze/system/StorageOrder.h>
 #include <blaze/util/Assert.h>
@@ -95,12 +93,7 @@ namespace blaze {
    \endcode
 
 //  - Type: specifies the type of the matrix elements. DynamicMatrix can be used with any
-//          non-cv-qualified element type. The arithmetic operators for matrix/matrix,
-//          matrix/vector and matrix/element operations with the same element type work
-//          for any element type as long as the element type supports the arithmetic
-//          operation. Arithmetic operations between matrices, vectors and elements of
-//          different element types are only supported for all data types supported by
-//          the MathTrait class template (for details see the MathTrait class description).
+//          non-cv-qualified, non-reference, non-pointer element type.
 //  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
 //          The default value is blaze::rowMajor.
 //
@@ -927,7 +920,7 @@ inline typename EnableIf< IsNumeric<Other>, DynamicMatrix<Type,SO> >::Type&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef typename MathTrait<Type,Other>::DivType  DT;
+   typedef typename DivTrait<Type,Other>::Type  DT;
    typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a
@@ -2751,7 +2744,7 @@ inline typename EnableIf< IsNumeric<Other>, DynamicMatrix<Type,true> >::Type&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef typename MathTrait<Type,Other>::DivType  DT;
+   typedef typename DivTrait<Type,Other>::Type  DT;
    typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a
@@ -4410,38 +4403,6 @@ struct MathTrait< DynamicMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
    typedef INVALID_TYPE                                                 DivType;
 };
 /*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  TYPE DEFINITIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief MxN single precision matrix.
-// \ingroup dynamic_matrix
-*/
-typedef DynamicMatrix<float,false>  MatMxNf;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief MxN double precision matrix.
-// \ingroup dynamic_matrix
-*/
-typedef DynamicMatrix<double,false>  MatMxNd;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief MxN matrix with system-specific precision.
-// \ingroup dynamic_matrix
-*/
-typedef DynamicMatrix<real,false>  MatMxN;
 //*************************************************************************************************
 
 } // namespace blaze
