@@ -34,8 +34,8 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/Intrinsics.h>
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/traits/AddExprTrait.h>
+#include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/util/Assert.h>
@@ -104,7 +104,7 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
  public:
    //**Type definitions****************************************************************************
    typedef DMatDMatAddExpr<MT1,MT2,SO>                 This;           //!< Type of this DMatDMatAdd instance.
-   typedef typename MathTrait<RT1,RT2>::AddType        ResultType;     //!< Result type for expression template evaluations.
+   typedef typename AddTrait<RT1,RT2>::Type            ResultType;     //!< Result type for expression template evaluations.
    typedef typename ResultType::OppositeType           OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
@@ -417,7 +417,7 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
 // The operator returns an expression representing a dense matrix of the higher-order element
 // type of the two involved matrix element types \a T1::ElementType and \a T2::ElementType.
 // Both matrix types \a T1 and \a T2 as well as the two element types \a T1::ElementType and
-// \a T2::ElementType have to be supported by the MathTrait class template.\n
+// \a T2::ElementType have to be supported by the AddTrait class template.\n
 // In case the current number of rows and columns of the two given matrices don't match, a
 // \a std::invalid_argument is thrown.
 */

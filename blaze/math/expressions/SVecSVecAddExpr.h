@@ -34,9 +34,9 @@
 #include <blaze/math/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseVector.h>
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddExprTrait.h>
+#include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -84,7 +84,7 @@ class SVecSVecAddExpr : public SparseVector< SVecSVecAddExpr<VT1,VT2,TF>, TF >
  public:
    //**Type definitions****************************************************************************
    typedef SVecSVecAddExpr<VT1,VT2,TF>                 This;           //!< Type of this SVecSVecAddExpr instance.
-   typedef typename MathTrait<RT1,RT2>::AddType        ResultType;     //!< Result type for expression template evaluations.
+   typedef typename AddTrait<RT1,RT2>::Type            ResultType;     //!< Result type for expression template evaluations.
    typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
    typedef const typename AddExprTrait<RN1,RN2>::Type  ReturnType;     //!< Return type for expression template evaluations.
@@ -462,7 +462,7 @@ class SVecSVecAddExpr : public SparseVector< SVecSVecAddExpr<VT1,VT2,TF>, TF >
 // The operator returns a sparse vector of the higher-order element type of the two involved
 // vector element types \a T1::ElementType and \a T2::ElementType. Both vector types \a T1
 // and \a T2 as well as the two element types \a T1::ElementType and \a T2::ElementType have
-// to be supported by the MathTrait class template.\n
+// to be supported by the AddTrait class template.\n
 // In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
 // is thrown.
 */
