@@ -3818,10 +3818,6 @@ template< typename Type, bool SO >
 inline const DynamicMatrix<Type,SO> inv( const DynamicMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
-inline const DMatDMatMultExpr< DynamicMatrix<Type,SO>, DynamicMatrix<Type,SO> >
-   sq( const DynamicMatrix<Type,SO>& m );
-
-template< typename Type, bool SO >
 inline void swap( DynamicMatrix<Type,SO>& a, DynamicMatrix<Type,SO>& b ) /* throw() */;
 //@}
 //*************************************************************************************************
@@ -3942,26 +3938,6 @@ inline const DynamicMatrix<Type,SO> inv( const DynamicMatrix<Type,SO>& m )
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( Type );
 
    return DynamicMatrix<Type,SO>();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Squaring the given dense matrix.
-// \ingroup dynamic_matrix
-//
-// \param m The dense matrix to be squared.
-// \return The result of the square operation.
-//
-// This function squares the given dense matrix \a m. This function has the same effect as
-// multiplying the matrix with itself (\f$ m * m \f$).
-*/
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline const DMatDMatMultExpr< DynamicMatrix<Type,SO>, DynamicMatrix<Type,SO> >
-   sq( const DynamicMatrix<Type,SO>& m )
-{
-   return DMatDMatMultExpr< DynamicMatrix<Type,SO>, DynamicMatrix<Type,SO> >( ~m, ~m );
 }
 //*************************************************************************************************
 

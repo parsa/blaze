@@ -4461,10 +4461,6 @@ template< typename Type, size_t M, size_t N, bool SO >
 inline bool isDefault( const StaticMatrix<Type,M,N,SO>& m );
 
 template< typename Type, size_t M, size_t N, bool SO >
-inline const DMatDMatMultExpr< StaticMatrix<Type,M,N,SO>, StaticMatrix<Type,M,N,SO> >
-   sq( const StaticMatrix<Type,M,N,SO>& m );
-
-template< typename Type, size_t M, size_t N, bool SO >
 inline void swap( StaticMatrix<Type,M,N,SO>& a, StaticMatrix<Type,M,N,SO>& b ) /* throw() */;
 //@}
 //*************************************************************************************************
@@ -4550,28 +4546,6 @@ inline bool isDefault( const StaticMatrix<Type,M,N,SO>& m )
    }
 
    return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Squaring the given 2x2 matrix.
-// \ingroup static_matrix
-//
-// \param m The 2x2 matrix to be squared.
-// \return The result of the square operation.
-//
-// This function squares the given 2x2 matrix \a m. This function has the same effect as
-// multiplying the matrix with itself (\f$ m * m \f$).
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline const DMatDMatMultExpr< StaticMatrix<Type,M,N,SO>, StaticMatrix<Type,M,N,SO> >
-   sq( const StaticMatrix<Type,M,N,SO>& m )
-{
-   return m * m;
 }
 //*************************************************************************************************
 

@@ -1873,10 +1873,6 @@ template< typename Type, bool TF >
 inline bool isDefault( const DynamicVector<Type,TF>& v );
 
 template< typename Type, bool TF >
-inline const DVecDVecMultExpr<DynamicVector<Type,TF>,DynamicVector<Type,TF>,TF>
-   sq( const DynamicVector<Type,TF>& v );
-
-template< typename Type, bool TF >
 inline void swap( DynamicVector<Type,TF>& a, DynamicVector<Type,TF>& b ) /* throw() */;
 //@}
 //*************************************************************************************************
@@ -1969,26 +1965,6 @@ inline bool isDefault( const DynamicVector<Type,TF>& v )
    for( size_t i=0UL; i<v.size(); ++i )
       if( !isDefault( v[i] ) ) return false;
    return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Squaring the given dynamic vector.
-// \ingroup dense_vector_N
-//
-// \param v The dynamic vector to be squared.
-// \return The result of the square operation.
-//
-// This function calculates the component product of the given dynamic vector. It has the same
-// effect as multiplying the vector with itself (\f$ v * v \f$).
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline const DVecDVecMultExpr<DynamicVector<Type,TF>,DynamicVector<Type,TF>,TF>
-   sq( const DynamicVector<Type,TF>& v )
-{
-   return v * v;
 }
 //*************************************************************************************************
 

@@ -1831,10 +1831,6 @@ inline void clear( StaticVector<Type,N,TF>& v );
 template< typename Type, size_t N, bool TF >
 inline bool isDefault( const StaticVector<Type,N,TF>& v );
 
-template< typename Type, size_t N, bool TF >
-inline const DVecDVecMultExpr<StaticVector<Type,N,TF>,StaticVector<Type,N,TF>,TF>
-   sq( const StaticVector<Type,N,TF>& v );
-
 template< typename Type, bool TF >
 inline const StaticVector<Type,2UL,TF> perp( const StaticVector<Type,2UL,TF>& v );
 
@@ -1939,27 +1935,6 @@ inline bool isDefault( const StaticVector<Type,N,TF>& v )
    for( size_t i=0UL; i<N; ++i )
       if( !isDefault( v[i] ) ) return false;
    return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Squaring the given static vector.
-// \ingroup static_vector
-//
-// \param v The static vector to be squared.
-// \return The result of the square operation.
-//
-// This function calculates the component product of the given static vector. It has the same
-// effect as multiplying the vector with itself (\f$ v * v \f$).
-*/
-template< typename Type  // Data type of the vector
-        , size_t N       // Number of elements
-        , bool TF >      // Transpose flag
-inline const DVecDVecMultExpr<StaticVector<Type,N,TF>,StaticVector<Type,N,TF>,TF>
-   sq( const StaticVector<Type,N,TF>& v )
-{
-   return v * v;
 }
 //*************************************************************************************************
 

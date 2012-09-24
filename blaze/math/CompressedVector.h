@@ -1565,9 +1565,6 @@ template< typename Type, bool TF >
 inline bool isDefault( const CompressedVector<Type,TF>& v );
 
 template< typename Type, bool TF >
-inline const typename MultTrait<Type,Type>::Type sq( const CompressedVector<Type,TF>& v );
-
-template< typename Type, bool TF >
 inline void swap( CompressedVector<Type,TF>& a, CompressedVector<Type,TF>& b ) /* throw() */;
 //@}
 //*************************************************************************************************
@@ -1665,26 +1662,6 @@ inline bool isDefault( const CompressedVector<Type,TF>& v )
    for( ConstIterator element=v.begin(); element!=v.end(); ++element )
       if( !isDefault( element->value() ) ) return false;
    return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Squaring the given compressed vector.
-// \ingroup compressed_vector
-//
-// \param v The compressed vector to be squared.
-// \return The result of the square operation.
-//
-// This function calculates the component product of the given compressed vector. It has the
-// same effect as multiplying the vector with itself (\f$ v * v \f$).
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline const CompressedVector< typename MultTrait<Type,Type>::Type, TF >
-   sq( const CompressedVector<Type>& v )
-{
-   return v * v;
 }
 //*************************************************************************************************
 

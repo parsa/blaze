@@ -3855,10 +3855,6 @@ template< typename Type, bool SO >
 inline const CompressedMatrix<Type,SO> inv( const CompressedMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
-inline const SMatSMatMultExpr< CompressedMatrix<Type,SO>, CompressedMatrix<Type,SO> >
-   sq( const CompressedMatrix<Type,SO>& m );
-
-template< typename Type, bool SO >
 inline void swap( CompressedMatrix<Type,SO>& a, CompressedMatrix<Type,SO>& b ) /* throw() */;
 //@}
 //*************************************************************************************************
@@ -3974,26 +3970,6 @@ template< typename Type  // Data type of the sparse matrix
 inline const CompressedMatrix<Type,SO> inv( const CompressedMatrix<Type,SO>& m )
 {
    return CompressedMatrix<Type,SO>();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Squaring the given sparse matrix.
-// \ingroup compressed_matrix
-//
-// \param m The sparse matrix to be squared.
-// \return The result of the square operation.
-//
-// This function squares the given sparse matrix \a m. This function has the same effect as
-// multiplying the matrix with itself (\f$ m * m \f$).
-*/
-template< typename Type  // Data type of the sparse matrix
-        , bool SO >      // Storage order
-inline const SMatSMatMultExpr< CompressedMatrix<Type,SO>, CompressedMatrix<Type,SO> >
-   sq( const CompressedMatrix<Type,SO>& m )
-{
-   return m * m;
 }
 //*************************************************************************************************
 

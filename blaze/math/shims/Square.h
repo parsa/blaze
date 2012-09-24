@@ -23,6 +23,13 @@
 #define _BLAZE_MATH_SHIMS_SQUARE_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/math/traits/MultExprTrait.h>
+
+
 namespace blaze {
 
 //=================================================================================================
@@ -42,9 +49,9 @@ namespace blaze {
 // data type. For values of built-in data type this results in a plain multiplication.
 */
 template< typename T >
-inline const T sq( const T& a )
+inline const typename MultExprTrait<T,T>::Type sq( const T& a )
 {
-   return a*a;
+   return a * a;
 }
 //*************************************************************************************************
 
