@@ -38,6 +38,7 @@
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/Types.h>
@@ -4745,161 +4746,10 @@ struct DivTrait< StaticMatrix<T1,M,N,SO>, T2 >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
-struct MathTrait< StaticMatrix<T1,M,N,SO>, T2 >
-{
-   typedef INVALID_TYPE                                                   HighType;
-   typedef INVALID_TYPE                                                   LowType;
-   typedef INVALID_TYPE                                                   AddType;
-   typedef INVALID_TYPE                                                   SubType;
-   typedef StaticMatrix< typename MathTrait<T1,T2>::MultType, M, N, SO >  MultType;
-   typedef INVALID_TYPE                                                   CrossType;
-   typedef StaticMatrix< typename MathTrait<T1,T2>::DivType , M, N, SO >  DivType;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
-};
-
-template< typename T1, typename T2, size_t M, size_t N, bool SO >
-struct MathTrait< T1, StaticMatrix<T2,M,N,SO> >
-{
-   typedef INVALID_TYPE                                                   HighType;
-   typedef INVALID_TYPE                                                   LowType;
-   typedef INVALID_TYPE                                                   AddType;
-   typedef INVALID_TYPE                                                   SubType;
-   typedef StaticMatrix< typename MathTrait<T1,T2>::MultType, M, N, SO >  MultType;
-   typedef INVALID_TYPE                                                   CrossType;
-   typedef INVALID_TYPE                                                   DivType;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T1 );
-};
-
-template< typename T1, size_t M, size_t N, bool SO, typename T2 >
-struct MathTrait< StaticMatrix<T1,M,N,SO>, StaticVector<T2,N,false> >
-{
-   typedef INVALID_TYPE                                                   HighType;
-   typedef INVALID_TYPE                                                   LowType;
-   typedef INVALID_TYPE                                                   AddType;
-   typedef INVALID_TYPE                                                   SubType;
-   typedef StaticVector< typename MathTrait<T1,T2>::MultType, M, false >  MultType;
-   typedef INVALID_TYPE                                                   CrossType;
-   typedef INVALID_TYPE                                                   DivType;
-};
-
-template< typename T1, size_t M, typename T2, size_t N, bool SO >
-struct MathTrait< StaticVector<T1,M,true>, StaticMatrix<T2,M,N,SO> >
-{
-   typedef INVALID_TYPE                                                  HighType;
-   typedef INVALID_TYPE                                                  LowType;
-   typedef INVALID_TYPE                                                  AddType;
-   typedef INVALID_TYPE                                                  SubType;
-   typedef StaticVector< typename MathTrait<T1,T2>::MultType, N, true >  MultType;
-   typedef INVALID_TYPE                                                  CrossType;
-   typedef INVALID_TYPE                                                  DivType;
-};
-
-template< typename T1, size_t M, size_t N, bool SO, typename T2 >
-struct MathTrait< StaticMatrix<T1,M,N,SO>, DynamicVector<T2,false> >
-{
-   typedef INVALID_TYPE                                                   HighType;
-   typedef INVALID_TYPE                                                   LowType;
-   typedef INVALID_TYPE                                                   AddType;
-   typedef INVALID_TYPE                                                   SubType;
-   typedef StaticVector< typename MathTrait<T1,T2>::MultType, M, false >  MultType;
-   typedef INVALID_TYPE                                                   CrossType;
-   typedef INVALID_TYPE                                                   DivType;
-};
-
-template< typename T1, typename T2, size_t M, size_t N, bool SO >
-struct MathTrait< DynamicVector<T1,true>, StaticMatrix<T2,M,N,SO> >
-{
-   typedef INVALID_TYPE                                                  HighType;
-   typedef INVALID_TYPE                                                  LowType;
-   typedef INVALID_TYPE                                                  AddType;
-   typedef INVALID_TYPE                                                  SubType;
-   typedef StaticVector< typename MathTrait<T1,T2>::MultType, N, true >  MultType;
-   typedef INVALID_TYPE                                                  CrossType;
-   typedef INVALID_TYPE                                                  DivType;
-};
-
-template< typename T1, size_t M, size_t N, bool SO, typename T2 >
-struct MathTrait< StaticMatrix<T1,M,N,SO>, CompressedVector<T2,false> >
-{
-   typedef INVALID_TYPE                                                   HighType;
-   typedef INVALID_TYPE                                                   LowType;
-   typedef INVALID_TYPE                                                   AddType;
-   typedef INVALID_TYPE                                                   SubType;
-   typedef StaticVector< typename MathTrait<T1,T2>::MultType, M, false >  MultType;
-   typedef INVALID_TYPE                                                   CrossType;
-   typedef INVALID_TYPE                                                   DivType;
-};
-
-template< typename T1, typename T2, size_t M, size_t N, bool SO >
-struct MathTrait< CompressedVector<T1,true>, StaticMatrix<T2,M,N,SO> >
-{
-   typedef INVALID_TYPE                                                  HighType;
-   typedef INVALID_TYPE                                                  LowType;
-   typedef INVALID_TYPE                                                  AddType;
-   typedef INVALID_TYPE                                                  SubType;
-   typedef StaticVector< typename MathTrait<T1,T2>::MultType, N, true >  MultType;
-   typedef INVALID_TYPE                                                  CrossType;
-   typedef INVALID_TYPE                                                  DivType;
-};
-
-template< typename T1, size_t N, bool SO, typename T2 >
-struct MathTrait< StaticMatrix<T1,N,N,SO>, StaticMatrix<T2,N,N,SO> >
-{
-   typedef StaticMatrix< typename MathTrait<T1,T2>::HighType, N, N, SO >  HighType;
-   typedef StaticMatrix< typename MathTrait<T1,T2>::LowType , N, N, SO >  LowType;
-   typedef StaticMatrix< typename MathTrait<T1,T2>::AddType , N, N, SO >  AddType;
-   typedef StaticMatrix< typename MathTrait<T1,T2>::SubType , N, N, SO >  SubType;
-   typedef StaticMatrix< typename MathTrait<T1,T2>::MultType, N, N, SO >  MultType;
-   typedef INVALID_TYPE                                                   CrossType;
-   typedef INVALID_TYPE                                                   DivType;
-};
-
-template< typename T1, size_t N, bool SO1, typename T2, bool SO2 >
-struct MathTrait< StaticMatrix<T1,N,N,SO1>, StaticMatrix<T2,N,N,SO2> >
-{
-   typedef StaticMatrix< typename MathTrait<T1,T2>::HighType, N, N, SO1 >    HighType;
-   typedef StaticMatrix< typename MathTrait<T1,T2>::LowType , N, N, SO1 >    LowType;
-   typedef StaticMatrix< typename MathTrait<T1,T2>::AddType , N, N, false >  AddType;
-   typedef StaticMatrix< typename MathTrait<T1,T2>::SubType , N, N, false >  SubType;
-   typedef StaticMatrix< typename MathTrait<T1,T2>::MultType, N, N, SO1 >    MultType;
-   typedef INVALID_TYPE                                                      CrossType;
-   typedef INVALID_TYPE                                                      DivType;
-};
-
-template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct MathTrait< StaticMatrix<T1,M,N,SO>, StaticMatrix<T2,M,N,SO> >
 {
    typedef StaticMatrix< typename MathTrait<T1,T2>::HighType, M, N, SO >  HighType;
    typedef StaticMatrix< typename MathTrait<T1,T2>::LowType , M, N, SO >  LowType;
-   typedef StaticMatrix< typename MathTrait<T1,T2>::AddType , M, N, SO >  AddType;
-   typedef StaticMatrix< typename MathTrait<T1,T2>::SubType , M, N, SO >  SubType;
-   typedef INVALID_TYPE                                                   MultType;
-   typedef INVALID_TYPE                                                   CrossType;
-   typedef INVALID_TYPE                                                   DivType;
-};
-
-template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
-struct MathTrait< StaticMatrix<T1,M,N,SO1>, StaticMatrix<T2,M,N,SO2> >
-{
-   typedef StaticMatrix< typename MathTrait<T1,T2>::HighType, M, N, SO1 >    HighType;
-   typedef StaticMatrix< typename MathTrait<T1,T2>::LowType , M, N, SO1 >    LowType;
-   typedef StaticMatrix< typename MathTrait<T1,T2>::AddType , M, N, false >  AddType;
-   typedef StaticMatrix< typename MathTrait<T1,T2>::SubType , M, N, false >  SubType;
-   typedef INVALID_TYPE                                                      MultType;
-   typedef INVALID_TYPE                                                      CrossType;
-   typedef INVALID_TYPE                                                      DivType;
-};
-
-template< typename T1, size_t M, size_t K, bool SO1, typename T2, size_t N, bool SO2 >
-struct MathTrait< StaticMatrix<T1,M,K,SO1>, StaticMatrix<T2,K,N,SO2> >
-{
-   typedef INVALID_TYPE                                                    HighType;
-   typedef INVALID_TYPE                                                    LowType;
-   typedef INVALID_TYPE                                                    AddType;
-   typedef INVALID_TYPE                                                    SubType;
-   typedef StaticMatrix< typename MathTrait<T1,T2>::MultType, M, N, SO1 >  MultType;
-   typedef INVALID_TYPE                                                    CrossType;
-   typedef INVALID_TYPE                                                    DivType;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/MathTrait.h
-//  \brief Header file for the mathematical/arithmetic trait
+//  \file blaze/math/traits/MathTrait.h
+//  \brief Header file for the mathematical trait
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_MATHTRAIT_H_
-#define _BLAZE_MATH_MATHTRAIT_H_
+#ifndef _BLAZE_MATH_TRAITS_MATHTRAIT_H_
+#define _BLAZE_MATH_TRAITS_MATHTRAIT_H_
 
 
 //*************************************************************************************************
@@ -42,65 +42,30 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  MATHEMATICAL TRAIT
+//  CLASS DEFINITION
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\class blaze::MathTrait
-// \brief Base template for the MathTrait class.
+/*!\brief Base template for the MathTrait class.
 // \ingroup math
 //
 // \section mathtrait_general General
 //
-// The MathTrait class template offers the possibility to select the resulting data type of
-// a generic mathematical operation between the two given types \a T1 and \a T2. In case of
-// operations between built-in data types, the MathTrait class defines the more significant
-// data type as the resulting data type. For this selection, larger and/or signed data types
-// are given a higher significance. In case of operations involving user-defined data types,
-// the MathTrait template specifies the resulting data type of this operation. \a const and
-// \a volatile qualifiers and reference modifiers are generally ignored.\n
+// The MathTrait class template determines the more significant, dominating data type and the
+// less significant, submissive data type of the two given data types \a T1 and \a T2. The more
+// significant data type is represented by the nested type \a HighType, the less significant
+// data type by the nested type \a LowType. For instance, in case both \a T1 and \a T2 are
+// built-in data types, \a HighType is set to the larger or signed data type and \a LowType
+// is set to the smaller or unsigned data type. In case no dominating data type can be selected,
+// \a Type is set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference
+// modifiers are generally ignored.
 //
-// MathTrait defines the following nested types:
-//
-//   - \a HighType : Represents the higher-order, more significant data type of the two
-//                   given data types.
-//   - \a LowType  : Represents the lower-order, less significant data type of the two
-//                   given data types.
-//   - \a AddType  : Represents the result of an addition operation.
-//   - \a SubType  : Represents the result of a subtraction operation.
-//   - \a MultType : Represents the result of a multiplication operation.
-//   - \a CrossType: Represents the result of a cross product operation.
-//   - \a DivType  : Represents the result of a division operation.
-//
-// If a certain mathematical operation is not possible and/or not defined between the two
-// given data types, the according type is set to \a INVALID_TYPE.\n
-//
-// Specifying the resulting data type for a specific operation is done by specializing the
-// MathTrait template for this particular type combination. In case a certain type combination
-// is not defined in a MathTrait specialization, the base template is selected, which sets all
-// nested types to \a INVALID_TYPE and therefore stops the compilation process. The following
-// example shows the specialization for operations between the double and the integer type:
-
-   \code
-   template<>
-   struct MathTrait< double, int >
-   {
-      typedef double        HighType;
-      typedef int           LowType;
-      typedef double        AddType;
-      typedef double        SubType;
-      typedef double        MultType;
-      typedef INVALID_TYPE  CrossType;
-      typedef double        DivType;
-   };
-   \endcode
-
-// Per default, the MathTrait template provides specializations for the following built-in
-// data types:
+// Per default, the MathTrait template provides specializations for the following built-in data
+// types:
 //
 // <ul>
-//    <li>integers</li>
+//    <li>Integral types</li>
 //    <ul>
 //       <li>unsigned char, signed char, char, wchar_t</li>
 //       <li>unsigned short, short</li>
@@ -108,7 +73,7 @@ namespace blaze {
 //       <li>unsigned long, long</li>
 //       <li>std::size_t, std::ptrdiff_t (for certain 64-bit compilers)</li>
 //    </ul>
-//    <li>floating points</li>
+//    <li>Floating point types</li>
 //    <ul>
 //       <li>float</li>
 //       <li>double</li>
@@ -117,7 +82,7 @@ namespace blaze {
 // </ul>
 //
 // Additionally, the Blaze library provides specializations for the following user-defined
-// arithmetic types:
+// arithmetic types, wherever a more/less significant data type can be selected:
 //
 // <ul>
 //    <li>std::complex</li>
@@ -132,63 +97,17 @@ namespace blaze {
 // </ul>
 //
 //
-// \n \section specializations Creating custom specializations
+// \n \section mathtrait_specializations Creating custom specializations
 //
 // It is possible to specialize the MathTrait template for additional user-defined data types.
-// However, it is possible that a specific mathematical operation is invalid for the particular
-// type combination. In this case, the \a INVALID_TYPE can be used to fill the missing type
-// definition. The \a INVALID_TYPE represents the resulting data type of an invalid numerical
-// operation. It is left undefined to stop the compilation process in case it is instantiated.
-// The following example shows the specialization of the MathTrait template for 3D matrices and
-// vectors. In this case, only the multiplication between the matrix and the vector is a valid
-// numerical operation. Therefore for all other types the \a INVALID_TYPE is used.
+// The following example shows the according specialization for two dynamic column vectors:
 
    \code
    template< typename T1, typename T2 >
-   struct MathTrait< StaticMatrix<T1,3UL,3UL,false>, StaticVector<T2,3UL,false> >
+   struct MathTrait< DynamicVector<T1,false>, DynamicVector<T2,false> >
    {
-      typedef typename typename MathTrait<T1,T2>::MultType  MT;
-
-      typedef INVALID_TYPE                HighType;   // Invalid, no common high data type
-      typedef INVALID_TYPE                LowType;    // Invalid, no common low data type
-      typedef INVALID_TYPE                AddType;    // Invalid, cannot add a matrix and a vector
-      typedef INVALID_TYPE                SubType;    // Invalid, cannot subtract a vector from a matrix
-      typedef StaticVector<MT,3UL,false>  MultType;   // Multiplication between a matrix and a vector
-      typedef INVALID_TYPE                CrossType;  // Invalid, cannot compute a matrix/vector cross product
-      typedef INVALID_TYPE                DivType;    // Invalid, cannot divide a matrix by a vector
+      typedef DynamicVector< typename MathTrait<T1,T2>::Type, false >  Type;
    };
-   \endcode
-
-// \n \section mathtrait_examples Examples
-//
-// The following example demonstrates the use of the MathTrait template, where depending on
-// the two given data types the resulting data type is selected:
-
-   \code
-   template< typename T1, typename T2 >    // The two generic types
-   typename MathTrait<T1,T2>::HighType     // The resulting generic return type
-   add( T1 t1, T2 t2 )                     //
-   {                                       // The function 'add' returns the sum
-      return t1 + t2;                      // of the two given values
-   }                                       //
-   \endcode
-
-// Additionally, the specializations of the MathTrait template enable arithmetic operations
-// between any combination of the supported data types:
-
-   \code
-   // Vector of 3x3 single precision matrices
-   typedef blaze::DynamicVector< blaze::StaticMatrix<float,3UL,3UL> >  VectorOfMatrices;
-
-   // Vector of 3D double precision vectors
-   typedef blaze::DynamicVector< blaze::StaticVector<double,3UL> >  VectorOfVectors;
-
-   VectorOfMatrices vm;  // Setup of a vector of matrices
-   VectorOfVectors  vv;  // Setup of a vector of vectors
-
-   // Calculation of the component-wise vector product between the two vectors. The resulting
-   // data type is again a dynamic vector of 3-dimensional vectors.
-   VectorOfVectors res = vm * vv;
    \endcode
 */
 template< typename T1, typename T2 >
@@ -200,11 +119,6 @@ struct MathTrait
    struct Failure {
       typedef INVALID_TYPE  HighType;
       typedef INVALID_TYPE  LowType;
-      typedef INVALID_TYPE  AddType;
-      typedef INVALID_TYPE  SubType;
-      typedef INVALID_TYPE  MultType;
-      typedef INVALID_TYPE  CrossType;
-      typedef INVALID_TYPE  DivType;
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -229,11 +143,6 @@ struct MathTrait
    /*! \cond BLAZE_INTERNAL */
    typedef typename SelectType< qualified, Helper, Failure >::Type::HighType   HighType;
    typedef typename SelectType< qualified, Helper, Failure >::Type::LowType    LowType;
-   typedef typename SelectType< qualified, Helper, Failure >::Type::AddType    AddType;
-   typedef typename SelectType< qualified, Helper, Failure >::Type::SubType    SubType;
-   typedef typename SelectType< qualified, Helper, Failure >::Type::MultType   MultType;
-   typedef typename SelectType< qualified, Helper, Failure >::Type::CrossType  CrossType;
-   typedef typename SelectType< qualified, Helper, Failure >::Type::DivType    DivType;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -259,13 +168,8 @@ struct MathTrait
    template<> \
    struct MathTrait< T1, T2 > \
    { \
-      typedef HIGH          HighType; \
-      typedef LOW           LowType;  \
-      typedef HIGH          AddType;  \
-      typedef HIGH          SubType;  \
-      typedef HIGH          MultType; \
-      typedef INVALID_TYPE  CrossType; \
-      typedef HIGH          DivType;  \
+      typedef HIGH  HighType; \
+      typedef LOW   LowType;  \
    }
 /*! \endcond */
 //*************************************************************************************************
@@ -282,24 +186,14 @@ struct MathTrait
    template< typename T2 > \
    struct MathTrait< T1, complex<T2> > \
    { \
-      typedef complex<T2>   HighType; \
-      typedef T1            LowType;  \
-      typedef complex<T2>   AddType;  \
-      typedef complex<T2>   SubType;  \
-      typedef complex<T2>   MultType; \
-      typedef INVALID_TYPE  CrossType; \
-      typedef complex<T2>   DivType;  \
+      typedef complex<T2>  HighType; \
+      typedef T1           LowType;  \
    }; \
    template< typename T2 > \
    struct MathTrait< complex<T2>, T1 > \
    { \
-      typedef complex<T2>   HighType; \
-      typedef T1            LowType;  \
-      typedef complex<T2>   AddType;  \
-      typedef complex<T2>   SubType;  \
-      typedef complex<T2>   MultType; \
-      typedef INVALID_TYPE  CrossType; \
-      typedef complex<T2>   DivType;  \
+      typedef complex<T2>  HighType; \
+      typedef T1           LowType;  \
    }
 /*! \endcond */
 //*************************************************************************************************
@@ -823,10 +717,6 @@ struct MathTrait< complex<T1>, complex<T2> >
 {
    typedef complex<typename MathTrait<T1,T2>::HighType>  HighType;
    typedef complex<typename MathTrait<T1,T2>::LowType>   LowType;
-   typedef complex<typename MathTrait<T1,T2>::AddType>   AddType;
-   typedef complex<typename MathTrait<T1,T2>::SubType>   SubType;
-   typedef complex<typename MathTrait<T1,T2>::MultType>  MultType;
-   typedef complex<typename MathTrait<T1,T2>::DivType>   DivType;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -31,10 +31,10 @@
 #include <istream>
 #include <ostream>
 #include <blaze/math/Accuracy.h>
-#include <blaze/math/MathTrait.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
+#include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/Types.h>
 #include <blaze/system/Precision.h>
@@ -1128,11 +1128,6 @@ struct MathTrait< Quaternion<T1>, Quaternion<T2> >
 {
    typedef Quaternion< typename MathTrait<T1,T2>::HighType >  HighType;
    typedef Quaternion< typename MathTrait<T1,T2>::LowType  >  LowType;
-   typedef INVALID_TYPE                                       AddType;
-   typedef INVALID_TYPE                                       SubType;
-   typedef Quaternion< typename MathTrait<T1,T2>::MultType >  MultType;
-   typedef INVALID_TYPE                                       CrossType;
-   typedef INVALID_TYPE                                       DivType;
 };
 /*! \endcond */
 //*************************************************************************************************

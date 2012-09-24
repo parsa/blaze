@@ -29,7 +29,7 @@
 
 #include <cmath>
 #include <limits>
-#include <blaze/math/MathTrait.h>
+#include <blaze/math/traits/MathTrait.h>
 #include <blaze/util/constraints/FloatingPoint.h>
 #include <blaze/util/constraints/Integral.h>
 #include <blaze/util/StaticAssert.h>
