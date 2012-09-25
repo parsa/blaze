@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/CMathTrait.h
+//  \file blaze/math/traits/CMathTrait.h
 //  \brief Header file for the cmath trait
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_CMATHTRAIT_H_
-#define _BLAZE_MATH_CMATHTRAIT_H_
+#ifndef _BLAZE_MATH_TRAITS_CMATHTRAIT_H_
+#define _BLAZE_MATH_TRAITS_CMATHTRAIT_H_
 
 
 namespace blaze {

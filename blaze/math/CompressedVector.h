@@ -31,7 +31,6 @@
 #include <cmath>
 #include <functional>
 #include <stdexcept>
-#include <blaze/math/CMathTrait.h>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
@@ -43,6 +42,7 @@
 #include <blaze/math/SparseVector.h>
 #include <blaze/math/Types.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/CMathTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MathTrait.h>

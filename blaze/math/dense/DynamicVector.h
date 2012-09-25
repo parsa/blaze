@@ -32,7 +32,6 @@
 #include <fstream>
 #include <ostream>
 #include <stdexcept>
-#include <blaze/math/CMathTrait.h>
 #include <blaze/math/DenseVector.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
@@ -40,6 +39,7 @@
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/CMathTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MathTrait.h>

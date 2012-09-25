@@ -28,7 +28,6 @@
 //*************************************************************************************************
 
 #include <blaze/math/Accuracy.h>
-#include <blaze/math/CMathTrait.h>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/Constants.h>
