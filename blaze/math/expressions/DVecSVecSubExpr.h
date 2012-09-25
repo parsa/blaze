@@ -448,7 +448,7 @@ inline const typename SubExprTrait< DVecSVecSubExpr<T1,T2,TF>, T3 >::Type
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, typename VT3 >
-struct DVecDVecAddTrait< DVecSVecSubExpr<VT1,VT2,false>, VT3 >
+struct DVecDVecAddExprTrait< DVecSVecSubExpr<VT1,VT2,false>, VT3 >
 {
  public:
    //**********************************************************************************************
@@ -456,7 +456,7 @@ struct DVecDVecAddTrait< DVecSVecSubExpr<VT1,VT2,false>, VT3 >
    typedef typename SelectType< IsDenseVector<VT1>::value  && !IsTransposeVector<VT1>::value &&
                                 IsSparseVector<VT2>::value && !IsTransposeVector<VT2>::value &&
                                 IsDenseVector<VT3>::value  && !IsTransposeVector<VT3>::value
-                              , typename DVecSVecSubTrait< typename DVecDVecAddTrait<VT1,VT3>::Type, VT2 >::Type
+                              , typename DVecSVecSubExprTrait< typename DVecDVecAddExprTrait<VT1,VT3>::Type, VT2 >::Type
                               , INVALID_TYPE >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -468,7 +468,7 @@ struct DVecDVecAddTrait< DVecSVecSubExpr<VT1,VT2,false>, VT3 >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, typename VT3 >
-struct TDVecTDVecAddTrait< DVecSVecSubExpr<VT1,VT2,true>, VT3 >
+struct TDVecTDVecAddExprTrait< DVecSVecSubExpr<VT1,VT2,true>, VT3 >
 {
  public:
    //**********************************************************************************************
@@ -476,7 +476,7 @@ struct TDVecTDVecAddTrait< DVecSVecSubExpr<VT1,VT2,true>, VT3 >
    typedef typename SelectType< IsDenseVector<VT1>::value  && IsTransposeVector<VT1>::value &&
                                 IsSparseVector<VT2>::value && IsTransposeVector<VT2>::value &&
                                 IsDenseVector<VT3>::value  && IsTransposeVector<VT3>::value
-                              , typename TDVecTSVecSubTrait< typename TDVecTDVecAddTrait<VT1,VT3>::Type, VT2 >::Type
+                              , typename TDVecTSVecSubExprTrait< typename TDVecTDVecAddExprTrait<VT1,VT3>::Type, VT2 >::Type
                               , INVALID_TYPE >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -488,7 +488,7 @@ struct TDVecTDVecAddTrait< DVecSVecSubExpr<VT1,VT2,true>, VT3 >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, typename VT3 >
-struct DVecDVecSubTrait< DVecSVecSubExpr<VT1,VT2,false>, VT3 >
+struct DVecDVecSubExprTrait< DVecSVecSubExpr<VT1,VT2,false>, VT3 >
 {
  public:
    //**********************************************************************************************
@@ -496,7 +496,7 @@ struct DVecDVecSubTrait< DVecSVecSubExpr<VT1,VT2,false>, VT3 >
    typedef typename SelectType< IsDenseVector<VT1>::value  && !IsTransposeVector<VT1>::value &&
                                 IsSparseVector<VT2>::value && !IsTransposeVector<VT2>::value &&
                                 IsDenseVector<VT3>::value  && !IsTransposeVector<VT3>::value
-                              , typename DVecSVecSubTrait< typename DVecDVecSubTrait<VT1,VT3>::Type, VT2 >::Type
+                              , typename DVecSVecSubExprTrait< typename DVecDVecSubExprTrait<VT1,VT3>::Type, VT2 >::Type
                               , INVALID_TYPE >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -508,7 +508,7 @@ struct DVecDVecSubTrait< DVecSVecSubExpr<VT1,VT2,false>, VT3 >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, typename VT3 >
-struct TDVecTDVecSubTrait< DVecSVecSubExpr<VT1,VT2,true>, VT3 >
+struct TDVecTDVecSubExprTrait< DVecSVecSubExpr<VT1,VT2,true>, VT3 >
 {
  public:
    //**********************************************************************************************
@@ -516,7 +516,7 @@ struct TDVecTDVecSubTrait< DVecSVecSubExpr<VT1,VT2,true>, VT3 >
    typedef typename SelectType< IsDenseVector<VT1>::value  && IsTransposeVector<VT1>::value &&
                                 IsSparseVector<VT2>::value && IsTransposeVector<VT2>::value &&
                                 IsDenseVector<VT3>::value  && IsTransposeVector<VT3>::value
-                              , typename TDVecTSVecSubTrait< typename TDVecTDVecSubTrait<VT1,VT3>::Type, VT2 >::Type
+                              , typename TDVecTSVecSubExprTrait< typename TDVecTDVecSubExprTrait<VT1,VT3>::Type, VT2 >::Type
                               , INVALID_TYPE >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************

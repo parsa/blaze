@@ -741,14 +741,14 @@ inline const typename EnableIf< IsNumeric<ST2>
 
 //=================================================================================================
 //
-//  SMATSCALARMULTTRAIT SPECIALIZATIONS
+//  SMATSCALARMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST1, typename ST2 >
-struct SMatScalarMultTrait< SMatScalarDivExpr<MT,ST1,false>, ST2 >
+struct SMatScalarMultExprTrait< SMatScalarDivExpr<MT,ST1,false>, ST2 >
 {
  private:
    //**********************************************************************************************
@@ -756,8 +756,8 @@ struct SMatScalarMultTrait< SMatScalarDivExpr<MT,ST1,false>, ST2 >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   typedef typename SMatScalarMultTrait<MT,typename DivTrait<ST1,ST2>::Type>::Type  T1;
-   typedef SMatScalarMultExpr< SMatScalarDivExpr<MT,ST1,false>, ST2, false >        T2;
+   typedef typename SMatScalarMultExprTrait<MT,typename DivTrait<ST1,ST2>::Type>::Type  T1;
+   typedef SMatScalarMultExpr< SMatScalarDivExpr<MT,ST1,false>, ST2, false >            T2;
    //**********************************************************************************************
 
  public:
@@ -776,14 +776,14 @@ struct SMatScalarMultTrait< SMatScalarDivExpr<MT,ST1,false>, ST2 >
 
 //=================================================================================================
 //
-//  TSMATSCALARMULTTRAIT SPECIALIZATIONS
+//  TSMATSCALARMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST1, typename ST2 >
-struct TSMatScalarMultTrait< SMatScalarDivExpr<MT,ST1,true>, ST2 >
+struct TSMatScalarMultExprTrait< SMatScalarDivExpr<MT,ST1,true>, ST2 >
 {
  private:
    //**********************************************************************************************
@@ -791,8 +791,8 @@ struct TSMatScalarMultTrait< SMatScalarDivExpr<MT,ST1,true>, ST2 >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   typedef typename SMatScalarMultTrait<MT,typename DivTrait<ST1,ST2>::Type>::Type  T1;
-   typedef SMatScalarMultExpr< SMatScalarDivExpr<MT,ST1,true>, ST2, true >          T2;
+   typedef typename SMatScalarMultExprTrait<MT,typename DivTrait<ST1,ST2>::Type>::Type  T1;
+   typedef SMatScalarMultExpr< SMatScalarDivExpr<MT,ST1,true>, ST2, true >              T2;
    //**********************************************************************************************
 
  public:

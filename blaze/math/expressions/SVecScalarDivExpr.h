@@ -735,14 +735,14 @@ inline const typename EnableIf< IsNumeric<ST2>
 
 //=================================================================================================
 //
-//  SVECSCALARMULTTRAIT SPECIALIZATIONS
+//  SVECSCALARMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST1, typename ST2 >
-struct SVecScalarMultTrait< SVecScalarDivExpr<VT,ST1,false>, ST2 >
+struct SVecScalarMultExprTrait< SVecScalarDivExpr<VT,ST1,false>, ST2 >
 {
  private:
    //**********************************************************************************************
@@ -750,8 +750,8 @@ struct SVecScalarMultTrait< SVecScalarDivExpr<VT,ST1,false>, ST2 >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   typedef typename SVecScalarMultTrait<VT,typename DivTrait<ST1,ST2>::Type>::Type  T1;
-   typedef SVecScalarMultExpr< SVecScalarDivExpr<VT,ST1,false>, ST2, false >        T2;
+   typedef typename SVecScalarMultExprTrait<VT,typename DivTrait<ST1,ST2>::Type>::Type  T1;
+   typedef SVecScalarMultExpr< SVecScalarDivExpr<VT,ST1,false>, ST2, false >            T2;
    //**********************************************************************************************
 
  public:
@@ -770,14 +770,14 @@ struct SVecScalarMultTrait< SVecScalarDivExpr<VT,ST1,false>, ST2 >
 
 //=================================================================================================
 //
-//  TSVECSCALARMULTTRAIT SPECIALIZATIONS
+//  TSVECSCALARMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST1, typename ST2 >
-struct TSVecScalarMultTrait< SVecScalarDivExpr<VT,ST1,true>, ST2 >
+struct TSVecScalarMultExprTrait< SVecScalarDivExpr<VT,ST1,true>, ST2 >
 {
  private:
    //**********************************************************************************************
@@ -785,8 +785,8 @@ struct TSVecScalarMultTrait< SVecScalarDivExpr<VT,ST1,true>, ST2 >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   typedef typename SVecScalarMultTrait<VT,typename DivTrait<ST1,ST2>::Type>::Type  T1;
-   typedef SVecScalarMultExpr< SVecScalarDivExpr<VT,ST1,true>, ST2, true >          T2;
+   typedef typename SVecScalarMultExprTrait<VT,typename DivTrait<ST1,ST2>::Type>::Type  T1;
+   typedef SVecScalarMultExpr< SVecScalarDivExpr<VT,ST1,true>, ST2, true >              T2;
    //**********************************************************************************************
 
  public:

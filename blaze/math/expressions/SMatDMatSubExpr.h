@@ -34,6 +34,7 @@
 #include <blaze/math/Expression.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
@@ -449,7 +450,7 @@ inline const typename SubExprTrait< SMatDMatSubExpr<T1,T2,SO1>, T3 >::Type
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, typename MT3 >
-struct DMatDMatAddTrait< SMatDMatSubExpr<MT1,MT2,false>, MT3 >
+struct DMatDMatAddExprTrait< SMatDMatSubExpr<MT1,MT2,false>, MT3 >
 {
  public:
    //**********************************************************************************************
@@ -457,7 +458,7 @@ struct DMatDMatAddTrait< SMatDMatSubExpr<MT1,MT2,false>, MT3 >
    typedef typename SelectType< IsSparseMatrix<MT1>::value && IsRowMajorMatrix<MT1>::value &&
                                 IsDenseMatrix<MT2>::value  && IsRowMajorMatrix<MT2>::value &&
                                 IsDenseMatrix<MT3>::value  && IsRowMajorMatrix<MT3>::value
-                              , typename DMatSMatAddTrait< typename DMatDMatSubTrait<MT3,MT2>::Type, MT1 >::Type
+                              , typename DMatSMatAddExprTrait< typename DMatDMatSubExprTrait<MT3,MT2>::Type, MT1 >::Type
                               , INVALID_TYPE >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -469,7 +470,7 @@ struct DMatDMatAddTrait< SMatDMatSubExpr<MT1,MT2,false>, MT3 >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, typename MT3 >
-struct DMatTDMatAddTrait< SMatDMatSubExpr<MT1,MT2,false>, MT3 >
+struct DMatTDMatAddExprTrait< SMatDMatSubExpr<MT1,MT2,false>, MT3 >
 {
  public:
    //**********************************************************************************************
@@ -477,7 +478,7 @@ struct DMatTDMatAddTrait< SMatDMatSubExpr<MT1,MT2,false>, MT3 >
    typedef typename SelectType< IsSparseMatrix<MT1>::value && IsRowMajorMatrix<MT1>::value &&
                                 IsDenseMatrix<MT2>::value  && IsRowMajorMatrix<MT2>::value &&
                                 IsDenseMatrix<MT3>::value  && IsColumnMajorMatrix<MT3>::value
-                              , typename DMatSMatAddTrait< typename TDMatDMatSubTrait<MT3,MT2>::Type, MT1 >::Type
+                              , typename DMatSMatAddExprTrait< typename TDMatDMatSubExprTrait<MT3,MT2>::Type, MT1 >::Type
                               , INVALID_TYPE >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -489,7 +490,7 @@ struct DMatTDMatAddTrait< SMatDMatSubExpr<MT1,MT2,false>, MT3 >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, typename MT3 >
-struct TDMatDMatAddTrait< SMatDMatSubExpr<MT1,MT2,true>, MT3 >
+struct TDMatDMatAddExprTrait< SMatDMatSubExpr<MT1,MT2,true>, MT3 >
 {
  public:
    //**********************************************************************************************
@@ -497,7 +498,7 @@ struct TDMatDMatAddTrait< SMatDMatSubExpr<MT1,MT2,true>, MT3 >
    typedef typename SelectType< IsSparseMatrix<MT1>::value && IsColumnMajorMatrix<MT1>::value &&
                                 IsDenseMatrix<MT2>::value  && IsColumnMajorMatrix<MT2>::value &&
                                 IsDenseMatrix<MT3>::value  && IsRowMajorMatrix<MT3>::value
-                              , typename DMatTSMatAddTrait< typename DMatTDMatSubTrait<MT3,MT2>::Type, MT1 >::Type
+                              , typename DMatTSMatAddExprTrait< typename DMatTDMatSubExprTrait<MT3,MT2>::Type, MT1 >::Type
                               , INVALID_TYPE >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -509,7 +510,7 @@ struct TDMatDMatAddTrait< SMatDMatSubExpr<MT1,MT2,true>, MT3 >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, typename MT3 >
-struct TDMatTDMatAddTrait< SMatDMatSubExpr<MT1,MT2,true>, MT3 >
+struct TDMatTDMatAddExprTrait< SMatDMatSubExpr<MT1,MT2,true>, MT3 >
 {
  public:
    //**********************************************************************************************
@@ -517,7 +518,7 @@ struct TDMatTDMatAddTrait< SMatDMatSubExpr<MT1,MT2,true>, MT3 >
    typedef typename SelectType< IsSparseMatrix<MT1>::value && IsColumnMajorMatrix<MT1>::value &&
                                 IsDenseMatrix<MT2>::value  && IsColumnMajorMatrix<MT2>::value &&
                                 IsDenseMatrix<MT3>::value  && IsColumnMajorMatrix<MT3>::value
-                              , typename TDMatTSMatAddTrait< typename TDMatTDMatSubTrait<MT3,MT2>::Type, MT1 >::Type
+                              , typename TDMatTSMatAddExprTrait< typename TDMatTDMatSubExprTrait<MT3,MT2>::Type, MT1 >::Type
                               , INVALID_TYPE >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -529,7 +530,7 @@ struct TDMatTDMatAddTrait< SMatDMatSubExpr<MT1,MT2,true>, MT3 >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, typename MT3 >
-struct DMatDMatSubTrait< SMatDMatSubExpr<MT1,MT2,false>, MT3 >
+struct DMatDMatSubExprTrait< SMatDMatSubExpr<MT1,MT2,false>, MT3 >
 {
  public:
    //**********************************************************************************************
@@ -537,7 +538,7 @@ struct DMatDMatSubTrait< SMatDMatSubExpr<MT1,MT2,false>, MT3 >
    typedef typename SelectType< IsSparseMatrix<MT1>::value && IsRowMajorMatrix<MT1>::value &&
                                 IsDenseMatrix<MT2>::value  && IsRowMajorMatrix<MT2>::value &&
                                 IsDenseMatrix<MT3>::value  && IsRowMajorMatrix<MT3>::value
-                              , typename SMatDMatSubTrait< MT1, typename DMatDMatAddTrait<MT2,MT3>::Type >::Type
+                              , typename SMatDMatSubExprTrait< MT1, typename DMatDMatAddExprTrait<MT2,MT3>::Type >::Type
                               , INVALID_TYPE >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -549,7 +550,7 @@ struct DMatDMatSubTrait< SMatDMatSubExpr<MT1,MT2,false>, MT3 >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, typename MT3 >
-struct DMatTDMatSubTrait< SMatDMatSubExpr<MT1,MT2,false>, MT3 >
+struct DMatTDMatSubExprTrait< SMatDMatSubExpr<MT1,MT2,false>, MT3 >
 {
  public:
    //**********************************************************************************************
@@ -557,7 +558,7 @@ struct DMatTDMatSubTrait< SMatDMatSubExpr<MT1,MT2,false>, MT3 >
    typedef typename SelectType< IsSparseMatrix<MT1>::value && IsRowMajorMatrix<MT1>::value &&
                                 IsDenseMatrix<MT2>::value  && IsRowMajorMatrix<MT2>::value &&
                                 IsDenseMatrix<MT3>::value  && IsColumnMajorMatrix<MT3>::value
-                              , typename SMatDMatSubTrait< MT1, typename DMatTDMatAddTrait<MT2,MT3>::Type >::Type
+                              , typename SMatDMatSubExprTrait< MT1, typename DMatTDMatAddExprTrait<MT2,MT3>::Type >::Type
                               , INVALID_TYPE >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -569,7 +570,7 @@ struct DMatTDMatSubTrait< SMatDMatSubExpr<MT1,MT2,false>, MT3 >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, typename MT3 >
-struct TDMatDMatSubTrait< SMatDMatSubExpr<MT1,MT2,true>, MT3 >
+struct TDMatDMatSubExprTrait< SMatDMatSubExpr<MT1,MT2,true>, MT3 >
 {
  public:
    //**********************************************************************************************
@@ -577,7 +578,7 @@ struct TDMatDMatSubTrait< SMatDMatSubExpr<MT1,MT2,true>, MT3 >
    typedef typename SelectType< IsSparseMatrix<MT1>::value && IsColumnMajorMatrix<MT1>::value &&
                                 IsDenseMatrix<MT2>::value  && IsColumnMajorMatrix<MT2>::value &&
                                 IsDenseMatrix<MT3>::value  && IsRowMajorMatrix<MT3>::value
-                              , typename TSMatDMatSubTrait< MT1, typename TDMatDMatAddTrait<MT2,MT3>::Type >::Type
+                              , typename TSMatDMatSubExprTrait< MT1, typename TDMatDMatAddExprTrait<MT2,MT3>::Type >::Type
                               , INVALID_TYPE >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -589,7 +590,7 @@ struct TDMatDMatSubTrait< SMatDMatSubExpr<MT1,MT2,true>, MT3 >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, typename MT3 >
-struct TDMatTDMatSubTrait< SMatDMatSubExpr<MT1,MT2,true>, MT3 >
+struct TDMatTDMatSubExprTrait< SMatDMatSubExpr<MT1,MT2,true>, MT3 >
 {
  public:
    //**********************************************************************************************
@@ -597,7 +598,7 @@ struct TDMatTDMatSubTrait< SMatDMatSubExpr<MT1,MT2,true>, MT3 >
    typedef typename SelectType< IsSparseMatrix<MT1>::value && IsColumnMajorMatrix<MT1>::value &&
                                 IsDenseMatrix<MT2>::value  && IsColumnMajorMatrix<MT2>::value &&
                                 IsDenseMatrix<MT3>::value  && IsColumnMajorMatrix<MT3>::value
-                              , typename TSMatTDMatSubTrait< MT1, typename TDMatTDMatAddTrait<MT2,MT3>::Type >::Type
+                              , typename TSMatTDMatSubExprTrait< MT1, typename TDMatTDMatAddExprTrait<MT2,MT3>::Type >::Type
                               , INVALID_TYPE >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************

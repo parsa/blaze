@@ -28,30 +28,30 @@
 //*************************************************************************************************
 
 #include <blaze/math/traits/AddTrait.h>
-#include <blaze/math/traits/DMatDMatAddTrait.h>
-#include <blaze/math/traits/DMatSMatAddTrait.h>
-#include <blaze/math/traits/DMatTDMatAddTrait.h>
-#include <blaze/math/traits/DMatTSMatAddTrait.h>
-#include <blaze/math/traits/DVecDVecAddTrait.h>
-#include <blaze/math/traits/DVecSVecAddTrait.h>
-#include <blaze/math/traits/SMatDMatAddTrait.h>
-#include <blaze/math/traits/SMatSMatAddTrait.h>
-#include <blaze/math/traits/SMatTDMatAddTrait.h>
-#include <blaze/math/traits/SMatTSMatAddTrait.h>
-#include <blaze/math/traits/SVecDVecAddTrait.h>
-#include <blaze/math/traits/SVecSVecAddTrait.h>
-#include <blaze/math/traits/TDMatDMatAddTrait.h>
-#include <blaze/math/traits/TDMatSMatAddTrait.h>
-#include <blaze/math/traits/TDMatTDMatAddTrait.h>
-#include <blaze/math/traits/TDMatTSMatAddTrait.h>
-#include <blaze/math/traits/TDVecTDVecAddTrait.h>
-#include <blaze/math/traits/TDVecTSVecAddTrait.h>
-#include <blaze/math/traits/TSMatDMatAddTrait.h>
-#include <blaze/math/traits/TSMatSMatAddTrait.h>
-#include <blaze/math/traits/TSMatTDMatAddTrait.h>
-#include <blaze/math/traits/TSMatTSMatAddTrait.h>
-#include <blaze/math/traits/TSVecTDVecAddTrait.h>
-#include <blaze/math/traits/TSVecTSVecAddTrait.h>
+#include <blaze/math/traits/DMatDMatAddExprTrait.h>
+#include <blaze/math/traits/DMatSMatAddExprTrait.h>
+#include <blaze/math/traits/DMatTDMatAddExprTrait.h>
+#include <blaze/math/traits/DMatTSMatAddExprTrait.h>
+#include <blaze/math/traits/DVecDVecAddExprTrait.h>
+#include <blaze/math/traits/DVecSVecAddExprTrait.h>
+#include <blaze/math/traits/SMatDMatAddExprTrait.h>
+#include <blaze/math/traits/SMatSMatAddExprTrait.h>
+#include <blaze/math/traits/SMatTDMatAddExprTrait.h>
+#include <blaze/math/traits/SMatTSMatAddExprTrait.h>
+#include <blaze/math/traits/SVecDVecAddExprTrait.h>
+#include <blaze/math/traits/SVecSVecAddExprTrait.h>
+#include <blaze/math/traits/TDMatDMatAddExprTrait.h>
+#include <blaze/math/traits/TDMatSMatAddExprTrait.h>
+#include <blaze/math/traits/TDMatTDMatAddExprTrait.h>
+#include <blaze/math/traits/TDMatTSMatAddExprTrait.h>
+#include <blaze/math/traits/TDVecTDVecAddExprTrait.h>
+#include <blaze/math/traits/TDVecTSVecAddExprTrait.h>
+#include <blaze/math/traits/TSMatDMatAddExprTrait.h>
+#include <blaze/math/traits/TSMatSMatAddExprTrait.h>
+#include <blaze/math/traits/TSMatTDMatAddExprTrait.h>
+#include <blaze/math/traits/TSMatTSMatAddExprTrait.h>
+#include <blaze/math/traits/TSVecTDVecAddExprTrait.h>
+#include <blaze/math/traits/TSVecTSVecAddExprTrait.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
@@ -111,44 +111,44 @@ struct AddExprTrait
                                                 , typename If< IsDenseMatrix<T2>
                                                              , typename If< IsRowMajorMatrix<T1>
                                                                           , typename If< IsRowMajorMatrix<T2>
-                                                                                       , DMatDMatAddTrait<T1,T2>
-                                                                                       , DMatTDMatAddTrait<T1,T2>
+                                                                                       , DMatDMatAddExprTrait<T1,T2>
+                                                                                       , DMatTDMatAddExprTrait<T1,T2>
                                                                                        >::Type
                                                                           , typename If< IsRowMajorMatrix<T2>
-                                                                                       , TDMatDMatAddTrait<T1,T2>
-                                                                                       , TDMatTDMatAddTrait<T1,T2>
+                                                                                       , TDMatDMatAddExprTrait<T1,T2>
+                                                                                       , TDMatTDMatAddExprTrait<T1,T2>
                                                                                        >::Type
                                                                           >::Type
                                                              , typename If< IsRowMajorMatrix<T1>
                                                                           , typename If< IsRowMajorMatrix<T2>
-                                                                                       , DMatSMatAddTrait<T1,T2>
-                                                                                       , DMatTSMatAddTrait<T1,T2>
+                                                                                       , DMatSMatAddExprTrait<T1,T2>
+                                                                                       , DMatTSMatAddExprTrait<T1,T2>
                                                                                        >::Type
                                                                           , typename If< IsRowMajorMatrix<T2>
-                                                                                       , TDMatSMatAddTrait<T1,T2>
-                                                                                       , TDMatTSMatAddTrait<T1,T2>
+                                                                                       , TDMatSMatAddExprTrait<T1,T2>
+                                                                                       , TDMatTSMatAddExprTrait<T1,T2>
                                                                                        >::Type
                                                                           >::Type
                                                              >::Type
                                                 , typename If< IsDenseMatrix<T2>
                                                              , typename If< IsRowMajorMatrix<T1>
                                                                           , typename If< IsRowMajorMatrix<T2>
-                                                                                       , SMatDMatAddTrait<T1,T2>
-                                                                                       , SMatTDMatAddTrait<T1,T2>
+                                                                                       , SMatDMatAddExprTrait<T1,T2>
+                                                                                       , SMatTDMatAddExprTrait<T1,T2>
                                                                                        >::Type
                                                                           , typename If< IsRowMajorMatrix<T2>
-                                                                                       , TSMatDMatAddTrait<T1,T2>
-                                                                                       , TSMatTDMatAddTrait<T1,T2>
+                                                                                       , TSMatDMatAddExprTrait<T1,T2>
+                                                                                       , TSMatTDMatAddExprTrait<T1,T2>
                                                                                        >::Type
                                                                           >::Type
                                                              , typename If< IsRowMajorMatrix<T1>
                                                                           , typename If< IsRowMajorMatrix<T2>
-                                                                                       , SMatSMatAddTrait<T1,T2>
-                                                                                       , SMatTSMatAddTrait<T1,T2>
+                                                                                       , SMatSMatAddExprTrait<T1,T2>
+                                                                                       , SMatTSMatAddExprTrait<T1,T2>
                                                                                        >::Type
                                                                           , typename If< IsRowMajorMatrix<T2>
-                                                                                       , TSMatSMatAddTrait<T1,T2>
-                                                                                       , TSMatTSMatAddTrait<T1,T2>
+                                                                                       , TSMatSMatAddExprTrait<T1,T2>
+                                                                                       , TSMatTSMatAddExprTrait<T1,T2>
                                                                                        >::Type
                                                                           >::Type
                                                              >::Type
@@ -161,44 +161,44 @@ struct AddExprTrait
                                                              , typename If< IsDenseVector<T2>
                                                                           , typename If< IsTransposeVector<T1>
                                                                                        , typename If< IsTransposeVector<T2>
-                                                                                                    , TDVecTDVecAddTrait<T1,T2>
+                                                                                                    , TDVecTDVecAddExprTrait<T1,T2>
                                                                                                     , Failure
                                                                                                     >::Type
                                                                                        , typename If< IsTransposeVector<T2>
                                                                                                     , Failure
-                                                                                                    , DVecDVecAddTrait<T1,T2>
+                                                                                                    , DVecDVecAddExprTrait<T1,T2>
                                                                                                     >::Type
                                                                                        >::Type
                                                                           , typename If< IsTransposeVector<T1>
                                                                                        , typename If< IsTransposeVector<T2>
-                                                                                                    , TDVecTSVecAddTrait<T1,T2>
+                                                                                                    , TDVecTSVecAddExprTrait<T1,T2>
                                                                                                     , Failure
                                                                                                     >::Type
                                                                                        , typename If< IsTransposeVector<T2>
                                                                                                     , Failure
-                                                                                                    , DVecSVecAddTrait<T1,T2>
+                                                                                                    , DVecSVecAddExprTrait<T1,T2>
                                                                                                     >::Type
                                                                                        >::Type
                                                                           >::Type
                                                              , typename If< IsDenseVector<T2>
                                                                           , typename If< IsTransposeVector<T1>
                                                                                        , typename If< IsTransposeVector<T2>
-                                                                                                    , TSVecTDVecAddTrait<T1,T2>
+                                                                                                    , TSVecTDVecAddExprTrait<T1,T2>
                                                                                                     , Failure
                                                                                                     >::Type
                                                                                        , typename If< IsTransposeVector<T2>
                                                                                                     , Failure
-                                                                                                    , SVecDVecAddTrait<T1,T2>
+                                                                                                    , SVecDVecAddExprTrait<T1,T2>
                                                                                                     >::Type
                                                                                        >::Type
                                                                           , typename If< IsTransposeVector<T1>
                                                                                        , typename If< IsTransposeVector<T2>
-                                                                                                    , TSVecTSVecAddTrait<T1,T2>
+                                                                                                    , TSVecTSVecAddExprTrait<T1,T2>
                                                                                                     , Failure
                                                                                                     >::Type
                                                                                        , typename If< IsTransposeVector<T2>
                                                                                                     , Failure
-                                                                                                    , SVecSVecAddTrait<T1,T2>
+                                                                                                    , SVecSVecAddExprTrait<T1,T2>
                                                                                                     >::Type
                                                                                        >::Type
                                                                           >::Type

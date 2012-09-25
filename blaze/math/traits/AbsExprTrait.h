@@ -27,14 +27,14 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/traits/DMatAbsTrait.h>
-#include <blaze/math/traits/DVecAbsTrait.h>
-#include <blaze/math/traits/SMatAbsTrait.h>
-#include <blaze/math/traits/SVecAbsTrait.h>
-#include <blaze/math/traits/TDMatAbsTrait.h>
-#include <blaze/math/traits/TDVecAbsTrait.h>
-#include <blaze/math/traits/TSMatAbsTrait.h>
-#include <blaze/math/traits/TSVecAbsTrait.h>
+#include <blaze/math/traits/DMatAbsExprTrait.h>
+#include <blaze/math/traits/DVecAbsExprTrait.h>
+#include <blaze/math/traits/SMatAbsExprTrait.h>
+#include <blaze/math/traits/SVecAbsExprTrait.h>
+#include <blaze/math/traits/TDMatAbsExprTrait.h>
+#include <blaze/math/traits/TDVecAbsExprTrait.h>
+#include <blaze/math/traits/TSMatAbsExprTrait.h>
+#include <blaze/math/traits/TSVecAbsExprTrait.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsMatrix.h>
@@ -97,23 +97,23 @@ struct AbsExprTrait
    typedef typename If< IsMatrix<T>
                       , typename If< IsDenseMatrix<T>
                                    , typename If< IsRowMajorMatrix<T>
-                                                , DMatAbsTrait<T>
-                                                , TDMatAbsTrait<T>
+                                                , DMatAbsExprTrait<T>
+                                                , TDMatAbsExprTrait<T>
                                                 >::Type
                                    , typename If< IsRowMajorMatrix<T>
-                                                , SMatAbsTrait<T>
-                                                , TSMatAbsTrait<T>
+                                                , SMatAbsExprTrait<T>
+                                                , TSMatAbsExprTrait<T>
                                                 >::Type
                                    >::Type
                       , typename If< IsVector<T>
                                    , typename If< IsDenseVector<T>
                                                 , typename If< IsTransposeVector<T>
-                                                             , TDVecAbsTrait<T>
-                                                             , DVecAbsTrait<T>
+                                                             , TDVecAbsExprTrait<T>
+                                                             , DVecAbsExprTrait<T>
                                                              >::Type
                                                 , typename If< IsTransposeVector<T>
-                                                             , TSVecAbsTrait<T>
-                                                             , SVecAbsTrait<T>
+                                                             , TSVecAbsExprTrait<T>
+                                                             , SVecAbsExprTrait<T>
                                                              >::Type
                                                 >::Type
                                    , typename If< IsNumeric<T>

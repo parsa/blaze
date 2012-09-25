@@ -28,14 +28,14 @@
 //*************************************************************************************************
 
 #include <blaze/math/traits/DivTrait.h>
-#include <blaze/math/traits/DMatScalarDivTrait.h>
-#include <blaze/math/traits/DVecScalarDivTrait.h>
-#include <blaze/math/traits/SMatScalarDivTrait.h>
-#include <blaze/math/traits/SVecScalarDivTrait.h>
-#include <blaze/math/traits/TDMatScalarDivTrait.h>
-#include <blaze/math/traits/TDVecScalarDivTrait.h>
-#include <blaze/math/traits/TSMatScalarDivTrait.h>
-#include <blaze/math/traits/TSVecScalarDivTrait.h>
+#include <blaze/math/traits/DMatScalarDivExprTrait.h>
+#include <blaze/math/traits/DVecScalarDivExprTrait.h>
+#include <blaze/math/traits/SMatScalarDivExprTrait.h>
+#include <blaze/math/traits/SVecScalarDivExprTrait.h>
+#include <blaze/math/traits/TDMatScalarDivExprTrait.h>
+#include <blaze/math/traits/TDVecScalarDivExprTrait.h>
+#include <blaze/math/traits/TSMatScalarDivExprTrait.h>
+#include <blaze/math/traits/TSVecScalarDivExprTrait.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
@@ -93,21 +93,21 @@ struct DivExprTrait
                       , typename If< IsDenseMatrix<T1>
                                    , typename If< IsRowMajorMatrix<T1>
                                                 , typename If< IsNumeric<T2>
-                                                             , DMatScalarDivTrait<T1,T2>
+                                                             , DMatScalarDivExprTrait<T1,T2>
                                                              , Failure
                                                              >::Type
                                                 , typename If< IsNumeric<T2>
-                                                             , TDMatScalarDivTrait<T1,T2>
+                                                             , TDMatScalarDivExprTrait<T1,T2>
                                                              , Failure
                                                              >::Type
                                                 >::Type
                                    , typename If< IsRowMajorMatrix<T1>
                                                 , typename If< IsNumeric<T2>
-                                                             , SMatScalarDivTrait<T1,T2>
+                                                             , SMatScalarDivExprTrait<T1,T2>
                                                              , Failure
                                                              >::Type
                                                 , typename If< IsNumeric<T2>
-                                                             , TSMatScalarDivTrait<T1,T2>
+                                                             , TSMatScalarDivExprTrait<T1,T2>
                                                              , Failure
                                                              >::Type
                                                 >::Type
@@ -116,21 +116,21 @@ struct DivExprTrait
                                    , typename If< IsDenseVector<T1>
                                                 , typename If< IsTransposeVector<T1>
                                                              , typename If< IsNumeric<T2>
-                                                                          , TDVecScalarDivTrait<T1,T2>
+                                                                          , TDVecScalarDivExprTrait<T1,T2>
                                                                           , Failure
                                                                           >::Type
                                                              , typename If< IsNumeric<T2>
-                                                                          , DVecScalarDivTrait<T1,T2>
+                                                                          , DVecScalarDivExprTrait<T1,T2>
                                                                           , Failure
                                                                           >::Type
                                                              >::Type
                                                 , typename If< IsTransposeVector<T1>
                                                              , typename If< IsNumeric<T2>
-                                                                          , TSVecScalarDivTrait<T1,T2>
+                                                                          , TSVecScalarDivExprTrait<T1,T2>
                                                                           , Failure
                                                                           >::Type
                                                              , typename If< IsNumeric<T2>
-                                                                          , SVecScalarDivTrait<T1,T2>
+                                                                          , SVecScalarDivExprTrait<T1,T2>
                                                                           , Failure
                                                                           >::Type
                                                              >::Type

@@ -1113,20 +1113,20 @@ inline const typename MultExprTrait< SMatScalarMultExpr<MT1,ST1,SO1>, DMatScalar
 
 //=================================================================================================
 //
-//  DMATSCALARMULTTRAIT SPECIALIZATIONS
+//  DMATSCALARMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST1, typename ST2 >
-struct DMatScalarMultTrait< DMatScalarMultExpr<MT,ST1,false>, ST2 >
+struct DMatScalarMultExprTrait< DMatScalarMultExpr<MT,ST1,false>, ST2 >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT>::value && IsRowMajorMatrix<MT>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename DMatScalarMultTrait<MT,typename MultTrait<ST1,ST2>::Type>::Type
+                              , typename DMatScalarMultExprTrait<MT,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1138,20 +1138,20 @@ struct DMatScalarMultTrait< DMatScalarMultExpr<MT,ST1,false>, ST2 >
 
 //=================================================================================================
 //
-//  TDMATSCALARMULTTRAIT SPECIALIZATIONS
+//  TDMATSCALARMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST1, typename ST2 >
-struct TDMatScalarMultTrait< DMatScalarMultExpr<MT,ST1,true>, ST2 >
+struct TDMatScalarMultExprTrait< DMatScalarMultExpr<MT,ST1,true>, ST2 >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename TDMatScalarMultTrait<MT,typename MultTrait<ST1,ST2>::Type>::Type
+                              , typename TDMatScalarMultExprTrait<MT,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1163,14 +1163,14 @@ struct TDMatScalarMultTrait< DMatScalarMultExpr<MT,ST1,true>, ST2 >
 
 //=================================================================================================
 //
-//  DMATSCALARDIVTRAIT SPECIALIZATIONS
+//  DMATSCALARDIVEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST1, typename ST2 >
-struct DMatScalarDivTrait< DMatScalarMultExpr<MT,ST1,false>, ST2 >
+struct DMatScalarDivExprTrait< DMatScalarMultExpr<MT,ST1,false>, ST2 >
 {
  private:
    //**********************************************************************************************
@@ -1178,8 +1178,8 @@ struct DMatScalarDivTrait< DMatScalarMultExpr<MT,ST1,false>, ST2 >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   typedef typename DMatScalarMultTrait<MT,typename DivTrait<ST1,ST2>::Type>::Type  T1;
-   typedef typename DMatScalarDivTrait<MT,typename DivTrait<ST1,ST2>::Type>::Type   T2;
+   typedef typename DMatScalarMultExprTrait<MT,typename DivTrait<ST1,ST2>::Type>::Type  T1;
+   typedef typename DMatScalarDivExprTrait<MT,typename DivTrait<ST1,ST2>::Type>::Type   T2;
    //**********************************************************************************************
 
  public:
@@ -1198,14 +1198,14 @@ struct DMatScalarDivTrait< DMatScalarMultExpr<MT,ST1,false>, ST2 >
 
 //=================================================================================================
 //
-//  TDMATSCALARDIVTRAIT SPECIALIZATIONS
+//  TDMATSCALARDIVEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST1, typename ST2 >
-struct TDMatScalarDivTrait< DMatScalarMultExpr<MT,ST1,true>, ST2 >
+struct TDMatScalarDivExprTrait< DMatScalarMultExpr<MT,ST1,true>, ST2 >
 {
  private:
    //**********************************************************************************************
@@ -1213,8 +1213,8 @@ struct TDMatScalarDivTrait< DMatScalarMultExpr<MT,ST1,true>, ST2 >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   typedef typename TDMatScalarMultTrait<MT,typename DivTrait<ST1,ST2>::Type>::Type  T1;
-   typedef typename TDMatScalarDivTrait<MT,typename DivTrait<ST1,ST2>::Type>::Type   T2;
+   typedef typename TDMatScalarMultExprTrait<MT,typename DivTrait<ST1,ST2>::Type>::Type  T1;
+   typedef typename TDMatScalarDivExprTrait<MT,typename DivTrait<ST1,ST2>::Type>::Type   T2;
    //**********************************************************************************************
 
  public:
@@ -1233,21 +1233,21 @@ struct TDMatScalarDivTrait< DMatScalarMultExpr<MT,ST1,true>, ST2 >
 
 //=================================================================================================
 //
-//  DMATDVECMULTTRAIT SPECIALIZATIONS
+//  DMATDVECMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, typename VT >
-struct DMatDVecMultTrait< DMatScalarMultExpr<MT,ST,false>, VT >
+struct DMatDVecMultExprTrait< DMatScalarMultExpr<MT,ST,false>, VT >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT>::value && IsRowMajorMatrix<MT>::value   &&
                                 IsDenseVector<VT>::value && !IsTransposeVector<VT>::value &&
                                 IsNumeric<ST>::value
-                              , typename DVecScalarMultTrait<typename DMatDVecMultTrait<MT,VT>::Type,ST>::Type
+                              , typename DVecScalarMultExprTrait<typename DMatDVecMultExprTrait<MT,VT>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1258,14 +1258,14 @@ struct DMatDVecMultTrait< DMatScalarMultExpr<MT,ST,false>, VT >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST1, typename VT, typename ST2 >
-struct DMatDVecMultTrait< DMatScalarMultExpr<MT,ST1,false>, DVecScalarMultExpr<VT,ST2,false> >
+struct DMatDVecMultExprTrait< DMatScalarMultExpr<MT,ST1,false>, DVecScalarMultExpr<VT,ST2,false> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT>::value && IsRowMajorMatrix<MT>::value   &&
                                 IsDenseVector<VT>::value && !IsTransposeVector<VT>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename DVecScalarMultTrait<typename DMatDVecMultTrait<MT,VT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                              , typename DVecScalarMultExprTrait<typename DMatDVecMultExprTrait<MT,VT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1277,21 +1277,21 @@ struct DMatDVecMultTrait< DMatScalarMultExpr<MT,ST1,false>, DVecScalarMultExpr<V
 
 //=================================================================================================
 //
-//  TDMATDVECMULTTRAIT SPECIALIZATIONS
+//  TDMATDVECMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, typename VT >
-struct TDMatDVecMultTrait< DMatScalarMultExpr<MT,ST,true>, VT >
+struct TDMatDVecMultExprTrait< DMatScalarMultExpr<MT,ST,true>, VT >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value &&
                                 IsDenseVector<VT>::value && !IsTransposeVector<VT>::value  &&
                                 IsNumeric<ST>::value
-                              , typename DVecScalarMultTrait<typename TDMatDVecMultTrait<MT,VT>::Type,ST>::Type
+                              , typename DVecScalarMultExprTrait<typename TDMatDVecMultExprTrait<MT,VT>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1302,14 +1302,14 @@ struct TDMatDVecMultTrait< DMatScalarMultExpr<MT,ST,true>, VT >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST1, typename VT, typename ST2 >
-struct TDMatDVecMultTrait< DMatScalarMultExpr<MT,ST1,true>, DVecScalarMultExpr<VT,ST2,false> >
+struct TDMatDVecMultExprTrait< DMatScalarMultExpr<MT,ST1,true>, DVecScalarMultExpr<VT,ST2,false> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value &&
                                 IsDenseVector<VT>::value && !IsTransposeVector<VT>::value  &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename DVecScalarMultTrait<typename TDMatDVecMultTrait<MT,VT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                              , typename DVecScalarMultExprTrait<typename TDMatDVecMultExprTrait<MT,VT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1321,21 +1321,21 @@ struct TDMatDVecMultTrait< DMatScalarMultExpr<MT,ST1,true>, DVecScalarMultExpr<V
 
 //=================================================================================================
 //
-//  TDVECDMATMULTTRAIT SPECIALIZATIONS
+//  TDVECDMATMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename MT, typename ST >
-struct TDVecDMatMultTrait< VT, DMatScalarMultExpr<MT,ST,false> >
+struct TDVecDMatMultExprTrait< VT, DMatScalarMultExpr<MT,ST,false> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseVector<VT>::value && IsTransposeVector<VT>::value &&
                                 IsDenseMatrix<MT>::value && IsRowMajorMatrix<MT>::value  &&
                                 IsNumeric<ST>::value
-                              , typename TDVecScalarMultTrait<typename TDVecDMatMultTrait<VT,MT>::Type,ST>::Type
+                              , typename TDVecScalarMultExprTrait<typename TDVecDMatMultExprTrait<VT,MT>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1346,14 +1346,14 @@ struct TDVecDMatMultTrait< VT, DMatScalarMultExpr<MT,ST,false> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST1, typename MT, typename ST2 >
-struct TDVecDMatMultTrait< DVecScalarMultExpr<VT,ST1,true>, DMatScalarMultExpr<MT,ST2,false> >
+struct TDVecDMatMultExprTrait< DVecScalarMultExpr<VT,ST1,true>, DMatScalarMultExpr<MT,ST2,false> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseVector<VT>::value && IsTransposeVector<VT>::value &&
                                 IsDenseMatrix<MT>::value && IsRowMajorMatrix<MT>::value  &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename TDVecScalarMultTrait<typename TDVecDMatMultTrait<VT,MT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                              , typename TDVecScalarMultExprTrait<typename TDVecDMatMultExprTrait<VT,MT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1365,21 +1365,21 @@ struct TDVecDMatMultTrait< DVecScalarMultExpr<VT,ST1,true>, DMatScalarMultExpr<M
 
 //=================================================================================================
 //
-//  TDVECTDMATMULTTRAIT SPECIALIZATIONS
+//  TDVECTDMATMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename MT, typename ST >
-struct TDVecTDMatMultTrait< VT, DMatScalarMultExpr<MT,ST,true> >
+struct TDVecTDMatMultExprTrait< VT, DMatScalarMultExpr<MT,ST,true> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseVector<VT>::value && IsTransposeVector<VT>::value   &&
                                 IsDenseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value &&
                                 IsNumeric<ST>::value
-                              , typename TDVecScalarMultTrait<typename TDVecTDMatMultTrait<VT,MT>::Type,ST>::Type
+                              , typename TDVecScalarMultExprTrait<typename TDVecTDMatMultExprTrait<VT,MT>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1390,14 +1390,14 @@ struct TDVecTDMatMultTrait< VT, DMatScalarMultExpr<MT,ST,true> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST1, typename MT, typename ST2 >
-struct TDVecTDMatMultTrait< DVecScalarMultExpr<VT,ST1,true>, DMatScalarMultExpr<MT,ST2,true> >
+struct TDVecTDMatMultExprTrait< DVecScalarMultExpr<VT,ST1,true>, DMatScalarMultExpr<MT,ST2,true> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseVector<VT>::value && IsTransposeVector<VT>::value   &&
                                 IsDenseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename TDVecScalarMultTrait<typename TDVecTDMatMultTrait<VT,MT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                              , typename TDVecScalarMultExprTrait<typename TDVecTDMatMultExprTrait<VT,MT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1409,21 +1409,21 @@ struct TDVecTDMatMultTrait< DVecScalarMultExpr<VT,ST1,true>, DMatScalarMultExpr<
 
 //=================================================================================================
 //
-//  DMATSVECMULTTRAIT SPECIALIZATIONS
+//  DMATSVECMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, typename VT >
-struct DMatSVecMultTrait< DMatScalarMultExpr<MT,ST,false>, VT >
+struct DMatSVecMultExprTrait< DMatScalarMultExpr<MT,ST,false>, VT >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT>::value  && IsRowMajorMatrix<MT>::value   &&
                                 IsSparseVector<VT>::value && !IsTransposeVector<VT>::value &&
                                 IsNumeric<ST>::value
-                              , typename DVecScalarMultTrait<typename DMatSVecMultTrait<MT,VT>::Type,ST>::Type
+                              , typename DVecScalarMultExprTrait<typename DMatSVecMultExprTrait<MT,VT>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1434,14 +1434,14 @@ struct DMatSVecMultTrait< DMatScalarMultExpr<MT,ST,false>, VT >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST1, typename VT, typename ST2 >
-struct DMatSVecMultTrait< DMatScalarMultExpr<MT,ST1,false>, SVecScalarMultExpr<VT,ST2,false> >
+struct DMatSVecMultExprTrait< DMatScalarMultExpr<MT,ST1,false>, SVecScalarMultExpr<VT,ST2,false> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT>::value  && IsRowMajorMatrix<MT>::value   &&
                                 IsSparseVector<VT>::value && !IsTransposeVector<VT>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename DVecScalarMultTrait<typename DMatSVecMultTrait<MT,VT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                              , typename DVecScalarMultExprTrait<typename DMatSVecMultExprTrait<MT,VT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1453,21 +1453,21 @@ struct DMatSVecMultTrait< DMatScalarMultExpr<MT,ST1,false>, SVecScalarMultExpr<V
 
 //=================================================================================================
 //
-//  TDMATSVECMULTTRAIT SPECIALIZATIONS
+//  TDMATSVECMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, typename VT >
-struct TDMatSVecMultTrait< DMatScalarMultExpr<MT,ST,true>, VT >
+struct TDMatSVecMultExprTrait< DMatScalarMultExpr<MT,ST,true>, VT >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT>::value  && IsColumnMajorMatrix<MT>::value &&
                                 IsSparseVector<VT>::value && !IsTransposeVector<VT>::value  &&
                                 IsNumeric<ST>::value
-                              , typename DVecScalarMultTrait<typename TDMatSVecMultTrait<MT,VT>::Type,ST>::Type
+                              , typename DVecScalarMultExprTrait<typename TDMatSVecMultExprTrait<MT,VT>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1478,14 +1478,14 @@ struct TDMatSVecMultTrait< DMatScalarMultExpr<MT,ST,true>, VT >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST1, typename VT, typename ST2 >
-struct TDMatSVecMultTrait< DMatScalarMultExpr<MT,ST1,true>, SVecScalarMultExpr<VT,ST2,false> >
+struct TDMatSVecMultExprTrait< DMatScalarMultExpr<MT,ST1,true>, SVecScalarMultExpr<VT,ST2,false> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT>::value  && IsColumnMajorMatrix<MT>::value &&
                                 IsSparseVector<VT>::value && !IsTransposeVector<VT>::value  &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename DVecScalarMultTrait<typename TDMatSVecMultTrait<MT,VT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                              , typename DVecScalarMultExprTrait<typename TDMatSVecMultExprTrait<MT,VT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1497,21 +1497,21 @@ struct TDMatSVecMultTrait< DMatScalarMultExpr<MT,ST1,true>, SVecScalarMultExpr<V
 
 //=================================================================================================
 //
-//  TSVECDMATMULTTRAIT SPECIALIZATIONS
+//  TSVECDMATMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename MT, typename ST >
-struct TSVecDMatMultTrait< VT, DMatScalarMultExpr<MT,ST,false> >
+struct TSVecDMatMultExprTrait< VT, DMatScalarMultExpr<MT,ST,false> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsSparseVector<VT>::value && IsTransposeVector<VT>::value &&
                                 IsDenseMatrix<MT>::value  && IsRowMajorMatrix<MT>::value  &&
                                 IsNumeric<ST>::value
-                              , typename TDVecScalarMultTrait<typename TSVecDMatMultTrait<VT,MT>::Type,ST>::Type
+                              , typename TDVecScalarMultExprTrait<typename TSVecDMatMultExprTrait<VT,MT>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1522,14 +1522,14 @@ struct TSVecDMatMultTrait< VT, DMatScalarMultExpr<MT,ST,false> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST1, typename MT, typename ST2 >
-struct TSVecDMatMultTrait< SVecScalarMultExpr<VT,ST1,true>, DMatScalarMultExpr<MT,ST2,false> >
+struct TSVecDMatMultExprTrait< SVecScalarMultExpr<VT,ST1,true>, DMatScalarMultExpr<MT,ST2,false> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsSparseVector<VT>::value && IsTransposeVector<VT>::value &&
                                 IsDenseMatrix<MT>::value  && IsRowMajorMatrix<MT>::value  &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename TDVecScalarMultTrait<typename TSVecDMatMultTrait<VT,MT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                              , typename TDVecScalarMultExprTrait<typename TSVecDMatMultExprTrait<VT,MT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1541,21 +1541,21 @@ struct TSVecDMatMultTrait< SVecScalarMultExpr<VT,ST1,true>, DMatScalarMultExpr<M
 
 //=================================================================================================
 //
-//  TSVECTDMATMULTTRAIT SPECIALIZATIONS
+//  TSVECTDMATMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename MT, typename ST >
-struct TSVecTDMatMultTrait< VT, DMatScalarMultExpr<MT,ST,true> >
+struct TSVecTDMatMultExprTrait< VT, DMatScalarMultExpr<MT,ST,true> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsSparseVector<VT>::value && IsTransposeVector<VT>::value   &&
                                 IsDenseMatrix<MT>::value  && IsColumnMajorMatrix<MT>::value &&
                                 IsNumeric<ST>::value
-                              , typename TDVecScalarMultTrait<typename TSVecTDMatMultTrait<VT,MT>::Type,ST>::Type
+                              , typename TDVecScalarMultExprTrait<typename TSVecTDMatMultExprTrait<VT,MT>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1566,14 +1566,14 @@ struct TSVecTDMatMultTrait< VT, DMatScalarMultExpr<MT,ST,true> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST1, typename MT, typename ST2 >
-struct TSVecTDMatMultTrait< SVecScalarMultExpr<VT,ST1,true>, DMatScalarMultExpr<MT,ST2,true> >
+struct TSVecTDMatMultExprTrait< SVecScalarMultExpr<VT,ST1,true>, DMatScalarMultExpr<MT,ST2,true> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsSparseVector<VT>::value && IsTransposeVector<VT>::value   &&
                                 IsDenseMatrix<MT>::value  && IsColumnMajorMatrix<MT>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename TDVecScalarMultTrait<typename TSVecTDMatMultTrait<VT,MT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                              , typename TDVecScalarMultExprTrait<typename TSVecTDMatMultExprTrait<VT,MT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1585,21 +1585,21 @@ struct TSVecTDMatMultTrait< SVecScalarMultExpr<VT,ST1,true>, DMatScalarMultExpr<
 
 //=================================================================================================
 //
-//  DMATDMATMULTTRAIT SPECIALIZATIONS
+//  DMATDMATMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST, typename MT2 >
-struct DMatDMatMultTrait< DMatScalarMultExpr<MT1,ST,false>, MT2 >
+struct DMatDMatMultExprTrait< DMatScalarMultExpr<MT1,ST,false>, MT2 >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT1>::value && IsRowMajorMatrix<MT1>::value &&
                                 IsDenseMatrix<MT2>::value && IsRowMajorMatrix<MT2>::value &&
                                 IsNumeric<ST>::value
-                              , typename DMatScalarMultTrait<typename DMatDMatMultTrait<MT1,MT2>::Type,ST>::Type
+                              , typename DMatScalarMultExprTrait<typename DMatDMatMultExprTrait<MT1,MT2>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1610,14 +1610,14 @@ struct DMatDMatMultTrait< DMatScalarMultExpr<MT1,ST,false>, MT2 >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, typename ST >
-struct DMatDMatMultTrait< MT1, DMatScalarMultExpr<MT2,ST,false> >
+struct DMatDMatMultExprTrait< MT1, DMatScalarMultExpr<MT2,ST,false> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT1>::value && IsRowMajorMatrix<MT1>::value &&
                                 IsDenseMatrix<MT2>::value && IsRowMajorMatrix<MT2>::value &&
                                 IsNumeric<ST>::value
-                              , typename DMatScalarMultTrait<typename DMatDMatMultTrait<MT1,MT2>::Type,ST>::Type
+                              , typename DMatScalarMultExprTrait<typename DMatDMatMultExprTrait<MT1,MT2>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1628,14 +1628,14 @@ struct DMatDMatMultTrait< MT1, DMatScalarMultExpr<MT2,ST,false> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST1, typename MT2, typename ST2 >
-struct DMatDMatMultTrait< DMatScalarMultExpr<MT1,ST1,false>, DMatScalarMultExpr<MT2,ST2,false> >
+struct DMatDMatMultExprTrait< DMatScalarMultExpr<MT1,ST1,false>, DMatScalarMultExpr<MT2,ST2,false> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT1>::value && IsRowMajorMatrix<MT1>::value &&
                                 IsDenseMatrix<MT2>::value && IsRowMajorMatrix<MT2>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename DMatScalarMultTrait<typename DMatDMatMultTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                              , typename DMatScalarMultExprTrait<typename DMatDMatMultExprTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1647,21 +1647,21 @@ struct DMatDMatMultTrait< DMatScalarMultExpr<MT1,ST1,false>, DMatScalarMultExpr<
 
 //=================================================================================================
 //
-//  DMATTDMATMULTTRAIT SPECIALIZATIONS
+//  DMATTDMATMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST, typename MT2 >
-struct DMatTDMatMultTrait< DMatScalarMultExpr<MT1,ST,false>, MT2 >
+struct DMatTDMatMultExprTrait< DMatScalarMultExpr<MT1,ST,false>, MT2 >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT1>::value && IsRowMajorMatrix<MT1>::value    &&
                                 IsDenseMatrix<MT2>::value && IsColumnMajorMatrix<MT2>::value &&
                                 IsNumeric<ST>::value
-                              , typename DMatScalarMultTrait<typename DMatTDMatMultTrait<MT1,MT2>::Type,ST>::Type
+                              , typename DMatScalarMultExprTrait<typename DMatTDMatMultExprTrait<MT1,MT2>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1672,14 +1672,14 @@ struct DMatTDMatMultTrait< DMatScalarMultExpr<MT1,ST,false>, MT2 >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, typename ST >
-struct DMatTDMatMultTrait< MT1, DMatScalarMultExpr<MT2,ST,true> >
+struct DMatTDMatMultExprTrait< MT1, DMatScalarMultExpr<MT2,ST,true> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT1>::value && IsRowMajorMatrix<MT1>::value    &&
                                 IsDenseMatrix<MT2>::value && IsColumnMajorMatrix<MT2>::value &&
                                 IsNumeric<ST>::value
-                              , typename DMatScalarMultTrait<typename DMatTDMatMultTrait<MT1,MT2>::Type,ST>::Type
+                              , typename DMatScalarMultExprTrait<typename DMatTDMatMultExprTrait<MT1,MT2>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1690,14 +1690,14 @@ struct DMatTDMatMultTrait< MT1, DMatScalarMultExpr<MT2,ST,true> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST1, typename MT2, typename ST2 >
-struct DMatTDMatMultTrait< DMatScalarMultExpr<MT1,ST1,false>, DMatScalarMultExpr<MT2,ST2,true> >
+struct DMatTDMatMultExprTrait< DMatScalarMultExpr<MT1,ST1,false>, DMatScalarMultExpr<MT2,ST2,true> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT1>::value && IsRowMajorMatrix<MT1>::value    &&
                                 IsDenseMatrix<MT2>::value && IsColumnMajorMatrix<MT2>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename DMatScalarMultTrait<typename DMatTDMatMultTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                              , typename DMatScalarMultExprTrait<typename DMatTDMatMultExprTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1709,21 +1709,21 @@ struct DMatTDMatMultTrait< DMatScalarMultExpr<MT1,ST1,false>, DMatScalarMultExpr
 
 //=================================================================================================
 //
-//  TDMATDMATMULTTRAIT SPECIALIZATIONS
+//  TDMATDMATMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST, typename MT2 >
-struct TDMatDMatMultTrait< DMatScalarMultExpr<MT1,ST,true>, MT2 >
+struct TDMatDMatMultExprTrait< DMatScalarMultExpr<MT1,ST,true>, MT2 >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT1>::value && IsColumnMajorMatrix<MT1>::value &&
                                 IsDenseMatrix<MT2>::value && IsRowMajorMatrix<MT2>::value    &&
                                 IsNumeric<ST>::value
-                              , typename TDMatScalarMultTrait<typename TDMatDMatMultTrait<MT1,MT2>::Type,ST>::Type
+                              , typename TDMatScalarMultExprTrait<typename TDMatDMatMultExprTrait<MT1,MT2>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1734,14 +1734,14 @@ struct TDMatDMatMultTrait< DMatScalarMultExpr<MT1,ST,true>, MT2 >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, typename ST >
-struct TDMatDMatMultTrait< MT1, DMatScalarMultExpr<MT2,ST,false> >
+struct TDMatDMatMultExprTrait< MT1, DMatScalarMultExpr<MT2,ST,false> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT1>::value && IsColumnMajorMatrix<MT1>::value &&
                                 IsDenseMatrix<MT2>::value && IsRowMajorMatrix<MT2>::value    &&
                                 IsNumeric<ST>::value
-                              , typename TDMatScalarMultTrait<typename TDMatDMatMultTrait<MT1,MT2>::Type,ST>::Type
+                              , typename TDMatScalarMultExprTrait<typename TDMatDMatMultExprTrait<MT1,MT2>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1752,14 +1752,14 @@ struct TDMatDMatMultTrait< MT1, DMatScalarMultExpr<MT2,ST,false> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST1, typename MT2, typename ST2 >
-struct TDMatDMatMultTrait< DMatScalarMultExpr<MT1,ST1,true>, DMatScalarMultExpr<MT2,ST2,false> >
+struct TDMatDMatMultExprTrait< DMatScalarMultExpr<MT1,ST1,true>, DMatScalarMultExpr<MT2,ST2,false> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT1>::value && IsColumnMajorMatrix<MT1>::value &&
                                 IsDenseMatrix<MT2>::value && IsRowMajorMatrix<MT2>::value    &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename TDMatScalarMultTrait<typename TDMatDMatMultTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                              , typename TDMatScalarMultExprTrait<typename TDMatDMatMultExprTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1771,21 +1771,21 @@ struct TDMatDMatMultTrait< DMatScalarMultExpr<MT1,ST1,true>, DMatScalarMultExpr<
 
 //=================================================================================================
 //
-//  TDMATTDMATMULTTRAIT SPECIALIZATIONS
+//  TDMATTDMATMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST, typename MT2 >
-struct TDMatTDMatMultTrait< DMatScalarMultExpr<MT1,ST,true>, MT2 >
+struct TDMatTDMatMultExprTrait< DMatScalarMultExpr<MT1,ST,true>, MT2 >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT1>::value && IsColumnMajorMatrix<MT1>::value &&
                                 IsDenseMatrix<MT2>::value && IsColumnMajorMatrix<MT2>::value &&
                                 IsNumeric<ST>::value
-                              , typename TDMatScalarMultTrait<typename TDMatTDMatMultTrait<MT1,MT2>::Type,ST>::Type
+                              , typename TDMatScalarMultExprTrait<typename TDMatTDMatMultExprTrait<MT1,MT2>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1796,14 +1796,14 @@ struct TDMatTDMatMultTrait< DMatScalarMultExpr<MT1,ST,true>, MT2 >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, typename ST >
-struct TDMatTDMatMultTrait< MT1, DMatScalarMultExpr<MT2,ST,true> >
+struct TDMatTDMatMultExprTrait< MT1, DMatScalarMultExpr<MT2,ST,true> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT1>::value && IsColumnMajorMatrix<MT1>::value &&
                                 IsDenseMatrix<MT2>::value && IsColumnMajorMatrix<MT2>::value &&
                                 IsNumeric<ST>::value
-                              , typename TDMatScalarMultTrait<typename TDMatTDMatMultTrait<MT1,MT2>::Type,ST>::Type
+                              , typename TDMatScalarMultExprTrait<typename TDMatTDMatMultExprTrait<MT1,MT2>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1814,14 +1814,14 @@ struct TDMatTDMatMultTrait< MT1, DMatScalarMultExpr<MT2,ST,true> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST1, typename MT2, typename ST2 >
-struct TDMatTDMatMultTrait< DMatScalarMultExpr<MT1,ST1,true>, DMatScalarMultExpr<MT2,ST2,true> >
+struct TDMatTDMatMultExprTrait< DMatScalarMultExpr<MT1,ST1,true>, DMatScalarMultExpr<MT2,ST2,true> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT1>::value && IsColumnMajorMatrix<MT1>::value &&
                                 IsDenseMatrix<MT2>::value && IsColumnMajorMatrix<MT2>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename TDMatScalarMultTrait<typename TDMatTDMatMultTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                              , typename TDMatScalarMultExprTrait<typename TDMatTDMatMultExprTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1833,21 +1833,21 @@ struct TDMatTDMatMultTrait< DMatScalarMultExpr<MT1,ST1,true>, DMatScalarMultExpr
 
 //=================================================================================================
 //
-//  DMATSMATMULTTRAIT SPECIALIZATIONS
+//  DMATSMATMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST, typename MT2 >
-struct DMatSMatMultTrait< DMatScalarMultExpr<MT1,ST,false>, MT2 >
+struct DMatSMatMultExprTrait< DMatScalarMultExpr<MT1,ST,false>, MT2 >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT1>::value  && IsRowMajorMatrix<MT1>::value &&
                                 IsSparseMatrix<MT2>::value && IsRowMajorMatrix<MT2>::value &&
                                 IsNumeric<ST>::value
-                              , typename DMatScalarMultTrait<typename DMatSMatMultTrait<MT1,MT2>::Type,ST>::Type
+                              , typename DMatScalarMultExprTrait<typename DMatSMatMultExprTrait<MT1,MT2>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1858,14 +1858,14 @@ struct DMatSMatMultTrait< DMatScalarMultExpr<MT1,ST,false>, MT2 >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST1, typename MT2, typename ST2 >
-struct DMatSMatMultTrait< DMatScalarMultExpr<MT1,ST1,false>, SMatScalarMultExpr<MT2,ST2,false> >
+struct DMatSMatMultExprTrait< DMatScalarMultExpr<MT1,ST1,false>, SMatScalarMultExpr<MT2,ST2,false> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT1>::value  && IsRowMajorMatrix<MT1>::value &&
                                 IsSparseMatrix<MT2>::value && IsRowMajorMatrix<MT2>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename DMatScalarMultTrait<typename DMatSMatMultTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                              , typename DMatScalarMultExprTrait<typename DMatSMatMultExprTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1877,21 +1877,21 @@ struct DMatSMatMultTrait< DMatScalarMultExpr<MT1,ST1,false>, SMatScalarMultExpr<
 
 //=================================================================================================
 //
-//  DMATTSMATMULTTRAIT SPECIALIZATIONS
+//  DMATTSMATMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST, typename MT2 >
-struct DMatTSMatMultTrait< DMatScalarMultExpr<MT1,ST,false>, MT2 >
+struct DMatTSMatMultExprTrait< DMatScalarMultExpr<MT1,ST,false>, MT2 >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT1>::value  && IsRowMajorMatrix<MT1>::value    &&
                                 IsSparseMatrix<MT2>::value && IsColumnMajorMatrix<MT2>::value &&
                                 IsNumeric<ST>::value
-                              , typename DMatScalarMultTrait<typename DMatTSMatMultTrait<MT1,MT2>::Type,ST>::Type
+                              , typename DMatScalarMultExprTrait<typename DMatTSMatMultExprTrait<MT1,MT2>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1902,14 +1902,14 @@ struct DMatTSMatMultTrait< DMatScalarMultExpr<MT1,ST,false>, MT2 >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST1, typename MT2, typename ST2 >
-struct DMatTSMatMultTrait< DMatScalarMultExpr<MT1,ST1,false>, SMatScalarMultExpr<MT2,ST2,true> >
+struct DMatTSMatMultExprTrait< DMatScalarMultExpr<MT1,ST1,false>, SMatScalarMultExpr<MT2,ST2,true> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT1>::value  && IsRowMajorMatrix<MT1>::value    &&
                                 IsSparseMatrix<MT2>::value && IsColumnMajorMatrix<MT2>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename DMatScalarMultTrait<typename DMatTSMatMultTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                              , typename DMatScalarMultExprTrait<typename DMatTSMatMultExprTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1921,21 +1921,21 @@ struct DMatTSMatMultTrait< DMatScalarMultExpr<MT1,ST1,false>, SMatScalarMultExpr
 
 //=================================================================================================
 //
-//  TDMATSMATMULTTRAIT SPECIALIZATIONS
+//  TDMATSMATMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST, typename MT2 >
-struct TDMatSMatMultTrait< DMatScalarMultExpr<MT1,ST,true>, MT2 >
+struct TDMatSMatMultExprTrait< DMatScalarMultExpr<MT1,ST,true>, MT2 >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT1>::value  && IsColumnMajorMatrix<MT1>::value &&
                                 IsSparseMatrix<MT2>::value && IsRowMajorMatrix<MT2>::value    &&
                                 IsNumeric<ST>::value
-                              , typename TDMatScalarMultTrait<typename TDMatSMatMultTrait<MT1,MT2>::Type,ST>::Type
+                              , typename TDMatScalarMultExprTrait<typename TDMatSMatMultExprTrait<MT1,MT2>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1946,14 +1946,14 @@ struct TDMatSMatMultTrait< DMatScalarMultExpr<MT1,ST,true>, MT2 >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST1, typename MT2, typename ST2 >
-struct TDMatSMatMultTrait< DMatScalarMultExpr<MT1,ST1,true>, SMatScalarMultExpr<MT2,ST2,false> >
+struct TDMatSMatMultExprTrait< DMatScalarMultExpr<MT1,ST1,true>, SMatScalarMultExpr<MT2,ST2,false> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT1>::value  && IsColumnMajorMatrix<MT1>::value &&
                                 IsSparseMatrix<MT2>::value && IsRowMajorMatrix<MT2>::value    &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename TDMatScalarMultTrait<typename TDMatSMatMultTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                              , typename TDMatScalarMultExprTrait<typename TDMatSMatMultExprTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1965,21 +1965,21 @@ struct TDMatSMatMultTrait< DMatScalarMultExpr<MT1,ST1,true>, SMatScalarMultExpr<
 
 //=================================================================================================
 //
-//  TDMATTSMATMULTTRAIT SPECIALIZATIONS
+//  TDMATTSMATMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST, typename MT2 >
-struct TDMatTSMatMultTrait< DMatScalarMultExpr<MT1,ST,true>, MT2 >
+struct TDMatTSMatMultExprTrait< DMatScalarMultExpr<MT1,ST,true>, MT2 >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT1>::value  && IsColumnMajorMatrix<MT1>::value &&
                                 IsSparseMatrix<MT2>::value && IsColumnMajorMatrix<MT2>::value &&
                                 IsNumeric<ST>::value
-                              , typename TDMatScalarMultTrait<typename TDMatTSMatMultTrait<MT1,MT2>::Type,ST>::Type
+                              , typename TDMatScalarMultExprTrait<typename TDMatTSMatMultExprTrait<MT1,MT2>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1990,14 +1990,14 @@ struct TDMatTSMatMultTrait< DMatScalarMultExpr<MT1,ST,true>, MT2 >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST1, typename MT2, typename ST2 >
-struct TDMatTSMatMultTrait< DMatScalarMultExpr<MT1,ST1,true>, SMatScalarMultExpr<MT2,ST2,true> >
+struct TDMatTSMatMultExprTrait< DMatScalarMultExpr<MT1,ST1,true>, SMatScalarMultExpr<MT2,ST2,true> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT1>::value  && IsColumnMajorMatrix<MT1>::value &&
                                 IsSparseMatrix<MT2>::value && IsColumnMajorMatrix<MT2>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename TDMatScalarMultTrait<typename TDMatTSMatMultTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                              , typename TDMatScalarMultExprTrait<typename TDMatTSMatMultExprTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -2009,21 +2009,21 @@ struct TDMatTSMatMultTrait< DMatScalarMultExpr<MT1,ST1,true>, SMatScalarMultExpr
 
 //=================================================================================================
 //
-//  SMATDMATMULTTRAIT SPECIALIZATIONS
+//  SMATDMATMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST, typename MT2 >
-struct SMatDMatMultTrait< MT1, DMatScalarMultExpr<MT2,ST,false> >
+struct SMatDMatMultExprTrait< MT1, DMatScalarMultExpr<MT2,ST,false> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsSparseMatrix<MT1>::value && IsRowMajorMatrix<MT1>::value &&
                                 IsDenseMatrix<MT2>::value  && IsRowMajorMatrix<MT2>::value &&
                                 IsNumeric<ST>::value
-                              , typename DMatScalarMultTrait<typename SMatDMatMultTrait<MT1,MT2>::Type,ST>::Type
+                              , typename DMatScalarMultExprTrait<typename SMatDMatMultExprTrait<MT1,MT2>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -2034,14 +2034,14 @@ struct SMatDMatMultTrait< MT1, DMatScalarMultExpr<MT2,ST,false> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST1, typename MT2, typename ST2 >
-struct SMatDMatMultTrait< SMatScalarMultExpr<MT1,ST1,false>, DMatScalarMultExpr<MT2,ST2,false> >
+struct SMatDMatMultExprTrait< SMatScalarMultExpr<MT1,ST1,false>, DMatScalarMultExpr<MT2,ST2,false> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsSparseMatrix<MT1>::value && IsRowMajorMatrix<MT1>::value &&
                                 IsDenseMatrix<MT2>::value  && IsRowMajorMatrix<MT2>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename DMatScalarMultTrait<typename SMatDMatMultTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                              , typename DMatScalarMultExprTrait<typename SMatDMatMultExprTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -2053,21 +2053,21 @@ struct SMatDMatMultTrait< SMatScalarMultExpr<MT1,ST1,false>, DMatScalarMultExpr<
 
 //=================================================================================================
 //
-//  SMATTDMATMULTTRAIT SPECIALIZATIONS
+//  SMATTDMATMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST, typename MT2 >
-struct SMatTDMatMultTrait< MT1, DMatScalarMultExpr<MT2,ST,true> >
+struct SMatTDMatMultExprTrait< MT1, DMatScalarMultExpr<MT2,ST,true> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsSparseMatrix<MT1>::value && IsRowMajorMatrix<MT1>::value    &&
                                 IsDenseMatrix<MT2>::value  && IsColumnMajorMatrix<MT2>::value &&
                                 IsNumeric<ST>::value
-                              , typename DMatScalarMultTrait<typename SMatTDMatMultTrait<MT1,MT2>::Type,ST>::Type
+                              , typename DMatScalarMultExprTrait<typename SMatTDMatMultExprTrait<MT1,MT2>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -2078,14 +2078,14 @@ struct SMatTDMatMultTrait< MT1, DMatScalarMultExpr<MT2,ST,true> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST1, typename MT2, typename ST2 >
-struct SMatTDMatMultTrait< SMatScalarMultExpr<MT1,ST1,false>, DMatScalarMultExpr<MT2,ST2,true> >
+struct SMatTDMatMultExprTrait< SMatScalarMultExpr<MT1,ST1,false>, DMatScalarMultExpr<MT2,ST2,true> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsSparseMatrix<MT1>::value && IsRowMajorMatrix<MT1>::value    &&
                                 IsDenseMatrix<MT2>::value  && IsColumnMajorMatrix<MT2>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename DMatScalarMultTrait<typename SMatTDMatMultTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                              , typename DMatScalarMultExprTrait<typename SMatTDMatMultExprTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -2097,21 +2097,21 @@ struct SMatTDMatMultTrait< SMatScalarMultExpr<MT1,ST1,false>, DMatScalarMultExpr
 
 //=================================================================================================
 //
-//  TSMATDMATMULTTRAIT SPECIALIZATIONS
+//  TSMATDMATMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST, typename MT2 >
-struct TSMatDMatMultTrait< MT1, DMatScalarMultExpr<MT2,ST,false> >
+struct TSMatDMatMultExprTrait< MT1, DMatScalarMultExpr<MT2,ST,false> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsSparseMatrix<MT1>::value && IsColumnMajorMatrix<MT1>::value &&
                                 IsDenseMatrix<MT2>::value  && IsRowMajorMatrix<MT2>::value    &&
                                 IsNumeric<ST>::value
-                              , typename TDMatScalarMultTrait<typename TSMatDMatMultTrait<MT1,MT2>::Type,ST>::Type
+                              , typename TDMatScalarMultExprTrait<typename TSMatDMatMultExprTrait<MT1,MT2>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -2122,14 +2122,14 @@ struct TSMatDMatMultTrait< MT1, DMatScalarMultExpr<MT2,ST,false> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST1, typename MT2, typename ST2 >
-struct TSMatDMatMultTrait< SMatScalarMultExpr<MT1,ST1,true>, DMatScalarMultExpr<MT2,ST2,false> >
+struct TSMatDMatMultExprTrait< SMatScalarMultExpr<MT1,ST1,true>, DMatScalarMultExpr<MT2,ST2,false> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsSparseMatrix<MT1>::value && IsColumnMajorMatrix<MT1>::value &&
                                 IsDenseMatrix<MT2>::value  && IsRowMajorMatrix<MT2>::value    &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename TDMatScalarMultTrait<typename TSMatDMatMultTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                              , typename TDMatScalarMultExprTrait<typename TSMatDMatMultExprTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -2141,21 +2141,21 @@ struct TSMatDMatMultTrait< SMatScalarMultExpr<MT1,ST1,true>, DMatScalarMultExpr<
 
 //=================================================================================================
 //
-//  TSMATTDMATMULTTRAIT SPECIALIZATIONS
+//  TSMATTDMATMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST, typename MT2 >
-struct TSMatTDMatMultTrait< MT1, DMatScalarMultExpr<MT2,ST,true> >
+struct TSMatTDMatMultExprTrait< MT1, DMatScalarMultExpr<MT2,ST,true> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsSparseMatrix<MT1>::value && IsColumnMajorMatrix<MT1>::value &&
                                 IsDenseMatrix<MT2>::value  && IsColumnMajorMatrix<MT2>::value &&
                                 IsNumeric<ST>::value
-                              , typename TDMatScalarMultTrait<typename TSMatTDMatMultTrait<MT1,MT2>::Type,ST>::Type
+                              , typename TDMatScalarMultExprTrait<typename TSMatTDMatMultExprTrait<MT1,MT2>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -2166,14 +2166,14 @@ struct TSMatTDMatMultTrait< MT1, DMatScalarMultExpr<MT2,ST,true> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename ST1, typename MT2, typename ST2 >
-struct TSMatTDMatMultTrait< SMatScalarMultExpr<MT1,ST1,true>, DMatScalarMultExpr<MT2,ST2,true> >
+struct TSMatTDMatMultExprTrait< SMatScalarMultExpr<MT1,ST1,true>, DMatScalarMultExpr<MT2,ST2,true> >
 {
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsSparseMatrix<MT1>::value && IsColumnMajorMatrix<MT1>::value &&
                                 IsDenseMatrix<MT2>::value  && IsColumnMajorMatrix<MT2>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename TDMatScalarMultTrait<typename TSMatTDMatMultTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                              , typename TDMatScalarMultExprTrait<typename TSMatTDMatMultExprTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
