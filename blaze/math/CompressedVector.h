@@ -1892,7 +1892,7 @@ struct MultTrait< CompressedVector<T1,true>, DynamicVector<T2,false> >
 template< typename T1, bool TF, typename T2 >
 struct MultTrait< DynamicVector<T1,TF>, CompressedVector<T2,TF> >
 {
-   typedef CompressedVector< typename MultTrait<T1,T2>::Type, false >  Type;
+   typedef CompressedVector< typename MultTrait<T1,T2>::Type, TF >  Type;
 };
 
 template< typename T1, typename T2 >
@@ -1910,7 +1910,7 @@ struct MultTrait< DynamicVector<T1,true>, CompressedVector<T2,false> >
 template< typename T1, bool TF, typename T2 >
 struct MultTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 {
-   typedef CompressedVector< typename MultTrait<T1,T2>::Type, false >  Type;
+   typedef CompressedVector< typename MultTrait<T1,T2>::Type, TF >  Type;
 };
 
 template< typename T1, typename T2 >

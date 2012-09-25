@@ -2153,7 +2153,7 @@ struct MultTrait< StaticVector<T1,N,true>, DynamicVector<T2,false> >
 template< typename T1, bool TF, typename T2 >
 struct MultTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
 {
-   typedef DynamicVector< typename MultTrait<T1,T2>::Type , false >  Type;
+   typedef DynamicVector< typename MultTrait<T1,T2>::Type, TF >  Type;
 };
 
 template< typename T1, typename T2 >
