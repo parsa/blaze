@@ -106,7 +106,7 @@ template<> struct CONSTRAINT_MUST_NOT_BE_TRANSPOSE_VECTOR_TYPE_FAILED<true> { en
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSPOSE_VECTOR_TYPE(T) \
    typedef \
       blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_NOT_BE_TRANSPOSE_VECTOR_TYPE_FAILED< !blaze::IsTransposeVector<T>::value > \
+         blaze::CONSTRAINT_MUST_NOT_BE_TRANSPOSE_VECTOR_TYPE_FAILED< !blaze::IsTransposeVector<T>::value >::value > \
       BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_TRANSPOSE_VECTOR_TYPE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
