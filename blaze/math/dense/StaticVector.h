@@ -2098,7 +2098,7 @@ struct CrossTrait< StaticVector<T1,3UL,false>, StaticVector<T2,3UL,false> >
    typedef typename MultTrait<T1,T2>::Type  T;
 
  public:
-   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  CrossType;
+   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
 };
 /*! \endcond */
 //*************************************************************************************************

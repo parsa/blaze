@@ -2188,7 +2188,7 @@ struct CrossTrait< DynamicVector<T1,false>, StaticVector<T2,3UL,false> >
    typedef typename MultTrait<T1,T2>::Type  T;
 
  public:
-   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  CrossType;
+   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
 };
 
 template< typename T1, typename T2 >
@@ -2198,7 +2198,7 @@ struct CrossTrait< StaticVector<T1,3UL,false>, DynamicVector<T2,false> >
    typedef typename MultTrait<T1,T2>::Type  T;
 
  public:
-   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  CrossType;
+   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
 };
 
 template< typename T1, typename T2 >
@@ -2208,7 +2208,7 @@ struct CrossTrait< DynamicVector<T1,false>, DynamicVector<T2,false> >
    typedef typename MultTrait<T1,T2>::Type  T;
 
  public:
-   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  CrossType;
+   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
