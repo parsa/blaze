@@ -387,8 +387,9 @@ class DVecSVecCrossExpr : public DenseVector< DVecSVecCrossExpr<VT1,VT2>, false 
 // This operator represents the cross product of a dense vector and a sparse vector:
 
    \code
-   blaze::DynamicVector<double> a( 3UL ), c( 3UL );
+   blaze::DynamicVector<double> a( 3UL );
    blaze::CompressedVector<double> b( 3UL );
+   blaze::StaticVector<double,3UL> c;
    // ... Resizing and initialization
    c = a % b;
    \endcode

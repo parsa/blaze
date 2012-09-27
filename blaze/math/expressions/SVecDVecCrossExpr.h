@@ -388,7 +388,8 @@ class SVecDVecCrossExpr : public DenseVector< SVecDVecCrossExpr<VT1,VT2>, false 
 
    \code
    blaze::CompressedVector<double> a( 3UL );
-   blaze::DynamicVector<double> b( 3UL ), c( 3UL );
+   blaze::DynamicVector<double> b( 3UL );
+   blaze::StaticVector<double,3UL> c;
    // ... Resizing and initialization
    c = a % b;
    \endcode

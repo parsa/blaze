@@ -44,6 +44,7 @@
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/SVecDVecCrossExpr.h>
 #include <blaze/math/expressions/SVecDVecSubExpr.h>
+#include <blaze/math/expressions/SVecSVecCrossExpr.h>
 #include <blaze/math/expressions/TDVecDVecMultExpr.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/Equal.h>
