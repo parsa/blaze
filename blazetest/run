@@ -486,6 +486,73 @@ src/mathtest/svecsvecmult/VCbVCb 2>&1 | tee -a result.txt
 
 
 #==================================================================================================
+# Dense vector/dense vector cross product
+#==================================================================================================
+
+echo " Running dense vector/dense vector cross product tests..." 2>&1 | tee -a result.txt
+src/mathtest/dvecdveccross/V3aV3a 2>&1 | tee -a result.txt
+src/mathtest/dvecdveccross/V3aV3b 2>&1 | tee -a result.txt
+src/mathtest/dvecdveccross/V3aVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdveccross/V3aVDb 2>&1 | tee -a result.txt
+src/mathtest/dvecdveccross/V3bV3a 2>&1 | tee -a result.txt
+src/mathtest/dvecdveccross/V3bV3b 2>&1 | tee -a result.txt
+src/mathtest/dvecdveccross/V3bVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdveccross/V3bVDb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecdveccross/VDaV3a 2>&1 | tee -a result.txt
+src/mathtest/dvecdveccross/VDaV3b 2>&1 | tee -a result.txt
+src/mathtest/dvecdveccross/VDaVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdveccross/VDaVDb 2>&1 | tee -a result.txt
+src/mathtest/dvecdveccross/VDbV3a 2>&1 | tee -a result.txt
+src/mathtest/dvecdveccross/VDbV3b 2>&1 | tee -a result.txt
+src/mathtest/dvecdveccross/VDbVDa 2>&1 | tee -a result.txt
+src/mathtest/dvecdveccross/VDbVDb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Dense vector/sparse vector cross product
+#==================================================================================================
+
+echo " Running dense vector/sparse vector cross product tests..." 2>&1 | tee -a result.txt
+src/mathtest/dvecsveccross/V3aVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsveccross/V3aVCb 2>&1 | tee -a result.txt
+src/mathtest/dvecsveccross/V3bVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsveccross/V3bVCb 2>&1 | tee -a result.txt
+
+src/mathtest/dvecsveccross/VDaVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsveccross/VDaVCb 2>&1 | tee -a result.txt
+src/mathtest/dvecsveccross/VDbVCa 2>&1 | tee -a result.txt
+src/mathtest/dvecsveccross/VDbVCb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Sparse vector/dense vector cross product
+#==================================================================================================
+
+echo " Running sparse vector/dense vector cross product tests..." 2>&1 | tee -a result.txt
+src/mathtest/svecdveccross/VCaV3a 2>&1 | tee -a result.txt
+src/mathtest/svecdveccross/VCaV3b 2>&1 | tee -a result.txt
+src/mathtest/svecdveccross/VCaVDa 2>&1 | tee -a result.txt
+src/mathtest/svecdveccross/VCaVDb 2>&1 | tee -a result.txt
+
+src/mathtest/svecdveccross/VCbV3a 2>&1 | tee -a result.txt
+src/mathtest/svecdveccross/VCbV3b 2>&1 | tee -a result.txt
+src/mathtest/svecdveccross/VCbVDa 2>&1 | tee -a result.txt
+src/mathtest/svecdveccross/VCbVDb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Sparse vector/sparse vector cross product
+#==================================================================================================
+
+echo " Running sparse vector/sparse vector cross product tests..." 2>&1 | tee -a result.txt
+src/mathtest/svecsveccross/VCaVCa 2>&1 | tee -a result.txt
+src/mathtest/svecsveccross/VCaVCb 2>&1 | tee -a result.txt
+src/mathtest/svecsveccross/VCbVCa 2>&1 | tee -a result.txt
+src/mathtest/svecsveccross/VCbVCb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
 # Dense vector/dense vector inner product
 #==================================================================================================
 

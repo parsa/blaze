@@ -23,6 +23,7 @@
 default: dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
          dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
          dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \
+         dvecdveccross dvecsveccross svecdveccross svecsveccross \
          tdvecdvecmult tdvecsvecmult tsvecdvecmult tsvecsvecmult \
          dvectdvecmult dvectsvecmult svectdvecmult svectsvecmult \
          dmatdvecmult dmatsvecmult smatdvecmult smatsvecmult \
@@ -90,6 +91,26 @@ svecsvecmult:
 	@echo
 	@echo "Building the sparse vector/sparse vector multiplication tests..."
 	@$(MAKE) --no-print-directory -C ./svecsvecmult/
+
+dvecdveccross:
+	@echo
+	@echo "Building the dense vector/dense vector cross product tests..."
+	@$(MAKE) --no-print-directory -C ./dvecdveccross/
+
+dvecsveccross:
+	@echo
+	@echo "Building the dense vector/sparse vector cross product tests..."
+	@$(MAKE) --no-print-directory -C ./dvecsveccross/
+
+svecdveccross:
+	@echo
+	@echo "Building the sparse vector/dense vector cross product tests..."
+	@$(MAKE) --no-print-directory -C ./svecdveccross/
+
+svecsveccross:
+	@echo
+	@echo "Building the sparse vector/sparse vector cross product tests..."
+	@$(MAKE) --no-print-directory -C ./svecsveccross/
 
 tdvecdvecmult:
 	@echo
