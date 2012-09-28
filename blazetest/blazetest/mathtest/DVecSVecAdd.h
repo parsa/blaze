@@ -3470,7 +3470,7 @@ void DVecSVecAdd<VT1,VT2>::testAbsOperation()
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
 template< typename LT     // Type of the left-hand side operand
-        , typename RT >   // Type of the right-hand side operan
+        , typename RT >   // Type of the right-hand side operand
 void DVecSVecAdd<VT1,VT2>::checkResults()
 {
    using blaze::IsTransposeVector;
@@ -3482,9 +3482,9 @@ void DVecSVecAdd<VT1,VT2>::checkResults()
           << " Error: Incorrect dense result vector detected\n"
           << " Details:\n"
           << "   " << ( IsTransposeVector<LT>::value ? ( "Transpose l" ) : ( "L" ) ) << "eft-hand side dense vector type:\n"
-          << "     " << typeid( VT1 ).name() << "\n"
+          << "     " << typeid( LT ).name() << "\n"
           << "   " << ( IsTransposeVector<RT>::value ? ( "Transpose r" ) : ( "R" ) ) << "ight-hand side sparse vector type:\n"
-          << "     " << typeid( VT2 ).name() << "\n"
+          << "     " << typeid( RT ).name() << "\n"
           << "   Result:\n" << dres_ << "\n"
           << "   Expected result:\n" << refres_ << "\n";
       throw std::runtime_error( oss.str() );
@@ -3497,9 +3497,9 @@ void DVecSVecAdd<VT1,VT2>::checkResults()
           << " Error: Incorrect sparse result vector detected\n"
           << " Details:\n"
           << "   " << ( IsTransposeVector<LT>::value ? ( "Transpose l" ) : ( "L" ) ) << "eft-hand side dense vector type:\n"
-          << "     " << typeid( VT1 ).name() << "\n"
+          << "     " << typeid( LT ).name() << "\n"
           << "   " << ( IsTransposeVector<RT>::value ? ( "Transpose r" ) : ( "R" ) ) << "ight-hand side sparse vector type:\n"
-          << "     " << typeid( VT2 ).name() << "\n"
+          << "     " << typeid( RT ).name() << "\n"
           << "   Result:\n" << sres_ << "\n"
           << "   Expected result:\n" << refres_ << "\n";
       throw std::runtime_error( oss.str() );
