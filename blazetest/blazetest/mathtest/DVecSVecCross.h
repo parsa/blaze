@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/DVecDVecCross.h
-//  \brief Header file for the dense vector/dense vector cross product math test
+//  \file blazetest/mathtest/DVecSVecCross.h
+//  \brief Header file for the dense vector/sparse vector cross product math test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DVECDVECCROSS_H_
-#define _BLAZETEST_MATHTEST_DVECDVECCROSS_H_
+#ifndef _BLAZETEST_MATHTEST_DVECSVECCROSS_H_
+#define _BLAZETEST_MATHTEST_DVECSVECCROSS_H_
 
 
 //*************************************************************************************************
@@ -51,7 +51,7 @@ namespace blazetest {
 
 namespace mathtest {
 
-namespace dvecdveccross {
+namespace dvecsveccross {
 
 //=================================================================================================
 //
@@ -60,15 +60,15 @@ namespace dvecdveccross {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the dense vector/dense vector cross product math test.
+/*!\brief Auxiliary class template for the dense vector/sparse vector cross product math test.
 //
-// The DVecDVecCross class template represents one particular vector cross product test between
+// The DVecSVecCross class template represents one particular vector cross product test between
 // two vectors of a particular type. The two template arguments \a VT1 and \a VT2 represent the
 // types of the left-hand side and right-hand side vector, respectively.
 */
 template< typename VT1    // Type of the left-hand side dense vector
-        , typename VT2 >  // Type of the right-hand side dense vector
-class DVecDVecCross
+        , typename VT2 >  // Type of the right-hand side sparse vector
+class DVecSVecCross
 {
  private:
    //**Type definitions****************************************************************************
@@ -81,7 +81,7 @@ class DVecDVecCross
    typedef typename VT2::ElementType           ET2;    //!< Element type 2
    typedef typename RE::ElementType            RET;    //!< Resulting element type
    typedef blaze::DynamicVector<ET1,false>     RT1;    //!< Reference type 1
-   typedef blaze::CompressedVector<ET2,false>  RT2;    //!< Reference type 2
+   typedef blaze::DynamicVector<ET2,false>     RT2;    //!< Reference type 2
    typedef blaze::StaticVector<RET,3UL,false>  DRRE;   //!< Dense reference result type
    typedef blaze::CompressedVector<RET,false>  SRRE;   //!< Sparse reference result type
    typedef typename DRRE::TransposeType        TDRRE;  //!< Transpose dense reference result type
@@ -96,7 +96,7 @@ class DVecDVecCross
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit DVecDVecCross( const Creator<VT1>& creator1, const Creator<VT2>& creator2 );
+   explicit DVecSVecCross( const Creator<VT1>& creator1, const Creator<VT2>& creator2 );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -132,7 +132,7 @@ class DVecDVecCross
    /*!\name Member variables */
    //@{
    VT1   lhs_;      //!< The left-hand side dense vector.
-   VT2   rhs_;      //!< The right-hand side dense vector.
+   VT2   rhs_;      //!< The right-hand side sparse vector.
    RT1   reflhs_;   //!< The reference left-hand side vector.
    RT2   refrhs_;   //!< The reference right-hand side vector.
    DRE   dres_;     //!< The dense vector for the result of the vector cross product.
@@ -149,9 +149,9 @@ class DVecDVecCross
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( VT1   );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( VT2   );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT2   );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( RT1   );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( RT2   );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( RT2   );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( DRE   );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( SRE   );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( DRRE  );
@@ -187,17 +187,17 @@ class DVecDVecCross
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the DVecDVecCross class template.
+/*!\brief Constructor for the DVecSVecCross class template.
 //
 // \param creator1 The creator for the left-hand side dense vector of the vector cross product.
-// \param creator2 The creator for the right-hand side dense vector of the vector cross product.
+// \param creator2 The creator for the right-hand side sparse vector of the vector cross product.
 // \exception std::runtime_error Operation error detected.
 */
 template< typename VT1    // Type of the left-hand side dense vector
-        , typename VT2 >  // Type of the right-hand side dense vector
-DVecDVecCross<VT1,VT2>::DVecDVecCross( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
+        , typename VT2 >  // Type of the right-hand side sparse vector
+DVecSVecCross<VT1,VT2>::DVecSVecCross( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
    : lhs_( creator1() )  // The left-hand side dense vector
-   , rhs_( creator2() )  // The right-hand side dense vector
+   , rhs_( creator2() )  // The right-hand side sparse vector
    , reflhs_( lhs_ )     // The reference left-hand side vector
    , refrhs_( rhs_ )     // The reference right-hand side vector
    , dres_()             // The dense vector for the result of the vector cross product
@@ -249,8 +249,8 @@ DVecDVecCross<VT1,VT2>::DVecDVecCross( const Creator<VT1>& creator1, const Creat
 // error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
-        , typename VT2 >  // Type of the right-hand side dense vector
-void DVecDVecCross<VT1,VT2>::testInitialStatus()
+        , typename VT2 >  // Type of the right-hand side sparse vector
+void DVecSVecCross<VT1,VT2>::testInitialStatus()
 {
    // Checking the size of the left-hand side operand
    if( lhs_.size() != reflhs_.size() ) {
@@ -268,10 +268,10 @@ void DVecDVecCross<VT1,VT2>::testInitialStatus()
    // Checking the size of the right-hand side operand
    if( rhs_.size() != refrhs_.size() ) {
       std::ostringstream oss;
-      oss << " Test: Initial size comparison of right-hand side dense operand\n"
+      oss << " Test: Initial size comparison of right-hand side sparse operand\n"
           << " Error: Invalid vector size\n"
           << " Details:\n"
-          << "   Dense vector type:\n"
+          << "   Sparse vector type:\n"
           << "     " << typeid( VT2 ).name() << "\n"
           << "   Detected size = " << rhs_.size() << "\n"
           << "   Expected size = " << refrhs_.size() << "\n";
@@ -294,10 +294,10 @@ void DVecDVecCross<VT1,VT2>::testInitialStatus()
    // Checking the initialization of the right-hand side operand
    if( !isEqual( rhs_, refrhs_ ) ) {
       std::ostringstream oss;
-      oss << " Test: Initial test of initialization of right-hand side dense operand\n"
+      oss << " Test: Initial test of initialization of right-hand side sparse operand\n"
           << " Error: Invalid vector initialization\n"
           << " Details:\n"
-          << "   Dense vector type:\n"
+          << "   Sparse vector type:\n"
           << "     " << typeid( VT2 ).name() << "\n"
           << "   Current initialization:\n" << rhs_ << "\n"
           << "   Expected initialization:\n" << refrhs_ << "\n";
@@ -317,8 +317,8 @@ void DVecDVecCross<VT1,VT2>::testInitialStatus()
 // \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
-        , typename VT2 >  // Type of the right-hand side dense vector
-void DVecDVecCross<VT1,VT2>::testAssignment()
+        , typename VT2 >  // Type of the right-hand side sparse vector
+void DVecSVecCross<VT1,VT2>::testAssignment()
 {
    try {
       lhs_ = reflhs_;
@@ -331,7 +331,7 @@ void DVecDVecCross<VT1,VT2>::testAssignment()
           << " Details:\n"
           << "   Left-hand side dense vector type:\n"
           << "     " << typeid( VT1 ).name() << "\n"
-          << "   Right-hand side dense vector type:\n"
+          << "   Right-hand side sparse vector type:\n"
           << "     " << typeid( VT2 ).name() << "\n"
           << "   Error message: " << ex.what() << "\n";
       throw std::runtime_error( oss.str() );
@@ -351,10 +351,10 @@ void DVecDVecCross<VT1,VT2>::testAssignment()
 
    if( !isEqual( rhs_, refrhs_ ) ) {
       std::ostringstream oss;
-      oss << " Test: Checking the assignment result of right-hand side dense operand\n"
+      oss << " Test: Checking the assignment result of right-hand side sparse operand\n"
           << " Error: Invalid vector initialization\n"
           << " Details:\n"
-          << "   Dense vector type:\n"
+          << "   Sparse vector type:\n"
           << "     " << typeid( VT2 ).name() << "\n"
           << "   Current initialization:\n" << rhs_ << "\n"
           << "   Expected initialization:\n" << refrhs_ << "\n";
@@ -374,8 +374,8 @@ void DVecDVecCross<VT1,VT2>::testAssignment()
 // error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
-        , typename VT2 >  // Type of the right-hand side dense vector
-void DVecDVecCross<VT1,VT2>::testElementAccess()
+        , typename VT2 >  // Type of the right-hand side sparse vector
+void DVecSVecCross<VT1,VT2>::testElementAccess()
 {
    using blaze::equal;
 
@@ -391,7 +391,7 @@ void DVecDVecCross<VT1,VT2>::testElementAccess()
           << " Details:\n"
           << "   Left-hand side dense vector type:\n"
           << "     " << typeid( VT1 ).name() << "\n"
-          << "   Right-hand side dense vector type:\n"
+          << "   Right-hand side sparse vector type:\n"
           << "     " << typeid( VT2 ).name() << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -403,7 +403,7 @@ void DVecDVecCross<VT1,VT2>::testElementAccess()
           << " Details:\n"
           << "   Left-hand side dense vector type:\n"
           << "     " << typeid( VT1 ).name() << "\n"
-          << "   Right-hand side dense vector type:\n"
+          << "   Right-hand side sparse vector type:\n"
           << "     " << typeid( VT2 ).name() << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -415,7 +415,7 @@ void DVecDVecCross<VT1,VT2>::testElementAccess()
           << " Details:\n"
           << "   Left-hand side dense vector type:\n"
           << "     " << typeid( VT1 ).name() << "\n"
-          << "   Right-hand side dense vector type:\n"
+          << "   Right-hand side sparse vector type:\n"
           << "     " << typeid( VT2 ).name() << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -427,7 +427,7 @@ void DVecDVecCross<VT1,VT2>::testElementAccess()
           << " Details:\n"
           << "   Left-hand side dense vector type:\n"
           << "     " << typeid( VT1 ).name() << "\n"
-          << "   Right-hand side dense vector type:\n"
+          << "   Right-hand side sparse vector type:\n"
           << "     " << typeid( VT2 ).name() << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -436,7 +436,7 @@ void DVecDVecCross<VT1,VT2>::testElementAccess()
 
 
 //*************************************************************************************************
-/*!\brief Testing the plain dense vector/dense vector cross product.
+/*!\brief Testing the plain dense vector/sparse vector cross product.
 //
 // \return void
 // \exception std::runtime_error Cross product error detected.
@@ -447,8 +447,8 @@ void DVecDVecCross<VT1,VT2>::testElementAccess()
 // \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
-        , typename VT2 >  // Type of the right-hand side dense vector
-void DVecDVecCross<VT1,VT2>::testBasicOperation()
+        , typename VT2 >  // Type of the right-hand side sparse vector
+void DVecSVecCross<VT1,VT2>::testBasicOperation()
 {
 #if BLAZETEST_MATHTEST_TEST_BASIC_OPERATION
    if( BLAZETEST_MATHTEST_TEST_BASIC_OPERATION > 1 )
@@ -473,7 +473,7 @@ void DVecDVecCross<VT1,VT2>::testBasicOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -497,7 +497,7 @@ void DVecDVecCross<VT1,VT2>::testBasicOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -527,7 +527,7 @@ void DVecDVecCross<VT1,VT2>::testBasicOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -552,7 +552,7 @@ void DVecDVecCross<VT1,VT2>::testBasicOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -582,7 +582,7 @@ void DVecDVecCross<VT1,VT2>::testBasicOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -607,7 +607,7 @@ void DVecDVecCross<VT1,VT2>::testBasicOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -637,7 +637,7 @@ void DVecDVecCross<VT1,VT2>::testBasicOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -662,7 +662,7 @@ void DVecDVecCross<VT1,VT2>::testBasicOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -675,7 +675,7 @@ void DVecDVecCross<VT1,VT2>::testBasicOperation()
 
 
 //*************************************************************************************************
-/*!\brief Testing the negated dense vector/dense vector cross product.
+/*!\brief Testing the negated dense vector/sparse vector cross product.
 //
 // \return void
 // \exception std::runtime_error Cross product error detected.
@@ -686,8 +686,8 @@ void DVecDVecCross<VT1,VT2>::testBasicOperation()
 // \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
-        , typename VT2 >  // Type of the right-hand side dense vector
-void DVecDVecCross<VT1,VT2>::testNegatedOperation()
+        , typename VT2 >  // Type of the right-hand side sparse vector
+void DVecSVecCross<VT1,VT2>::testNegatedOperation()
 {
 #if BLAZETEST_MATHTEST_TEST_NEGATED_OPERATION
    if( BLAZETEST_MATHTEST_TEST_NEGATED_OPERATION > 1 )
@@ -712,7 +712,7 @@ void DVecDVecCross<VT1,VT2>::testNegatedOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -736,7 +736,7 @@ void DVecDVecCross<VT1,VT2>::testNegatedOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -766,7 +766,7 @@ void DVecDVecCross<VT1,VT2>::testNegatedOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -791,7 +791,7 @@ void DVecDVecCross<VT1,VT2>::testNegatedOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -821,7 +821,7 @@ void DVecDVecCross<VT1,VT2>::testNegatedOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -846,7 +846,7 @@ void DVecDVecCross<VT1,VT2>::testNegatedOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -876,7 +876,7 @@ void DVecDVecCross<VT1,VT2>::testNegatedOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -901,7 +901,7 @@ void DVecDVecCross<VT1,VT2>::testNegatedOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -916,7 +916,7 @@ void DVecDVecCross<VT1,VT2>::testNegatedOperation()
 
 
 //*************************************************************************************************
-/*!\brief Testing the scaled dense vector/dense vector cross product.
+/*!\brief Testing the scaled dense vector/sparse vector cross product.
 //
 // \param scalar The scalar value.
 // \return void
@@ -928,9 +928,9 @@ void DVecDVecCross<VT1,VT2>::testNegatedOperation()
 // \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
-        , typename VT2 >  // Type of the right-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side sparse vector
 template< typename T >    // Type of the scalar
-void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
+void DVecSVecCross<VT1,VT2>::testScaledOperation( T scalar )
 {
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T );
 
@@ -1023,7 +1023,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1047,7 +1047,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1077,7 +1077,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1101,7 +1101,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1131,7 +1131,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1155,7 +1155,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1185,7 +1185,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1210,7 +1210,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1240,7 +1240,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1265,7 +1265,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1295,7 +1295,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1320,7 +1320,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1350,7 +1350,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1375,7 +1375,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1405,7 +1405,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1430,7 +1430,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1460,7 +1460,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1485,7 +1485,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1515,7 +1515,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1540,7 +1540,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1570,7 +1570,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1595,7 +1595,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1625,7 +1625,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1650,7 +1650,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1665,7 +1665,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
 
 
 //*************************************************************************************************
-/*!\brief Testing the transpose dense vector/dense vector cross product.
+/*!\brief Testing the transpose dense vector/sparse vector cross product.
 //
 // \return void
 // \exception std::runtime_error Cross product error detected.
@@ -1676,8 +1676,8 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
 // exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
-        , typename VT2 >  // Type of the right-hand side dense vector
-void DVecDVecCross<VT1,VT2>::testTransposeOperation()
+        , typename VT2 >  // Type of the right-hand side sparse vector
+void DVecSVecCross<VT1,VT2>::testTransposeOperation()
 {
 #if BLAZETEST_MATHTEST_TEST_TRANSPOSE_OPERATION
    if( BLAZETEST_MATHTEST_TEST_TRANSPOSE_OPERATION > 1 )
@@ -1702,7 +1702,7 @@ void DVecDVecCross<VT1,VT2>::testTransposeOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1726,7 +1726,7 @@ void DVecDVecCross<VT1,VT2>::testTransposeOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1756,7 +1756,7 @@ void DVecDVecCross<VT1,VT2>::testTransposeOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1781,7 +1781,7 @@ void DVecDVecCross<VT1,VT2>::testTransposeOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1811,7 +1811,7 @@ void DVecDVecCross<VT1,VT2>::testTransposeOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1836,7 +1836,7 @@ void DVecDVecCross<VT1,VT2>::testTransposeOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1866,7 +1866,7 @@ void DVecDVecCross<VT1,VT2>::testTransposeOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1891,7 +1891,7 @@ void DVecDVecCross<VT1,VT2>::testTransposeOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1906,7 +1906,7 @@ void DVecDVecCross<VT1,VT2>::testTransposeOperation()
 
 
 //*************************************************************************************************
-/*!\brief Testing the abs dense vector/dense vector cross product.
+/*!\brief Testing the abs dense vector/sparse vector cross product.
 //
 // \return void
 // \exception std::runtime_error Cross product error detected.
@@ -1917,8 +1917,8 @@ void DVecDVecCross<VT1,VT2>::testTransposeOperation()
 // is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
-        , typename VT2 >  // Type of the right-hand side dense vector
-void DVecDVecCross<VT1,VT2>::testAbsOperation()
+        , typename VT2 >  // Type of the right-hand side sparse vector
+void DVecSVecCross<VT1,VT2>::testAbsOperation()
 {
 #if BLAZETEST_MATHTEST_TEST_ABS_OPERATION
    if( BLAZETEST_MATHTEST_TEST_ABS_OPERATION > 1 )
@@ -1943,7 +1943,7 @@ void DVecDVecCross<VT1,VT2>::testAbsOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1967,7 +1967,7 @@ void DVecDVecCross<VT1,VT2>::testAbsOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -1997,7 +1997,7 @@ void DVecDVecCross<VT1,VT2>::testAbsOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -2022,7 +2022,7 @@ void DVecDVecCross<VT1,VT2>::testAbsOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -2052,7 +2052,7 @@ void DVecDVecCross<VT1,VT2>::testAbsOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -2077,7 +2077,7 @@ void DVecDVecCross<VT1,VT2>::testAbsOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -2107,7 +2107,7 @@ void DVecDVecCross<VT1,VT2>::testAbsOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -2132,7 +2132,7 @@ void DVecDVecCross<VT1,VT2>::testAbsOperation()
                 << " Details:\n"
                 << "   Left-hand side dense vector type:\n"
                 << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
+                << "   Right-hand side sparse vector type:\n"
                 << "     " << typeid( VT2 ).name() << "\n"
                 << "   Error message: " << ex.what() << "\n";
             throw std::runtime_error( oss.str() );
@@ -2166,8 +2166,8 @@ void DVecDVecCross<VT1,VT2>::testAbsOperation()
 // side operands used for the computations.
 */
 template< typename VT1    // Type of the left-hand side dense vector
-        , typename VT2 >  // Type of the right-hand side dense vector
-void DVecDVecCross<VT1,VT2>::checkResults()
+        , typename VT2 >  // Type of the right-hand side sparse vector
+void DVecSVecCross<VT1,VT2>::checkResults()
 {
    if( !isEqual( dres_, refres_ ) ) {
       std::ostringstream oss;
@@ -2177,7 +2177,7 @@ void DVecDVecCross<VT1,VT2>::checkResults()
           << " Details:\n"
           << "   Left-hand side dense vector type:\n"
           << "     " << typeid( VT1 ).name() << "\n"
-          << "   Right-hand side dense vector type:\n"
+          << "   Right-hand side sparse vector type:\n"
           << "     " << typeid( VT2 ).name() << "\n"
           << "   Result:\n" << dres_ << "\n"
           << "   Expected result:\n" << refres_ << "\n";
@@ -2192,7 +2192,7 @@ void DVecDVecCross<VT1,VT2>::checkResults()
           << " Details:\n"
           << "   Left-hand side dense vector type:\n"
           << "     " << typeid( VT1 ).name() << "\n"
-          << "   Right-hand side dense vector type:\n"
+          << "   Right-hand side sparse vector type:\n"
           << "     " << typeid( VT2 ).name() << "\n"
           << "   Result:\n" << sres_ << "\n"
           << "   Expected result:\n" << refres_ << "\n";
@@ -2214,8 +2214,8 @@ void DVecDVecCross<VT1,VT2>::checkResults()
 // side and right-hand side operands used for the computations.
 */
 template< typename VT1    // Type of the left-hand side dense vector
-        , typename VT2 >  // Type of the right-hand side dense vector
-void DVecDVecCross<VT1,VT2>::checkTransposeResults()
+        , typename VT2 >  // Type of the right-hand side sparse vector
+void DVecSVecCross<VT1,VT2>::checkTransposeResults()
 {
    using blaze::IsTransposeVector;
 
@@ -2227,7 +2227,7 @@ void DVecDVecCross<VT1,VT2>::checkTransposeResults()
           << " Details:\n"
           << "   Left-hand side dense vector type:\n"
           << "     " << typeid( VT1 ).name() << "\n"
-          << "   Right-hand side dense vector type:\n"
+          << "   Right-hand side sparse vector type:\n"
           << "     " << typeid( VT2 ).name() << "\n"
           << "   Result:\n" << tdres_ << "\n"
           << "   Expected result:\n" << trefres_ << "\n";
@@ -2242,7 +2242,7 @@ void DVecDVecCross<VT1,VT2>::checkTransposeResults()
           << " Details:\n"
           << "   Left-hand side dense vector type:\n"
           << "     " << typeid( VT1 ).name() << "\n"
-          << "   Right-hand side dense vector type:\n"
+          << "   Right-hand side sparse vector type:\n"
           << "     " << typeid( VT2 ).name() << "\n"
           << "   Result:\n" << tsres_ << "\n"
           << "   Expected result:\n" << trefres_ << "\n";
@@ -2264,15 +2264,15 @@ void DVecDVecCross<VT1,VT2>::checkTransposeResults()
 /*!\brief Testing the vector cross product between two specific vector types.
 //
 // \param creator1 The creator for the left-hand side dense vector.
-// \param creator2 The creator for the right-hand side dense vector.
+// \param creator2 The creator for the right-hand side sparse vector.
 // \return void
 */
 template< typename VT1    // Type of the left-hand side dense vector
-        , typename VT2 >  // Type of the right-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side sparse vector
 void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
 {
    for( size_t rep=0; rep<repetitions; ++rep ) {
-      DVecDVecCross<VT1,VT2>( creator1, creator2 );
+      DVecSVecCross<VT1,VT2>( creator1, creator2 );
    }
 }
 //*************************************************************************************************
@@ -2288,24 +2288,24 @@ void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the definition of a dense vector/dense vector cross product test case.
+/*!\brief Macro for the definition of a dense vector/sparse vector cross product test case.
 */
-#define DEFINE_DVECDVECCROSS_TEST( VT1, VT2 ) \
-   extern template class blazetest::mathtest::dvecdveccross::DVecDVecCross<VT1,VT2>
+#define DEFINE_DVECSVECCROSS_TEST( VT1, VT2 ) \
+   extern template class blazetest::mathtest::dvecsveccross::DVecSVecCross<VT1,VT2>
 /*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of a dense vector/dense vector cross product test case.
+/*!\brief Macro for the execution of a dense vector/sparse vector cross product test case.
 */
-#define RUN_DVECDVECCROSS_TEST( C1, C2 ) \
-   blazetest::mathtest::dvecdveccross::runTest( C1, C2 )
+#define RUN_DVECSVECCROSS_TEST( C1, C2 ) \
+   blazetest::mathtest::dvecsveccross::runTest( C1, C2 )
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace dvecdveccross
+} // namespace dvecsveccross
 
 } // namespace mathtest
 
