@@ -417,6 +417,16 @@ if [ "$EIGEN" = "yes" ]; then
 fi
 DAXPY="$DAXPY \$(OBJECT_PATH)/MAIN_Daxpy.o"
 
+# Configuration of the dense vector/dense vector cross product benchmark
+DVECDVECCROSS="\$(OBJECT_PATH)/BLAZE_DVecDVecCross.o"
+if [ "$ARMADILLO" = "yes" ]; then
+   DVECDVECCROSS="$DVECDVECCROSS \$(OBJECT_PATH)/ARMADILLO_DVecDVecCross.o"
+fi
+if [ "$EIGEN" = "yes" ]; then
+   DVECDVECCROSS="$DVECDVECCROSS \$(OBJECT_PATH)/EIGEN_DVecDVecCross.o"
+fi
+DVECDVECCROSS="$DVECDVECCROSS \$(OBJECT_PATH)/MAIN_DVecDVecCross.o"
+
 # Configuration of the vector norm benchmark
 DVECNORM="\$(OBJECT_PATH)/CLASSIC_DVecNorm.o \$(OBJECT_PATH)/BLAZE_DVecNorm.o \$(OBJECT_PATH)/BOOST_DVecNorm.o"
 if [ "$BLITZ" = "yes" ]; then
@@ -1990,6 +2000,8 @@ binaries:
 	@\$(CXX) -o \$(INSTALL_PATH)/bin/svecsvecmult $SVECSVECMULT \$(LIBRARIES)
 	@echo "  Building daxpy product (daxpy) binary..."
 	@\$(CXX) -o \$(INSTALL_PATH)/bin/daxpy $DAXPY \$(LIBRARIES)
+	@echo "  Building dense vector/dense vector cross product (dvecdveccross) binary..."
+	@\$(CXX) -o \$(INSTALL_PATH)/bin/dvecdveccross $DVECDVECCROSS \$(LIBRARIES)
 	@echo "  Building dense vector norm (dvecnorm) binary..."
 	@\$(CXX) -o \$(INSTALL_PATH)/bin/dvecnorm $DVECNORM \$(LIBRARIES)
 	@echo "  Building dense vector/dense vector inner product (tdvecdvecmult) binary..."
@@ -2761,6 +2773,44 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MAIN_Daxpy.o:
 	@echo "  Building the benchmark..."
 	@\$(CXX) \$(CXXFLAGS) -DINSTALL_PATH='"\$(INSTALL_PATH)"' -c -o \$(OBJECT_PATH)/MAIN_Daxpy.o \$(INSTALL_PATH)/src/main/Daxpy.cpp \$(INCLUDES)
+EOF
+
+
+# Dense vector/dense vector cross product
+cat >> Makefile <<EOF
+
+dvecdveccross: \$(BINARY_PATH)/dvecdveccross
+\$(BINARY_PATH)/dvecdveccross: $DVECDVECCROSS
+	@\$(CXX) -o \$(BINARY_PATH)/dvecdveccross $DVECDVECCROSS \$(LIBRARIES)
+	@echo "... finished"
+	@echo
+\$(OBJECT_PATH)/BLAZE_DVecDVecCross.o:
+	@echo
+	@echo "Building dense vector/dense vector cross product (dvecdveccross) binary..."
+	@echo "  Building the Blaze kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLAZE_DVecDVecCross.o \$(INSTALL_PATH)/src/blaze/DVecDVecCross.cpp \$(INCLUDES)
+EOF
+
+if [ "$ARMADILLO" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/ARMADILLO_DVecDVecCross.o:
+	@echo "  Building the Armadillo kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/ARMADILLO_DVecDVecCross.o \$(INSTALL_PATH)/src/armadillo/DVecDVecCross.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$EIGEN" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/EIGEN_DVecDVecCross.o:
+	@echo "  Building the Eigen kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/EIGEN_DVecDVecCross.o \$(INSTALL_PATH)/src/eigen/DVecDVecCross.cpp \$(INCLUDES)
+EOF
+fi
+
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/MAIN_DVecDVecCross.o:
+	@echo "  Building the benchmark..."
+	@\$(CXX) \$(CXXFLAGS) -DINSTALL_PATH='"\$(INSTALL_PATH)"' -c -o \$(OBJECT_PATH)/MAIN_DVecDVecCross.o \$(INSTALL_PATH)/src/main/DVecDVecCross.cpp \$(INCLUDES)
 EOF
 
 
@@ -7757,6 +7807,7 @@ clean:
         bin/svecdvecmult $SVECDVECMULT \\
         bin/svecsvecmult $SVECSVECMULT \\
         bin/daxpy $DAXPY \\
+        bin/dvecdveccross $DVECDVECCROSS \\
         bin/dvecnorm $DVECNORM \\
         bin/tdvecdvecmult $TDVECDVECMULT \\
         bin/tdvecsvecmult $TDVECSVECMULT \\

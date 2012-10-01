@@ -23,6 +23,7 @@ dmattrans
 dmattsmatadd
 dmattsmatmult
 dvecdvecadd
+dvecdveccross
 dvecdvecmult
 dvecdvecsub
 dvecnorm
