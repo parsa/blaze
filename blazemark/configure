@@ -89,8 +89,6 @@ if [ "$GMM" != "yes" ] && [ "$GMM" != "no" ]; then
    echo "Invalid setting for the GMM++ library."
    exit 1
 fi
-
-# Checking the settings for the GMM++ library
 if [ "$GMM_ATLAS_INSTALLED" != "yes" ] && [ "$GMM_ATLAS_INSTALLED" != "no" ]; then
    echo "Invalid setting for the GMM_ATLAS_INSTALLED flag."
    exit 1
@@ -105,6 +103,26 @@ fi
 # Checking the settings for the FLENS library
 if [ "$FLENS" != "yes" ] && [ "$FLENS" != "no" ]; then
    echo "Invalid setting for the FLENS library."
+   exit 1
+fi
+if [ "$FLENS_ATLAS_INSTALLED" != "yes" ] && [ "$FLENS_ATLAS_INSTALLED" != "no" ]; then
+   echo "Invalid setting for the FLENS_ATLAS_INSTALLED flag."
+   exit 1
+fi
+if [ "$FLENS_GOTO_INSTALLED" != "yes" ] && [ "$FLENS_GOTO_INSTALLED" != "no" ]; then
+   echo "Invalid setting for the FLENS_GOTO_INSTALLED flag."
+   exit 1
+fi
+if [ "$FLENS_MKL_INSTALLED" != "yes" ] && [ "$FLENS_MKL_INSTALLED" != "no" ]; then
+   echo "Invalid setting for the FLENS_MKL_INSTALLED flag."
+   exit 1
+fi
+if [ "$FLENS_ATLAS_INSTALLED" = "yes" ] && [ "$FLENS_GOTO_INSTALLED" = "yes" ]; then
+   echo "Invalid setting for the FLENS BLAS support. Only one BLAS library must be selected."
+   exit 1
+fi
+if [ "$FLENS_ATLAS_INSTALLED" = "yes" ] && [ "$FLENS_MKL_INSTALLED" = "yes" ]; then
+   echo "Invalid setting for the FLENS BLAS support. Only one BLAS library must be selected."
    exit 1
 fi
 

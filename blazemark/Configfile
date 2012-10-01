@@ -109,8 +109,9 @@ ARMADILLO_INCLUDE_PATH=
 # use a C++-11 conform compiler (such as for instance GCC 4.7 or Intel 12.1.2). If either
 # the ATLAS, GOTO BLAS, or Intel MKL library is installed the according switch can be
 # set to 'yes' in order to accelerate several of FLENS kernels by an optimized BLAS
-# implementation. In case the FLENS include directory is not set, Blaze expects the
-# according headers in the standard paths (for example '/usr/include/flens').
+# implementation. Note however that only one of these switches can be set to 'yes'. In
+# case the FLENS include directory is not set, Blaze expects the according headers in
+# the standard paths (for example '/usr/include/flens').
 FLENS="no"
 FLENS_ATLAS_INSTALLED="no"
 FLENS_GOTO_INSTALLED="no"
