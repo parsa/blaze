@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazemark/flens/Init.h
-//  \brief Header file for the FLENS initialization functions
+//  \file blazemark/flens/TSMatDVecMult.h
+//  \brief Header file for the FLENS transpose sparse matrix/dense vector multiplication kernel
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,17 +19,36 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZEMARK_FLENS_INIT_H_
-#define _BLAZEMARK_FLENS_INIT_H_
+#ifndef _BLAZEMARK_FLENS_TSMATDVECMULT_H_
+#define _BLAZEMARK_FLENS_TSMATDVECMULT_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blazemark/flens/init/DenseVector.h>
-#include <blazemark/flens/init/GeCCSMatrix.h>
-#include <blazemark/flens/init/GeCRSMatrix.h>
-#include <blazemark/flens/init/GeMatrix.h>
+#include <blazemark/system/Types.h>
+
+
+namespace blazemark {
+
+namespace flens {
+
+//=================================================================================================
+//
+//  KERNEL FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\name FLENS kernel functions */
+//@{
+double tsmatdvecmult( size_t N, size_t F, size_t steps );
+//@}
+//*************************************************************************************************
+
+} // namespace flens
+
+} // namespace blazemark
 
 #endif

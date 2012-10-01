@@ -38,10 +38,12 @@
 #include <blazemark/blaze/TSMatDVecMult.h>
 #include <blazemark/boost/TSMatDVecMult.h>
 #include <blazemark/eigen/TSMatDVecMult.h>
+#include <blazemark/flens/TSMatDVecMult.h>
 #include <blazemark/gmm/TSMatDVecMult.h>
 #include <blazemark/mtl/TSMatDVecMult.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/Eigen.h>
+#include <blazemark/system/FLENS.h>
 #include <blazemark/system/GMM.h>
 #include <blazemark/system/MTL.h>
 #include <blazemark/system/Types.h>
@@ -199,6 +201,25 @@ void tsmatdvecmult( std::vector<SparseRun>& runs, Benchmarks benchmarks )
             const size_t steps( run->getSteps()    );
             run->setGMMResult( blazemark::gmm::tsmatdvecmult( N, F, steps ) );
             const double mflops( ( 2UL*N*F - N ) * steps / run->getGMMResult() / 1E6 );
+            std::cout << "     " << std::setw(12) << N << mflops << std::endl;
+         }
+      }
+   }
+#endif
+
+#if BLAZEMARK_FLENS_MODE
+   if( benchmarks.runFLENS ) {
+      std::vector<SparseRun>::iterator run=runs.begin();
+      while( run != runs.end() ) {
+         const float fill( run->getFillingDegree() );
+         std::cout << "   FLENS (" << fill << "% filled) [MFlop/s]:\n";
+         for( ; run!=runs.end(); ++run ) {
+            if( run->getFillingDegree() != fill ) break;
+            const size_t N    ( run->getSize()     );
+            const size_t F    ( run->getNonZeros() );
+            const size_t steps( run->getSteps()    );
+            run->setFLENSResult( blazemark::flens::tsmatdvecmult( N, F, steps ) );
+            const double mflops( ( 2UL*N*F - N ) * steps / run->getFLENSResult() / 1E6 );
             std::cout << "     " << std::setw(12) << N << mflops << std::endl;
          }
       }

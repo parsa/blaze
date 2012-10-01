@@ -562,6 +562,9 @@ SMATDVECMULT="\$(OBJECT_PATH)/CLIKE_SMatDVecMult.o \$(OBJECT_PATH)/BLAZE_SMatDVe
 if [ "$GMM" = "yes" ]; then
    SMATDVECMULT="$SMATDVECMULT \$(OBJECT_PATH)/GMM_SMatDVecMult.o"
 fi
+if [ "$FLENS" = "yes" ]; then
+   SMATDVECMULT="$SMATDVECMULT \$(OBJECT_PATH)/FLENS_SMatDVecMult.o"
+fi
 if [ "$MTL" = "yes" ]; then
    SMATDVECMULT="$SMATDVECMULT \$(OBJECT_PATH)/MTL_SMatDVecMult.o"
 fi
@@ -574,6 +577,9 @@ SMATDVECMULT="$SMATDVECMULT \$(OBJECT_PATH)/MAIN_SMatDVecMult.o"
 TSMATDVECMULT="\$(OBJECT_PATH)/BLAZE_TSMatDVecMult.o \$(OBJECT_PATH)/BOOST_TSMatDVecMult.o"
 if [ "$GMM" = "yes" ]; then
    TSMATDVECMULT="$TSMATDVECMULT \$(OBJECT_PATH)/GMM_TSMatDVecMult.o"
+fi
+if [ "$FLENS" = "yes" ]; then
+   TSMATDVECMULT="$TSMATDVECMULT \$(OBJECT_PATH)/FLENS_TSMatDVecMult.o"
 fi
 if [ "$MTL" = "yes" ]; then
    TSMATDVECMULT="$TSMATDVECMULT \$(OBJECT_PATH)/MTL_TSMatDVecMult.o"
@@ -3361,6 +3367,14 @@ cat >> Makefile <<EOF
 EOF
 fi
 
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_SMatDVecMult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_SMatDVecMult.o \$(INSTALL_PATH)/src/flens/SMatDVecMult.cpp \$(INCLUDES)
+EOF
+fi
+
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MTL_SMatDVecMult.o:
@@ -3407,6 +3421,14 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/GMM_TSMatDVecMult.o:
 	@echo "  Building the GMM++ kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/GMM_TSMatDVecMult.o \$(INSTALL_PATH)/src/gmm/TSMatDVecMult.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$FLENS" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/FLENS_TSMatDVecMult.o:
+	@echo "  Building the FLENS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_TSMatDVecMult.o \$(INSTALL_PATH)/src/flens/TSMatDVecMult.cpp \$(INCLUDES)
 EOF
 fi
 
