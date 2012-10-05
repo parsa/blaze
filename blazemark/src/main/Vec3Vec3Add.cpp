@@ -104,7 +104,7 @@ void estimateSteps( Run& run )
    using blazemark::element_t;
    using blaze::columnVector;
 
-   const size_t N( run.getSize() );
+   const size_t N( run.getNumber() );
 
    blaze::StaticVector<element_t,3UL,columnVector> init( 0.1 );
    std::vector< blaze::StaticVector<element_t,3UL,columnVector> > a( N, init ), b( N, init ), c( N );
@@ -169,8 +169,8 @@ void vec3vec3add( std::vector<Run>& runs, Benchmarks benchmarks )
    if( benchmarks.runBlaze ) {
       std::cout << "   Blaze [MFlop/s]:\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
-         const size_t N    ( run->getSize()  );
-         const size_t steps( run->getSteps() );
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
          run->setBlazeResult( blazemark::blaze::vec3vec3add( N, steps ) );
          const double mflops( 3UL * steps / run->getBlazeResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
@@ -180,8 +180,8 @@ void vec3vec3add( std::vector<Run>& runs, Benchmarks benchmarks )
    if( benchmarks.runBoost ) {
       std::cout << "   Boost uBLAS [MFlop/s]:\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
-         const size_t N    ( run->getSize()  );
-         const size_t steps( run->getSteps() );
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
          run->setBoostResult( blazemark::boost::vec3vec3add( N, steps ) );
          const double mflops( 3UL * steps / run->getBoostResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
@@ -192,8 +192,8 @@ void vec3vec3add( std::vector<Run>& runs, Benchmarks benchmarks )
    if( benchmarks.runBlitz ) {
       std::cout << "   Blitz++ [MFlop/s]:\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
-         const size_t N    ( run->getSize()  );
-         const size_t steps( run->getSteps() );
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
          run->setBlitzResult( blazemark::blitz::vec3vec3add( N, steps ) );
          const double mflops( 3UL * steps / run->getBlitzResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
@@ -205,8 +205,8 @@ void vec3vec3add( std::vector<Run>& runs, Benchmarks benchmarks )
    if( benchmarks.runGMM ) {
       std::cout << "   GMM++ [MFlop/s]:\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
-         const size_t N    ( run->getSize()  );
-         const size_t steps( run->getSteps() );
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
          run->setGMMResult( blazemark::gmm::vec3vec3add( N, steps ) );
          const double mflops( 3UL * steps / run->getGMMResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
@@ -218,8 +218,8 @@ void vec3vec3add( std::vector<Run>& runs, Benchmarks benchmarks )
    if( benchmarks.runArmadillo ) {
       std::cout << "   Armadillo [MFlop/s]:\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
-         const size_t N    ( run->getSize()  );
-         const size_t steps( run->getSteps() );
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
          run->setArmadilloResult( blazemark::armadillo::vec3vec3add( N, steps ) );
          const double mflops( 3UL * steps / run->getArmadilloResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
@@ -231,8 +231,8 @@ void vec3vec3add( std::vector<Run>& runs, Benchmarks benchmarks )
    if( benchmarks.runFLENS ) {
       std::cout << "   FLENS [MFlop/s]:\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
-         const size_t N    ( run->getSize()  );
-         const size_t steps( run->getSteps() );
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
          run->setFLENSResult( blazemark::flens::vec3vec3add( N, steps ) );
          const double mflops( 3UL * steps / run->getFLENSResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
@@ -244,8 +244,8 @@ void vec3vec3add( std::vector<Run>& runs, Benchmarks benchmarks )
    if( benchmarks.runMTL ) {
       std::cout << "   MTL [MFlop/s]:\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
-         const size_t N    ( run->getSize()  );
-         const size_t steps( run->getSteps() );
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
          run->setMTLResult( blazemark::mtl::vec3vec3add( N, steps ) );
          const double mflops( 3UL * steps / run->getMTLResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
@@ -257,8 +257,8 @@ void vec3vec3add( std::vector<Run>& runs, Benchmarks benchmarks )
    if( benchmarks.runEigen ) {
       std::cout << "   Eigen [MFlop/s]:\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
-         const size_t N    ( run->getSize()  );
-         const size_t steps( run->getSteps() );
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
          run->setEigenResult( blazemark::eigen::vec3vec3add( N, steps ) );
          const double mflops( 3UL * steps / run->getEigenResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << "\n";

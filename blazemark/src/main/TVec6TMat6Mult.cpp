@@ -100,7 +100,7 @@ void estimateSteps( Run& run )
    using blaze::rowVector;
    using blaze::columnMajor;
 
-   const size_t N( run.getSize() );
+   const size_t N( run.getNumber() );
 
    blaze::StaticVector<element_t,6UL,rowVector> vec( 0.1 );
    blaze::StaticMatrix<element_t,6UL,6UL,columnMajor> mat( 0.1 );
@@ -167,8 +167,8 @@ void tvec6tmat6mult( std::vector<Run>& runs, Benchmarks benchmarks )
    if( benchmarks.runBlaze ) {
       std::cout << "   Blaze [MFlop/s]:\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
-         const size_t N    ( run->getSize()  );
-         const size_t steps( run->getSteps() );
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
          run->setBlazeResult( blazemark::blaze::tvec6tmat6mult( N, steps ) );
          const double mflops( 15UL * steps / run->getBlazeResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
@@ -178,8 +178,8 @@ void tvec6tmat6mult( std::vector<Run>& runs, Benchmarks benchmarks )
    if( benchmarks.runBoost ) {
       std::cout << "   Boost uBLAS [MFlop/s]:\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
-         const size_t N    ( run->getSize()  );
-         const size_t steps( run->getSteps() );
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
          run->setBoostResult( blazemark::boost::tvec6tmat6mult( N, steps ) );
          const double mflops( 15UL * steps / run->getBoostResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
@@ -190,8 +190,8 @@ void tvec6tmat6mult( std::vector<Run>& runs, Benchmarks benchmarks )
    if( benchmarks.runArmadillo ) {
       std::cout << "   Armadillo [MFlop/s]:\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
-         const size_t N    ( run->getSize()  );
-         const size_t steps( run->getSteps() );
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
          run->setArmadilloResult( blazemark::armadillo::tvec6tmat6mult( N, steps ) );
          const double mflops( 15UL * steps / run->getArmadilloResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
@@ -203,8 +203,8 @@ void tvec6tmat6mult( std::vector<Run>& runs, Benchmarks benchmarks )
    if( benchmarks.runFLENS ) {
       std::cout << "   FLENS [MFlop/s]:\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
-         const size_t N    ( run->getSize()  );
-         const size_t steps( run->getSteps() );
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
          run->setFLENSResult( blazemark::flens::tvec6tmat6mult( N, steps ) );
          const double mflops( 15UL * steps / run->getFLENSResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
@@ -216,8 +216,8 @@ void tvec6tmat6mult( std::vector<Run>& runs, Benchmarks benchmarks )
    if( benchmarks.runEigen ) {
       std::cout << "   Eigen [MFlop/s]:\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
-         const size_t N    ( run->getSize()  );
-         const size_t steps( run->getSteps() );
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
          run->setEigenResult( blazemark::eigen::tvec6tmat6mult( N, steps ) );
          const double mflops( 15UL * steps / run->getEigenResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;

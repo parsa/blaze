@@ -101,7 +101,7 @@ void estimateSteps( Run& run )
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-   const size_t N( run.getSize() );
+   const size_t N( run.getNumber() );
 
    blaze::StaticMatrix<element_t,3UL,3UL,rowMajor> init( 0.1 );
    std::vector< blaze::StaticMatrix<element_t,3UL,3UL,rowMajor> > A( N, init ), C( N );
@@ -167,8 +167,8 @@ void mat3tmat3mult( std::vector<Run>& runs, Benchmarks benchmarks )
    if( benchmarks.runBlaze ) {
       std::cout << "   Blaze [MFlop/s]:\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
-         const size_t N    ( run->getSize()  );
-         const size_t steps( run->getSteps() );
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
          run->setBlazeResult( blazemark::blaze::mat3tmat3mult( N, steps ) );
          const double mflops( 45UL * steps / run->getBlazeResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
@@ -178,8 +178,8 @@ void mat3tmat3mult( std::vector<Run>& runs, Benchmarks benchmarks )
    if( benchmarks.runBoost ) {
       std::cout << "   Boost uBLAS [MFlop/s]:\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
-         const size_t N    ( run->getSize()  );
-         const size_t steps( run->getSteps() );
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
          run->setBoostResult( blazemark::boost::mat3tmat3mult( N, steps ) );
          const double mflops( 45UL * steps / run->getBoostResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
@@ -190,8 +190,8 @@ void mat3tmat3mult( std::vector<Run>& runs, Benchmarks benchmarks )
    if( benchmarks.runBlitz ) {
       std::cout << "   Blitz++ [MFlop/s]:\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
-         const size_t N    ( run->getSize()  );
-         const size_t steps( run->getSteps() );
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
          run->setBlitzResult( blazemark::blitz::mat3tmat3mult( N, steps ) );
          const double mflops( 45UL * steps / run->getBlitzResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
@@ -203,8 +203,8 @@ void mat3tmat3mult( std::vector<Run>& runs, Benchmarks benchmarks )
    if( benchmarks.runFLENS ) {
       std::cout << "   FLENS [MFlop/s]:\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
-         const size_t N    ( run->getSize()  );
-         const size_t steps( run->getSteps() );
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
          run->setFLENSResult( blazemark::flens::mat3tmat3mult( N, steps ) );
          const double mflops( 45UL * steps / run->getFLENSResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
@@ -216,8 +216,8 @@ void mat3tmat3mult( std::vector<Run>& runs, Benchmarks benchmarks )
    if( benchmarks.runMTL ) {
       std::cout << "   MTL [MFlop/s]:\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
-         const size_t N    ( run->getSize()  );
-         const size_t steps( run->getSteps() );
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
          run->setMTLResult( blazemark::mtl::mat3tmat3mult( N, steps ) );
          const double mflops( 45UL * steps / run->getMTLResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
@@ -229,8 +229,8 @@ void mat3tmat3mult( std::vector<Run>& runs, Benchmarks benchmarks )
    if( benchmarks.runEigen ) {
       std::cout << "   Eigen [MFlop/s]:\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
-         const size_t N    ( run->getSize()  );
-         const size_t steps( run->getSteps() );
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
          run->setEigenResult( blazemark::eigen::mat3tmat3mult( N, steps ) );
          const double mflops( 45UL * steps / run->getEigenResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;

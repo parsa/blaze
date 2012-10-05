@@ -93,7 +93,7 @@ void estimateSteps( Run& run )
    using blazemark::element_t;
    using blaze::columnVector;
 
-   const size_t N( run.getSize() );
+   const size_t N( run.getNumber() );
    const size_t F( run.getNonZeros() );
 
    blaze::StaticVector<element_t,3UL,columnVector> init( 0.1 );
