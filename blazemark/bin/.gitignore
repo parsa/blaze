@@ -59,6 +59,7 @@ svecdveccross
 svecdvecmult
 svecscalarmult
 svecsvecadd
+svecsveccross
 svecsvecmult
 svectdvecmult
 svectsvecmult

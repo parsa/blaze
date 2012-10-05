@@ -451,6 +451,9 @@ DVECSVECCROSS="\$(OBJECT_PATH)/BLAZE_DVecSVecCross.o \$(OBJECT_PATH)/MAIN_DVecSV
 # Configuration of the sparse vector/dense vector cross product benchmark
 SVECDVECCROSS="\$(OBJECT_PATH)/BLAZE_SVecDVecCross.o \$(OBJECT_PATH)/MAIN_SVecDVecCross.o"
 
+# Configuration of the sparse vector/sparse vector cross product benchmark
+SVECSVECCROSS="\$(OBJECT_PATH)/BLAZE_SVecSVecCross.o \$(OBJECT_PATH)/MAIN_SVecSVecCross.o"
+
 # Configuration of the vector norm benchmark
 DVECNORM="\$(OBJECT_PATH)/CLASSIC_DVecNorm.o \$(OBJECT_PATH)/BLAZE_DVecNorm.o \$(OBJECT_PATH)/BOOST_DVecNorm.o"
 if [ "$BLITZ" = "yes" ]; then
@@ -2030,6 +2033,8 @@ binaries:
 	@\$(CXX) -o \$(INSTALL_PATH)/bin/dvecsveccross $DVECSVECCROSS \$(LIBRARIES)
 	@echo "  Building sparse vector/dense vector cross product (svecdveccross) binary..."
 	@\$(CXX) -o \$(INSTALL_PATH)/bin/svecdveccross $SVECDVECCROSS \$(LIBRARIES)
+	@echo "  Building sparse vector/sparse vector cross product (svecsveccross) binary..."
+	@\$(CXX) -o \$(INSTALL_PATH)/bin/svecsveccross $SVECSVECCROSS \$(LIBRARIES)
 	@echo "  Building dense vector norm (dvecnorm) binary..."
 	@\$(CXX) -o \$(INSTALL_PATH)/bin/dvecnorm $DVECNORM \$(LIBRARIES)
 	@echo "  Building dense vector/dense vector inner product (tdvecdvecmult) binary..."
@@ -2877,6 +2882,25 @@ svecdveccross: \$(BINARY_PATH)/svecdveccross
 \$(OBJECT_PATH)/MAIN_SVecDVecCross.o:
 	@echo "  Building the benchmark..."
 	@\$(CXX) \$(CXXFLAGS) -DINSTALL_PATH='"\$(INSTALL_PATH)"' -c -o \$(OBJECT_PATH)/MAIN_SVecDVecCross.o \$(INSTALL_PATH)/src/main/SVecDVecCross.cpp \$(INCLUDES)
+EOF
+
+
+# Sparse vector/sparse vector cross product
+cat >> Makefile <<EOF
+
+svecsveccross: \$(BINARY_PATH)/svecsveccross
+\$(BINARY_PATH)/svecsveccross: $SVECSVECCROSS
+	@\$(CXX) -o \$(BINARY_PATH)/svecsveccross $SVECSVECCROSS \$(LIBRARIES)
+	@echo "... finished"
+	@echo
+\$(OBJECT_PATH)/BLAZE_SVecSVecCross.o:
+	@echo
+	@echo "Building sparse vector/dense vector cross product (svecsveccross) binary..."
+	@echo "  Building the Blaze kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLAZE_SVecSVecCross.o \$(INSTALL_PATH)/src/blaze/SVecSVecCross.cpp \$(INCLUDES)
+\$(OBJECT_PATH)/MAIN_SVecSVecCross.o:
+	@echo "  Building the benchmark..."
+	@\$(CXX) \$(CXXFLAGS) -DINSTALL_PATH='"\$(INSTALL_PATH)"' -c -o \$(OBJECT_PATH)/MAIN_SVecSVecCross.o \$(INSTALL_PATH)/src/main/SVecSVecCross.cpp \$(INCLUDES)
 EOF
 
 
@@ -7876,6 +7900,7 @@ clean:
         bin/dvecdveccross $DVECDVECCROSS \\
         bin/dvecsveccross $DVECSVECCROSS \\
         bin/svecdveccross $SVECDVECCROSS \\
+        bin/svecsveccross $SVECSVECCROSS \\
         bin/dvecnorm $DVECNORM \\
         bin/tdvecdvecmult $TDVECDVECMULT \\
         bin/tdvecsvecmult $TDVECSVECMULT \\
