@@ -63,6 +63,24 @@ using blazemark::SolverRun;
 
 //=================================================================================================
 //
+//  TYPE DEFINITIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Type of a benchmark run.
+//
+// This type definition specifies the type of a single benchmark run for the conjugate gradient
+// benchmark.
+*/
+typedef SolverRun  Run;
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
@@ -76,7 +94,7 @@ using blazemark::SolverRun;
 // This function estimates the necessary number of steps for the given benchmark based on the
 // performance of the Blaze library.
 */
-void estimateSteps( SolverRun& run )
+void estimateSteps( Run& run )
 {
    using blazemark::element_t;
    using blaze::columnVector;
@@ -172,19 +190,19 @@ void estimateSteps( SolverRun& run )
 // \param benchmarks The selection of benchmarks.
 // \return void
 */
-void cg( std::vector<SolverRun>& runs, Benchmarks benchmarks )
+void cg( std::vector<Run>& runs, Benchmarks benchmarks )
 {
    std::cout << std::left;
 
    std::sort( runs.begin(), runs.end() );
 
-   for( std::vector<SolverRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+   for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
       estimateSteps( *run );
    }
 
    if( benchmarks.runBlaze ) {
       std::cout << "   Blaze [MFlop/s]:\n";
-      for( std::vector<SolverRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N         ( run->getSize()  );
          const size_t steps     ( run->getSteps() );
          const size_t iterations( run->getIterations() );
@@ -197,7 +215,7 @@ void cg( std::vector<SolverRun>& runs, Benchmarks benchmarks )
 
    if( benchmarks.runBoost ) {
       std::cout << "   Boost uBLAS [MFlop/s]:\n";
-      for( std::vector<SolverRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N         ( run->getSize()  );
          const size_t steps     ( run->getSteps() );
          const size_t iterations( run->getIterations() );
@@ -211,7 +229,7 @@ void cg( std::vector<SolverRun>& runs, Benchmarks benchmarks )
 #if BLAZEMARK_GMM_MODE
    if( benchmarks.runGMM ) {
       std::cout << "   GMM++ [MFlop/s]:\n";
-      for( std::vector<SolverRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N         ( run->getSize()  );
          const size_t steps     ( run->getSteps() );
          const size_t iterations( run->getIterations() );
@@ -226,7 +244,7 @@ void cg( std::vector<SolverRun>& runs, Benchmarks benchmarks )
 #if BLAZEMARK_MTL_MODE
    if( benchmarks.runMTL ) {
       std::cout << "   MTL [MFlop/s]:\n";
-      for( std::vector<SolverRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N         ( run->getSize()  );
          const size_t steps     ( run->getSteps() );
          const size_t iterations( run->getIterations() );
@@ -241,7 +259,7 @@ void cg( std::vector<SolverRun>& runs, Benchmarks benchmarks )
 #if BLAZEMARK_EIGEN_MODE
    if( benchmarks.runEigen ) {
       std::cout << "   Eigen [MFlop/s]:\n";
-      for( std::vector<SolverRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N         ( run->getSize()  );
          const size_t steps     ( run->getSteps() );
          const size_t iterations( run->getIterations() );
@@ -253,7 +271,7 @@ void cg( std::vector<SolverRun>& runs, Benchmarks benchmarks )
    }
 #endif
 
-   for( std::vector<SolverRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+   for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
       std::cout << *run;
    }
 }
@@ -291,8 +309,8 @@ int main( int argc, char** argv )
 
    const std::string installPath( INSTALL_PATH );
    const std::string parameterFile( installPath + "/params/cg.prm" );
-   Parser<SolverRun> parser;
-   std::vector<SolverRun> runs;
+   Parser<Run> parser;
+   std::vector<Run> runs;
 
    try {
       parser.parse( parameterFile.c_str(), runs );

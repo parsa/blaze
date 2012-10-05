@@ -52,7 +52,7 @@
 #include <blazemark/system/MTL.h>
 #include <blazemark/system/Types.h>
 #include <blazemark/util/Benchmarks.h>
-#include <blazemark/util/DenseRun.h>
+#include <blazemark/util/DynamicDenseRun.h>
 #include <blazemark/util/Parser.h>
 
 
@@ -61,8 +61,27 @@
 //*************************************************************************************************
 
 using blazemark::Benchmarks;
-using blazemark::DenseRun;
+using blazemark::DynamicDenseRun;
 using blazemark::Parser;
+
+
+
+
+//=================================================================================================
+//
+//  TYPE DEFINITIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Type of a benchmark run.
+//
+// This type definition specifies the type of a single benchmark run for the complex
+// expression D = A * B * C.
+*/
+typedef DynamicDenseRun  Run;
+//*************************************************************************************************
+
 
 
 
@@ -81,7 +100,7 @@ using blazemark::Parser;
 // This function estimates the necessary number of steps for the given benchmark based on the
 // performance of the Blaze library.
 */
-void estimateSteps( DenseRun& run )
+void estimateSteps( Run& run )
 {
    using blazemark::element_t;
    using blaze::columnMajor;
@@ -127,14 +146,14 @@ void estimateSteps( DenseRun& run )
 // \param benchmarks The selection of benchmarks.
 // \return void
 */
-void complex6( std::vector<DenseRun>& runs, Benchmarks benchmarks )
+void complex6( std::vector<Run>& runs, Benchmarks benchmarks )
 {
    std::cout << std::left;
 
    std::sort( runs.begin(), runs.end() );
 
    size_t slowSize( blaze::inf );
-   for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+   for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
       if( run->getSteps() == 0UL ) {
          if( run->getSize() < slowSize ) {
             estimateSteps( *run );
@@ -147,7 +166,7 @@ void complex6( std::vector<DenseRun>& runs, Benchmarks benchmarks )
 
    if( benchmarks.runClassic ) {
       std::cout << "   Classic operator overloading [MFlop/s]:\n";
-      for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setClassicResult( blazemark::classic::complex6( N, steps ) );
@@ -158,7 +177,7 @@ void complex6( std::vector<DenseRun>& runs, Benchmarks benchmarks )
 
    if( benchmarks.runBlaze ) {
       std::cout << "   Blaze [MFlop/s]:\n";
-      for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setBlazeResult( blazemark::blaze::complex6( N, steps ) );
@@ -169,7 +188,7 @@ void complex6( std::vector<DenseRun>& runs, Benchmarks benchmarks )
 
    if( benchmarks.runBoost ) {
       std::cout << "   Boost uBLAS [MFlop/s]:\n";
-      for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setBoostResult( blazemark::boost::complex6( N, steps ) );
@@ -181,7 +200,7 @@ void complex6( std::vector<DenseRun>& runs, Benchmarks benchmarks )
 #if BLAZEMARK_BLITZ_MODE
    if( benchmarks.runBlitz ) {
       std::cout << "   Blitz++ [MFlop/s]:\n";
-      for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setBlitzResult( blazemark::blitz::complex6( N, steps ) );
@@ -194,7 +213,7 @@ void complex6( std::vector<DenseRun>& runs, Benchmarks benchmarks )
 #if BLAZEMARK_GMM_MODE
    if( benchmarks.runGMM ) {
       std::cout << "   GMM++ [MFlop/s]:\n";
-      for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setGMMResult( blazemark::gmm::complex6( N, steps ) );
@@ -207,7 +226,7 @@ void complex6( std::vector<DenseRun>& runs, Benchmarks benchmarks )
 #if BLAZEMARK_ARMADILLO_MODE
    if( benchmarks.runArmadillo ) {
       std::cout << "   Armadillo [MFlop/s]:\n";
-      for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setArmadilloResult( blazemark::armadillo::complex6( N, steps ) );
@@ -220,7 +239,7 @@ void complex6( std::vector<DenseRun>& runs, Benchmarks benchmarks )
 #if BLAZEMARK_FLENS_MODE
    if( benchmarks.runFLENS ) {
       std::cout << "   FLENS [MFlop/s]:\n";
-      for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setFLENSResult( blazemark::flens::complex6( N, steps ) );
@@ -233,7 +252,7 @@ void complex6( std::vector<DenseRun>& runs, Benchmarks benchmarks )
 #if BLAZEMARK_MTL_MODE
    if( benchmarks.runMTL ) {
       std::cout << "   MTL [MFlop/s]:\n";
-      for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setMTLResult( blazemark::mtl::complex6( N, steps ) );
@@ -246,7 +265,7 @@ void complex6( std::vector<DenseRun>& runs, Benchmarks benchmarks )
 #if BLAZEMARK_EIGEN_MODE
    if( benchmarks.runEigen ) {
       std::cout << "   Eigen [MFlop/s]:\n";
-      for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setEigenResult( blazemark::eigen::complex6( N, steps ) );
@@ -256,7 +275,7 @@ void complex6( std::vector<DenseRun>& runs, Benchmarks benchmarks )
    }
 #endif
 
-   for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+   for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
       std::cout << *run;
    }
 }
@@ -294,8 +313,8 @@ int main( int argc, char** argv )
 
    const std::string installPath( INSTALL_PATH );
    const std::string parameterFile( installPath + "/params/complex6.prm" );
-   Parser<DenseRun> parser;
-   std::vector<DenseRun> runs;
+   Parser<Run> parser;
+   std::vector<Run> runs;
 
    try {
       parser.parse( parameterFile.c_str(), runs );

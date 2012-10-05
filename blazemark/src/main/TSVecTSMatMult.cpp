@@ -40,9 +40,9 @@
 #include <blazemark/system/Config.h>
 #include <blazemark/system/Types.h>
 #include <blazemark/util/Benchmarks.h>
+#include <blazemark/util/DynamicSparseRun.h>
 #include <blazemark/util/Indices.h>
 #include <blazemark/util/Parser.h>
-#include <blazemark/util/SparseRun.h>
 
 
 //*************************************************************************************************
@@ -50,8 +50,26 @@
 //*************************************************************************************************
 
 using blazemark::Benchmarks;
+using blazemark::DynamicSparseRun;
 using blazemark::Parser;
-using blazemark::SparseRun;
+
+
+
+
+//=================================================================================================
+//
+//  TYPE DEFINITIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Type of a benchmark run.
+//
+// This type definition specifies the type of a single benchmark run for the transpose sparse
+// vector/transpose sparse matrix multiplication benchmark.
+*/
+typedef DynamicSparseRun  Run;
+//*************************************************************************************************
 
 
 
@@ -71,7 +89,7 @@ using blazemark::SparseRun;
 // This function estimates the necessary number of steps for the given benchmark based on the
 // performance of the Blaze library.
 */
-void estimateSteps( SparseRun& run )
+void estimateSteps( Run& run )
 {
    using blazemark::element_t;
    using blaze::rowVector;
@@ -135,14 +153,14 @@ void estimateSteps( SparseRun& run )
 // \param benchmarks The selection of benchmarks.
 // \return void
 */
-void tsvectsmatmult( std::vector<SparseRun>& runs, Benchmarks benchmarks )
+void tsvectsmatmult( std::vector<Run>& runs, Benchmarks benchmarks )
 {
    std::cout << std::left;
 
    std::sort( runs.begin(), runs.end() );
 
    size_t slowSize( blaze::inf );
-   for( std::vector<SparseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+   for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
       if( run->getSteps() == 0UL ) {
          if( run->getSize() < slowSize ) {
             estimateSteps( *run );
@@ -154,7 +172,7 @@ void tsvectsmatmult( std::vector<SparseRun>& runs, Benchmarks benchmarks )
    }
 
    if( benchmarks.runBlaze ) {
-      std::vector<SparseRun>::iterator run=runs.begin();
+      std::vector<Run>::iterator run=runs.begin();
       while( run != runs.end() ) {
          const float fill( run->getFillingDegree() );
          std::cout << "   Blaze (" << fill << "% filled) [MFlop/s]:\n";
@@ -171,7 +189,7 @@ void tsvectsmatmult( std::vector<SparseRun>& runs, Benchmarks benchmarks )
    }
 
    if( benchmarks.runBoost ) {
-      std::vector<SparseRun>::iterator run=runs.begin();
+      std::vector<Run>::iterator run=runs.begin();
       while( run != runs.end() ) {
          const float fill( run->getFillingDegree() );
          std::cout << "   Boost uBLAS (" << fill << "% filled) [MFlop/s]:\n";
@@ -187,7 +205,7 @@ void tsvectsmatmult( std::vector<SparseRun>& runs, Benchmarks benchmarks )
       }
    }
 
-   for( std::vector<SparseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+   for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
       std::cout << *run;
    }
 }
@@ -226,8 +244,8 @@ int main( int argc, char** argv )
 
    const std::string installPath( INSTALL_PATH );
    const std::string parameterFile( installPath + "/params/tsvectsmatmult.prm" );
-   Parser<SparseRun> parser;
-   std::vector<SparseRun> runs;
+   Parser<Run> parser;
+   std::vector<Run> runs;
 
    try {
       parser.parse( parameterFile.c_str(), runs );

@@ -47,7 +47,7 @@
 #include <blazemark/system/Eigen.h>
 #include <blazemark/system/Types.h>
 #include <blazemark/util/Benchmarks.h>
-#include <blazemark/util/DenseRun.h>
+#include <blazemark/util/DynamicDenseRun.h>
 #include <blazemark/util/Parser.h>
 
 
@@ -56,8 +56,26 @@
 //*************************************************************************************************
 
 using blazemark::Benchmarks;
-using blazemark::DenseRun;
+using blazemark::DynamicDenseRun;
 using blazemark::Parser;
+
+
+
+
+//=================================================================================================
+//
+//  TYPE DEFINITIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Type of a benchmark run.
+//
+// This type definition specifies the type of a single benchmark run for the dense vector/dense
+// vector multiplication benchmark.
+*/
+typedef DynamicDenseRun  Run;
+//*************************************************************************************************
 
 
 
@@ -77,7 +95,7 @@ using blazemark::Parser;
 // This function estimates the necessary number of steps for the given benchmark based on the
 // performance of the Blaze library.
 */
-void estimateSteps( DenseRun& run )
+void estimateSteps( Run& run )
 {
    using blazemark::element_t;
    using blaze::columnVector;
@@ -123,14 +141,14 @@ void estimateSteps( DenseRun& run )
 // \param benchmarks The selection of benchmarks.
 // \return void
 */
-void dvecdvecmult( std::vector<DenseRun>& runs, Benchmarks benchmarks )
+void dvecdvecmult( std::vector<Run>& runs, Benchmarks benchmarks )
 {
    std::cout << std::left;
 
    std::sort( runs.begin(), runs.end() );
 
    size_t slowSize( blaze::inf );
-   for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+   for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
       if( run->getSteps() == 0UL ) {
          if( run->getSize() < slowSize ) {
             estimateSteps( *run );
@@ -143,7 +161,7 @@ void dvecdvecmult( std::vector<DenseRun>& runs, Benchmarks benchmarks )
 
    if( benchmarks.runClike ) {
       std::cout << "   C-like implementation [MFlop/s]:\n";
-      for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setClikeResult( blazemark::clike::dvecdvecmult( N, steps ) );
@@ -154,7 +172,7 @@ void dvecdvecmult( std::vector<DenseRun>& runs, Benchmarks benchmarks )
 
    if( benchmarks.runClassic ) {
       std::cout << "   Classic operator overloading [MFlop/s]:\n";
-      for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setClassicResult( blazemark::classic::dvecdvecmult( N, steps ) );
@@ -165,7 +183,7 @@ void dvecdvecmult( std::vector<DenseRun>& runs, Benchmarks benchmarks )
 
    if( benchmarks.runBlaze ) {
       std::cout << "   Blaze [MFlop/s]:\n";
-      for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setBlazeResult( blazemark::blaze::dvecdvecmult( N, steps ) );
@@ -176,7 +194,7 @@ void dvecdvecmult( std::vector<DenseRun>& runs, Benchmarks benchmarks )
 
    if( benchmarks.runBoost ) {
       std::cout << "   Boost uBLAS [MFlop/s]:\n";
-      for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setBoostResult( blazemark::boost::dvecdvecmult( N, steps ) );
@@ -188,7 +206,7 @@ void dvecdvecmult( std::vector<DenseRun>& runs, Benchmarks benchmarks )
 #if BLAZEMARK_BLITZ_MODE
    if( benchmarks.runBlitz ) {
       std::cout << "   Blitz++ [MFlop/s]:\n";
-      for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setBlitzResult( blazemark::blitz::dvecdvecmult( N, steps ) );
@@ -201,7 +219,7 @@ void dvecdvecmult( std::vector<DenseRun>& runs, Benchmarks benchmarks )
 #if BLAZEMARK_ARMADILLO_MODE
    if( benchmarks.runArmadillo ) {
       std::cout << "   Armadillo [MFlop/s]:\n";
-      for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setArmadilloResult( blazemark::armadillo::dvecdvecmult( N, steps ) );
@@ -214,7 +232,7 @@ void dvecdvecmult( std::vector<DenseRun>& runs, Benchmarks benchmarks )
 #if BLAZEMARK_EIGEN_MODE
    if( benchmarks.runEigen ) {
       std::cout << "   Eigen [MFlop/s]:\n";
-      for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setEigenResult( blazemark::eigen::dvecdvecmult( N, steps ) );
@@ -224,7 +242,7 @@ void dvecdvecmult( std::vector<DenseRun>& runs, Benchmarks benchmarks )
    }
 #endif
 
-   for( std::vector<DenseRun>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+   for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
       std::cout << *run;
    }
 }
@@ -262,8 +280,8 @@ int main( int argc, char** argv )
 
    const std::string installPath( INSTALL_PATH );
    const std::string parameterFile( installPath + "/params/dvecdvecmult.prm" );
-   Parser<DenseRun> parser;
-   std::vector<DenseRun> runs;
+   Parser<Run> parser;
+   std::vector<Run> runs;
 
    try {
       parser.parse( parameterFile.c_str(), runs );
