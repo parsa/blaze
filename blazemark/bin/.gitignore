@@ -55,6 +55,7 @@ smattrans
 smattsmatadd
 smattsmatmult
 svecdvecadd
+svecdveccross
 svecdvecmult
 svecscalarmult
 svecsvecadd
