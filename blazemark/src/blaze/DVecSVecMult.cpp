@@ -59,7 +59,6 @@ double dvecsvecmult( size_t N, size_t F, size_t steps )
 {
    using ::blazemark::element_t;
    using ::blaze::columnVector;
-   using ::blaze::rowMajor;
 
    ::blaze::setSeed( seed );
 
