@@ -445,6 +445,9 @@ if [ "$EIGEN" = "yes" ]; then
 fi
 DVECDVECCROSS="$DVECDVECCROSS \$(OBJECT_PATH)/MAIN_DVecDVecCross.o"
 
+# Configuration of the dense vector/sparse vector cross product benchmark
+DVECSVECCROSS="\$(OBJECT_PATH)/BLAZE_DVecSVecCross.o \$(OBJECT_PATH)/MAIN_DVecSVecCross.o"
+
 # Configuration of the vector norm benchmark
 DVECNORM="\$(OBJECT_PATH)/CLASSIC_DVecNorm.o \$(OBJECT_PATH)/BLAZE_DVecNorm.o \$(OBJECT_PATH)/BOOST_DVecNorm.o"
 if [ "$BLITZ" = "yes" ]; then
@@ -2020,6 +2023,8 @@ binaries:
 	@\$(CXX) -o \$(INSTALL_PATH)/bin/daxpy $DAXPY \$(LIBRARIES)
 	@echo "  Building dense vector/dense vector cross product (dvecdveccross) binary..."
 	@\$(CXX) -o \$(INSTALL_PATH)/bin/dvecdveccross $DVECDVECCROSS \$(LIBRARIES)
+	@echo "  Building dense vector/sparse vector cross product (dvecsveccross) binary..."
+	@\$(CXX) -o \$(INSTALL_PATH)/bin/dvecsveccross $DVECSVECCROSS \$(LIBRARIES)
 	@echo "  Building dense vector norm (dvecnorm) binary..."
 	@\$(CXX) -o \$(INSTALL_PATH)/bin/dvecnorm $DVECNORM \$(LIBRARIES)
 	@echo "  Building dense vector/dense vector inner product (tdvecdvecmult) binary..."
@@ -2829,6 +2834,25 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MAIN_DVecDVecCross.o:
 	@echo "  Building the benchmark..."
 	@\$(CXX) \$(CXXFLAGS) -DINSTALL_PATH='"\$(INSTALL_PATH)"' -c -o \$(OBJECT_PATH)/MAIN_DVecDVecCross.o \$(INSTALL_PATH)/src/main/DVecDVecCross.cpp \$(INCLUDES)
+EOF
+
+
+# Dense vector/sparse vector cross product
+cat >> Makefile <<EOF
+
+dvecsveccross: \$(BINARY_PATH)/dvecsveccross
+\$(BINARY_PATH)/dvecsveccross: $DVECSVECCROSS
+	@\$(CXX) -o \$(BINARY_PATH)/dvecsveccross $DVECSVECCROSS \$(LIBRARIES)
+	@echo "... finished"
+	@echo
+\$(OBJECT_PATH)/BLAZE_DVecSVecCross.o:
+	@echo
+	@echo "Building dense vector/sparse vector cross product (dvecsveccross) binary..."
+	@echo "  Building the Blaze kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLAZE_DVecSVecCross.o \$(INSTALL_PATH)/src/blaze/DVecSVecCross.cpp \$(INCLUDES)
+\$(OBJECT_PATH)/MAIN_DVecSVecCross.o:
+	@echo "  Building the benchmark..."
+	@\$(CXX) \$(CXXFLAGS) -DINSTALL_PATH='"\$(INSTALL_PATH)"' -c -o \$(OBJECT_PATH)/MAIN_DVecSVecCross.o \$(INSTALL_PATH)/src/main/DVecSVecCross.cpp \$(INCLUDES)
 EOF
 
 
@@ -7826,6 +7850,7 @@ clean:
         bin/svecsvecmult $SVECSVECMULT \\
         bin/daxpy $DAXPY \\
         bin/dvecdveccross $DVECDVECCROSS \\
+        bin/dvecsveccross $DVECSVECCROSS \\
         bin/dvecnorm $DVECNORM \\
         bin/tdvecdvecmult $TDVECDVECMULT \\
         bin/tdvecsvecmult $TDVECSVECMULT \\

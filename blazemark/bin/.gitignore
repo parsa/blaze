@@ -29,6 +29,7 @@ dvecdvecsub
 dvecnorm
 dvecscalarmult
 dvecsvecadd
+dvecsveccross
 dvecsvecmult
 dvectdvecmult
 dvectsvecmult
