@@ -138,6 +138,25 @@ void estimateSteps( Run& run )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Estimating the necessary number of floating point operations.
+//
+// \param run The parameters for the benchmark run.
+// \return void
+//
+// This function estimates the number of floating point operations required for a single
+// computation of the (composite) arithmetic operation.
+*/
+void estimateFlops( Run& run )
+{
+   const size_t N( run.getSize()     );
+   const size_t F( run.getNonZeros() );
+
+   run.setFlops( 2UL*N*N*F - N*N );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -160,7 +179,10 @@ void smattdmatmult( std::vector<Run>& runs, Benchmarks benchmarks )
    std::sort( runs.begin(), runs.end() );
 
    size_t slowSize( blaze::inf );
-   for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+   for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run )
+   {
+      estimateFlops( *run );
+
       if( run->getSteps() == 0UL ) {
          if( run->getSize() < slowSize ) {
             estimateSteps( *run );
@@ -182,7 +204,7 @@ void smattdmatmult( std::vector<Run>& runs, Benchmarks benchmarks )
             const size_t F    ( run->getNonZeros() );
             const size_t steps( run->getSteps()    );
             run->setBlazeResult( blazemark::blaze::smattdmatmult( N, F, steps ) );
-            const double mflops( ( 2UL*N*N*F - N*N ) * steps / run->getBlazeResult() / 1E6 );
+            const double mflops( run->getFlops() * steps / run->getBlazeResult() / 1E6 );
             std::cout << "     " << std::setw(12) << N << mflops << std::endl;
          }
       }
@@ -199,7 +221,7 @@ void smattdmatmult( std::vector<Run>& runs, Benchmarks benchmarks )
             const size_t F    ( run->getNonZeros() );
             const size_t steps( run->getSteps()    );
             run->setBoostResult( blazemark::boost::smattdmatmult( N, F, steps ) );
-            const double mflops( ( 2UL*N*N*F - N*N ) * steps / run->getBoostResult() / 1E6 );
+            const double mflops( run->getFlops() * steps / run->getBoostResult() / 1E6 );
             std::cout << "     " << std::setw(12) << N << mflops << std::endl;
          }
       }
@@ -217,7 +239,7 @@ void smattdmatmult( std::vector<Run>& runs, Benchmarks benchmarks )
             const size_t F    ( run->getNonZeros() );
             const size_t steps( run->getSteps()    );
             run->setGMMResult( blazemark::gmm::smattdmatmult( N, F, steps ) );
-            const double mflops( ( 2UL*N*N*F - N*N ) * steps / run->getGMMResult() / 1E6 );
+            const double mflops( run->getFlops() * steps / run->getGMMResult() / 1E6 );
             std::cout << "     " << std::setw(12) << N << mflops << std::endl;
          }
       }
@@ -236,7 +258,7 @@ void smattdmatmult( std::vector<Run>& runs, Benchmarks benchmarks )
             const size_t F    ( run->getNonZeros() );
             const size_t steps( run->getSteps()    );
             run->setMTLResult( blazemark::mtl::smattdmatmult( N, F, steps ) );
-            const double mflops( ( 2UL*N*N*F - N*N ) * steps / run->getMTLResult() / 1E6 );
+            const double mflops( run->getFlops() * steps / run->getMTLResult() / 1E6 );
             std::cout << "     " << std::setw(12) << N << mflops << std::endl;
          }
       }
@@ -255,7 +277,7 @@ void smattdmatmult( std::vector<Run>& runs, Benchmarks benchmarks )
             const size_t F    ( run->getNonZeros() );
             const size_t steps( run->getSteps()    );
             run->setEigenResult( blazemark::eigen::smattdmatmult( N, F, steps ) );
-            const double mflops( ( 2UL*N*N*F - N*N ) * steps / run->getEigenResult() / 1E6 );
+            const double mflops( run->getFlops() * steps / run->getEigenResult() / 1E6 );
             std::cout << "     " << std::setw(12) << N << mflops << std::endl;
          }
       }

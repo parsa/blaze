@@ -137,6 +137,22 @@ void estimateSteps( Run& run )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Estimating the necessary number of floating point operations.
+//
+// \param run The parameters for the benchmark run.
+// \return void
+//
+// This function estimates the number of floating point operations required for a single
+// computation of the (composite) arithmetic operation.
+*/
+void estimateFlops( Run& run )
+{
+   run.setFlops( 15UL );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -159,7 +175,10 @@ void tvec6tmat6mult( std::vector<Run>& runs, Benchmarks benchmarks )
    std::sort( runs.begin(), runs.end() );
 
    size_t slowSize( blaze::inf );
-   for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+   for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run )
+   {
+      estimateFlops( *run );
+
       if( run->getSteps() == 0UL ) {
          if( run->getSize() < slowSize ) {
             estimateSteps( *run );
@@ -176,7 +195,7 @@ void tvec6tmat6mult( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t N    ( run->getNumber() );
          const size_t steps( run->getSteps()  );
          run->setBlazeResult( blazemark::blaze::tvec6tmat6mult( N, steps ) );
-         const double mflops( 15UL * steps / run->getBlazeResult() / 1E6 );
+         const double mflops( run->getFlops() * steps / run->getBlazeResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
@@ -187,7 +206,7 @@ void tvec6tmat6mult( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t N    ( run->getNumber() );
          const size_t steps( run->getSteps()  );
          run->setBoostResult( blazemark::boost::tvec6tmat6mult( N, steps ) );
-         const double mflops( 15UL * steps / run->getBoostResult() / 1E6 );
+         const double mflops( run->getFlops() * steps / run->getBoostResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
@@ -199,7 +218,7 @@ void tvec6tmat6mult( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t N    ( run->getNumber() );
          const size_t steps( run->getSteps()  );
          run->setArmadilloResult( blazemark::armadillo::tvec6tmat6mult( N, steps ) );
-         const double mflops( 15UL * steps / run->getArmadilloResult() / 1E6 );
+         const double mflops( run->getFlops() * steps / run->getArmadilloResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
@@ -212,7 +231,7 @@ void tvec6tmat6mult( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t N    ( run->getNumber() );
          const size_t steps( run->getSteps()  );
          run->setFLENSResult( blazemark::flens::tvec6tmat6mult( N, steps ) );
-         const double mflops( 15UL * steps / run->getFLENSResult() / 1E6 );
+         const double mflops( run->getFlops() * steps / run->getFLENSResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
@@ -225,7 +244,7 @@ void tvec6tmat6mult( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t N    ( run->getNumber() );
          const size_t steps( run->getSteps()  );
          run->setEigenResult( blazemark::eigen::tvec6tmat6mult( N, steps ) );
-         const double mflops( 15UL * steps / run->getEigenResult() / 1E6 );
+         const double mflops( run->getFlops() * steps / run->getEigenResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }

@@ -138,6 +138,24 @@ void estimateSteps( Run& run )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Estimating the necessary number of floating point operations.
+//
+// \param run The parameters for the benchmark run.
+// \return void
+//
+// This function estimates the number of floating point operations required for a single
+// computation of the (composite) arithmetic operation.
+*/
+void estimateFlops( Run& run )
+{
+   const size_t N( run.getSize() );
+
+   run.setFlops( 2UL*N*N*N + N*N );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -160,7 +178,10 @@ void complex8( std::vector<Run>& runs, Benchmarks benchmarks )
    std::sort( runs.begin(), runs.end() );
 
    size_t slowSize( blaze::inf );
-   for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+   for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run )
+   {
+      estimateFlops( *run );
+
       if( run->getSteps() == 0UL ) {
          if( run->getSize() < slowSize ) {
             estimateSteps( *run );
@@ -177,7 +198,7 @@ void complex8( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setClassicResult( blazemark::classic::complex8( N, steps ) );
-         const double mflops( ( 2UL*N*N*N + N*N ) * steps / run->getClassicResult() / 1E6 );
+         const double mflops( run->getSteps() * steps / run->getClassicResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
@@ -188,7 +209,7 @@ void complex8( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setBlazeResult( blazemark::blaze::complex8( N, steps ) );
-         const double mflops( ( 2UL*N*N*N + N*N ) * steps / run->getBlazeResult() / 1E6 );
+         const double mflops( run->getSteps() * steps / run->getBlazeResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
@@ -199,7 +220,7 @@ void complex8( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setBoostResult( blazemark::boost::complex8( N, steps ) );
-         const double mflops( ( 2UL*N*N*N + N*N ) * steps / run->getBoostResult() / 1E6 );
+         const double mflops( run->getSteps() * steps / run->getBoostResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
@@ -211,7 +232,7 @@ void complex8( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setBlitzResult( blazemark::blitz::complex8( N, steps ) );
-         const double mflops( ( 2UL*N*N*N + N*N ) * steps / run->getBlitzResult() / 1E6 );
+         const double mflops( run->getSteps() * steps / run->getBlitzResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
@@ -224,7 +245,7 @@ void complex8( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setGMMResult( blazemark::gmm::complex8( N, steps ) );
-         const double mflops( ( 2UL*N*N*N + N*N ) * steps / run->getGMMResult() / 1E6 );
+         const double mflops( run->getSteps() * steps / run->getGMMResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
@@ -237,7 +258,7 @@ void complex8( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setArmadilloResult( blazemark::armadillo::complex8( N, steps ) );
-         const double mflops( ( 2UL*N*N*N + N*N ) * steps / run->getArmadilloResult() / 1E6 );
+         const double mflops( run->getSteps() * steps / run->getArmadilloResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
@@ -250,7 +271,7 @@ void complex8( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setFLENSResult( blazemark::flens::complex8( N, steps ) );
-         const double mflops( ( 2UL*N*N*N + N*N ) * steps / run->getFLENSResult() / 1E6 );
+         const double mflops( run->getSteps() * steps / run->getFLENSResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
@@ -263,7 +284,7 @@ void complex8( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setMTLResult( blazemark::mtl::complex8( N, steps ) );
-         const double mflops( ( 2UL*N*N*N + N*N ) * steps / run->getMTLResult() / 1E6 );
+         const double mflops( run->getSteps() * steps / run->getMTLResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
@@ -276,7 +297,7 @@ void complex8( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setEigenResult( blazemark::eigen::complex8( N, steps ) );
-         const double mflops( ( 2UL*N*N*N + N*N ) * steps / run->getEigenResult() / 1E6 );
+         const double mflops( run->getSteps() * steps / run->getEigenResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }

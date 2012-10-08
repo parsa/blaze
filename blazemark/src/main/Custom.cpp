@@ -154,7 +154,7 @@ void custom( std::vector<Run>& runs, Benchmarks benchmarks )
    }
 
    if( benchmarks.runBlaze ) {
-      std::cout << "   Blaze [MFlop/s]:\n";
+      std::cout << "   Blaze (Seconds):\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()     );
          const size_t F    ( run->getNonZeros() );
@@ -165,7 +165,7 @@ void custom( std::vector<Run>& runs, Benchmarks benchmarks )
    }
 
    if( benchmarks.runBoost ) {
-      std::cout << "   Boost uBLAS [MFlop/s]:\n";
+      std::cout << "   Boost uBLAS (Seconds):\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()     );
          const size_t F    ( run->getNonZeros() );
@@ -177,7 +177,7 @@ void custom( std::vector<Run>& runs, Benchmarks benchmarks )
 
 #if BLAZEMARK_BLITZ_MODE
    if( benchmarks.runBlitz ) {
-      std::cout << "   Blitz++ [MFlop/s]:\n";
+      std::cout << "   Blitz++ (Seconds):\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()     );
          const size_t F    ( run->getNonZeros() );
@@ -190,7 +190,7 @@ void custom( std::vector<Run>& runs, Benchmarks benchmarks )
 
 #if BLAZEMARK_GMM_MODE
    if( benchmarks.runGMM ) {
-      std::cout << "   GMM++ [MFlop/s]:\n";
+      std::cout << "   GMM++ (Seconds):\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()     );
          const size_t F    ( run->getNonZeros() );
@@ -203,7 +203,7 @@ void custom( std::vector<Run>& runs, Benchmarks benchmarks )
 
 #if BLAZEMARK_ARMADILLO_MODE
    if( benchmarks.runArmadillo ) {
-      std::cout << "   Armadillo [MFlop/s]:\n";
+      std::cout << "   Armadillo (Seconds):\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()     );
          const size_t F    ( run->getNonZeros() );
@@ -216,7 +216,7 @@ void custom( std::vector<Run>& runs, Benchmarks benchmarks )
 
 #if BLAZEMARK_MTL_MODE
    if( benchmarks.runMTL ) {
-      std::cout << "   MTL [MFlop/s]:\n";
+      std::cout << "   MTL (Seconds):\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()     );
          const size_t F    ( run->getNonZeros() );
@@ -229,7 +229,7 @@ void custom( std::vector<Run>& runs, Benchmarks benchmarks )
 
 #if BLAZEMARK_EIGEN_MODE
    if( benchmarks.runEigen ) {
-      std::cout << "   Eigen [MFlop/s]:\n";
+      std::cout << "   Eigen (Seconds):\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()     );
          const size_t F    ( run->getNonZeros() );
