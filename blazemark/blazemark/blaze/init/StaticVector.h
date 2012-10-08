@@ -27,6 +27,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <vector>
 #include <blaze/math/StaticVector.h>
 #include <blaze/util/Random.h>
 #include <blazemark/system/Types.h>
@@ -47,6 +48,9 @@ namespace blaze {
 //@{
 template< typename Type, size_t N, bool TF >
 void init( ::blaze::StaticVector<Type,N,TF>& v );
+
+template< typename Type, size_t N, bool TF >
+void init( ::std::vector< ::blaze::StaticVector<Type,N,TF> >& v );
 //@}
 //*************************************************************************************************
 
@@ -66,6 +70,28 @@ void init( ::blaze::StaticVector<Type,N,TF>& v )
 {
    for( size_t i=0UL; i<N; ++i ) {
       v[i] = ::blaze::rand<Type>( 0, 10 );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Random initialization of the given vector of static vectors.
+//
+// \param v The vector of static vectors to be initialized.
+// \return void
+//
+// This function initializes all static vectors in the given vector with random values.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+void init( ::std::vector< ::blaze::StaticVector<Type,N,TF> >& v )
+{
+   const size_t size( v.size() );
+
+   for( size_t i=0UL; i<size; ++i ) {
+      init( v[i] );
    }
 }
 //*************************************************************************************************

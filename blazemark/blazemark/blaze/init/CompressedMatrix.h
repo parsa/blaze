@@ -27,6 +27,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <vector>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/util/Random.h>
 #include <blazemark/system/Types.h>
@@ -51,6 +52,9 @@ void init( ::blaze::CompressedMatrix<Type,::blaze::rowMajor>& m, size_t nonzeros
 
 template< typename Type >
 void init( ::blaze::CompressedMatrix<Type,::blaze::columnMajor>& m, size_t nonzeros );
+
+template< typename Type, bool SO >
+void init( ::std::vector< ::blaze::CompressedMatrix<Type,SO> >& v, size_t nonzeros );
 //@}
 //*************************************************************************************************
 
@@ -110,6 +114,30 @@ void init( ::blaze::CompressedMatrix<Type,::blaze::columnMajor>& m, size_t nonze
          m.append( *it, j, ::blaze::rand<Type>( 0, 10 ) );
       }
       m.finalize( j );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Random initialization of the given vector of compressed matrices.
+//
+// \param v The vector of compressed matrices to be initialized.
+// \param nonzeros The number of non-zero elements per row.
+// \return void
+//
+// This function initializes the all compressed matrices in the given vector with random
+// values. Each row will be filled with \a nonzeros non-zero elements, whose indices are
+// randomly determined.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+void init( ::std::vector< ::blaze::CompressedMatrix<Type,SO> >& v, size_t nonzeros )
+{
+   const size_t size( v.size() );
+
+   for( size_t i=0UL; i<size; ++i ) {
+      init( v[i], nonzeros );
    }
 }
 //*************************************************************************************************

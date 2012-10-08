@@ -27,6 +27,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <vector>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/util/Random.h>
 #include <blazemark/system/Types.h>
@@ -48,6 +49,9 @@ namespace blaze {
 //@{
 template< typename Type, bool TF >
 void init( ::blaze::CompressedVector<Type,TF>& v, size_t nonzeros );
+
+template< typename Type, bool TF >
+void init( ::std::vector< ::blaze::CompressedVector<Type,TF> >& v, size_t nonzeros );
 //@}
 //*************************************************************************************************
 
@@ -71,6 +75,30 @@ void init( ::blaze::CompressedVector<Type,TF>& v, size_t nonzeros )
    ::blazemark::Indices indices( N, nonzeros );
    for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
       v[*it] = ::blaze::rand<Type>( 0, 10 );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Random initialization of the given vector of compressed vectors.
+//
+// \param v The vector of compressed vectors to be initialized.
+// \param nonzeros The number of non-zero elements.
+// \return void
+//
+// This function initializes all compressed vectors of the given std::vector with random values.
+// All compressed vectors will be filled with \a nonzeros non-zero elements, whose indices will
+// be randomly determined.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+void init( ::std::vector< ::blaze::CompressedVector<Type,TF> >& v, size_t nonzeros )
+{
+   const size_t size( v.size() );
+
+   for( size_t i=0UL; i<size; ++i ) {
+      init( v[i], nonzeros );
    }
 }
 //*************************************************************************************************

@@ -27,6 +27,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <vector>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/util/Random.h>
 #include <blazemark/system/Types.h>
@@ -47,6 +48,9 @@ namespace blaze {
 //@{
 template< typename Type, bool TF >
 void init( ::blaze::DynamicVector<Type,TF>& v );
+
+template< typename Type, bool TF >
+void init( ::std::vector< ::blaze::DynamicVector<Type,TF> >& v );
 //@}
 //*************************************************************************************************
 
@@ -67,6 +71,27 @@ void init( ::blaze::DynamicVector<Type,TF>& v )
 
    for( size_t i=0UL; i<N; ++i ) {
       v[i] = ::blaze::rand<Type>( 0, 10 );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Random initialization of the given vector of dynamic vector.
+//
+// \param v The vector of dynamic vectors to be initialized.
+// \return void
+//
+// This function initializes all dynamic vectors in the given vector with random values.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+void init( ::std::vector< ::blaze::DynamicVector<Type,TF> >& v )
+{
+   const size_t size( v.size() );
+
+   for( size_t i=0UL; i<size; ++i ) {
+      init( v[i] );
    }
 }
 //*************************************************************************************************

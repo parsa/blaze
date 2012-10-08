@@ -27,6 +27,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <vector>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/util/Random.h>
 #include <blazemark/system/Types.h>
@@ -50,6 +51,9 @@ void init( ::blaze::DynamicMatrix<Type,::blaze::rowMajor>& m );
 
 template< typename Type >
 void init( ::blaze::DynamicMatrix<Type,::blaze::columnMajor>& m );
+
+template< typename Type, bool SO >
+void init( ::std::vector< ::blaze::DynamicMatrix<Type,SO> >& v );
 //@}
 //*************************************************************************************************
 
@@ -95,6 +99,27 @@ void init( ::blaze::DynamicMatrix<Type,::blaze::columnMajor>& m )
       for( size_t i=0UL; i<M; ++i ) {
          m(i,j) = ::blaze::rand<Type>( 0, 10 );
       }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Random initialization of the given vector of dynamic matrices.
+//
+// \param v The vector of dynamic matrices to be initialized.
+// \return void
+//
+// This function initializes all dynamic matrices in the given vector with random values.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+void init( ::std::vector< ::blaze::DynamicMatrix<Type,SO> >& v )
+{
+   const size_t size( v.size() );
+
+   for( size_t i=0UL; i<size; ++i ) {
+      init( v[i] );
    }
 }
 //*************************************************************************************************
