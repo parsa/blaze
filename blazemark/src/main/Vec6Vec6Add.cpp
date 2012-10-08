@@ -33,8 +33,10 @@
 #include <blaze/math/Functions.h>
 #include <blaze/math/Infinity.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/armadillo/Vec6Vec6Add.h>
+#include <blazemark/blaze/init/StaticVector.h>
 #include <blazemark/blaze/Vec6Vec6Add.h>
 #include <blazemark/blitz/Vec6Vec6Add.h>
 #include <blazemark/boost/Vec6Vec6Add.h>
@@ -104,13 +106,17 @@ void estimateSteps( Run& run )
    using blazemark::element_t;
    using blaze::columnVector;
 
+   ::blaze::setSeed( ::blazemark::seed );
+
    const size_t N( run.getNumber() );
 
-   blaze::StaticVector<element_t,6UL,columnVector> init( 0.1 );
-   std::vector< blaze::StaticVector<element_t,6UL,columnVector> > a( N, init ), b( N, init ), c( N );
+   std::vector< blaze::StaticVector<element_t,6UL,columnVector> > a( N ), b( N ), c( N );
    blaze::timing::WcTimer timer;
    double wct( 0.0 );
    size_t steps( 1UL );
+
+   blazemark::blaze::init( a );
+   blazemark::blaze::init( b );
 
    while( true ) {
       timer.start();

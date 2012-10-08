@@ -34,7 +34,9 @@
 #include <blaze/math/Functions.h>
 #include <blaze/math/Infinity.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/blaze/init/CompressedVector.h>
 #include <blazemark/blaze/SVecSVecCross.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/Types.h>
@@ -93,10 +95,11 @@ void estimateSteps( Run& run )
    using blazemark::element_t;
    using blaze::columnVector;
 
+   ::blaze::setSeed( ::blazemark::seed );
+
    const size_t N( run.getNumber() );
    const size_t F( run.getNonZeros() );
 
-   blaze::StaticVector<element_t,3UL,columnVector> init( 0.1 );
    std::vector< blaze::CompressedVector<element_t,columnVector> > a( N ), b( N );
    std::vector< blaze::StaticVector<element_t,3UL,columnVector> > c( N );
    blaze::timing::WcTimer timer;
@@ -106,20 +109,12 @@ void estimateSteps( Run& run )
    for( size_t i=0UL; i<N; ++i ) {
       a[i].resize( 3UL );
       a[i].reserve( F );
-      blazemark::Indices indices( N, F );
-      for( blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         a[i][*it] = element_t(0.1);
-      }
-   }
-
-   for( size_t i=0UL; i<N; ++i ) {
       b[i].resize( 3UL );
       b[i].reserve( F );
-      blazemark::Indices indices( N, F );
-      for( blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         b[i][*it] = element_t(0.1);
-      }
    }
+
+   blazemark::blaze::init( a, F );
+   blazemark::blaze::init( b, F );
 
    while( true ) {
       timer.start();

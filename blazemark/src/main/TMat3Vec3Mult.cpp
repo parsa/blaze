@@ -34,8 +34,11 @@
 #include <blaze/math/Infinity.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/armadillo/TMat3Vec3Mult.h>
+#include <blazemark/blaze/init/StaticMatrix.h>
+#include <blazemark/blaze/init/StaticVector.h>
 #include <blazemark/blaze/TMat3Vec3Mult.h>
 #include <blazemark/boost/TMat3Vec3Mult.h>
 #include <blazemark/eigen/TMat3Vec3Mult.h>
@@ -105,15 +108,18 @@ void estimateSteps( Run& run )
    using blaze::columnVector;
    using blaze::rowMajor;
 
+   ::blaze::setSeed( ::blazemark::seed );
+
    const size_t N( run.getNumber() );
 
-   blaze::StaticMatrix<element_t,3UL,3UL,rowMajor> mat( 0.1 );
-   blaze::StaticVector<element_t,3UL,columnVector> vec( 0.1 );
-   std::vector< blaze::StaticMatrix<element_t,3UL,3UL,rowMajor> > A( N, mat );
-   std::vector< blaze::StaticVector<element_t,3UL,columnVector> > a( N, vec ), b( N );
+   std::vector< blaze::StaticMatrix<element_t,3UL,3UL,rowMajor> > A( N );
+   std::vector< blaze::StaticVector<element_t,3UL,columnVector> > a( N ), b( N );
    blaze::timing::WcTimer timer;
    double wct( 0.0 );
    size_t steps( 1UL );
+
+   blazemark::blaze::init( A );
+   blazemark::blaze::init( a );
 
    while( true ) {
       timer.start();

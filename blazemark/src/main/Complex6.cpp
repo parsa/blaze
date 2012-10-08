@@ -33,9 +33,11 @@
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/Infinity.h>
+#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/armadillo/Complex6.h>
 #include <blazemark/blaze/Complex6.h>
+#include <blazemark/blaze/init/DynamicMatrix.h>
 #include <blazemark/blitz/Complex6.h>
 #include <blazemark/boost/Complex6.h>
 #include <blazemark/classic/Complex6.h>
@@ -105,12 +107,18 @@ void estimateSteps( Run& run )
    using blazemark::element_t;
    using blaze::columnMajor;
 
+   ::blaze::setSeed( ::blazemark::seed );
+
    const size_t N( run.getSize() );
 
-   blaze::DynamicMatrix<element_t,columnMajor> A( N, N, 0.1 ), B( N, N, 0.1 ), C( N, N, 0.1 ), D( N, N );
+   blaze::DynamicMatrix<element_t,columnMajor> A( N, N ), B( N, N ), C( N, N ), D( N, N );
    blaze::timing::WcTimer timer;
    double wct( 0.0 );
    size_t steps( 1UL );
+
+   blazemark::blaze::init( A );
+   blazemark::blaze::init( B );
+   blazemark::blaze::init( C );
 
    while( true ) {
       timer.start();

@@ -34,8 +34,10 @@
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/Infinity.h>
+#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blaze/DVecTDVecMult.h>
+#include <blazemark/blaze/init/DynamicVector.h>
 #include <blazemark/blitz/DVecTDVecMult.h>
 #include <blazemark/boost/DVecTDVecMult.h>
 #include <blazemark/classic/DVecTDVecMult.h>
@@ -101,14 +103,19 @@ void estimateSteps( Run& run )
    using blaze::columnVector;
    using blaze::rowMajor;
 
+   ::blaze::setSeed( ::blazemark::seed );
+
    const size_t N( run.getSize() );
 
-   blaze::DynamicVector<element_t,columnVector> a( N, 0.1 );
-   blaze::DynamicVector<element_t,rowVector> b( N, 0.1 );
+   blaze::DynamicVector<element_t,columnVector> a( N );
+   blaze::DynamicVector<element_t,rowVector> b( N );
    blaze::DynamicMatrix<element_t,rowMajor> A( N, N );
    blaze::timing::WcTimer timer;
    double wct( 0.0 );
    size_t steps( 1UL );
+
+   blazemark::blaze::init( a );
+   blazemark::blaze::init( b );
 
    while( true ) {
       timer.start();

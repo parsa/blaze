@@ -34,7 +34,10 @@
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/Infinity.h>
+#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/blaze/init/CompressedMatrix.h>
+#include <blazemark/blaze/init/DynamicMatrix.h>
 #include <blazemark/blaze/TSMatTDMatMult.h>
 #include <blazemark/boost/TSMatTDMatMult.h>
 #include <blazemark/eigen/TSMatTDMatMult.h>
@@ -100,22 +103,19 @@ void estimateSteps( Run& run )
    using blazemark::element_t;
    using blaze::columnMajor;
 
+   ::blaze::setSeed( ::blazemark::seed );
+
    const size_t N( run.getSize() );
    const size_t F( run.getNonZeros() );
 
    blaze::CompressedMatrix<element_t,columnMajor> A( N, N, N*F );
-   blaze::DynamicMatrix<element_t,columnMajor> B( N, N, 0.1 ), C( N, N );
+   blaze::DynamicMatrix<element_t,columnMajor> B( N, N ), C( N, N );
    blaze::timing::WcTimer timer;
    double wct( 0.0 );
    size_t steps( 1UL );
 
-   for( size_t j=0UL; j<N; ++j ) {
-      A.reserve( j, F );
-      blazemark::Indices indices( N, F );
-      for( blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         A.append( *it, j, element_t(0.1) );
-      }
-   }
+   blazemark::blaze::init( A, F );
+   blazemark::blaze::init( B );
 
    while( true ) {
       timer.start();

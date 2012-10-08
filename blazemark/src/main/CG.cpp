@@ -100,6 +100,8 @@ void estimateSteps( Run& run )
    using blaze::columnVector;
    using blaze::rowMajor;
 
+   ::blaze::setSeed( ::blazemark::seed );
+
    const size_t N ( run.getSize() );
    const size_t NN( N*N );
 

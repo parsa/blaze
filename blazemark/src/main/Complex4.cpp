@@ -34,9 +34,12 @@
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/Infinity.h>
+#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/armadillo/Complex4.h>
 #include <blazemark/blaze/Complex4.h>
+#include <blazemark/blaze/init/DynamicMatrix.h>
+#include <blazemark/blaze/init/DynamicVector.h>
 #include <blazemark/blitz/Complex4.h>
 #include <blazemark/boost/Complex4.h>
 #include <blazemark/classic/Complex4.h>
@@ -107,13 +110,18 @@ void estimateSteps( Run& run )
    using blaze::columnVector;
    using blaze::columnMajor;
 
+   ::blaze::setSeed( ::blazemark::seed );
+
    const size_t N( run.getSize() );
 
-   blaze::DynamicMatrix<element_t,columnMajor> A( N, N, 0.1 );
-   blaze::DynamicVector<element_t,columnVector> a( N, 0.1 ), b( N, 0.0 );
+   blaze::DynamicMatrix<element_t,columnMajor> A( N, N );
+   blaze::DynamicVector<element_t,columnVector> a( N ), b( N, 0.0 );
    blaze::timing::WcTimer timer;
    double wct( 0.0 );
    size_t steps( 1UL );
+
+   blazemark::blaze::init( A );
+   blazemark::blaze::init( a );
 
    while( true ) {
       timer.start();

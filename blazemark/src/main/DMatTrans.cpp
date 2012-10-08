@@ -33,8 +33,10 @@
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/Infinity.h>
+#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blaze/DMatTrans.h>
+#include <blazemark/blaze/init/DynamicMatrix.h>
 #include <blazemark/boost/DMatTrans.h>
 #include <blazemark/eigen/DMatTrans.h>
 #include <blazemark/flens/DMatTrans.h>
@@ -100,12 +102,16 @@ void estimateSteps( Run& run )
    using blazemark::element_t;
    using blaze::rowMajor;
 
+   ::blaze::setSeed( ::blazemark::seed );
+
    const size_t N( run.getSteps() );
 
-   blaze::DynamicMatrix<element_t,rowMajor> A( N, N, 0.1 ), B( N, N );
+   blaze::DynamicMatrix<element_t,rowMajor> A( N, N ), B( N, N );
    blaze::timing::WcTimer timer;
    double wct( 0.0 );
    size_t steps( 1UL );
+
+   blazemark::blaze::init( A );
 
    while( true ) {
       timer.start();

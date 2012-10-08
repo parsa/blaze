@@ -34,7 +34,10 @@
 #include <blaze/math/Infinity.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/blaze/init/StaticMatrix.h>
+#include <blazemark/blaze/init/StaticVector.h>
 #include <blazemark/blaze/TVec6Mat6Mult.h>
 #include <blazemark/blitz/TVec6Mat6Mult.h>
 #include <blazemark/boost/TVec6Mat6Mult.h>
@@ -100,15 +103,18 @@ void estimateSteps( Run& run )
    using blaze::rowVector;
    using blaze::rowMajor;
 
+   ::blaze::setSeed( ::blazemark::seed );
+
    const size_t N( run.getNumber() );
 
-   blaze::StaticVector<element_t,6UL,rowVector> vec( 0.1 );
-   blaze::StaticMatrix<element_t,6UL,6UL,rowMajor> mat( 0.1 );
-   std::vector< blaze::StaticVector<element_t,6UL,rowVector> > a( N, vec ), b( N );
-   std::vector< blaze::StaticMatrix<element_t,6UL,6UL,rowMajor> > A( N, mat );
+   std::vector< blaze::StaticVector<element_t,6UL,rowVector> > a( N ), b( N );
+   std::vector< blaze::StaticMatrix<element_t,6UL,6UL,rowMajor> > A( N );
    blaze::timing::WcTimer timer;
    double wct( 0.0 );
    size_t steps( 1UL );
+
+   blazemark::blaze::init( a );
+   blazemark::blaze::init( A );
 
    while( true ) {
       timer.start();

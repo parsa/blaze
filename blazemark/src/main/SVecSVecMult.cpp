@@ -33,7 +33,9 @@
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/Infinity.h>
+#include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/blaze/init/CompressedVector.h>
 #include <blazemark/blaze/SVecSVecMult.h>
 #include <blazemark/boost/SVecSVecMult.h>
 #include <blazemark/system/Config.h>
@@ -93,6 +95,8 @@ void estimateSteps( Run& run )
    using blazemark::element_t;
    using blaze::columnVector;
 
+   ::blaze::setSeed( ::blazemark::seed );
+
    const size_t N( run.getSize() );
    const size_t F( run.getNonZeros() );
 
@@ -101,19 +105,8 @@ void estimateSteps( Run& run )
    double wct( 0.0 );
    size_t steps( 1UL );
 
-   {
-      blazemark::Indices indices( N, F );
-      for( blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         a[*it] = element_t(0.1);
-      }
-   }
-
-   {
-      blazemark::Indices indices( N, F );
-      for( blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         b[*it] = element_t(0.1);
-      }
-   }
+   blazemark::blaze::init( a, F );
+   blazemark::blaze::init( b, F );
 
    while( true ) {
       timer.start();
