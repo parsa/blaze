@@ -101,16 +101,12 @@ void estimateSteps( Run& run )
    const size_t N( run.getNumber() );
    const size_t F( run.getNonZeros() );
 
+   blaze::CompressedVector<element_t,columnVector> tmp( 3UL, F );
    std::vector< blaze::StaticVector<element_t,3UL,columnVector> > a( N ), c( N );
-   std::vector< blaze::CompressedVector<element_t,columnVector> > b( N );
+   std::vector< blaze::CompressedVector<element_t,columnVector> > b( N, tmp );
    blaze::timing::WcTimer timer;
    double wct( 0.0 );
    size_t steps( 1UL );
-
-   for( size_t i=0UL; i<N; ++i ) {
-      b[i].resize( 3UL );
-      b[i].reserve( F );
-   }
 
    blazemark::blaze::init( a );
    blazemark::blaze::init( b, F );
