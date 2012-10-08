@@ -89,6 +89,7 @@ class StaticSparseRun
    inline size_t getNonZeros       () const;
    inline float  getFillingDegree  () const;
    inline size_t getSteps          () const;
+   inline size_t getFlops          () const;
    inline double getClikeResult    () const;
    inline double getClassicResult  () const;
    inline double getBlazeResult    () const;
@@ -103,6 +104,7 @@ class StaticSparseRun
    inline void   setNumber  ( size_t newNumber   );
    inline void   setNonZeros( size_t newNonZeros );
    inline void   setSteps   ( size_t newSteps    );
+   inline void   setFlops   ( size_t newFlops    );
    inline void   setClikeResult    ( double result );
    inline void   setClassicResult  ( double result );
    inline void   setBlazeResult    ( double result );
@@ -131,6 +133,10 @@ class StaticSparseRun
                        /*!< The (composite) arithmetic operation of each benchmark is run several
                             times to guarantee reasonable runtimes. \a steps_ corresponds to the
                             number of performed iterations. */
+   size_t flops_;      //!< The number of flops required for the benchmark run.
+                       /*!< This value corresponds to the total number of floating point operations
+                            (Flops) required for a single computation of the (composite) arithmetic
+                            operation. */
    double clike_;      //!< Benchmark result of the C-like implementation.
    double classic_;    //!< Benchmark result of classic C++ operator overloading.
    double blaze_;      //!< Benchmark result of the Blaze library.
@@ -171,6 +177,7 @@ inline StaticSparseRun<N>::StaticSparseRun()
    : number_   ( 0UL )  // The target number of fixed size vectors/matrices
    , nonzeros_ ( 0UL )  // The number of non-zero elements in the sparse vectors/matrices.
    , steps_    ( 0UL )  // The number of steps for the benchmark run
+   , flops_    ( 0UL )  // The number of flops required for the benchmark run
    , clike_    ( 0.0 )  // Benchmark result of the C-like implementation
    , classic_  ( 0.0 )  // Benchmark result of the classic C++ implementation
    , blaze_    ( 0.0 )  // Benchmark result of the Blaze library
@@ -203,6 +210,7 @@ inline StaticSparseRun<N>::StaticSparseRun( size_t number, size_t nonzeros )
    : number_   ( number   )  // The target number of fixed size vectors/matrices
    , nonzeros_ ( nonzeros )  // The number of non-zero elements in the sparse vectors/matrices.
    , steps_    ( 0UL      )  // The number of steps for the benchmark run
+   , flops_    ( 0UL      )  // The number of flops required for the benchmark run
    , clike_    ( 0.0      )  // Benchmark result of the C-like implementation
    , classic_  ( 0.0      )  // Benchmark result of the classic C++ implementation
    , blaze_    ( 0.0      )  // Benchmark result of the Blaze library
@@ -245,6 +253,7 @@ inline StaticSparseRun<N>::StaticSparseRun( size_t number, size_t nonzeros, size
    : number_   ( number   )  // The target number of fixed size vectors/matrices
    , nonzeros_ ( nonzeros )  // The number of non-zero elements in the sparse vectors/matrices
    , steps_    ( steps    )  // The number of steps for the benchmark run
+   , flops_    ( 0UL      )  // The number of flops required for the benchmark run
    , clike_    ( 0.0      )  // Benchmark result of the C-like implementation
    , classic_  ( 0.0      )  // Benchmark result of the classic C++ implementation
    , blaze_    ( 0.0      )  // Benchmark result of the Blaze library
@@ -336,6 +345,19 @@ template< size_t N >  // Fixed size of the vectors/matrices
 inline size_t StaticSparseRun<N>::getSteps() const
 {
    return steps_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the number of required floating point operations.
+//
+// \return The number of required floating point operations.
+*/
+template< size_t N >  // Fixed size of the vectors/matrices
+inline size_t StaticSparseRun<N>::getFlops() const
+{
+   return flops_;
 }
 //*************************************************************************************************
 
@@ -514,6 +536,20 @@ template< size_t N >  // Fixed size of the vectors/matrices
 inline void StaticSparseRun<N>::setSteps( size_t newSteps )
 {
    steps_ = newSteps;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Setting the number of required floating point operations.
+//
+// \param newFlops The new number of required floating point operations.
+// \return void
+*/
+template< size_t N >  // Fixed size of the vectors/matrices
+inline void StaticSparseRun<N>::setFlops( size_t newFlops )
+{
+   flops_ = newFlops;
 }
 //*************************************************************************************************
 
