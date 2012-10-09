@@ -59,6 +59,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/Random.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
@@ -4725,6 +4726,92 @@ struct MathTrait< StaticMatrix<T1,M,N,SO>, StaticMatrix<T2,M,N,SO> >
    typedef StaticMatrix< typename MathTrait<T1,T2>::HighType, M, N, SO >  HighType;
    typedef StaticMatrix< typename MathTrait<T1,T2>::LowType , M, N, SO >  LowType;
 };
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  RAND SPECIALIZATION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the Rand class template for StaticMatrix.
+// \ingroup random
+//
+// This specialization of the Rand class creates random instances of StaticMatrix.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+class Rand< StaticMatrix<Type,M,N,SO> >
+{
+ public:
+   //**Constructors********************************************************************************
+   /*!\name Constructors */
+   //@{
+   explicit inline Rand();
+   //@}
+   //**********************************************************************************************
+
+   //**Conversion operators************************************************************************
+   /*!\name Conversion operators */
+   //@{
+   inline operator StaticMatrix<Type,M,N,SO>() const;
+   //@}
+   //**********************************************************************************************
+
+ private:
+   //**Member variables****************************************************************************
+   /*!\name Member variables */
+   //@{
+   StaticMatrix<Type,M,N,SO> matrix_;  //!< The random matrix.
+   //@}
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default constructor of the Rand specialization for StaticMatrix.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline Rand< StaticMatrix<Type,M,N,SO> >::Rand()
+   : matrix_()  // The random matrix
+{
+   for( size_t i=0UL; i<M; ++i ) {
+      for( size_t j=0UL; j<N; ++j ) {
+         matrix_(i,j) = rand<Type>();
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Conversion to the created random StaticMatrix.
+//
+// \return The random matrix.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline Rand< StaticMatrix<Type,M,N,SO> >::operator StaticMatrix<Type,M,N,SO>() const
+{
+   return matrix_;
+}
 /*! \endcond */
 //*************************************************************************************************
 
