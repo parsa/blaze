@@ -1201,7 +1201,7 @@ void SVecSVecCross<VT1,VT2>::testScaledOperation( T scalar )
          try {
             dres_   += scalar * ( eval( lhs_ ) % eval( rhs_ ) );
             sres_   += scalar * ( eval( lhs_ ) % eval( rhs_ ) );
-            refres_ += scalar * ( eval( reflhs_ ) * eval( refrhs_ ) );
+            refres_ += scalar * ( eval( reflhs_ ) % eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             std::ostringstream oss;
@@ -1256,7 +1256,7 @@ void SVecSVecCross<VT1,VT2>::testScaledOperation( T scalar )
          try {
             dres_   += ( eval( lhs_ ) % eval( rhs_ ) ) * scalar;
             sres_   += ( eval( lhs_ ) % eval( rhs_ ) ) * scalar;
-            refres_ += ( eval( reflhs_ ) * eval( refrhs_ ) ) * scalar;
+            refres_ += ( eval( reflhs_ ) % eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
             std::ostringstream oss;
@@ -1311,7 +1311,7 @@ void SVecSVecCross<VT1,VT2>::testScaledOperation( T scalar )
          try {
             dres_   += ( eval( lhs_ ) % eval( rhs_ ) ) / scalar;
             sres_   += ( eval( lhs_ ) % eval( rhs_ ) ) / scalar;
-            refres_ += ( eval( reflhs_ ) * eval( refrhs_ ) ) / scalar;
+            refres_ += ( eval( reflhs_ ) % eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
             std::ostringstream oss;
@@ -1366,7 +1366,7 @@ void SVecSVecCross<VT1,VT2>::testScaledOperation( T scalar )
          try {
             dres_   -= scalar * ( eval( lhs_ ) % eval( rhs_ ) );
             sres_   -= scalar * ( eval( lhs_ ) % eval( rhs_ ) );
-            refres_ -= scalar * ( eval( reflhs_ ) * eval( refrhs_ ) );
+            refres_ -= scalar * ( eval( reflhs_ ) % eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             std::ostringstream oss;
@@ -1421,7 +1421,7 @@ void SVecSVecCross<VT1,VT2>::testScaledOperation( T scalar )
          try {
             dres_   -= ( eval( lhs_ ) % eval( rhs_ ) ) * scalar;
             sres_   -= ( eval( lhs_ ) % eval( rhs_ ) ) * scalar;
-            refres_ -= ( eval( reflhs_ ) * eval( refrhs_ ) ) * scalar;
+            refres_ -= ( eval( reflhs_ ) % eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
             std::ostringstream oss;
@@ -1476,7 +1476,7 @@ void SVecSVecCross<VT1,VT2>::testScaledOperation( T scalar )
          try {
             dres_   -= ( eval( lhs_ ) % eval( rhs_ ) ) / scalar;
             sres_   -= ( eval( lhs_ ) % eval( rhs_ ) ) / scalar;
-            refres_ -= ( eval( reflhs_ ) * eval( refrhs_ ) ) / scalar;
+            refres_ -= ( eval( reflhs_ ) % eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
             std::ostringstream oss;
@@ -1531,7 +1531,7 @@ void SVecSVecCross<VT1,VT2>::testScaledOperation( T scalar )
          try {
             dres_   *= scalar * ( eval( lhs_ ) % eval( rhs_ ) );
             sres_   *= scalar * ( eval( lhs_ ) % eval( rhs_ ) );
-            refres_ *= scalar * ( eval( reflhs_ ) * eval( refrhs_ ) );
+            refres_ *= scalar * ( eval( reflhs_ ) % eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             std::ostringstream oss;
@@ -1586,7 +1586,7 @@ void SVecSVecCross<VT1,VT2>::testScaledOperation( T scalar )
          try {
             dres_   *= ( eval( lhs_ ) % eval( rhs_ ) ) * scalar;
             sres_   *= ( eval( lhs_ ) % eval( rhs_ ) ) * scalar;
-            refres_ *= ( eval( reflhs_ ) * eval( refrhs_ ) ) * scalar;
+            refres_ *= ( eval( reflhs_ ) % eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
             std::ostringstream oss;
@@ -1641,7 +1641,7 @@ void SVecSVecCross<VT1,VT2>::testScaledOperation( T scalar )
          try {
             dres_   *= ( eval( lhs_ ) % eval( rhs_ ) ) / scalar;
             sres_   *= ( eval( lhs_ ) % eval( rhs_ ) ) / scalar;
-            refres_ *= ( eval( reflhs_ ) * eval( refrhs_ ) ) / scalar;
+            refres_ *= ( eval( reflhs_ ) % eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
             std::ostringstream oss;
