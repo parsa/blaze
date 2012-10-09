@@ -145,10 +145,29 @@ void estimateSteps( Run& run )
 */
 void estimateFlops( Run& run )
 {
+   using blazemark::element_t;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   ::blaze::setSeed( ::blazemark::seed );
+
    const size_t N( run.getSize()     );
    const size_t F( run.getNonZeros() );
 
-   run.setFlops( N*F );
+   blaze::CompressedMatrix<element_t,columnMajor> A( N, N, N*F );
+   blaze::CompressedMatrix<element_t,rowMajor> B( N, N, N*F ), TmpA( N, N, N*F );
+   size_t flops( 0UL );
+
+   blazemark::blaze::init( TmpA, F );
+   blazemark::blaze::init( B   , F );
+
+   A = TmpA;
+
+   for( size_t i=0UL; i<N; ++i ) {
+      flops += A.nonZeros( i ) * B.nonZeros( i );
+   }
+
+   run.setFlops( 2UL*flops );
 }
 //*************************************************************************************************
 
@@ -188,6 +207,8 @@ void smatsmatmult( std::vector<Run>& runs, Benchmarks benchmarks )
          else run->setSteps( 1UL );
       }
    }
+
+   return;
 
    if( benchmarks.runBlaze ) {
       std::vector<Run>::iterator run=runs.begin();

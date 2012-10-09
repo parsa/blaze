@@ -146,10 +146,30 @@ void estimateSteps( Run& run )
 */
 void estimateFlops( Run& run )
 {
+   using blazemark::element_t;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   ::blaze::setSeed( ::blazemark::seed );
+
    const size_t N( run.getSize()     );
    const size_t F( run.getNonZeros() );
 
-   run.setFlops( N*F );
+   blaze::CompressedMatrix<element_t,columnMajor> A( N, N, N*F ), TmpB( N, N, N*F );
+   blaze::CompressedMatrix<element_t,rowMajor> B( N, N, N*F ), TmpA( N, N, N*F );
+   size_t flops( 0UL );
+
+   blazemark::blaze::init( TmpA, F );
+   blazemark::blaze::init( TmpB, F );
+
+   A = TmpA;
+   B = TmpB;
+
+   for( size_t i=0UL; i<N; ++i ) {
+      flops += A.nonZeros( i ) * B.nonZeros( i );
+   }
+
+   run.setFlops( 2UL*flops );
 }
 //*************************************************************************************************
 
