@@ -60,7 +60,6 @@
 #include <blaze/util/Memory.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Null.h>
-#include <blaze/util/Random.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
@@ -4217,89 +4216,6 @@ struct MathTrait< DynamicMatrix<T1,SO>, DynamicMatrix<T2,SO> >
    typedef DynamicMatrix< typename MathTrait<T1,T2>::HighType, SO >  HighType;
    typedef DynamicMatrix< typename MathTrait<T1,T2>::LowType , SO >  LowType;
 };
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  RAND SPECIALIZATION
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Rand class template for DynamicMatrix.
-// \ingroup random
-//
-// This specialization of the Rand class creates random instances of DynamicMatrix.
-*/
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-class Rand< DynamicMatrix<Type,SO> >
-{
- public:
-   //**Constructors********************************************************************************
-   /*!\name Constructors */
-   //@{
-   explicit inline Rand( size_t m, size_t n );
-   //@}
-   //**********************************************************************************************
-
-   //**Conversion operators************************************************************************
-   /*!\name Conversion operators */
-   //@{
-   inline operator DynamicMatrix<Type,SO>() const;
-   //@}
-   //**********************************************************************************************
-
- private:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   DynamicMatrix<Type,SO> matrix_;  //!< The random matrix.
-   //@}
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor of the Rand specialization for DynamicMatrix.
-//
-// \param m The number of rows of the random matrix.
-// \param n The number of columns of the random matrix.
-*/
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline Rand< DynamicMatrix<Type,SO> >::Rand( size_t m, size_t n )
-   : matrix_( m, n )  // The random matrix
-{
-   for( size_t i=0UL; i<m; ++i ) {
-      for( size_t j=0UL; j<n; ++j ) {
-         matrix_(i,j) = rand<Type>();
-      }
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Conversion to the created random DynamicMatrix.
-//
-// \return The random matrix.
-*/
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline Rand< DynamicMatrix<Type,SO> >::operator DynamicMatrix<Type,SO>() const
-{
-   return matrix_;
-}
 /*! \endcond */
 //*************************************************************************************************
 
