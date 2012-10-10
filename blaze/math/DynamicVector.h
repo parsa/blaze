@@ -30,9 +30,90 @@
 #include <blaze/math/dense/DynamicMatrix.h>
 #include <blaze/math/dense/DynamicVector.h>
 #include <blaze/system/Precision.h>
+#include <blaze/util/Random.h>
 
 
 namespace blaze {
+
+//=================================================================================================
+//
+//  RAND SPECIALIZATION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the Rand class template for DynamicVector.
+// \ingroup random
+//
+// This specialization of the Rand class creates random instances of DynamicVector.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+class Rand< DynamicVector<Type,TF> >
+{
+ public:
+   //**Constructors********************************************************************************
+   /*!\name Constructors */
+   //@{
+   explicit inline Rand( size_t n );
+   //@}
+   //**********************************************************************************************
+
+   //**Conversion operators************************************************************************
+   /*!\name Conversion operators */
+   //@{
+   inline operator DynamicVector<Type,TF>() const;
+   //@}
+   //**********************************************************************************************
+
+ private:
+   //**Member variables****************************************************************************
+   /*!\name Member variables */
+   //@{
+   DynamicVector<Type,TF> vector_;  //!< The random vector.
+   //@}
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor of the Rand specialization for DynamicVector.
+//
+// \param n The size of the random vector.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline Rand< DynamicVector<Type,TF> >::Rand( size_t n )
+   : vector_( n )  // The random vector
+{
+   for( size_t i=0UL; i<n; ++i ) {
+      vector_[i] = rand<Type>();
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Conversion to the created random DynamicVector.
+//
+// \return The random vector.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline Rand< DynamicVector<Type,TF> >::operator DynamicVector<Type,TF>() const
+{
+   return vector_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
 
 //=================================================================================================
 //
