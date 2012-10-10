@@ -27,11 +27,94 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/dense/StaticMatrix.h>
 #include <blaze/math/dense/StaticVector.h>
 #include <blaze/system/Precision.h>
+#include <blaze/util/Random.h>
 
 
 namespace blaze {
+
+//=================================================================================================
+//
+//  RAND SPECIALIZATION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the Rand class template for StaticVector.
+// \ingroup random
+//
+// This specialization of the Rand class creates random instances of StaticVector.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+class Rand< StaticVector<Type,N,TF> >
+{
+ public:
+   //**Constructors********************************************************************************
+   /*!\name Constructors */
+   //@{
+   explicit inline Rand();
+   //@}
+   //**********************************************************************************************
+
+   //**Conversion operators************************************************************************
+   /*!\name Conversion operators */
+   //@{
+   inline operator StaticVector<Type,N,TF>() const;
+   //@}
+   //**********************************************************************************************
+
+ private:
+   //**Member variables****************************************************************************
+   /*!\name Member variables */
+   //@{
+   StaticVector<Type,N,TF> vector_;  //!< The random vector.
+   //@}
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default constructor of the Rand specialization for StaticVector.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline Rand< StaticVector<Type,N,TF> >::Rand()
+   : vector_()  // The random vector
+{
+   for( size_t i=0UL; i<N; ++i ) {
+      vector_[i] = rand<Type>();
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Conversion to the created random StaticVector.
+//
+// \return The random vector.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline Rand< StaticVector<Type,N,TF> >::operator StaticVector<Type,N,TF>() const
+{
+   return vector_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
 
 //=================================================================================================
 //
