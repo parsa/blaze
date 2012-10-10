@@ -64,7 +64,6 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Null.h>
-#include <blaze/util/Random.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -2027,119 +2026,6 @@ struct MathTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
    typedef CompressedVector< typename MathTrait<T1,T2>::HighType, TF >  HighType;
    typedef CompressedVector< typename MathTrait<T1,T2>::LowType , TF >  LowType;
 };
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  RAND SPECIALIZATION
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Rand class template for CompressedVector.
-// \ingroup random
-//
-// This specialization of the Rand class creates random instances of CompressedVector.
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-class Rand< CompressedVector<Type,TF> >
-{
- public:
-   //**Constructors********************************************************************************
-   /*!\name Constructors */
-   //@{
-   explicit inline Rand( size_t size );
-   explicit inline Rand( size_t size, size_t nonzeros );
-   //@}
-   //**********************************************************************************************
-
-   //**Conversion operators************************************************************************
-   /*!\name Conversion operators */
-   //@{
-   inline operator CompressedVector<Type,TF>() const;
-   //@}
-   //**********************************************************************************************
-
- private:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   CompressedVector<Type,TF> vector_;  //!< The random vector.
-   //@}
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Single argument constructor of the Rand specialization for CompressedVector.
-//
-// \param size The size of the random vector.
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline Rand< CompressedVector<Type,TF> >::Rand( size_t size )
-   : vector_( size )  // The random vector
-{
-   if( size == 0UL ) return;
-
-   const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*size ) ) );
-
-   vector_.reserve( nonzeros );
-
-   while( vector_.nonZeros() < nonzeros ) {
-      vector_[ rand<size_t>( 0UL, size-1UL ) ] = rand<Type>();
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Two argument constructor of the Rand specialization for CompressedVector.
-//
-// \param size The size of the random vector.
-// \param nonzeros The number of non-zero elements of the random vector.
-// \exception std::invalid_argument Invalid number of non-zero elements.
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline Rand< CompressedVector<Type,TF> >::Rand( size_t size, size_t nonzeros )
-   : vector_( size, nonzeros )  // The random vector
-{
-   if( nonzeros > size )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
-
-   if( size == 0UL ) return;
-
-   while( vector_.nonZeros() < nonzeros ) {
-      vector_[ rand<size_t>( 0UL, size-1UL ) ] = rand<Type>();
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Conversion to the created random CompressedVector.
-//
-// \return The random vector.
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline Rand< CompressedVector<Type,TF> >::operator CompressedVector<Type,TF>() const
-{
-   return vector_;
-}
 /*! \endcond */
 //*************************************************************************************************
 
