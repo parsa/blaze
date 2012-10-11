@@ -37,7 +37,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS DEFINITION
+//  CLASS HASSIZE
 //
 //=================================================================================================
 
@@ -60,7 +60,7 @@ namespace blaze {
    \endcode
 */
 template< typename T, size_t Size >
-class HasSize : public SelectType< sizeof( T ) == Size, TrueType, FalseType >::Type
+struct HasSize : public SelectType< sizeof( T ) == Size, TrueType, FalseType >::Type
 {
  public:
    //**********************************************************************************************
@@ -85,7 +85,7 @@ class HasSize : public SelectType< sizeof( T ) == Size, TrueType, FalseType >::T
 // and the class derives from \a FalseType.
 */
 template< size_t Size >
-class HasSize<void,Size> : public SelectType< 0 == Size, TrueType, FalseType >::Type
+struct HasSize<void,Size> : public SelectType< 0 == Size, TrueType, FalseType >::Type
 {
  public:
    //**********************************************************************************************
@@ -109,7 +109,7 @@ class HasSize<void,Size> : public SelectType< 0 == Size, TrueType, FalseType >::
 // and the class derives from \a FalseType.
 */
 template< size_t Size >
-class HasSize<const void,Size> : public SelectType< 0 == Size, TrueType, FalseType >::Type
+struct HasSize<const void,Size> : public SelectType< 0 == Size, TrueType, FalseType >::Type
 {
  public:
    //**********************************************************************************************
@@ -133,7 +133,7 @@ class HasSize<const void,Size> : public SelectType< 0 == Size, TrueType, FalseTy
 // and the class derives from \a FalseType.
 */
 template< size_t Size >
-class HasSize<volatile void,Size> : public SelectType< 0 == Size, TrueType, FalseType >::Type
+struct HasSize<volatile void,Size> : public SelectType< 0 == Size, TrueType, FalseType >::Type
 {
  public:
    //**********************************************************************************************
@@ -157,7 +157,7 @@ class HasSize<volatile void,Size> : public SelectType< 0 == Size, TrueType, Fals
 // derives from \a FalseType.
 */
 template< size_t Size >
-class HasSize<const volatile void,Size> : public SelectType< 0 == Size, TrueType, FalseType >::Type
+struct HasSize<const volatile void,Size> : public SelectType< 0 == Size, TrueType, FalseType >::Type
 {
  public:
    //**********************************************************************************************
@@ -166,6 +166,138 @@ class HasSize<const volatile void,Size> : public SelectType< 0 == Size, TrueType
    //**********************************************************************************************
 };
 /*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CLASS HAS1BYTE
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Compile time size check.
+// \ingroup type_traits
+//
+// This type trait offers the possibility to test whether a given type has a size of exactly
+// one byte. If the type \a T has one byte, the \a value member enumeration is set to 1, the
+// nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
+// Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives from
+// \a FalseType.
+
+   \code
+   blaze::Has1Byte<const char>::value       // Evaluates to 1 (on most architectures)
+   blaze::Has1Byte<unsigned char>::Type     // Results in TrueType (on most architectures)
+   blaze::Has1Byte<signed char>             // Is derived from TrueType (on most architectures)
+   blaze::Has1Byte<volatile double>::value  // Evaluates to 0
+   blaze::Has1Byte<const float>::Type       // Results in FalseType
+   blaze::Has1Byte<unsigned short>          // Is derived from FalseType
+   \endcode
+*/
+template< typename T >
+struct Has1Byte : public HasSize<T,1UL>
+{};
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CLASS HAS2BYTES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Compile time size check.
+// \ingroup type_traits
+//
+// This type trait offers the possibility to test whether a given type has a size of exactly
+// two bytes. If the type \a T has two bytes, the \a value member enumeration is set to 1, the
+// nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
+// Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives from
+// \a FalseType.
+
+   \code
+   blaze::Has2Bytes<const short>::value      // Evaluates to 1 (on most architectures)
+   blaze::Has2Bytes<unsigned short>::Type    // Results in TrueType (on most architectures)
+   blaze::Has2Bytes<volatile short>          // Is derived from TrueType (on most architectures)
+   blaze::Has2Bytes<volatile double>::value  // Evaluates to 0
+   blaze::Has2Bytes<const float>::Type       // Results in FalseType
+   blaze::Has2Bytes<unsigned int>            // Is derived from FalseType
+   \endcode
+*/
+template< typename T >
+struct Has2Bytes : public HasSize<T,2UL>
+{};
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CLASS HAS4BYTES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Compile time size check.
+// \ingroup type_traits
+//
+// This type trait offers the possibility to test whether a given type has a size of exactly
+// four bytes. If the type \a T has four bytes, the \a value member enumeration is set to 1,
+// the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
+// Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives from
+// \a FalseType.
+
+   \code
+   blaze::Has4Bytes<const int>::value        // Evaluates to 1 (on most architectures)
+   blaze::Has4Bytes<unsigned int>::Type      // Results in TrueType (on most architectures)
+   blaze::Has4Bytes<volatile float>          // Is derived from TrueType (on most architectures)
+   blaze::Has4Bytes<volatile double>::value  // Evaluates to 0
+   blaze::Has4Bytes<const float>::Type       // Results in FalseType
+   blaze::Has4Bytes<short>                   // Is derived from FalseType
+   \endcode
+*/
+template< typename T >
+struct Has4Bytes : public HasSize<T,4UL>
+{};
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CLASS HAS8BYTES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Compile time size check.
+// \ingroup type_traits
+//
+// This type trait offers the possibility to test whether a given type has a size of exactly
+// four bytes. If the type \a T has four bytes, the \a value member enumeration is set to 1,
+// the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
+// Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives from
+// \a FalseType.
+
+   \code
+   blaze::Has8Bytes<double>::value        // Evaluates to 1 (on most architectures)
+   blaze::Has8Bytes<const double>::Type   // Results in TrueType (on most architectures)
+   blaze::Has8Bytes<volatile double>      // Is derived from TrueType (on most architectures)
+   blaze::Has8Bytes<unsigned int>::value  // Evaluates to 0
+   blaze::Has8Bytes<const float>::Type    // Results in FalseType
+   blaze::Has8Bytes<volatile short>       // Is derived from FalseType
+   \endcode
+*/
+template< typename T >
+struct Has8Bytes : public HasSize<T,8UL>
+{};
 //*************************************************************************************************
 
 } // namespace blaze
