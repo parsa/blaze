@@ -185,8 +185,8 @@ void dvecdveccross( std::vector<Run>& runs, Benchmarks benchmarks )
    if( benchmarks.runBlaze ) {
       std::cout << "   Blaze [MFlop/s]:\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
-         const size_t N    ( run->getSize()  );
-         const size_t steps( run->getSteps() );
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
          run->setBlazeResult( blazemark::blaze::dvecdveccross( N, steps ) );
          const double mflops( run->getFlops() * steps / run->getBlazeResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
@@ -197,8 +197,8 @@ void dvecdveccross( std::vector<Run>& runs, Benchmarks benchmarks )
    if( benchmarks.runArmadillo ) {
       std::cout << "   Armadillo [MFlop/s]:\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
-         const size_t N    ( run->getSize()  );
-         const size_t steps( run->getSteps() );
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
          run->setArmadilloResult( blazemark::armadillo::dvecdveccross( N, steps ) );
          const double mflops( run->getFlops() * steps / run->getArmadilloResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
@@ -210,8 +210,8 @@ void dvecdveccross( std::vector<Run>& runs, Benchmarks benchmarks )
    if( benchmarks.runEigen ) {
       std::cout << "   Eigen [MFlop/s]:\n";
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
-         const size_t N    ( run->getSize()  );
-         const size_t steps( run->getSteps() );
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
          run->setEigenResult( blazemark::eigen::dvecdveccross( N, steps ) );
          const double mflops( run->getFlops() * steps / run->getEigenResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
