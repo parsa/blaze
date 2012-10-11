@@ -30,6 +30,7 @@
 #include <stdexcept>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/dense/StaticVector.h>
 #include <blaze/math/Expression.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
@@ -96,10 +97,10 @@ class DVecDVecCrossExpr : public DenseVector< DVecDVecCrossExpr<VT1,VT2>, false 
    typedef typename SelectType< IsExpression<VT2>::value, const VT2, const VT2& >::Type  RightOperand;
 
    //! Composite type of the left-hand side dense vector expression.
-   typedef typename SelectType< IsExpression<VT1>::value, const RT1, CT1 >::Type  LT;
+   typedef typename SelectType< IsExpression<VT1>::value, const StaticVector<ET1,3UL,false>, CT1 >::Type  LT;
 
    //! Composite type of the right-hand side dense vector expression.
-   typedef typename SelectType< IsExpression<VT2>::value, const RT2, CT2 >::Type  RT;
+   typedef typename SelectType< IsExpression<VT2>::value, const StaticVector<ET2,3UL,false>, CT2 >::Type  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
