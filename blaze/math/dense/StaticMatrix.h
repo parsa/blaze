@@ -30,7 +30,7 @@
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>
-#include <blaze/math/DenseMatrix.h>
+#include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>

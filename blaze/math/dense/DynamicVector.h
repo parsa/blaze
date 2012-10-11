@@ -32,7 +32,7 @@
 #include <fstream>
 #include <ostream>
 #include <stdexcept>
-#include <blaze/math/DenseVector.h>
+#include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/IsDefault.h>

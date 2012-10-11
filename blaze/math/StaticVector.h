@@ -27,8 +27,9 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/dense/StaticMatrix.h>
 #include <blaze/math/dense/StaticVector.h>
+#include <blaze/math/DenseVector.h>
+#include <blaze/math/StaticMatrix.h>
 #include <blaze/system/Precision.h>
 #include <blaze/util/Random.h>
 

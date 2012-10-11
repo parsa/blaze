@@ -28,7 +28,8 @@
 //*************************************************************************************************
 
 #include <blaze/math/sparse/CompressedMatrix.h>
-#include <blaze/math/sparse/CompressedVector.h>
+#include <blaze/math/CompressedVector.h>
+#include <blaze/math/SparseMatrix.h>
 #include <blaze/system/Precision.h>
 #include <blaze/util/Random.h>
 

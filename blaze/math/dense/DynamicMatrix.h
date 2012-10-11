@@ -29,7 +29,7 @@
 
 #include <algorithm>
 #include <stdexcept>
-#include <blaze/math/DenseMatrix.h>
+#include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Equal.h>

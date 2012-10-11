@@ -28,7 +28,8 @@
 //*************************************************************************************************
 
 #include <blaze/math/dense/DynamicMatrix.h>
-#include <blaze/math/dense/DynamicVector.h>
+#include <blaze/math/DenseMatrix.h>
+#include <blaze/math/DynamicVector.h>
 #include <blaze/system/Precision.h>
 #include <blaze/util/Random.h>
 
