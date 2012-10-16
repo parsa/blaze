@@ -1602,7 +1602,7 @@ inline typename DisableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vecto
          v_[i*nn_+j    ] = (~rhs)(i,j    );
          v_[i*nn_+j+1UL] = (~rhs)(i,j+1UL);
       }
-      if( end < n_ ) {
+      if( jend < n_ ) {
          v_[i*nn_+jend] = (~rhs)(i,jend);
       }
    }
