@@ -188,6 +188,8 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    typedef const This&                 CompositeType;   //!< Data type for composite expression templates.
    typedef Type&                       Reference;       //!< Reference to a non-constant matrix value.
    typedef const Type&                 ConstReference;  //!< Reference to a constant matrix value.
+   typedef Type*                       Iterator;        //!< Iterator over non-constant elements.
+   typedef const Type*                 ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -243,6 +245,12 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    inline ConstReference operator()( size_t i, size_t j ) const;
    inline Type*          data();
    inline const Type*    data() const;
+   inline Iterator       begin ( size_t i );
+   inline ConstIterator  begin ( size_t i ) const;
+   inline ConstIterator  cbegin( size_t i ) const;
+   inline Iterator       end   ( size_t i );
+   inline ConstIterator  end   ( size_t i ) const;
+   inline ConstIterator  cend  ( size_t i ) const;
    //@}
    //**********************************************************************************************
 
@@ -1276,6 +1284,150 @@ inline const Type* StaticMatrix<Type,M,N,SO>::data() const
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first element of row/column \a i.
+//
+// \param i The row/column index.
+// \return Iterator to the first element of row/column \a i.
+//
+// This function returns a row/column iterator to the first element of row/column \a i. In case
+// the storage order is set to \a rowMajor the function returns an iterator to the first element
+// of row \a i, in case the storage flag is set to \a columnMajor the function returns an iterator
+// to the first element of column \a i.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline typename StaticMatrix<Type,M,N,SO>::Iterator
+   StaticMatrix<Type,M,N,SO>::begin( size_t i )
+{
+   BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
+   return v_ + i*NN;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first element of row/column \a i.
+//
+// \param i The row/column index.
+// \return Iterator to the first element of row/column \a i.
+//
+// This function returns a row/column iterator to the first element of row/column \a i. In case
+// the storage order is set to \a rowMajor the function returns an iterator to the first element
+// of row \a i, in case the storage flag is set to \a columnMajor the function returns an iterator
+// to the first element of column \a i.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline typename StaticMatrix<Type,M,N,SO>::ConstIterator
+   StaticMatrix<Type,M,N,SO>::begin( size_t i ) const
+{
+   BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
+   return v_ + i*NN;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first element of row/column \a i.
+//
+// \param i The row/column index.
+// \return Iterator to the first element of row/column \a i.
+//
+// This function returns a row/column iterator to the first element of row/column \a i. In case
+// the storage order is set to \a rowMajor the function returns an iterator to the first element
+// of row \a i, in case the storage flag is set to \a columnMajor the function returns an iterator
+// to the first element of column \a i.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline typename StaticMatrix<Type,M,N,SO>::ConstIterator
+   StaticMatrix<Type,M,N,SO>::cbegin( size_t i ) const
+{
+   BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
+   return v_ + i*NN;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator just past the last element of row/column \a i.
+//
+// \param i The row/column index.
+// \return Iterator just past the last element of row/column \a i.
+//
+// This function returns an row/column iterator just past the last element of row/column \a i.
+// In case the storage order is set to \a rowMajor the function returns an iterator just past
+// the last element of row \a i, in case the storage flag is set to \a columnMajor the function
+// returns an iterator just past the last element of column \a i.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline typename StaticMatrix<Type,M,N,SO>::Iterator
+   StaticMatrix<Type,M,N,SO>::end( size_t i )
+{
+   BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
+   return v_ + i*NN + N;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator just past the last element of row/column \a i.
+//
+// \param i The row/column index.
+// \return Iterator just past the last element of row/column \a i.
+//
+// This function returns an row/column iterator just past the last element of row/column \a i.
+// In case the storage order is set to \a rowMajor the function returns an iterator just past
+// the last element of row \a i, in case the storage flag is set to \a columnMajor the function
+// returns an iterator just past the last element of column \a i.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline typename StaticMatrix<Type,M,N,SO>::ConstIterator
+   StaticMatrix<Type,M,N,SO>::end( size_t i ) const
+{
+   BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
+   return v_ + i*NN + N;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator just past the last element of row/column \a i.
+//
+// \param i The row/column index.
+// \return Iterator just past the last element of row/column \a i.
+//
+// This function returns an row/column iterator just past the last element of row/column \a i.
+// In case the storage order is set to \a rowMajor the function returns an iterator just past
+// the last element of row \a i, in case the storage flag is set to \a columnMajor the function
+// returns an iterator just past the last element of column \a i.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline typename StaticMatrix<Type,M,N,SO>::ConstIterator
+   StaticMatrix<Type,M,N,SO>::cend( size_t i ) const
+{
+   BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
+   return v_ + i*NN + N;
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -1651,10 +1803,10 @@ inline size_t StaticMatrix<Type,M,N,SO>::nonZeros( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
-   const size_t end( (i+1UL)*NN );
+   const size_t jend( (i+1UL)*NN );
    size_t nonzeros( 0UL );
 
-   for( size_t j=i*NN; j<end; ++j )
+   for( size_t j=i*NN; j<jend; ++j )
       if( !isDefault( v_[j] ) )
          ++nonzeros;
 
@@ -2284,6 +2436,8 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    typedef const This&                   CompositeType;   //!< Data type for composite expression templates.
    typedef Type&                         Reference;       //!< Reference to a non-constant matrix value.
    typedef const Type&                   ConstReference;  //!< Reference to a constant matrix value.
+   typedef Type*                         Iterator;        //!< Iterator over non-constant elements.
+   typedef const Type*                   ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2339,6 +2493,12 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    inline ConstReference operator()( size_t i, size_t j ) const;
    inline Type*          data();
    inline const Type*    data() const;
+   inline Iterator       begin ( size_t i );
+   inline ConstIterator  begin ( size_t i ) const;
+   inline ConstIterator  cbegin( size_t i ) const;
+   inline Iterator       end   ( size_t i );
+   inline ConstIterator  end   ( size_t i ) const;
+   inline ConstIterator  cend  ( size_t i ) const;
    //@}
    //**********************************************************************************************
 
@@ -3377,6 +3537,126 @@ inline const Type* StaticMatrix<Type,M,N,true>::data() const
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first element of column \a j.
+//
+// \param j The column index.
+// \return Iterator to the first element of column \a j.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline typename StaticMatrix<Type,M,N,true>::Iterator
+   StaticMatrix<Type,M,N,true>::begin( size_t j )
+{
+   BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
+   return v_ + j*MM;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first element of column \a j.
+//
+// \param j The column index.
+// \return Iterator to the first element of column \a j.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline typename StaticMatrix<Type,M,N,true>::ConstIterator
+   StaticMatrix<Type,M,N,true>::begin( size_t j ) const
+{
+   BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
+   return v_ + j*MM;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first element of column \a j.
+//
+// \param j The column index.
+// \return Iterator to the first element of column \a j.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline typename StaticMatrix<Type,M,N,true>::ConstIterator
+   StaticMatrix<Type,M,N,true>::cbegin( size_t j ) const
+{
+   BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
+   return v_ + j*MM;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator just past the last element of column \a j.
+//
+// \param j The column index.
+// \return Iterator just past the last element of column \a j.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline typename StaticMatrix<Type,M,N,true>::Iterator
+   StaticMatrix<Type,M,N,true>::end( size_t j )
+{
+   BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
+   return v_ + j*MM + M;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator just past the last element of column \a j.
+//
+// \param j The column index.
+// \return Iterator just past the last element of column \a j.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline typename StaticMatrix<Type,M,N,true>::ConstIterator
+   StaticMatrix<Type,M,N,true>::end( size_t j ) const
+{
+   BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
+   return v_ + j*MM + M;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator just past the last element of column \a j.
+//
+// \param j The column index.
+// \return Iterator just past the last element of column \a j.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline typename StaticMatrix<Type,M,N,true>::ConstIterator
+   StaticMatrix<Type,M,N,true>::cend( size_t j ) const
+{
+   BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
+   return v_ + j*MM + M;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -3767,10 +4047,10 @@ inline size_t StaticMatrix<Type,M,N,true>::nonZeros( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
-   const size_t end( (j+1UL)*MM );
+   const size_t iend( (j+1UL)*MM );
    size_t nonzeros( 0UL );
 
-   for( size_t i=j*MM; i<end; ++i )
+   for( size_t i=j*MM; i<iend; ++i )
       if( !isDefault( v_[i] ) )
          ++nonzeros;
 

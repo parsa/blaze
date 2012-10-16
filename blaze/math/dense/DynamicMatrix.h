@@ -687,7 +687,8 @@ inline const Type* DynamicMatrix<Type,SO>::data() const
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline typename DynamicMatrix<Type,SO>::Iterator DynamicMatrix<Type,SO>::begin( size_t i )
+inline typename DynamicMatrix<Type,SO>::Iterator
+   DynamicMatrix<Type,SO>::begin( size_t i )
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return v_ + i*nn_;
@@ -708,7 +709,8 @@ inline typename DynamicMatrix<Type,SO>::Iterator DynamicMatrix<Type,SO>::begin( 
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline typename DynamicMatrix<Type,SO>::ConstIterator DynamicMatrix<Type,SO>::begin( size_t i ) const
+inline typename DynamicMatrix<Type,SO>::ConstIterator
+   DynamicMatrix<Type,SO>::begin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return v_ + i*nn_;
@@ -729,7 +731,8 @@ inline typename DynamicMatrix<Type,SO>::ConstIterator DynamicMatrix<Type,SO>::be
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline typename DynamicMatrix<Type,SO>::ConstIterator DynamicMatrix<Type,SO>::cbegin( size_t i ) const
+inline typename DynamicMatrix<Type,SO>::ConstIterator
+   DynamicMatrix<Type,SO>::cbegin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return v_ + i*nn_;
@@ -750,7 +753,8 @@ inline typename DynamicMatrix<Type,SO>::ConstIterator DynamicMatrix<Type,SO>::cb
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline typename DynamicMatrix<Type,SO>::Iterator DynamicMatrix<Type,SO>::end( size_t i )
+inline typename DynamicMatrix<Type,SO>::Iterator
+   DynamicMatrix<Type,SO>::end( size_t i )
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return v_ + i*nn_ + n_;
@@ -771,7 +775,8 @@ inline typename DynamicMatrix<Type,SO>::Iterator DynamicMatrix<Type,SO>::end( si
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline typename DynamicMatrix<Type,SO>::ConstIterator DynamicMatrix<Type,SO>::end( size_t i ) const
+inline typename DynamicMatrix<Type,SO>::ConstIterator
+   DynamicMatrix<Type,SO>::end( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return v_ + i*nn_ + n_;
@@ -792,7 +797,8 @@ inline typename DynamicMatrix<Type,SO>::ConstIterator DynamicMatrix<Type,SO>::en
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline typename DynamicMatrix<Type,SO>::ConstIterator DynamicMatrix<Type,SO>::cend( size_t i ) const
+inline typename DynamicMatrix<Type,SO>::ConstIterator
+   DynamicMatrix<Type,SO>::cend( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return v_ + i*nn_ + n_;
