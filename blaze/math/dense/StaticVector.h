@@ -171,6 +171,8 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    typedef const StaticVector&       CompositeType;   //!< Data type for composite expression templates.
    typedef Type&                     Reference;       //!< Reference to a non-constant vector value.
    typedef const Type&               ConstReference;  //!< Reference to a constant vector value.
+   typedef Type*                     Iterator;        //!< Iterator over non-constant elements.
+   typedef const Type*               ConstIterator;   //!< Iterator over constant elements.
 
    //! Vector length return type.
    /*! Return type of the StaticVector<Type,N,TF>::length function. */
@@ -221,8 +223,14 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    //@{
    inline Reference      operator[]( size_t index );
    inline ConstReference operator[]( size_t index ) const;
-   inline Type*          data();
-   inline const Type*    data() const;
+   inline Type*          data  ();
+   inline const Type*    data  () const;
+   inline Iterator       begin ();
+   inline ConstIterator  begin () const;
+   inline ConstIterator  cbegin() const;
+   inline Iterator       end   ();
+   inline ConstIterator  end   () const;
+   inline ConstIterator  cend  () const;
    //@}
    //**********************************************************************************************
 
@@ -802,6 +810,96 @@ template< typename Type  // Data type of the vector
 inline const Type* StaticVector<Type,N,TF>::data() const
 {
    return v_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first element of the static vector.
+//
+// \return Iterator to the first element of the static vector.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline typename StaticVector<Type,N,TF>::Iterator StaticVector<Type,N,TF>::begin()
+{
+   return v_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first element of the static vector.
+//
+// \return Iterator to the first element of the static vector.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline typename StaticVector<Type,N,TF>::ConstIterator StaticVector<Type,N,TF>::begin() const
+{
+   return v_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first element of the static vector.
+//
+// \return Iterator to the first element of the static vector.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline typename StaticVector<Type,N,TF>::ConstIterator StaticVector<Type,N,TF>::cbegin() const
+{
+   return v_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator just past the last element of the static vector.
+//
+// \return Iterator just past the last element of the static vector.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline typename StaticVector<Type,N,TF>::Iterator StaticVector<Type,N,TF>::end()
+{
+   return v_ + N;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator just past the last element of the static vector.
+//
+// \return Iterator just past the last element of the static vector.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline typename StaticVector<Type,N,TF>::ConstIterator StaticVector<Type,N,TF>::end() const
+{
+   return v_ + N;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator just past the last element of the static vector.
+//
+// \return Iterator just past the last element of the static vector.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline typename StaticVector<Type,N,TF>::ConstIterator StaticVector<Type,N,TF>::cend() const
+{
+   return v_ + N;
 }
 //*************************************************************************************************
 
@@ -1767,11 +1865,10 @@ inline void StaticVector<Type,N,TF>::multAssign( const SparseVector<VT,TF>& rhs 
    typedef typename VT::ConstIterator  ConstIterator;
 
    const StaticVector tmp( *this );
-   const ConstIterator end( (~rhs).end() );
 
    reset();
 
-   for( ConstIterator element=(~rhs).begin(); element!=end; ++element )
+   for( ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = tmp[element->index()] * element->value();
 }
 //*************************************************************************************************
