@@ -177,6 +177,8 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    typedef const This&              CompositeType;   //!< Data type for composite expression templates.
    typedef Type&                    Reference;       //!< Reference to a non-constant matrix value.
    typedef const Type&              ConstReference;  //!< Reference to a constant matrix value.
+   typedef Type*                    Iterator;        //!< Iterator over non-constant elements.
+   typedef const Type*              ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -222,6 +224,12 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    inline ConstReference operator()( size_t i, size_t j ) const;
    inline Type*          data();
    inline const Type*    data() const;
+   inline Iterator       begin ( size_t i );
+   inline ConstIterator  begin ( size_t i ) const;
+   inline ConstIterator  cbegin( size_t i ) const;
+   inline Iterator       end   ( size_t i );
+   inline ConstIterator  end   ( size_t i ) const;
+   inline ConstIterator  cend  ( size_t i ) const;
    //@}
    //**********************************************************************************************
 
@@ -666,6 +674,132 @@ inline const Type* DynamicMatrix<Type,SO>::data() const
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first element of row/column \a i.
+//
+// \param i The row/column index.
+// \return Iterator to the first element of row/column \a i.
+//
+// This function returns a row/column iterator to the first element of row/column \a i. In case
+// the storage order is set to \a rowMajor the function returns an iterator to the first element
+// of row \a i, in case the storage flag is set to \a columnMajor the function returns an iterator
+// to the first element of column \a i.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline typename DynamicMatrix<Type,SO>::Iterator DynamicMatrix<Type,SO>::begin( size_t i )
+{
+   BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
+   return v_ + i*nn_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first element of row/column \a i.
+//
+// \param i The row/column index.
+// \return Iterator to the first element of row/column \a i.
+//
+// This function returns a row/column iterator to the first element of row/column \a i. In case
+// the storage order is set to \a rowMajor the function returns an iterator to the first element
+// of row \a i, in case the storage flag is set to \a columnMajor the function returns an iterator
+// to the first element of column \a i.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline typename DynamicMatrix<Type,SO>::ConstIterator DynamicMatrix<Type,SO>::begin( size_t i ) const
+{
+   BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
+   return v_ + i*nn_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first element of row/column \a i.
+//
+// \param i The row/column index.
+// \return Iterator to the first element of row/column \a i.
+//
+// This function returns a row/column iterator to the first element of row/column \a i. In case
+// the storage order is set to \a rowMajor the function returns an iterator to the first element
+// of row \a i, in case the storage flag is set to \a columnMajor the function returns an iterator
+// to the first element of column \a i.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline typename DynamicMatrix<Type,SO>::ConstIterator DynamicMatrix<Type,SO>::cbegin( size_t i ) const
+{
+   BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
+   return v_ + i*nn_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator just past the last element of row/column \a i.
+//
+// \param i The row/column index.
+// \return Iterator just past the last element of row/column \a i.
+//
+// This function returns an row/column iterator just past the last element of row/column \a i.
+// In case the storage order is set to \a rowMajor the function returns an iterator just past
+// the last element of row \a i, in case the storage flag is set to \a columnMajor the function
+// returns an iterator just past the last element of column \a i.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline typename DynamicMatrix<Type,SO>::Iterator DynamicMatrix<Type,SO>::end( size_t i )
+{
+   BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
+   return v_ + i*nn_ + n_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator just past the last element of row/column \a i.
+//
+// \param i The row/column index.
+// \return Iterator just past the last element of row/column \a i.
+//
+// This function returns an row/column iterator just past the last element of row/column \a i.
+// In case the storage order is set to \a rowMajor the function returns an iterator just past
+// the last element of row \a i, in case the storage flag is set to \a columnMajor the function
+// returns an iterator just past the last element of column \a i.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline typename DynamicMatrix<Type,SO>::ConstIterator DynamicMatrix<Type,SO>::end( size_t i ) const
+{
+   BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
+   return v_ + i*nn_ + n_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator just past the last element of row/column \a i.
+//
+// \param i The row/column index.
+// \return Iterator just past the last element of row/column \a i.
+//
+// This function returns an row/column iterator just past the last element of row/column \a i.
+// In case the storage order is set to \a rowMajor the function returns an iterator just past
+// the last element of row \a i, in case the storage flag is set to \a columnMajor the function
+// returns an iterator just past the last element of column \a i.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline typename DynamicMatrix<Type,SO>::ConstIterator DynamicMatrix<Type,SO>::cend( size_t i ) const
+{
+   BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
+   return v_ + i*nn_ + n_;
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -1043,10 +1177,10 @@ inline size_t DynamicMatrix<Type,SO>::nonZeros( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
-   const size_t end( (i+1UL)*nn_ );
+   const size_t jend( (i+1UL)*nn_ );
    size_t nonzeros( 0UL );
 
-   for( size_t j=i*nn_; j<end; ++j )
+   for( size_t j=i*nn_; j<jend; ++j )
       if( !isDefault( v_[j] ) )
          ++nonzeros;
 
@@ -1455,15 +1589,15 @@ inline typename DisableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vecto
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == ( n_ & size_t(-2) ), "Invalid end calculation" );
-   const size_t end( n_ & size_t(-2) );
+   const size_t jend( n_ & size_t(-2) );
 
    for( size_t i=0UL; i<m_; ++i ) {
-      for( size_t j=0UL; j<end; j+=2UL ) {
+      for( size_t j=0UL; j<jend; j+=2UL ) {
          v_[i*nn_+j    ] = (~rhs)(i,j    );
          v_[i*nn_+j+1UL] = (~rhs)(i,j+1UL);
       }
       if( end < n_ ) {
-         v_[i*nn_+end] = (~rhs)(i,end);
+         v_[i*nn_+jend] = (~rhs)(i,jend);
       }
    }
 }
@@ -1501,16 +1635,16 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
    else
    {
       BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == ( n_ & size_t(-IT::size*4) ), "Invalid end calculation" );
-      const size_t end( n_ & size_t(-IT::size*4) );
+      const size_t jend( n_ & size_t(-IT::size*4) );
 
       for( size_t i=0UL; i<m_; ++i ) {
-         for( size_t j=0UL; j<end; j+=IT::size*4UL ) {
+         for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
             store( &v_[i*nn_+j             ], (~rhs).get(i,j             ) );
             store( &v_[i*nn_+j+IT::size    ], (~rhs).get(i,j+IT::size    ) );
             store( &v_[i*nn_+j+IT::size*2UL], (~rhs).get(i,j+IT::size*2UL) );
             store( &v_[i*nn_+j+IT::size*3UL], (~rhs).get(i,j+IT::size*3UL) );
          }
-         for( size_t j=end; j<n_; j+=IT::size ) {
+         for( size_t j=jend; j<n_; j+=IT::size ) {
             store( &v_[i*nn_+j], (~rhs).get(i,j) );
          }
       }
@@ -1632,15 +1766,15 @@ inline typename DisableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vecto
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == ( n_ & size_t(-2) ), "Invalid end calculation" );
-   const size_t end( n_ & size_t(-2) );
+   const size_t jend( n_ & size_t(-2) );
 
    for( size_t i=0UL; i<m_; ++i ) {
-      for( size_t j=0UL; j<end; j+=2UL ) {
+      for( size_t j=0UL; j<jend; j+=2UL ) {
          v_[i*nn_+j    ] += (~rhs)(i,j    );
          v_[i*nn_+j+1UL] += (~rhs)(i,j+1UL);
       }
-      if( end < n_ ) {
-         v_[i*nn_+end] += (~rhs)(i,end);
+      if( jend < n_ ) {
+         v_[i*nn_+jend] += (~rhs)(i,jend);
       }
    }
 }
@@ -1670,16 +1804,16 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == ( n_ & size_t(-IT::size*4) ), "Invalid end calculation" );
-   const size_t end( n_ & size_t(-IT::size*4) );
+   const size_t jend( n_ & size_t(-IT::size*4) );
 
    for( size_t i=0UL; i<m_; ++i ) {
-      for( size_t j=0UL; j<end; j+=IT::size*4UL ) {
+      for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
          store( &v_[i*nn_+j             ], load( &v_[i*nn_+j             ] ) + (~rhs).get(i,j             ) );
          store( &v_[i*nn_+j+IT::size    ], load( &v_[i*nn_+j+IT::size    ] ) + (~rhs).get(i,j+IT::size    ) );
          store( &v_[i*nn_+j+IT::size*2UL], load( &v_[i*nn_+j+IT::size*2UL] ) + (~rhs).get(i,j+IT::size*2UL) );
          store( &v_[i*nn_+j+IT::size*3UL], load( &v_[i*nn_+j+IT::size*3UL] ) + (~rhs).get(i,j+IT::size*3UL) );
       }
-      for( size_t j=end; j<n_; j+=IT::size ) {
+      for( size_t j=jend; j<n_; j+=IT::size ) {
          store( &v_[i*nn_+j], load( &v_[i*nn_+j] ) + (~rhs).get(i,j) );
       }
    }
@@ -1800,15 +1934,15 @@ inline typename DisableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vecto
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == ( n_ & size_t(-2) ), "Invalid end calculation" );
-   const size_t end( n_ & size_t(-2) );
+   const size_t jend( n_ & size_t(-2) );
 
    for( size_t i=0UL; i<m_; ++i ) {
-      for( size_t j=0UL; j<end; j+=2UL ) {
+      for( size_t j=0UL; j<jend; j+=2UL ) {
          v_[i*nn_+j    ] -= (~rhs)(i,j    );
          v_[i*nn_+j+1UL] -= (~rhs)(i,j+1UL);
       }
-      if( end < n_ ) {
-         v_[i*nn_+end] -= (~rhs)(i,end);
+      if( jend < n_ ) {
+         v_[i*nn_+jend] -= (~rhs)(i,jend);
       }
    }
 }
@@ -1838,16 +1972,16 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == ( n_ & size_t(-IT::size*4) ), "Invalid end calculation" );
-   const size_t end( n_ & size_t(-IT::size*4) );
+   const size_t jend( n_ & size_t(-IT::size*4) );
 
    for( size_t i=0UL; i<m_; ++i ) {
-      for( size_t j=0UL; j<end; j+=IT::size*4UL ) {
+      for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
          store( &v_[i*nn_+j             ], load( &v_[i*nn_+j             ] ) - (~rhs).get(i,j             ) );
          store( &v_[i*nn_+j+IT::size    ], load( &v_[i*nn_+j+IT::size    ] ) - (~rhs).get(i,j+IT::size    ) );
          store( &v_[i*nn_+j+IT::size*2UL], load( &v_[i*nn_+j+IT::size*2UL] ) - (~rhs).get(i,j+IT::size*2UL) );
          store( &v_[i*nn_+j+IT::size*3UL], load( &v_[i*nn_+j+IT::size*3UL] ) - (~rhs).get(i,j+IT::size*3UL) );
       }
-      for( size_t j=end; j<n_; j+=IT::size ) {
+      for( size_t j=jend; j<n_; j+=IT::size ) {
          store( &v_[i*nn_+j], load( &v_[i*nn_+j] ) - (~rhs).get(i,j) );
       }
    }
@@ -1987,6 +2121,8 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    typedef const This&                CompositeType;   //!< Data type for composite expression templates.
    typedef Type&                      Reference;       //!< Reference to a non-constant matrix value.
    typedef const Type&                ConstReference;  //!< Reference to a constant matrix value.
+   typedef Type*                      Iterator;        //!< Iterator over non-constant elements.
+   typedef const Type*                ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2032,6 +2168,12 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    inline ConstReference operator()( size_t i, size_t j ) const;
    inline Type*          data();
    inline const Type*    data() const;
+   inline Iterator       begin ( size_t i );
+   inline ConstIterator  begin ( size_t i ) const;
+   inline ConstIterator  cbegin( size_t i ) const;
+   inline Iterator       end   ( size_t i );
+   inline ConstIterator  end   ( size_t i ) const;
+   inline ConstIterator  cend  ( size_t i ) const;
    //@}
    //**********************************************************************************************
 
@@ -2482,6 +2624,114 @@ inline const Type* DynamicMatrix<Type,true>::data() const
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first element of column \a j.
+//
+// \param j The column index.
+// \return Iterator to the first element of column \a j.
+*/
+template< typename Type >  // Data type of the matrix
+inline typename DynamicMatrix<Type,true>::Iterator
+   DynamicMatrix<Type,true>::begin( size_t j )
+{
+   BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
+   return v_ + j*mm_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first element of column \a j.
+//
+// \param j The column index.
+// \return Iterator to the first element of column \a j.
+*/
+template< typename Type >  // Data type of the matrix
+inline typename DynamicMatrix<Type,true>::ConstIterator
+   DynamicMatrix<Type,true>::begin( size_t j ) const
+{
+   BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
+   return v_ + j*mm_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first element of column \a j.
+//
+// \param j The column index.
+// \return Iterator to the first element of column \a j.
+*/
+template< typename Type >  // Data type of the matrix
+inline typename DynamicMatrix<Type,true>::ConstIterator
+   DynamicMatrix<Type,true>::cbegin( size_t j ) const
+{
+   BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
+   return v_ + j*mm_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator just past the last element of column \a j.
+//
+// \param j The column index.
+// \return Iterator just past the last element of column \a j.
+*/
+template< typename Type >  // Data type of the matrix
+inline typename DynamicMatrix<Type,true>::Iterator
+   DynamicMatrix<Type,true>::end( size_t j )
+{
+   BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
+   return v_ + j*mm_ + m_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator just past the last element of column \a j.
+//
+// \param j The column index.
+// \return Iterator just past the last element of column \a j.
+*/
+template< typename Type >  // Data type of the matrix
+inline typename DynamicMatrix<Type,true>::ConstIterator
+   DynamicMatrix<Type,true>::end( size_t j ) const
+{
+   BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
+   return v_ + j*mm_ + m_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator just past the last element of column \a j.
+//
+// \param j The column index.
+// \return Iterator just past the last element of column \a j.
+*/
+template< typename Type >  // Data type of the matrix
+inline typename DynamicMatrix<Type,true>::ConstIterator
+   DynamicMatrix<Type,true>::cend( size_t j ) const
+{
+   BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
+   return v_ + j*mm_ + m_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -2873,10 +3123,10 @@ inline size_t DynamicMatrix<Type,true>::nonZeros( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
-   const size_t end( (j+1UL)*mm_ );
+   const size_t iend( (j+1UL)*mm_ );
    size_t nonzeros( 0UL );
 
-   for( size_t i=j*mm_; i<end; ++i )
+   for( size_t i=j*mm_; i<iend; ++i )
       if( !isDefault( v_[i] ) )
          ++nonzeros;
 
@@ -3300,15 +3550,15 @@ inline typename DisableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vec
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % 2UL ) ) == ( m_ & size_t(-2) ), "Invalid end calculation" );
-   const size_t end( m_ & size_t(-2) );
+   const size_t iend( m_ & size_t(-2) );
 
    for( size_t j=0UL; j<n_; ++j ) {
-      for( size_t i=0UL; i<end; i+=2UL ) {
+      for( size_t i=0UL; i<iend; i+=2UL ) {
          v_[i    +j*mm_] = (~rhs)(i    ,j);
          v_[i+1UL+j*mm_] = (~rhs)(i+1UL,j);
       }
-      if( end < m_ ) {
-         v_[end+j*mm_] = (~rhs)(end,j);
+      if( iend < m_ ) {
+         v_[iend+j*mm_] = (~rhs)(iend,j);
       }
    }
 }
@@ -3347,16 +3597,16 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
    else
    {
       BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == ( m_ & size_t(-IT::size*4) ), "Invalid end calculation" );
-      const size_t end( m_ & size_t(-IT::size*4) );
+      const size_t iend( m_ & size_t(-IT::size*4) );
 
       for( size_t j=0UL; j<n_; ++j ) {
-         for( size_t i=0UL; i<end; i+=IT::size*4UL ) {
+         for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
             store( &v_[i+j*mm_             ], (~rhs).get(i             ,j) );
             store( &v_[i+j*mm_+IT::size    ], (~rhs).get(i+IT::size    ,j) );
             store( &v_[i+j*mm_+IT::size*2UL], (~rhs).get(i+IT::size*2UL,j) );
             store( &v_[i+j*mm_+IT::size*3UL], (~rhs).get(i+IT::size*3UL,j) );
          }
-         for( size_t i=end; i<m_; i+=IT::size ) {
+         for( size_t i=iend; i<m_; i+=IT::size ) {
             store( &v_[i+j*mm_], (~rhs).get(i,j) );
          }
       }
@@ -3476,15 +3726,15 @@ inline typename DisableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vec
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % 2UL ) ) == ( m_ & size_t(-2) ), "Invalid end calculation" );
-   const size_t end( m_ & size_t(-2) );
+   const size_t iend( m_ & size_t(-2) );
 
    for( size_t j=0UL; j<n_; ++j ) {
-      for( size_t i=0UL; i<end; i+=2UL ) {
+      for( size_t i=0UL; i<iend; i+=2UL ) {
          v_[i    +j*mm_] += (~rhs)(i    ,j);
          v_[i+1UL+j*mm_] += (~rhs)(i+1UL,j);
       }
-      if( end < m_ ) {
-         v_[end+j*mm_] += (~rhs)(end,j);
+      if( iend < m_ ) {
+         v_[iend+j*mm_] += (~rhs)(iend,j);
       }
    }
 }
@@ -3515,16 +3765,16 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == ( m_ & size_t(-IT::size*4) ), "Invalid end calculation" );
-   const size_t end( m_ & size_t(-IT::size*4) );
+   const size_t iend( m_ & size_t(-IT::size*4) );
 
    for( size_t j=0UL; j<n_; ++j ) {
-      for( size_t i=0UL; i<end; i+=IT::size*4UL ) {
+      for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
          store( &v_[i+j*mm_             ], load( &v_[i+j*mm_             ] ) + (~rhs).get(i             ,j) );
          store( &v_[i+j*mm_+IT::size    ], load( &v_[i+j*mm_+IT::size    ] ) + (~rhs).get(i+IT::size    ,j) );
          store( &v_[i+j*mm_+IT::size*2UL], load( &v_[i+j*mm_+IT::size*2UL] ) + (~rhs).get(i+IT::size*2UL,j) );
          store( &v_[i+j*mm_+IT::size*3UL], load( &v_[i+j*mm_+IT::size*3UL] ) + (~rhs).get(i+IT::size*3UL,j) );
       }
-      for( size_t i=end; i<m_; i+=IT::size ) {
+      for( size_t i=iend; i<m_; i+=IT::size ) {
          store( &v_[i+j*mm_], load( &v_[i+j*mm_] ) + (~rhs).get(i,j) );
       }
    }
@@ -3643,15 +3893,15 @@ inline typename DisableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vec
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % 2UL ) ) == ( m_ & size_t(-2) ), "Invalid end calculation" );
-   const size_t end( m_ & size_t(-2) );
+   const size_t iend( m_ & size_t(-2) );
 
    for( size_t j=0UL; j<n_; ++j ) {
-      for( size_t i=0UL; i<end; i+=2UL ) {
+      for( size_t i=0UL; i<iend; i+=2UL ) {
          v_[i  +j*mm_] -= (~rhs)(i  ,j);
          v_[i+1+j*mm_] -= (~rhs)(i+1,j);
       }
-      if( end < m_ ) {
-         v_[end+j*mm_] -= (~rhs)(end,j);
+      if( iend < m_ ) {
+         v_[iend+j*mm_] -= (~rhs)(iend,j);
       }
    }
 }
@@ -3683,16 +3933,16 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == ( m_ & size_t(-IT::size*4) ), "Invalid end calculation" );
-   const size_t end( m_ & size_t(-IT::size*4) );
+   const size_t iend( m_ & size_t(-IT::size*4) );
 
    for( size_t j=0UL; j<n_; ++j ) {
-      for( size_t i=0UL; i<end; i+=IT::size*4UL ) {
+      for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
          store( &v_[i+j*mm_             ], load( &v_[i+j*mm_             ] ) - (~rhs).get(i             ,j) );
          store( &v_[i+j*mm_+IT::size    ], load( &v_[i+j*mm_+IT::size    ] ) - (~rhs).get(i+IT::size    ,j) );
          store( &v_[i+j*mm_+IT::size*2UL], load( &v_[i+j*mm_+IT::size*2UL] ) - (~rhs).get(i+IT::size*2UL,j) );
          store( &v_[i+j*mm_+IT::size*3UL], load( &v_[i+j*mm_+IT::size*3UL] ) - (~rhs).get(i+IT::size*3UL,j) );
       }
-      for( size_t i=end; i<m_; i+=IT::size ) {
+      for( size_t i=iend; i<m_; i+=IT::size ) {
          store( &v_[i+j*mm_], load( &v_[i+j*mm_] ) - (~rhs).get(i,j) );
       }
    }
