@@ -167,6 +167,8 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    typedef const DynamicVector&     CompositeType;   //!< Data type for composite expression templates.
    typedef Type&                    Reference;       //!< Reference to a non-constant vector value.
    typedef const Type&              ConstReference;  //!< Reference to a constant vector value.
+   typedef Type*                    Iterator;        //!< Iterator over non-constant elements.
+   typedef const Type*              ConstIterator;   //!< Iterator over constant elements.
 
    //! Vector length return type.
    /*! Return type of the DynamicVector<Type,TF>::length function. */
@@ -214,8 +216,14 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    //@{
    inline Reference      operator[]( size_t index );
    inline ConstReference operator[]( size_t index ) const;
-   inline Type*          data();
-   inline const Type*    data() const;
+   inline Type*          data  ();
+   inline const Type*    data  () const;
+   inline Iterator       begin ();
+   inline ConstIterator  begin () const;
+   inline ConstIterator  cbegin() const;
+   inline Iterator       end   ();
+   inline ConstIterator  end   () const;
+   inline ConstIterator  cend  () const;
    //@}
    //**********************************************************************************************
 
@@ -642,6 +650,90 @@ template< typename Type  // Data type of the vector
 inline const Type* DynamicVector<Type,TF>::data() const
 {
    return v_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first element of the dynamic vector.
+//
+// \return Iterator to the first element of the dynamic vector.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename DynamicVector<Type,TF>::Iterator DynamicVector<Type,TF>::begin()
+{
+   return v_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first element of the dynamic vector.
+//
+// \return Iterator to the first element of the dynamic vector.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::begin() const
+{
+   return v_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first element of the dynamic vector.
+//
+// \return Iterator to the first element of the dynamic vector.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::cbegin() const
+{
+   return v_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator just past the last element of the dynamic vector.
+//
+// \return Iterator just past the last element of the dynamic vector.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename DynamicVector<Type,TF>::Iterator DynamicVector<Type,TF>::end()
+{
+   return v_ + size_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator just past the last element of the dynamic vector.
+//
+// \return Iterator just past the last element of the dynamic vector.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::end() const
+{
+   return v_ + size_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator just past the last element of the dynamic vector.
+//
+// \return Iterator just past the last element of the dynamic vector.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::cend() const
+{
+   return v_ + size_;
 }
 //*************************************************************************************************
 
@@ -1482,13 +1574,13 @@ inline typename DisableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vecto
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t end( (~rhs).size() & size_t(-2) );
-   for( size_t i=0UL; i<end; i+=2UL ) {
+   const size_t iend( (~rhs).size() & size_t(-2) );
+   for( size_t i=0UL; i<iend; i+=2UL ) {
       v_[i    ] = (~rhs)[i    ];
       v_[i+1UL] = (~rhs)[i+1UL];
    }
-   if( end < (~rhs).size() )
-      v_[end] = (~rhs)[end];
+   if( iend < (~rhs).size() )
+      v_[iend] = (~rhs)[iend];
 }
 //*************************************************************************************************
 
@@ -1523,15 +1615,15 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
    else
    {
       BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ( size_ & size_t(-IT::size*4) ), "Invalid end calculation" );
-      const size_t end( size_ & size_t(-IT::size*4) );
+      const size_t iend( size_ & size_t(-IT::size*4) );
 
-      for( size_t i=0UL; i<end; i+=IT::size*4UL ) {
+      for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
          store( v_+i             , (~rhs).get(i             ) );
          store( v_+i+IT::size    , (~rhs).get(i+IT::size    ) );
          store( v_+i+IT::size*2UL, (~rhs).get(i+IT::size*2UL) );
          store( v_+i+IT::size*3UL, (~rhs).get(i+IT::size*3UL) );
       }
-      for( size_t i=end; i<size_; i+=IT::size ) {
+      for( size_t i=iend; i<size_; i+=IT::size ) {
          store( v_+i, (~rhs).get(i) );
       }
    }
@@ -1584,13 +1676,13 @@ inline typename DisableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vecto
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t end( (~rhs).size() & size_t(-2) );
-   for( size_t i=0UL; i<end; i+=2UL ) {
+   const size_t iend( (~rhs).size() & size_t(-2) );
+   for( size_t i=0UL; i<iend; i+=2UL ) {
       v_[i    ] += (~rhs)[i    ];
       v_[i+1UL] += (~rhs)[i+1UL];
    }
-   if( end < (~rhs).size() )
-      v_[end] += (~rhs)[end];
+   if( iend < (~rhs).size() )
+      v_[iend] += (~rhs)[iend];
 }
 //*************************************************************************************************
 
@@ -1617,15 +1709,15 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ( size_ & size_t(-IT::size*4) ), "Invalid end calculation" );
-   const size_t end( size_ & size_t(-IT::size*4) );
+   const size_t iend( size_ & size_t(-IT::size*4) );
 
-   for( size_t i=0UL; i<end; i+=IT::size*4UL ) {
+   for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
       store( v_+i             , load(v_+i             ) + (~rhs).get(i             ) );
       store( v_+i+IT::size    , load(v_+i+IT::size    ) + (~rhs).get(i+IT::size    ) );
       store( v_+i+IT::size*2UL, load(v_+i+IT::size*2UL) + (~rhs).get(i+IT::size*2UL) );
       store( v_+i+IT::size*3UL, load(v_+i+IT::size*3UL) + (~rhs).get(i+IT::size*3UL) );
    }
-   for( size_t i=end; i<size_; i+=IT::size ) {
+   for( size_t i=iend; i<size_; i+=IT::size ) {
       store( v_+i, load(v_+i) + (~rhs).get(i) );
    }
 }
@@ -1677,13 +1769,13 @@ inline typename DisableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vecto
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t end( (~rhs).size() & size_t(-2) );
-   for( size_t i=0UL; i<end; i+=2UL ) {
+   const size_t iend( (~rhs).size() & size_t(-2) );
+   for( size_t i=0UL; i<iend; i+=2UL ) {
       v_[i    ] -= (~rhs)[i    ];
       v_[i+1UL] -= (~rhs)[i+1UL];
    }
-   if( end < (~rhs).size() )
-      v_[end] -= (~rhs)[end];
+   if( iend < (~rhs).size() )
+      v_[iend] -= (~rhs)[iend];
 }
 //*************************************************************************************************
 
@@ -1710,15 +1802,15 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ( size_ & size_t(-IT::size*4) ), "Invalid end calculation" );
-   const size_t end( size_ & size_t(-IT::size*4) );
+   const size_t iend( size_ & size_t(-IT::size*4) );
 
-   for( size_t i=0UL; i<end; i+=IT::size*4UL ) {
+   for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
       store( v_+i             , load(v_+i             ) - (~rhs).get(i             ) );
       store( v_+i+IT::size    , load(v_+i+IT::size    ) - (~rhs).get(i+IT::size    ) );
       store( v_+i+IT::size*2UL, load(v_+i+IT::size*2UL) - (~rhs).get(i+IT::size*2UL) );
       store( v_+i+IT::size*3UL, load(v_+i+IT::size*3UL) - (~rhs).get(i+IT::size*3UL) );
    }
-   for( size_t i=end; i<size_; i+=IT::size ) {
+   for( size_t i=iend; i<size_; i+=IT::size ) {
       store( v_+i, load(v_+i) - (~rhs).get(i) );
    }
 }
@@ -1770,13 +1862,13 @@ inline typename DisableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vecto
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t end( (~rhs).size() & size_t(-2) );
-   for( size_t i=0UL; i<end; i+=2UL ) {
+   const size_t iend( (~rhs).size() & size_t(-2) );
+   for( size_t i=0UL; i<iend; i+=2UL ) {
       v_[i    ] *= (~rhs)[i    ];
       v_[i+1UL] *= (~rhs)[i+1UL];
    }
-   if( end < (~rhs).size() )
-      v_[end] *= (~rhs)[end];
+   if( iend < (~rhs).size() )
+      v_[iend] *= (~rhs)[iend];
 }
 //*************************************************************************************************
 
@@ -1803,15 +1895,15 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ( size_ & size_t(-IT::size*4) ), "Invalid end calculation" );
-   const size_t end( size_ & size_t(-IT::size*4) );
+   const size_t iend( size_ & size_t(-IT::size*4) );
 
-   for( size_t i=0UL; i<end; i+=IT::size*4UL ) {
+   for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
       store( v_+i             , load(v_+i             ) * (~rhs).get(i             ) );
       store( v_+i+IT::size    , load(v_+i+IT::size    ) * (~rhs).get(i+IT::size    ) );
       store( v_+i+IT::size*2UL, load(v_+i+IT::size*2UL) * (~rhs).get(i+IT::size*2UL) );
       store( v_+i+IT::size*3UL, load(v_+i+IT::size*3UL) * (~rhs).get(i+IT::size*3UL) );
    }
-   for( size_t i=end; i<size_; i+=IT::size ) {
+   for( size_t i=iend; i<size_; i+=IT::size ) {
       store( v_+i, load(v_+i) * (~rhs).get(i) );
    }
 }
@@ -1839,11 +1931,10 @@ inline void DynamicVector<Type,TF>::multAssign( const SparseVector<VT,TF>& rhs )
    typedef typename VT::ConstIterator  ConstIterator;
 
    const DynamicVector tmp( *this );
-   const ConstIterator end( (~rhs).end() );
 
    reset();
 
-   for( ConstIterator element=(~rhs).begin(); element!=end; ++element )
+   for( ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = tmp[element->index()] * element->value();
 }
 //*************************************************************************************************
