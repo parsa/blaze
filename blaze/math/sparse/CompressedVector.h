@@ -258,10 +258,12 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    //@{
    inline Reference      operator[]( size_t index );
    inline ConstReference operator[]( size_t index ) const;
-   inline Iterator       begin();
-   inline ConstIterator  begin() const;
-   inline Iterator       end();
-   inline ConstIterator  end() const;
+   inline Iterator       begin ();
+   inline ConstIterator  begin () const;
+   inline ConstIterator  cbegin() const;
+   inline Iterator       end   ();
+   inline ConstIterator  end   () const;
+   inline ConstIterator  cend  () const;
    //@}
    //**********************************************************************************************
 
@@ -586,6 +588,20 @@ inline typename CompressedVector<Type,TF>::ConstIterator CompressedVector<Type,T
 
 
 //*************************************************************************************************
+/*!\brief Returns an iterator to the first non-zero element of the compressed vector.
+//
+// \return Iterator to the first non-zero element of the compressed vector.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename CompressedVector<Type,TF>::ConstIterator CompressedVector<Type,TF>::cbegin() const
+{
+   return ConstIterator( begin_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns an iterator just past the last non-zero element of the compressed vector.
 //
 // \return Iterator just past the last non-zero element of the compressed vector.
@@ -607,6 +623,20 @@ inline typename CompressedVector<Type,TF>::Iterator CompressedVector<Type,TF>::e
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline typename CompressedVector<Type,TF>::ConstIterator CompressedVector<Type,TF>::end() const
+{
+   return ConstIterator( end_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator just past the last non-zero element of the compressed vector.
+//
+// \return Iterator just past the last non-zero element of the compressed vector.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename CompressedVector<Type,TF>::ConstIterator CompressedVector<Type,TF>::cend() const
 {
    return ConstIterator( end_ );
 }

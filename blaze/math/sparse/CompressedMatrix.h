@@ -265,10 +265,12 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
    //@{
    inline Reference      operator()( size_t i, size_t j );
    inline ConstReference operator()( size_t i, size_t j ) const;
-   inline Iterator       begin( size_t i );
-   inline ConstIterator  begin( size_t i ) const;
-   inline Iterator       end  ( size_t i );
-   inline ConstIterator  end  ( size_t i ) const;
+   inline Iterator       begin ( size_t i );
+   inline ConstIterator  begin ( size_t i ) const;
+   inline ConstIterator  cbegin( size_t i ) const;
+   inline Iterator       end   ( size_t i );
+   inline ConstIterator  end   ( size_t i ) const;
+   inline ConstIterator  cend  ( size_t i ) const;
    //@}
    //**********************************************************************************************
 
@@ -692,6 +694,28 @@ inline typename CompressedMatrix<Type,SO>::ConstIterator
 
 
 //*************************************************************************************************
+/*!\brief Returns an iterator to the first non-zero element of row/column \a i.
+//
+// \param i The row/column index.
+// \return Iterator to the first non-zero element of row/column \a i.
+//
+// This function returns a row/column iterator to the first non-zero element of row/column \a i.
+// In case the storage order is set to \a rowMajor the function returns an iterator to the first
+// non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
+// returns an iterator to the first non-zero element of column \a i.
+*/
+template< typename Type  // Data type of the sparse matrix
+        , bool SO >      // Storage order
+inline typename CompressedMatrix<Type,SO>::ConstIterator
+   CompressedMatrix<Type,SO>::cbegin( size_t i ) const
+{
+   BLAZE_USER_ASSERT( i < m_, "Invalid sparse matrix row access index" );
+   return begin_[i];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns an iterator just past the last non-zero element of row/column \a i.
 //
 // \param i The row/column index.
@@ -728,6 +752,28 @@ template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
 inline typename CompressedMatrix<Type,SO>::ConstIterator
    CompressedMatrix<Type,SO>::end( size_t i ) const
+{
+   BLAZE_USER_ASSERT( i < m_, "Invalid sparse matrix row access index" );
+   return end_[i];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator just past the last non-zero element of row/column \a i.
+//
+// \param i The row/column index.
+// \return Iterator just past the last non-zero element of row/column \a i.
+//
+// This function returns an row/column iterator just past the last non-zero element of row/column
+// \a i. In case the storage order is set to \a rowMajor the function returns an iterator just
+// past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
+// the function returns an iterator just past the last non-zero element of column \a i.
+*/
+template< typename Type  // Data type of the sparse matrix
+        , bool SO >      // Storage order
+inline typename CompressedMatrix<Type,SO>::ConstIterator
+   CompressedMatrix<Type,SO>::cend( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid sparse matrix row access index" );
    return end_[i];
@@ -2087,10 +2133,12 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
    //@{
    inline Reference      operator()( size_t i, size_t j );
    inline ConstReference operator()( size_t i, size_t j ) const;
-   inline Iterator       begin( size_t i );
-   inline ConstIterator  begin( size_t i ) const;
-   inline Iterator       end  ( size_t i );
-   inline ConstIterator  end  ( size_t i ) const;
+   inline Iterator       begin ( size_t i );
+   inline ConstIterator  begin ( size_t i ) const;
+   inline ConstIterator  cbegin( size_t i ) const;
+   inline Iterator       end   ( size_t i );
+   inline ConstIterator  end   ( size_t i ) const;
+   inline ConstIterator  cend  ( size_t i ) const;
    //@}
    //**********************************************************************************************
 
@@ -2518,6 +2566,24 @@ inline typename CompressedMatrix<Type,true>::ConstIterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first non-zero element of column \a j.
+//
+// \param j The column index.
+// \return Iterator to the first non-zero element of column \a j.
+*/
+template< typename Type >  // Data type of the sparse matrix
+inline typename CompressedMatrix<Type,true>::ConstIterator
+   CompressedMatrix<Type,true>::cbegin( size_t j ) const
+{
+   BLAZE_USER_ASSERT( j < n_, "Invalid sparse matrix column access index" );
+   return begin_[j];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator just past the last non-zero element of column \a j.
 //
 // \param j The column index.
@@ -2544,6 +2610,24 @@ inline typename CompressedMatrix<Type,true>::Iterator
 template< typename Type >  // Data type of the sparse matrix
 inline typename CompressedMatrix<Type,true>::ConstIterator
    CompressedMatrix<Type,true>::end( size_t j ) const
+{
+   BLAZE_USER_ASSERT( j < n_, "Invalid sparse matrix column access index" );
+   return end_[j];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator just past the last non-zero element of column \a j.
+//
+// \param j The column index.
+// \return Iterator just past the last non-zero element of column \a j.
+*/
+template< typename Type >  // Data type of the sparse matrix
+inline typename CompressedMatrix<Type,true>::ConstIterator
+   CompressedMatrix<Type,true>::cend( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid sparse matrix column access index" );
    return end_[j];
