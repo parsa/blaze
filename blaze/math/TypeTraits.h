@@ -42,6 +42,7 @@
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
+#include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/math/typetraits/IsTVecMatMultExpr.h>
 #include <blaze/math/typetraits/IsVector.h>
