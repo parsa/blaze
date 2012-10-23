@@ -29,6 +29,7 @@
 
 #include <gmm/gmm_matrix.h>
 #include <blaze/util/Random.h>
+#include <blazemark/system/Config.h>
 #include <blazemark/system/Types.h>
 #include <blazemark/util/Indices.h>
 
@@ -71,10 +72,28 @@ void init( ::gmm::csc_matrix<Type>& m, size_t nonzeros )
 
    ::gmm::col_matrix< ::gmm::wsvector<Type> > tmp( M, N );
 
-   for( size_t j=0UL; j<N; ++j ) {
-      ::blazemark::Indices indices( M, nonzeros );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         tmp(*it,j) = ::blaze::rand<Type>( 0, 10 );
+   if( structure == band )
+   {
+      const size_t drange( nonzeros / 2UL );
+      const size_t urange( ( nonzeros % 2UL )?( drange ):( drange-1UL ) );
+
+      for( size_t j=0UL; j<N; ++j )
+      {
+         const size_t ibegin( ( j >= urange )?( j-urange ):( 0UL ) );
+         const size_t iend  ( ( j+drange+1UL < M )?( j+drange+1UL ):( M ) );
+
+         for( size_t i=ibegin; i<iend; ++i ) {
+            tmp(i,j) = ::blaze::rand<Type>( 0, 10 );
+         }
+      }
+   }
+   else
+   {
+      for( size_t j=0UL; j<N; ++j ) {
+         ::blazemark::Indices indices( M, nonzeros );
+         for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
+            tmp(*it,j) = ::blaze::rand<Type>( 0, 10 );
+         }
       }
    }
 

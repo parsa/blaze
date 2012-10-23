@@ -29,7 +29,7 @@
 
 #include <Eigen/Sparse>
 #include <blaze/util/Random.h>
-#include <blazemark/config/Config.h>
+#include <blazemark/system/Config.h>
 #include <blazemark/system/Types.h>
 #include <blazemark/util/Indices.h>
 
@@ -74,11 +74,31 @@ void init( ::Eigen::SparseMatrix<Type,::Eigen::RowMajor,EigenSparseIndexType>& m
 
    m.reserve( M*nonzeros );
 
-   for( int i=0UL; i<M; ++i ) {
-      m.startVec( i );
-      ::blazemark::Indices indices( N, nonzeros );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         m.insertBack(i,*it) = ::blaze::rand<Type>( 0, 10 );
+   if( structure == band )
+   {
+      const int rrange( nonzeros / 2 );
+      const int lrange( ( nonzeros % 2 )?( rrange ):( rrange-1 ) );
+
+      for( int i=0; i<M; ++i )
+      {
+         m.startVec( i );
+
+         const int jbegin( ( i >= lrange )?( i-lrange ):( 0 ) );
+         const int jend  ( ( i+rrange+1 < N )?( i+rrange+1 ):( N ) );
+
+         for( int j=jbegin; j<jend; ++j ) {
+            m.insertBack(i,j) = ::blaze::rand<Type>( 0, 10 );
+         }
+      }
+   }
+   else
+   {
+      for( int i=0UL; i<M; ++i ) {
+         m.startVec( i );
+         ::blazemark::Indices indices( N, nonzeros );
+         for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
+            m.insertBack(i,*it) = ::blaze::rand<Type>( 0, 10 );
+         }
       }
    }
 
@@ -105,11 +125,31 @@ void init( ::Eigen::SparseMatrix<Type,::Eigen::ColMajor,EigenSparseIndexType>& m
 
    m.reserve( N*nonzeros );
 
-   for( int j=0UL; j<N; ++j ) {
-      m.startVec( j );
-      ::blazemark::Indices indices( M, nonzeros );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         m.insertBack(*it,j) = ::blaze::rand<Type>( 0, 10 );
+   if( structure == band )
+   {
+      const int drange( nonzeros / 2 );
+      const int urange( ( nonzeros % 2 )?( drange ):( drange-1 ) );
+
+      for( int j=0; j<N; ++j )
+      {
+         m.startVec( j );
+
+         const int ibegin( ( j >= urange )?( j-urange ):( 0 ) );
+         const int iend  ( ( j+drange+1 < M )?( j+drange+1 ):( M ) );
+
+         for( int i=ibegin; i<iend; ++i ) {
+            m.insertBack(i,j) = ::blaze::rand<Type>( 0, 10 );
+         }
+      }
+   }
+   else
+   {
+      for( int j=0UL; j<N; ++j ) {
+         m.startVec( j );
+         ::blazemark::Indices indices( M, nonzeros );
+         for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
+            m.insertBack(*it,j) = ::blaze::rand<Type>( 0, 10 );
+         }
       }
    }
 

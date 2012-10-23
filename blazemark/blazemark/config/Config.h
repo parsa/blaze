@@ -66,6 +66,20 @@ typedef double  element_t;
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Structure of sparse matrices
+//
+// This flag value specifies the structure of sparse matrices in all benchmarks. The structure
+// can be either specified as blazemark::band, which results in the setup of banded matrices,
+// or blazemark::random, which results in the setup of sparse matrices with randomly placed
+// non-zero entries.
+//
+// Valid settings for the structure are blazemark::band and blaze::random.
+*/
+const MatrixStructure structure( random );
+//*************************************************************************************************
+
+
 
 
 

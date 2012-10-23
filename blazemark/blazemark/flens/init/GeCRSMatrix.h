@@ -29,6 +29,7 @@
 
 #include <flens/matrixtypes/general/impl/gecrsmatrix.h>
 #include <blaze/util/Random.h>
+#include <blazemark/system/Config.h>
 #include <blazemark/system/Types.h>
 #include <blazemark/util/Indices.h>
 
@@ -75,10 +76,28 @@ void init( ::flens::GeCRSMatrix< ::flens::CRS<Type,::flens::IndexBaseZero<IndexT
 
    ::flens::GeCoordMatrix<Coord> tmp( rows, columns );
 
-   for( IndexType i=tmp.firstRow(); i<=tmp.lastRow(); ++i ) {
-      ::blazemark::Indices indices( columns, nonzeros );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         tmp( i, *it ) += ::blaze::rand<Type>( 0, 10 );
+   if( structure == band )
+   {
+      const size_t rrange( nonzeros / 2UL );
+      const size_t lrange( ( nonzeros % 2UL )?( rrange ):( rrange-1UL ) );
+
+      for( size_t i=tmp.firstRow(); i<=tmp.lastRow(); ++i )
+      {
+         const size_t jbegin( ( i >= lrange )?( i-lrange ):( 0UL ) );
+         const size_t jend  ( ( i+rrange+1UL < N )?( i+rrange+1UL ):( N ) );
+
+         for( size_t j=jbegin; j<jend; ++j ) {
+            tmp(i,j) += ::blaze::rand<Type>( 0, 10 );
+         }
+      }
+   }
+   else
+   {
+      for( IndexType i=tmp.firstRow(); i<=tmp.lastRow(); ++i ) {
+         ::blazemark::Indices indices( columns, nonzeros );
+         for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
+            tmp(i,*it) += ::blaze::rand<Type>( 0, 10 );
+         }
       }
    }
 

@@ -30,6 +30,7 @@
 #include <vector>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/util/Random.h>
+#include <blazemark/system/Config.h>
 #include <blazemark/system/Types.h>
 #include <blazemark/util/Indices.h>
 
@@ -78,12 +79,31 @@ void init( ::blaze::CompressedMatrix<Type,::blaze::rowMajor>& m, size_t nonzeros
 
    m.reserve( M * nonzeros );
 
-   for( size_t i=0UL; i<M; ++i ) {
-      ::blazemark::Indices indices( N, nonzeros );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         m.append( i, *it, ::blaze::rand<Type>( 0, 10 ) );
+   if( structure == band )
+   {
+      const size_t rrange( nonzeros / 2UL );
+      const size_t lrange( ( nonzeros % 2UL )?( rrange ):( rrange-1UL ) );
+
+      for( size_t i=0UL; i<M; ++i )
+      {
+         const size_t jbegin( ( i >= lrange )?( i-lrange ):( 0UL ) );
+         const size_t jend  ( ( i+rrange+1UL < N )?( i+rrange+1UL ):( N ) );
+
+         for( size_t j=jbegin; j<jend; ++j ) {
+            m.append( i, j, ::blaze::rand<Type>( 0, 10 ) );
+         }
+         m.finalize( i );
       }
-      m.finalize( i );
+   }
+   else
+   {
+      for( size_t i=0UL; i<M; ++i ) {
+         ::blazemark::Indices indices( N, nonzeros );
+         for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
+            m.append( i, *it, ::blaze::rand<Type>( 0, 10 ) );
+         }
+         m.finalize( i );
+      }
    }
 }
 //*************************************************************************************************
@@ -106,14 +126,33 @@ void init( ::blaze::CompressedMatrix<Type,::blaze::columnMajor>& m, size_t nonze
    const size_t M( m.rows()    );
    const size_t N( m.columns() );
 
-   m.reserve( N * nonzeros );
+   m.reserve( M * nonzeros );
 
-   for( size_t j=0UL; j<N; ++j ) {
-      ::blazemark::Indices indices( M, nonzeros );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
-         m.append( *it, j, ::blaze::rand<Type>( 0, 10 ) );
+   if( structure == band )
+   {
+      const size_t drange( nonzeros / 2UL );
+      const size_t urange( ( nonzeros % 2UL )?( drange ):( drange-1UL ) );
+
+      for( size_t j=0UL; j<N; ++j )
+      {
+         const size_t ibegin( ( j >= urange )?( j-urange ):( 0UL ) );
+         const size_t iend  ( ( j+drange+1UL < M )?( j+drange+1UL ):( M ) );
+
+         for( size_t i=ibegin; i<iend; ++i ) {
+            m.append( i, j, ::blaze::rand<Type>( 0, 10 ) );
+         }
+         m.finalize( j );
       }
-      m.finalize( j );
+   }
+   else
+   {
+      for( size_t j=0UL; j<N; ++j ) {
+         ::blazemark::Indices indices( M, nonzeros );
+         for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
+            m.append( *it, j, ::blaze::rand<Type>( 0, 10 ) );
+         }
+         m.finalize( j );
+      }
    }
 }
 //*************************************************************************************************
