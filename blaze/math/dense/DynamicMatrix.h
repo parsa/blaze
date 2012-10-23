@@ -1714,10 +1714,8 @@ inline void DynamicMatrix<Type,SO>::assign( const SparseMatrix<MT,SO>& rhs )
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   typedef typename MT::ConstIterator  ConstIterator;
-
    for( size_t i=0UL; i<m_; ++i )
-      for( ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( typename MT::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*nn_+element->index()] = element->value();
 }
 //*************************************************************************************************
@@ -1742,10 +1740,8 @@ inline void DynamicMatrix<Type,SO>::assign( const SparseMatrix<MT,!SO>& rhs )
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   typedef typename MT::ConstIterator  ConstIterator;
-
    for( size_t j=0UL; j<n_; ++j )
-      for( ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( typename MT::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*nn_+j] = element->value();
 }
 //*************************************************************************************************
@@ -1882,10 +1878,8 @@ inline void DynamicMatrix<Type,SO>::addAssign( const SparseMatrix<MT,SO>& rhs )
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   typedef typename MT::ConstIterator  ConstIterator;
-
    for( size_t i=0UL; i<m_; ++i )
-      for( ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( typename MT::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*nn_+element->index()] += element->value();
 }
 //*************************************************************************************************
@@ -1910,10 +1904,8 @@ inline void DynamicMatrix<Type,SO>::addAssign( const SparseMatrix<MT,!SO>& rhs )
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   typedef typename MT::ConstIterator  ConstIterator;
-
    for( size_t j=0UL; j<n_; ++j )
-      for( ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( typename MT::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*nn_+j] += element->value();
 }
 //*************************************************************************************************
@@ -2050,10 +2042,8 @@ inline void DynamicMatrix<Type,SO>::subAssign( const SparseMatrix<MT,SO>& rhs )
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   typedef typename MT::ConstIterator  ConstIterator;
-
    for( size_t i=0UL; i<m_; ++i )
-      for( ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( typename MT::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*nn_+element->index()] -= element->value();
 }
 //*************************************************************************************************
@@ -2078,10 +2068,8 @@ inline void DynamicMatrix<Type,SO>::subAssign( const SparseMatrix<MT,!SO>& rhs )
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   typedef typename MT::ConstIterator  ConstIterator;
-
    for( size_t j=0UL; j<n_; ++j )
-      for( ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( typename MT::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*nn_+j] -= element->value();
 }
 //*************************************************************************************************
@@ -3675,10 +3663,8 @@ template< typename Type >  // Data type of the matrix
 template< typename MT >    // Type of the right-hand side sparse matrix
 inline void DynamicMatrix<Type,true>::assign( const SparseMatrix<MT,true>& rhs )
 {
-   typedef typename MT::ConstIterator  ConstIterator;
-
    for( size_t j=0UL; j<(~rhs).columns(); ++j )
-      for( ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( typename MT::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*mm_] = element->value();
 }
 /*! \endcond */
@@ -3701,10 +3687,8 @@ template< typename Type >  // Data type of the matrix
 template< typename MT >    // Type of the right-hand side sparse matrix
 inline void DynamicMatrix<Type,true>::assign( const SparseMatrix<MT,false>& rhs )
 {
-   typedef typename MT::ConstIterator  ConstIterator;
-
    for( size_t i=0UL; i<(~rhs).rows(); ++i )
-      for( ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( typename MT::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*mm_] = element->value();
 }
 /*! \endcond */
@@ -3842,10 +3826,8 @@ template< typename Type >  // Data type of the matrix
 template< typename MT >    // Type of the right-hand side sparse matrix
 inline void DynamicMatrix<Type,true>::addAssign( const SparseMatrix<MT,true>& rhs )
 {
-   typedef typename MT::ConstIterator  ConstIterator;
-
    for( size_t j=0UL; j<(~rhs).columns(); ++j )
-      for( ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( typename MT::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*mm_] += element->value();
 }
 /*! \endcond */
@@ -3868,10 +3850,8 @@ template< typename Type >  // Data type of the matrix
 template< typename MT >    // Type of the right-hand side sparse matrix
 inline void DynamicMatrix<Type,true>::addAssign( const SparseMatrix<MT,false>& rhs )
 {
-   typedef typename MT::ConstIterator  ConstIterator;
-
    for( size_t i=0UL; i<(~rhs).rows(); ++i )
-      for( ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( typename MT::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*mm_] += element->value();
 }
 /*! \endcond */
@@ -4007,10 +3987,8 @@ template< typename Type >  // Data type of the matrix
 template< typename MT >    // Type of the right-hand side sparse matrix
 inline void DynamicMatrix<Type,true>::subAssign( const SparseMatrix<MT,true>& rhs )
 {
-   typedef typename MT::ConstIterator  ConstIterator;
-
    for( size_t j=0UL; j<(~rhs).columns(); ++j )
-      for( ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( typename MT::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*mm_] -= element->value();
 }
 /*! \endcond */
@@ -4033,10 +4011,8 @@ template< typename Type >  // Data type of the matrix
 template< typename MT >    // Type of the right-hand side sparse matrix
 inline void DynamicMatrix<Type,true>::subAssign( const SparseMatrix<MT,false>& rhs )
 {
-   typedef typename MT::ConstIterator  ConstIterator;
-
    for( size_t i=0UL; i<(~rhs).rows(); ++i )
-      for( ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( typename MT::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*mm_] -= element->value();
 }
 /*! \endcond */

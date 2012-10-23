@@ -1616,9 +1616,7 @@ inline void StaticVector<Type,N,TF>::assign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
-   typedef typename VT::ConstIterator  ConstIterator;
-
-   for( ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = element->value();
 }
 //*************************************************************************************************
@@ -1698,9 +1696,7 @@ inline void StaticVector<Type,N,TF>::addAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
-   typedef typename VT::ConstIterator  ConstIterator;
-
-   for( ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] += element->value();
 }
 //*************************************************************************************************
@@ -1780,9 +1776,7 @@ inline void StaticVector<Type,N,TF>::subAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
-   typedef typename VT::ConstIterator  ConstIterator;
-
-   for( ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] -= element->value();
 }
 //*************************************************************************************************
@@ -1862,13 +1856,11 @@ inline void StaticVector<Type,N,TF>::multAssign( const SparseVector<VT,TF>& rhs 
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
-   typedef typename VT::ConstIterator  ConstIterator;
-
    const StaticVector tmp( *this );
 
    reset();
 
-   for( ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = tmp[element->index()] * element->value();
 }
 //*************************************************************************************************
