@@ -299,7 +299,17 @@ struct IntrinsicTraitBase<unsigned long>
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'float'.
 // \ingroup intrinsics
 */
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+struct IntrinsicTraitBase<float>
+{
+   typedef sse_float_t  Type;
+   enum { size           = ( 64UL / sizeof(float) ),
+          alignment      = AlignmentTrait<float>::value,
+          addition       = 1,
+          subtraction    = 1,
+          multiplication = 1 };
+};
+#elif BLAZE_AVX_MODE
 template<>
 struct IntrinsicTraitBase<float>
 {
@@ -331,7 +341,18 @@ struct IntrinsicTraitBase<float>
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'double'.
 // \ingroup intrinsics
 */
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+template<>
+struct IntrinsicTraitBase<double>
+{
+   typedef sse_double_t  Type;
+   enum { size           = ( 64UL / sizeof(double) ),
+          alignment      = AlignmentTrait<double>::value,
+          addition       = 1,
+          subtraction    = 1,
+          multiplication = 1 };
+};
+#elif BLAZE_AVX_MODE
 template<>
 struct IntrinsicTraitBase<double>
 {

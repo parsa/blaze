@@ -131,6 +131,23 @@
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Compilation switch for the MIC mode.
+// \ingroup system
+//
+// This compilation switch enables/disables the MIC mode. In case the MIC mode is enabled
+// (i.e. in case MIC functionality is available) the Blaze library attempts to vectorize
+// the linear algebra operations by MIC intrinsics. In case the MIC mode is disabled,
+// the Blaze library chooses default, non-vectorized functionality for the operations.
+*/
+#if defined(__MIC__)
+#  define BLAZE_MIC_MODE 1
+#else
+#  define BLAZE_MIC_MODE 0
+#endif
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -139,7 +156,7 @@
 //
 //=================================================================================================
 
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE || BLAZE_AVX_MODE
 #  include <immintrin.h>
 #elif BLAZE_SSE4_MODE
 #  include <smmintrin.h>

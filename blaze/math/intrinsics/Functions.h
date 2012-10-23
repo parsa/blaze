@@ -164,7 +164,10 @@ inline sse_ulong_t load( const unsigned long* address )
 */
 inline sse_float_t load( const float* address )
 {
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 64UL ), "Invalid alignment detected" );
+   return _mm512_load_ps( address );
+#elif BLAZE_AVX_MODE
    BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
    return _mm256_load_ps( address );
 #elif BLAZE_SSE_MODE
@@ -186,7 +189,10 @@ inline sse_float_t load( const float* address )
 */
 inline sse_double_t load( const double* address )
 {
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 64UL ), "Invalid alignment detected" );
+   return _mm512_load_pd( address );
+#elif BLAZE_AVX_MODE
    BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
    return _mm256_load_pd( address );
 #elif BLAZE_SSE2_MODE
@@ -288,7 +294,9 @@ inline sse_uint_t set( unsigned int value )
 */
 inline sse_float_t set( float value )
 {
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   return _mm512_set1_ps( value );
+#elif BLAZE_AVX_MODE
    return _mm256_set1_ps( value );
 #elif BLAZE_SSE_MODE
    return _mm_set1_ps( value );
@@ -308,7 +316,9 @@ inline sse_float_t set( float value )
 */
 inline sse_double_t set( double value )
 {
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   return _mm512_set1_pd( value );
+#elif BLAZE_AVX_MODE
    return _mm256_set1_pd( value );
 #elif BLAZE_SSE2_MODE
    return _mm_set1_pd( value );
@@ -457,7 +467,10 @@ inline void store( unsigned long* address, sse_ulong_t value )
 */
 inline void store( float* address, sse_float_t value )
 {
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 64UL ), "Invalid alignment detected" );
+   _mm512_store_ps( address, value.value );
+#elif BLAZE_AVX_MODE
    BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
    _mm256_store_ps( address, value.value );
 #elif BLAZE_SSE_MODE
@@ -480,7 +493,10 @@ inline void store( float* address, sse_float_t value )
 */
 inline void store( double* address, sse_double_t value )
 {
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 64UL ), "Invalid alignment detected" );
+   _mm512_store_pd( address, value.value );
+#elif BLAZE_AVX_MODE
    BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
    _mm256_store_pd( address, value.value );
 #elif BLAZE_SSE2_MODE
@@ -631,7 +647,10 @@ inline void stream( unsigned long* address, sse_ulong_t value )
 */
 inline void stream( float* address, sse_float_t value )
 {
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 64UL ), "Invalid alignment detected" );
+   _mm512_stream_ps( address, value.value );
+#elif BLAZE_AVX_MODE
    BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
    _mm256_stream_ps( address, value.value );
 #elif BLAZE_SSE_MODE
@@ -654,7 +673,10 @@ inline void stream( float* address, sse_float_t value )
 */
 inline void stream( double* address, sse_double_t value )
 {
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 64UL ), "Invalid alignment detected" );
+   _mm512_store_pd( address, value.value );
+#elif BLAZE_AVX_MODE
    BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
    _mm256_stream_pd( address, value.value );
 #elif BLAZE_SSE2_MODE
@@ -756,7 +778,9 @@ inline void setzero( sse_int64_t& value )
 */
 inline void setzero( sse_float_t& value )
 {
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   value.value = _mm512_setzero_ps();
+#elif BLAZE_AVX_MODE
    value.value = _mm256_setzero_ps();
 #elif BLAZE_SSE_MODE
    value.value = _mm_setzero_ps();
@@ -776,7 +800,9 @@ inline void setzero( sse_float_t& value )
 */
 inline void setzero( sse_double_t& value )
 {
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   value.value = _mm512_setzero_pd();
+#elif BLAZE_AVX_MODE
    value.value = _mm256_setzero_pd();
 #elif BLAZE_SSE2_MODE
    value.value = _mm_setzero_pd();
@@ -876,7 +902,12 @@ inline sse_int64_t operator+( sse_int64_t a, sse_int64_t b )
 // \param b The right-hand side operand.
 // \return The result of the addition.
 */
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+inline sse_float_t operator+( sse_float_t a, sse_float_t b )
+{
+   return _mm512_add_ps( a.value, b.value );
+}
+#elif BLAZE_AVX_MODE
 inline sse_float_t operator+( sse_float_t a, sse_float_t b )
 {
    return _mm256_add_ps( a.value, b.value );
@@ -899,7 +930,12 @@ inline sse_float_t operator+( sse_float_t a, sse_float_t b )
 // \param b The right-hand side operand.
 // \return The result of the addition.
 */
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+inline sse_double_t operator+( sse_double_t a, sse_double_t b )
+{
+   return _mm512_add_pd( a.value, b.value );
+}
+#elif BLAZE_AVX_MODE
 inline sse_double_t operator+( sse_double_t a, sse_double_t b )
 {
    return _mm256_add_pd( a.value, b.value );
@@ -1002,7 +1038,12 @@ inline sse_int64_t operator-( sse_int64_t a, sse_int64_t b )
 // \param b The right-hand side operand.
 // \return The result of the subtraction.
 */
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+inline sse_float_t operator-( sse_float_t a, sse_float_t b )
+{
+   return _mm512_sub_ps( a.value, b.value );
+}
+#elif BLAZE_AVX_MODE
 inline sse_float_t operator-( sse_float_t a, sse_float_t b )
 {
    return _mm256_sub_ps( a.value, b.value );
@@ -1025,7 +1066,12 @@ inline sse_float_t operator-( sse_float_t a, sse_float_t b )
 // \param b The right-hand side operand.
 // \return The result of the subtraction.
 */
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+inline sse_double_t operator-( sse_double_t a, sse_double_t b )
+{
+   return _mm512_sub_pd( a.value, b.value );
+}
+#elif BLAZE_AVX_MODE
 inline sse_double_t operator-( sse_double_t a, sse_double_t b )
 {
    return _mm256_sub_pd( a.value, b.value );
@@ -1092,7 +1138,12 @@ inline sse_int32_t operator*( sse_int32_t a, sse_int32_t b )
 // \param b The right-hand side operand.
 // \return The result of the multiplication.
 */
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+inline sse_float_t operator*( sse_float_t a, sse_float_t b )
+{
+   return _mm512_mul_ps( a.value, b.value );
+}
+#elif BLAZE_AVX_MODE
 inline sse_float_t operator*( sse_float_t a, sse_float_t b )
 {
    return _mm256_mul_ps( a.value, b.value );
@@ -1115,7 +1166,12 @@ inline sse_float_t operator*( sse_float_t a, sse_float_t b )
 // \param b The right-hand side operand.
 // \return The result of the multiplication.
 */
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+inline sse_double_t operator*( sse_double_t a, sse_double_t b )
+{
+   return _mm512_mul_pd( a.value, b.value );
+}
+#elif BLAZE_AVX_MODE
 inline sse_double_t operator*( sse_double_t a, sse_double_t b )
 {
    return _mm256_mul_pd( a.value, b.value );
@@ -1146,7 +1202,12 @@ inline sse_double_t operator*( sse_double_t a, sse_double_t b )
 // \param b The right-hand side operand.
 // \return The result of the division.
 */
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+inline sse_float_t operator/( sse_float_t a, sse_float_t b )
+{
+   return _mm512_div_ps( a.value, b.value );
+}
+#elif BLAZE_AVX_MODE
 inline sse_float_t operator/( sse_float_t a, sse_float_t b )
 {
    return _mm256_div_ps( a.value, b.value );
@@ -1169,7 +1230,12 @@ inline sse_float_t operator/( sse_float_t a, sse_float_t b )
 // \param b The right-hand side operand.
 // \return The result of the division.
 */
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+inline sse_double_t operator/( sse_double_t a, sse_double_t b )
+{
+   return _mm512_div_pd( a.value, b.value );
+}
+#elif BLAZE_AVX_MODE
 inline sse_double_t operator/( sse_double_t a, sse_double_t b )
 {
    return _mm256_div_pd( a.value, b.value );
@@ -1302,7 +1368,9 @@ inline int32_t sum( sse_int32_t a )
 */
 inline float sum( sse_float_t a )
 {
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   return _mm512_reduce_add_ps( a.value );
+#elif BLAZE_AVX_MODE
    const sse_float_t b( _mm256_hadd_ps( a.value, a.value ) );
    const sse_float_t c( _mm256_hadd_ps( b.value, b.value ) );
    const sse_float_t d( _mm256_hadd_ps( c.value, c.value ) );
@@ -1329,7 +1397,9 @@ inline float sum( sse_float_t a )
 */
 inline double sum( sse_double_t a )
 {
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   return _mm512_reduce_add_pd( a.value );
+#elif BLAZE_AVX_MODE
    const sse_double_t b( _mm256_hadd_pd( a.value, a.value ) );
    const sse_double_t c( _mm256_hadd_pd( b.value, b.value ) );
    return c.values[0];

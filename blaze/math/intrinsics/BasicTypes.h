@@ -144,7 +144,14 @@ union sse_int64_t {
 // \ingroup intrinsics
 */
 /*! \cond BLAZE_INTERNAL */
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+union sse_float_t {
+   inline sse_float_t() : value( _mm512_setzero_ps() ) {}
+   inline sse_float_t( __m512 v ) : value( v ) {}
+   __m512 value;
+   float values[16];
+};
+#elif BLAZE_AVX_MODE
 union sse_float_t {
    inline sse_float_t() : value( _mm256_setzero_ps() ) {}
    inline sse_float_t( __m256 v ) : value( v ) {}
@@ -176,7 +183,14 @@ union sse_float_t {
 // \ingroup intrinsics
 */
 /*! \cond BLAZE_INTERNAL */
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+union sse_double_t {
+   inline sse_double_t() : value( _mm512_setzero_pd() ) {}
+   inline sse_double_t( __m512d v ) : value( v ) {}
+   __m512d value;
+   double values[8];
+};
+#elif BLAZE_AVX_MODE
 union sse_double_t {
    inline sse_double_t() : value( _mm256_setzero_pd() ) {}
    inline sse_double_t( __m256d v ) : value( v ) {}
