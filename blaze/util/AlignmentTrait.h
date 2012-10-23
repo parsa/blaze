@@ -95,7 +95,9 @@ struct AlignmentTrait<float>
 {
  public:
    //**Member enumerations*************************************************************************
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   enum { value = 64UL };
+#elif BLAZE_AVX_MODE
    enum { value = 32UL };
 #elif BLAZE_SSE_MODE
    enum { value = 16UL };
@@ -118,7 +120,9 @@ struct AlignmentTrait<double>
 {
  public:
    //**Member enumerations*************************************************************************
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   enum { value = 64UL };
+#elif BLAZE_AVX_MODE
    enum { value = 32UL };
 #elif BLAZE_SSE_MODE
    enum { value = 16UL };
