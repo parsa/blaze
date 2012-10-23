@@ -39,6 +39,7 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/SelectType.h>
@@ -77,6 +78,20 @@ class SVecDVecCrossExpr : public DenseVector< SVecDVecCrossExpr<VT1,VT2>, false 
    typedef typename VT2::ElementType    ET2;  //!< Element type of the right-hand side dense vector expression.
    //**********************************************************************************************
 
+   //**Return type evaluation**********************************************************************
+   //! Compilation switch for the selection of the subscript operator return type.
+   /*! The \a returnExpr compile time constant expression is a compilation switch for the
+       selection of the \a ReturnType. If either vector operand returns a temporary vector
+       or matrix, \a returnExpr will be set to \a false and the subscript operator will
+       return it's result by value. Otherwise \a returnExpr will be set to \a true and
+       the subscript operator may return it's result as an expression. */
+   enum { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
+
+   //! Expression return type for the subscript operator.
+   typedef typename SubExprTrait< typename MultExprTrait<RN1,RN2>::Type
+                                , typename MultExprTrait<RN1,RN2>::Type >::Type  ExprReturnType;
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    typedef SVecDVecCrossExpr<VT1,VT2>          This;           //!< Type of this SVecDVecCrossExpr instance.
@@ -85,8 +100,7 @@ class SVecDVecCrossExpr : public DenseVector< SVecDVecCrossExpr<VT1,VT2>, false 
    typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
 
    //!< Return type for expression template evaluations.
-   typedef const typename SubExprTrait< typename MultExprTrait<RN1,RN2>::Type
-                                      , typename MultExprTrait<RN1,RN2>::Type >::Type  ReturnType;
+   typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
 
    //! Data type for composite expression templates.
    typedef const ResultType  CompositeType;

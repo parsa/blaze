@@ -39,6 +39,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/SelectType.h>
@@ -78,14 +79,31 @@ class SVecSVecMultExpr : public SparseVector< SVecSVecMultExpr<VT1,VT2,TF>, TF >
    typedef typename VT2::TransposeType  TT2;  //!< Transpose type of the right-hand side sparse vector expression.
    //**********************************************************************************************
 
+   //**Return type evaluation**********************************************************************
+   //! Compilation switch for the selection of the subscript operator return type.
+   /*! The \a returnExpr compile time constant expression is a compilation switch for the
+       selection of the \a ReturnType. If either vector operand returns a temporary vector
+       or matrix, \a returnExpr will be set to \a false and the subscript operator will
+       return it's result by value. Otherwise \a returnExpr will be set to \a true and
+       the subscript operator may return it's result as an expression. */
+   enum { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
+
+   //! Expression return type for the subscript operator.
+   typedef typename MultExprTrait<RN1,RN2>::Type  ExprReturnType;
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
-   typedef SVecSVecMultExpr<VT1,VT2,TF>                 This;           //!< Type of this SVecSVecMultExpr instance.
-   typedef typename MultTrait<RT1,RT2>::Type            ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::TransposeType           TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType             ElementType;    //!< Resulting element type.
-   typedef const typename MultExprTrait<RN1,RN2>::Type  ReturnType;     //!< Return type for expression template evaluations.
-   typedef const ResultType                             CompositeType;  //!< Data type for composite expression templates.
+   typedef SVecSVecMultExpr<VT1,VT2,TF>        This;           //!< Type of this SVecSVecMultExpr instance.
+   typedef typename MultTrait<RT1,RT2>::Type   ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
+
+   //! Return type for expression template evaluations.
+   typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+
+   //! Data type for composite expression templates.
+   typedef const ResultType  CompositeType;
 
    //! Composite type of the left-hand side sparse vector expression.
    typedef typename SelectType< IsExpression<VT1>::value, const VT1, const VT1& >::Type  LeftOperand;

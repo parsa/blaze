@@ -38,6 +38,7 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
@@ -70,28 +71,39 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT1::ResultType      RT1;  //!< Result type of the left-hand side dense matrix expression.
-   typedef typename MT2::ResultType      RT2;  //!< Result type of the right-hand side dense matrix expression.
-   typedef typename MT1::ReturnType      RN1;  //!< Return type of the left-hand side dense matrix expression.
-   typedef typename MT2::ReturnType      RN2;  //!< Return type of the right-hand side dense matrix expression.
-   typedef typename MT1::CompositeType   CT1;  //!< Composite type of the left-hand side dense matrix expression.
-   typedef typename MT2::CompositeType   CT2;  //!< Composite type of the right-hand side dense matrix expression.
-   typedef typename MT1::ElementType     ET1;  //!< Element type of the left-hand side dense matrix expression.
-   typedef typename MT2::ElementType     ET2;  //!< Element type of the right-hand side dense matrix expression.
+   typedef typename MT1::ResultType     RT1;  //!< Result type of the left-hand side dense matrix expression.
+   typedef typename MT2::ResultType     RT2;  //!< Result type of the right-hand side dense matrix expression.
+   typedef typename MT1::ReturnType     RN1;  //!< Return type of the left-hand side dense matrix expression.
+   typedef typename MT2::ReturnType     RN2;  //!< Return type of the right-hand side dense matrix expression.
+   typedef typename MT1::CompositeType  CT1;  //!< Composite type of the left-hand side dense matrix expression.
+   typedef typename MT2::CompositeType  CT2;  //!< Composite type of the right-hand side dense matrix expression.
+   typedef typename MT1::ElementType    ET1;  //!< Element type of the left-hand side dense matrix expression.
+   typedef typename MT2::ElementType    ET2;  //!< Element type of the right-hand side dense matrix expression.
    //**********************************************************************************************
 
+   //**Return type evaluation**********************************************************************
+   //! Compilation switch for the selection of the subscript operator return type.
+   /*! The \a returnExpr compile time constant expression is a compilation switch for the
+       selection of the \a ReturnType. If either matrix operand returns a temporary vector
+       or matrix, \a returnExpr will be set to \a false and the subscript operator will
+       return it's result by value. Otherwise \a returnExpr will be set to \a true and
+       the subscript operator may return it's result as an expression. */
+   enum { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
+
+   //! Expression return type for the subscript operator.
+   typedef typename AddExprTrait<RN1,RN2>::Type  ExprReturnType;
    //**********************************************************************************************
+
+   //**Evaluation strategy*************************************************************************
    //! Compilation switch for the evaluation strategy of the addition expression.
    /*! The \a useAssign compile time constant expression represents a compilation switch for the
        evaluation strategy of the addition expression. In case either of the two dense matrix
-       operands requires an intermediate evaluation, \a useAssign will be set to \a true and
-       the addition expression will be evaluated via the \a assign function family. Otherwise
-       \a useAssign will be set to \a false and the expression will be evaluated via the function
-       call operator. */
-   enum { useAssign = ( !IsReference<CT1>::value || !IsReference<CT2>::value ) };
-   //**********************************************************************************************
+       operands requires an intermediate evaluation or the subscript operator can only return by
+       value, \a useAssign will be set to \a true and the addition expression will be evaluated
+       via the \a assign function family. Otherwise \a useAssign will be set to \a false and the
+       expression will be evaluated via the function call operator. */
+   enum { useAssign = ( !IsReference<CT1>::value || !IsReference<CT2>::value || !returnExpr ) };
 
-   //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
@@ -109,7 +121,9 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
    typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
    typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
-   typedef const typename AddExprTrait<RN1,RN2>::Type  ReturnType;     //!< Return type for expression template evaluations.
+
+   //! Return type for expression template evaluations.
+   typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
 
    //! Data type for composite expression templates.
    typedef typename SelectType< useAssign, const ResultType, const DMatDMatAddExpr& >::Type  CompositeType;

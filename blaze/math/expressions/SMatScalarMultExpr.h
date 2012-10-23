@@ -48,6 +48,7 @@
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
+#include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -90,7 +91,20 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
    typedef typename MT::CompositeType  CT;  //!< Composite type of the sparse matrix expression.
    //**********************************************************************************************
 
+   //**Return type evaluation**********************************************************************
+   //! Compilation switch for the selection of the subscript operator return type.
+   /*! The \a returnExpr compile time constant expression is a compilation switch for the
+       selection of the \a ReturnType. If the matrix operand returns a temporary vector
+       or matrix, \a returnExpr will be set to \a false and the subscript operator will
+       return it's result by value. Otherwise \a returnExpr will be set to \a true and
+       the subscript operator may return it's result as an expression. */
+   enum { returnExpr = !IsTemporary<RN>::value };
+
+   //! Expression return type for the subscript operator.
+   typedef typename MultExprTrait<RN,ST>::Type  ExprReturnType;
    //**********************************************************************************************
+
+   //**Evaluation strategy*************************************************************************
    //! Compilation switch for the evaluation strategy of the multiplication expression.
    /*! The \a useAssign compile time constant expression represents a compilation switch for
        the evaluation strategy of the multiplication expression. In case the given sparse matrix
@@ -99,9 +113,7 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
        family. Otherwise \a useAssign will be set to 0 and the expression will be evaluated
        via the subscript operator. */
    enum { useAssign = !IsReference<CT>::value };
-   //**********************************************************************************************
 
-   //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
@@ -113,12 +125,14 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
 
  public:
    //**Type definitions****************************************************************************
-   typedef SMatScalarMultExpr<MT,ST,SO>               This;           //!< Type of this SMatScalarMultExpr instance.
-   typedef typename MultTrait<RT,ST>::Type            ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType          OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType         TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType           ElementType;    //!< Resulting element type.
-   typedef const typename MultExprTrait<RN,ST>::Type  ReturnType;     //!< Return type for expression template evaluations.
+   typedef SMatScalarMultExpr<MT,ST,SO>        This;           //!< Type of this SMatScalarMultExpr instance.
+   typedef typename MultTrait<RT,ST>::Type     ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
+
+   //! Return type for expression template evaluations.
+   typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
 
    //! Data type for composite expression templates.
    typedef typename SelectType< useAssign, const ResultType, const SMatScalarMultExpr& >::Type  CompositeType;

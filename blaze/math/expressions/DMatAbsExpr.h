@@ -36,6 +36,7 @@
 #include <blaze/math/traits/AbsExprTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
@@ -71,7 +72,20 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
    typedef typename MT::CompositeType  CT;  //!< Composite type of the dense matrix expression.
    //**********************************************************************************************
 
+   //**Return type evaluation**********************************************************************
+   //! Compilation switch for the selection of the subscript operator return type.
+   /*! The \a returnExpr compile time constant expression is a compilation switch for the
+       selection of the \a ReturnType. If the vector operand returns a temporary vector
+       or matrix, \a returnExpr will be set to \a false and the subscript operator will
+       return it's result by value. Otherwise \a returnExpr will be set to \a true and
+       the subscript operator may return it's result as an expression. */
+   enum { returnExpr = !IsTemporary<RN>::value };
+
+   //! Expression return type for the subscript operator.
+   typedef typename AbsExprTrait<RN>::Type  ExprReturnType;
    //**********************************************************************************************
+
+   //**Evaluation strategy*************************************************************************
    //! Compilation switch for the evaluation strategy of the absolute value expression.
    /*! The \a useAssign compile time constant expression represents a compilation switch for
        the evaluation strategy of the absolute value expression. In case the given dense matrix
@@ -80,9 +94,7 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
        family. Otherwise \a useAssign will be set to 0 and the expression will be evaluated
        via the subscript operator. */
    enum { useAssign = !IsReference<CT>::value };
-   //**********************************************************************************************
 
-   //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
@@ -94,12 +106,14 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DMatAbsExpr<MT,SO>                     This;           //!< Type of this DMatAbsExpr instance.
-   typedef typename MT::ResultType                ResultType;     //!< Result type for expression template evaluations.
-   typedef typename MT::OppositeType              OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename MT::TransposeType             TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType               ElementType;    //!< Resulting element type.
-   typedef const typename AbsExprTrait<RN>::Type  ReturnType;     //!< Return type for expression template evaluations.
+   typedef DMatAbsExpr<MT,SO>          This;           //!< Type of this DMatAbsExpr instance.
+   typedef typename MT::ResultType     ResultType;     //!< Result type for expression template evaluations.
+   typedef typename MT::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef typename MT::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename MT::ElementType    ElementType;    //!< Resulting element type.
+
+   //! Return type for expression template evaluations.
+   typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
 
    //! Data type for composite expression templates.
    typedef typename SelectType< useAssign, const ResultType, const DMatAbsExpr& >::Type  CompositeType;

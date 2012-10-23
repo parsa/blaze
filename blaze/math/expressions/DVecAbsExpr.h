@@ -36,6 +36,7 @@
 #include <blaze/math/traits/AbsExprTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
@@ -73,7 +74,20 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
    typedef typename VT::ElementType    ET;  //!< Element type of the dense vector expression.
    //**********************************************************************************************
 
+   //**Return type evaluation**********************************************************************
+   //! Compilation switch for the selection of the subscript operator return type.
+   /*! The \a returnExpr compile time constant expression is a compilation switch for the
+       selection of the \a ReturnType. If the vector operand returns a temporary vector
+       or matrix, \a returnExpr will be set to \a false and the subscript operator will
+       return it's result by value. Otherwise \a returnExpr will be set to \a true and
+       the subscript operator may return it's result as an expression. */
+   enum { returnExpr = !IsTemporary<RN>::value };
+
+   //! Expression return type for the subscript operator.
+   typedef typename AbsExprTrait<RN>::Type  ExprReturnType;
    //**********************************************************************************************
+
+   //**Evaluation strategy*************************************************************************
    //! Compilation switch for the evaluation strategy of the absolute value expression.
    /*! The \a useAssign compile time constant expression represents a compilation switch for
        the evaluation strategy of the absolute value expression. In case the given dense vector
@@ -82,9 +96,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
        family. Otherwise \a useAssign will be set to 0 and the expression will be evaluated
        via the subscript operator. */
    enum { useAssign = !IsReference<CT>::value };
-   //**********************************************************************************************
 
-   //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT2 >
@@ -96,11 +108,13 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DVecAbsExpr<VT,TF>                     This;           //!< Type of this DVecAbsExpr instance.
-   typedef RT                                     ResultType;     //!< Result type for expression template evaluations.
-   typedef TT                                     TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ET                                     ElementType;    //!< Resulting element type.
-   typedef const typename AbsExprTrait<RN>::Type  ReturnType;     //!< Return type for expression template evaluations.
+   typedef DVecAbsExpr<VT,TF>  This;           //!< Type of this DVecAbsExpr instance.
+   typedef RT                  ResultType;     //!< Result type for expression template evaluations.
+   typedef TT                  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ET                  ElementType;    //!< Resulting element type.
+
+   //! Return type for expression template evaluations.
+   typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
 
    //! Data type for composite expression templates.
    typedef typename SelectType< useAssign, const ResultType, const DVecAbsExpr& >::Type  CompositeType;

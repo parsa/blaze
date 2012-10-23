@@ -42,6 +42,7 @@
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/FloatingPoint.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -135,7 +136,20 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    typedef typename MT::CompositeType  CT;  //!< Composite type of the dense matrix expression.
    //**********************************************************************************************
 
+   //**Return type evaluation**********************************************************************
+   //! Compilation switch for the selection of the subscript operator return type.
+   /*! The \a returnExpr compile time constant expression is a compilation switch for the
+       selection of the \a ReturnType. If the matrix operand returns a temporary vector
+       or matrix, \a returnExpr will be set to \a false and the subscript operator will
+       return it's result by value. Otherwise \a returnExpr will be set to \a true and
+       the subscript operator may return it's result as an expression. */
+   enum { returnExpr = !IsTemporary<RN>::value };
+
+   //! Expression return type for the subscript operator.
+   typedef typename DivExprTrait<RN,ST>::Type  ExprReturnType;
    //**********************************************************************************************
+
+   //**Evaluation strategy*************************************************************************
    //! Compilation switch for the evaluation strategy of the division expression.
    /*! The \a useAssign compile time constant expression represents a compilation switch for
        the evaluation strategy of the division expression. In case the dense matrix operand
@@ -144,9 +158,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
        \a useAssign will be set to \a false and the expression will be evaluated via the
        subscript operator. */
    enum { useAssign = !IsReference<CT>::value };
-   //**********************************************************************************************
 
-   //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
@@ -158,12 +170,14 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DMatScalarDivExpr<MT,ST,SO>               This;           //!< Type of this DMatScalarDivExpr instance.
-   typedef typename DivTrait<RT,ST>::Type            ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType         OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType        TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType          ElementType;    //!< Resulting element type.
-   typedef const typename DivExprTrait<RN,ST>::Type  ReturnType;     //!< Return type for expression template evaluations.
+   typedef DMatScalarDivExpr<MT,ST,SO>         This;           //!< Type of this DMatScalarDivExpr instance.
+   typedef typename DivTrait<RT,ST>::Type      ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
+
+   //! Return type for expression template evaluations.
+   typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
 
    //! Data type for composite expression templates.
    typedef typename SelectType< useAssign, const ResultType, const DMatScalarDivExpr& >::Type  CompositeType;

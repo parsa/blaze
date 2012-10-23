@@ -43,6 +43,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
+#include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/SelectType.h>
@@ -77,15 +78,32 @@ class DMatTSMatAddExpr : public DenseMatrix< DMatTSMatAddExpr<MT1,MT2>, false >
    typedef typename MT2::ReturnType  RN2;  //!< Return type of the right-hand side sparse matrix expression.
    //**********************************************************************************************
 
+   //**Return type evaluation**********************************************************************
+   //! Compilation switch for the selection of the subscript operator return type.
+   /*! The \a returnExpr compile time constant expression is a compilation switch for the
+       selection of the \a ReturnType. If either matrix operand returns a temporary vector
+       or matrix, \a returnExpr will be set to \a false and the subscript operator will
+       return it's result by value. Otherwise \a returnExpr will be set to \a true and
+       the subscript operator may return it's result as an expression. */
+   enum { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
+
+   //! Expression return type for the subscript operator.
+   typedef typename AddExprTrait<RN1,RN2>::Type  ExprReturnType;
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
-   typedef DMatTSMatAddExpr<MT1,MT2>                   This;           //!< Type of this DMatTSMatAddExpr instance.
-   typedef typename AddTrait<RT1,RT2>::Type            ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType           OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
-   typedef const typename AddExprTrait<RN1,RN2>::Type  ReturnType;     //!< Return type for expression template evaluations.
-   typedef const ResultType                            CompositeType;  //!< Data type for composite expression templates.
+   typedef DMatTSMatAddExpr<MT1,MT2>           This;           //!< Type of this DMatTSMatAddExpr instance.
+   typedef typename AddTrait<RT1,RT2>::Type    ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
+
+   //! Return type for expression template evaluations.
+   typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+
+   //! Data type for composite expression templates.
+   typedef const ResultType  CompositeType;
 
    //! Composite type of the left-hand side dense matrix expression.
    typedef typename SelectType< IsExpression<MT1>::value, const MT1, const MT1& >::Type  LeftOperand;
