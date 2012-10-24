@@ -265,6 +265,10 @@ clean:
 	@$(MAKE) --no-print-directory -C ./dvecsvecmult clean
 	@$(MAKE) --no-print-directory -C ./svecdvecmult clean
 	@$(MAKE) --no-print-directory -C ./svecsvecmult clean
+	@$(MAKE) --no-print-directory -C ./dvecdveccross clean
+	@$(MAKE) --no-print-directory -C ./dvecsveccross clean
+	@$(MAKE) --no-print-directory -C ./svecdveccross clean
+	@$(MAKE) --no-print-directory -C ./svecsveccross clean
 	@$(MAKE) --no-print-directory -C ./tdvecdvecmult clean
 	@$(MAKE) --no-print-directory -C ./tdvecsvecmult clean
 	@$(MAKE) --no-print-directory -C ./tsvecdvecmult clean
@@ -301,6 +305,7 @@ clean:
         dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
         dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
         dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \
+        dvecdveccross dvecsveccross svecdveccross svecsveccross \
         tdvecdvecmult tdvecsvecmult tsvecdvecmult tsvecsvecmult \
         dvectdvecmult dvectsvecmult svectdvecmult svectsvecmult \
         dmatdvecmult dmatsvecmult smatdvecmult smatsvecmult \
