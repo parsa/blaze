@@ -98,6 +98,16 @@ struct IntrinsicTraitHelper<2UL>
 /*!\brief Specialization of the IntrinsicTraitHelper class template for 4-byte integral data types.
 // \ingroup intrinsics
 */
+#if BLAZE_MIC_MODE
+struct IntrinsicTraitHelper<4UL>
+{
+   typedef sse_int32_t  Type;
+   enum { size           = 16,
+          addition       = 1,
+          subtraction    = 1,
+          multiplication = 1 };
+};
+#else
 template<>
 struct IntrinsicTraitHelper<4UL>
 {
@@ -107,6 +117,7 @@ struct IntrinsicTraitHelper<4UL>
           subtraction    = BLAZE_SSE2_MODE,
           multiplication = BLAZE_SSE4_MODE };
 };
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -116,6 +127,17 @@ struct IntrinsicTraitHelper<4UL>
 /*!\brief Specialization of the IntrinsicTraitHelper class template for 8-byte integral data types.
 // \ingroup intrinsics
 */
+#if BLAZE_MIC_MODE
+template<>
+struct IntrinsicTraitHelper<8UL>
+{
+   typedef sse_int64_t  Type;
+   enum { size           = 8,
+          addition       = 1,
+          subtraction    = 1,
+          multiplication = 1 };
+};
+#else
 template<>
 struct IntrinsicTraitHelper<8UL>
 {
@@ -125,6 +147,7 @@ struct IntrinsicTraitHelper<8UL>
           subtraction    = BLAZE_SSE2_MODE,
           multiplication = 0 };
 };
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
