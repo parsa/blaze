@@ -107,12 +107,7 @@ inline sse_int32_t operator-( sse_int32_t a, sse_int32_t b )
 // \param b The right-hand side operand.
 // \return The result of the subtraction.
 */
-#if BLAZE_MIC_MODE
-inline sse_int64_t operator-( sse_int64_t a, sse_int64_t b )
-{
-   return _mm512_sub_epi64( a.value, b.value );
-}
-#elif BLAZE_SSE2_MODE
+#if BLAZE_SSE2_MODE
 inline sse_int64_t operator-( sse_int64_t a, sse_int64_t b )
 {
    return _mm_sub_epi64( a.value, b.value );

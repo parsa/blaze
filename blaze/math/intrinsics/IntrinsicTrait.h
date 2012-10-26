@@ -134,8 +134,8 @@ struct IntrinsicTraitHelper<8UL>
    typedef sse_int64_t  Type;
    enum { size           = 8,
           addition       = 1,
-          subtraction    = 1,
-          multiplication = 1 };
+          subtraction    = 0,
+          multiplication = 0 };
 };
 #else
 template<>

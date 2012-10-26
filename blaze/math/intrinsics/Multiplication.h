@@ -81,24 +81,6 @@ inline sse_int32_t operator*( sse_int32_t a, sse_int32_t b )
 
 
 //*************************************************************************************************
-/*!\fn sse_int64_t operator*( sse_int64_t, sse_int64_t )
-// \brief Multiplication of two vectors of 64-bit integral values.
-// \ingroup intrinsics
-//
-// \param a The left-hand side operand.
-// \param b The right-hand side operand.
-// \return The result of the multiplication.
-*/
-#if BLAZE_MIC_MODE
-inline sse_int64_t operator*( sse_int64_t a, sse_int64_t b )
-{
-   return _mm512_mullo_epi64( a.value, b.value );
-}
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\fn sse_float_t operator*( sse_float_t, sse_float_t )
 // \brief Multiplication of two vectors of single precision floating point values.
 // \ingroup intrinsics
