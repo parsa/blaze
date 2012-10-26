@@ -66,7 +66,9 @@ struct AlignmentTrait
  public:
    //**Member enumerations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-#if BLAZE_SSE2_MODE
+#if BLAZE_MIC_MODE
+   enum { value = ( IsVectorizable<T>::value )?( 64UL ):( boost::alignment_of<T>::value ) };
+#elif BLAZE_SSE2_MODE
    enum { value = ( IsVectorizable<T>::value )?( 16UL ):( boost::alignment_of<T>::value ) };
 #else
    enum { value = boost::alignment_of<T>::value };
