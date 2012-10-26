@@ -29,6 +29,7 @@
 
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/StaticAssert.h>
+#include <blazemark/util/MatrixStructure.h>
 
 
 namespace blazemark {
