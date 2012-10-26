@@ -33,9 +33,7 @@
 #include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsDouble.h>
 #include <blaze/util/typetraits/IsFloat.h>
-#include <blaze/util/typetraits/IsInteger.h>
-#include <blaze/util/typetraits/IsLong.h>
-#include <blaze/util/typetraits/IsShort.h>
+#include <blaze/util/typetraits/IsIntegral.h>
 
 
 namespace blaze {
@@ -56,7 +54,8 @@ struct IsVectorizableHelper
 {
    //**********************************************************************************************
    enum { value = ( BLAZE_SSE_MODE  && ( IsFloat<T>::value || IsDouble<T>::value  ) ) ||
-                  ( BLAZE_SSE2_MODE && ( IsShort<T>::value || IsInteger<T>::value || IsLong<T>::value ) ) };
+                  ( BLAZE_SSE2_MODE && ( IsIntegral<T>::value && sizeof(T) >= 2UL ) ) ||
+                  ( BLAZE_MIC_MODE  && ( ( IsIntegral<T>::value && sizeof(T) >= 4UL ) || IsFloat<T>::value || IsDouble<T>::value ) ) };
    typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
    //**********************************************************************************************
 };
@@ -68,13 +67,14 @@ struct IsVectorizableHelper
 /*!\brief Compile time check for vectorizable types.
 // \ingroup type_traits
 //
-// This type trait tests whether or not the given template parameter is a vectorizable type,
-// i.e. a type for which intrinsic operations and optimizations can be used. Currently, only
-// signed/unsigned short, signed/unsigned int, signed/unsigned long, float, and double are
-// considered to be vectorizable types. In case the type is vectorizable, the \a value member
-// enumeration is set to 1, the nested type definition \a Type is \a TrueType, and the class
-// derives from \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and the
-// class derives from \a FalseType.
+// Depending on the available instruction set (SSE, SSE2, AVX, MIC, ...), this type trait tests
+// whether or not the given template parameter is a vectorizable type, i.e. a type for which
+// intrinsic vector operations and optimizations can be used. Currently, only signed/unsigned
+// short, signed/unsigned int, signed/unsigned long, float, and double are considered to be
+// vectorizable types. In case the type is vectorizable, the \a value member enumeration is
+// set to 1, the nested type definition \a Type is \a TrueType, and the class derives from
+// \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives
+// from \a FalseType.
 
    \code
    blaze::IsVectorizable< int >::value         // Evaluates to 1
