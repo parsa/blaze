@@ -28,6 +28,7 @@
 //*************************************************************************************************
 
 #include <blaze/system/SSE.h>
+#include <blaze/util/Types.h>
 
 
 namespace blaze {
