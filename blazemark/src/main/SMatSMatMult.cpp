@@ -208,8 +208,6 @@ void smatsmatmult( std::vector<Run>& runs, Benchmarks benchmarks )
       }
    }
 
-   return;
-
    if( benchmarks.runBlaze ) {
       std::vector<Run>::iterator run=runs.begin();
       while( run != runs.end() ) {
