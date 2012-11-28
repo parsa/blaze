@@ -135,6 +135,7 @@ inline Rand< CompressedMatrix<Type,SO> >::Rand( size_t m, size_t n, size_t nonze
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Conversion to the created random CompressedMatrix.
 //
 // \return The random matrix.

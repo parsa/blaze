@@ -100,6 +100,7 @@ inline Rand< DynamicVector<Type,TF> >::Rand( size_t n )
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Conversion to the created random DynamicVector.
 //
 // \return The random vector.

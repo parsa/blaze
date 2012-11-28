@@ -148,7 +148,7 @@ inline const typename MultTrait<typename T1::ElementType,typename T2::ElementTyp
 // \ingroup vector
 //
 // \param os Reference to the output stream.
-// \param dv Reference to a constant vector object.
+// \param v Reference to a constant vector object.
 // \return Reference to the output stream.
 */
 template< typename VT  // Type of the vector

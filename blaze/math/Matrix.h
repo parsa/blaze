@@ -54,7 +54,7 @@ inline std::ostream& operator<<( std::ostream& os, const Matrix<MT,SO>& dv );
 // \ingroup matrix
 //
 // \param os Reference to the output stream.
-// \param dm Reference to a constant matrix object.
+// \param m Reference to a constant matrix object.
 // \return Reference to the output stream.
 */
 template< typename MT  // Type of the matrix

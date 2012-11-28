@@ -99,7 +99,7 @@ class SVecDVecCrossExpr : public DenseVector< SVecDVecCrossExpr<VT1,VT2>, false 
    typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
 
-   //!< Return type for expression template evaluations.
+   //! Return type for expression template evaluations.
    typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
 
    //! Data type for composite expression templates.

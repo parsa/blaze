@@ -133,6 +133,7 @@ inline Rand< CompressedVector<Type,TF> >::Rand( size_t size, size_t nonzeros )
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Conversion to the created random CompressedVector.
 //
 // \return The random vector.

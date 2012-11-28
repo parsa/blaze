@@ -103,6 +103,7 @@ inline Rand< DynamicMatrix<Type,SO> >::Rand( size_t m, size_t n )
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Conversion to the created random DynamicMatrix.
 //
 // \return The random matrix.

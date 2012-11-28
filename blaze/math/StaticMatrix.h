@@ -104,6 +104,7 @@ inline Rand< StaticMatrix<Type,M,N,SO> >::Rand()
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Conversion to the created random StaticMatrix.
 //
 // \return The random matrix.

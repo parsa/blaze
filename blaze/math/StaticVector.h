@@ -100,6 +100,7 @@ inline Rand< StaticVector<Type,N,TF> >::Rand()
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Conversion to the created random StaticVector.
 //
 // \return The random vector.
