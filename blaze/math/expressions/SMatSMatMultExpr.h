@@ -27,11 +27,13 @@
 // Includes
 //*************************************************************************************************
 
+#include <algorithm>
 #include <stdexcept>
+#include <vector>
 #include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
-#include <blaze/math/DynamicVector.h>
+#include <blaze/math/dense/DynamicVector.h>
 #include <blaze/math/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
@@ -56,7 +58,6 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsReference.h>
 
 
@@ -397,15 +398,17 @@ class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
          }
       }
 
+      if( nonzeros > (~lhs).rows() * (~lhs).columns() ) {
+         nonzeros = (~lhs).rows() * (~lhs).columns();
+      }
+
       (~lhs).reserve( nonzeros );
       nonzeros = 0UL;
 
       // Performing the matrix-matrix multiplication
-      DynamicVector<ElementType> tmp( (~lhs).columns() );
+      std::vector<ElementType> values ( (~lhs).columns(), ElementType() );
+      std::vector<size_t>      indices( (~lhs).columns(), 0UL );
       size_t minIndex( inf ), maxIndex( 0UL );
-
-      if( IsBuiltin<ElementType>::value )
-         tmp.reset();
 
       for( size_t i=0UL; i<(~lhs).rows(); ++i )
       {
@@ -415,24 +418,39 @@ class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
             const RightIterator rend( B.end( lelem->index() ) );
             for( RightIterator relem=B.begin( lelem->index() ); relem!=rend; ++relem )
             {
-               if( isDefault( tmp[relem->index()] ) ) {
+               if( isDefault( values[relem->index()] ) ) {
+                  values[relem->index()] = lelem->value() * relem->value();
+                  indices[nonzeros] = relem->index();
+                  ++nonzeros;
                   if( relem->index() < minIndex ) minIndex = relem->index();
                   if( relem->index() > maxIndex ) maxIndex = relem->index();
-                  ++nonzeros;
-                  tmp[relem->index()] = lelem->value() * relem->value();
                }
                else {
-                  tmp[relem->index()] += lelem->value() * relem->value();
+                  values[relem->index()] += lelem->value() * relem->value();
                }
             }
          }
 
          if( nonzeros > 0UL )
          {
-            for( size_t j=minIndex; j<=maxIndex; ++j ) {
-               if( !isDefault( tmp[j] ) ) {
-                  (~lhs).append( i, j, tmp[j] );
-                  reset( tmp[j] );
+            BLAZE_INTERNAL_ASSERT( minIndex <= maxIndex, "Invalid index detected" );
+
+            if( ( nonzeros + nonzeros ) < ( maxIndex - minIndex ) )
+            {
+               std::sort( indices.begin(), indices.begin() + nonzeros );
+
+               for( size_t j=0UL; j<nonzeros; ++j ) {
+                  const size_t index( indices[j] );
+                  (~lhs).append( i, index, values[index] );
+                  reset( values[index] );
+               }
+            }
+            else {
+               for( size_t j=minIndex; j<=maxIndex; ++j ) {
+                  if( !isDefault( values[j] ) ) {
+                     (~lhs).append( i, j, values[j] );
+                     reset( values[j] );
+                  }
                }
             }
 
