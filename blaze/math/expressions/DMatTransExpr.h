@@ -167,6 +167,16 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
       return dm_.rows();
    }
    //**********************************************************************************************
+   
+   //**Spacing function****************************************************************************
+   /*!\brief Returns the spacing between the beginning of two rows/columns.
+   //
+   // \return The spacing between the beginning of two rows/columns.
+   */
+   inline size_t spacing() const {
+      return dm_.spacing();
+   }
+   //**********************************************************************************************
 
    //**Operand access******************************************************************************
    /*!\brief Returns the dense matrix operand.
