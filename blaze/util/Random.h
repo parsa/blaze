@@ -344,6 +344,7 @@ inline Rand<float>::Rand( float min, float max )
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Conversion to the created random single precision number.
 //
 // \return The random value.
@@ -444,6 +445,7 @@ inline Rand<double>::Rand( double min, double max )
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Conversion to the created random double precision number.
 //
 // \return The random value.
@@ -544,6 +546,7 @@ inline Rand<long double>::Rand( long double min, long double max )
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Conversion to the created random extended precision number.
 //
 // \return The random value.
@@ -664,6 +667,7 @@ inline Rand< complex<T> >::Rand( const T& realmin, const T& realmax, const T& im
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Conversion to the created random complex number.
 //
 // \return The random value.
