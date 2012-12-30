@@ -31,7 +31,7 @@
 #include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
-#include <blaze/math/Expression.h>
+#include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/sparse/SparseElement.h>

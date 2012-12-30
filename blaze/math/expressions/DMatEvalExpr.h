@@ -30,8 +30,8 @@
 #include <cmath>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
-#include <blaze/math/Expression.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/util/Assert.h>

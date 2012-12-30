@@ -33,8 +33,8 @@
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/TransposeFlag.h>
-#include <blaze/math/Expression.h>
 #include <blaze/math/expressions/DenseVector.h>
+#include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/MultExprTrait.h>

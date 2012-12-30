@@ -31,8 +31,8 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/dense/StaticVector.h>
-#include <blaze/math/Expression.h>
 #include <blaze/math/expressions/DenseVector.h>
+#include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>

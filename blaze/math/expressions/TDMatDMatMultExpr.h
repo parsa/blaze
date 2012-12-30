@@ -31,8 +31,8 @@
 #include <boost/cast.hpp>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
-#include <blaze/math/Expression.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Reset.h>
