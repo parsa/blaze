@@ -34,6 +34,7 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
@@ -41,6 +42,7 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/util/Assert.h>
@@ -71,6 +73,7 @@ template< typename MT    // Type of the left-hand side dense matrix
         , typename VT >  // Type of the right-hand side sparse vector
 class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
                        , private Expression
+                       , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -88,7 +91,7 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
        compound expression, \a useAssign will be set to \a true and the addition expression
        will be evaluated via the \a assign function family. Otherwise \a useAssign will be
        set to \a false and the expression will be evaluated via the subscript operator. */
-   enum { useAssign = ( !IsReference<MCT>::value || IsExpression<VT>::value ) };
+   enum { useAssign = ( !IsReference<MCT>::value || IsComputation<VT>::value ) };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -122,7 +125,7 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
    typedef MCT  LT;
 
    //! Type for the assignment of the right-hand side dense matrix operand.
-   typedef typename SelectType< IsExpression<VT>::value, const VRT, VCT >::Type  RT;
+   typedef typename SelectType< IsComputation<VT>::value, const VRT, VCT >::Type  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -130,7 +133,7 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
    enum { vectorizable = 0 };
 
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = IsReference<MCT>::value && ( !IsExpression<MT>::value || CanAlias<MT>::value ) };
+   enum { canAlias = IsComputation<MT>::value && IsReference<MCT>::value && CanAlias<MT>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -217,7 +220,8 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( IsReference<MCT>::value && mat_.isAliased( alias ) );
+      return IsComputation<MT>::value && IsReference<MCT>::value &&
+             CanAlias<MT>::value && mat_.isAliased( alias );
    }
    //**********************************************************************************************
 
