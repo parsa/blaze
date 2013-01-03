@@ -34,6 +34,7 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
@@ -41,6 +42,7 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -50,6 +52,7 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsReference.h>
 
 
 namespace blaze {
@@ -71,6 +74,7 @@ template< typename VT    // Type of the left-hand side sparse vector
         , typename MT >  // Type of the right-hand side dense matrix
 class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
                         , private Expression
+                        , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -96,7 +100,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    typedef typename SelectType< IsExpression<MT>::value, const MT, const MT& >::Type  RightOperand;
 
    //! Type for the assignment of the left-hand side sparse vector operand.
-   typedef typename SelectType< IsExpression<VT>::value, const VRT, VCT >::Type  LT;
+   typedef typename SelectType< IsComputation<VT>::value, const VRT, VCT >::Type  LT;
 
    //! Type for the assignment of the right-hand side dense matrix operand.
    typedef MCT  RT;
@@ -107,7 +111,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    enum { vectorizable = 0 };
 
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = IsReference<MCT>::value && ( !IsExpression<MT>::value || CanAlias<MT>::value ) };
+   enum { canAlias = IsComputation<MT>::value && IsReference<MCT>::value && CanAlias<MT>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -195,7 +199,8 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( IsReference<MCT>::value && mat_.isAliased( alias ) );
+      return IsComputation<MT>::value && IsReference<MCT>::value &&
+             CanAlias<MT>::value && mat_.isAliased( alias );
    }
    //**********************************************************************************************
 
