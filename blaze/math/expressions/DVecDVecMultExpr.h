@@ -258,9 +258,17 @@ class DVecDVecMultExpr : public DenseVector< DVecDVecMultExpr<VT1,VT2,TF>, TF >
       assign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
    {
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      assign    ( ~lhs, rhs.lhs_ );
-      multAssign( ~lhs, rhs.rhs_ );
+      
+      if( !IsComputation<VT1>::value && (~lhs).isAliased( &rhs.lhs_ ) ) {
+         multAssign( ~lhs, rhs.rhs_ );
+      }
+      else if( !IsComputation<VT2>::value && (~lhs).isAliased( &rhs.rhs_ ) ) {
+         multAssign( ~lhs, rhs.lhs_ );
+      }
+      else {
+         assign   ( ~lhs, rhs.lhs_ );
+         multAssign( ~lhs, rhs.rhs_ );
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
