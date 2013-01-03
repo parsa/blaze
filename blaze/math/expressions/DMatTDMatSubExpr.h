@@ -30,12 +30,12 @@
 #include <stdexcept>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/util/Assert.h>
@@ -64,6 +64,7 @@ template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
 class DMatTDMatSubExpr : public DenseMatrix< DMatTDMatSubExpr<MT1,MT2>, false >
                        , private Expression
+                       , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -114,8 +115,7 @@ class DMatTDMatSubExpr : public DenseMatrix< DMatTDMatSubExpr<MT1,MT2>, false >
    enum { vectorizable = 0 };
 
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( IsExpression<MT1>::value && CanAlias<MT1>::value ) ||
-                     ( IsExpression<MT2>::value && CanAlias<MT2>::value ) };
+   enum { canAlias = IsExpression<MT1>::value || IsExpression<MT2>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -195,7 +195,8 @@ class DMatTDMatSubExpr : public DenseMatrix< DMatTDMatSubExpr<MT1,MT2>, false >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( lhs_.isAliased( alias ) || rhs_.isAliased( alias ) );
+      return ( IsExpression<MT1>::value && lhs_.isAliased( alias ) ) ||
+             ( IsExpression<MT2>::value && rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 

@@ -30,13 +30,13 @@
 #include <stdexcept>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/util/Assert.h>
@@ -68,6 +68,7 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO >     // Storage order
 class DMatDMatSubExpr : public DenseMatrix< DMatDMatSubExpr<MT1,MT2,SO>, SO >
                       , private Expression
+                      , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -142,8 +143,7 @@ class DMatDMatSubExpr : public DenseMatrix< DMatDMatSubExpr<MT1,MT2,SO>, SO >
                          IntrinsicTrait<ET1>::subtraction };
 
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( IsExpression<MT1>::value && CanAlias<MT1>::value ) ||
-                     ( IsExpression<MT2>::value && CanAlias<MT2>::value ) };
+   enum { canAlias = IsExpression<MT1>::value || IsExpression<MT2>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -242,7 +242,8 @@ class DMatDMatSubExpr : public DenseMatrix< DMatDMatSubExpr<MT1,MT2,SO>, SO >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( lhs_.isAliased( alias ) || rhs_.isAliased( alias ) );
+      return ( IsExpression<MT1>::value && lhs_.isAliased( alias ) ) ||
+             ( IsExpression<MT2>::value && rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 
