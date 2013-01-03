@@ -251,6 +251,19 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
       sm_.finalize( i );
    }
    //**********************************************************************************************
+   
+   //**********************************************************************************************
+   /*!\brief Returns whether the matrix is aliased with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the alias corresponds to this matrix, \a false if not.
+   */
+   template< typename Other >  // Data type of the foreign expression
+   inline bool isAliased( const Other* alias ) const
+   {
+      return sm_.isAliased( alias );
+   }
+   //**********************************************************************************************
 
    //**Transpose assignment of row-major sparse matrices*******************************************
    /*!\brief Implementation of the transpose assignment of a row-major sparse matrix.

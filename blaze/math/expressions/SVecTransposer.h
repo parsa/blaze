@@ -205,6 +205,19 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
       sv_.append( index, value );
    }
    //**********************************************************************************************
+   
+   //**IsAliased function**************************************************************************
+   /*!\brief Returns whether the vector is aliased with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the alias corresponds to this vector, \a false if not.
+   */
+   template< typename Other >  // Data type of the foreign expression
+   inline bool isAliased( const Other* alias ) const
+   {
+      return sv_.isAliased( alias );
+   }
+   //**********************************************************************************************
 
    //**Transpose assignment of dense vectors*******************************************************
    /*!\brief Implementation of the transpose assignment of a dense vector.
