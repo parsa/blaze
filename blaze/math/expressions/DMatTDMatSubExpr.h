@@ -247,9 +247,12 @@ class DMatTDMatSubExpr : public DenseMatrix< DMatTDMatSubExpr<MT1,MT2>, false >
       }
 
       // In case either of the two dense operands requires an intermediate evaluation, the
-      // expression is evaluated in a two-step approach.
-      else
-      {
+      // expression is evaluated in a one- or two-step approach (depending on whether any
+      // of the operands is aliased with the target matrix).
+      else if( !IsExpression<MT1>::value && (~lhs).isAliased( &rhs.lhs_ ) ) {
+         subAssign( ~lhs, rhs.rhs_ );
+      }
+      else {
          assign   ( ~lhs, rhs.lhs_ );
          subAssign( ~lhs, rhs.rhs_ );
       }
