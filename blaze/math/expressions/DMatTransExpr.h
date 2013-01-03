@@ -29,10 +29,12 @@
 
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DMatTransposer.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
@@ -61,7 +63,8 @@ namespace blaze {
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
-                    , private SelectType< IsExpression<MT>::value, Expression, EmptyType >::Type
+                    , private Expression
+                    , private SelectType< IsComputation<MT>::value, Computation, EmptyType >::Type
 {
  private:
    //**Type definitions****************************************************************************

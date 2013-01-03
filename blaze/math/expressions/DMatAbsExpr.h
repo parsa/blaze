@@ -30,6 +30,7 @@
 #include <cmath>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
@@ -64,6 +65,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
                   , private Expression
+                  , private Computation
 {
  private:
    //**Type definitions****************************************************************************
