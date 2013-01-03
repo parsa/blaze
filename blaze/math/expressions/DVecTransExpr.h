@@ -29,6 +29,7 @@
 
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/DVecTransposer.h>
@@ -36,6 +37,7 @@
 #include <blaze/math/expressions/SVecTransposer.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/typetraits/CanAlias.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EmptyType.h>
@@ -63,7 +65,8 @@ namespace blaze {
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
-                    , private SelectType< IsExpression<VT>::value, Expression, EmptyType >::Type
+                    , private Expression
+                    , private SelectType< IsComputation<VT>::value, Computation, EmptyType >::Type
 {
  private:
    //**Type definitions****************************************************************************
