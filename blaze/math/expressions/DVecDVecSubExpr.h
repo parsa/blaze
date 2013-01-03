@@ -262,9 +262,6 @@ class DVecDVecSubExpr : public DenseVector< DVecDVecSubExpr<VT1,VT2,TF>, TF >
       if( !IsComputation<VT1>::value && (~lhs).isAliased( &rhs.lhs_ ) ) {
          subAssign( ~lhs, rhs.rhs_ );
       }
-      else if( !IsComputation<VT2>::value && (~lhs).isAliased( &rhs.rhs_ ) ) {
-         subAssign( ~lhs, rhs.lhs_ );
-      }
       else {
          assign   ( ~lhs, rhs.lhs_ );
          subAssign( ~lhs, rhs.rhs_ );
