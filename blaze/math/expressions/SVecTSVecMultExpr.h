@@ -31,12 +31,14 @@
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/util/Assert.h>
@@ -64,6 +66,7 @@ template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side sparse vector
 class SVecTSVecMultExpr : public SparseMatrix< SVecTSVecMultExpr<VT1,VT2>, false >
                         , private Expression
+                        , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -109,15 +112,15 @@ class SVecTSVecMultExpr : public SparseMatrix< SVecTSVecMultExpr<VT1,VT2>, false
    typedef typename SelectType< IsExpression<VT2>::value, const VT2, const VT2& >::Type  RightOperand;
 
    //! Type for the assignment of the left-hand side dense vector operand.
-   typedef typename SelectType< IsExpression<VT1>::value, const RT1, CT1 >::Type  LT;
+   typedef typename SelectType< IsComputation<VT1>::value, const RT1, CT1 >::Type  LT;
 
    //! Type for the assignment of the right-hand side dense vector operand.
-   typedef typename SelectType< IsExpression<VT2>::value, const RT2, CT2 >::Type  RT;
+   typedef typename SelectType< IsComputation<VT2>::value, const RT2, CT2 >::Type  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = !IsExpression<VT1>::value || !IsExpression<VT2>::value };
+   enum { canAlias = !IsComputation<VT1>::value || !IsComputation<VT2>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -216,8 +219,8 @@ class SVecTSVecMultExpr : public SparseMatrix< SVecTSVecMultExpr<VT1,VT2>, false
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( !IsExpression<VT1>::value && lhs_.isAliased( alias ) ) ||
-             ( !IsExpression<VT2>::value && lhs_.isAliased( alias ) );
+      return ( !IsComputation<VT1>::value && lhs_.isAliased( alias ) ) ||
+             ( !IsComputation<VT2>::value && lhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 

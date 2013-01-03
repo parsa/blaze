@@ -33,6 +33,7 @@
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
@@ -40,7 +41,7 @@
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/typetraits/CanAlias.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/util/Assert.h>
@@ -70,6 +71,7 @@ template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
 class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false >
                         , private Expression
+                        , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -99,13 +101,14 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    //**Evaluation strategy*************************************************************************
    //! Compilation switch for the evaluation strategy of the multiplication expression.
    /*! The \a useAssign compile time constant expression represents a compilation switch for
-       the evaluation strategy of the multiplication expression. In case either the dense or
-       the sparse vector operand is an expression or if any of two involved element types is not
-       a numeric data type, \a useAssign will be set to \a true and the multiplication expression
-       will be evaluated via the \a assign function family. Otherwise \a useAssign will be set to
-       \a false and the expression will be evaluated via the subscript operator. */
-   enum { useAssign = ( IsExpression<VT1>::value || !IsNumeric<ET1>::value ||
-                        IsExpression<VT2>::value || !IsNumeric<ET2>::value ) };
+       the evaluation strategy of the multiplication expression. In case either the dense
+       or the sparse vector operand is a computational expression or if any of two involved
+       element types is not a numeric data type, \a useAssign will be set to \a true and the
+       multiplication expression will be evaluated via the \a assign function family. Otherwise
+       \a useAssign will be set to \a false and the expression will be evaluated via the
+       subscript operator. */
+   enum { useAssign = ( IsComputation<VT1>::value || !IsNumeric<ET1>::value ||
+                        IsComputation<VT2>::value || !IsNumeric<ET2>::value ) };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
@@ -137,15 +140,15 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    typedef typename SelectType< IsExpression<VT2>::value, const VT2, const VT2& >::Type  RightOperand;
 
    //! Type for the assignment of the left-hand side dense vector operand.
-   typedef typename SelectType< IsExpression<VT1>::value, const RT1, CT1 >::Type  LT;
+   typedef typename SelectType< IsComputation<VT1>::value, const RT1, CT1 >::Type  LT;
 
    //! Type for the assignment of the right-hand side dense vector operand.
-   typedef typename SelectType< IsExpression<VT2>::value, const RT2, CT2 >::Type  RT;
+   typedef typename SelectType< IsComputation<VT2>::value, const RT2, CT2 >::Type  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = !IsExpression<VT1>::value || !IsExpression<VT2>::value };
+   enum { canAlias = !IsComputation<VT1>::value || !IsComputation<VT2>::value };
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -397,8 +400,8 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( !IsExpression<VT1>::value && lhs_.isAliased( alias ) ) ||
-             ( !IsExpression<VT2>::value && lhs_.isAliased( alias ) );
+      return ( !IsComputation<VT1>::value && lhs_.isAliased( alias ) ) ||
+             ( !IsComputation<VT2>::value && lhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 
