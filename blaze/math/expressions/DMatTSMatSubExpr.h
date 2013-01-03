@@ -31,13 +31,13 @@
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -69,6 +69,7 @@ template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
 class DMatTSMatSubExpr : public DenseMatrix< DMatTSMatSubExpr<MT1,MT2>, false >
                        , private Expression
+                       , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -117,7 +118,7 @@ class DMatTSMatSubExpr : public DenseMatrix< DMatTSMatSubExpr<MT1,MT2>, false >
    enum { vectorizable = 0 };
 
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = IsExpression<MT1>::value && CanAlias<MT1>::value };
+   enum { canAlias = IsExpression<MT1>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -197,7 +198,7 @@ class DMatTSMatSubExpr : public DenseMatrix< DMatTSMatSubExpr<MT1,MT2>, false >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return lhs_.isAliased( alias );
+      return IsExpression<MT1>::value && lhs_.isAliased( alias );
    }
    //**********************************************************************************************
 

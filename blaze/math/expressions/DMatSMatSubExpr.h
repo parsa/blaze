@@ -31,13 +31,13 @@
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -70,6 +70,7 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO >     // Storage order
 class DMatSMatSubExpr : public DenseMatrix< DMatSMatSubExpr<MT1,MT2,SO>, SO >
                       , private Expression
+                      , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -118,7 +119,7 @@ class DMatSMatSubExpr : public DenseMatrix< DMatSMatSubExpr<MT1,MT2,SO>, SO >
    enum { vectorizable = 0 };
 
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = IsExpression<MT1>::value && CanAlias<MT1>::value };
+   enum { canAlias = IsExpression<MT1>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -198,7 +199,7 @@ class DMatSMatSubExpr : public DenseMatrix< DMatSMatSubExpr<MT1,MT2,SO>, SO >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return lhs_.isAliased( alias );
+      return IsExpression<MT1>::value && lhs_.isAliased( alias );
    }
    //**********************************************************************************************
 
