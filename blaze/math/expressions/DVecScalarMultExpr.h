@@ -29,6 +29,7 @@
 
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Expression.h>
@@ -85,6 +86,7 @@ template< typename VT  // Type of the left-hand side dense vector
         , bool TF >    // Transpose flag
 class DVecScalarMultExpr : public DenseVector< DVecScalarMultExpr<VT,ST,TF>, TF >
                          , private Expression
+                         , private Computation
 {
  private:
    //**Type definitions****************************************************************************
