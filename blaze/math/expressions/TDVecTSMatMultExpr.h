@@ -33,12 +33,14 @@
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/util/Assert.h>
@@ -47,6 +49,7 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsReference.h>
 
 
 namespace blaze {
@@ -68,6 +71,7 @@ template< typename VT    // Type of the left-hand side dense vector
         , typename MT >  // Type of the right-hand side sparse matrix
 class TDVecTSMatMultExpr : public DenseVector< TDVecTSMatMultExpr<VT,MT>, true >
                          , private Expression
+                         , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -85,7 +89,7 @@ class TDVecTSMatMultExpr : public DenseVector< TDVecTSMatMultExpr<VT,MT>, true >
        compound expression, \a useAssign will be set to \a true and the addition expression
        will be evaluated via the \a assign function family. Otherwise \a useAssign will be
        set to \a false and the expression will be evaluated via the subscript operator. */
-   enum { useAssign = ( IsExpression<VT>::value || !IsReference<MCT>::value ) };
+   enum { useAssign = ( IsComputation<VT>::value || !IsReference<MCT>::value ) };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -116,7 +120,7 @@ class TDVecTSMatMultExpr : public DenseVector< TDVecTSMatMultExpr<VT,MT>, true >
    typedef typename SelectType< IsExpression<MT>::value, const MT, const MT& >::Type  RightOperand;
 
    //! Composite type of the left-hand side dense vector expression.
-   typedef typename SelectType< IsExpression<VT>::value, const VRT, VCT >::Type  LT;
+   typedef typename SelectType< IsComputation<VT>::value, const VRT, VCT >::Type  LT;
 
    //! Composite type of the right-hand side sparse matrix expression.
    typedef MCT  RT;
@@ -126,9 +130,9 @@ class TDVecTSMatMultExpr : public DenseVector< TDVecTSMatMultExpr<VT,MT>, true >
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = 0 };
 
-   //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( !IsExpression<VT>::value ) ||
-                     ( IsReference<MCT>::value && ( !IsExpression<MT>::value || CanAlias<MT>::value ) ) };
+   //! Compilation flag for the detection of aliasing effects.   
+   enum { canAlias = ( !IsComputation<VT>::value ) ||
+                     ( IsComputation<MT>::value && IsReference<MCT>::value && CanAlias<MT>::value ) };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -216,8 +220,9 @@ class TDVecTSMatMultExpr : public DenseVector< TDVecTSMatMultExpr<VT,MT>, true >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( !IsExpression<VT>::value && vec_.isAliased( alias ) ) ||
-             ( IsReference<MCT>::value && mat_.isAliased( alias ) );
+      return ( !IsComputation<VT>::value && vec_.isAliased( alias ) ) ||
+             ( IsComputation<MT>::value && IsReference<MCT>::value &&
+               CanAlias<MT>::value && mat_.isAliased( alias ) );
    }
    //**********************************************************************************************
 
