@@ -36,6 +36,7 @@
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/DynamicVector.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
@@ -52,6 +53,7 @@
 #include <blaze/math/traits/TSVecTSMatMultExprTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -87,6 +89,7 @@ template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
 class TSMatSMatMultExpr : public SparseMatrix< TSMatSMatMultExpr<MT1,MT2>, true >
                         , private Expression
+                        , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -115,8 +118,8 @@ class TSMatSMatMultExpr : public SparseMatrix< TSMatSMatMultExpr<MT1,MT2>, true 
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( IsReference<CT1>::value && ( !IsExpression<MT1>::value || CanAlias<MT1>::value ) ) ||
-                     ( IsReference<CT2>::value && ( !IsExpression<MT2>::value || CanAlias<MT2>::value ) ) };
+   enum { canAlias = ( IsReference<CT1>::value && ( !IsComputation<MT1>::value || CanAlias<MT1>::value ) ) ||
+                     ( IsReference<CT2>::value && ( !IsComputation<MT2>::value || CanAlias<MT2>::value ) ) };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -226,8 +229,10 @@ class TSMatSMatMultExpr : public SparseMatrix< TSMatSMatMultExpr<MT1,MT2>, true 
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( IsReference<CT1>::value && lhs_.isAliased( alias ) ) ||
-             ( IsReference<CT2>::value && rhs_.isAliased( alias ) );
+      return ( ( !IsComputation<MT1>::value || CanAlias<MT1>::value ) &&
+               IsReference<CT1>::value && lhs_.isAliased( alias ) ) ||
+             ( ( !IsComputation<MT2>::value || CanAlias<MT2>::value ) &&
+               IsReference<CT2>::value && rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 
