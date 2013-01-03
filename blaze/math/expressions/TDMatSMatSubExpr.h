@@ -222,9 +222,14 @@ class TDMatSMatSubExpr : public DenseMatrix< TDMatSMatSubExpr<MT1,MT2>, false >
    {
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-
-      assign   ( ~lhs, rhs.lhs_ );
-      subAssign( ~lhs, rhs.rhs_ );
+      
+      if( !IsExpression<MT1>::value && (~lhs).isAliased( &rhs.lhs_ ) ) {
+         subAssign( ~lhs, rhs.rhs_ );
+      }
+      else {
+         assign   ( ~lhs, rhs.lhs_ );
+         subAssign( ~lhs, rhs.rhs_ );
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
