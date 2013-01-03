@@ -31,6 +31,7 @@
 #include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -38,6 +39,7 @@
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsTemporary.h>
@@ -69,6 +71,7 @@ template< typename VT1  // Type of the left-hand side sparse vector
         , bool TF >     // Transpose flag
 class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
                       , private Expression
+                      , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -117,8 +120,8 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( IsReference<CT1>::value && ( !IsExpression<VT1>::value || CanAlias<VT1>::value ) ) ||
-                     ( IsReference<CT2>::value && ( !IsExpression<VT2>::value || CanAlias<VT2>::value ) ) };
+   enum { canAlias = ( IsReference<CT1>::value && ( !IsComputation<VT1>::value || CanAlias<VT1>::value ) ) ||
+                     ( IsReference<CT2>::value && ( !IsComputation<VT2>::value || CanAlias<VT2>::value ) ) };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -192,8 +195,10 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( IsReference<CT1>::value && lhs_.isAliased( alias ) ) ||
-             ( IsReference<CT2>::value && rhs_.isAliased( alias ) );
+      return ( ( !IsComputation<VT1>::value || CanAlias<VT1>::value ) &&
+               IsReference<CT1>::value && lhs_.isAliased( alias ) ) ||
+             ( ( !IsComputation<VT2>::value || CanAlias<VT2>::value ) &&
+               IsReference<CT2>::value && rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 

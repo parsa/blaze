@@ -31,6 +31,7 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/dense/StaticVector.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
@@ -64,6 +65,7 @@ template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side sparse vector
 class SVecSVecCrossExpr : public DenseVector< SVecSVecCrossExpr<VT1,VT2>, false >
                         , private Expression
+                        , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -122,7 +124,7 @@ class SVecSVecCrossExpr : public DenseVector< SVecSVecCrossExpr<VT1,VT2>, false 
    enum { vectorizable = 0 };
 
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( !IsExpression<VT1>::value || !IsExpression<VT2>::value ) };
+   enum { canAlias = 0 };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -196,7 +198,7 @@ class SVecSVecCrossExpr : public DenseVector< SVecSVecCrossExpr<VT1,VT2>, false 
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( lhs_.isAliased( alias ) || rhs_.isAliased( alias ) );
+      return false;
    }
    //**********************************************************************************************
 
