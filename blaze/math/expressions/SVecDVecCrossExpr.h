@@ -32,12 +32,14 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/dense/StaticVector.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/util/Assert.h>
@@ -65,6 +67,7 @@ template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
 class SVecDVecCrossExpr : public DenseVector< SVecDVecCrossExpr<VT1,VT2>, false >
                         , private Expression
+                        , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -115,7 +118,7 @@ class SVecDVecCrossExpr : public DenseVector< SVecDVecCrossExpr<VT1,VT2>, false 
    typedef const StaticVector<ET1,3UL,false>  LT;
 
    //! Composite type of the right-hand side dense vector expression.
-   typedef typename SelectType< IsExpression<VT2>::value, const StaticVector<ET2,3UL,false>, CT2 >::Type  RT;
+   typedef typename SelectType< IsComputation<VT2>::value, const StaticVector<ET2,3UL,false>, CT2 >::Type  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -123,7 +126,7 @@ class SVecDVecCrossExpr : public DenseVector< SVecDVecCrossExpr<VT1,VT2>, false 
    enum { vectorizable = 0 };
 
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( !IsExpression<VT1>::value || !IsExpression<VT2>::value ) };
+   enum { canAlias = !IsComputation<VT1>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -197,7 +200,7 @@ class SVecDVecCrossExpr : public DenseVector< SVecDVecCrossExpr<VT1,VT2>, false 
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( lhs_.isAliased( alias ) || rhs_.isAliased( alias ) );
+      return !IsComputation<VT1>::value && lhs_.isAliased( alias );
    }
    //**********************************************************************************************
 
