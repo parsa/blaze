@@ -30,6 +30,7 @@
 #include <cmath>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -61,6 +62,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 class SVecEvalExpr : public SparseVector< SVecEvalExpr<VT,TF>, TF >
                    , private Expression
+                   , private Computation
 {
  public:
    //**Type definitions****************************************************************************

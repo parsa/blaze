@@ -30,6 +30,7 @@
 #include <iterator>
 #include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/constraints/SparseVector.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DVecTransposer.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
@@ -63,7 +64,8 @@ namespace blaze {
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
-                    , private SelectType< IsExpression<VT>::value, Expression, EmptyType >::Type
+                    , private Expression
+                    , private SelectType< IsComputation<VT>::value, Computation, EmptyType >::Type
 {
  private:
    //**Type definitions****************************************************************************
