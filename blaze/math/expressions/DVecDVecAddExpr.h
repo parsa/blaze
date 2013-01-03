@@ -261,8 +261,16 @@ class DVecDVecAddExpr : public DenseVector< DVecDVecAddExpr<VT1,VT2,TF>, TF >
    {
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      assign   ( ~lhs, rhs.lhs_ );
-      addAssign( ~lhs, rhs.rhs_ );
+      if( !IsComputation<VT1>::value && (~lhs).isAliased( &rhs.lhs_ ) ) {
+         addAssign( ~lhs, rhs.rhs_ );
+      }
+      else if( !IsComputation<VT2>::value && (~lhs).isAliased( &rhs.rhs_ ) ) {
+         addAssign( ~lhs, rhs.lhs_ );
+      }
+      else {
+         assign   ( ~lhs, rhs.lhs_ );
+         addAssign( ~lhs, rhs.rhs_ );
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
