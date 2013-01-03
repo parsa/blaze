@@ -33,6 +33,7 @@
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
@@ -41,6 +42,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsBlasCompatible.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/system/BLAS.h>
@@ -59,6 +61,7 @@
 #include <blaze/util/typetraits/IsDouble.h>
 #include <blaze/util/typetraits/IsFloat.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsSame.h>
 
 
@@ -81,6 +84,7 @@ template< typename VT    // Type of the left-hand side dense vector
         , typename MT >  // Type of the right-hand side dense matrix
 class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
                          , private Expression
+                         , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -94,7 +98,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense matrix expression.
-   enum { evaluate = IsExpression<MT>::value && !MT::vectorizable &&
+   enum { evaluate = IsComputation<MT>::value && !MT::vectorizable &&
                      IsSame<VET,MET>::value && IsBlasCompatible<VET>::value };
    //**********************************************************************************************
 
@@ -209,7 +213,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    typedef typename SelectType< IsExpression<MT>::value, const MT, const MT& >::Type  RightOperand;
 
    //! Type for the assignment of the left-hand side dense matrix operand.
-   typedef typename SelectType< IsExpression<VT>::value, const VRT, VCT >::Type  LT;
+   typedef typename SelectType< IsComputation<VT>::value, const VRT, VCT >::Type  LT;
 
    //! Type for the assignment of the right-hand side dense vector operand.
    typedef typename SelectType< evaluate, const MRT, MCT >::Type  RT;
@@ -220,8 +224,8 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    enum { vectorizable = 0 };
 
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( !IsExpression<VT>::value ) ||
-                     ( !evaluate && IsReference<MCT>::value && CanAlias<MT>::value ) };
+   enum { canAlias = ( !IsComputation<VT>::value ) ||
+                     ( !evaluate && IsComputation<MT>::value && IsReference<MCT>::value && CanAlias<MT>::value ) };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -305,8 +309,9 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( !IsExpression<VT>::value && vec_.isAliased( alias ) ) ||
-             ( !evaluate && IsReference<MCT>::value && mat_.isAliased( alias ) );
+      return ( !IsComputation<VT>::value && vec_.isAliased( alias ) ) ||
+             ( !evaluate && IsComputation<MT>::value && IsReference<MCT>::value &&
+               CanAlias<MT>::value && mat_.isAliased( alias ) );
    }
    //**********************************************************************************************
 
@@ -351,7 +356,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.mat_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()     , "Invalid vector size"       );
 
-      if( ( IsExpression<MT>::value && !evaluate ) ||
+      if( ( IsComputation<MT>::value && !evaluate ) ||
           ( A.rows() * A.columns() < TDVECTDMATMULT_THRESHOLD ) )
          TDVecTDMatMultExpr::selectDefaultAssignKernel( ~lhs, x, A );
       else
@@ -726,7 +731,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.mat_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()     , "Invalid vector size"       );
 
-      if( ( IsExpression<MT>::value && !evaluate ) ||
+      if( ( IsComputation<MT>::value && !evaluate ) ||
           ( A.rows() * A.columns() < TDVECTDMATMULT_THRESHOLD ) )
          TDVecTDMatMultExpr::selectDefaultAddAssignKernel( ~lhs, x, A );
       else
@@ -1077,7 +1082,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.mat_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()     , "Invalid vector size"       );
 
-      if( ( IsExpression<MT>::value && !evaluate ) ||
+      if( ( IsComputation<MT>::value && !evaluate ) ||
           ( A.rows() * A.columns() < TDVECTDMATMULT_THRESHOLD ) )
          TDVecTDMatMultExpr::selectDefaultSubAssignKernel( ~lhs, x, A );
       else
@@ -1464,6 +1469,7 @@ template< typename VT    // Type of the left-hand side dense vector
 class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    : public DenseVector< DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >, true >
    , private Expression
+   , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -1479,7 +1485,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense matrix expression.
-   enum { evaluate = IsExpression<MT>::value && !MT::vectorizable &&
+   enum { evaluate = IsComputation<MT>::value && !MT::vectorizable &&
                      IsSame<VET,MET>::value && IsBlasCompatible<VET>::value };
    //**********************************************************************************************
 
@@ -1585,7 +1591,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    typedef typename SelectType< IsNumeric<ElementType>::value, ElementType, ST >::Type  RightOperand;
 
    //! Type for the assignment of the left-hand side dense matrix operand.
-   typedef typename SelectType< IsExpression<VT>::value, const VRT, VCT >::Type  LT;
+   typedef typename SelectType< IsComputation<VT>::value, const VRT, VCT >::Type  LT;
 
    //! Type for the assignment of the right-hand side dense vector operand.
    typedef typename SelectType< evaluate, const MRT, MCT >::Type  RT;
@@ -1708,7 +1714,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
       BLAZE_INTERNAL_ASSERT( A.columns() == right.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()  , "Invalid vector size"       );
 
-      if( ( IsExpression<MT>::value && !evaluate ) ||
+      if( ( IsComputation<MT>::value && !evaluate ) ||
           ( A.rows() * A.columns() < TDVECTDMATMULT_THRESHOLD ) )
          DVecScalarMultExpr::selectDefaultAssignKernel( ~lhs, x, A, rhs.scalar_ );
       else
@@ -2087,7 +2093,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
       BLAZE_INTERNAL_ASSERT( A.columns() == right.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()  , "Invalid vector size"       );
 
-      if( ( IsExpression<MT>::value && !evaluate ) ||
+      if( ( IsComputation<MT>::value && !evaluate ) ||
           ( A.rows() * A.columns() < TDVECTDMATMULT_THRESHOLD ) )
          DVecScalarMultExpr::selectDefaultAddAssignKernel( ~lhs, x, A, rhs.scalar_ );
       else
@@ -2444,7 +2450,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
       BLAZE_INTERNAL_ASSERT( A.columns() == right.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()  , "Invalid vector size"       );
 
-      if( ( IsExpression<MT>::value && !evaluate ) ||
+      if( ( IsComputation<MT>::value && !evaluate ) ||
           ( A.rows() * A.columns() < TDVECTDMATMULT_THRESHOLD ) )
          DVecScalarMultExpr::selectDefaultSubAssignKernel( ~lhs, x, A, rhs.scalar_ );
       else
