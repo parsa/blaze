@@ -30,6 +30,7 @@
 #include <stdexcept>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
@@ -37,6 +38,7 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/util/Assert.h>
@@ -68,6 +70,7 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF >     // Transpose flag
 class DVecDVecMultExpr : public DenseVector< DVecDVecMultExpr<VT1,VT2,TF>, TF >
                        , private Expression
+                       , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -141,8 +144,8 @@ class DVecDVecMultExpr : public DenseVector< DVecDVecMultExpr<VT1,VT2,TF>, TF >
                          IntrinsicTrait<ET1>::multiplication };
 
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( IsExpression<VT1>::value && CanAlias<VT1>::value ) ||
-                     ( IsExpression<VT2>::value && CanAlias<VT2>::value ) };
+   enum { canAlias = ( IsComputation<VT1>::value && CanAlias<VT1>::value ) ||
+                     ( IsComputation<VT2>::value && CanAlias<VT2>::value ) };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -225,7 +228,8 @@ class DVecDVecMultExpr : public DenseVector< DVecDVecMultExpr<VT1,VT2,TF>, TF >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( lhs_.isAliased( alias ) || rhs_.isAliased( alias ) );
+      return ( IsComputation<VT1>::value && CanAlias<VT1>::value && lhs_.isAliased( alias ) ) ||
+             ( IsComputation<VT2>::value && CanAlias<VT2>::value && rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 
