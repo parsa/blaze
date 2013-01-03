@@ -31,6 +31,7 @@
 #include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
@@ -83,6 +84,7 @@ template< typename MT  // Type of the left-hand side sparse matrix
         , bool SO >    // Storage order
 class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO >
                          , private Expression
+                         , private Computation
 {
  private:
    //**Type definitions****************************************************************************
