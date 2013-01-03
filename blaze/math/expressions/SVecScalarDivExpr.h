@@ -31,6 +31,7 @@
 #include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -130,6 +131,7 @@ template< typename VT  // Type of the left-hand side sparse vector
         , bool TF >    // Transpose flag
 class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
                         , private Expression
+                        , private Computation
 {
  private:
    //**Type definitions****************************************************************************
