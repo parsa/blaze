@@ -258,9 +258,17 @@ class DVecDVecSubExpr : public DenseVector< DVecDVecSubExpr<VT1,VT2,TF>, TF >
       assign( DenseVector<VT,TF>& lhs, const DVecDVecSubExpr& rhs )
    {
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      assign   ( ~lhs, rhs.lhs_ );
-      subAssign( ~lhs, rhs.rhs_ );
+      
+      if( !IsComputation<VT1>::value && (~lhs).isAliased( &rhs.lhs_ ) ) {
+         subAssign( ~lhs, rhs.rhs_ );
+      }
+      else if( !IsComputation<VT2>::value && (~lhs).isAliased( &rhs.rhs_ ) ) {
+         subAssign( ~lhs, rhs.lhs_ );
+      }
+      else {
+         assign   ( ~lhs, rhs.lhs_ );
+         subAssign( ~lhs, rhs.rhs_ );
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
