@@ -31,6 +31,7 @@
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
@@ -38,6 +39,7 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
@@ -69,6 +71,7 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF >     // Transpose flag
 class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
                       , private Expression
+                      , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -97,10 +100,10 @@ class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DVecSVecAddExpr<VT1,VT2,TF>                 This;           //!< Type of this DVecSVecAddExpr instance.
-   typedef typename AddTrait<RT1,RT2>::Type            ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
+   typedef DVecSVecAddExpr<VT1,VT2,TF>         This;           //!< Type of this DVecSVecAddExpr instance.
+   typedef typename AddTrait<RT1,RT2>::Type    ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
@@ -120,8 +123,7 @@ class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
    enum { vectorizable = 0 };
 
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( IsExpression<VT1>::value && CanAlias<VT1>::value ) ||
-                     ( IsExpression<VT2>::value && CanAlias<VT2>::value ) };
+   enum { canAlias = ( IsComputation<VT1>::value && CanAlias<VT1>::value ) };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -188,7 +190,7 @@ class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return lhs_.isAliased( alias ) || ( IsExpression<VT2>::value && rhs_.isAliased( alias ) );
+      return ( IsComputation<VT1>::value && CanAlias<VT1>::value && lhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 
