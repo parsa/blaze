@@ -34,12 +34,15 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/DynamicVector.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/typetraits/CanAlias.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -49,6 +52,7 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsReference.h>
 
 
 namespace blaze {
@@ -70,6 +74,7 @@ template< typename MT    // Type of the left-hand side sparse matrix
         , typename VT >  // Type of the right-hand side sparse vector
 class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
                         , private Expression
+                        , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -100,13 +105,13 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
    typedef MCT  LT;
 
    //! Type for the assignment of the right-hand side sparse vector operand.
-   typedef typename SelectType< IsExpression<VT>::value, const VRT, VCT >::Type  RT;
+   typedef typename SelectType< IsComputation<VT>::value, const VRT, VCT >::Type  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( IsReference<MCT>::value && ( !IsExpression<MT>::value || CanAlias<MT>::value ) ) ||
-                     ( !IsExpression<VT>::value ) };
+   enum { canAlias = ( IsComputation<MT>::value && IsReference<MCT>::value && CanAlias<MT>::value ) ||
+                     ( !IsComputation<VT>::value ) };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -209,8 +214,9 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( IsReference<MCT>::value && mat_.isAliased( alias ) ) ||
-             ( !IsExpression<VT>::value && vec_.isAliased( alias ) );
+      return ( IsComputation<MT>::value && IsReference<MCT>::value &&
+               CanAlias<MT>::value && mat_.isAliased( alias ) ) ||
+             ( !IsComputation<VT>::value && vec_.isAliased( alias ) );
    }
    //**********************************************************************************************
 
