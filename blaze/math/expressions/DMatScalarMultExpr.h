@@ -29,6 +29,7 @@
 
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Expression.h>
@@ -80,6 +81,7 @@ template< typename MT  // Type of the left-hand side dense matrix
         , bool SO >    // Storage order
 class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO >
                          , private Expression
+                         , private Computation
 {
  private:
    //**Type definitions****************************************************************************
