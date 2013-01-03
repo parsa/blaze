@@ -42,12 +42,12 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsReference.h>
 
 
 namespace blaze {
@@ -105,7 +105,7 @@ class DVecSVecMultExpr : public SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF >
        to \a true and the multiplication expression will be evaluated via the \a assign function
        family. Otherwise \a useAssign will be set to \a false and the expression will be
        evaluated via the subscript operator. */
-   enum { useAssign = ( !IsReference<CT1>::value || !IsReference<CT2>::value ) };
+   enum { useAssign = ( RequiresEvaluation<VT1>::value || RequiresEvaluation<VT2>::value ) };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
@@ -138,7 +138,7 @@ class DVecSVecMultExpr : public SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF >
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = IsReference<CT1>::value || IsReference<CT2>::value };
+   enum { canAlias = !RequiresEvaluation<VT1>::value || !RequiresEvaluation<VT2>::value };
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -363,8 +363,8 @@ class DVecSVecMultExpr : public SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( IsReference<CT1>::value && lhs_.isAliased( alias ) ) ||
-             ( IsReference<CT2>::value && rhs_.isAliased( alias ) );
+      return ( !RequiresEvaluation<VT1>::value && lhs_.isAliased( alias ) ) ||
+             ( !RequiresEvaluation<VT2>::value && rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 

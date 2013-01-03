@@ -57,6 +57,7 @@
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsTransposeVector.h>
+#include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
@@ -64,7 +65,6 @@
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
-#include <blaze/util/typetraits/IsReference.h>
 
 
 namespace blaze {
@@ -115,8 +115,8 @@ class TSMatTSMatMultExpr : public SparseMatrix< TSMatTSMatMultExpr<MT1,MT2>, tru
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( IsReference<CT1>::value && ( !IsComputation<MT1>::value || CanAlias<MT1>::value ) ) ||
-                     ( IsReference<CT2>::value && ( !IsComputation<MT2>::value || CanAlias<MT2>::value ) ) };
+   enum { canAlias = ( !RequiresEvaluation<MT1>::value && ( !IsComputation<MT1>::value || CanAlias<MT1>::value ) ) ||
+                     ( !RequiresEvaluation<MT2>::value && ( !IsComputation<MT2>::value || CanAlias<MT2>::value ) ) };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -153,7 +153,7 @@ class TSMatTSMatMultExpr : public SparseMatrix< TSMatTSMatMultExpr<MT1,MT2>, tru
          return tmp;
 
       // Fast computation in case the right-hand side sparse matrix directly provides iterators
-      if( IsReference<CT2>::value )
+      if( !RequiresEvaluation<MT2>::value )
       {
          // Evaluation of the right-hand side sparse matrix operand
          CT2 B( rhs_ );
@@ -254,9 +254,9 @@ class TSMatTSMatMultExpr : public SparseMatrix< TSMatTSMatMultExpr<MT1,MT2>, tru
    template< typename T >
    inline bool isAliased( const T* alias ) const {
       return ( ( !IsComputation<MT1>::value || CanAlias<MT1>::value ) &&
-               IsReference<CT1>::value && lhs_.isAliased( alias ) ) ||
+               !RequiresEvaluation<MT1>::value && lhs_.isAliased( alias ) ) ||
              ( ( !IsComputation<MT2>::value || CanAlias<MT2>::value ) &&
-               IsReference<CT2>::value && rhs_.isAliased( alias ) );
+               !RequiresEvaluation<MT2>::value && rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 

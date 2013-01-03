@@ -38,12 +38,12 @@
 #include <blaze/math/expressions/SVecTransposer.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EmptyType.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsReference.h>
 
 
 namespace blaze {
@@ -80,7 +80,7 @@ class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
        to 1 and the transposition expression will be evaluated via the \a assign function
        family. Otherwise \a useAssign will be set to 0 and the expression will be evaluated
        via the subscript operator. */
-   enum { useAssign = !IsReference<CT>::value };
+   enum { useAssign = RequiresEvaluation<VT>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************

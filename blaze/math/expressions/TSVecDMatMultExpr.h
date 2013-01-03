@@ -46,13 +46,13 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsReference.h>
 
 
 namespace blaze {
@@ -111,7 +111,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    enum { vectorizable = 0 };
 
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = IsComputation<MT>::value && IsReference<MCT>::value && CanAlias<MT>::value };
+   enum { canAlias = IsComputation<MT>::value && !RequiresEvaluation<MT>::value && CanAlias<MT>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -199,7 +199,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return IsComputation<MT>::value && IsReference<MCT>::value &&
+      return IsComputation<MT>::value && !RequiresEvaluation<MT>::value &&
              CanAlias<MT>::value && mat_.isAliased( alias );
    }
    //**********************************************************************************************

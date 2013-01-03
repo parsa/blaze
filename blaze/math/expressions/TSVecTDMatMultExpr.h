@@ -44,13 +44,13 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
+#include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsReference.h>
 
 
 namespace blaze {
@@ -90,7 +90,7 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
        compound expression, \a useAssign will be set to \a true and the addition expression
        will be evaluated via the \a assign function family. Otherwise \a useAssign will be
        set to \a false and the expression will be evaluated via the subscript operator. */
-   enum { useAssign = ( IsComputation<VT>::value || !IsReference<MCT>::value ) };
+   enum { useAssign = ( IsComputation<VT>::value || RequiresEvaluation<MT>::value ) };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -132,7 +132,7 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
    enum { vectorizable = 0 };
 
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = IsComputation<MT>::value && IsReference<MCT>::value && CanAlias<MT>::value };
+   enum { canAlias = IsComputation<MT>::value && !RequiresEvaluation<MT>::value && CanAlias<MT>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -220,7 +220,7 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return IsComputation<MT>::value && IsReference<MCT>::value &&
+      return IsComputation<MT>::value && !RequiresEvaluation<MT>::value &&
              CanAlias<MT>::value && mat_.isAliased( alias );
    }
    //**********************************************************************************************

@@ -38,11 +38,11 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsReference.h>
 
 
 namespace blaze {
@@ -227,7 +227,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
 
       // In case non of the two dense operands requires an intermediate evaluation, the
       // addition expression is assigned directly in a cache-efficient manner.
-      if( IsReference<CT1>::value && IsReference<CT2>::value )
+      if( !RequiresEvaluation<MT1>::value && !RequiresEvaluation<MT2>::value )
       {
          const size_t m( rhs.rows() );
          const size_t n( rhs.columns() );
@@ -318,7 +318,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
 
       // In case non of the two dense operands requires an intermediate evaluation, the
       // addition expression is assigned directly in a cache-efficient manner.
-      if( IsReference<CT1>::value && IsReference<CT2>::value )
+      if( !RequiresEvaluation<MT1>::value && !RequiresEvaluation<MT2>::value )
       {
          const size_t m( rhs.rows() );
          const size_t n( rhs.columns() );
@@ -373,7 +373,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
 
       // In case non of the two dense operands requires an intermediate evaluation, the
       // addition expression is assigned directly in a cache-efficient manner.
-      if( IsReference<CT1>::value && IsReference<CT2>::value )
+      if( !RequiresEvaluation<MT1>::value && !RequiresEvaluation<MT2>::value )
       {
          const size_t m( rhs.rows() );
          const size_t n( rhs.columns() );

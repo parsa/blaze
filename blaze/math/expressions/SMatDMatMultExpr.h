@@ -54,13 +54,13 @@
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsTransposeVector.h>
+#include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsReference.h>
 
 
 namespace blaze {
@@ -159,7 +159,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
          return tmp;
 
       // Fast computation in case the left-hand side sparse matrix directly provides iterators
-      if( IsReference<CT1>::value )
+      if( !RequiresEvaluation<MT1>::value )
       {
          CT1 A( lhs_ );  // Evaluation of the left-hand side sparse matrix operand
 

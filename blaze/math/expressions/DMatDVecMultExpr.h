@@ -46,6 +46,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
+#include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/system/BLAS.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
@@ -62,7 +63,6 @@
 #include <blaze/util/typetraits/IsDouble.h>
 #include <blaze/util/typetraits/IsFloat.h>
 #include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsSame.h>
 
 
@@ -225,7 +225,8 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
    enum { vectorizable = 0 };
 
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( !evaluate && IsComputation<MT>::value && IsReference<MCT>::value && CanAlias<MT>::value ) ||
+   enum { canAlias = ( !evaluate && IsComputation<MT>::value &&
+                       !RequiresEvaluation<MT>::value && CanAlias<MT>::value ) ||
                      ( !IsComputation<VT>::value ) };
    //**********************************************************************************************
 
@@ -310,7 +311,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( !evaluate && IsComputation<MT>::value && IsReference<MCT>::value &&
+      return ( !evaluate && IsComputation<MT>::value && !RequiresEvaluation<MT>::value &&
                CanAlias<MT>::value && mat_.isAliased( alias ) ) ||
              ( !IsComputation<VT>::value && vec_.isAliased( alias ) );
    }

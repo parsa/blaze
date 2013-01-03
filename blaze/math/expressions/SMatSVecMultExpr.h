@@ -45,13 +45,13 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
+#include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsReference.h>
 
 
 namespace blaze {
@@ -109,7 +109,7 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( IsComputation<MT>::value && IsReference<MCT>::value && CanAlias<MT>::value ) ||
+   enum { canAlias = ( IsComputation<MT>::value && !RequiresEvaluation<MT>::value && CanAlias<MT>::value ) ||
                      ( !IsComputation<VT>::value ) };
    //**********************************************************************************************
 
@@ -147,7 +147,7 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
 
       // Fast computation in case both the left-hand side matrix operand and the right-hand
       // side vector operand directly provide iterators
-      if( IsReference<MCT>::value && IsReference<VCT>::value )
+      if( !RequiresEvaluation<MT>::value && !RequiresEvaluation<VT>::value )
       {
          MCT A( mat_ );  // Evaluation of the left-hand side sparse matrix operand
          VCT x( vec_ );  // Evaluation of the right-hand side sparse vector operand
@@ -204,7 +204,7 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
       }
 
       // Optimized computation in case the left-hand side matrix operand directly provides iterators
-      else if( IsReference<MCT>::value )
+      else if( !RequiresEvaluation<MT>::value )
       {
          MCT A( mat_ );  // Evaluation of the left-hand side sparse matrix operand
 
@@ -222,7 +222,7 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
       }
 
       // Optimized computation in case the right-hand side vector operand directly provides iterators
-      else if( IsReference<VCT>::value )
+      else if( !RequiresEvaluation<VT>::value )
       {
          VCT x( vec_ );  // Evaluation of the right-hand side sparse vector operand
 
@@ -299,7 +299,7 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( IsComputation<MT>::value && IsReference<MCT>::value &&
+      return ( IsComputation<MT>::value && !RequiresEvaluation<MT>::value &&
                CanAlias<MT>::value && mat_.isAliased( alias ) ) ||
              ( !IsComputation<VT>::value && vec_.isAliased( alias ) );
    }

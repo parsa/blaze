@@ -43,6 +43,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/DisableIf.h>
@@ -120,8 +121,8 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( IsReference<CT1>::value && ( !IsComputation<VT1>::value || CanAlias<VT1>::value ) ) ||
-                     ( IsReference<CT2>::value && ( !IsComputation<VT2>::value || CanAlias<VT2>::value ) ) };
+   enum { canAlias = ( !RequiresEvaluation<VT1>::value && ( !IsComputation<VT1>::value || CanAlias<VT1>::value ) ) ||
+                     ( !RequiresEvaluation<VT2>::value && ( !IsComputation<VT2>::value || CanAlias<VT2>::value ) ) };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -196,9 +197,9 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
    template< typename T >
    inline bool isAliased( const T* alias ) const {
       return ( ( !IsComputation<VT1>::value || CanAlias<VT1>::value ) &&
-               IsReference<CT1>::value && lhs_.isAliased( alias ) ) ||
+               !RequiresEvaluation<VT1>::value && lhs_.isAliased( alias ) ) ||
              ( ( !IsComputation<VT2>::value || CanAlias<VT2>::value ) &&
-               IsReference<CT2>::value && rhs_.isAliased( alias ) );
+               !RequiresEvaluation<VT2>::value && rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 

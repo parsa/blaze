@@ -41,6 +41,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Double.h>
 #include <blaze/util/constraints/Float.h>
@@ -48,7 +49,6 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsSame.h>
 
 
@@ -107,7 +107,7 @@ class DVecDVecAddExpr : public DenseVector< DVecDVecAddExpr<VT1,VT2,TF>, TF >
        value, \a useAssign will be set to \a true and the addition expression will be evaluated
        via the \a assign function family. Otherwise \a useAssign will be set to \a false and the
        expression will be evaluated via the subscript operator. */
-   enum { useAssign = ( !IsReference<CT1>::value || !IsReference<CT2>::value || !returnExpr ) };
+   enum { useAssign = ( RequiresEvaluation<VT1>::value || RequiresEvaluation<VT2>::value || !returnExpr ) };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
