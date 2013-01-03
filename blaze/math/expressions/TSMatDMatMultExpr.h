@@ -32,6 +32,7 @@
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
@@ -49,6 +50,7 @@
 #include <blaze/math/traits/TSVecTDMatMultExprTrait.h>
 #include <blaze/math/traits/TSVecTSMatMultExprTrait.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -84,6 +86,7 @@ template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
 class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
                         , private Expression
+                        , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -112,10 +115,10 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
    typedef typename SelectType< IsExpression<MT2>::value, const MT2, const MT2& >::Type  RightOperand;
 
    //! Type for the assignment of the left-hand side sparse matrix operand.
-   typedef typename SelectType< IsExpression<MT1>::value, const RT1, CT1 >::Type  LT;
+   typedef typename SelectType< IsComputation<MT1>::value, const RT1, CT1 >::Type  LT;
 
    //! Type for the assignment of the right-hand side dense matrix operand.
-   typedef typename SelectType< IsExpression<MT1>::value, const RT2, CT2 >::Type  RT;
+   typedef typename SelectType< IsComputation<MT2>::value, const RT2, CT2 >::Type  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -123,7 +126,7 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
    enum { vectorizable = 0 };
 
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = !IsExpression<MT2>::value };
+   enum { canAlias = !IsComputation<MT2>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -215,7 +218,7 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( !IsExpression<MT2>::value && rhs_.isAliased( alias ) );
+      return ( !IsComputation<MT2>::value && rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 
