@@ -273,7 +273,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return matrix_.isAliased( alias );
+      return CanAlias<MT>::value && matrix_.isAliased( alias );
    }
    //**********************************************************************************************
 

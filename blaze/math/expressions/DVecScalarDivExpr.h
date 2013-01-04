@@ -260,7 +260,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return vector_.isAliased( alias );
+      return CanAlias<VT>::value && vector_.isAliased( alias );
    }
    //**********************************************************************************************
 

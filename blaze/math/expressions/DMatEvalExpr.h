@@ -149,7 +149,7 @@ class DMatEvalExpr : public DenseMatrix< DMatEvalExpr<MT,SO>, SO >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return dm_.isAliased( alias );
+      return CanAlias<MT>::value && dm_.isAliased( alias );
    }
    //**********************************************************************************************
 

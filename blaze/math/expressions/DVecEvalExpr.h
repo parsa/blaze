@@ -137,7 +137,7 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return dv_.isAliased( alias );
+      return CanAlias<VT>::value && dv_.isAliased( alias );
    }
    //**********************************************************************************************
 

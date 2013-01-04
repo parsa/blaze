@@ -316,7 +316,7 @@ class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return sv_.isAliased( alias );
+      return CanAlias<VT>::value && sv_.isAliased( alias );
    }
    //**********************************************************************************************
 

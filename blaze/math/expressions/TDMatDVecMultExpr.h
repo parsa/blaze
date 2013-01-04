@@ -223,8 +223,9 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    enum { vectorizable = 0 };
 
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( !evaluate && IsComputation<MT>::value && !RequiresEvaluation<MT>::value &&
-                       CanAlias<MT>::value ) || ( !IsComputation<VT>::value ) };
+   enum { canAlias = ( !evaluate && IsComputation<MT>::value &&
+                       !RequiresEvaluation<MT>::value && CanAlias<MT>::value ) ||
+                     ( !IsComputation<VT>::value ) };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -1671,7 +1672,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    enum { vectorizable = 0 };
 
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = CanAlias<VT>::value };
+   enum { canAlias = CanAlias<MVM>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -1736,7 +1737,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return vector_.isAliased( alias );
+      return CanAlias<MVM>::value && vector_.isAliased( alias );
    }
    //**********************************************************************************************
 

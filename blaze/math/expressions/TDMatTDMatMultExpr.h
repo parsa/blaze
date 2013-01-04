@@ -2110,7 +2110,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return matrix_.isAliased( alias );
+      return CanAlias<MMM>::value && matrix_.isAliased( alias );
    }
    //**********************************************************************************************
 

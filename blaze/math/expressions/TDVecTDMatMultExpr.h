@@ -224,7 +224,8 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    enum { vectorizable = 0 };
 
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( !IsComputation<VT>::value ) || ( !evaluate && IsComputation<MT>::value &&
+   enum { canAlias = ( !IsComputation<VT>::value ) ||
+                     ( !evaluate && IsComputation<MT>::value &&
                        !RequiresEvaluation<MT>::value && CanAlias<MT>::value ) };
    //**********************************************************************************************
 
@@ -1667,7 +1668,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return vector_.isAliased( alias );
+      return CanAlias<VMM>::value && vector_.isAliased( alias );
    }
    //**********************************************************************************************
 

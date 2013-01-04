@@ -199,8 +199,8 @@ class DVecDVecCrossExpr : public DenseVector< DVecDVecCrossExpr<VT1,VT2>, false 
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( IsComputation<VT1>::value && lhs_.isAliased( alias ) ) ||
-             ( IsComputation<VT2>::value && rhs_.isAliased( alias ) );
+      return ( !IsComputation<VT1>::value && lhs_.isAliased( alias ) ) ||
+             ( !IsComputation<VT2>::value && rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 

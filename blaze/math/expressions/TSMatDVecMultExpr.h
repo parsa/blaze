@@ -110,8 +110,8 @@ class TSMatDVecMultExpr : public DenseVector< TSMatDVecMultExpr<MT,VT>, false >
    enum { vectorizable = 0 };
 
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( IsComputation<MT>::value && !RequiresEvaluation<MT>::value &&
-                       CanAlias<MT>::value ) || ( !IsComputation<VT>::value ) };
+   enum { canAlias = ( IsComputation<MT>::value && !RequiresEvaluation<MT>::value && CanAlias<MT>::value ) ||
+                     ( !IsComputation<VT>::value ) };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

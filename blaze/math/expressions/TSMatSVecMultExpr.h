@@ -110,8 +110,8 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( IsComputation<MT>::value && !RequiresEvaluation<MT>::value &&
-                       CanAlias<MT>::value ) || ( !IsComputation<VT>::value ) };
+   enum { canAlias = ( IsComputation<MT>::value && !RequiresEvaluation<MT>::value && CanAlias<MT>::value ) ||
+                     ( !IsComputation<VT>::value ) };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
