@@ -42,6 +42,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/CanAlias.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
@@ -196,7 +197,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = CanAlias<MT>::value };
+   enum { canAlias = ( !IsComputation<MT>::value || CanAlias<MT>::value ) && !RequiresEvaluation<MT>::value };
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -444,7 +445,8 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return matrix_.isAliased( alias );
+      return ( !IsComputation<MT>::value || CanAlias<MT>::value ) &&
+             !RequiresEvaluation<MT>::value && matrix_.isAliased( alias );
    }
    //**********************************************************************************************
 
