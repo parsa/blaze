@@ -35,7 +35,9 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/typetraits/CanAlias.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
@@ -81,7 +83,7 @@ class SVecEvalExpr : public SparseVector< SVecEvalExpr<VT,TF>, TF >
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = CanAlias<VT>::value };
+   enum { canAlias = ( !IsComputation<VT>::value || CanAlias<VT>::value ) && !RequiresEvaluation<VT>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -144,7 +146,8 @@ class SVecEvalExpr : public SparseVector< SVecEvalExpr<VT,TF>, TF >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return sv_.isAliased( alias );
+      return ( !IsComputation<VT>::value || CanAlias<VT>::value ) &&
+             !RequiresEvaluation<VT>::value && sv_.isAliased( alias );
    }
    //**********************************************************************************************
 
