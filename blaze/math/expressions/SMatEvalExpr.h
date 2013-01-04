@@ -35,7 +35,9 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/typetraits/CanAlias.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
@@ -82,7 +84,7 @@ class SMatEvalExpr : public SparseMatrix< SMatEvalExpr<MT,SO>, SO >
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = CanAlias<MT>::value };
+   enum { canAlias = ( !IsComputation<MT>::value || CanAlias<MT>::value ) && !RequiresEvaluation<MT>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -168,7 +170,8 @@ class SMatEvalExpr : public SparseMatrix< SMatEvalExpr<MT,SO>, SO >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return sm_.isAliased( alias );
+      return ( !IsComputation<MT>::value || CanAlias<MT>::value ) &&
+             !RequiresEvaluation<MT>::value && sm_.isAliased( alias );
    }
    //**********************************************************************************************
 

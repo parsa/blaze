@@ -39,6 +39,7 @@
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AbsExprTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -129,7 +130,7 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = CanAlias<MT>::value };
+   enum { canAlias = ( !IsComputation<MT>::value || CanAlias<MT>::value ) && !RequiresEvaluation<MT>::value };
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -366,7 +367,8 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return sm_.isAliased( alias );
+      return ( !IsComputation<MT>::value || CanAlias<MT>::value ) &&
+             !RequiresEvaluation<MT>::value && sm_.isAliased( alias );
    }
    //**********************************************************************************************
 
