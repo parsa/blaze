@@ -43,6 +43,7 @@
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -147,7 +148,7 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = CanAlias<VT>::value };
+   enum { canAlias = ( !IsComputation<VT>::value || CanAlias<VT>::value ) && !RequiresEvaluation<VT>::value };
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -370,7 +371,8 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return vector_.isAliased( alias );
+      return ( !IsComputation<VT>::value || CanAlias<VT>::value ) &&
+             !RequiresEvaluation<VT>::value && vector_.isAliased( alias );
    }
    //**********************************************************************************************
 
