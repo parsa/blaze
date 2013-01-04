@@ -34,6 +34,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/Intrinsics.h>
 #include <blaze/math/traits/DivExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
@@ -87,6 +88,7 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    //**Type definitions****************************************************************************
    typedef typename MT::ResultType     RT;  //!< Result type of the dense matrix expression.
    typedef typename MT::ReturnType     RN;  //!< Return type of the dense matrix expression.
+   typedef typename MT::ElementType    ET;  //!< Element type of the dense matrix expression.
    typedef typename MT::CompositeType  CT;  //!< Composite type of the dense matrix expression.
    //**********************************************************************************************
 
@@ -124,11 +126,12 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
 
  public:
    //**Type definitions****************************************************************************
-   typedef DMatScalarMultExpr<MT,ST,SO>        This;           //!< Type of this DMatScalarMultExpr instance.
-   typedef typename MultTrait<RT,ST>::Type     ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
+   typedef DMatScalarMultExpr<MT,ST,SO>                This;           //!< Type of this DMatScalarMultExpr instance.
+   typedef typename MultTrait<RT,ST>::Type             ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::OppositeType           OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
+   typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
 
    //! Return type for expression template evaluations.
    typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
@@ -145,7 +148,9 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = 0 };
+   enum { vectorizable = MT::vectorizable &&
+                         IsSame<ET,RightOperand>::value &&
+                         IntrinsicTrait<ET>::multiplication };
 
    //! Compilation flag for the detection of aliasing effects.
    enum { canAlias = CanAlias<MT>::value };
@@ -174,6 +179,25 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
       BLAZE_INTERNAL_ASSERT( i < matrix_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < matrix_.columns(), "Invalid column access index" );
       return matrix_(i,j) * scalar_;
+   }
+   //**********************************************************************************************
+   
+   //**Get function********************************************************************************
+   /*!\brief Access to the intrinsic elements of the matrix.
+   //
+   // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+   // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+   // \return Reference to the accessed values.
+   */
+   inline IntrinsicType get( size_t i, size_t j ) const {
+      typedef IntrinsicTrait<ElementType>  IT;
+      BLAZE_INTERNAL_ASSERT( i < matrix_.rows()   , "Invalid row access index"    );
+      BLAZE_INTERNAL_ASSERT( j < matrix_.columns(), "Invalid column access index" );
+      BLAZE_INTERNAL_ASSERT( SO  || ( j % IT::size == 0UL ), "Invalid column access index" );
+      BLAZE_INTERNAL_ASSERT( !SO || ( i % IT::size == 0UL ), "Invalid column access index" );
+      const IntrinsicType xmm1( matrix_.get(i,j) );
+      const IntrinsicType xmm2( set( scalar_ ) );
+      return xmm1 * xmm2;
    }
    //**********************************************************************************************
 
