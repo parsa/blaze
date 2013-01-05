@@ -1657,11 +1657,7 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, StaticMatrix<Type,M,N,SO> >::Type&
    StaticMatrix<Type,M,N,SO>::operator*=( Other rhs )
 {
-   for( size_t i=0UL; i<M; ++i )
-      for( size_t j=0UL; j<N; ++j )
-         v_[i*NN+j] *= rhs;
-
-   return *this;
+   return operator=( (*this) * rhs );
 }
 //*************************************************************************************************
 
@@ -1685,24 +1681,7 @@ inline typename EnableIf< IsNumeric<Other>, StaticMatrix<Type,M,N,SO> >::Type&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef typename DivTrait<Type,Other>::Type  DT;
-   typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
-
-   // Depending on the two involved data types, an integer division is applied or a
-   // floating point division is selected.
-   if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
-      const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
-      for( size_t i=0UL; i<M; ++i )
-         for( size_t j=0UL; j<N; ++j )
-            v_[i*NN+j] *= tmp;
-   }
-   else {
-      for( size_t i=0UL; i<M; ++i )
-         for( size_t j=0UL; j<N; ++j )
-            v_[i*NN+j] /= rhs;
-   }
-
-   return *this;
+   return operator=( (*this) / rhs );
 }
 //*************************************************************************************************
 
@@ -3895,11 +3874,7 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, StaticMatrix<Type,M,N,true> >::Type&
    StaticMatrix<Type,M,N,true>::operator*=( Other rhs )
 {
-   for( size_t j=0UL; j<N; ++j )
-      for( size_t i=0UL; i<M; ++i )
-         v_[i+j*MM] *= rhs;
-
-   return *this;
+   return operator=( (*this) * rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3924,24 +3899,7 @@ inline typename EnableIf< IsNumeric<Other>, StaticMatrix<Type,M,N,true> >::Type&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef typename DivTrait<Type,Other>::Type  DT;
-   typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
-
-   // Depending on the two involved data types, an integer division is applied or a
-   // floating point division is selected.
-   if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
-      const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
-      for( size_t j=0UL; j<N; ++j )
-         for( size_t i=0UL; i<M; ++i )
-            v_[i+j*MM] *= tmp;
-   }
-   else {
-      for( size_t j=0UL; j<N; ++j )
-         for( size_t i=0UL; i<M; ++i )
-            v_[i+j*MM] /= rhs;
-   }
-
-   return *this;
+   return operator=( (*this) / rhs );
 }
 /*! \endcond */
 //*************************************************************************************************

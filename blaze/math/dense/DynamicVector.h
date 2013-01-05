@@ -966,9 +966,7 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DynamicVector<Type,TF> >::Type&
    DynamicVector<Type,TF>::operator*=( Other rhs )
 {
-   for( size_t i=0UL; i<size_; ++i )
-      v_[i] *= rhs;
-   return *this;
+   return operator=( (*this) * rhs );
 }
 //*************************************************************************************************
 
@@ -987,25 +985,10 @@ template< typename Type     // Data type of the vector
 template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DynamicVector<Type,TF> >::Type&
    DynamicVector<Type,TF>::operator/=( Other rhs )
-{
+{   
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   typedef typename DivTrait<Type,Other>::Type  DT;
-   typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
-
-   // Depending on the two involved data types, an integer division is applied or a
-   // floating point division is selected.
-   if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
-      const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
-      for( size_t i=0UL; i<size_; ++i )
-         v_[i] *= tmp;
-   }
-   else {
-      for( size_t i=0UL; i<size_; ++i )
-         v_[i] /= rhs;
-   }
-
-   return *this;
+   
+   return operator=( (*this) / rhs );
 }
 //*************************************************************************************************
 
