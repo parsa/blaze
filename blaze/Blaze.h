@@ -86,6 +86,7 @@ namespace blaze {}
 //                      <li> \ref componentwise_multiplication </li>
 //                      <li> \ref inner_product </li>
 //                      <li> \ref outer_product </li>
+//                      <li> \ref cross_product </li>
 //                   </ul>
 //                </li>
 //                <li> \ref matrix_vector_multiplication </li>
@@ -1823,6 +1824,43 @@ namespace blaze {}
    int result = trans( v1 ) * v2;
    \endcode
 
+// \n \section cross_product Cross Product
+// <hr>
+//
+// Two column vectors can be multiplied via the cross product. The cross product between two
+// vectors \f$ a \f$ and \f$ b \f$ is defined as
+
+   \f[
+   \left(\begin{array}{*{1}{c}}
+   c_0 \\
+   c_1 \\
+   c_2 \\
+   \end{array}\right)
+   =
+   \left(\begin{array}{*{1}{c}}
+   a_1 b_2 - a_2 b_1 \\
+   a_2 b_0 - a_0 b_2 \\
+   a_0 b_1 - a_1 b_0 \\
+   \end{array}\right).
+   \f]
+
+// Due to the absence of a \f$ \times \f$ operator in the C++ language, the cross product is
+// realized via the modulo operator (i.e. \c operator%):
+
+   \code
+   blaze::StaticVector<int,3UL,columnVector> v1( 2, 5, -1 );
+   
+   blaze::DynamicVector<int,rowVector> v2( 3UL );
+   v2[0] = -1;
+   v2[1] = 3;
+   v2[2] = -2;
+   
+   blaze::StaticVector<int,3UL,columnVector> v3( v1 % v2 );
+   \endcode
+   
+// Please note that the cross product is restricted to three dimensional (dense and sparse)
+// vectors.
+//
 // \n <center> Previous: \ref scalar_multiplication &nbsp; &nbsp; Next: \ref matrix_vector_multiplication </center>
 */
 //*************************************************************************************************
