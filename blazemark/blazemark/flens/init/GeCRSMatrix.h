@@ -73,20 +73,23 @@ void init( ::flens::GeCRSMatrix< ::flens::CRS<Type,::flens::IndexBaseZero<IndexT
 {
    typedef ::flens::IndexBaseZero<IndexType>                              IndexBase;
    typedef ::flens::CoordStorage<Type,::flens::CoordRowColCmp,IndexBase>  Coord;
+   
+   const IndexType M( rows    );
+   const IndexType N( columns );
 
-   ::flens::GeCoordMatrix<Coord> tmp( rows, columns );
+   ::flens::GeCoordMatrix<Coord> tmp( M, N );
 
    if( structure == band )
    {
-      const size_t rrange( nonzeros / 2UL );
-      const size_t lrange( ( nonzeros % 2UL )?( rrange ):( rrange-1UL ) );
+      const IndexType rrange( nonzeros / 2 );
+      const IndexType lrange( ( nonzeros % 2 )?( rrange ):( rrange-1 ) );
 
-      for( size_t i=tmp.firstRow(); i<=tmp.lastRow(); ++i )
+      for( IndexType i=tmp.firstRow(); i<=tmp.lastRow(); ++i )
       {
-         const size_t jbegin( ( i >= lrange )?( i-lrange ):( 0UL ) );
-         const size_t jend  ( ( i+rrange+1UL < N )?( i+rrange+1UL ):( N ) );
+         const IndexType jbegin( ( i >= lrange )?( i-lrange ):( 0 ) );
+         const IndexType jend  ( ( i+rrange+1 < N )?( i+rrange+1 ):( N ) );
 
-         for( size_t j=jbegin; j<jend; ++j ) {
+         for( IndexType j=jbegin; j<jend; ++j ) {
             tmp(i,j) += ::blaze::rand<Type>( 0, 10 );
          }
       }
