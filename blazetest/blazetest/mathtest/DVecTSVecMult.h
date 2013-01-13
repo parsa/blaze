@@ -955,7 +955,7 @@ void DVecTSVecMult<VT1,VT2>::testScaledOperation( T scalar )
             throw std::runtime_error( oss.str() );
          }
 
-         checkResults<MT1,MT2>();
+         checkResults();
       }
       
       
@@ -990,7 +990,7 @@ void DVecTSVecMult<VT1,VT2>::testScaledOperation( T scalar )
             throw std::runtime_error( oss.str() );
          }
 
-         checkResults<MT1,MT2>();
+         checkResults();
       }
 
 
@@ -1060,7 +1060,7 @@ void DVecTSVecMult<VT1,VT2>::testScaledOperation( T scalar )
             throw std::runtime_error( oss.str() );
          }
 
-         checkResults<MT1,MT2>();
+         checkResults();
       }
 
 

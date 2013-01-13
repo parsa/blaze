@@ -1578,7 +1578,7 @@ void SVecDVecAdd<VT1,VT2>::testScaledOperation( T scalar )
 
       // Self-scaling (v=v/s)
       {
-         test_ = "Self-scaling (v/=s)";
+         test_ = "Self-scaling (v=v/s)";
 
          try {
             dres_   = lhs_ + rhs_;

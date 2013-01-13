@@ -999,7 +999,7 @@ void SVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
             throw std::runtime_error( oss.str() );
          }
 
-         checkResults<VT1,VT2>();
+         checkResults();
       }
       
       
@@ -1030,7 +1030,7 @@ void SVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
             throw std::runtime_error( oss.str() );
          }
 
-         checkResults<VT1,VT2>();
+         checkResults();
       }
 
 
@@ -1071,7 +1071,7 @@ void SVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
 
       // Self-scaling (v=v/s)
       {
-         test_ = "Self-scaling (v/=s)";
+         test_ = "Self-scaling (v=v/s)";
 
          try {
             dres_   = lhs_ % rhs_;
@@ -1092,7 +1092,7 @@ void SVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
             throw std::runtime_error( oss.str() );
          }
 
-         checkResults<VT1,VT2>();
+         checkResults();
       }
 
 
