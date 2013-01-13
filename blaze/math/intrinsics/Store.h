@@ -80,7 +80,7 @@ struct Store<T,2UL>
    //**********************************************************************************************
 
    //**Set function********************************************************************************
-   static inline void store( T* address, Type value )
+   static inline void store( T* address, const Type& value )
    {
 #if BLAZE_SSE2_MODE
       BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 16UL ), "Invalid alignment detected" );
@@ -114,7 +114,7 @@ struct Store<T,4UL>
    //**********************************************************************************************
 
    //**Set function********************************************************************************
-   static inline void store( T* address, Type value )
+   static inline void store( T* address, const Type& value )
    {
 #if BLAZE_MIC_MODE
       BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 64UL ), "Invalid alignment detected" );
@@ -151,7 +151,7 @@ struct Store<T,8UL>
    //**********************************************************************************************
 
    //**Set function********************************************************************************
-   static inline void store( T* address, Type value )
+   static inline void store( T* address, const Type& value )
    {
 #if BLAZE_MIC_MODE
       BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 64UL ), "Invalid alignment detected" );
@@ -192,7 +192,7 @@ struct Store<T,8UL>
 */
 template< typename T >  // Type of the integral value
 inline typename EnableIf< IsIntegral<T> >::Type
-   store( T* address, typename Store<T,sizeof(T)>::Type value )
+   store( T* address, const typename Store<T,sizeof(T)>::Type& value )
 {
    Store<T,sizeof(T)>::store( address, value );
 }
@@ -207,7 +207,7 @@ inline typename EnableIf< IsIntegral<T> >::Type
 // \param value The 'float' vector to be stored.
 // \return void
 */
-inline void store( float* address, sse_float_t value )
+inline void store( float* address, const sse_float_t& value )
 {
 #if BLAZE_MIC_MODE
    BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 64UL ), "Invalid alignment detected" );
@@ -233,7 +233,7 @@ inline void store( float* address, sse_float_t value )
 // \param value The 'double' vector to be stored.
 // \return void
 */
-inline void store( double* address, sse_double_t value )
+inline void store( double* address, const sse_double_t& value )
 {
 #if BLAZE_MIC_MODE
    BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 64UL ), "Invalid alignment detected" );

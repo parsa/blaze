@@ -46,7 +46,7 @@ namespace blaze {
 // \param a The vector to be sumed up.
 // \return The sum of all vector elements.
 */
-inline int16_t sum( sse_int16_t a )
+inline int16_t sum( const sse_int16_t& a )
 {
 #if BLAZE_SSSE3_MODE
    const sse_int16_t b( _mm_hadd_epi16( a.value, a.value ) );
@@ -70,7 +70,7 @@ inline int16_t sum( sse_int16_t a )
 // \param a The vector to be sumed up.
 // \return The sum of all vector elements.
 */
-inline int32_t sum( sse_int32_t a )
+inline int32_t sum( const sse_int32_t& a )
 {
 #if BLAZE_MIC_MODE
    return _mm512_reduce_add_epi32( a.value );
@@ -94,7 +94,7 @@ inline int32_t sum( sse_int32_t a )
 // \param a The vector to be sumed up.
 // \return The sum of all vector elements.
 */
-inline float sum( sse_float_t a )
+inline float sum( const sse_float_t& a )
 {
 #if BLAZE_MIC_MODE
    return _mm512_reduce_add_ps( a.value );
@@ -123,7 +123,7 @@ inline float sum( sse_float_t a )
 // \param a The vector to be sumed up.
 // \return The sum of all vector elements.
 */
-inline double sum( sse_double_t a )
+inline double sum( const sse_double_t& a )
 {
 #if BLAZE_MIC_MODE
    return _mm512_reduce_add_pd( a.value );

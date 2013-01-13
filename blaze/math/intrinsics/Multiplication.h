@@ -49,7 +49,7 @@ namespace blaze {
 // \return The result of the multiplication.
 */
 #if BLAZE_SSE2_MODE
-inline sse_int16_t operator*( sse_int16_t a, sse_int16_t b )
+inline sse_int16_t operator*( const sse_int16_t& a, const sse_int16_t& b )
 {
    return _mm_mullo_epi16( a.value, b.value );
 }
@@ -67,12 +67,12 @@ inline sse_int16_t operator*( sse_int16_t a, sse_int16_t b )
 // \return The result of the multiplication.
 */
 #if BLAZE_MIC_MODE
-inline sse_int32_t operator*( sse_int32_t a, sse_int32_t b )
+inline sse_int32_t operator*( const sse_int32_t& a, const sse_int32_t& b )
 {
    return _mm512_mullo_epi32( a.value, b.value );
 }
 #elif BLAZE_SSE4_MODE
-inline sse_int32_t operator*( sse_int32_t a, sse_int32_t b )
+inline sse_int32_t operator*( const sse_int32_t& a, const sse_int32_t& b )
 {
    return _mm_mullo_epi32( a.value, b.value );
 }
@@ -90,17 +90,17 @@ inline sse_int32_t operator*( sse_int32_t a, sse_int32_t b )
 // \return The result of the multiplication.
 */
 #if BLAZE_MIC_MODE
-inline sse_float_t operator*( sse_float_t a, sse_float_t b )
+inline sse_float_t operator*( const sse_float_t& a, const sse_float_t& b )
 {
    return _mm512_mul_ps( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-inline sse_float_t operator*( sse_float_t a, sse_float_t b )
+inline sse_float_t operator*( const sse_float_t& a, const sse_float_t& b )
 {
    return _mm256_mul_ps( a.value, b.value );
 }
 #elif BLAZE_SSE_MODE
-inline sse_float_t operator*( sse_float_t a, sse_float_t b )
+inline sse_float_t operator*( const sse_float_t& a, const sse_float_t& b )
 {
    return _mm_mul_ps( a.value, b.value );
 }
@@ -118,17 +118,17 @@ inline sse_float_t operator*( sse_float_t a, sse_float_t b )
 // \return The result of the multiplication.
 */
 #if BLAZE_MIC_MODE
-inline sse_double_t operator*( sse_double_t a, sse_double_t b )
+inline sse_double_t operator*( const sse_double_t& a, const sse_double_t& b )
 {
    return _mm512_mul_pd( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-inline sse_double_t operator*( sse_double_t a, sse_double_t b )
+inline sse_double_t operator*( const sse_double_t& a, const sse_double_t& b )
 {
    return _mm256_mul_pd( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-inline sse_double_t operator*( sse_double_t a, sse_double_t b )
+inline sse_double_t operator*( const sse_double_t& a, const sse_double_t& b )
 {
    return _mm_mul_pd( a.value, b.value );
 }
