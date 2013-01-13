@@ -890,12 +890,12 @@ void SVecTSVecMult<VT1,VT2>::testScaledOperation( T scalar )
    if( BLAZETEST_MATHTEST_TEST_SCALED_OPERATION > 1 )
    {
       //=====================================================================================
-      // Self-scaling (OP*=s)
+      // Self-scaling (M*=s)
       //=====================================================================================
 
-      // Self-scaling (OP*=s)
+      // Self-scaling (M*=s)
       {
-         test_ = "Self-scaling (OP*=s)";
+         test_ = "Self-scaling (M*=s)";
 
          try {
             dres_   = lhs_ * rhs_;
@@ -922,15 +922,85 @@ void SVecTSVecMult<VT1,VT2>::testScaledOperation( T scalar )
 
          checkResults();
       }
-
-
+      
+      
       //=====================================================================================
-      // Self-scaling (OP/=s)
+      // Self-scaling (M=M*s)
       //=====================================================================================
 
-      // Self-scaling (OP/=s)
+      // Self-scaling (M=M*s)
       {
-         test_ = "Self-scaling (OP/=s)";
+         test_ = "Self-scaling (M=M*s)";
+
+         try {
+            dres_   = lhs_ * rhs_;
+            odres_  = dres_;
+            sres_   = dres_;
+            osres_  = dres_;
+            refres_ = dres_;
+
+            dres_   = dres_   * scalar;
+            odres_  = odres_  * scalar;
+            sres_   = sres_   * scalar;
+            osres_  = osres_  * scalar;
+            refres_ = refres_ * scalar;
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed self-scaling operation\n"
+                << " Details:\n"
+                << "   Scalar = " << scalar << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,MT2>();
+      }
+      
+      
+      //=====================================================================================
+      // Self-scaling (M=s*M)
+      //=====================================================================================
+
+      // Self-scaling (M=s*M)
+      {
+         test_ = "Self-scaling (M=s*M)";
+
+         try {
+            dres_   = lhs_ * rhs_;
+            odres_  = dres_;
+            sres_   = dres_;
+            osres_  = dres_;
+            refres_ = dres_;
+
+            dres_   = scalar * dres_;
+            odres_  = scalar * odres_;
+            sres_   = scalar * sres_;
+            osres_  = scalar * osres_;
+            refres_ = scalar * refres_;
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed self-scaling operation\n"
+                << " Details:\n"
+                << "   Scalar = " << scalar << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,MT2>();
+      }
+
+
+      //=====================================================================================
+      // Self-scaling (M/=s)
+      //=====================================================================================
+
+      // Self-scaling (M/=s)
+      {
+         test_ = "Self-scaling (M/=s)";
 
          try {
             dres_   = lhs_ * rhs_;
@@ -956,6 +1026,41 @@ void SVecTSVecMult<VT1,VT2>::testScaledOperation( T scalar )
          }
 
          checkResults();
+      }
+      
+      
+      //=====================================================================================
+      // Self-scaling (M=M/s)
+      //=====================================================================================
+
+      // Self-scaling (M=M/s)
+      {
+         test_ = "Self-scaling (M=M/s)";
+
+         try {
+            dres_   = lhs_ * rhs_;
+            odres_  = dres_;
+            sres_   = dres_;
+            osres_  = dres_;
+            refres_ = dres_;
+
+            dres_   = dres_   / scalar;
+            odres_  = odres_  / scalar;
+            sres_   = sres_   / scalar;
+            osres_  = osres_  / scalar;
+            refres_ = refres_ / scalar;
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed self-scaling operation\n"
+                << " Details:\n"
+                << "   Scalar = " << scalar << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,MT2>();
       }
 
 
