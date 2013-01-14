@@ -1483,7 +1483,7 @@ void TDVecDMatMult<VT,MT>::testScaledOperation( T scalar )
             throw std::runtime_error( oss.str() );
          }
 
-         checkResults<VT1,VT2>();
+         checkResults<MT>();
       }
       
       
@@ -1514,7 +1514,7 @@ void TDVecDMatMult<VT,MT>::testScaledOperation( T scalar )
             throw std::runtime_error( oss.str() );
          }
 
-         checkResults<VT1,VT2>();
+         checkResults<MT>();
       }
 
 
@@ -1576,7 +1576,7 @@ void TDVecDMatMult<VT,MT>::testScaledOperation( T scalar )
             throw std::runtime_error( oss.str() );
          }
 
-         checkResults<VT1,VT2>();
+         checkResults<MT>();
       }
 
 
