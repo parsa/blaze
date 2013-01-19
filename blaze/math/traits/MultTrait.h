@@ -194,12 +194,12 @@ struct MultTrait
    template< typename T2 > \
    struct MultTrait< T1, complex<T2> > \
    { \
-      typedef complex<typename MultTrait<T1,T2>::Type>  Type;  \
+      typedef complex<T2>  Type;  \
    }; \
    template< typename T2 > \
    struct MultTrait< complex<T2>, T1 > \
    { \
-      typedef complex<typename MultTrait<T2,T1>::Type>  Type;  \
+      typedef complex<T2>  Type;  \
    }
 /*! \endcond */
 //*************************************************************************************************

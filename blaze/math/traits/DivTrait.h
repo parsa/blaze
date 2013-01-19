@@ -194,12 +194,12 @@ struct DivTrait
    template< typename T2 > \
    struct DivTrait< T1, complex<T2> > \
    { \
-      typedef complex<typename DivTrait<T1,T2>::Type>  Type;  \
+      typedef complex<T2>  Type;  \
    }; \
    template< typename T2 > \
    struct DivTrait< complex<T2>, T1 > \
    { \
-      typedef complex<typename DivTrait<T2,T1>::Type>  Type;  \
+      typedef complex<T2>  Type;  \
    }
 /*! \endcond */
 //*************************************************************************************************
