@@ -41,8 +41,8 @@
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Platform dependent setup of the restrict keyword.
+/*!\def BLAZE_RESTRICT
+// \brief Platform dependent setup of the restrict keyword.
 // \ingroup system
 */
 #if BLAZE_USE_RESTRICT
@@ -67,7 +67,6 @@
 #else
 #  define BLAZE_RESTRICT
 #endif
-/*! \endcond */
 //*************************************************************************************************
 
 #endif

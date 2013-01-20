@@ -25,12 +25,11 @@
 
 //=================================================================================================
 //
-//  DEPRECATED MACROS
+//  DEPRECATED MACRO
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\def BLAZE_DEPRECATED(func)
 // \brief Platform dependent macro for marking a function as deprecated.
 // \ingroup system
@@ -48,8 +47,6 @@
 #else
 #  error Compiler-specific deprecated tag undefined!
 #endif
-
-/*! \endcond */
 //*************************************************************************************************
 
 #endif
