@@ -68,10 +68,10 @@ const bool spacing = false;
 // the Blaze library, i.e. it will be necessary to link the Blaze library to the executable!
 //
 // Possible settings for the function trace switch:
-//  - Deactivated: \b 0
+//  - Deactivated: \b 0 (default)
 //  - Activated  : \b 1
 */
-#define BLAZE_USE_FUNCTION_TRACES 1
+#define BLAZE_USE_FUNCTION_TRACES 0
 //*************************************************************************************************
 
 } // namespace logging
