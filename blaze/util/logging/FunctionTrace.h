@@ -29,6 +29,7 @@
 
 #include <new>
 #include <string>
+#include <blaze/system/Logging.h>
 #include <blaze/system/Signature.h>
 #include <blaze/util/NonCopyable.h>
 
