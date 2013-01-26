@@ -30,6 +30,7 @@
 #include <blaze/util/logging/DebugSection.h>
 #include <blaze/util/logging/DetailSection.h>
 #include <blaze/util/logging/ErrorSection.h>
+#include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/logging/InfoSection.h>
 #include <blaze/util/logging/ProgressSection.h>
 #include <blaze/util/logging/WarningSection.h>
