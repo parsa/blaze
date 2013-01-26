@@ -29,6 +29,7 @@
 
 #include <new>
 #include <sstream>
+#include <blaze/system/Logging.h>
 #include <blaze/util/logging/LogLevel.h>
 
 
