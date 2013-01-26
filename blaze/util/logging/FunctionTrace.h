@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/logging/Logger.h
-//  \brief Header file for the Logger class
+//  \file blaze/util/logging/FunctionTrace.h
+//  \brief Header file for the FunctionTrace class
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,18 +19,18 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_LOGGING_LOGGER_H_
-#define _BLAZE_UTIL_LOGGING_LOGGER_H_
+#ifndef _BLAZE_UTIL_LOGGING_FUNCTIONTRACE_H_
+#define _BLAZE_UTIL_LOGGING_FUNCTIONTRACE_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <fstream>
-#include <boost/thread/mutex.hpp>
-#include <blaze/util/singleton/Singleton.h>
-#include <blaze/util/SystemClock.h>
+#include <new>
+#include <string>
+#include <blaze/system/Signature.h>
+#include <blaze/util/NonCopyable.h>
 
 
 namespace blaze {
@@ -44,70 +44,54 @@ namespace logging {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Implementation of a logger class.
+/*!\brief RAII object for function tracing.
 // \ingroup logging
 //
-// The Logger class represents the core of the logging functionality. It is responsible for
-// commiting logging messages immediately to the according log file(s). The logger works for
-// both serial as well as MPI parallel environments. In case of a non-MPI-parallel simulation
-// the Logger creates the log file 'blaze.log', which contains all logging information from all
-// logging levels. In case of a MPI parallel simulation, each process creates his own individual
-// log file called 'blazeX.log', where 'X' is replaced by the according rank the process has in
-// the MPI_COMM_WORLD communicator.\n
-// Note that the log file(s) are only created in case any logging information is created. This
-// might for instance result in only a small number of log file(s) in MPI parallel simulations
-// when only some of the processes encounter errors/warnings/etc.\n
-// Note that the logging functionality may not be used before MPI_Init() has been finished. In
-// consequence, this means that no global data that is initialized before the main() function
-// may contain any use of the logging functionality!
+// The FunctionTrace class is a 
+
+// The FunctionTrace class is an auxiliary helper class for the tracing of function calls. It
+// is implemented as a wrapper around the Logger class and is responsible for the atomicity of
+// the logging operations of trace information.
 */
-class Logger : private Singleton<Logger,SystemClock>
+class FunctionTrace : private NonCopyable
 {
- private:
+ public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit Logger();
+   FunctionTrace( const std::string& file, const std::string& function );
    //@}
    //**********************************************************************************************
 
- public:
    //**Destructor**********************************************************************************
    /*!\name Destructor */
    //@{
-   ~Logger();
+   ~FunctionTrace();
    //@}
    //**********************************************************************************************
 
  private:
-   //**Logging functions***************************************************************************
-   /*!\name Logging functions */
-   //@{
-   template< typename Type > void log( const Type& message );
-   //@}
-   //**********************************************************************************************
-
-   //**Utility functions***************************************************************************
-   /*!\name Utility functions */
-   //@{
-   void openLogFile();
-   //@}
-   //**********************************************************************************************
-
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   boost::mutex  mutex_;  //!< Synchronization mutex for thread-parallel logging.
-   std::ofstream log_;    //!< The log file.
+   std::string file_;      //!< The file name the traced function is contained in.
+   std::string function_;  //!< The name of the traced function.
    //@}
    //**********************************************************************************************
 
-   //**Friend declarations*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   friend class FunctionTrace;
-   friend class LogSection;
-   BLAZE_BEFRIEND_SINGLETON;
-   /*! \endcond */
+   //**Forbidden operations************************************************************************
+   /*!\name Forbidden operations */
+   //@{
+   void* operator new  ( std::size_t ) throw( std::bad_alloc );
+   void* operator new[]( std::size_t ) throw( std::bad_alloc );
+   void* operator new  ( std::size_t, const std::nothrow_t& ) throw();
+   void* operator new[]( std::size_t, const std::nothrow_t& ) throw();
+
+   void operator delete  ( void* ) throw();
+   void operator delete[]( void* ) throw();
+   void operator delete  ( void*, const std::nothrow_t& ) throw();
+   void operator delete[]( void*, const std::nothrow_t& ) throw();
+   //@}
    //**********************************************************************************************
 };
 //*************************************************************************************************
@@ -117,28 +101,39 @@ class Logger : private Singleton<Logger,SystemClock>
 
 //=================================================================================================
 //
-//  LOGGING FUNCTIONS
+//  BLAZE_FUNCTION_TRACE MACRO
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Writes the log message to the log file.
+/*!\brief Function trace macro.
+// \ingroup logging
 //
-// \param message The log message to be logged.
-// \return void
-//
-// This function immediately commits the log message to the log file. The first call to this
-// function will create the log file.
+// This macro can be used to reliably trace function calls. In case function tracing is
+// activated, the traces are logged via the Logger class. The following, short example
+// demonstrates how the function trace macro is used:
+
+   \code
+   int main( int argc, char** argv )
+   {
+      BLAZE_FUNCTION_TRACE;
+      
+      // ...
+   }
+   \endcode
+
+// The macro should be used as the very first statement inside the function in order to
+// guarantee that logging the function trace is the very first and last action of the
+// function call. In case function tracing is activated, the resulting log will contain
+// trace information of the following form:
+
+   \code
+   [TRACE   ][000:00:00] + Entering function 'int main()' in file 'TraceDemo.cpp'
+   [TRACE   ][000:00:10] - Leaving function 'int main()' in file 'TraceDemo.cpp'
+   \endcode
 */
-template< typename Type >  // Type of the log message
-void Logger::log( const Type& message )
-{
-   boost::mutex::scoped_lock lock( mutex_ );
-   if( !log_.is_open() )
-      openLogFile();
-   log_ << message;
-   log_.flush();
-}
+#define BLAZE_FUNCTION_TRACE \
+   blaze::logging::FunctionTrace BLAZE_FUNCTION_TRACE_OBJECT( __FILE__, BLAZE_SIGNATURE )
 //*************************************************************************************************
 
 } // namespace logging
