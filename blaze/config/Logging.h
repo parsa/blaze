@@ -57,6 +57,23 @@ const LogLevel loglevel = info;
 const bool spacing = false;
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Compilation switch for function traces.
+// \ingroup config
+//
+// This compilation switch triggers the use of function traces. In case the switch is set to
+// 0, all function traces are disabled and completely removed from all code. If set to 1,
+// function traces are enabled. Note that enabling function traces results in a dependency to
+// the Blaze library, i.e. it will be necessary to link the Blaze library to the executable!
+//
+// Possible settings for the function trace switch:
+//  - Deactivated: \b 0
+//  - Activated  : \b 1
+*/
+#define BLAZE_USE_FUNCTION_TRACES 1
+//*************************************************************************************************
+
 } // namespace logging
 
 } // namespace blaze

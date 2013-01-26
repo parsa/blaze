@@ -132,8 +132,12 @@ class FunctionTrace : private NonCopyable
    [TRACE   ][000:00:10] - Leaving function 'int main()' in file 'TraceDemo.cpp'
    \endcode
 */
-#define BLAZE_FUNCTION_TRACE \
+#if BLAZE_USE_FUNCTION_TRACES
+#  define BLAZE_FUNCTION_TRACE \
    blaze::logging::FunctionTrace BLAZE_FUNCTION_TRACE_OBJECT( __FILE__, BLAZE_SIGNATURE )
+#else
+#  define BLAZE_FUNCTION_TRACE
+#endif
 //*************************************************************************************************
 
 } // namespace logging
