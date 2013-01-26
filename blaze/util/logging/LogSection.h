@@ -29,7 +29,6 @@
 
 #include <new>
 #include <sstream>
-#include <blaze/system/Logging.h>
 #include <blaze/util/logging/LogLevel.h>
 
 
@@ -73,7 +72,6 @@ class LogSection
    /*!\name Conversion operators */
    //@{
    inline operator bool() const;
-   inline operator std::ostream&();
    //@}
    //**********************************************************************************************
 
@@ -152,18 +150,6 @@ inline LogSection::LogSection( const LogSection& ls )
 inline LogSection::operator bool() const
 {
    return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Conversion operator to \a std::ostream&.
-//
-// The conversion operator returns a reference to a standard output stream.
-*/
-inline LogSection::operator std::ostream&()
-{
-   return message_;
 }
 //*************************************************************************************************
 
