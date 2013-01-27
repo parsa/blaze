@@ -51,6 +51,7 @@
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
+#include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
@@ -288,6 +289,8 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       assign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       assign( ~lhs, rhs.vector_ );
@@ -314,6 +317,8 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       assign( SparseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       assign( ~lhs, rhs.vector_ );
@@ -340,6 +345,8 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       addAssign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -374,6 +381,8 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       subAssign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -408,6 +417,8 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       multAssign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -481,6 +492,8 @@ inline const typename EnableIf< IsNumeric<T2>,
                                 typename DVecScalarDivExprHelper<T1,T2,TF>::Type >::Type
    operator/( const DenseVector<T1,TF>& vec, T2 scalar )
 {
+   BLAZE_FUNCTION_TRACE;
+
    BLAZE_USER_ASSERT( scalar != T2(0), "Division by zero detected" );
 
    typedef DVecScalarDivExprHelper<T1,T2,TF>  Helper;
@@ -525,6 +538,8 @@ inline const typename EnableIf< IsFloatingPoint< typename DivTrait<ST2,ST1>::Typ
                               , typename MultExprTrait< DVecScalarDivExpr<VT,ST1,TF>, ST2 >::Type >::Type
    operator*( const DVecScalarDivExpr<VT,ST1,TF>& vec, ST2 scalar )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return vec.leftOperand() * ( scalar / vec.rightOperand() );
 }
 /*! \endcond */
@@ -552,6 +567,8 @@ inline const typename EnableIf< IsFloatingPoint< typename DivTrait<ST1,ST2>::Typ
                               , typename MultExprTrait< ST1, DVecScalarDivExpr<VT,ST2,TF> >::Type >::Type
    operator*( ST1 scalar, const DVecScalarDivExpr<VT,ST2,TF>& vec )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return vec.leftOperand() * ( scalar / vec.rightOperand() );
 }
 /*! \endcond */
@@ -579,6 +596,8 @@ inline const typename EnableIf< IsNumeric<ST2>
                               , typename DVecScalarDivExprHelper<VT,typename MultTrait<ST1,ST2>::Type,TF>::Type >::Type
    operator/( const DVecScalarDivExpr<VT,ST1,TF>& vec, ST2 scalar )
 {
+   BLAZE_FUNCTION_TRACE;
+
    BLAZE_USER_ASSERT( scalar != ST2(0), "Division by zero detected" );
 
    typedef typename MultTrait<ST1,ST2>::Type        MultType;

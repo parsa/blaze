@@ -39,6 +39,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 
@@ -163,6 +164,8 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    template< typename VT2 >  // Type of the target dense vector
    friend inline void assign( DenseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       assign( ~lhs, rhs.dv_ );
@@ -187,6 +190,8 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    template< typename VT2 >  // Type of the target sparse vector
    friend inline void assign( SparseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       assign( ~lhs, rhs.dv_ );
@@ -211,6 +216,8 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    template< typename VT2 >  // Type of the target dense vector
    friend inline void addAssign( DenseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       addAssign( ~lhs, rhs.dv_ );
@@ -235,6 +242,8 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    template< typename VT2 >  // Type of the target sparse vector
    friend inline void addAssign( SparseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       addAssign( ~lhs, rhs.dv_ );
@@ -259,6 +268,8 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    template< typename VT2 >  // Type of the target dense vector
    friend inline void subAssign( DenseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       subAssign( ~lhs, rhs.dv_ );
@@ -283,6 +294,8 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    template< typename VT2 >  // Type of the target sparse vector
    friend inline void subAssign( SparseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       subAssign( ~lhs, rhs.dv_ );
@@ -307,6 +320,8 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    template< typename VT2 >  // Type of the target dense vector
    friend inline void multAssign( DenseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       multAssign( ~lhs, rhs.dv_ );
@@ -331,6 +346,8 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    template< typename VT2 >  // Type of the target sparse vector
    friend inline void multAssign( SparseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       multAssign( ~lhs, rhs.dv_ );
@@ -377,6 +394,8 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline const DVecEvalExpr<VT,TF> eval( const DenseVector<VT,TF>& dv )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return DVecEvalExpr<VT,TF>( ~dv );
 }
 //*************************************************************************************************

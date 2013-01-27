@@ -42,6 +42,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 
@@ -211,6 +212,8 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       assign( DenseVector<VT2,TF>& lhs, const DVecAbsExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       using std::abs;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
@@ -243,6 +246,8 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       assign( SparseVector<VT2,TF>& lhs, const DVecAbsExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -273,6 +278,8 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       addAssign( DenseVector<VT2,TF>& lhs, const DVecAbsExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -307,6 +314,8 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       subAssign( DenseVector<VT2,TF>& lhs, const DVecAbsExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -341,6 +350,8 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       multAssign( DenseVector<VT2,TF>& lhs, const DVecAbsExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -396,6 +407,8 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline const DVecAbsExpr<VT,TF> abs( const DenseVector<VT,TF>& dv )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return DVecAbsExpr<VT,TF>( ~dv );
 }
 //*************************************************************************************************
@@ -424,6 +437,8 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline const DVecAbsExpr<VT,TF>& abs( const DVecAbsExpr<VT,TF>& dv )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return dv;
 }
 /*! \endcond */
