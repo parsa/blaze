@@ -61,6 +61,7 @@
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/InvalidType.h>
+#include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 
@@ -264,6 +265,8 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
            , bool SO >    // Storage order of the target dense matrix
    friend inline void assign( DenseMatrix<MT,SO>& lhs, const SMatTDMatMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -348,6 +351,8 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
            , bool SO >    // Storage order of the target sparse matrix
    friend inline void assign( SparseMatrix<MT,SO>& lhs, const SMatTDMatMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       typedef typename SelectType< SO, OppositeType, ResultType >::Type  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
@@ -383,6 +388,8 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
            , bool SO >    // Storage order of the target dense matrix
    friend inline void addAssign( DenseMatrix<MT,SO>& lhs, const SMatTDMatMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -451,6 +458,8 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
            , bool SO >    // Storage order of the target dense matrix
    friend inline void subAssign( DenseMatrix<MT,SO>& lhs, const SMatTDMatMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -566,6 +575,8 @@ template< typename T1    // Type of the left-hand side sparse matrix
 inline const SMatTDMatMultExpr<T1,T2>
    operator*( const SparseMatrix<T1,false>& lhs, const DenseMatrix<T2,true>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    if( (~lhs).columns() != (~rhs).rows() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 

@@ -42,6 +42,7 @@
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
+#include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 
@@ -220,6 +221,8 @@ class TSMatDMatSubExpr : public DenseMatrix< TSMatDMatSubExpr<MT1,MT2>, false >
            , bool SO2 >   // Storage order of the target dense matrix
    friend inline void assign( DenseMatrix<MT,SO2>& lhs, const TSMatDMatSubExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -245,6 +248,8 @@ class TSMatDMatSubExpr : public DenseMatrix< TSMatDMatSubExpr<MT1,MT2>, false >
            , bool SO2 >   // Storage order of the target sparse matrix
    friend inline void assign( SparseMatrix<MT,SO2>& lhs, const TSMatDMatSubExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       typedef typename SelectType< SO2, OppositeType, ResultType >::Type  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
@@ -280,6 +285,8 @@ class TSMatDMatSubExpr : public DenseMatrix< TSMatDMatSubExpr<MT1,MT2>, false >
            , bool SO2 >   // Storage order of the target dense matrix
    friend inline void addAssign( DenseMatrix<MT,SO2>& lhs, const TSMatDMatSubExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -310,6 +317,8 @@ class TSMatDMatSubExpr : public DenseMatrix< TSMatDMatSubExpr<MT1,MT2>, false >
            , bool SO2 >   // Storage order of the target dense matrix
    friend inline void subAssign( DenseMatrix<MT,SO2>& lhs, const TSMatDMatSubExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -386,6 +395,8 @@ template< typename T1    // Type of the left-hand side sparse matrix
 inline const TSMatDMatSubExpr<T1,T2>
    operator-( const SparseMatrix<T1,true>& lhs, const DenseMatrix<T2,false>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
@@ -422,6 +433,8 @@ template< typename T1  // Type of the sparse matrix of the left-hand side expres
 inline const typename AddExprTrait< TSMatDMatSubExpr<T1,T2>, T3 >::Type
    operator+( const TSMatDMatSubExpr<T1,T2>& lhs, const DenseMatrix<T3,SO>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( (~rhs) - lhs.rightOperand() ) + lhs.leftOperand();
 }
 /*! \endcond */
@@ -448,6 +461,8 @@ template< typename T1  // Type of the sparse matrix of the left-hand side expres
 inline const typename SubExprTrait< TSMatDMatSubExpr<T1,T2>, T3 >::Type
    operator-( const TSMatDMatSubExpr<T1,T2>& lhs, const DenseMatrix<T3,SO>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return lhs.leftOperand() - ( lhs.rightOperand() + (~rhs) );
 }
 /*! \endcond */
