@@ -57,6 +57,7 @@
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsComplex.h>
@@ -339,6 +340,8 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
    template< typename VT1 >  // Type of the target dense vector
    friend inline void assign( DenseVector<VT1,false>& lhs, const DMatDVecMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( rhs.mat_.rows() == 0UL ) {
@@ -689,6 +692,8 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
    template< typename VT1 >  // Type of the target sparse vector
    friend inline void assign( SparseVector<VT1,false>& lhs, const DMatDVecMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -716,6 +721,8 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
    template< typename VT1 >  // Type of the target dense vector
    friend inline void addAssign( DenseVector<VT1,false>& lhs, const DMatDVecMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( rhs.mat_.rows() == 0UL || rhs.mat_.columns() == 0UL ) {
@@ -1066,6 +1073,8 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
    template< typename VT1 >  // Type of the target dense vector
    friend inline void subAssign( DenseVector<VT1,false>& lhs, const DMatDVecMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( rhs.mat_.rows() == 0UL || rhs.mat_.columns() == 0UL ) {
@@ -1416,6 +1425,8 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
    template< typename VT1 >  // Type of the target dense vector
    friend inline void multAssign( DenseVector<VT1,false>& lhs, const DMatDVecMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -1689,6 +1700,8 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
    template< typename VT1 >  // Type of the target dense vector
    friend inline void assign( DenseVector<VT1,false>& lhs, const DVecScalarMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       typename MVM::LeftOperand  left ( rhs.vector_.leftOperand()  );
@@ -2042,6 +2055,8 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
    template< typename VT1 >  // Type of the target sparse vector
    friend inline void assign( SparseVector<VT1,false>& lhs, const DVecScalarMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -2068,6 +2083,8 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
    template< typename VT1 >  // Type of the target dense vector
    friend inline void addAssign( DenseVector<VT1,false>& lhs, const DVecScalarMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       typename MVM::LeftOperand  left ( rhs.vector_.leftOperand()  );
@@ -2422,6 +2439,8 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
    template< typename VT1 >  // Type of the target dense vector
    friend inline void subAssign( DenseVector<VT1,false>& lhs, const DVecScalarMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       typename MVM::LeftOperand  left ( rhs.vector_.leftOperand()  );
@@ -2776,6 +2795,8 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
    template< typename VT1 >  // Type of the target dense vector
    friend inline void multAssign( DenseVector<VT1,false>& lhs, const DVecScalarMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -2848,6 +2869,8 @@ template< typename T1    // Type of the left-hand side dense matrix
 inline const typename DisableIf< IsMatMatMultExpr<T1>, DMatDVecMultExpr<T1,T2> >::Type
    operator*( const DenseMatrix<T1,false>& mat, const DenseVector<T2,false>& vec )
 {
+   BLAZE_FUNCTION_TRACE;
+
    if( (~mat).columns() != (~vec).size() )
       throw std::invalid_argument( "Matrix and vector sizes do not match" );
 
@@ -2883,6 +2906,8 @@ template< typename T1    // Type of the left-hand side dense matrix
 inline const typename EnableIf< IsMatMatMultExpr<T1>, MultExprTrait<T1,T2> >::Type::Type
    operator*( const DenseMatrix<T1,SO>& mat, const DenseVector<T2,false>& vec )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return (~mat).leftOperand() * ( (~mat).rightOperand() * vec );
 }
 //*************************************************************************************************
