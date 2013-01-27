@@ -43,6 +43,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -272,6 +273,8 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT> >::Type
       assign( DenseMatrix<MT,SO2>& lhs, const DMatDMatAddExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
       
@@ -308,6 +311,8 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT> >::Type
       assign( SparseMatrix<MT,SO2>& lhs, const DMatDMatAddExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       typedef typename SelectType< SO == SO2, ResultType, OppositeType >::Type  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
@@ -345,6 +350,8 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT> >::Type
       addAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatAddExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -377,6 +384,8 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT> >::Type
       subAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatAddExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -450,6 +459,8 @@ template< typename T1  // Type of the left-hand side dense matrix
 inline const DMatDMatAddExpr<T1,T2,SO>
    operator+( const DenseMatrix<T1,SO>& lhs, const DenseMatrix<T2,SO>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
