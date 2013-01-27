@@ -42,6 +42,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/EmptyType.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 
@@ -343,6 +344,8 @@ class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       assign( DenseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       DVecTransposer<VT2,!TF> tmp( ~lhs );
@@ -369,6 +372,8 @@ class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       assign( SparseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       SVecTransposer<VT2,!TF> tmp( ~lhs );
@@ -395,6 +400,8 @@ class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       addAssign( DenseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       DVecTransposer<VT2,!TF> tmp( ~lhs );
@@ -425,6 +432,8 @@ class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       subAssign( DenseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       DVecTransposer<VT2,!TF> tmp( ~lhs );
@@ -455,6 +464,8 @@ class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       multAssign( DenseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       DVecTransposer<VT2,!TF> tmp( ~lhs );
@@ -489,6 +500,8 @@ class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
            , bool TF2 >    // Transpose flag of the sparse vector
    friend inline Operand trans( const SVecTransExpr<VT2,TF2>& sv )
    {
+      BLAZE_FUNCTION_TRACE;
+
       return sv.sv_;
    }
    /*! \endcond */
@@ -534,6 +547,8 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline const SVecTransExpr<VT,!TF> trans( const SparseVector<VT,TF>& sv )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return SVecTransExpr<VT,!TF>( ~sv );
 }
 //*************************************************************************************************

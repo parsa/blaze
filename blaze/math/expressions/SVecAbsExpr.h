@@ -46,6 +46,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 
@@ -371,6 +372,8 @@ class SVecAbsExpr : public SparseVector< SVecAbsExpr<VT,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       assign( DenseVector<VT2,TF>& lhs, const SVecAbsExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       using std::abs;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
@@ -403,6 +406,8 @@ class SVecAbsExpr : public SparseVector< SVecAbsExpr<VT,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       assign( SparseVector<VT2,TF>& lhs, const SVecAbsExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       using std::abs;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
@@ -437,6 +442,8 @@ class SVecAbsExpr : public SparseVector< SVecAbsExpr<VT,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       addAssign( DenseVector<VT2,TF>& lhs, const SVecAbsExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -471,6 +478,8 @@ class SVecAbsExpr : public SparseVector< SVecAbsExpr<VT,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       subAssign( DenseVector<VT2,TF>& lhs, const SVecAbsExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -505,6 +514,8 @@ class SVecAbsExpr : public SparseVector< SVecAbsExpr<VT,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       multAssign( DenseVector<VT2,TF>& lhs, const SVecAbsExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -560,6 +571,8 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline const SVecAbsExpr<VT,TF> abs( const SparseVector<VT,TF>& sv )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return SVecAbsExpr<VT,TF>( ~sv );
 }
 //*************************************************************************************************
@@ -588,6 +601,8 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline const SVecAbsExpr<VT,TF>& abs( const SVecAbsExpr<VT,TF>& sv )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return sv;
 }
 /*! \endcond */

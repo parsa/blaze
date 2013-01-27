@@ -59,6 +59,7 @@
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
+#include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
@@ -400,6 +401,8 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       assign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       assign( ~lhs, rhs.vector_ );
@@ -429,6 +432,8 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       assign( SparseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       assign( ~lhs, rhs.vector_ );
@@ -460,6 +465,8 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       addAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -494,6 +501,8 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       subAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -528,6 +537,8 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
    friend inline typename EnableIf< UseAssign<VT2> >::Type
       multAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -586,6 +597,8 @@ template< typename VT  // Type of the sparse vector
 inline const SVecScalarMultExpr<VT,typename BaseElementType<VT>::Type,TF>
    operator-( const SparseVector<VT,TF>& sv )
 {
+   BLAZE_FUNCTION_TRACE;
+
    typedef typename BaseElementType<VT>::Type  ElementType;
    return SVecScalarMultExpr<VT,ElementType,TF>( ~sv, ElementType(-1) );
 }
@@ -627,6 +640,8 @@ template< typename T1  // Type of the left-hand side sparse vector
 inline const typename EnableIf< IsNumeric<T2>, typename MultExprTrait<T1,T2>::Type >::Type
    operator*( const SparseVector<T1,TF>& vec, T2 scalar )
 {
+   BLAZE_FUNCTION_TRACE;
+
    typedef typename MultExprTrait<T1,T2>::Type  Type;
    return Type( ~vec, scalar );
 }
@@ -660,6 +675,8 @@ template< typename T1  // Type of the left-hand side scalar
 inline const typename EnableIf< IsNumeric<T1>, typename MultExprTrait<T1,T2>::Type >::Type
    operator*( T1 scalar, const SparseVector<T2,TF>& vec )
 {
+   BLAZE_FUNCTION_TRACE;
+
    typedef typename MultExprTrait<T1,T2>::Type  Type;
    return Type( ~vec, scalar );
 }
@@ -692,6 +709,8 @@ template< typename VT  // Type of the sparse vector
 inline const SVecScalarMultExpr<VT,ST,TF>
    operator-( const SVecScalarMultExpr<VT,ST,TF>& sv )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return SVecScalarMultExpr<VT,ST,TF>( sv.leftOperand(), -sv.rightOperand() );
 }
 /*! \endcond */
@@ -727,6 +746,8 @@ inline const typename EnableIf< IsNumeric<ST2>
                               , typename MultExprTrait< SVecScalarMultExpr<VT,ST1,TF>, ST2 >::Type >::Type
    operator*( const SVecScalarMultExpr<VT,ST1,TF>& vec, ST2 scalar )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return vec.leftOperand() * ( vec.rightOperand() * scalar );
 }
 /*! \endcond */
@@ -754,6 +775,8 @@ inline const typename EnableIf< IsNumeric<ST1>
                               , typename MultExprTrait< ST1, SVecScalarMultExpr<VT,ST2,TF> >::Type >::Type
    operator*( ST1 scalar, const SVecScalarMultExpr<VT,ST2,TF>& vec )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return vec.leftOperand() * ( scalar * vec.rightOperand() );
 }
 /*! \endcond */
@@ -781,6 +804,8 @@ inline const typename EnableIf< IsFloatingPoint<typename DivTrait<ST1,ST2>::Type
                               , typename DivExprTrait< SVecScalarMultExpr<VT,ST1,TF>, ST2 >::Type >::Type
    operator/( const SVecScalarMultExpr<VT,ST1,TF>& vec, ST2 scalar )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return vec.leftOperand() * ( vec.rightOperand() / scalar );
 }
 /*! \endcond */
@@ -808,6 +833,8 @@ template< typename VT1    // Type of the sparse vector of the left-hand side exp
 inline const typename MultExprTrait< SVecScalarMultExpr<VT1,ST,TF>, VT2 >::Type
    operator*( const SVecScalarMultExpr<VT1,ST,TF>& lhs, const DenseVector<VT2,TF>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( lhs.leftOperand() * (~rhs) ) * lhs.rightOperand();
 }
 /*! \endcond */
@@ -835,6 +862,8 @@ template< typename VT1   // Type of the left-hand side dense vector
 inline const typename MultExprTrait< VT1, SVecScalarMultExpr<VT2,ST,TF> >::Type
    operator*( const DenseVector<VT1,TF>& lhs, const SVecScalarMultExpr<VT2,ST,TF>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( (~lhs) * rhs.leftOperand() ) * rhs.rightOperand();
 }
 /*! \endcond */
@@ -861,6 +890,8 @@ template< typename VT1    // Type of the sparse vector of the left-hand side exp
 inline const typename MultExprTrait< SVecScalarMultExpr<VT1,ST,false>, VT2 >::Type
    operator*( const SVecScalarMultExpr<VT1,ST,false>& lhs, const DenseVector<VT2,true>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( lhs.leftOperand() * (~rhs) ) * lhs.rightOperand();
 }
 /*! \endcond */
@@ -887,6 +918,8 @@ template< typename VT1   // Type of the left-hand side dense vector
 inline const typename MultExprTrait< VT1, SVecScalarMultExpr<VT2,ST,true> >::Type
    operator*( const DenseVector<VT1,false>& lhs, const SVecScalarMultExpr<VT2,ST,true>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( (~lhs) * rhs.leftOperand() ) * rhs.rightOperand();
 }
 /*! \endcond */
@@ -914,6 +947,8 @@ template< typename VT1    // Type of the sparse vector of the left-hand side exp
 inline const typename MultExprTrait< SVecScalarMultExpr<VT1,ST,TF>, VT2 >::Type
    operator*( const SVecScalarMultExpr<VT1,ST,TF>& lhs, const SparseVector<VT2,TF>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( lhs.leftOperand() * (~rhs) ) * lhs.rightOperand();
 }
 /*! \endcond */
@@ -941,6 +976,8 @@ template< typename VT1   // Type of the left-hand side sparse vector
 inline const typename MultExprTrait< VT1, SVecScalarMultExpr<VT2,ST,TF> >::Type
    operator*( const SparseVector<VT1,TF>& lhs, const SVecScalarMultExpr<VT2,ST,TF>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( (~lhs) * rhs.leftOperand() ) * rhs.rightOperand();
 }
 /*! \endcond */
@@ -969,6 +1006,8 @@ template< typename VT1    // Type of the sparse vector of the left-hand side exp
 inline const typename MultExprTrait< SVecScalarMultExpr<VT1,ST1,TF>, SVecScalarMultExpr<VT2,ST2,TF> >::Type
    operator*( const SVecScalarMultExpr<VT1,ST1,TF>& lhs, const SVecScalarMultExpr<VT2,ST2,TF>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( lhs.leftOperand() * rhs.leftOperand() ) * ( lhs.rightOperand() * rhs.rightOperand() );
 }
 /*! \endcond */
@@ -995,6 +1034,8 @@ template< typename VT1    // Type of the sparse vector of the left-hand side exp
 inline const typename MultExprTrait< SVecScalarMultExpr<VT1,ST,false>, VT2 >::Type
    operator*( const SVecScalarMultExpr<VT1,ST,false>& lhs, const SparseVector<VT2,true>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( lhs.leftOperand() * (~rhs) ) * lhs.rightOperand();
 }
 /*! \endcond */
@@ -1021,6 +1062,8 @@ template< typename VT1   // Type of the left-hand side sparse vector
 inline const typename MultExprTrait< VT1, SVecScalarMultExpr<VT2,ST,true> >::Type
    operator*( const SparseVector<VT1,false>& lhs, const SVecScalarMultExpr<VT2,ST,true>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( (~lhs) * rhs.leftOperand() ) * rhs.rightOperand();
 }
 /*! \endcond */
@@ -1048,6 +1091,8 @@ template< typename VT1    // Type of the sparse vector of the left-hand side exp
 inline const typename MultExprTrait< SVecScalarMultExpr<VT1,ST1,false>, SVecScalarMultExpr<VT2,ST2,true> >::Type
    operator*( const SVecScalarMultExpr<VT1,ST1,false>& lhs, const SVecScalarMultExpr<VT2,ST2,true>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( lhs.leftOperand() * rhs.leftOperand() ) * ( lhs.rightOperand() * rhs.rightOperand() );
 }
 /*! \endcond */
@@ -1075,6 +1120,8 @@ template< typename MT    // Type of the left-hand side dense matrix
 inline const typename MultExprTrait< MT, SVecScalarMultExpr<VT,ST,false> >::Type
    operator*( const DenseMatrix<MT,SO>& mat, const SVecScalarMultExpr<VT,ST,false>& vec )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( (~mat) * vec.leftOperand() ) * vec.rightOperand();
 }
 /*! \endcond */
@@ -1102,6 +1149,8 @@ template< typename VT  // Type of the sparse vector of the left-hand side expres
 inline const typename MultExprTrait< SVecScalarMultExpr<VT,ST,true>, MT >::Type
    operator*( const SVecScalarMultExpr<VT,ST,true>& vec, const DenseMatrix<MT,SO>& mat )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( vec.leftOperand() * (~mat) ) * vec.rightOperand();
 }
 /*! \endcond */
@@ -1129,6 +1178,8 @@ template< typename MT    // Type of the left-hand side sparse matrix
 inline const typename MultExprTrait< MT, SVecScalarMultExpr<VT,ST,false> >::Type
    operator*( const SparseMatrix<MT,SO>& mat, const SVecScalarMultExpr<VT,ST,false>& vec )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( (~mat) * vec.leftOperand() ) * vec.rightOperand();
 }
 /*! \endcond */
@@ -1156,6 +1207,8 @@ template< typename VT  // Type of the sparse vector of the left-hand side expres
 inline const typename MultExprTrait< SVecScalarMultExpr<VT,ST,true>, MT >::Type
    operator*( const SVecScalarMultExpr<VT,ST,true>& vec, const SparseMatrix<MT,SO>& mat )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( vec.leftOperand() * (~mat) ) * vec.rightOperand();
 }
 /*! \endcond */
