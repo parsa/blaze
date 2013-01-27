@@ -125,13 +125,19 @@ class FunctionTrace : private NonCopyable
 
 // The macro should be used as the very first statement inside the function in order to
 // guarantee that logging the function trace is the very first and last action of the
-// function call. In case function tracing is activated, the resulting log will contain
-// trace information of the following form:
+// function call.\n
+// Function tracing can be enabled or disabled via the BLAZE_USE_FUNCTION_TRACES macro.
+// If function tracing is activated, the resulting log will contain trace information of
+// the following form:
 
    \code
    [TRACE   ][000:00:00] + Entering function 'int main()' in file 'TraceDemo.cpp'
    [TRACE   ][000:00:10] - Leaving function 'int main()' in file 'TraceDemo.cpp'
    \endcode
+
+// In case function tracing is deactivated, all function trace functionality is completely
+// removed from the code, i.e. no function traces are logged and no overhead results from
+// the BLAZE_FUNCTION_TRACE macro.
 */
 #if BLAZE_USE_FUNCTION_TRACES
 #  define BLAZE_FUNCTION_TRACE \
