@@ -47,6 +47,7 @@
 #include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
+#include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 
@@ -215,6 +216,8 @@ class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
    template< typename VT >  // Type of the target dense vector
    friend inline void assign( DenseVector<VT,TF>& lhs, const DVecSVecAddExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       assign   ( ~lhs, rhs.lhs_ );
@@ -238,6 +241,8 @@ class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
    template< typename VT >  // Type of the target sparse vector
    friend inline void assign( SparseVector<VT,TF>& lhs, const DVecSVecAddExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -265,6 +270,8 @@ class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
    template< typename VT >  // Type of the target dense vector
    friend inline void addAssign( DenseVector<VT,TF>& lhs, const DVecSVecAddExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       addAssign( ~lhs, rhs.lhs_ );
@@ -292,6 +299,8 @@ class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
    template< typename VT >  // Type of the target dense vector
    friend inline void subAssign( DenseVector<VT,TF>& lhs, const DVecSVecAddExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       subAssign( ~lhs, rhs.lhs_ );
@@ -319,6 +328,8 @@ class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
    template< typename VT >  // Type of the target dense vector
    friend inline void multAssign( DenseVector<VT,TF>& lhs, const DVecSVecAddExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -387,6 +398,8 @@ template< typename T1  // Type of the left-hand side dense vector
 inline const DVecSVecAddExpr<T1,T2,TF>
    operator+( const DenseVector<T1,TF>& lhs, const SparseVector<T2,TF>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    if( (~lhs).size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
@@ -427,6 +440,8 @@ template< typename T1  // Type of the left-hand side sparse vector
 inline const DVecSVecAddExpr<T2,T1,TF>
    operator+( const SparseVector<T1,TF>& lhs, const DenseVector<T2,TF>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    if( (~lhs).size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
@@ -463,6 +478,8 @@ template< typename T1    // Type of the dense vector of the left-hand side expre
 inline const typename AddExprTrait< DVecSVecAddExpr<T1,T2,TF>, T3 >::Type
    operator+( const DVecSVecAddExpr<T1,T2,TF>& lhs, const DenseVector<T3,TF>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( lhs.leftOperand() + (~rhs) ) + lhs.rightOperand();
 }
 /*! \endcond */
@@ -489,6 +506,8 @@ template< typename T1    // Type of the dense vector of the left-hand side expre
 inline const typename SubExprTrait< DVecSVecAddExpr<T1,T2,TF>, T3 >::Type
    operator-( const DVecSVecAddExpr<T1,T2,TF>& lhs, const DenseVector<T3,TF>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( lhs.leftOperand() - (~rhs) ) + lhs.rightOperand();
 }
 /*! \endcond */

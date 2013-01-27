@@ -46,6 +46,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 
@@ -392,6 +393,8 @@ class DVecSVecMultExpr : public SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT> >::Type
       assign( DenseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       typedef typename boost::remove_reference<CT2>::type::ConstIterator  ConstIterator;
@@ -427,6 +430,8 @@ class DVecSVecMultExpr : public SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT> >::Type
       assign( SparseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       typedef typename boost::remove_reference<CT2>::type::ConstIterator  ConstIterator;
@@ -462,6 +467,8 @@ class DVecSVecMultExpr : public SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT> >::Type
       addAssign( DenseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       typedef typename boost::remove_reference<CT2>::type::ConstIterator  ConstIterator;
@@ -501,6 +508,8 @@ class DVecSVecMultExpr : public SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT> >::Type
       subAssign( DenseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       typedef typename boost::remove_reference<CT2>::type::ConstIterator  ConstIterator;
@@ -540,6 +549,8 @@ class DVecSVecMultExpr : public SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF >
    friend inline typename EnableIf< UseAssign<VT> >::Type
       multAssign( DenseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       typedef typename boost::remove_reference<CT2>::type::ConstIterator  ConstIterator;
@@ -626,6 +637,8 @@ template< typename T1  // Type of the left-hand side dense vector
 inline const DVecSVecMultExpr<T1,T2,TF>
    operator*( const DenseVector<T1,TF>& lhs, const SparseVector<T2,TF>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    if( (~lhs).size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
