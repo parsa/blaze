@@ -50,6 +50,7 @@
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 
@@ -326,6 +327,8 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
    template< typename VT1 >  // Type of the target dense vector
    friend inline void assign( DenseVector<VT1,false>& lhs, const SMatSVecMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+      
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       typedef typename boost::remove_reference<LT>::type::ConstIterator  MatrixIterator;
@@ -416,6 +419,8 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
    template< typename VT1 >  // Type of the target sparse vector
    friend inline void assign( SparseVector<VT1,false>& lhs, const SMatSVecMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+      
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       typedef typename boost::remove_reference<LT>::type::ConstIterator  MatrixIterator;
@@ -505,6 +510,8 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
    template< typename VT1 >  // Type of the target dense vector
    friend inline void addAssign( DenseVector<VT1,false>& lhs, const SMatSVecMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+      
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       typedef typename boost::remove_reference<LT>::type::ConstIterator  MatrixIterator;
@@ -576,6 +583,8 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
    template< typename VT1 >  // Type of the target dense vector
    friend inline void subAssign( DenseVector<VT1,false>& lhs, const SMatSVecMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+      
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       typedef typename boost::remove_reference<LT>::type::ConstIterator  MatrixIterator;
@@ -647,6 +656,8 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
    template< typename VT1 >  // Type of the target dense vector
    friend inline void multAssign( DenseVector<VT1,false>& lhs, const SMatSVecMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+      
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -719,6 +730,8 @@ template< typename T1    // Type of the left-hand side sparse matrix
 inline const typename DisableIf< IsMatMatMultExpr<T1>, SMatSVecMultExpr<T1,T2> >::Type
    operator*( const SparseMatrix<T1,false>& mat, const SparseVector<T2,false>& vec )
 {
+   BLAZE_FUNCTION_TRACE;
+      
    if( (~mat).columns() != (~vec).size() )
       throw std::invalid_argument( "Matrix and vector sizes do not match" );
 
@@ -754,6 +767,8 @@ template< typename T1    // Type of the left-hand side sparse matrix
 inline const typename EnableIf< IsMatMatMultExpr<T1>, MultExprTrait<T1,T2> >::Type::Type
    operator*( const SparseMatrix<T1,SO>& mat, const SparseVector<T2,false>& vec )
 {
+   BLAZE_FUNCTION_TRACE;
+      
    return (~mat).leftOperand() * ( (~mat).rightOperand() * vec );
 }
 //*************************************************************************************************
