@@ -33,6 +33,7 @@
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/Types.h>
 
 
@@ -77,6 +78,8 @@ template< typename T1    // Type of the left-hand side sparse vector
 inline const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type
    operator*( const SparseVector<T1,true>& lhs, const SparseVector<T2,false>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    using boost::remove_reference;
 
    typedef typename T1::CompositeType            Lhs;            // Composite type of the left-hand side sparse vector expression

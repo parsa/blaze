@@ -48,6 +48,7 @@
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 
@@ -226,6 +227,8 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
    friend inline typename EnableIf< IsResizable<typename VT::ElementType> >::Type
       assign( DenseVector<VT,TF>& lhs, const SVecSVecSubExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       typedef typename boost::remove_reference<CT1>::type::ConstIterator  LeftIterator;
@@ -272,6 +275,8 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
    friend inline typename DisableIf< IsResizable<typename VT::ElementType> >::Type
       assign( DenseVector<VT,TF>& lhs, const SVecSVecSubExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       typedef typename boost::remove_reference<CT1>::type::ConstIterator  LeftIterator;
@@ -313,6 +318,8 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
    template< typename VT >  // Type of the target sparse vector
    friend inline void assign( SparseVector<VT,TF>& lhs, const SVecSVecSubExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       typedef typename boost::remove_reference<CT1>::type::ConstIterator  LeftIterator;
@@ -376,6 +383,8 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
    template< typename VT >  // Type of the target dense vector
    friend inline void addAssign( DenseVector<VT,TF>& lhs, const SVecSVecSubExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       addAssign( ~lhs, rhs.lhs_ );
@@ -403,6 +412,8 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
    template< typename VT >  // Type of the target dense vector
    friend inline void subAssign( DenseVector<VT,TF>& lhs, const SVecSVecSubExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       subAssign( ~lhs, rhs.lhs_ );
@@ -430,6 +441,8 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
    template< typename VT >  // Type of the target dense vector
    friend inline void multAssign( DenseVector<VT,TF>& lhs, const SVecSVecSubExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -496,6 +509,8 @@ template< typename T1  // Type of the left-hand side sparse vector
 inline const SVecSVecSubExpr<T1,T2,TF>
    operator-( const SparseVector<T1,TF>& lhs, const SparseVector<T2,TF>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    if( (~lhs).size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 

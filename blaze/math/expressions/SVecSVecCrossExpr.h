@@ -42,6 +42,7 @@
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
+#include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 
@@ -225,6 +226,8 @@ class SVecSVecCrossExpr : public DenseVector< SVecSVecCrossExpr<VT1,VT2>, false 
    template< typename VT >  // Type of the target dense vector
    friend inline void assign( DenseVector<VT,false>& lhs, const SVecSVecCrossExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == 3UL, "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( (~rhs).size() == 3UL, "Invalid vector size" );
 
@@ -255,6 +258,8 @@ class SVecSVecCrossExpr : public DenseVector< SVecSVecCrossExpr<VT1,VT2>, false 
    template< typename VT >  // Type of the target sparse vector
    friend inline void assign( SparseVector<VT,false>& lhs, const SVecSVecCrossExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -285,6 +290,8 @@ class SVecSVecCrossExpr : public DenseVector< SVecSVecCrossExpr<VT1,VT2>, false 
    template< typename VT >  // Type of the target dense vector
    friend inline void addAssign( DenseVector<VT,false>& lhs, const SVecSVecCrossExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == 3UL, "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( (~rhs).size() == 3UL, "Invalid vector size" );
 
@@ -319,6 +326,8 @@ class SVecSVecCrossExpr : public DenseVector< SVecSVecCrossExpr<VT1,VT2>, false 
    template< typename VT >  // Type of the target dense vector
    friend inline void subAssign( DenseVector<VT,false>& lhs, const SVecSVecCrossExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == 3UL, "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( (~rhs).size() == 3UL, "Invalid vector size" );
 
@@ -353,6 +362,8 @@ class SVecSVecCrossExpr : public DenseVector< SVecSVecCrossExpr<VT1,VT2>, false 
    template< typename VT >  // Type of the target dense vector
    friend inline void multAssign( DenseVector<VT,false>& lhs, const SVecSVecCrossExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == 3UL, "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( (~rhs).size() == 3UL, "Invalid vector size" );
 
@@ -420,6 +431,8 @@ template< typename T1    // Type of the left-hand side sparse vector
 inline const SVecSVecCrossExpr<T1,T2>
    operator%( const SparseVector<T1,false>& lhs, const SparseVector<T2,false>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    if( (~lhs).size() != 3UL || (~rhs).size() != 3UL )
       throw std::invalid_argument( "Invalid vector size for cross product" );
 
