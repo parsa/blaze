@@ -34,6 +34,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsSame.h>
 
@@ -115,6 +116,8 @@ inline typename DisableIf< TDVecDVecMultExprHelper<T1,T2>,
                            const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type >::Type
    operator*( const DenseVector<T1,true>& lhs, const DenseVector<T2,false>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    if( (~lhs).size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
@@ -173,6 +176,8 @@ inline typename EnableIf< TDVecDVecMultExprHelper<T1,T2>,
                           const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type >::Type
    operator*( const DenseVector<T1,true>& lhs, const DenseVector<T2,false>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    if( (~lhs).size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
