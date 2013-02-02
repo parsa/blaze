@@ -277,6 +277,8 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       assign( DenseMatrix<MT2,false>& lhs, const DMatScalarMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -311,6 +313,8 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       assign( DenseMatrix<MT2,true>& lhs, const DMatScalarMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -345,6 +349,8 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       assign( SparseMatrix<MT2,false>& lhs, const DMatScalarMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -380,6 +386,8 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       assign( SparseMatrix<MT2,true>& lhs, const DMatScalarMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -416,6 +424,8 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       addAssign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -452,6 +462,8 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       subAssign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -519,6 +531,8 @@ template< typename MT  // Type of the dense matrix
 inline const DMatScalarMultExpr<MT,typename BaseElementType<MT>::Type,SO>
    operator-( const DenseMatrix<MT,SO>& dm )
 {
+   BLAZE_FUNCTION_TRACE;
+
    typedef typename BaseElementType<MT>::Type  ElementType;
    return DMatScalarMultExpr<MT,ElementType,SO>( ~dm, ElementType(-1) );
 }
@@ -560,6 +574,8 @@ template< typename T1    // Type of the left-hand side dense matrix
 inline const typename EnableIf< IsNumeric<T2>, typename MultExprTrait<T1,T2>::Type >::Type
    operator*( const DenseMatrix<T1,SO>& mat, T2 scalar )
 {
+   BLAZE_FUNCTION_TRACE;
+
    typedef typename MultExprTrait<T1,T2>::Type  Type;
    return Type( ~mat, scalar );
 }
@@ -593,6 +609,8 @@ template< typename T1  // Type of the left-hand side scalar
 inline const typename EnableIf< IsNumeric<T1>, typename MultExprTrait<T1,T2>::Type >::Type
    operator*( T1 scalar, const DenseMatrix<T2,SO>& mat )
 {
+   BLAZE_FUNCTION_TRACE;
+
    typedef typename MultExprTrait<T1,T2>::Type  Type;
    return Type( ~mat, scalar );
 }
@@ -625,6 +643,8 @@ template< typename VT  // Type of the dense matrix
 inline const DMatScalarMultExpr<VT,ST,TF>
    operator-( const DMatScalarMultExpr<VT,ST,TF>& dm )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return DMatScalarMultExpr<VT,ST,TF>( dm.leftOperand(), -dm.rightOperand() );
 }
 /*! \endcond */
@@ -660,6 +680,8 @@ inline const typename EnableIf< IsNumeric<ST2>
                               , typename MultExprTrait< DMatScalarMultExpr<MT,ST1,SO>, ST2 >::Type >::Type
    operator*( const DMatScalarMultExpr<MT,ST1,SO>& mat, ST2 scalar )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return mat.leftOperand() * ( mat.rightOperand() * scalar );
 }
 /*! \endcond */
@@ -687,6 +709,8 @@ inline const typename EnableIf< IsNumeric<ST1>
                               , typename MultExprTrait< ST1, DMatScalarMultExpr<MT,ST2,SO> >::Type >::Type
    operator*( ST1 scalar, const DMatScalarMultExpr<MT,ST2,SO>& mat )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return mat.leftOperand() * ( scalar * mat.rightOperand() );
 }
 /*! \endcond */
@@ -714,6 +738,8 @@ inline const typename EnableIf< IsFloatingPoint<typename DivTrait<ST1,ST2>::Type
                               , typename DivExprTrait< DMatScalarMultExpr<MT,ST1,SO>, ST2 >::Type >::Type
    operator/( const DMatScalarMultExpr<MT,ST1,SO>& mat, ST2 scalar )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return mat.leftOperand() * ( mat.rightOperand() / scalar );
 }
 /*! \endcond */
@@ -741,6 +767,8 @@ template< typename MT    // Type of the dense matrix of the left-hand side expre
 inline const typename MultExprTrait< DMatScalarMultExpr<MT,ST,SO>, VT >::Type
    operator*( const DMatScalarMultExpr<MT,ST,SO>& mat, const DenseVector<VT,false>& vec )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( mat.leftOperand() * (~vec) ) * mat.rightOperand();
 }
 /*! \endcond */
@@ -768,6 +796,8 @@ template< typename VT  // Type of the left-hand side dense vector
 inline const typename MultExprTrait< VT, DMatScalarMultExpr<MT,ST,SO> >::Type
    operator*( const DenseVector<VT,true>& vec, const DMatScalarMultExpr<MT,ST,SO>& mat )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( (~vec) * mat.leftOperand() ) * mat.rightOperand();
 }
 /*! \endcond */
@@ -798,6 +828,8 @@ template< typename MT     // Type of the dense matrix of the left-hand side expr
 inline const DVecScalarMultExpr<typename MultExprTrait<MT,VT>::Type,typename MultTrait<ST1,ST2>::Type,false>
    operator*( const DMatScalarMultExpr<MT,ST1,SO>& mat, const DVecScalarMultExpr<VT,ST2,false>& vec )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( mat.leftOperand() * vec.leftOperand() ) * ( mat.rightOperand() * vec.rightOperand() );
 }
 /*! \endcond */
@@ -828,6 +860,8 @@ template< typename VT   // Type of the dense vector of the left-hand side expres
 inline const typename MultExprTrait< DVecScalarMultExpr<VT,ST1,true>, DMatScalarMultExpr<MT,ST2,SO> >::Type
    operator*( const DVecScalarMultExpr<VT,ST1,true>& vec, const DMatScalarMultExpr<MT,ST2,SO>& mat )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( vec.leftOperand() * mat.leftOperand() ) * ( vec.rightOperand() * mat.rightOperand() );
 }
 /*! \endcond */
@@ -855,6 +889,8 @@ template< typename MT    // Type of the dense matrix of the left-hand side expre
 inline const typename MultExprTrait< DMatScalarMultExpr<MT,ST,SO>, VT >::Type
    operator*( const DMatScalarMultExpr<MT,ST,SO>& mat, const SparseVector<VT,false>& vec )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( mat.leftOperand() * (~vec) ) * mat.rightOperand();
 }
 /*! \endcond */
@@ -882,6 +918,8 @@ template< typename VT  // Type of the left-hand side sparse vector
 inline const typename MultExprTrait< VT, DMatScalarMultExpr<MT,ST,SO> >::Type
    operator*( const SparseVector<VT,true>& vec, const DMatScalarMultExpr<MT,ST,SO>& mat )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( (~vec) * mat.leftOperand() ) * mat.rightOperand();
 }
 /*! \endcond */
@@ -912,6 +950,8 @@ template< typename MT     // Type of the dense matrix of the left-hand side expr
 inline const typename MultExprTrait< DMatScalarMultExpr<MT,ST1,SO>, SVecScalarMultExpr<VT,ST2,false> >::Type
    operator*( const DMatScalarMultExpr<MT,ST1,SO>& mat, const SVecScalarMultExpr<VT,ST2,false>& vec )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( mat.leftOperand() * vec.leftOperand() ) * ( mat.rightOperand() * vec.rightOperand() );
 }
 /*! \endcond */
@@ -942,6 +982,8 @@ template< typename VT   // Type of the sparse vector of the left-hand side expre
 inline const typename MultExprTrait< SVecScalarMultExpr<VT,ST1,true>, DMatScalarMultExpr<MT,ST2,SO> >::Type
    operator*( const SVecScalarMultExpr<VT,ST1,true>& vec, const DMatScalarMultExpr<MT,ST2,SO>& mat )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( vec.leftOperand() * mat.leftOperand() ) * ( vec.rightOperand() * mat.rightOperand() );
 }
 /*! \endcond */
@@ -970,6 +1012,8 @@ template< typename MT1  // Type of the dense matrix of the left-hand side expres
 inline const typename MultExprTrait< DMatScalarMultExpr<MT1,ST,SO1>, MT2 >::Type
    operator*( const DMatScalarMultExpr<MT1,ST,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( lhs.leftOperand() * (~rhs) ) * lhs.rightOperand();
 }
 /*! \endcond */
@@ -998,6 +1042,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
 inline const typename MultExprTrait< MT1, DMatScalarMultExpr<MT2,ST,SO2> >::Type
    operator*( const DenseMatrix<MT1,SO1>& lhs, const DMatScalarMultExpr<MT2,ST,SO2>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( (~lhs) * rhs.leftOperand() ) * rhs.rightOperand();
 }
 /*! \endcond */
@@ -1027,6 +1073,8 @@ template< typename MT1  // Type of the dense matrix of the left-hand side expres
 inline const typename MultExprTrait< DMatScalarMultExpr<MT1,ST1,SO1>, DMatScalarMultExpr<MT2,ST2,SO2> >::Type
    operator*( const DMatScalarMultExpr<MT1,ST1,SO1>& lhs, const DMatScalarMultExpr<MT2,ST2,SO2>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( lhs.leftOperand() * rhs.leftOperand() ) * ( lhs.rightOperand() * rhs.rightOperand() );
 }
 /*! \endcond */
@@ -1055,6 +1103,8 @@ template< typename MT1    // Type of the dense matrix of the left-hand side expr
 inline const typename MultExprTrait< DMatScalarMultExpr<MT1,ST,SO1>, MT2 >::Type
    operator*( const DMatScalarMultExpr<MT1,ST,SO1>& lhs, const SparseMatrix<MT2,SO2>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( lhs.leftOperand() * (~rhs) ) * lhs.rightOperand();
 }
 /*! \endcond */
@@ -1083,6 +1133,8 @@ template< typename MT1    // Type of the left-hand side sparse matrix
 inline const typename MultExprTrait< MT1, DMatScalarMultExpr<MT2,ST,SO2> >::Type
    operator*( const SparseMatrix<MT1,SO1>& lhs, const DMatScalarMultExpr<MT2,ST,SO2>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( (~lhs) * rhs.leftOperand() ) * rhs.rightOperand();
 }
 /*! \endcond */
@@ -1113,6 +1165,8 @@ template< typename MT1  // Type of the dense matrix of the left-hand side expres
 inline const typename MultExprTrait< DMatScalarMultExpr<MT1,ST1,SO1>, SMatScalarMultExpr<MT2,ST2,SO2> >::Type
    operator*( const DMatScalarMultExpr<MT1,ST1,SO1>& mat, const SMatScalarMultExpr<MT2,ST2,SO2>& vec )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( mat.leftOperand() * vec.leftOperand() ) * ( mat.rightOperand() * vec.rightOperand() );
 }
 /*! \endcond */
@@ -1143,6 +1197,8 @@ template< typename MT1  // Type of the sparse matrix of the left-hand side expre
 inline const typename MultExprTrait< SMatScalarMultExpr<MT1,ST1,SO1>, DMatScalarMultExpr<MT2,ST2,SO2> >::Type
    operator*( const SMatScalarMultExpr<MT1,ST1,SO1>& mat, const DMatScalarMultExpr<MT2,ST2,SO2>& vec )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return ( mat.leftOperand() * vec.leftOperand() ) * ( mat.rightOperand() * vec.rightOperand() );
 }
 /*! \endcond */

@@ -227,6 +227,8 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       assign( DenseMatrix<MT2,SO2>& lhs, const DMatTransExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -255,6 +257,8 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       assign( SparseMatrix<MT2,SO2>& lhs, const DMatTransExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       typedef typename SelectType< SO == SO2, ResultType, OppositeType >::Type  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
@@ -292,6 +296,8 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       addAssign( DenseMatrix<MT2,SO2>& lhs, const DMatTransExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -324,6 +330,8 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       subAssign( DenseMatrix<MT2,SO2>& lhs, const DMatTransExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -365,6 +373,8 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
            , bool SO2 >    // Storage order of the dense matrix
    friend inline Operand trans( const DMatTransExpr<MT2,SO2>& dm )
    {
+      BLAZE_FUNCTION_TRACE;
+
       return dm.dm_;
    }
    /*! \endcond */
@@ -408,6 +418,8 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline const DMatTransExpr<MT,!SO> trans( const DenseMatrix<MT,SO>& dm )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return DMatTransExpr<MT,!SO>( ~dm );
 }
 //*************************************************************************************************

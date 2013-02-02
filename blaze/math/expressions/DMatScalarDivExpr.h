@@ -301,6 +301,8 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       assign( DenseMatrix<MT2,false>& lhs, const DMatScalarDivExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -328,6 +330,8 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       assign( DenseMatrix<MT2,true>& lhs, const DMatScalarDivExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -355,6 +359,8 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       assign( SparseMatrix<MT2,false>& lhs, const DMatScalarDivExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -390,6 +396,8 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       assign( SparseMatrix<MT2,true>& lhs, const DMatScalarDivExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -426,6 +434,8 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       addAssign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarDivExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -462,6 +472,8 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       subAssign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarDivExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -538,6 +550,8 @@ inline const typename EnableIf< IsNumeric<T2>
                               , typename DMatScalarDivExprHelper<T1,T2,SO>::Type >::Type
    operator/( const DenseMatrix<T1,SO>& mat, T2 scalar )
 {
+   BLAZE_FUNCTION_TRACE;
+
    BLAZE_USER_ASSERT( scalar != T2(0), "Division by zero detected" );
 
    typedef DMatScalarDivExprHelper<T1,T2,SO>  Helper;
@@ -582,6 +596,8 @@ inline const typename EnableIf< IsFloatingPoint< typename DivTrait<ST2,ST1>::Typ
                               , typename MultExprTrait< DMatScalarDivExpr<MT,ST1,SO>, ST2 >::Type >::Type
    operator*( const DMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return mat.leftOperand() * ( scalar / mat.rightOperand() );
 }
 /*! \endcond */
@@ -609,6 +625,8 @@ inline const typename EnableIf< IsFloatingPoint< typename DivTrait<ST1,ST2>::Typ
                               , typename MultExprTrait< ST1, DMatScalarDivExpr<MT,ST2,SO> >::Type >::Type
    operator*( ST1 scalar, const DMatScalarDivExpr<MT,ST2,SO>& mat )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return mat.leftOperand() * ( scalar / mat.rightOperand() );
 }
 /*! \endcond */
@@ -636,6 +654,8 @@ inline const typename EnableIf< IsNumeric<ST2>
                               , typename DMatScalarDivExprHelper<MT,typename MultTrait<ST1,ST2>::Type,SO>::Type >::Type
    operator/( const DMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
 {
+   BLAZE_FUNCTION_TRACE;
+
    BLAZE_USER_ASSERT( scalar != ST2(0), "Division by zero detected" );
 
    typedef typename MultTrait<ST1,ST2>::Type        MultType;

@@ -222,6 +222,8 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       assign( DenseMatrix<MT2,false>& lhs, const DMatAbsExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       using std::abs;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
@@ -259,6 +261,8 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       assign( DenseMatrix<MT2,true>& lhs, const DMatAbsExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       using std::abs;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
@@ -297,6 +301,8 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       assign( SparseMatrix<MT2,SO2>& lhs, const DMatAbsExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       typedef typename SelectType< SO == SO2, ResultType, OppositeType >::Type  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
@@ -334,6 +340,8 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       addAssign( DenseMatrix<MT2,SO2>& lhs, const DMatAbsExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -370,6 +378,8 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       subAssign( DenseMatrix<MT2,SO2>& lhs, const DMatAbsExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -434,6 +444,8 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline const DMatAbsExpr<MT,SO> abs( const DenseMatrix<MT,SO>& dm )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return DMatAbsExpr<MT,SO>( ~dm );
 }
 //*************************************************************************************************
@@ -462,6 +474,8 @@ template< typename MT  // Type of the dense matrix
         , bool TF >    // Transpose flag
 inline const DMatAbsExpr<MT,TF>& abs( const DMatAbsExpr<MT,TF>& dm )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return dm;
 }
 /*! \endcond */
