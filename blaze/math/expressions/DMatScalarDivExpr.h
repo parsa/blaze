@@ -52,6 +52,7 @@
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
+#include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
