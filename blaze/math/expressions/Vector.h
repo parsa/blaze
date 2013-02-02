@@ -28,6 +28,7 @@
 //*************************************************************************************************
 
 #include <blaze/util/Assert.h>
+#include <blaze/util/logging/FunctionTrace.h>
 
 
 namespace blaze {
@@ -146,6 +147,8 @@ template< typename VT1  // Type of the left-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
 inline void assign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+   
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
    (~lhs).assign( ~rhs );
 }
@@ -172,6 +175,8 @@ template< typename VT1  // Type of the left-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
 inline void addAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+   
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
    (~lhs).addAssign( ~rhs );
 }
@@ -198,6 +203,8 @@ template< typename VT1  // Type of the left-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
 inline void subAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+   
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
    (~lhs).subAssign( ~rhs );
 }
@@ -224,6 +231,8 @@ template< typename VT1  // Type of the left-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
 inline void multAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+   
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
    (~lhs).multAssign( ~rhs );
 }

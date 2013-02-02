@@ -28,6 +28,7 @@
 //*************************************************************************************************
 
 #include <blaze/util/Assert.h>
+#include <blaze/util/logging/FunctionTrace.h>
 
 
 namespace blaze {
@@ -164,6 +165,8 @@ template< typename MT1  // Type of the left-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
 inline void assign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+   
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
@@ -192,6 +195,8 @@ template< typename MT1  // Type of the left-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
 inline void addAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+   
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
@@ -220,6 +225,8 @@ template< typename MT1  // Type of the left-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
 inline void subAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+   
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
@@ -248,6 +255,8 @@ template< typename MT1  // Type of the left-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
 inline void multAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
+   BLAZE_FUNCTION_TRACE;
+   
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).rows(), "Invalid matrix sizes" );
 
    (~lhs).multAssign( ~rhs );
