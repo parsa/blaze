@@ -396,6 +396,8 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       assign( DenseMatrix<MT2,SO2>& lhs, const SMatAbsExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+      
       using std::abs;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
@@ -433,6 +435,8 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       assign( SparseMatrix<MT2,false>& lhs, const SMatAbsExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+      
       using std::abs;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
@@ -472,6 +476,8 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       assign( SparseMatrix<MT2,true>& lhs, const SMatAbsExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+      
       using std::abs;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
@@ -512,6 +518,8 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       addAssign( DenseMatrix<MT2,SO2>& lhs, const SMatAbsExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+      
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
 
@@ -547,6 +555,8 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    friend inline typename EnableIf< UseAssign<MT2> >::Type
       subAssign( DenseMatrix<MT2,SO2>& lhs, const SMatAbsExpr& rhs )
    {
+      BLAZE_FUNCTION_TRACE;
+      
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
 
@@ -610,6 +620,8 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline const SMatAbsExpr<MT,SO> abs( const SparseMatrix<MT,SO>& sm )
 {
+   BLAZE_FUNCTION_TRACE;
+      
    return SMatAbsExpr<MT,SO>( ~sm );
 }
 //*************************************************************************************************
@@ -638,6 +650,8 @@ template< typename MT  // Type of the sparse matrix
         , bool TF >    // Transpose flag
 inline const SMatAbsExpr<MT,TF>& abs( const SMatAbsExpr<MT,TF>& sm )
 {
+   BLAZE_FUNCTION_TRACE;
+      
    return sm;
 }
 /*! \endcond */
