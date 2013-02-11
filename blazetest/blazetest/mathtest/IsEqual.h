@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blazetest/util/IsEqual.h
+//  \file blazetest/mathtest/IsEqual.h
 //  \brief Header file for the isEqual comparison
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_UTIL_ISEQUAL_H_
-#define _BLAZETEST_UTIL_ISEQUAL_H_
+#ifndef _BLAZETEST_MATHTEST_ISEQUAL_H_
+#define _BLAZETEST_MATHTEST_ISEQUAL_H_
 
 
 //*************************************************************************************************
