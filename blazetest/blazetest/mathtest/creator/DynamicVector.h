@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/util/creator/StaticMatrix.h
-//  \brief Specialization of the Creator class template for StaticMatrix
+//  \file blazetest/mathtest/creator/DynamicVector.h
+//  \brief Specialization of the Creator class template for DynamicVector
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,16 +19,17 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_UTIL_CREATOR_STATICMATRIX_H_
-#define _BLAZETEST_UTIL_CREATOR_STATICMATRIX_H_
+#ifndef _BLAZETEST_MATHTEST_CREATOR_DYNAMICVECTOR_H_
+#define _BLAZETEST_MATHTEST_CREATOR_DYNAMICVECTOR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/StaticMatrix.h>
-#include <blazetest/util/creator/Default.h>
+#include <blaze/math/DynamicVector.h>
+#include <blazetest/mathtest/creator/Default.h>
+#include <blazetest/system/Types.h>
 
 
 namespace blazetest {
@@ -40,25 +41,25 @@ namespace blazetest {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Specialization of the Creator class template for static matrices.
+/*!\brief Specialization of the Creator class template for N-dimensional vectors.
 //
-// This specialization of the Creator class template is able to create random static matrices.
+// This specialization of the Creator class template is able to create random N-dimensional
+// vectors.
 */
-template< typename T  // Element type of the static matrix
-        , size_t M    // Number of rows of the static matrix
-        , size_t N    // Number of columns of the static matrix
-        , bool SO >   // Storage order of the static matrix
-class Creator< blaze::StaticMatrix<T,M,N,SO> >
+template< typename T  // Element type of the N-dimensional vector
+        , bool TF >   // Transpose flag of the N-dimensional vector
+class Creator< blaze::DynamicVector<T,TF> >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef blaze::StaticMatrix<T,M,N,SO>  Type;  //!< Type to be created by the Creator.
+   typedef blaze::DynamicVector<T,TF>  Type;  //!< Type to be created by the Creator.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
    explicit inline Creator( const Creator<T>& elementCreator = Creator<T>() );
+   explicit inline Creator( size_t size, const Creator<T>& elementCreator = Creator<T>() );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -71,7 +72,7 @@ class Creator< blaze::StaticMatrix<T,M,N,SO> >
    /*!\name Operators */
    //@{
    // No explicitly declared copy assignment operator.
-   const blaze::StaticMatrix<T,M,N,SO> operator()() const;
+   const blaze::DynamicVector<T,TF> operator()() const;
    //@}
    //**********************************************************************************************
 
@@ -79,7 +80,8 @@ class Creator< blaze::StaticMatrix<T,M,N,SO> >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   Creator<T> ec_;  //!< Creator for the elements of the static matrix.
+   size_t size_;    //!< The size for the N-dimensional vector.
+   Creator<T> ec_;  //!< Creator for the elements of the N-dimensional vector.
    //@}
    //**********************************************************************************************
 };
@@ -95,16 +97,30 @@ class Creator< blaze::StaticMatrix<T,M,N,SO> >
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the creator specialization for StaticMatrix.
+/*!\brief Constructor for the creator specialization for DynamicVector.
 //
-// \param elementCreator The creator for the elements of the static matrix.
+// \param elementCreator The creator for the elements of the N-dimensional vector.
 */
-template< typename T  // Element type of the static matrix
-        , size_t M    // Number of rows of the static matrix
-        , size_t N    // Number of columns of the static matrix
-        , bool SO >   // Storage order of the static matrix
-inline Creator< blaze::StaticMatrix<T,M,N,SO> >::Creator( const Creator<T>& elementCreator )
-   : ec_( elementCreator )  // Creator for the elements of the static matrix
+template< typename T  // Element type of the N-dimensional vector
+        , bool TF >   // Transpose flag of the N-dimensional vector
+inline Creator< blaze::DynamicVector<T,TF> >::Creator( const Creator<T>& elementCreator )
+   : size_( 3UL )           // The size for the N-dimensional vector
+   , ec_( elementCreator )  // Creator for the elements of the N-dimensional vector
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Constructor for the creator specialization for DynamicVector.
+//
+// \param size The size for the N-dimensional vector.
+// \param elementCreator The creator for the elements of the N-dimensional vector.
+*/
+template< typename T  // Element type of the N-dimensional vector
+        , bool TF >   // Transpose flag of the N-dimensional vector
+inline Creator< blaze::DynamicVector<T,TF> >::Creator( size_t size, const Creator<T>& elementCreator )
+   : size_( size )          // The size for the N-dimensional vector
+   , ec_( elementCreator )  // Creator for the elements of the N-dimensional vector
 {}
 //*************************************************************************************************
 
@@ -118,33 +134,18 @@ inline Creator< blaze::StaticMatrix<T,M,N,SO> >::Creator( const Creator<T>& elem
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Returns a randomly created static matrix.
+/*!\brief Returns a randomly created N-dimensional vector.
 //
-// \return The randomly generated static matrix.
+// \return The randomly generated N-dimensional vector.
 */
-template< typename T  // Element type of the static matrix
-        , size_t M    // Number of rows of the static matrix
-        , size_t N    // Number of columns of the static matrix
-        , bool SO >   // Storage order of the static matrix
-inline const blaze::StaticMatrix<T,M,N,SO> Creator< blaze::StaticMatrix<T,M,N,SO> >::operator()() const
+template< typename T  // Element type of the N-dimensional vector
+        , bool TF >   // Transpose flag of the N-dimensional vector
+inline const blaze::DynamicVector<T,TF> Creator< blaze::DynamicVector<T,TF> >::operator()() const
 {
-   blaze::StaticMatrix<T,M,N,SO> matrix;
-
-   // Initialization of a column-major matrix
-   if( SO ) {
-      for( size_t j=0UL; j<N; ++j )
-         for( size_t i=0UL; i<M; ++i )
-            matrix(i,j) = ec_();
-   }
-
-   // Initialization of a row-major matrix
-   else {
-      for( size_t i=0UL; i<M; ++i )
-         for( size_t j=0UL; j<N; ++j )
-            matrix(i,j) = ec_();
-   }
-
-   return matrix;
+   blaze::DynamicVector<T,TF> vector( size_ );
+   for( size_t i=0; i<size_; ++i )
+      vector[i] = ec_();
+   return vector;
 }
 //*************************************************************************************************
 

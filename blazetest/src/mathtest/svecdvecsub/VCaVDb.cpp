@@ -28,9 +28,9 @@
 #include <iostream>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/DynamicVector.h>
+#include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/SVecDVecSub.h>
 #include <blazetest/system/MathTest.h>
-#include <blazetest/util/Creator.h>
 
 
 //=================================================================================================

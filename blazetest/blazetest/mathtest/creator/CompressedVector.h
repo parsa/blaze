@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/util/creator/DynamicVector.h
-//  \brief Specialization of the Creator class template for DynamicVector
+//  \file blazetest/mathtest/creator/CompressedVector.h
+//  \brief Specialization of the Creator class template for CompressedVector
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,16 +19,18 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_UTIL_CREATOR_DYNAMICVECTOR_H_
-#define _BLAZETEST_UTIL_CREATOR_DYNAMICVECTOR_H_
+#ifndef _BLAZETEST_MATHTEST_CREATOR_COMPRESSEDVECTOR_H_
+#define _BLAZETEST_MATHTEST_CREATOR_COMPRESSEDVECTOR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/DynamicVector.h>
-#include <blazetest/util/creator/Default.h>
+#include <stdexcept>
+#include <blaze/math/CompressedVector.h>
+#include <blaze/util/Random.h>
+#include <blazetest/mathtest/creator/Default.h>
 #include <blazetest/system/Types.h>
 
 
@@ -41,25 +43,26 @@ namespace blazetest {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Specialization of the Creator class template for N-dimensional vectors.
+/*!\brief Specialization of the Creator class template for N-dimensional compressed vectors.
 //
 // This specialization of the Creator class template is able to create random N-dimensional
-// vectors.
+// compressed vectors.
 */
-template< typename T  // Element type of the N-dimensional vector
-        , bool TF >   // Transpose flag of the N-dimensional vector
-class Creator< blaze::DynamicVector<T,TF> >
+template< typename T  // Element type of the N-dimensional compressed vector
+        , bool TF >   // Transpose flag of the N-dimensional compressed vector
+class Creator< blaze::CompressedVector<T,TF> >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef blaze::DynamicVector<T,TF>  Type;  //!< Type to be created by the Creator.
+   typedef blaze::CompressedVector<T,TF>  Type;  //!< Type to be created by the Creator.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
    explicit inline Creator( const Creator<T>& elementCreator = Creator<T>() );
-   explicit inline Creator( size_t size, const Creator<T>& elementCreator = Creator<T>() );
+   explicit inline Creator( size_t size, size_t nonzeros,
+                            const Creator<T>& elementCreator = Creator<T>() );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -72,7 +75,7 @@ class Creator< blaze::DynamicVector<T,TF> >
    /*!\name Operators */
    //@{
    // No explicitly declared copy assignment operator.
-   const blaze::DynamicVector<T,TF> operator()() const;
+   const blaze::CompressedVector<T,TF> operator()() const;
    //@}
    //**********************************************************************************************
 
@@ -80,8 +83,9 @@ class Creator< blaze::DynamicVector<T,TF> >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   size_t size_;    //!< The size for the N-dimensional vector.
-   Creator<T> ec_;  //!< Creator for the elements of the N-dimensional vector.
+   size_t size_;      //!< The size for the N-dimensional compressed vector.
+   size_t nonzeros_;  //!< The number of non-zero elements in the compressed vector.
+   Creator<T> ec_;    //!< Creator for the elements of the N-dimensional compressed vector.
    //@}
    //**********************************************************************************************
 };
@@ -97,31 +101,42 @@ class Creator< blaze::DynamicVector<T,TF> >
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the creator specialization for DynamicVector.
+/*!\brief Constructor for the creator specialization for CompressedVector.
 //
-// \param elementCreator The creator for the elements of the N-dimensional vector.
+// \param elementCreator The creator for the elements of the N-dimensional compressed vector.
+// \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename T  // Element type of the N-dimensional vector
-        , bool TF >   // Transpose flag of the N-dimensional vector
-inline Creator< blaze::DynamicVector<T,TF> >::Creator( const Creator<T>& elementCreator )
-   : size_( 3UL )           // The size for the N-dimensional vector
-   , ec_( elementCreator )  // Creator for the elements of the N-dimensional vector
-{}
+template< typename T  // Element type of the N-dimensional compressed vector
+        , bool TF >   // Transpose flag of the N-dimensional compressed vector
+inline Creator< blaze::CompressedVector<T,TF> >::Creator( const Creator<T>& elementCreator )
+   : size_( 3UL )           // The size for the N-dimensional compressed vector
+   , nonzeros_( 1UL )       // The number of non-zero elements in the compressed vector
+   , ec_( elementCreator )  // Creator for the elements of the N-dimensional compressed vector
+{
+   if( size_ < nonzeros_ )
+      throw std::invalid_argument( "Invalid number of non-zero elements" );
+}
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Constructor for the creator specialization for DynamicVector.
+/*!\brief Constructor for the creator specialization for CompressedVector.
 //
-// \param size The size for the N-dimensional vector.
-// \param elementCreator The creator for the elements of the N-dimensional vector.
+// \param size The size for the N-dimensional compressed vector.
+// \param nonzeros The number of non-zero elements in the compressed vector.
+// \param elementCreator The creator for the elements of the N-dimensional compressed vector.
+// \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename T  // Element type of the N-dimensional vector
-        , bool TF >   // Transpose flag of the N-dimensional vector
-inline Creator< blaze::DynamicVector<T,TF> >::Creator( size_t size, const Creator<T>& elementCreator )
-   : size_( size )          // The size for the N-dimensional vector
-   , ec_( elementCreator )  // Creator for the elements of the N-dimensional vector
-{}
+template< typename T  // Element type of the N-dimensional compressed vector
+        , bool TF >   // Transpose flag of the N-dimensional compressed vector
+inline Creator< blaze::CompressedVector<T,TF> >::Creator( size_t size, size_t nonzeros, const Creator<T>& elementCreator )
+   : size_( size )          // The size for the N-dimensional compressed vector
+   , nonzeros_( nonzeros )  // The number of non-zero elements in the compressed vector
+   , ec_( elementCreator )  // Creator for the elements of the N-dimensional compressed vector
+{
+   if( size_ < nonzeros_ )
+      throw std::invalid_argument( "Invalid number of non-zero elements" );
+}
 //*************************************************************************************************
 
 
@@ -134,17 +149,17 @@ inline Creator< blaze::DynamicVector<T,TF> >::Creator( size_t size, const Creato
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Returns a randomly created N-dimensional vector.
+/*!\brief Returns a randomly created N-dimensional compressed vector.
 //
-// \return The randomly generated N-dimensional vector.
+// \return The randomly generated N-dimensional compressed vector.
 */
-template< typename T  // Element type of the N-dimensional vector
-        , bool TF >   // Transpose flag of the N-dimensional vector
-inline const blaze::DynamicVector<T,TF> Creator< blaze::DynamicVector<T,TF> >::operator()() const
+template< typename T  // Element type of the N-dimensional compressed vector
+        , bool TF >   // Transpose flag of the N-dimensional compressed vector
+inline const blaze::CompressedVector<T,TF> Creator< blaze::CompressedVector<T,TF> >::operator()() const
 {
-   blaze::DynamicVector<T,TF> vector( size_ );
-   for( size_t i=0; i<size_; ++i )
-      vector[i] = ec_();
+   blaze::CompressedVector<T,TF> vector( size_ );
+   while( vector.nonZeros() < nonzeros_ )
+      vector[blaze::rand<size_t>(0,size_-1)] = ec_();
    return vector;
 }
 //*************************************************************************************************

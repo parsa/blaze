@@ -27,9 +27,9 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/DynamicMatrix.h>
+#include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/DMatDMatSub.h>
 #include <blazetest/system/MathTest.h>
-#include <blazetest/util/Creator.h>
 
 
 //=================================================================================================

@@ -27,9 +27,9 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/StaticVector.h>
+#include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/DVecTDVecMult.h>
 #include <blazetest/system/MathTest.h>
-#include <blazetest/util/Creator.h>
 
 
 //=================================================================================================

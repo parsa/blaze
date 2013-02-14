@@ -28,9 +28,9 @@
 #include <iostream>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StaticVector.h>
+#include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/DMatDVecMult.h>
 #include <blazetest/system/MathTest.h>
-#include <blazetest/util/Creator.h>
 
 
 //=================================================================================================

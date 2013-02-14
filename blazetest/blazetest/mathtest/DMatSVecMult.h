@@ -45,7 +45,7 @@
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blazetest/system/MathTest.h>
-#include <blazetest/util/Creator.h>
+#include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/IsEqual.h>
 
 

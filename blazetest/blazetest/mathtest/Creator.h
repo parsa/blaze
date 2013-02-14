@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blazetest/util/Creator.h
+//  \file blazetest/mathtest/Creator.h
 //  \brief Header file for the Creator class template
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
@@ -19,21 +19,21 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_UTIL_CREATOR_H_
-#define _BLAZETEST_UTIL_CREATOR_H_
+#ifndef _BLAZETEST_MATHTEST_CREATOR_H_
+#define _BLAZETEST_MATHTEST_CREATOR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blazetest/util/creator/Complex.h>
-#include <blazetest/util/creator/CompressedMatrix.h>
-#include <blazetest/util/creator/CompressedVector.h>
-#include <blazetest/util/creator/Default.h>
-#include <blazetest/util/creator/DynamicMatrix.h>
-#include <blazetest/util/creator/DynamicVector.h>
-#include <blazetest/util/creator/StaticMatrix.h>
-#include <blazetest/util/creator/StaticVector.h>
+#include <blazetest/mathtest/creator/Complex.h>
+#include <blazetest/mathtest/creator/CompressedMatrix.h>
+#include <blazetest/mathtest/creator/CompressedVector.h>
+#include <blazetest/mathtest/creator/Default.h>
+#include <blazetest/mathtest/creator/DynamicMatrix.h>
+#include <blazetest/mathtest/creator/DynamicVector.h>
+#include <blazetest/mathtest/creator/StaticMatrix.h>
+#include <blazetest/mathtest/creator/StaticVector.h>
 
 #endif

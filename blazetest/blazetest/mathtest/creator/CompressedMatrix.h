@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/util/creator/DynamicMatrix.h
-//  \brief Specialization of the Creator class template for DynamicMatrix
+//  \file blazetest/mathtest/creator/CompressedMatrix.h
+//  \brief Specialization of the Creator class template for CompressedMatrix
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,16 +19,18 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_UTIL_CREATOR_DYNAMICMATRIX_H_
-#define _BLAZETEST_UTIL_CREATOR_DYNAMICMATRIX_H_
+#ifndef _BLAZETEST_MATHTEST_CREATOR_COMPRESSEDMATRIX_H_
+#define _BLAZETEST_MATHTEST_CREATOR_COMPRESSEDMATRIX_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/DynamicMatrix.h>
-#include <blazetest/util/creator/Default.h>
+#include <stdexcept>
+#include <blaze/math/CompressedMatrix.h>
+#include <blaze/util/Random.h>
+#include <blazetest/mathtest/creator/Default.h>
 #include <blazetest/system/Types.h>
 
 
@@ -41,26 +43,25 @@ namespace blazetest {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Specialization of the Creator class template for dynamic \f$ M \times N \f$ matrices.
+/*!\brief Specialization of the Creator class template for compressed \f$ M \times N \f$ matrices.
 //
-// This specialization of the Creator class template is able to create random \f$ M \times N \f$
-// matrices.
+// This specialization of the Creator class template is able to create random compressed matrices.
 */
-template< typename T  // Element type of the dynamic matrix
-        , bool SO >   // Storage order of the dynamic matrix
-class Creator< blaze::DynamicMatrix<T,SO> >
+template< typename T  // Element type of the compressed matrix
+        , bool SO >   // Storage order of the compressed matrix
+class Creator< blaze::CompressedMatrix<T,SO> >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef blaze::DynamicMatrix<T,SO>  Type;  //!< Type to be created by the Creator.
+   typedef blaze::CompressedMatrix<T,SO>  Type;  //!< Type to be created by the Creator.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
    explicit inline Creator( const Creator<T>& elementCreator = Creator<T>() );
-   explicit inline Creator( size_t m, size_t n, const Creator<T>& elementCreator = Creator<T>() );
-   // No explicitly declared copy constructor.
+   explicit inline Creator( size_t m, size_t n, size_t nonzeros,
+                            const Creator<T>& elementCreator = Creator<T>() );
    //@}
    //**********************************************************************************************
 
@@ -72,7 +73,7 @@ class Creator< blaze::DynamicMatrix<T,SO> >
    /*!\name Operators */
    //@{
    // No explicitly declared copy assignment operator.
-   const blaze::DynamicMatrix<T,SO> operator()() const;
+   const blaze::CompressedMatrix<T,SO> operator()() const;
    //@}
    //**********************************************************************************************
 
@@ -80,9 +81,10 @@ class Creator< blaze::DynamicMatrix<T,SO> >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   size_t m_;       //!< The number of rows of the dynamic matrix.
-   size_t n_;       //!< The number of columns of the dynamic matrix.
-   Creator<T> ec_;  //!< Creator for the elements of the dynamic matrix.
+   size_t m_;         //!< The number of rows of the compressed matrix.
+   size_t n_;         //!< The number of columns of the compressed matrix.
+   size_t nonzeros_;  //!< The number of non-zero elements in the compressed matrix.
+   Creator<T> ec_;    //!< Creator for the elements of the compressed matrix.
    //@}
    //**********************************************************************************************
 };
@@ -98,34 +100,46 @@ class Creator< blaze::DynamicMatrix<T,SO> >
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the creator specialization for DynamicMatrix.
+/*!\brief Constructor for the creator specialization for CompressedMatrix.
 //
-// \param elementCreator The creator for the elements of the dynamic matrix.
+// \param elementCreator The creator for the elements of the compressed matrix.
+// \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename T  // Element type of the dynamic matrix
-        , bool SO >   // Storage order of the dynamic matrix
-inline Creator< blaze::DynamicMatrix<T,SO> >::Creator( const Creator<T>& elementCreator )
-   : m_( 3UL )              // The number of rows of the dynamic matrix
-   , n_( 3UL )              // The number of columns of the dynamic matrix
-   , ec_( elementCreator )  // Creator for the elements of the dynamic matrix
-{}
+template< typename T  // Element type of the compressed matrix
+        , bool SO >   // Storage order of the compressed matrix
+inline Creator< blaze::CompressedMatrix<T,SO> >::Creator( const Creator<T>& elementCreator )
+   : m_( 3UL )              // The number of rows of the compressed matrix
+   , n_( 3UL )              // The number of columns of the compressed matrix
+   , nonzeros_( 3UL )       // The total number of non-zero elements in the compressed matrix
+   , ec_( elementCreator )  // Creator for the elements of the compressed matrix
+{
+   if( m_ * n_ < nonzeros_ )
+      throw std::invalid_argument( "Invalid number of non-zero elements" );
+}
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Constructor for the creator specialization for DynamicMatrix.
+/*!\brief Constructor for the creator specialization for CompressedMatrix.
 //
-// \param m The number of rows of the dynamic matrix.
-// \param n The number of columns of the dynamic matrix.
-// \param elementCreator The creator for the elements of the dynamic matrix.
+// \param m The number of rows of the compressed matrix.
+// \param n The number of columns of the compressed matrix.
+// \param nonzeros The number of non-zero elements in the compressed matrix.
+// \param elementCreator The creator for the elements of the compressed matrix.
+// \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename T  // Element type of the dynamic matrix
-        , bool SO >   // Storage order of the dynamic matrix
-inline Creator< blaze::DynamicMatrix<T,SO> >::Creator( size_t m, size_t n, const Creator<T>& elementCreator )
-   : m_( m )                // The number of rows of the dynamic matrix
-   , n_( n )                // The number of columns of the dynamic matrix
-   , ec_( elementCreator )  // Creator for the elements of the dynamic matrix
-{}
+template< typename T  // Element type of the compressed matrix
+        , bool SO >   // Storage order of the compressed matrix
+inline Creator< blaze::CompressedMatrix<T,SO> >::Creator( size_t m, size_t n, size_t nonzeros,
+                                                          const Creator<T>& elementCreator )
+   : m_( m )                // The number of rows of the compressed matrix
+   , n_( n )                // The number of columns of the compressed matrix
+   , nonzeros_( nonzeros )  // The total number of non-zero elements in the compressed matrix
+   , ec_( elementCreator )  // Creator for the elements of the compressed matrix
+{
+   if( m_ * n_ < nonzeros_ )
+      throw std::invalid_argument( "Invalid number of non-zero elements" );
+}
 //*************************************************************************************************
 
 
@@ -138,30 +152,17 @@ inline Creator< blaze::DynamicMatrix<T,SO> >::Creator( size_t m, size_t n, const
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Returns a randomly created dynamic matrix.
+/*!\brief Returns a randomly created compressed matrix.
 //
-// \return The randomly generated dynamic matrix.
+// \return The randomly generated compressed matrix.
 */
-template< typename T  // Element type of the dynamic matrix
-        , bool SO >   // Storage order of the dynamic matrix
-inline const blaze::DynamicMatrix<T,SO> Creator< blaze::DynamicMatrix<T,SO> >::operator()() const
+template< typename T  // Element type of the compressed matrix
+        , bool SO >   // Storage order of the compressed matrix
+inline const blaze::CompressedMatrix<T,SO> Creator< blaze::CompressedMatrix<T,SO> >::operator()() const
 {
-   blaze::DynamicMatrix<T,SO> matrix( m_, n_ );
-
-   // Initialization of a column-major matrix
-   if( SO ) {
-      for( size_t j=0UL; j<n_; ++j )
-         for( size_t i=0UL; i<m_; ++i )
-            matrix(i,j) = ec_();
-   }
-
-   // Initialization of a row-major matrix
-   else {
-      for( size_t i=0UL; i<m_; ++i )
-         for( size_t j=0UL; j<n_; ++j )
-            matrix(i,j) = ec_();
-   }
-
+   blaze::CompressedMatrix<T,SO> matrix( m_, n_, nonzeros_ );
+   while( matrix.nonZeros() < nonzeros_ )
+      matrix( blaze::rand<size_t>(0,m_-1), blaze::rand<size_t>(0,n_-1) ) = ec_();
    return matrix;
 }
 //*************************************************************************************************

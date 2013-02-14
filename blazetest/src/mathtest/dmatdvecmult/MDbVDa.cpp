@@ -28,9 +28,9 @@
 #include <iostream>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
+#include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/DMatDVecMult.h>
 #include <blazetest/system/MathTest.h>
-#include <blazetest/util/Creator.h>
 
 
 //=================================================================================================

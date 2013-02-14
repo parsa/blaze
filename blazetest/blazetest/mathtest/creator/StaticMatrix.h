@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/util/creator/Complex.h
-//  \brief Specialization of the Creator class template for complex values
+//  \file blazetest/mathtest/creator/StaticMatrix.h
+//  \brief Specialization of the Creator class template for StaticMatrix
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,23 +19,16 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_UTIL_CREATOR_COMPLEX_H_
-#define _BLAZETEST_UTIL_CREATOR_COMPLEX_H_
+#ifndef _BLAZETEST_MATHTEST_CREATOR_STATICMATRIX_H_
+#define _BLAZETEST_MATHTEST_CREATOR_STATICMATRIX_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/constraints/Boolean.h>
-#include <blaze/util/constraints/Builtin.h>
-#include <blaze/util/constraints/Const.h>
-#include <blaze/util/constraints/Void.h>
-#include <blaze/util/constraints/Volatile.h>
-#include <blaze/util/Random.h>
-#include <blaze/util/typetraits/IsFloatingPoint.h>
-#include <blazetest/system/Types.h>
-#include <blazetest/util/creator/Default.h>
+#include <blaze/math/StaticMatrix.h>
+#include <blazetest/mathtest/creator/Default.h>
 
 
 namespace blazetest {
@@ -47,20 +40,27 @@ namespace blazetest {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Specialization of the Creator class template for complex data types.
+/*!\brief Specialization of the Creator class template for static matrices.
 //
-// This specialization of the Creator class template is able to create random complex values.
+// This specialization of the Creator class template is able to create random static matrices.
 */
-template< typename T >  // Element type of the complex type
-class Creator< complex<T> >
+template< typename T  // Element type of the static matrix
+        , size_t M    // Number of rows of the static matrix
+        , size_t N    // Number of columns of the static matrix
+        , bool SO >   // Storage order of the static matrix
+class Creator< blaze::StaticMatrix<T,M,N,SO> >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef complex<T>  Type;  //!< Type to be created by the Creator.
+   typedef blaze::StaticMatrix<T,M,N,SO>  Type;  //!< Type to be created by the Creator.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
-   // No explicitly declared constructor.
+   /*!\name Constructors */
+   //@{
+   explicit inline Creator( const Creator<T>& elementCreator = Creator<T>() );
+   // No explicitly declared copy constructor.
+   //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
@@ -71,21 +71,41 @@ class Creator< complex<T> >
    /*!\name Operators */
    //@{
    // No explicitly declared copy assignment operator.
-   const complex<T> operator()() const;
+   const blaze::StaticMatrix<T,M,N,SO> operator()() const;
    //@}
    //**********************************************************************************************
 
  private:
-   //**Compile time checks*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE    ( T );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST       ( T );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE    ( T );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_VOID        ( T );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_BOOLEAN_TYPE( T );
-   /*! \endcond */
+   //**Member variables****************************************************************************
+   /*!\name Member variables */
+   //@{
+   Creator<T> ec_;  //!< Creator for the elements of the static matrix.
+   //@}
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CONSTRUCTORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Constructor for the creator specialization for StaticMatrix.
+//
+// \param elementCreator The creator for the elements of the static matrix.
+*/
+template< typename T  // Element type of the static matrix
+        , size_t M    // Number of rows of the static matrix
+        , size_t N    // Number of columns of the static matrix
+        , bool SO >   // Storage order of the static matrix
+inline Creator< blaze::StaticMatrix<T,M,N,SO> >::Creator( const Creator<T>& elementCreator )
+   : ec_( elementCreator )  // Creator for the elements of the static matrix
+{}
 //*************************************************************************************************
 
 
@@ -98,17 +118,33 @@ class Creator< complex<T> >
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Returns a randomly created complex value.
+/*!\brief Returns a randomly created static matrix.
 //
-// \return The randomly generated complex value.
+// \return The randomly generated static matrix.
 */
-template< typename T >  // Element type of the complex type
-inline const complex<T> Creator< complex<T> >::operator()() const
+template< typename T  // Element type of the static matrix
+        , size_t M    // Number of rows of the static matrix
+        , size_t N    // Number of columns of the static matrix
+        , bool SO >   // Storage order of the static matrix
+inline const blaze::StaticMatrix<T,M,N,SO> Creator< blaze::StaticMatrix<T,M,N,SO> >::operator()() const
 {
-   if( blaze::IsFloatingPoint<T>::value )
-      return complex<T>( blaze::rand<T>() );
-   else
-      return complex<T>( blaze::rand<T>( T(0), T(10) ) );
+   blaze::StaticMatrix<T,M,N,SO> matrix;
+
+   // Initialization of a column-major matrix
+   if( SO ) {
+      for( size_t j=0UL; j<N; ++j )
+         for( size_t i=0UL; i<M; ++i )
+            matrix(i,j) = ec_();
+   }
+
+   // Initialization of a row-major matrix
+   else {
+      for( size_t i=0UL; i<M; ++i )
+         for( size_t j=0UL; j<N; ++j )
+            matrix(i,j) = ec_();
+   }
+
+   return matrix;
 }
 //*************************************************************************************************
 

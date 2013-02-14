@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/util/creator/Default.h
-//  \brief Header file for the Creator class template
+//  \file blazetest/mathtest/creator/Complex.h
+//  \brief Specialization of the Creator class template for complex values
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_UTIL_CREATOR_DEFAULT_H_
-#define _BLAZETEST_UTIL_CREATOR_DEFAULT_H_
+#ifndef _BLAZETEST_MATHTEST_CREATOR_COMPLEX_H_
+#define _BLAZETEST_MATHTEST_CREATOR_COMPLEX_H_
 
 
 //*************************************************************************************************
@@ -34,6 +34,8 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
+#include <blazetest/mathtest/creator/Default.h>
+#include <blazetest/system/Types.h>
 
 
 namespace blazetest {
@@ -45,18 +47,16 @@ namespace blazetest {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Default creator for random built-in data values.
+/*!\brief Specialization of the Creator class template for complex data types.
 //
-// The Creator class creates random values of the given data type \a T. In case \a T is an
-// integral data type, Creator returns values in the range \f$ [0..10] \f$, in case \a T is
-// a floating point data type \f$ [0..1) \f$.
+// This specialization of the Creator class template is able to create random complex values.
 */
-template< typename T >  // Type to be created
-class Creator
+template< typename T >  // Element type of the complex type
+class Creator< complex<T> >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef T  Type;  //!< Type to be created by the Creator.
+   typedef complex<T>  Type;  //!< Type to be created by the Creator.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -71,7 +71,7 @@ class Creator
    /*!\name Operators */
    //@{
    // No explicitly declared copy assignment operator.
-   inline T operator()() const;
+   const complex<T> operator()() const;
    //@}
    //**********************************************************************************************
 
@@ -98,21 +98,17 @@ class Creator
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Returns a randomly created numeric value.
+/*!\brief Returns a randomly created complex value.
 //
-// \return The randomly generated numeric value.
-//
-// This operator returns a randomly generated numeric value. In case \a T is a floating point
-// data type, a value in the range \f$ [0..1) \f$ is generated, in case \a T is an integral
-// data type, a value in the range \f$ [0..10] \f$ is generated.
+// \return The randomly generated complex value.
 */
-template< typename T >  // Type to be created
-inline T Creator<T>::operator()() const
+template< typename T >  // Element type of the complex type
+inline const complex<T> Creator< complex<T> >::operator()() const
 {
    if( blaze::IsFloatingPoint<T>::value )
-      return blaze::rand<T>();
+      return complex<T>( blaze::rand<T>() );
    else
-      return blaze::rand<T>( T(0), T(10) );
+      return complex<T>( blaze::rand<T>( T(0), T(10) ) );
 }
 //*************************************************************************************************
 

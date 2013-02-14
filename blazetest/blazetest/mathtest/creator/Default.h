@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/util/creator/StaticVector.h
-//  \brief Specialization of the Creator class template for StaticVector
+//  \file blazetest/mathtest/creator/Default.h
+//  \brief Header file for the Creator class template
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,16 +19,21 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_UTIL_CREATOR_STATICVECTOR_H_
-#define _BLAZETEST_UTIL_CREATOR_STATICVECTOR_H_
+#ifndef _BLAZETEST_MATHTEST_CREATOR_DEFAULT_H_
+#define _BLAZETEST_MATHTEST_CREATOR_DEFAULT_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/StaticVector.h>
-#include <blazetest/util/creator/Default.h>
+#include <blaze/util/constraints/Boolean.h>
+#include <blaze/util/constraints/Builtin.h>
+#include <blaze/util/constraints/Const.h>
+#include <blaze/util/constraints/Void.h>
+#include <blaze/util/constraints/Volatile.h>
+#include <blaze/util/Random.h>
+#include <blaze/util/typetraits/IsFloatingPoint.h>
 
 
 namespace blazetest {
@@ -40,26 +45,22 @@ namespace blazetest {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Specialization of the Creator class template for static vectors.
+/*!\brief Default creator for random built-in data values.
 //
-// This specialization of the Creator class template is able to create random static vectors.
+// The Creator class creates random values of the given data type \a T. In case \a T is an
+// integral data type, Creator returns values in the range \f$ [0..10] \f$, in case \a T is
+// a floating point data type \f$ [0..1) \f$.
 */
-template< typename T  // Element type of the static vector
-        , size_t N    // Number of elements of the static vector
-        , bool TF >   // Transpose flag of the static vector
-class Creator< blaze::StaticVector<T,N,TF> >
+template< typename T >  // Type to be created
+class Creator
 {
  public:
    //**Type definitions****************************************************************************
-   typedef blaze::StaticVector<T,N,TF>  Type;  //!< Type to be created by the Creator.
+   typedef T  Type;  //!< Type to be created by the Creator.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
-   /*!\name Constructors */
-   //@{
-   explicit inline Creator( const Creator<T>& elementCreator = Creator<T>() );
-   // No explicitly declared copy constructor.
-   //@}
+   // No explicitly declared constructor.
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
@@ -70,40 +71,21 @@ class Creator< blaze::StaticVector<T,N,TF> >
    /*!\name Operators */
    //@{
    // No explicitly declared copy assignment operator.
-   const blaze::StaticVector<T,N,TF> operator()() const;
+   inline T operator()() const;
    //@}
    //**********************************************************************************************
 
  private:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   Creator<T> ec_;  //!< Creator for the elements of the static vector.
-   //@}
+   //**Compile time checks*************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE    ( T );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST       ( T );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE    ( T );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_VOID        ( T );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_BOOLEAN_TYPE( T );
+   /*! \endcond */
    //**********************************************************************************************
 };
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  CONSTRUCTORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Constructor for the creator specialization for StaticVector.
-//
-// \param elementCreator The creator for the elements of the static vector.
-*/
-template< typename T  // Element type of the static vector
-        , size_t N    // Number of elements of the static vector
-        , bool TF >   // Transpose flag of the static vector
-inline Creator< blaze::StaticVector<T,N,TF> >::Creator( const Creator<T>& elementCreator )
-   : ec_( elementCreator )  // Creator for the elements of the static vector
-{}
 //*************************************************************************************************
 
 
@@ -116,19 +98,21 @@ inline Creator< blaze::StaticVector<T,N,TF> >::Creator( const Creator<T>& elemen
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Returns a randomly created static vector.
+/*!\brief Returns a randomly created numeric value.
 //
-// \return The randomly generated static vector.
+// \return The randomly generated numeric value.
+//
+// This operator returns a randomly generated numeric value. In case \a T is a floating point
+// data type, a value in the range \f$ [0..1) \f$ is generated, in case \a T is an integral
+// data type, a value in the range \f$ [0..10] \f$ is generated.
 */
-template< typename T  // Element type of the static vector
-        , size_t N    // Number of elements of the static vector
-        , bool TF >   // Transpose flag of the static vector
-inline const blaze::StaticVector<T,N,TF> Creator< blaze::StaticVector<T,N,TF> >::operator()() const
+template< typename T >  // Type to be created
+inline T Creator<T>::operator()() const
 {
-   blaze::StaticVector<T,N,TF> vector;
-   for( size_t i=0; i<N; ++i )
-      vector[i] = ec_();
-   return vector;
+   if( blaze::IsFloatingPoint<T>::value )
+      return blaze::rand<T>();
+   else
+      return blaze::rand<T>( T(0), T(10) );
 }
 //*************************************************************************************************
 

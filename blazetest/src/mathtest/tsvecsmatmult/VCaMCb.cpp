@@ -28,9 +28,9 @@
 #include <iostream>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>
+#include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/TSVecSMatMult.h>
 #include <blazetest/system/MathTest.h>
-#include <blazetest/util/Creator.h>
 
 
 //=================================================================================================
