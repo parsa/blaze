@@ -62,9 +62,9 @@ struct IsPodHelper
 /*!\brief Compile time check for pod data types.
 // \ingroup type_traits
 //
-// This type trait tests whether or not the given template parameter is a POD (Plain Old Data)
-// or not. In case the type is a POD, the \a value member enumeration is set o 1, the nested
-// type definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise
+// This type trait tests whether or not the given template parameter is a POD (Plain Old Data).
+// In case the type is a POD, the \a value member enumeration is set o 1, the nested type
+// definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise
 // \a value is set to 0, \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
@@ -82,8 +82,8 @@ struct IsPodHelper
    };
 
    blaze::IsPod<int>::value                 // Evaluates to 1
-   blaze::IsPod<const double>::Type         // Results in TrueType
-   blaze::IsPod<volatile A>                 // Is derived from TrueType
+   blaze::IsPod<double const>::Type         // Results in TrueType
+   blaze::IsPod<A volatile>                 // Is derived from TrueType
    blaze::IsPod< std::vector<int> >::value  // Evaluates to 0
    blaze::IsPod<B>::Type                    // Results in FalseType
    blaze::IsPod<C>                          // Is derived from FalseType
