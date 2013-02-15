@@ -28,6 +28,7 @@
 //*************************************************************************************************
 
 #include <blaze/util/typetraits/AddConst.h>
+#include <blaze/util/typetraits/AddVolatile.h>
 #include <blaze/util/typetraits/HasSize.h>
 #include <blaze/util/typetraits/HaveSameSize.h>
 #include <blaze/util/typetraits/IsArithmetic.h>
