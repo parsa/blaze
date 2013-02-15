@@ -39,6 +39,7 @@
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsConvertible.h>
 #include <blaze/util/typetraits/IsDouble.h>
+#include <blaze/util/typetraits/IsEmpty.h>
 #include <blaze/util/typetraits/IsFloat.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsInteger.h>

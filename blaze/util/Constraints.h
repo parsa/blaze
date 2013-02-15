@@ -38,6 +38,7 @@
 #include <blaze/util/constraints/Convertible.h>
 #include <blaze/util/constraints/DerivedFrom.h>
 #include <blaze/util/constraints/Double.h>
+#include <blaze/util/constraints/Empty.h>
 #include <blaze/util/constraints/Float.h>
 #include <blaze/util/constraints/FloatingPoint.h>
 #include <blaze/util/constraints/Integral.h>
