@@ -53,6 +53,7 @@
 #include <blaze/util/constraints/Size.h>
 #include <blaze/util/constraints/Subscriptable.h>
 #include <blaze/util/constraints/TypeRestriction.h>
+#include <blaze/util/constraints/Union.h>
 #include <blaze/util/constraints/Unsigned.h>
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/constraints/Void.h>

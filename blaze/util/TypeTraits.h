@@ -53,6 +53,7 @@
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsShort.h>
 #include <blaze/util/typetraits/IsSigned.h>
+#include <blaze/util/typetraits/IsUnion.h>
 #include <blaze/util/typetraits/IsUnsigned.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/IsVoid.h>
