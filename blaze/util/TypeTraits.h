@@ -30,6 +30,7 @@
 #include <blaze/util/typetraits/AddConst.h>
 #include <blaze/util/typetraits/AddCV.h>
 #include <blaze/util/typetraits/AddPointer.h>
+#include <blaze/util/typetraits/AddReference.h>
 #include <blaze/util/typetraits/AddVolatile.h>
 #include <blaze/util/typetraits/HasSize.h>
 #include <blaze/util/typetraits/HaveSameSize.h>
