@@ -259,8 +259,8 @@ namespace blaze {
 // deletion policy should be considered a convenience functionality in the context of a resource
 // managing class. The following policies can be selected:
 //
-//  - NoDelete : No deletion of the contained pointers (the default behavior).
-//  - PtrDelete : Applies \a delete to all contained pointers.
+//  - NoDelete : No deletion of the contained pointers.
+//  - PtrDelete : Applies \a delete to all contained pointers (the default behavior).
 //  - ArrayDelete : Applies \a delete[] to all contained pointers.\n\n
 */
 template< typename T                    // Type
