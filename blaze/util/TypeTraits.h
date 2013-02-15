@@ -59,6 +59,7 @@
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/IsVoid.h>
 #include <blaze/util/typetraits/IsVolatile.h>
+#include <blaze/util/typetraits/RemoveAllExtents.h>
 #include <blaze/util/typetraits/RemoveConst.h>
 #include <blaze/util/typetraits/RemoveCV.h>
 #include <blaze/util/typetraits/RemoveExtent.h>
