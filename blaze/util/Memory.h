@@ -31,7 +31,9 @@
 #  include <malloc.h>
 #endif
 #include <cstdlib>
+#include <new>
 #include <stdexcept>
+#include <boost/checked_delete.hpp>
 #include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/Null.h>
 #include <blaze/util/Types.h>
@@ -104,7 +106,9 @@ void deallocate( T* address )
       free( address );
 #endif
    }
-   else delete[] address;
+   else {
+      boost::checked_array_delete( address );
+   }
 }
 //*************************************************************************************************
 
