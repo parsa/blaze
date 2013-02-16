@@ -35,12 +35,12 @@ namespace blaze {
 /*!\brief No-delete policy class.
 // \ingroup util
 */
+template< typename Type >
 struct NoDelete
 {
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   template< typename Type >
    inline void operator()( const Type& ptr ) const;
    //@}
    //**********************************************************************************************
@@ -63,7 +63,7 @@ struct NoDelete
 // \return void
 */
 template< typename Type >
-inline void NoDelete::operator()( const Type& /*ptr*/ ) const
+inline void NoDelete<Type>::operator()( const Type& /*ptr*/ ) const
 {}
 //*************************************************************************************************
 
