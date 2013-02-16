@@ -29,7 +29,7 @@
 
 #include <algorithm>
 #include <deque>
-#include <blaze/util/Policies.h>
+#include <blaze/util/policies/PtrDelete.h>
 #include <blaze/util/threadpool/Task.h>
 #include <blaze/util/threadpool/TaskID.h>
 
