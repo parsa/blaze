@@ -106,16 +106,16 @@ class UniqueArray : private NonCopyable
    //**Access operators****************************************************************************
    /*!\name Access operators */
    //@{
-   inline Reference operator[]( size_t index ) const;
+   inline Reference operator[]( size_t index ) const  /* throw() */;
    //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline Pointer get() const;
-   inline Pointer release();
-   inline void    reset( Pointer ptr = NULL );
+   inline Pointer get() const /* throw() */;
+   inline Pointer release() /* throw() */;
+   inline void    reset( Pointer ptr = NULL ) /* throw() */;
    inline void    swap ( UniqueArray& up ) /* throw() */;
    //@}
    //**********************************************************************************************
@@ -195,7 +195,7 @@ inline UniqueArray<T,D>::~UniqueArray()
 */
 template< typename T    // Type of the array elements
         , typename D >  // Type of the deleter
-inline typename UniqueArray<T,D>::Reference UniqueArray<T,D>::operator[]( size_t index ) const
+inline typename UniqueArray<T,D>::Reference UniqueArray<T,D>::operator[]( size_t index ) const /* throw() */
 {
    return ptr_[index];
 }
@@ -220,7 +220,7 @@ inline typename UniqueArray<T,D>::Reference UniqueArray<T,D>::operator[]( size_t
 */ 
 template< typename T    // Type of the array elements
         , typename D >  // Type of the deleter
-inline typename UniqueArray<T,D>::Pointer UniqueArray<T,D>::get() const
+inline typename UniqueArray<T,D>::Pointer UniqueArray<T,D>::get() const /* throw() */
 {
    return ptr_;
 }
@@ -237,7 +237,7 @@ inline typename UniqueArray<T,D>::Pointer UniqueArray<T,D>::get() const
 */
 template< typename T    // Type of the array elements
         , typename D >  // Type of the deleter
-inline typename UniqueArray<T,D>::Pointer UniqueArray<T,D>::release()
+inline typename UniqueArray<T,D>::Pointer UniqueArray<T,D>::release() /* throw() */
 {
    Pointer tmp( ptr_ );
    ptr_ = NULL;
@@ -254,7 +254,7 @@ inline typename UniqueArray<T,D>::Pointer UniqueArray<T,D>::release()
 */
 template< typename T    // Type of the array elements
         , typename D >  // Type of the deleter
-inline void UniqueArray<T,D>::reset( Pointer ptr )
+inline void UniqueArray<T,D>::reset( Pointer ptr ) /* throw() */
 {
    if( ptr != ptr_ ) {
       UniqueArray( ptr ).swap( *this );
@@ -272,17 +272,13 @@ inline void UniqueArray<T,D>::reset( Pointer ptr )
 */
 template< typename T    // Type of the array elements
         , typename D >  // Type of the deleter
-inline void UniqueArray<T,D>::swap( UniqueArray& ptr )
+inline void UniqueArray<T,D>::swap( UniqueArray& ptr ) /* throw() */
 {
    Pointer tmp( ptr_ );
    ptr_ = ptr.ptr_;
    ptr.ptr_ = tmp;
 }
 //*************************************************************************************************
-
-
-
-
 
 
 

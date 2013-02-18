@@ -107,17 +107,17 @@ class UniquePtr : private NonCopyable
    //**Access operators****************************************************************************
    /*!\name Access operators */
    //@{
-   inline Reference operator* () const;
-   inline Pointer   operator->() const;
+   inline Reference operator* () const /* throw() */;
+   inline Pointer   operator->() const /* throw() */;
    //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline Pointer get() const;
-   inline Pointer release();
-   inline void    reset( Pointer ptr = NULL );
+   inline Pointer get() const /* throw() */;
+   inline Pointer release() /* throw() */;
+   inline void    reset( Pointer ptr = NULL ) /* throw() */;
    inline void    swap ( UniquePtr& up ) /* throw() */;
    //@}
    //**********************************************************************************************
@@ -197,7 +197,7 @@ inline UniquePtr<T,D>::~UniquePtr()
 */
 template< typename T    // Type of the resource
         , typename D >  // Type of the deleter
-inline typename UniquePtr<T,D>::Reference UniquePtr<T,D>::operator*() const
+inline typename UniquePtr<T,D>::Reference UniquePtr<T,D>::operator*() const /* throw() */
 {
    return *ptr_;
 }
@@ -211,7 +211,7 @@ inline typename UniquePtr<T,D>::Reference UniquePtr<T,D>::operator*() const
 */
 template< typename T    // Type of the resource
         , typename D >  // Type of the deleter
-inline typename UniquePtr<T,D>::Pointer UniquePtr<T,D>::operator->() const
+inline typename UniquePtr<T,D>::Pointer UniquePtr<T,D>::operator->() const /* throw() */
 {
    return ptr_;
 }
@@ -236,7 +236,7 @@ inline typename UniquePtr<T,D>::Pointer UniquePtr<T,D>::operator->() const
 */ 
 template< typename T    // Type of the resource
         , typename D >  // Type of the deleter
-inline typename UniquePtr<T,D>::Pointer UniquePtr<T,D>::get() const
+inline typename UniquePtr<T,D>::Pointer UniquePtr<T,D>::get() const /* throw() */
 {
    return ptr_;
 }
@@ -253,7 +253,7 @@ inline typename UniquePtr<T,D>::Pointer UniquePtr<T,D>::get() const
 */
 template< typename T    // Type of the resource
         , typename D >  // Type of the deleter
-inline typename UniquePtr<T,D>::Pointer UniquePtr<T,D>::release()
+inline typename UniquePtr<T,D>::Pointer UniquePtr<T,D>::release() /* throw() */
 {
    Pointer tmp( ptr_ );
    ptr_ = NULL;
@@ -270,7 +270,7 @@ inline typename UniquePtr<T,D>::Pointer UniquePtr<T,D>::release()
 */
 template< typename T    // Type of the resource
         , typename D >  // Type of the deleter
-inline void UniquePtr<T,D>::reset( Pointer ptr )
+inline void UniquePtr<T,D>::reset( Pointer ptr ) /* throw() */
 {
    if( ptr != ptr_ ) {
       UniquePtr( ptr ).swap( *this );
@@ -288,7 +288,7 @@ inline void UniquePtr<T,D>::reset( Pointer ptr )
 */
 template< typename T    // Type of the resource
         , typename D >  // Type of the deleter
-inline void UniquePtr<T,D>::swap( UniquePtr& ptr )
+inline void UniquePtr<T,D>::swap( UniquePtr& ptr ) /* throw() */
 {
    Pointer tmp( ptr_ );
    ptr_ = ptr.ptr_;
