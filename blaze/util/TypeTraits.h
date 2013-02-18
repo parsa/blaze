@@ -32,6 +32,7 @@
 #include <blaze/util/typetraits/AddPointer.h>
 #include <blaze/util/typetraits/AddReference.h>
 #include <blaze/util/typetraits/AddVolatile.h>
+#include <blaze/util/typetraits/HasExtent.h>
 #include <blaze/util/typetraits/HasSize.h>
 #include <blaze/util/typetraits/HaveSameSize.h>
 #include <blaze/util/typetraits/IsArithmetic.h>
