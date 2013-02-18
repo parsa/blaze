@@ -27,7 +27,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/constraints/Extent.h>
+#include <blaze/util/constraints/Array.h>
 #include <blaze/util/NonCopyable.h>
 #include <blaze/util/Null.h>
 #include <blaze/util/policies/PtrDelete.h>
@@ -133,7 +133,7 @@ class UniquePtr : private NonCopyable
    
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_NOT_HAVE_EXTENT( T );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ARRAY_TYPE( T );
    /*! \endcond */
    //**********************************************************************************************
 };
