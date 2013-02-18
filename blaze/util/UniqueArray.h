@@ -27,7 +27,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/uitl/constraints/Extent.h>
+#include <blaze/util/constraints/Extent.h>
 #include <blaze/util/NonCopyable.h>
 #include <blaze/util/Null.h>
 #include <blaze/util/policies/ArrayDelete.h>
