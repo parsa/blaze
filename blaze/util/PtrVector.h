@@ -277,7 +277,7 @@ class PtrVector
 
  public:
    //**Type definitions****************************************************************************
-   // pe naming convention
+   // Blaze naming convention
    typedef T*                    ValueType;           //!< Type of the underlying values.
    typedef T*                    PointerType;         //!< Pointer to a non-const object.
    typedef const T*              ConstPointerType;    //!< Pointer to a const object.
@@ -1954,7 +1954,7 @@ class PtrVector<T,D,G>::CastIterator
 {
  public:
    //**Type definitions****************************************************************************
-   // pe naming convention
+   // Blaze naming convention
    typedef std::forward_iterator_tag  IteratorCategory;   //!< The iterator category.
    typedef C*                         ValueType;          //!< Type of the underlying pointers.
    typedef C*                         PointerType;        //!< Pointer return type.
@@ -2287,7 +2287,7 @@ class PtrVector<T,D,G>::ConstCastIterator
 {
  public:
    //**Type definitions****************************************************************************
-   // pe naming convention
+   // Blaze naming convention
    typedef std::forward_iterator_tag  IteratorCategory;   //!< The iterator category.
    typedef const C*                   ValueType;          //!< Type of the underlying pointers.
    typedef const C*                   PointerType;        //!< Pointer return type.
