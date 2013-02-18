@@ -48,13 +48,13 @@ namespace blaze {
 // The attempt to apply a PtrDelete functor to a pointer to an object of incomplete type
 // results in a compile time error!
 */
-template< typename Type >
 struct Deallocate
 {
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline void operator()( Type* ptr ) const;
+   template< typename Type >
+   inline void operator()( Type ptr ) const;
    //@}
    //**********************************************************************************************
 };
@@ -81,7 +81,7 @@ struct Deallocate
 // in a compile time error!
 */
 template< typename Type >
-inline void Deallocate<Type>::operator()( Type* ptr ) const
+inline void Deallocate::operator()( Type ptr ) const
 {
    deallocate( ptr );
 }
