@@ -32,6 +32,7 @@
 #include <blaze/util/policies/PtrDelete.h>
 #include <blaze/util/threadpool/Task.h>
 #include <blaze/util/threadpool/TaskID.h>
+#include <blaze/util/UniquePtr.h>
 
 
 namespace blaze {
@@ -214,7 +215,9 @@ inline bool TaskQueue::isEmpty() const
 */
 inline void TaskQueue::push( TaskID task )
 {
+   UniquePtr<Task> ptr( task );
    tasks_.push_back( task );
+   ptr.release();
 }
 //*************************************************************************************************
 
