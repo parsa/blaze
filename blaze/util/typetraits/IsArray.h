@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/typetraits/HasExtent.h
-//  \brief Header file for the HasExtent type trait
+//  \file blaze/util/typetraits/IsArray.h
+//  \brief Header file for the IsArray type trait
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,15 +19,17 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_TYPETRAITS_HASEXTENT_H_
-#define _BLAZE_UTIL_TYPETRAITS_HASEXTENT_H_
+#ifndef _BLAZE_UTIL_TYPETRAITS_ISARRAY_H_
+#define _BLAZE_UTIL_TYPETRAITS_ISARRAY_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
+#include <boost/type_traits/is_array.hpp>
 #include <blaze/util/FalseType.h>
+#include <blaze/util/SelectType.h>
 #include <blaze/util/TrueType.h>
 
 
@@ -40,68 +42,52 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Compile time check for array extents.
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the IsArray type trait.
+// \ingroup type_traits
+*/
+template< typename T >
+struct IsArrayHelper
+{
+   //**********************************************************************************************
+   enum { value = boost::is_array<T>::value };
+   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Compile time type check.
 // \ingroup type_traits
 //
-// This type trait tests whether or not the given template argument has any array extents
-// (empty or non-empty) and determines the number of array extents. In case the type has any
-// array extent, the \a value member enumeration is set to the total number of array extents,
-// the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
-// Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives from
-// \a FalseType.
+// The IsArray type trait tests whether or not the given template parameter is an array type.
+// In case the given data type is an array type, the \a value member enumeration is set to 1,
+// the nested type definition \a Type is set to \a TrueType, and the class derives from
+// \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType and the class derives
+// from \a FalseType.
 
    \code
-   blaze::HasExtent<int[3]>::value      // Evaluates to 1
-   blaze::HasExtent<const int[]>::Type  // Results in TrueType
-   blaze::HasExtent<int[][3]>           // Is derived from TrueType
-   blaze::HasExtent<int>::value         // Evaluates to 0
-   blaze::HasExtent<int const*>::Type   // Results in FalseType
-   blaze::HasExtent<int volatile**>     // Is derived from FalseType
+   blaze::IsArray< int[3] >::value      // Evaluates to 1
+   blaze::IsArray< const int[] >::Type  // Results in TrueType
+   blaze::IsArray< int[][3] >           // Is derived from TrueType
+   blaze::IsArray< int >::value         // Evaluates to 0
+   blaze::IsArray< int const* >::Type   // Results in FalseType
+   blaze::IsArray< std::vector<int> >   // Is derived from FalseType
    \endcode
 */
 template< typename T >
-struct HasExtent : public FalseType
+struct IsArray : public IsArrayHelper<T>::Type
 {
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { value = 0 };
-   typedef FalseType  Type;
+   enum { value = IsArrayHelper<T>::value };
+   typedef typename IsArrayHelper<T>::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the HasExtent type trait for empty array extents.
-template< typename T >
-struct HasExtent<T[]> : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 + HasExtent<T>::value };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the HasExtent type trait for non-empty array extents.
-template< typename T, unsigned int N >
-struct HasExtent<T[N]> : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 + HasExtent<T>::value };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
