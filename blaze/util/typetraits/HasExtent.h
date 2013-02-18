@@ -44,10 +44,11 @@ namespace blaze {
 // \ingroup type_traits
 //
 // This type trait tests whether or not the given template argument has any array extents
-// (empty or non-empty). In case the type has any array extent, the \a value member enumeration
-// is set to 1, the nested type definition \a Type is \a TrueType, and the class derives from
-// \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives
-// from \a FalseType.
+// (empty or non-empty) and determines the number of array extents. In case the type has any
+// array extent, the \a value member enumeration is set to the total number of array extents,
+// the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
+// Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives from
+// \a FalseType.
 
    \code
    blaze::HasExtent<int[3]>::value      // Evaluates to 1
@@ -80,7 +81,7 @@ struct HasExtent<T[]> : public TrueType
 {
  public:
    //**********************************************************************************************
-   enum { value = 1 };
+   enum { value = 1 + HasExtent<T>::value };
    typedef TrueType  Type;
    //**********************************************************************************************
 };
@@ -96,7 +97,7 @@ struct HasExtent<T[N]> : public TrueType
 {
  public:
    //**********************************************************************************************
-   enum { value = 1 };
+   enum { value = 1 + HasExtent<T>::value };
    typedef TrueType  Type;
    //**********************************************************************************************
 };
