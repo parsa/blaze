@@ -50,8 +50,8 @@ namespace blaze {
 // or the specialization is selected. If the undefined basic template is selected, a compilation
 // error is created.
 */
-template< bool > struct CONSTRAINT_MUST_BE_CLASS_FAILED;
-template<> struct CONSTRAINT_MUST_BE_CLASS_FAILED<true> { enum { value = 1 }; };
+template< bool > struct CONSTRAINT_MUST_BE_CLASS_TYPE_FAILED;
+template<> struct CONSTRAINT_MUST_BE_CLASS_TYPE_FAILED<true> { enum { value = 1 }; };
 /*! \endcond */
 //*************************************************************************************************
 
@@ -66,8 +66,8 @@ template<> struct CONSTRAINT_MUST_BE_CLASS_FAILED<true> { enum { value = 1 }; };
 #define BLAZE_CONSTRAINT_MUST_BE_CLASS_TYPE(T) \
    typedef \
       ::blaze::CONSTRAINT_TEST< \
-         ::blaze::CONSTRAINT_MUST_BE_CLASS_FAILED< ::blaze::IsClass<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_BE_CLASS_TYPEDEF, __LINE__ )
+         ::blaze::CONSTRAINT_MUST_BE_CLASS_TYPE_FAILED< ::blaze::IsClass<T>::value >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_BE_CLASS_TYPE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 
@@ -89,8 +89,8 @@ template<> struct CONSTRAINT_MUST_BE_CLASS_FAILED<true> { enum { value = 1 }; };
 // or the specialization is selected. If the undefined basic template is selected, a compilation
 // error is created.
 */
-template< bool > struct CONSTRAINT_MUST_NOT_BE_CLASS_FAILED;
-template<> struct CONSTRAINT_MUST_NOT_BE_CLASS_FAILED<true> { enum { value = 1 }; };
+template< bool > struct CONSTRAINT_MUST_NOT_BE_CLASS_TYPE_FAILED;
+template<> struct CONSTRAINT_MUST_NOT_BE_CLASS_TYPE_FAILED<true> { enum { value = 1 }; };
 /*! \endcond */
 //*************************************************************************************************
 
@@ -105,8 +105,8 @@ template<> struct CONSTRAINT_MUST_NOT_BE_CLASS_FAILED<true> { enum { value = 1 }
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_CLASS_TYPE(T) \
    typedef \
       ::blaze::CONSTRAINT_TEST< \
-         ::blaze::CONSTRAINT_MUST_NOT_BE_CLASS_FAILED< !::blaze::IsClass<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_CLASS_TYPEDEF, __LINE__ )
+         ::blaze::CONSTRAINT_MUST_NOT_BE_CLASS_TYPE_FAILED< !::blaze::IsClass<T>::value >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_CLASS_TYPE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 } // namespace blaze
