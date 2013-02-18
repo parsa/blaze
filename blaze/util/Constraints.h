@@ -48,6 +48,7 @@
 #include <blaze/util/constraints/Object.h>
 #include <blaze/util/constraints/Pod.h>
 #include <blaze/util/constraints/Pointer.h>
+#include <blaze/util/constraints/Rank.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/SameSize.h>
 #include <blaze/util/constraints/SameType.h>

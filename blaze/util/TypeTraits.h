@@ -34,8 +34,8 @@
 #include <blaze/util/typetraits/AddVolatile.h>
 #include <blaze/util/typetraits/HasSize.h>
 #include <blaze/util/typetraits/HaveSameSize.h>
-#include <blaze/util/typetraits/IsArray.h>
 #include <blaze/util/typetraits/IsArithmetic.h>
+#include <blaze/util/typetraits/IsArray.h>
 #include <blaze/util/typetraits/IsBaseOf.h>
 #include <blaze/util/typetraits/IsBoolean.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
@@ -65,6 +65,7 @@
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/IsVoid.h>
 #include <blaze/util/typetraits/IsVolatile.h>
+#include <blaze/util/typetraits/Rank.h>
 #include <blaze/util/typetraits/RemoveAllExtents.h>
 #include <blaze/util/typetraits/RemoveConst.h>
 #include <blaze/util/typetraits/RemoveCV.h>
