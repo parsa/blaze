@@ -27,6 +27,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Array.h>
 #include <blaze/util/NonCopyable.h>
 #include <blaze/util/Null.h>
@@ -199,6 +200,7 @@ template< typename T    // Type of the resource
         , typename D >  // Type of the deleter
 inline typename UniquePtr<T,D>::Reference UniquePtr<T,D>::operator*() const /* throw() */
 {
+   BLAZE_USER_ASSERT( ptr_, "Uninitialized unique pointer" );
    return *ptr_;
 }
 //*************************************************************************************************
@@ -213,6 +215,7 @@ template< typename T    // Type of the resource
         , typename D >  // Type of the deleter
 inline typename UniquePtr<T,D>::Pointer UniquePtr<T,D>::operator->() const /* throw() */
 {
+   BLAZE_USER_ASSERT( ptr_, "Uninitialized unique pointer" );
    return ptr_;
 }
 //*************************************************************************************************

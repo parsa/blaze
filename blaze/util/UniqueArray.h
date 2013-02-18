@@ -27,6 +27,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Array.h>
 #include <blaze/util/NonCopyable.h>
 #include <blaze/util/Null.h>
@@ -197,6 +198,7 @@ template< typename T    // Type of the array elements
         , typename D >  // Type of the deleter
 inline typename UniqueArray<T,D>::Reference UniqueArray<T,D>::operator[]( size_t index ) const /* throw() */
 {
+   BLAZE_USER_ASSERT( ptr_, "Uninitialized unique pointer" );
    return ptr_[index];
 }
 //*************************************************************************************************
