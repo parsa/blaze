@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/constraints/Extent.h
+//  \file blaze/util/constraints/Array.h
 //  \brief Constraint on the data type
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_CONSTRAINTS_EXTENT_H_
-#define _BLAZE_UTIL_CONSTRAINTS_EXTENT_H_
+#ifndef _BLAZE_UTIL_CONSTRAINTS_ARRAY_H_
+#define _BLAZE_UTIL_CONSTRAINTS_ARRAY_H_
 
 
 //*************************************************************************************************
@@ -29,14 +29,14 @@
 
 #include <blaze/util/constraints/ConstraintTest.h>
 #include <blaze/util/Suffix.h>
-#include <blaze/util/typetraits/HasExtent.h>
+#include <blaze/util/typetraits/IsArray.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  MUST_HAVE_EXTENT CONSTRAINT
+//  MUST_BE_ARRAY_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -50,8 +50,8 @@ namespace blaze {
 // or the specialization is selected. If the undefined basic template is selected, a compilation
 // error is created.
 */
-template< bool > struct CONSTRAINT_MUST_HAVE_EXTENT_FAILED;
-template<> struct CONSTRAINT_MUST_HAVE_EXTENT_FAILED<true> { enum { value = 1 }; };
+template< bool > struct CONSTRAINT_MUST_BE_ARRAY_TYPE_FAILED;
+template<> struct CONSTRAINT_MUST_BE_ARRAY_TYPE_FAILED<true> { enum { value = 1 }; };
 /*! \endcond */
 //*************************************************************************************************
 
@@ -60,13 +60,13 @@ template<> struct CONSTRAINT_MUST_HAVE_EXTENT_FAILED<true> { enum { value = 1 };
 /*!\brief Constraint on the data type.
 // \ingroup constraints
 //
-// In case the given data type \a T has no array extent, a compilation error is created.
+// In case the given data type \a T is no array type, a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_HAVE_EXTENT(T) \
+#define BLAZE_CONSTRAINT_MUST_BE_ARRAY_TYPE(T) \
    typedef \
       ::blaze::CONSTRAINT_TEST< \
-         ::blaze::CONSTRAINT_MUST_HAVE_EXTENT_FAILED< ::blaze::HasExtent<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_HAVE_EXTENT_TYPEDEF, __LINE__ )
+         ::blaze::CONSTRAINT_MUST_BE_ARRAY_TYPE_FAILED< ::blaze::IsArray<T>::value >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_BE_ARRAY_TYPE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 
@@ -74,7 +74,7 @@ template<> struct CONSTRAINT_MUST_HAVE_EXTENT_FAILED<true> { enum { value = 1 };
 
 //=================================================================================================
 //
-//  MUST_NOT_HAVE_EXTENT CONSTRAINT
+//  MUST_NOT_BE_ARRAY_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -88,8 +88,8 @@ template<> struct CONSTRAINT_MUST_HAVE_EXTENT_FAILED<true> { enum { value = 1 };
 // or the specialization is selected. If the undefined basic template is selected, a compilation
 // error is created.
 */
-template< bool > struct CONSTRAINT_MUST_NOT_HAVE_EXTENT_FAILED;
-template<> struct CONSTRAINT_MUST_NOT_HAVE_EXTENT_FAILED<true> { enum { value = 1 }; };
+template< bool > struct CONSTRAINT_MUST_NOT_BE_ARRAY_TYPE_FAILED;
+template<> struct CONSTRAINT_MUST_NOT_BE_ARRAY_TYPE_FAILED<true> { enum { value = 1 }; };
 /*! \endcond */
 //*************************************************************************************************
 
@@ -98,13 +98,13 @@ template<> struct CONSTRAINT_MUST_NOT_HAVE_EXTENT_FAILED<true> { enum { value = 
 /*!\brief Constraint on the data type.
 // \ingroup constraints
 //
-// In case the given data type \a T has an array extent, a compilation error is created.
+// In case the given data type \a T is an array type, a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_NOT_HAVE_EXTENT(T) \
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_ARRAY_TYPE(T) \
    typedef \
       ::blaze::CONSTRAINT_TEST< \
-         ::blaze::CONSTRAINT_MUST_NOT_HAVE_EXTENT_FAILED< !::blaze::HasExtent<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_NOT_HAVE_EXTENT_TYPEDEF, __LINE__ )
+         ::blaze::CONSTRAINT_MUST_NOT_BE_ARRAY_TYPE_FAILED< !::blaze::IsArray<T>::value >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_ARRAY_TYPE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 } // namespace blaze
