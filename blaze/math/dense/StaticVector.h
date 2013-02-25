@@ -267,8 +267,6 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
                               inline StaticVector&      normalize();
                               inline const StaticVector getNormalized() const;
    template< typename Other > inline StaticVector&      scale( Other scalar );
-                              inline Type               min() const;
-                              inline Type               max() const;
                               inline void               swap( StaticVector& v ) /* throw() */;
    //@}
    //**********************************************************************************************
@@ -1408,46 +1406,6 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::scale( Other scalar )
    for( size_t i=0; i<N; ++i )
       v_[i] *= scalar;
    return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns the smallest element of the vector.
-//
-// \return The smallest vector element.
-*/
-template< typename Type  // Data type of the vector
-        , size_t N       // Number of elements
-        , bool TF >      // Transpose flag
-inline Type StaticVector<Type,N,TF>::min() const
-{
-   using blaze::min;
-
-   Type minimum( v_[0] );
-   for( size_t i=1UL; i<N; ++i )
-      minimum = min( minimum, v_[i] );
-   return minimum;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns the largest element of the vector.
-//
-// \return The largest vector element.
-*/
-template< typename Type  // Data type of the vector
-        , size_t N       // Number of elements
-        , bool TF >      // Transpose flag
-inline Type StaticVector<Type,N,TF>::max() const
-{
-   using blaze::max;
-
-   Type maximum( v_[0] );
-   for( size_t i=1UL; i<N; ++i )
-      maximum = max( maximum, v_[i] );
-   return maximum;
 }
 //*************************************************************************************************
 
