@@ -20,7 +20,8 @@
 
 
 # Rules
-default: dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
+default: staticvector \
+         dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
          dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
          dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \
          dvecdveccross dvecsveccross svecdveccross svecsveccross \
@@ -31,6 +32,11 @@ default: dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
          dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
          dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
          dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult
+
+staticvector:
+	@echo
+	@echo "Building the StaticVector tests..."
+	@$(MAKE) --no-print-directory -C ./staticvector/
 
 dvecdvecadd:
 	@echo
@@ -253,6 +259,7 @@ smatsmatmult:
 	@$(MAKE) --no-print-directory -C ./smatsmatmult/
 
 clean:
+	@$(MAKE) --no-print-directory -C ./staticvector clean
 	@$(MAKE) --no-print-directory -C ./dvecdvecadd clean
 	@$(MAKE) --no-print-directory -C ./dvecsvecadd clean
 	@$(MAKE) --no-print-directory -C ./svecdvecadd clean
@@ -302,6 +309,7 @@ clean:
 
 # Setting the independent commands
 .PHONY: default clean \
+        staticvector \
         dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
         dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
         dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \
