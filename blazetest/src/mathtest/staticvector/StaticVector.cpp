@@ -59,6 +59,7 @@ StaticVector::StaticVector()
    testNonZeros();
    testReset();
    testNormalize();
+   testScale();
    testSwap();
    testMinimum();
    testMaximum();
@@ -306,6 +307,22 @@ void StaticVector::testConstructors()
       }
    }
    
+   // Array initialization
+   {
+      int array[4] = { 1, 2, 3, 4 };
+      blaze::StaticVector<int,4UL,blaze::rowVector> vec( array );
+
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: StaticVector array initialization constructor\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1, 2, 3, 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+   
    // Copy constructor
    {
       blaze::StaticVector<int,5UL,blaze::rowVector> vec1( 1, 2, 3, 4, 5 );
@@ -338,7 +355,7 @@ void StaticVector::testNonZeros()
 {
    {
       // Initialization check
-      VT vec;
+      blaze::StaticVector<int,4UL,blaze::rowVector> vec;
    
       if( vec[0] != 0 || vec[1] != 0 || vec[2] != 0 || vec[3] != 0 ) {
          std::ostringstream oss;
@@ -366,7 +383,7 @@ void StaticVector::testNonZeros()
 
    {
       // Initialization check
-      VT vec( 1, 2, 0, 3 );
+      blaze::StaticVector<int,4UL,blaze::rowVector> vec( 1, 2, 0, 3 );
    
       if( vec[0] != 1 || vec[1] != 2 || vec[2] != 0 || vec[3] != 3 ) {
          std::ostringstream oss;
@@ -407,7 +424,7 @@ void StaticVector::testNonZeros()
 void StaticVector::testReset()
 {
    // Initialization check
-   VT vec( 1, 2, 3, 4 );
+   blaze::StaticVector<int,4UL,blaze::rowVector> vec( 1, 2, 3, 4 );
    
    if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
       std::ostringstream oss;
@@ -490,6 +507,84 @@ void StaticVector::testNormalize()
 
 
 //*************************************************************************************************
+/*!\brief Test of the scale member function of StaticVector.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the scale member function of StaticVector.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void StaticVector::testScale()
+{
+   {
+      // Initialization check
+      blaze::StaticVector<int,4UL,blaze::rowVector> vec;
+      vec[0] = 1;
+      vec[1] = 2;
+      vec[2] = 3;
+      vec[3] = 4;
+   
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: StaticVector::scale()\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1, 2, 3, 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   
+      // Integral scaling of the vector
+      vec.scale( 2 );
+   
+      if( vec[0] != 2 || vec[1] != 4 || vec[2] != 6 || vec[3] != 8 ) {
+         std::ostringstream oss;
+         oss << " Test: StaticVector::scale()\n"
+             << " Error: Scale operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 2, 4, 6, 8 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   
+      // Floating point scaling of the vector
+      vec.scale( 0.5 );
+   
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: StaticVector::scale()\n"
+             << " Error: Scale operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1, 2, 3, 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+   
+   {
+      using blaze::complex;
+   
+      blaze::StaticVector<complex<float>,2UL,blaze::rowVector> vec;
+      vec[0] = complex<float>( 1.0F, 0.0F );
+      vec[1] = complex<float>( 2.0F, 0.0F );
+      vec.scale( complex<float>( 3.0F, 0.0F ) );
+   
+      if( vec[0] != complex<float>( 3.0F, 0.0F ) || vec[1] != complex<float>( 6.0F, 0.0F ) ) {
+         std::ostringstream oss;
+         oss << " Test: StaticVector::scale()\n"
+             << " Error: Scale operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( (3,0), (6,0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the swap functionality of the StaticVector class template.
 //
 // \return void
@@ -501,8 +596,8 @@ void StaticVector::testNormalize()
 void StaticVector::testSwap()
 {
    // Initialization check
-   VT vec1( 1, 2, 3, 4 );
-   VT vec2( 4, 3, 2, 1 );
+   blaze::StaticVector<int,4UL,blaze::rowVector> vec1( 1, 2, 3, 4 );
+   blaze::StaticVector<int,4UL,blaze::rowVector> vec2( 4, 3, 2, 1 );
    
    if( vec1[0] != 1 || vec1[1] != 2 || vec1[2] != 3 || vec1[3] != 4 ) {
       std::ostringstream oss;

@@ -50,19 +50,11 @@ namespace staticvector {
 //*************************************************************************************************
 /*!\brief Auxiliary class template for the StaticVector math test.
 //
-// The StaticVector class template represents one particular vector addition test between two
-// vectors of a particular type. The two template arguments \a VT1 and \a VT2 represent the
-// types of the left-hand side and right-hand side vector, respectively.
+// The StaticVector class represents a test suite for the blaze::StaticVector class template.
+// It performs a series of both compile time as well as runtime tests.
 */
 class StaticVector
 {
- private:
-   //**Type definitions****************************************************************************
-   typedef blaze::StaticVector<int,4UL,blaze::rowVector>  VT;   //!< Type of the static vector
-   typedef typename VT::TransposeType                     TVT;  //!< Transpose static vector type
-   typedef typename VT::ElementType                       ET;   //!< Element type of the static vector
-   //**********************************************************************************************
-
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
@@ -85,10 +77,17 @@ class StaticVector
    void testNonZeros    ();
    void testReset       ();
    void testNormalize   ();
+   void testScale       ();
    void testSwap        ();
    void testMinimum     ();
    void testMaximum     ();
    //@}
+   //**********************************************************************************************
+   
+   //**Type definitions****************************************************************************
+   typedef blaze::StaticVector<int,4UL,blaze::rowVector>  VT;   //!< Type of the static vector
+   typedef typename VT::TransposeType                     TVT;  //!< Transpose static vector type
+   typedef typename VT::ElementType                       ET;   //!< Element type of the static vector
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
