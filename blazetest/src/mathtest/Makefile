@@ -20,7 +20,7 @@
 
 
 # Rules
-default: staticvector dynamicvector \
+default: staticvector dynamicvector compressedvector \
          dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
          dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
          dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \
@@ -42,6 +42,11 @@ dynamicvector:
 	@echo
 	@echo "Building the DynamicVector tests..."
 	@$(MAKE) --no-print-directory -C ./dynamicvector/
+
+compressedvector:
+	@echo
+	@echo "Building the CompressedVector tests..."
+	@$(MAKE) --no-print-directory -C ./compressedvector/
 
 dvecdvecadd:
 	@echo
