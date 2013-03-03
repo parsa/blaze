@@ -26,8 +26,6 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <sstream>
-#include <stdexcept>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/util/AlignmentTrait.h>
@@ -56,6 +54,7 @@ DynamicVector::DynamicVector()
 {
    testAlignment();
    testConstructors();
+   testSubscript();
    testNonZeros();
    testReset();
    testClear();
@@ -209,52 +208,61 @@ void DynamicVector::testConstructors()
 {
    // Default constructor
    {
+      test_ = "DynamicVector default constructor";
+   
       blaze::DynamicVector<int,blaze::rowVector> vec;
    
-      if( vec.size() != 0UL ) {
-         std::ostringstream oss;
-         oss << " Test: DynamicVector default constructor\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n()\n";
-         throw std::runtime_error( oss.str() );
-      }
+      checkSize    ( vec, 0UL );
+      checkNonZeros( vec, 0UL );
    }
    
    // Homogeneous initialization
    {
+      test_ = "DynamicVector homogeneous initialization constructor";
+   
       blaze::DynamicVector<int,blaze::rowVector> vec( 3UL, 2 );
+      
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 3UL );
+      checkNonZeros( vec, 3UL );
    
       if( vec[0] != 2 || vec[1] != 2 || vec[2] != 2 ) {
          std::ostringstream oss;
-         oss << " Test: DynamicVector homogeneous initialization constructor\n"
-             << " Error: Initialization failed\n"
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 2, 2, 2 )\n";
+             << "   Expected result:\n( 2 2 2 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
    
    // Array initialization
    {
+      test_ = "DynamicVector array initialization constructor";
+   
       int array[4] = { 1, 2, 3, 4 };
       blaze::DynamicVector<int,blaze::rowVector> vec( array );
       
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
+      
       if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
          std::ostringstream oss;
-         oss << " Test: DynamicVector array initialization constructor\n"
-             << " Error: Initialization failed\n"
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 1, 2, 3, 4 )\n";
+             << "   Expected result:\n( 1 2 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
    
    // Copy constructor
    {
+      test_ = "DynamicVector copy constructor";
+   
       blaze::DynamicVector<int,blaze::rowVector> vec1( 5UL );
       vec1[0] = 1;
       vec1[1] = 2;
@@ -262,16 +270,106 @@ void DynamicVector::testConstructors()
       vec1[3] = 4;
       vec1[4] = 5;
       blaze::DynamicVector<int,blaze::rowVector> vec2( vec1 );
+      
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 5UL );
    
       if( vec2[0] != 1 || vec2[1] != 2 || vec2[2] != 3 || vec2[3] != 4 || vec2[4] != 5 ) {
          std::ostringstream oss;
-         oss << " Test: DynamicVector copy constructor\n"
-             << " Error: Initialization failed\n"
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << vec2 << "\n"
-             << "   Expected result:\n( 1, 2, 3, 4, 5 )\n";
+             << "   Expected result:\n( 1 2 3 4 5 )\n";
          throw std::runtime_error( oss.str() );
       }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the DynamicVector subscript operator.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of adding and accessing elements via the subscript operator
+// of the DynamicVector class template. In case an error is detected, a \a std::runtime_error
+// exception is thrown.
+*/
+void DynamicVector::testSubscript()
+{
+   test_ = "DynamicVector::operator[]";
+
+   // Writing the first element
+   blaze::DynamicVector<int,blaze::rowVector> vec( 7UL, 0UL );
+   vec[2] = 1;
+   
+   checkSize    ( vec, 7UL );
+   checkCapacity( vec, 7UL );
+   checkNonZeros( vec, 1UL );
+
+   if( vec[2] != 1 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 0 0 1 0 0 0 0 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+   
+   // Writing the second element
+   vec[5] = 2;
+   
+   checkSize    ( vec, 7UL );
+   checkCapacity( vec, 7UL );
+   checkNonZeros( vec, 2UL );
+
+   if( vec[2] != 1 || vec[5] != 2 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 0 0 1 0 0 2 0 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+   
+   // Writing the third element
+   vec[3] = 3;
+   
+   checkSize    ( vec, 7UL );
+   checkCapacity( vec, 7UL );
+   checkNonZeros( vec, 3UL );
+   
+   if( vec[2] != 1 || vec[3] != 3 || vec[5] != 2 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 0 0 1 3 0 2 0 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+   
+   // Writing the fourth element
+   vec[0] = 4;
+   
+   checkSize    ( vec, 7UL );
+   checkCapacity( vec, 7UL );
+   checkNonZeros( vec, 4UL );
+
+   if( vec[0] != 4 || vec[2] != 1 || vec[3] != 3 || vec[5] != 2 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 4 0 1 3 0 2 0 )\n";
+      throw std::runtime_error( oss.str() );
    }
 }
 //*************************************************************************************************
@@ -288,62 +386,44 @@ void DynamicVector::testConstructors()
 */
 void DynamicVector::testNonZeros()
 {
+   test_ = "DynamicVector::nonZeros()";
+
    {
-      // Initialization check
       blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
+      
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 0UL );
    
       if( vec[0] != 0 || vec[1] != 0 || vec[2] != 0 || vec[3] != 0 ) {
          std::ostringstream oss;
-         oss << " Test: DynamicVector::nonZeros()\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 0, 0, 0, 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   
-      // Testing the nonZeros function
-      const int nonzeros = vec.nonZeros();
-   
-      if( nonzeros != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: DynamicVector::nonZeros()\n"
-             << " Error: Invalid number of non-zero elements\n"
-             << " Details:\n"
-             << "   Result: " << nonzeros << "\n"
-             << "   Expected result: 0\n";
+             << "   Expected result:\n( 0 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
    {
-      // Initialization check
       blaze::DynamicVector<int,blaze::rowVector> vec( 4UL );
       vec[0] = 1;
       vec[1] = 2;
       vec[2] = 0;
       vec[3] = 3;
+      
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 3UL );
    
       if( vec[0] != 1 || vec[1] != 2 || vec[2] != 0 || vec[3] != 3 ) {
          std::ostringstream oss;
-         oss << " Test: DynamicVector::nonZeros()\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 1, 2, 0, 3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   
-      // Testing the nonZeros function
-      const int nonzeros = vec.nonZeros();
-   
-      if( nonzeros != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: DynamicVector::nonZeros()\n"
-             << " Error: Invalid number of non-zero elements\n"
-             << " Details:\n"
-             << "   Result: " << nonzeros << "\n"
-             << "   Expected result: 3\n";
+             << "   Expected result:\n( 1 2 0 3 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -362,6 +442,8 @@ void DynamicVector::testNonZeros()
 */
 void DynamicVector::testReset()
 {
+   test_ = "DynamicVector::reset()";
+
    // Initialization check
    blaze::DynamicVector<int,blaze::rowVector> vec( 4UL );
    vec[0] = 1;
@@ -369,26 +451,34 @@ void DynamicVector::testReset()
    vec[2] = 3;
    vec[3] = 4;
    
+   checkSize    ( vec, 4UL );
+   checkCapacity( vec, 4UL );
+   checkNonZeros( vec, 4UL );
+   
    if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
       std::ostringstream oss;
-      oss << " Test: DynamicVector::reset()\n"
+      oss << " Test: " << test_ << "\n"
           << " Error: Initialization failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 1, 2, 3, 4 )\n";
+          << "   Expected result:\n( 1 2 3 4 )\n";
       throw std::runtime_error( oss.str() );
    }
    
    // Resetting the vector
    vec.reset();
    
+   checkSize    ( vec, 4UL );
+   checkCapacity( vec, 4UL );
+   checkNonZeros( vec, 0UL );
+   
    if( vec[0] != 0 || vec[1] != 0 || vec[2] != 0 || vec[3] != 0 ) {
       std::ostringstream oss;
-      oss << " Test: DynamicVector::reset()\n"
+      oss << " Test: " << test_ << "\n"
           << " Error: Reset operation failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 0, 0, 0, 0 )\n";
+          << "   Expected result:\n( 0 0 0 0 )\n";
       throw std::runtime_error( oss.str() );
    }
 }
@@ -406,6 +496,8 @@ void DynamicVector::testReset()
 */
 void DynamicVector::testClear()
 {
+   test_ = "DynamicVector::clear()";
+
    // Initialization check
    blaze::DynamicVector<int,blaze::rowVector> vec( 4UL );
    vec[0] = 1;
@@ -413,22 +505,30 @@ void DynamicVector::testClear()
    vec[2] = 3;
    vec[3] = 4;
    
+   checkSize    ( vec, 4UL );
+   checkCapacity( vec, 4UL );
+   checkNonZeros( vec, 4UL );
+   
    if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
       std::ostringstream oss;
-      oss << " Test: DynamicVector::clear()\n"
+      oss << " Test: " << test_ << "\n"
           << " Error: Initialization failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 1, 2, 3, 4 )\n";
+          << "   Expected result:\n( 1 2 3 4 )\n";
       throw std::runtime_error( oss.str() );
    }
    
    // Clearing the vector
    vec.clear();
    
+   checkSize    ( vec, 0UL );
+   checkCapacity( vec, 4UL );
+   checkNonZeros( vec, 0UL );
+   
    if( vec.size() != 0UL ) {
       std::ostringstream oss;
-      oss << " Test: DynamicVector::clear()\n"
+      oss << " Test: " << test_ << "\n"
           << " Error: Reset operation failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
@@ -450,109 +550,63 @@ void DynamicVector::testClear()
 */
 void DynamicVector::testResize()
 {
+   test_ = "DynamicVector::resize()";
+
    // Initialization check
    blaze::DynamicVector<int,blaze::rowVector> vec;
    
-   if( vec.size() != 0UL ) {
-      std::ostringstream oss;
-      oss << " Test: DynamicVector::resize()\n"
-          << " Error: Initialization failed\n"
-          << " Details:\n"
-          << "   Size: " << vec.size() << "\n"
-          << "   Expected size: 0\n";
-      throw std::runtime_error( oss.str() );
-   }
+   checkSize    ( vec, 0UL );
+   checkNonZeros( vec, 0UL );
    
    // Increasing the size of the vector
    vec.resize( 3UL );
    
-   if( vec.size() != 3UL ) {
-      std::ostringstream oss;
-      oss << " Test: DynamicVector::resize()\n"
-          << " Error: Resizing the vector failed\n"
-          << " Details:\n"
-          << "   Size: " << vec.size() << "\n"
-          << "   Expected size: 3\n";
-      throw std::runtime_error( oss.str() );
-   }
-   if( vec.capacity() < vec.size() ) {
-      std::ostringstream oss;
-      oss << " Test: DynamicVector::resize()\n"
-          << " Error: Invalid vector capacity detected\n"
-          << " Details:\n"
-          << "   Size    : " << vec.size() << "\n"
-          << "   Capacity: " << vec.capacity() << "\n";
-      throw std::runtime_error( oss.str() );
-   }
+   checkSize    ( vec, 3UL );
+   checkCapacity( vec, 3UL );
+   checkNonZeros( vec, 0UL );
    
-   // Furth increasing the size of the vector and preserving the elements
+   // Further increasing the size of the vector and preserving the elements
    vec[0] = 1;
    vec[1] = 2;
    vec[2] = 3;
    vec.resize( 5UL, true );
    
-   if( vec.size() != 5UL || vec[0] != 1 || vec[1] != 2 || vec[2] != 3 ) {
+   checkSize    ( vec, 5UL );
+   checkCapacity( vec, 5UL );
+   checkNonZeros( vec, 3UL );
+   
+   if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 ) {
       std::ostringstream oss;
-      oss << " Test: DynamicVector::resize()\n"
+      oss << " Test: " << test_ << "\n"
           << " Error: Resizing the vector failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 1, 2, 3, x, x )\n";
-      throw std::runtime_error( oss.str() );
-   }
-   if( vec.capacity() < vec.size() ) {
-      std::ostringstream oss;
-      oss << " Test: DynamicVector::resize()\n"
-          << " Error: Invalid vector capacity detected\n"
-          << " Details:\n"
-          << "   Size    : " << vec.size() << "\n"
-          << "   Capacity: " << vec.capacity() << "\n";
+          << "   Expected result:\n( 1 2 3 x x )\n";
       throw std::runtime_error( oss.str() );
    }
    
    // Decreasing the size of the vector and preserving the elements
    vec.resize( 2UL, true );
    
-   if( vec.size() != 2UL || vec[0] != 1 || vec[1] != 2 ) {
+   checkSize    ( vec, 2UL );
+   checkCapacity( vec, 5UL );
+   checkNonZeros( vec, 2UL );
+   
+   if( vec[0] != 1 || vec[1] != 2 ) {
       std::ostringstream oss;
-      oss << " Test: DynamicVector::resize()\n"
+      oss << " Test: " << test_ << "\n"
           << " Error: Resizing the vector failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 1, 2 )\n";
-      throw std::runtime_error( oss.str() );
-   }
-   if( vec.capacity() < vec.size() ) {
-      std::ostringstream oss;
-      oss << " Test: DynamicVector::resize()\n"
-          << " Error: Invalid vector capacity detected\n"
-          << " Details:\n"
-          << "   Size    : " << vec.size() << "\n"
-          << "   Capacity: " << vec.capacity() << "\n";
+          << "   Expected result:\n( 1 2 )\n";
       throw std::runtime_error( oss.str() );
    }
    
    // Further decreasing the size of the vector
    vec.resize( 1UL );
    
-   if( vec.size() != 1UL ) {
-      std::ostringstream oss;
-      oss << " Test: DynamicVector::resize()\n"
-          << " Error: Resizing the vector failed\n"
-          << " Details:\n"
-          << "   Size: " << vec.size() << "\n"
-          << "   Expected size: 1\n";
-      throw std::runtime_error( oss.str() );
-   }
-   if( vec.capacity() < vec.size() ) {
-      std::ostringstream oss;
-      oss << " Test: DynamicVector::resize()\n"
-          << " Error: Invalid vector capacity detected\n"
-          << " Details:\n"
-          << "   Size    : " << vec.size() << "\n"
-          << "   Capacity: " << vec.capacity() << "\n";
-      throw std::runtime_error( oss.str() );
-   }
+   checkSize    ( vec, 1UL );
+   checkCapacity( vec, 5UL );
 }
 //*************************************************************************************************
 
@@ -568,87 +622,46 @@ void DynamicVector::testResize()
 */
 void DynamicVector::testExtend()
 {
+   test_ = "DynamicVector::extend()";
+
    // Initialization check
    blaze::DynamicVector<int,blaze::rowVector> vec;
    
-   if( vec.size() != 0UL ) {
-      std::ostringstream oss;
-      oss << " Test: DynamicVector::extend()\n"
-          << " Error: Initialization failed\n"
-          << " Details:\n"
-          << "   Size: " << vec.size() << "\n"
-          << "   Expected size: 0\n";
-      throw std::runtime_error( oss.str() );
-   }
+   checkSize    ( vec, 0UL );
+   checkNonZeros( vec, 0UL );
    
    // Increasing the size of the vector
    vec.extend( 3UL );
    
-   if( vec.size() != 3UL ) {
-      std::ostringstream oss;
-      oss << " Test: DynamicVector::extend()\n"
-          << " Error: Extending the vector failed\n"
-          << " Details:\n"
-          << "   Size: " << vec.size() << "\n"
-          << "   Expected size: 3\n";
-      throw std::runtime_error( oss.str() );
-   }
-   if( vec.capacity() < vec.size() ) {
-      std::ostringstream oss;
-      oss << " Test: DynamicVector::extend()\n"
-          << " Error: Invalid vector capacity detected\n"
-          << " Details:\n"
-          << "   Size    : " << vec.size() << "\n"
-          << "   Capacity: " << vec.capacity() << "\n";
-      throw std::runtime_error( oss.str() );
-   }
+   checkSize    ( vec, 3UL );
+   checkCapacity( vec, 3UL );
+   checkNonZeros( vec, 0UL );
    
-   // Furth increasing the size of the vector and preserving the elements
+   // Further increasing the size of the vector and preserving the elements
    vec[0] = 1;
    vec[1] = 2;
    vec[2] = 3;
    vec.extend( 2UL, true );
    
-   if( vec.size() != 5UL || vec[0] != 1 || vec[1] != 2 || vec[2] != 3 ) {
+   checkSize    ( vec, 5UL );
+   checkCapacity( vec, 5UL );
+   checkNonZeros( vec, 3UL );
+   
+   if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 ) {
       std::ostringstream oss;
-      oss << " Test: DynamicVector::extend()\n"
+      oss << " Test: " << test_ << "\n"
           << " Error: Extending the vector failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 1, 2, 3, x, x )\n";
-      throw std::runtime_error( oss.str() );
-   }
-   if( vec.capacity() < vec.size() ) {
-      std::ostringstream oss;
-      oss << " Test: DynamicVector::extend()\n"
-          << " Error: Invalid vector capacity detected\n"
-          << " Details:\n"
-          << "   Size    : " << vec.size() << "\n"
-          << "   Capacity: " << vec.capacity() << "\n";
+          << "   Expected result:\n( 1 2 3 x x )\n";
       throw std::runtime_error( oss.str() );
    }
    
-   // Furth increasing the size of the vector
-   vec.extend( 10UL, true );
+   // Further increasing the size of the vector
+   vec.extend( 10UL, false );
    
-   if( vec.size() != 15UL ) {
-      std::ostringstream oss;
-      oss << " Test: DynamicVector::extend()\n"
-          << " Error: Extending the vector failed\n"
-          << " Details:\n"
-          << "   Size: " << vec.size() << "\n"
-          << "   Expected size: 15\n";
-      throw std::runtime_error( oss.str() );
-   }
-   if( vec.capacity() < vec.size() ) {
-      std::ostringstream oss;
-      oss << " Test: DynamicVector::extend()\n"
-          << " Error: Invalid vector capacity detected\n"
-          << " Details:\n"
-          << "   Size    : " << vec.size() << "\n"
-          << "   Capacity: " << vec.capacity() << "\n";
-      throw std::runtime_error( oss.str() );
-   }
+   checkSize    ( vec, 15UL );
+   checkCapacity( vec, 15UL );
 }
 //*************************************************************************************************
 
@@ -664,48 +677,27 @@ void DynamicVector::testExtend()
 */
 void DynamicVector::testReserve()
 {
+   test_ = "DynamicVector::reserve()";
+
    // Initialization check
    blaze::DynamicVector<int,blaze::rowVector> vec;
    
-   if( vec.size() != 0UL ) {
-      std::ostringstream oss;
-      oss << " Test: DynamicVector::reserve()\n"
-          << " Error: Initialization failed\n"
-          << " Details:\n"
-          << "   Size: " << vec.size() << "\n"
-          << "   Expected size: 0\n";
-      throw std::runtime_error( oss.str() );
-   }
+   checkSize    ( vec, 0UL );
+   checkNonZeros( vec, 0UL );
    
    // Increasing the capacity of the vector
    vec.reserve( 10UL );
    
-   if( vec.size() != 0UL || vec.capacity() < 10UL ) {
-      std::ostringstream oss;
-      oss << " Test: DynamicVector::reserve()\n"
-          << " Error: Reserving capacity for the vector failed\n"
-          << " Details:\n"
-          << "   Size: " << vec.size() << "\n"
-          << "   Expected size: 0\n"
-          << "   Capacity: " << vec.capacity() << "\n"
-          << "   Expected capacity: >= 10\n";
-      throw std::runtime_error( oss.str() );
-   }
+   checkSize    ( vec,  0UL );
+   checkCapacity( vec, 10UL );
+   checkNonZeros( vec,  0UL );
    
    // Further increasing the capacity of the vector
    vec.reserve( 20UL );
    
-   if( vec.size() != 0UL || vec.capacity() < 20UL ) {
-      std::ostringstream oss;
-      oss << " Test: DynamicVector::reserve()\n"
-          << " Error: Reserving capacity for the vector failed\n"
-          << " Details:\n"
-          << "   Size: " << vec.size() << "\n"
-          << "   Expected size: 0\n"
-          << "   Capacity: " << vec.capacity() << "\n"
-          << "   Expected capacity: >= 20\n";
-      throw std::runtime_error( oss.str() );
-   }
+   checkSize    ( vec,  0UL );
+   checkCapacity( vec, 20UL );
+   checkNonZeros( vec,  0UL );
 }
 //*************************************************************************************************
 
@@ -721,18 +713,24 @@ void DynamicVector::testReserve()
 */
 void DynamicVector::testLength()
 {
+   test_ = "DynamicVector::length()";
+
    // Initialization check
    blaze::DynamicVector<double,blaze::rowVector> vec( 2UL );
    vec[0] = 3.0;
    vec[1] = 4.0;
    
+   checkSize    ( vec, 2UL );
+   checkCapacity( vec, 2UL );
+   checkNonZeros( vec, 2UL );
+   
    if( vec[0] != 3.0 || vec[1] != 4.0 ) {
       std::ostringstream oss;
-      oss << " Test: DynamicVector::length()\n"
+      oss << " Test: " << test_ << "\n"
           << " Error: Initialization failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 3, 4 )\n";
+          << "   Expected result:\n( 3 4 )\n";
       throw std::runtime_error( oss.str() );
    }
    
@@ -741,7 +739,7 @@ void DynamicVector::testLength()
    
    if( !blaze::equal( length, 5.0 ) ) {
       std::ostringstream oss;
-      oss << " Test: DynamicVector::length()\n"
+      oss << " Test: " << test_ << "\n"
           << " Error: Length computation failed\n"
           << " Details:\n"
           << "   Result: " << length << "\n"
@@ -777,6 +775,8 @@ void DynamicVector::testLength()
 */
 void DynamicVector::testNormalize()
 {
+   test_ = "DynamicVector::normalize()";
+
    // Initialization check
    blaze::DynamicVector<double,blaze::rowVector> vec( 4UL );
    vec[0] = 1.0;
@@ -784,13 +784,17 @@ void DynamicVector::testNormalize()
    vec[2] = 3.0;
    vec[3] = 4.0;
    
+   checkSize    ( vec, 4UL );
+   checkCapacity( vec, 4UL );
+   checkNonZeros( vec, 4UL );
+   
    if( vec[0] != 1.0 || vec[1] != 2.0 || vec[2] != 3.0 || vec[3] != 4.0 ) {
       std::ostringstream oss;
-      oss << " Test: DynamicVector::getNormalized()\n"
+      oss << " Test: " << test_ << "\n"
           << " Error: Initialization failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 1, 2, 3, 4 )\n";
+          << "   Expected result:\n( 1 2 3 4 )\n";
       throw std::runtime_error( oss.str() );
    }
    
@@ -812,7 +816,7 @@ void DynamicVector::testNormalize()
    
    if( !blaze::equal( vec.length(), 1.0 ) ) {
       std::ostringstream oss;
-      oss << " Test: DynamicVector::normalize()\n"
+      oss << " Test: " << test_ << "\n"
           << " Error: Normalization failed\n"
           << " Details:\n"
           << "   Result: " << vec.length() << "\n"
@@ -834,6 +838,8 @@ void DynamicVector::testNormalize()
 */
 void DynamicVector::testScale()
 {
+   test_ = "DynamicVector::scale()";
+
    {
       // Initialization check
       blaze::DynamicVector<int,blaze::rowVector> vec( 4UL );
@@ -841,40 +847,52 @@ void DynamicVector::testScale()
       vec[1] = 2;
       vec[2] = 3;
       vec[3] = 4;
+      
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
    
       if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
          std::ostringstream oss;
-         oss << " Test: DynamicVector::scale()\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 1, 2, 3, 4 )\n";
+             << "   Expected result:\n( 1 2 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
    
       // Integral scaling of the vector
       vec.scale( 2 );
+      
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
    
       if( vec[0] != 2 || vec[1] != 4 || vec[2] != 6 || vec[3] != 8 ) {
          std::ostringstream oss;
-         oss << " Test: DynamicVector::scale()\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 2, 4, 6, 8 )\n";
+             << "   Expected result:\n( 2 4 6 8 )\n";
          throw std::runtime_error( oss.str() );
       }
    
       // Floating point scaling of the vector
       vec.scale( 0.5 );
+      
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
    
       if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
          std::ostringstream oss;
-         oss << " Test: DynamicVector::scale()\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 1, 2, 3, 4 )\n";
+             << "   Expected result:\n( 1 2 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -886,14 +904,18 @@ void DynamicVector::testScale()
       vec[0] = complex<float>( 1.0F, 0.0F );
       vec[1] = complex<float>( 2.0F, 0.0F );
       vec.scale( complex<float>( 3.0F, 0.0F ) );
+      
+      checkSize    ( vec, 2UL );
+      checkCapacity( vec, 2UL );
+      checkNonZeros( vec, 2UL );
    
       if( vec[0] != complex<float>( 3.0F, 0.0F ) || vec[1] != complex<float>( 6.0F, 0.0F ) ) {
          std::ostringstream oss;
-         oss << " Test: DynamicVector::scale()\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( (3,0), (6,0) )\n";
+             << "   Expected result:\n( (3,0) (6,0) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -912,12 +934,12 @@ void DynamicVector::testScale()
 */
 void DynamicVector::testSwap()
 {
-   // Initialization check
-   blaze::DynamicVector<int,blaze::rowVector> vec1( 4UL );
+   test_ = "DynamicVector swap";
+
+   blaze::DynamicVector<int,blaze::rowVector> vec1( 3UL );
    vec1[0] = 1;
    vec1[1] = 2;
    vec1[2] = 3;
-   vec1[3] = 4;
 
    blaze::DynamicVector<int,blaze::rowVector> vec2( 4UL );
    vec2[0] = 4;
@@ -925,44 +947,33 @@ void DynamicVector::testSwap()
    vec2[2] = 2;
    vec2[3] = 1;
    
-   if( vec1[0] != 1 || vec1[1] != 2 || vec1[2] != 3 || vec1[3] != 4 ) {
-      std::ostringstream oss;
-      oss << " Test: DynamicVector swap\n"
-          << " Error: Initialization of first vector failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec1 << "\n"
-          << "   Expected result:\n( 1, 2, 3, 4 )\n";
-      throw std::runtime_error( oss.str() );
-   }
-   else if( vec2[0] != 4 || vec2[1] != 3 || vec2[2] != 2 || vec2[3] != 1 ) {
-      std::ostringstream oss;
-      oss << " Test: DynamicVector swap\n"
-          << " Error: Initialization of second vector failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec1 << "\n"
-          << "   Expected result:\n( 4, 3, 2, 1 )\n";
-      throw std::runtime_error( oss.str() );
-   }
-   
-   // Swapping the vectors
    swap( vec1, vec2 );
+   
+   checkSize    ( vec1, 4UL );
+   checkCapacity( vec1, 4UL );
+   checkNonZeros( vec1, 4UL );
    
    if( vec1[0] != 4 || vec1[1] != 3 || vec1[2] != 2 || vec1[3] != 1 ) {
       std::ostringstream oss;
-      oss << " Test: DynamicVector swap\n"
+      oss << " Test: " << test_ << "\n"
           << " Error: Swapping the first vector failed\n"
           << " Details:\n"
           << "   Result:\n" << vec1 << "\n"
-          << "   Expected result:\n( 1, 2, 3, 4 )\n";
+          << "   Expected result:\n( 1 2 3 4 )\n";
       throw std::runtime_error( oss.str() );
    }
-   else if( vec2[0] != 1 || vec2[1] != 2 || vec2[2] != 3 || vec2[3] != 4 ) {
+   
+   checkSize    ( vec2, 3UL );
+   checkCapacity( vec2, 3UL );
+   checkNonZeros( vec2, 3UL );
+   
+   if( vec2[0] != 1 || vec2[1] != 2 || vec2[2] != 3 ) {
       std::ostringstream oss;
-      oss << " Test: DynamicVector swap\n"
+      oss << " Test: " << test_ << "\n"
           << " Error: Swapping the second vector failed\n"
           << " Details:\n"
           << "   Result:\n" << vec1 << "\n"
-          << "   Expected result:\n( 4, 3, 2, 1 )\n";
+          << "   Expected result:\n( 4 3 2 1 )\n";
       throw std::runtime_error( oss.str() );
    }
 }
@@ -980,6 +991,8 @@ void DynamicVector::testSwap()
 */
 void DynamicVector::testMinimum()
 {
+   test_ = "min() function";
+
    {
       // Initialization check
       blaze::DynamicVector<int,blaze::rowVector> vec( 4UL );
@@ -987,14 +1000,18 @@ void DynamicVector::testMinimum()
       vec[1] = -2;
       vec[2] =  3;
       vec[3] = -4;
+      
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
    
       if( vec[0] != 1 || vec[1] != -2 || vec[2] != 3 || vec[3] != -4 ) {
          std::ostringstream oss;
-         oss << " Test: min() function\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 1, -2, 3, -4 )\n";
+             << "   Expected result:\n( 1 -2 3 -4 )\n";
          throw std::runtime_error( oss.str() );
       }
    
@@ -1003,7 +1020,7 @@ void DynamicVector::testMinimum()
    
       if( minimum != -4 ) {
          std::ostringstream oss;
-         oss << " Test: min() function\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: First computation failed\n"
              << " Details:\n"
              << "   Result: " << minimum << "\n"
@@ -1019,14 +1036,18 @@ void DynamicVector::testMinimum()
       vec[1] =  2;
       vec[2] =  3;
       vec[3] =  4;
+      
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
    
       if( vec[0] != -1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
          std::ostringstream oss;
-         oss << " Test: min() function\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( -1, 2, 3, 4 )\n";
+             << "   Expected result:\n( -1 2 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
    
@@ -1035,7 +1056,7 @@ void DynamicVector::testMinimum()
    
       if( minimum != -1 ) {
          std::ostringstream oss;
-         oss << " Test: min() function\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Second computation failed\n"
              << " Details:\n"
              << "   Result: " << minimum << "\n"
@@ -1058,6 +1079,8 @@ void DynamicVector::testMinimum()
 */
 void DynamicVector::testMaximum()
 {
+   test_ = "max() function";
+
    {
       // Initialization check
       blaze::DynamicVector<int,blaze::rowVector> vec( 4UL );
@@ -1065,14 +1088,18 @@ void DynamicVector::testMaximum()
       vec[1] = -2;
       vec[2] = -3;
       vec[3] = -4;
+      
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
    
       if( vec[0] != 1 || vec[1] != -2 || vec[2] != -3 || vec[3] != -4 ) {
          std::ostringstream oss;
-         oss << " Test: max() function\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 1, -2, -3, -4 )\n";
+             << "   Expected result:\n( 1 -2 -3 -4 )\n";
          throw std::runtime_error( oss.str() );
       }
    
@@ -1081,7 +1108,7 @@ void DynamicVector::testMaximum()
    
       if( maximum != 1 ) {
          std::ostringstream oss;
-         oss << " Test: max() function\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: First computation failed\n"
              << " Details:\n"
              << "   Result: " << maximum << "\n"
@@ -1097,14 +1124,18 @@ void DynamicVector::testMaximum()
       vec[1] =  2;
       vec[2] =  3;
       vec[3] =  4;
+      
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
    
       if( vec[0] != -1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
          std::ostringstream oss;
-         oss << " Test: max() function\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( -1, 2, 3, 4 )\n";
+             << "   Expected result:\n( -1 2 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
    
@@ -1113,7 +1144,7 @@ void DynamicVector::testMaximum()
    
       if( maximum != 4 ) {
          std::ostringstream oss;
-         oss << " Test: max() function\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Second computation failed\n"
              << " Details:\n"
              << "   Result: " << maximum << "\n"
