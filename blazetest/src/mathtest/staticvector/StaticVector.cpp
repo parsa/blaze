@@ -26,8 +26,6 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <sstream>
-#include <stdexcept>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/StaticVector.h>
 #include <blaze/util/AlignmentTrait.h>
@@ -56,6 +54,7 @@ StaticVector::StaticVector()
 {
    testAlignment();
    testConstructors();
+   testSubscript();
    testNonZeros();
    testReset();
    testNormalize();
@@ -204,139 +203,279 @@ void StaticVector::testConstructors()
 {
    // Default constructor
    {
+      test_ = "StaticVector default constructor";
+   
       blaze::StaticVector<int,5UL,blaze::rowVector> vec;
+      
+      checkSize    ( vec, 5UL );
+      checkCapacity( vec, 5UL );
+      checkNonZeros( vec, 0UL );
    
       if( vec[0] != 0 || vec[1] != 0 || vec[2] != 0 || vec[3] != 0 || vec[4] != 0 ) {
          std::ostringstream oss;
-         oss << " Test: StaticVector default constructor\n"
-             << " Error: Initialization failed\n"
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 0, 0, 0, 0, 0 )\n";
+             << "   Expected result:\n( 0 0 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
    
    // Homogeneous initialization
    {
+      test_ = "StaticVector homogeneous initialization constructor";
+   
       blaze::StaticVector<int,3UL,blaze::rowVector> vec( 2 );
+      
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 3UL );
+      checkNonZeros( vec, 3UL );
    
       if( vec[0] != 2 || vec[1] != 2 || vec[2] != 2 ) {
          std::ostringstream oss;
-         oss << " Test: StaticVector homogeneous initialization constructor\n"
-             << " Error: Initialization failed\n"
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 2, 2, 2 )\n";
+             << "   Expected result:\n( 2 2 2 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
    
    // 2D initialization constructor
    {
+      test_ = "StaticVector 2D initialization constructor";
+   
       blaze::StaticVector<int,2UL,blaze::rowVector> vec( 3, 5 );
+      
+      checkSize    ( vec, 2UL );
+      checkCapacity( vec, 2UL );
+      checkNonZeros( vec, 2UL );
    
       if( vec[0] != 3 || vec[1] != 5 ) {
          std::ostringstream oss;
-         oss << " Test: StaticVector 2D initialization constructor\n"
-             << " Error: Initialization failed\n"
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 3, 5 )\n";
+             << "   Expected result:\n( 3 5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
    
    // 3D initialization constructor
    {
+      test_ = "StaticVector 3D initialization constructor";
+
       blaze::StaticVector<int,3UL,blaze::rowVector> vec( 3, 5, 2 );
+      
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 3UL );
+      checkNonZeros( vec, 3UL );
    
       if( vec[0] != 3 || vec[1] != 5 || vec[2] != 2 ) {
          std::ostringstream oss;
-         oss << " Test: StaticVector 3D initialization constructor\n"
-             << " Error: Initialization failed\n"
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 3, 5, 2 )\n";
+             << "   Expected result:\n( 3 5 2 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
    // 4D initialization constructor
    {
+      test_ = "StaticVector 4D initialization constructor";
+
       blaze::StaticVector<int,4UL,blaze::rowVector> vec( 3, 5, 2, -7 );
+      
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
    
       if( vec[0] != 3 || vec[1] != 5 || vec[2] != 2 || vec[3] != -7 ) {
          std::ostringstream oss;
-         oss << " Test: StaticVector 4D initialization constructor\n"
-             << " Error: Initialization failed\n"
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 3, 5, 2, -7 )\n";
+             << "   Expected result:\n( 3 5 2 -7 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
    // 5D initialization constructor
    {
+      test_ = "StaticVector 5D initialization constructor";
+
       blaze::StaticVector<int,5UL,blaze::rowVector> vec( 3, 5, 2, -7, -1 );
+      
+      checkSize    ( vec, 5UL );
+      checkCapacity( vec, 5UL );
+      checkNonZeros( vec, 5UL );
    
       if( vec[0] != 3 || vec[1] != 5 || vec[2] != 2 || vec[3] != -7 || vec[4] != -1 ) {
          std::ostringstream oss;
-         oss << " Test: StaticVector 5D initialization constructor\n"
-             << " Error: Initialization failed\n"
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 3, 5, 2, -7, -1 )\n";
+             << "   Expected result:\n( 3 5 2 -7 -1 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
    // 6D initialization constructor
    {
+      test_ = "StaticVector 6D initialization constructor";
+
       blaze::StaticVector<int,6UL,blaze::rowVector> vec( 3, 5, 2, -7, -1, 4 );
+      
+      checkSize    ( vec, 6UL );
+      checkCapacity( vec, 6UL );
+      checkNonZeros( vec, 6UL );
    
       if( vec[0] != 3 || vec[1] != 5 || vec[2] != 2 || vec[3] != -7 || vec[4] != -1 || vec[5] != 4 ) {
          std::ostringstream oss;
-         oss << " Test: StaticVector 6D initialization constructor\n"
-             << " Error: Initialization failed\n"
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 3, 5, 2, -7, -1, 4 )\n";
+             << "   Expected result:\n( 3 5 2 -7 -1 4 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
    
    // Array initialization
    {
+      test_ = "StaticVector array initialization constructor";
+
       int array[4] = { 1, 2, 3, 4 };
       blaze::StaticVector<int,4UL,blaze::rowVector> vec( array );
+      
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
 
       if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
          std::ostringstream oss;
-         oss << " Test: StaticVector array initialization constructor\n"
-             << " Error: Initialization failed\n"
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 1, 2, 3, 4 )\n";
+             << "   Expected result:\n( 1 2 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
    
    // Copy constructor
    {
+      test_ = "StaticVector copy constructor";
+
       blaze::StaticVector<int,5UL,blaze::rowVector> vec1( 1, 2, 3, 4, 5 );
       blaze::StaticVector<int,5UL,blaze::rowVector> vec2( vec1 );
+      
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 5UL );
    
       if( vec2[0] != 1 || vec2[1] != 2 || vec2[2] != 3 || vec2[3] != 4 || vec2[4] != 5 ) {
          std::ostringstream oss;
-         oss << " Test: StaticVector copy constructor\n"
-             << " Error: Initialization failed\n"
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << vec2 << "\n"
-             << "   Expected result:\n( 1, 2, 3, 4, 5 )\n";
+             << "   Expected result:\n( 1 2 3 4 5 )\n";
          throw std::runtime_error( oss.str() );
       }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the StaticVector subscript operator.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of adding and accessing elements via the subscript operator
+// of the StaticVector class template. In case an error is detected, a \a std::runtime_error
+// exception is thrown.
+*/
+void StaticVector::testSubscript()
+{
+   test_ = "StaticVector::operator[]";
+
+   // Writing the first element
+   blaze::StaticVector<int,5UL,blaze::rowVector> vec;
+   vec[2] = 1;
+   
+   checkSize    ( vec, 5UL );
+   checkCapacity( vec, 5UL );
+   checkNonZeros( vec, 1UL );
+
+   if( vec[2] != 1 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 0 0 1 0 0 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+   
+   // Writing the second element
+   vec[4] = 2;
+   
+   checkSize    ( vec, 5UL );
+   checkCapacity( vec, 5UL );
+   checkNonZeros( vec, 2UL );
+
+   if( vec[2] != 1 || vec[4] != 2 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 0 0 1 0 2 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+   
+   // Writing the third element
+   vec[3] = 3;
+   
+   checkSize    ( vec, 5UL );
+   checkCapacity( vec, 5UL );
+   checkNonZeros( vec, 3UL );
+   
+   if( vec[2] != 1 || vec[3] != 3 || vec[4] != 2 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 0 0 1 3 2 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+   
+   // Writing the fourth element
+   vec[0] = 4;
+   
+   checkSize    ( vec, 5UL );
+   checkCapacity( vec, 5UL );
+   checkNonZeros( vec, 4UL );
+
+   if( vec[0] != 4 || vec[2] != 1 || vec[3] != 3 || vec[4] != 2 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 4 0 1 3 2 )\n";
+      throw std::runtime_error( oss.str() );
    }
 }
 //*************************************************************************************************
@@ -353,58 +492,40 @@ void StaticVector::testConstructors()
 */
 void StaticVector::testNonZeros()
 {
+   test_ = "StaticVector::nonZeros()";
+
    {
-      // Initialization check
       blaze::StaticVector<int,4UL,blaze::rowVector> vec;
+      
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 0UL );
    
       if( vec[0] != 0 || vec[1] != 0 || vec[2] != 0 || vec[3] != 0 ) {
          std::ostringstream oss;
-         oss << " Test: StaticVector::nonZeros()\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 0, 0, 0, 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   
-      // Testing the nonZeros function
-      const int nonzeros = vec.nonZeros();
-   
-      if( nonzeros != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: StaticVector::nonZeros()\n"
-             << " Error: Invalid number of non-zero elements\n"
-             << " Details:\n"
-             << "   Result: " << nonzeros << "\n"
-             << "   Expected result: 0\n";
+             << "   Expected result:\n( 0 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
    {
-      // Initialization check
       blaze::StaticVector<int,4UL,blaze::rowVector> vec( 1, 2, 0, 3 );
+      
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 3UL );
    
       if( vec[0] != 1 || vec[1] != 2 || vec[2] != 0 || vec[3] != 3 ) {
          std::ostringstream oss;
-         oss << " Test: StaticVector::nonZeros()\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 1, 2, 0, 3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   
-      // Testing the nonZeros function
-      const int nonzeros = vec.nonZeros();
-   
-      if( nonzeros != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: StaticVector::nonZeros()\n"
-             << " Error: Invalid number of non-zero elements\n"
-             << " Details:\n"
-             << "   Result: " << nonzeros << "\n"
-             << "   Expected result: 3\n";
+             << "   Expected result:\n( 1 2 0 3 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -423,29 +544,39 @@ void StaticVector::testNonZeros()
 */
 void StaticVector::testReset()
 {
+   test_ = "StaticVector::reset()";
+
    // Initialization check
    blaze::StaticVector<int,4UL,blaze::rowVector> vec( 1, 2, 3, 4 );
    
+   checkSize    ( vec, 4UL );
+   checkCapacity( vec, 4UL );
+   checkNonZeros( vec, 4UL );
+   
    if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
       std::ostringstream oss;
-      oss << " Test: StaticVector::reset()\n"
+      oss << " Test: " << test_ << "\n"
           << " Error: Initialization failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 1, 2, 3, 4 )\n";
+          << "   Expected result:\n( 1 2 3 4 )\n";
       throw std::runtime_error( oss.str() );
    }
    
    // Resetting the vector
    vec.reset();
    
+   checkSize    ( vec, 4UL );
+   checkCapacity( vec, 4UL );
+   checkNonZeros( vec, 0UL );
+   
    if( vec[0] != 0 || vec[1] != 0 || vec[2] != 0 || vec[3] != 0 ) {
       std::ostringstream oss;
-      oss << " Test: StaticVector::reset()\n"
+      oss << " Test: " << test_ << "\n"
           << " Error: Reset operation failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 0, 0, 0, 0 )\n";
+          << "   Expected result:\n( 0 0 0 0 )\n";
       throw std::runtime_error( oss.str() );
    }
 }
@@ -464,16 +595,22 @@ void StaticVector::testReset()
 */
 void StaticVector::testNormalize()
 {
+   test_ = "StaticVector::normalize()";
+
    // Initialization check
    blaze::StaticVector<double,4UL,blaze::rowVector> vec( 1.0, 2.0, 3.0, 4.0 );
    
+   checkSize    ( vec, 4UL );
+   checkCapacity( vec, 4UL );
+   checkNonZeros( vec, 4UL );
+   
    if( vec[0] != 1.0 || vec[1] != 2.0 || vec[2] != 3.0 || vec[3] != 4.0 ) {
       std::ostringstream oss;
-      oss << " Test: StaticVector::getNormalized()\n"
+      oss << " Test: " << test_ << "\n"
           << " Error: Initialization failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 1, 2, 3, 4 )\n";
+          << "   Expected result:\n( 1 2 3 4 )\n";
       throw std::runtime_error( oss.str() );
    }
    
@@ -495,7 +632,7 @@ void StaticVector::testNormalize()
    
    if( !blaze::equal( vec.length(), 1.0 ) ) {
       std::ostringstream oss;
-      oss << " Test: StaticVector::normalize()\n"
+      oss << " Test: " << test_ << "\n"
           << " Error: Normalization failed\n"
           << " Details:\n"
           << "   Result: " << vec.length() << "\n"
@@ -517,6 +654,8 @@ void StaticVector::testNormalize()
 */
 void StaticVector::testScale()
 {
+   test_ = "StaticVector::scale()";
+
    {
       // Initialization check
       blaze::StaticVector<int,4UL,blaze::rowVector> vec;
@@ -524,40 +663,52 @@ void StaticVector::testScale()
       vec[1] = 2;
       vec[2] = 3;
       vec[3] = 4;
+      
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
    
       if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
          std::ostringstream oss;
-         oss << " Test: StaticVector::scale()\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 1, 2, 3, 4 )\n";
+             << "   Expected result:\n( 1 2 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
    
       // Integral scaling of the vector
       vec.scale( 2 );
+      
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
    
       if( vec[0] != 2 || vec[1] != 4 || vec[2] != 6 || vec[3] != 8 ) {
          std::ostringstream oss;
-         oss << " Test: StaticVector::scale()\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 2, 4, 6, 8 )\n";
+             << "   Expected result:\n( 2 4 6 8 )\n";
          throw std::runtime_error( oss.str() );
       }
    
       // Floating point scaling of the vector
       vec.scale( 0.5 );
+      
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
    
       if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
          std::ostringstream oss;
-         oss << " Test: StaticVector::scale()\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 1, 2, 3, 4 )\n";
+             << "   Expected result:\n( 1 2 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -569,14 +720,18 @@ void StaticVector::testScale()
       vec[0] = complex<float>( 1.0F, 0.0F );
       vec[1] = complex<float>( 2.0F, 0.0F );
       vec.scale( complex<float>( 3.0F, 0.0F ) );
+      
+      checkSize    ( vec, 2UL );
+      checkCapacity( vec, 2UL );
+      checkNonZeros( vec, 2UL );
    
       if( vec[0] != complex<float>( 3.0F, 0.0F ) || vec[1] != complex<float>( 6.0F, 0.0F ) ) {
          std::ostringstream oss;
-         oss << " Test: StaticVector::scale()\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( (3,0), (6,0) )\n";
+             << "   Expected result:\n( (3,0) (6,0) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -595,48 +750,38 @@ void StaticVector::testScale()
 */
 void StaticVector::testSwap()
 {
-   // Initialization check
+   test_ = "StaticVector swap";
+
    blaze::StaticVector<int,4UL,blaze::rowVector> vec1( 1, 2, 3, 4 );
    blaze::StaticVector<int,4UL,blaze::rowVector> vec2( 4, 3, 2, 1 );
    
-   if( vec1[0] != 1 || vec1[1] != 2 || vec1[2] != 3 || vec1[3] != 4 ) {
-      std::ostringstream oss;
-      oss << " Test: StaticVector swap\n"
-          << " Error: Initialization of first vector failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec1 << "\n"
-          << "   Expected result:\n( 1, 2, 3, 4 )\n";
-      throw std::runtime_error( oss.str() );
-   }
-   else if( vec2[0] != 4 || vec2[1] != 3 || vec2[2] != 2 || vec2[3] != 1 ) {
-      std::ostringstream oss;
-      oss << " Test: StaticVector swap\n"
-          << " Error: Initialization of second vector failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec1 << "\n"
-          << "   Expected result:\n( 4, 3, 2, 1 )\n";
-      throw std::runtime_error( oss.str() );
-   }
-   
-   // Swapping the vectors
    swap( vec1, vec2 );
+   
+   checkSize    ( vec1, 4UL );
+   checkCapacity( vec1, 4UL );
+   checkNonZeros( vec1, 4UL );
    
    if( vec1[0] != 4 || vec1[1] != 3 || vec1[2] != 2 || vec1[3] != 1 ) {
       std::ostringstream oss;
-      oss << " Test: StaticVector swap\n"
+      oss << " Test: " << test_ << "\n"
           << " Error: Swapping the first vector failed\n"
           << " Details:\n"
           << "   Result:\n" << vec1 << "\n"
-          << "   Expected result:\n( 1, 2, 3, 4 )\n";
+          << "   Expected result:\n( 1 2 3 4 )\n";
       throw std::runtime_error( oss.str() );
    }
-   else if( vec2[0] != 1 || vec2[1] != 2 || vec2[2] != 3 || vec2[3] != 4 ) {
+   
+   checkSize    ( vec2, 4UL );
+   checkCapacity( vec2, 4UL );
+   checkNonZeros( vec2, 4UL );
+   
+   if( vec2[0] != 1 || vec2[1] != 2 || vec2[2] != 3 || vec2[3] != 4 ) {
       std::ostringstream oss;
-      oss << " Test: StaticVector swap\n"
+      oss << " Test: " << test_ << "\n"
           << " Error: Swapping the second vector failed\n"
           << " Details:\n"
           << "   Result:\n" << vec1 << "\n"
-          << "   Expected result:\n( 4, 3, 2, 1 )\n";
+          << "   Expected result:\n( 4 3 2 1 )\n";
       throw std::runtime_error( oss.str() );
    }
 }
@@ -654,17 +799,23 @@ void StaticVector::testSwap()
 */
 void StaticVector::testMinimum()
 {
+   test_ = "min() function";
+
    {
       // Initialization check
       blaze::StaticVector<int,4UL,blaze::rowVector> vec( 1, -2, 3, -4 );
+      
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
    
       if( vec[0] != 1 || vec[1] != -2 || vec[2] != 3 || vec[3] != -4 ) {
          std::ostringstream oss;
-         oss << " Test: min() function\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 1, -2, 3, -4 )\n";
+             << "   Expected result:\n( 1 -2 3 -4 )\n";
          throw std::runtime_error( oss.str() );
       }
    
@@ -673,7 +824,7 @@ void StaticVector::testMinimum()
    
       if( minimum != -4 ) {
          std::ostringstream oss;
-         oss << " Test: min() function\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: First computation failed\n"
              << " Details:\n"
              << "   Result: " << minimum << "\n"
@@ -685,14 +836,18 @@ void StaticVector::testMinimum()
    {
       // Initialization check
       blaze::StaticVector<int,4UL,blaze::rowVector> vec( -1, 2, 3, 4 );
+      
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
    
       if( vec[0] != -1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
          std::ostringstream oss;
-         oss << " Test: min() function\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( -1, 2, 3, 4 )\n";
+             << "   Expected result:\n( -1 2 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
    
@@ -701,7 +856,7 @@ void StaticVector::testMinimum()
    
       if( minimum != -1 ) {
          std::ostringstream oss;
-         oss << " Test: min() function\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Second computation failed\n"
              << " Details:\n"
              << "   Result: " << minimum << "\n"
@@ -724,17 +879,23 @@ void StaticVector::testMinimum()
 */
 void StaticVector::testMaximum()
 {
+   test_ = "max() function";
+
    {
       // Initialization check
       blaze::StaticVector<int,4UL,blaze::rowVector> vec( 1, -2, -3, -4 );
+      
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
    
       if( vec[0] != 1 || vec[1] != -2 || vec[2] != -3 || vec[3] != -4 ) {
          std::ostringstream oss;
-         oss << " Test: max() function\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 1, -2, -3, -4 )\n";
+             << "   Expected result:\n( 1 -2 -3 -4 )\n";
          throw std::runtime_error( oss.str() );
       }
    
@@ -743,7 +904,7 @@ void StaticVector::testMaximum()
    
       if( maximum != 1 ) {
          std::ostringstream oss;
-         oss << " Test: max() function\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: First computation failed\n"
              << " Details:\n"
              << "   Result: " << maximum << "\n"
@@ -755,14 +916,18 @@ void StaticVector::testMaximum()
    {
       // Initialization check
       blaze::StaticVector<int,4UL,blaze::rowVector> vec( -1, 2, 3, 4 );
+      
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
    
       if( vec[0] != -1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
          std::ostringstream oss;
-         oss << " Test: max() function\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( -1, 2, 3, 4 )\n";
+             << "   Expected result:\n( -1 2 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
    
@@ -771,7 +936,7 @@ void StaticVector::testMaximum()
    
       if( maximum != 4 ) {
          std::ostringstream oss;
-         oss << " Test: max() function\n"
+         oss << " Test: " << test_ << "\n"
              << " Error: Second computation failed\n"
              << " Details:\n"
              << "   Result: " << maximum << "\n"
