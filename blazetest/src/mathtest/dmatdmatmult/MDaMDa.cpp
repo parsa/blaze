@@ -63,16 +63,16 @@ int main()
       }
 
       // Running tests with large matrices
-      RUN_DMATDMATMULT_TEST( CMDa(  31UL,  67UL ), CMDa(  67UL,  31UL ) );
-      RUN_DMATDMATMULT_TEST( CMDa(  31UL,  67UL ), CMDa(  67UL, 127UL ) );
-      RUN_DMATDMATMULT_TEST( CMDa(  67UL,  67UL ), CMDa(  67UL,  67UL ) );
-      RUN_DMATDMATMULT_TEST( CMDa( 127UL,  67UL ), CMDa(  67UL,  31UL ) );
-      RUN_DMATDMATMULT_TEST( CMDa( 127UL,  67UL ), CMDa(  67UL, 127UL ) );
-      RUN_DMATDMATMULT_TEST( CMDa(  32UL,  64UL ), CMDa(  64UL,  32UL ) );
-      RUN_DMATDMATMULT_TEST( CMDa(  32UL,  64UL ), CMDa(  64UL, 128UL ) );
-      RUN_DMATDMATMULT_TEST( CMDa(  64UL,  64UL ), CMDa(  64UL,  64UL ) );
-      RUN_DMATDMATMULT_TEST( CMDa( 128UL,  64UL ), CMDa(  64UL,  32UL ) );
-      RUN_DMATDMATMULT_TEST( CMDa( 128UL,  64UL ), CMDa(  64UL, 128UL ) );
+      RUN_DMATDMATMULT_TEST( CMDa( 15UL, 37UL ), CMDa(  37UL, 15UL ) );
+      RUN_DMATDMATMULT_TEST( CMDa( 15UL, 37UL ), CMDa(  37UL, 63UL ) );
+      RUN_DMATDMATMULT_TEST( CMDa( 37UL, 37UL ), CMDa(  37UL, 37UL ) );
+      RUN_DMATDMATMULT_TEST( CMDa( 63UL, 37UL ), CMDa(  37UL, 15UL ) );
+      RUN_DMATDMATMULT_TEST( CMDa( 63UL, 37UL ), CMDa(  37UL, 63UL ) );
+      RUN_DMATDMATMULT_TEST( CMDa( 16UL, 32UL ), CMDa(  32UL, 16UL ) );
+      RUN_DMATDMATMULT_TEST( CMDa( 16UL, 32UL ), CMDa(  32UL, 64UL ) );
+      RUN_DMATDMATMULT_TEST( CMDa( 32UL, 32UL ), CMDa(  32UL, 32UL ) );
+      RUN_DMATDMATMULT_TEST( CMDa( 64UL, 32UL ), CMDa(  32UL, 16UL ) );
+      RUN_DMATDMATMULT_TEST( CMDa( 64UL, 32UL ), CMDa(  32UL, 64UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense matrix/dense matrix multiplication:\n"
