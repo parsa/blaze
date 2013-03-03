@@ -260,6 +260,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    /*!\name Utility functions */
    //@{
                               inline size_t             size() const;
+                              inline size_t             capacity() const;
                               inline size_t             nonZeros() const;
                               inline void               reset();
                               inline LengthType         length() const;
@@ -1208,6 +1209,21 @@ template< typename Type  // Data type of the vector
 inline size_t StaticVector<Type,N,TF>::size() const
 {
    return N;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the maximum capacity of the vector.
+//
+// \return The capacity of the vector.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline size_t StaticVector<Type,N,TF>::capacity() const
+{
+   return NN;
 }
 //*************************************************************************************************
 
