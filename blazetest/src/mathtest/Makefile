@@ -270,6 +270,8 @@ smatsmatmult:
 
 clean:
 	@$(MAKE) --no-print-directory -C ./staticvector clean
+	@$(MAKE) --no-print-directory -C ./dynamicvector clean
+	@$(MAKE) --no-print-directory -C ./compressedvector clean
 	@$(MAKE) --no-print-directory -C ./dvecdvecadd clean
 	@$(MAKE) --no-print-directory -C ./dvecsvecadd clean
 	@$(MAKE) --no-print-directory -C ./svecdvecadd clean
@@ -319,7 +321,7 @@ clean:
 
 # Setting the independent commands
 .PHONY: default clean \
-        staticvector \
+        staticvector dynamicvector compressedvector \
         dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
         dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
         dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \
