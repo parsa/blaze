@@ -281,6 +281,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
                               inline size_t        rows() const;
                               inline size_t        columns() const;
                               inline size_t        spacing() const;
+                              inline size_t        capacity() const;
                               inline size_t        nonZeros() const;
                               inline size_t        nonZeros( size_t i ) const;
                               inline void          reset();
@@ -1746,6 +1747,22 @@ inline size_t StaticMatrix<Type,M,N,SO>::spacing() const
 
 
 //*************************************************************************************************
+/*!\brief Returns the maximum capacity of the matrix.
+//
+// \return The capacity of the matrix.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline size_t StaticMatrix<Type,M,N,SO>::capacity() const
+{
+   return M*NN;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns the total number of non-zero elements in the matrix
 //
 // \return The number of non-zero elements in the matrix.
@@ -2508,6 +2525,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
                               inline size_t        rows() const;
                               inline size_t        columns() const;
                               inline size_t        spacing() const;
+                              inline size_t        capacity() const;
                               inline size_t        nonZeros() const;
                               inline size_t        nonZeros( size_t j ) const;
                               inline void          reset();
@@ -3964,6 +3982,21 @@ inline size_t StaticMatrix<Type,M,N,true>::spacing() const
    return MM;
 }
 /*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the maximum capacity of the matrix.
+//
+// \return The capacity of the matrix.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline size_t StaticMatrix<Type,M,N,true>::capacity() const
+{
+   return MM*N;
+}
 //*************************************************************************************************
 
 
