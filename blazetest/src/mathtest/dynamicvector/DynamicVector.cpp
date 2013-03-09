@@ -418,18 +418,7 @@ void DynamicVector::testClear()
    vec.clear();
    
    checkSize    ( vec, 0UL );
-   checkCapacity( vec, 4UL );
    checkNonZeros( vec, 0UL );
-   
-   if( vec.size() != 0UL ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Reset operation failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n()\n";
-      throw std::runtime_error( oss.str() );
-   }
 }
 //*************************************************************************************************
 
@@ -458,7 +447,6 @@ void DynamicVector::testResize()
    
    checkSize    ( vec, 3UL );
    checkCapacity( vec, 3UL );
-   checkNonZeros( vec, 0UL );
    
    // Further increasing the size of the vector and preserving the elements
    vec[0] = 1;
@@ -468,7 +456,6 @@ void DynamicVector::testResize()
    
    checkSize    ( vec, 5UL );
    checkCapacity( vec, 5UL );
-   checkNonZeros( vec, 3UL );
    
    if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 ) {
       std::ostringstream oss;
@@ -484,7 +471,7 @@ void DynamicVector::testResize()
    vec.resize( 2UL, true );
    
    checkSize    ( vec, 2UL );
-   checkCapacity( vec, 5UL );
+   checkCapacity( vec, 2UL );
    checkNonZeros( vec, 2UL );
    
    if( vec[0] != 1 || vec[1] != 2 ) {
@@ -501,7 +488,7 @@ void DynamicVector::testResize()
    vec.resize( 1UL );
    
    checkSize    ( vec, 1UL );
-   checkCapacity( vec, 5UL );
+   checkCapacity( vec, 1UL );
 }
 //*************************************************************************************************
 
