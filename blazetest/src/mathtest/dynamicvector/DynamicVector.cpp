@@ -517,7 +517,6 @@ void DynamicVector::testExtend()
    
    checkSize    ( vec, 3UL );
    checkCapacity( vec, 3UL );
-   checkNonZeros( vec, 0UL );
    
    // Further increasing the size of the vector and preserving the elements
    vec[0] = 1;
