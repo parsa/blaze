@@ -35,7 +35,8 @@ src/mathtest/compressedvector/CompressedVector 2>&1 | tee -a result.txt
 #==================================================================================================
 
 echo " Running matrix tests..." 2>&1 | tee -a result.txt
-src/mathtest/staticmatrix/StaticMatrix 2>&1 | tee -a result.txt
+src/mathtest/staticmatrix/StaticMatrix   2>&1 | tee -a result.txt
+src/mathtest/dynamicmatrix/DynamicMatrix 2>&1 | tee -a result.txt
 
 
 #==================================================================================================
