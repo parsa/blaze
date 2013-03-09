@@ -73,7 +73,9 @@ class DynamicVector
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
-   void testAlignment   ();
+   template< typename Type >
+   void testAlignment( const std::string& type );
+
    void testConstructors();
    void testSubscript   ();
    void testNonZeros    ();
@@ -134,6 +136,36 @@ class DynamicVector
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Test of the alignment of different DynamicVector instances.
+//
+// \return void
+// \param type The string representation of the given template type.
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the alignment of a DynamicVector instance of the given
+// element type. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void DynamicVector::testAlignment( const std::string& type )
+{
+   blaze::DynamicVector<Type,blaze::rowVector> vec( 7UL );
+   const size_t alignment( blaze::AlignmentTrait<Type>::value );
+   const size_t deviation( reinterpret_cast<size_t>( &vec[0] ) % alignment );
+   
+   if( deviation != 0UL ) {
+      std::ostringstream oss;
+      oss << " Test: DynamicVector" << type << ",rowVector> alignment test\n"
+          << " Error: Invalid alignment detected\n"
+          << " Details:\n"
+          << "   Expected alignment: " << alignment << "\n"
+          << "   Deviation         : " << deviation << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Checking the size of the given dynamic vector.
 //
 // \param vector The dynamic vector to be checked.
@@ -165,7 +197,7 @@ void DynamicVector::checkSize( const Type& vector, size_t expectedSize ) const
 /*!\brief Checking the capacity of the given dynamic vector.
 //
 // \param vector The dynamic vector to be checked.
-// \param expectedSize The expected minimum capacity of the dynamic vector.
+// \param minCapacity The expected minimum capacity of the dynamic vector.
 // \return void
 // \exception std::runtime_error Error detected.
 //

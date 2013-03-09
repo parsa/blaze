@@ -27,7 +27,6 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/shims/Equal.h>
-#include <blaze/math/DynamicVector.h>
 #include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/Complex.h>
 #include <blazetest/mathtest/DynamicVector.h>
@@ -52,7 +51,19 @@ namespace dynamicvector {
 */
 DynamicVector::DynamicVector()
 {
-   testAlignment();
+   testAlignment< signed char          >( "signed char"          );
+   testAlignment< unsigned char        >( "unsigned char"        );
+   testAlignment< short                >( "short"                );
+   testAlignment< unsigned short       >( "unsigned short"       );
+   testAlignment< int                  >( "int"                  );
+   testAlignment< unsigned int         >( "unsigned int"         );
+   testAlignment< float                >( "float"                );
+   testAlignment< double               >( "double"               );
+   testAlignment< long double          >( "long double"          );
+   testAlignment< complex<float>       >( "complex<float>"       );
+   testAlignment< complex<double>      >( "complex<double>"      );
+   testAlignment< complex<long double> >( "complex<long double>" );
+
    testConstructors();
    testSubscript();
    testNonZeros();
@@ -78,122 +89,6 @@ DynamicVector::DynamicVector()
 //  TEST FUNCTIONS
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Test of the alignment of different DynamicVector instances.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the alignment of different DynamicVector instances.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void DynamicVector::testAlignment()
-{
-   // Testing the alignment of a signed integer vector
-   {
-      blaze::DynamicVector<int,blaze::rowVector> vec( 7UL );
-      const size_t alignment( blaze::AlignmentTrait<int>::value );
-      const size_t deviation( reinterpret_cast<size_t>( &vec[0] ) % alignment );
-      
-      if( deviation != 0UL ) {
-         std::ostringstream oss;
-         oss << " Test: DynamicVector<int> alignment test\n"
-             << " Error: Invalid alignment detected\n"
-             << " Details:\n"
-             << "   Expected alignment: " << alignment << "\n"
-             << "   Deviation: " << deviation << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-   
-   // Testing the alignment of an unsigned integer vector
-   {
-      blaze::DynamicVector<unsigned int,blaze::rowVector> vec( 7UL );
-      const size_t alignment( blaze::AlignmentTrait<unsigned int>::value );
-      const size_t deviation( reinterpret_cast<size_t>( &vec[0] ) % alignment );
-      
-      if( deviation != 0UL ) {
-         std::ostringstream oss;
-         oss << " Test: DynamicVector<unsigned int> alignment test\n"
-             << " Error: Invalid alignment detected\n"
-             << " Details:\n"
-             << "   Expected alignment: " << alignment << "\n"
-             << "   Deviation: " << deviation << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-   
-   // Testing the alignment of a single precision vector
-   {
-      blaze::DynamicVector<float,blaze::rowVector> vec( 7UL );
-      const size_t alignment( blaze::AlignmentTrait<float>::value );
-      const size_t deviation( reinterpret_cast<size_t>( &vec[0] ) % alignment );
-      
-      if( deviation != 0UL ) {
-         std::ostringstream oss;
-         oss << " Test: DynamicVector<float> alignment test\n"
-             << " Error: Invalid alignment detected\n"
-             << " Details:\n"
-             << "   Expected alignment: " << alignment << "\n"
-             << "   Deviation: " << deviation << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-   
-   // Testing the alignment of a double precision vector
-   {
-      blaze::DynamicVector<double,blaze::rowVector> vec( 7UL );
-      const size_t alignment( blaze::AlignmentTrait<double>::value );
-      const size_t deviation( reinterpret_cast<size_t>( &vec[0] ) % alignment );
-      
-      if( deviation != 0UL ) {
-         std::ostringstream oss;
-         oss << " Test: DynamicVector<double> alignment test\n"
-             << " Error: Invalid alignment detected\n"
-             << " Details:\n"
-             << "   Expected alignment: " << alignment << "\n"
-             << "   Deviation: " << deviation << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-   
-   // Testing the alignment of a single precision complex vector
-   {
-      blaze::DynamicVector<blaze::complex<float>,blaze::rowVector> vec( 7UL );
-      const size_t alignment( blaze::AlignmentTrait< blaze::complex<float> >::value );
-      const size_t deviation( reinterpret_cast<size_t>( &vec[0] ) % alignment );
-      
-      if( deviation != 0UL ) {
-         std::ostringstream oss;
-         oss << " Test: DynamicVector< complex<float> > alignment test\n"
-             << " Error: Invalid alignment detected\n"
-             << " Details:\n"
-             << "   Expected alignment: " << alignment << "\n"
-             << "   Deviation: " << deviation << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-   
-   // Testing the alignment of a double precision complex vector
-   {
-      blaze::DynamicVector<blaze::complex<double>,blaze::rowVector> vec( 7UL );
-      const size_t alignment( blaze::AlignmentTrait< blaze::complex<double> >::value );
-      const size_t deviation( reinterpret_cast<size_t>( &vec[0] ) % alignment );
-      
-      if( deviation != 0UL ) {
-         std::ostringstream oss;
-         oss << " Test: DynamicVector< complex<double> > alignment test\n"
-             << " Error: Invalid alignment detected\n"
-             << " Details:\n"
-             << "   Expected alignment: " << alignment << "\n"
-             << "   Deviation: " << deviation << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-}
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*!\brief Test of the DynamicVector constructors.
