@@ -166,7 +166,7 @@ void CompressedVector::checkSize( const Type& vector, size_t expectedSize ) cons
 /*!\brief Checking the capacity of the given compressed vector.
 //
 // \param vector The compressed vector to be checked.
-// \param expectedSize The expected minimum capacity of the compressed vector.
+// \param minCapacity The expected minimum capacity of the compressed vector.
 // \return void
 // \exception std::runtime_error Error detected.
 //
