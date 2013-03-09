@@ -21,6 +21,7 @@
 
 # Rules
 default: staticvector dynamicvector compressedvector \
+         staticmatrix \
          dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
          dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
          dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \
@@ -47,6 +48,11 @@ compressedvector:
 	@echo
 	@echo "Building the CompressedVector tests..."
 	@$(MAKE) --no-print-directory -C ./compressedvector/
+
+staticmatrix:
+	@echo
+	@echo "Building the StaticMatrix tests..."
+	@$(MAKE) --no-print-directory -C ./staticmatrix/
 
 dvecdvecadd:
 	@echo
@@ -272,6 +278,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./staticvector clean
 	@$(MAKE) --no-print-directory -C ./dynamicvector clean
 	@$(MAKE) --no-print-directory -C ./compressedvector clean
+	@$(MAKE) --no-print-directory -C ./staticmatrix clean
 	@$(MAKE) --no-print-directory -C ./dvecdvecadd clean
 	@$(MAKE) --no-print-directory -C ./dvecsvecadd clean
 	@$(MAKE) --no-print-directory -C ./svecdvecadd clean
@@ -322,6 +329,7 @@ clean:
 # Setting the independent commands
 .PHONY: default clean \
         staticvector dynamicvector compressedvector \
+        staticmatrix \
         dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
         dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
         dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \
