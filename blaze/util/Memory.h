@@ -37,7 +37,7 @@
 #include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/Null.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsVectorizable.h>
 
 
 namespace blaze {
@@ -71,7 +71,7 @@ namespace blaze {
 template< typename T >
 T* allocate( size_t size )
 {
-   if( IsBuiltin<T>::value )
+   if( IsVectorizable<T>::value )
    {
       void* tmp( NULL );
       const size_t alignment( AlignmentTrait<T>::value );
@@ -99,7 +99,7 @@ T* allocate( size_t size )
 template< typename T >
 void deallocate( T* address )
 {
-   if( IsBuiltin<T>::value ) {
+   if( IsVectorizable<T>::value ) {
 #if defined(_MSC_VER)
       _aligned_free( address );
 #else
