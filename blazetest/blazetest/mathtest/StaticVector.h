@@ -73,7 +73,9 @@ class StaticVector
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
-   void testAlignment   ();
+   template< typename Type >
+   void testAlignment( const std::string& type );
+
    void testConstructors();
    void testSubscript   ();
    void testNonZeros    ();
@@ -129,6 +131,36 @@ class StaticVector
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Test of the alignment of different StaticVector instances.
+//
+// \return void
+// \param type The string representation of the given template type.
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the alignment of a StaticVector instance of the given
+// element type. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void StaticVector::testAlignment( const std::string& type )
+{
+   blaze::StaticVector<Type,7UL,blaze::rowVector> vec;
+   const size_t alignment( blaze::AlignmentTrait<Type>::value );
+   const size_t deviation( reinterpret_cast<size_t>( &vec[0] ) % alignment );
+   
+   if( deviation != 0UL ) {
+      std::ostringstream oss;
+      oss << " Test: StaticVector" << type << ",7,rowVector> alignment test\n"
+          << " Error: Invalid alignment detected\n"
+          << " Details:\n"
+          << "   Expected alignment: " << alignment << "\n"
+          << "   Deviation         : " << deviation << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Checking the size of the given static vector.
 //
 // \param vector The static vector to be checked.
@@ -160,7 +192,7 @@ void StaticVector::checkSize( const Type& vector, size_t expectedSize ) const
 /*!\brief Checking the capacity of the given static vector.
 //
 // \param vector The static vector to be checked.
-// \param expectedSize The expected minimum capacity of the static vector.
+// \param minCapacity The expected minimum capacity of the static vector.
 // \return void
 // \exception std::runtime_error Error detected.
 //

@@ -27,7 +27,6 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/shims/Equal.h>
-#include <blaze/math/StaticVector.h>
 #include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/Complex.h>
 #include <blazetest/mathtest/StaticVector.h>
@@ -52,7 +51,19 @@ namespace staticvector {
 */
 StaticVector::StaticVector()
 {
-   testAlignment();
+   testAlignment< signed char          >( "signed char"          );
+   testAlignment< unsigned char        >( "unsigned char"        );
+   testAlignment< short                >( "short"                );
+   testAlignment< unsigned short       >( "unsigned short"       );
+   testAlignment< int                  >( "int"                  );
+   testAlignment< unsigned int         >( "unsigned int"         );
+   testAlignment< float                >( "float"                );
+   testAlignment< double               >( "double"               );
+   testAlignment< long double          >( "long double"          );
+   testAlignment< complex<float>       >( "complex<float>"       );
+   testAlignment< complex<double>      >( "complex<double>"      );
+   testAlignment< complex<long double> >( "complex<long double>" );
+   
    testConstructors();
    testSubscript();
    testNonZeros();
@@ -73,122 +84,6 @@ StaticVector::StaticVector()
 //  TEST FUNCTIONS
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Test of the alignment of different StaticVector instances.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the alignment of different StaticVector instances.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void StaticVector::testAlignment()
-{
-   // Testing the alignment of a signed integer vector
-   {
-      blaze::StaticVector<int,7UL,blaze::rowVector> vec;
-      const size_t alignment( blaze::AlignmentTrait<int>::value );
-      const size_t deviation( reinterpret_cast<size_t>( &vec[0] ) % alignment );
-      
-      if( deviation != 0UL ) {
-         std::ostringstream oss;
-         oss << " Test: StaticVector<int> alignment test\n"
-             << " Error: Invalid alignment detected\n"
-             << " Details:\n"
-             << "   Expected alignment: " << alignment << "\n"
-             << "   Deviation: " << deviation << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-   
-   // Testing the alignment of an unsigned integer vector
-   {
-      blaze::StaticVector<unsigned int,7UL,blaze::rowVector> vec;
-      const size_t alignment( blaze::AlignmentTrait<unsigned int>::value );
-      const size_t deviation( reinterpret_cast<size_t>( &vec[0] ) % alignment );
-      
-      if( deviation != 0UL ) {
-         std::ostringstream oss;
-         oss << " Test: StaticVector<unsigned int> alignment test\n"
-             << " Error: Invalid alignment detected\n"
-             << " Details:\n"
-             << "   Expected alignment: " << alignment << "\n"
-             << "   Deviation: " << deviation << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-   
-   // Testing the alignment of a single precision vector
-   {
-      blaze::StaticVector<float,7UL,blaze::rowVector> vec;
-      const size_t alignment( blaze::AlignmentTrait<float>::value );
-      const size_t deviation( reinterpret_cast<size_t>( &vec[0] ) % alignment );
-      
-      if( deviation != 0UL ) {
-         std::ostringstream oss;
-         oss << " Test: StaticVector<float> alignment test\n"
-             << " Error: Invalid alignment detected\n"
-             << " Details:\n"
-             << "   Expected alignment: " << alignment << "\n"
-             << "   Deviation: " << deviation << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-   
-   // Testing the alignment of a double precision vector
-   {
-      blaze::StaticVector<double,7UL,blaze::rowVector> vec;
-      const size_t alignment( blaze::AlignmentTrait<double>::value );
-      const size_t deviation( reinterpret_cast<size_t>( &vec[0] ) % alignment );
-      
-      if( deviation != 0UL ) {
-         std::ostringstream oss;
-         oss << " Test: StaticVector<double> alignment test\n"
-             << " Error: Invalid alignment detected\n"
-             << " Details:\n"
-             << "   Expected alignment: " << alignment << "\n"
-             << "   Deviation: " << deviation << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-   
-   // Testing the alignment of a single precision complex vector
-   {
-      blaze::StaticVector<blaze::complex<float>,7UL,blaze::rowVector> vec;
-      const size_t alignment( blaze::AlignmentTrait< blaze::complex<float> >::value );
-      const size_t deviation( reinterpret_cast<size_t>( &vec[0] ) % alignment );
-      
-      if( deviation != 0UL ) {
-         std::ostringstream oss;
-         oss << " Test: StaticVector< complex<float> > alignment test\n"
-             << " Error: Invalid alignment detected\n"
-             << " Details:\n"
-             << "   Expected alignment: " << alignment << "\n"
-             << "   Deviation: " << deviation << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-   
-   // Testing the alignment of a double precision complex vector
-   {
-      blaze::StaticVector<blaze::complex<double>,7UL,blaze::rowVector> vec;
-      const size_t alignment( blaze::AlignmentTrait< blaze::complex<double> >::value );
-      const size_t deviation( reinterpret_cast<size_t>( &vec[0] ) % alignment );
-      
-      if( deviation != 0UL ) {
-         std::ostringstream oss;
-         oss << " Test: StaticVector< complex<double> > alignment test\n"
-             << " Error: Invalid alignment detected\n"
-             << " Details:\n"
-             << "   Expected alignment: " << alignment << "\n"
-             << "   Deviation: " << deviation << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-}
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*!\brief Test of the StaticVector constructors.
@@ -658,11 +553,7 @@ void StaticVector::testScale()
 
    {
       // Initialization check
-      blaze::StaticVector<int,4UL,blaze::rowVector> vec;
-      vec[0] = 1;
-      vec[1] = 2;
-      vec[2] = 3;
-      vec[3] = 4;
+      blaze::StaticVector<int,4UL,blaze::rowVector> vec( 1, 2, 3, 4 );
       
       checkSize    ( vec, 4UL );
       checkCapacity( vec, 4UL );
