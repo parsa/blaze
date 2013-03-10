@@ -1541,6 +1541,8 @@ template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
 bool CompressedMatrix<Type,SO>::isDiagonal() const
 {
+   if( m_ != n_ ) return false;
+
    for( size_t i=0UL; i<rows(); ++i ) {
       for( ConstIterator element=begin_[i]; element!=end_[i]; ++element )
          if( element->index_ != i && !isDefault( element->value_ ) )
@@ -3405,6 +3407,8 @@ CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::transpose()
 template< typename Type >  // Data type of the sparse matrix
 bool CompressedMatrix<Type,true>::isDiagonal() const
 {
+   if( m_ != n_ ) return false;
+
    for( size_t j=0UL; j<columns(); ++j ) {
       for( ConstIterator element=begin_[j]; element!=end_[j]; ++element )
          if( element->index_ != j && !isDefault( element->value_ ) )
