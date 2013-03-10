@@ -27,7 +27,6 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/shims/Equal.h>
-#include <blaze/math/CompressedVector.h>
 #include <blaze/util/Complex.h>
 #include <blazetest/mathtest/CompressedVector.h>
 
@@ -378,8 +377,8 @@ void CompressedVector::testAppend()
    checkCapacity( vec, 4UL );
    checkNonZeros( vec, 0UL );
 
-   // Appending an element
-   vec.append( 1, 1 );
+   // Appending one non-zero element
+   vec.append( 1UL, 1 );
 
    checkSize    ( vec, 9UL );
    checkCapacity( vec, 4UL );
@@ -395,10 +394,10 @@ void CompressedVector::testAppend()
       throw std::runtime_error( oss.str() );
    }
 
-   // Appending three more elements
-   vec.append( 3, 2 );
-   vec.append( 4, 3 );
-   vec.append( 8, 4 );
+   // Appending three more non-zero elements
+   vec.append( 3UL, 2 );
+   vec.append( 4UL, 3 );
+   vec.append( 8UL, 4 );
 
    checkSize    ( vec, 9UL );
    checkCapacity( vec, 4UL );
@@ -437,7 +436,7 @@ void CompressedVector::testInsert()
    checkNonZeros( vec, 0UL );
 
    // Inserting a non-zero element
-   vec.insert( 4, 1 );
+   vec.insert( 4UL, 1 );
 
    checkSize    ( vec, 7UL );
    checkCapacity( vec, 1UL );
@@ -454,7 +453,7 @@ void CompressedVector::testInsert()
    }
 
    // Inserting a second non-zero element
-   vec.insert( 6, 2 );
+   vec.insert( 6UL, 2 );
 
    checkSize    ( vec, 7UL );
    checkCapacity( vec, 2UL );
@@ -471,7 +470,7 @@ void CompressedVector::testInsert()
    }
 
    // Inserting a third non-zero element
-   vec.insert( 2, 3 );
+   vec.insert( 2UL, 3 );
 
    checkSize    ( vec, 7UL );
    checkCapacity( vec, 3UL );
@@ -488,7 +487,7 @@ void CompressedVector::testInsert()
    }
 
    // Inserting a fourth non-zero element
-   vec.insert( 3, 4 );
+   vec.insert( 3UL, 4 );
 
    checkSize    ( vec, 7UL );
    checkCapacity( vec, 4UL );
@@ -534,7 +533,7 @@ void CompressedVector::testFind()
 
    // Searching for the first element
    {
-      ConstIterator pos( vec.find( 0 ) );
+      ConstIterator pos( vec.find( 0UL ) );
 
       if( pos == vec.end() ) {
          std::ostringstream oss;
@@ -561,7 +560,7 @@ void CompressedVector::testFind()
 
    // Searching for the second element
    {
-      ConstIterator pos( vec.find( 2 ) );
+      ConstIterator pos( vec.find( 2UL ) );
 
       if( pos == vec.end() ) {
          std::ostringstream oss;
@@ -588,7 +587,7 @@ void CompressedVector::testFind()
 
    // Searching for the third element
    {
-      ConstIterator pos( vec.find( 7 ) );
+      ConstIterator pos( vec.find( 7UL ) );
 
       if( pos == vec.end() ) {
          std::ostringstream oss;
@@ -615,7 +614,7 @@ void CompressedVector::testFind()
 
    // Searching for a non-existing non-zero element
    {
-      ConstIterator pos( vec.find( 5 ) );
+      ConstIterator pos( vec.find( 5UL ) );
 
       if( pos != vec.end() ) {
          std::ostringstream oss;
