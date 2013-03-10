@@ -1933,3 +1933,12 @@ src/mathtest/smatsmatmult/MCaMCa 2>&1 | tee -a result.txt
 src/mathtest/smatsmatmult/MCaMCb 2>&1 | tee -a result.txt
 src/mathtest/smatsmatmult/MCbMCa 2>&1 | tee -a result.txt
 src/mathtest/smatsmatmult/MCbMCb 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
+# Utility classes
+#==================================================================================================
+
+echo " Running utility class tests..." 2>&1 | tee -a result.txt
+src/utiltest/uniqueptr/UniquePtr     2>&1 | tee -a result.txt
+src/utiltest/uniquearray/UniqueArray 2>&1 | tee -a result.txt

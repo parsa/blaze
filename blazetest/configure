@@ -161,17 +161,23 @@ cat > Makefile <<EOF
 
 
 # Build rules
-default: mathtest
+default: mathtest utiltest
 
 mathtest:
 	@echo
 	@\$(MAKE) --no-print-directory -C $INSTALL_PATH/src/mathtest
 	@echo
 
+utiltest:
+	@echo
+	@\$(MAKE) --no-print-directory -C $INSTALL_PATH/src/utiltest
+	@echo
+
 # Clean up rules
 clean:
 	@echo "Cleaning up..."
 	@\$(MAKE) --no-print-directory -C $INSTALL_PATH/src/mathtest clean
+	@\$(MAKE) --no-print-directory -C $INSTALL_PATH/src/utiltest clean
 	@\$(RM) bin/* *.o
 
 # Setting the independent commands
