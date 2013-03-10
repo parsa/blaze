@@ -26,7 +26,6 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <blaze/math/shims/Equal.h>
 #include <blaze/util/Complex.h>
 #include <blazetest/mathtest/StaticMatrix.h>
 
