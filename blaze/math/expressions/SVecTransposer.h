@@ -205,7 +205,7 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
       sv_.append( index, value );
    }
    //**********************************************************************************************
-   
+
    //**IsAliased function**************************************************************************
    /*!\brief Returns whether the vector is aliased with the given address \a alias.
    //

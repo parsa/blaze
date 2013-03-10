@@ -131,7 +131,7 @@ class TDVecTSMatMultExpr : public DenseVector< TDVecTSMatMultExpr<VT,MT>, true >
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = 0 };
 
-   //! Compilation flag for the detection of aliasing effects.   
+   //! Compilation flag for the detection of aliasing effects.
    enum { canAlias = ( !IsComputation<VT>::value ) ||
                      ( IsComputation<MT>::value && !RequiresEvaluation<MT>::value && CanAlias<MT>::value ) };
    //**********************************************************************************************
@@ -253,7 +253,7 @@ class TDVecTSMatMultExpr : public DenseVector< TDVecTSMatMultExpr<VT,MT>, true >
       assign( DenseVector<VT2,true>& lhs, const TDVecTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
@@ -310,7 +310,7 @@ class TDVecTSMatMultExpr : public DenseVector< TDVecTSMatMultExpr<VT,MT>, true >
       assign( SparseVector<VT2,true>& lhs, const TDVecTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -342,7 +342,7 @@ class TDVecTSMatMultExpr : public DenseVector< TDVecTSMatMultExpr<VT,MT>, true >
       addAssign( DenseVector<VT2,true>& lhs, const TDVecTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
@@ -394,7 +394,7 @@ class TDVecTSMatMultExpr : public DenseVector< TDVecTSMatMultExpr<VT,MT>, true >
       subAssign( DenseVector<VT2,true>& lhs, const TDVecTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
@@ -446,7 +446,7 @@ class TDVecTSMatMultExpr : public DenseVector< TDVecTSMatMultExpr<VT,MT>, true >
       multAssign( DenseVector<VT2,true>& lhs, const TDVecTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
@@ -519,7 +519,7 @@ inline const typename DisableIf< IsMatMatMultExpr<T2>, TDVecTSMatMultExpr<T1,T2>
    operator*( const DenseVector<T1,true>& vec, const SparseMatrix<T2,true>& mat )
 {
    BLAZE_FUNCTION_TRACE;
-      
+
    if( (~vec).size() != (~mat).rows() )
       throw std::invalid_argument( "Vector and matrix sizes do not match" );
 

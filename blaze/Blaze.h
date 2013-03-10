@@ -1849,15 +1849,15 @@ namespace blaze {}
 
    \code
    blaze::StaticVector<int,3UL,columnVector> v1( 2, 5, -1 );
-   
+
    blaze::DynamicVector<int,rowVector> v2( 3UL );
    v2[0] = -1;
    v2[1] = 3;
    v2[2] = -2;
-   
+
    blaze::StaticVector<int,3UL,columnVector> v3( v1 % v2 );
    \endcode
-   
+
 // Please note that the cross product is restricted to three dimensional (dense and sparse)
 // vectors.
 //

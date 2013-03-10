@@ -48,7 +48,7 @@ namespace blaze {
 
    \code
    class Resource { ... };
-   
+
    DefaultDelete<Resource> ptrDelete       // Uses delete to free resources
    DefaultDelete<Resource[]> arrayDelete;  // Uses array delete to free resources
    \endcode

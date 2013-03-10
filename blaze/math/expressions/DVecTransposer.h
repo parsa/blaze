@@ -124,7 +124,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
       return dv_.reset();
    }
    //**********************************************************************************************
-   
+
    //**IsAliased function**************************************************************************
    /*!\brief Returns whether the vector is aliased with the given address \a alias.
    //

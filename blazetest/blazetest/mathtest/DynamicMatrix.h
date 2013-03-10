@@ -76,7 +76,7 @@ class DynamicMatrix
    //@{
    template< typename Type >
    void testAlignment( const std::string& type );
-   
+
    void testConstructors();
    void testFunctionCall();
    void testNonZeros    ();
@@ -90,28 +90,28 @@ class DynamicMatrix
    void testIsSymmetric ();
    void testScale       ();
    void testSwap        ();
-   
+
    template< typename Type >
    void checkRows( const Type& matrix, size_t expectedRows ) const;
-   
+
    template< typename Type >
    void checkColumns( const Type& matrix, size_t expectedColumns ) const;
-   
+
    template< typename Type >
    void checkCapacity( const Type& matrix, size_t minCapacity ) const;
-   
+
    template< typename Type >
    void checkNonZeros( const Type& matrix, size_t nonzeros ) const;
    //@}
    //**********************************************************************************************
-   
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
    std::string test_;  //!< Label of the currently performed test.
    //@}
    //**********************************************************************************************
-   
+
    //**Type definitions****************************************************************************
    typedef blaze::DynamicMatrix<int,blaze::rowMajor>  MT;   //!< Type of the dynamic matrix
    typedef typename MT::TransposeType                 TMT;  //!< Transpose dynamic matrix type
@@ -157,7 +157,7 @@ void DynamicMatrix::testAlignment( const std::string& type )
       blaze::DynamicMatrix<Type,blaze::rowMajor> mat( 7UL, 5UL );
       const size_t alignment( blaze::AlignmentTrait<Type>::value );
       const size_t deviation( reinterpret_cast<size_t>( &mat(0UL,0UL) ) % alignment );
-      
+
       if( deviation != 0UL ) {
          std::ostringstream oss;
          oss << " Test: DynamicMatrix<" << type << ",7,5,rowMajor> alignment test\n"
@@ -168,13 +168,13 @@ void DynamicMatrix::testAlignment( const std::string& type )
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    // Testing the alignment of the column-major matrix instance
    {
       blaze::DynamicMatrix<Type,blaze::columnMajor> mat( 7UL, 5UL );
       const size_t alignment( blaze::AlignmentTrait<Type>::value );
       const size_t deviation( reinterpret_cast<size_t>( &mat(0UL,0UL) ) % alignment );
-      
+
       if( deviation != 0UL ) {
          std::ostringstream oss;
          oss << " Test: DynamicMatrix<" << type << ",7,5,columnMajor> alignment test\n"

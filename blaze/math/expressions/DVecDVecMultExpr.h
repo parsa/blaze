@@ -261,7 +261,7 @@ class DVecDVecMultExpr : public DenseVector< DVecDVecMultExpr<VT1,VT2,TF>, TF >
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-      
+
       if( !IsComputation<VT1>::value && (~lhs).isAliased( &rhs.lhs_ ) ) {
          multAssign( ~lhs, rhs.rhs_ );
       }

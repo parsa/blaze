@@ -251,7 +251,7 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
       sm_.finalize( i );
    }
    //**********************************************************************************************
-   
+
    //**********************************************************************************************
    /*!\brief Returns whether the matrix is aliased with the given address \a alias.
    //
@@ -562,7 +562,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
       sm_.finalize( j );
    }
    //**********************************************************************************************
-   
+
    //**********************************************************************************************
    /*!\brief Returns whether the matrix is aliased with the given address \a alias.
    //

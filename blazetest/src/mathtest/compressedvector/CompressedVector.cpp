@@ -93,38 +93,38 @@ void CompressedVector::testConstructors()
    // Default constructor
    {
       test_ = "CompressedVector default constructor";
-   
+
       blaze::CompressedVector<int,blaze::rowVector> vec;
-   
+
       checkSize    ( vec, 0UL );
       checkNonZeros( vec, 0UL );
    }
-   
+
    // Size constructor
    {
       test_ = "CompressedVector size constructor";
-   
+
       blaze::CompressedVector<int,blaze::rowVector> vec( 5UL );
-      
+
       checkSize    ( vec, 5UL );
       checkNonZeros( vec, 0UL );
    }
-   
+
    // Size/Non-zeros constructor
    {
       test_ = "CompressedVector size/non-zeros constructor";
-      
+
       blaze::CompressedVector<int,blaze::rowVector> vec( 7UL, 3UL );
-      
+
       checkSize    ( vec, 7UL );
       checkCapacity( vec, 3UL );
       checkNonZeros( vec, 0UL );
    }
-   
+
    // Copy constructor
    {
       test_ = "CompressedVector copy constructor";
-   
+
       blaze::CompressedVector<int,blaze::rowVector> vec1( 7UL, 3UL );
       vec1[0] = 1;
       vec1[1] = 2;
@@ -166,7 +166,7 @@ void CompressedVector::testSubscript()
    // Adding the first element
    blaze::CompressedVector<int,blaze::rowVector> vec( 7UL, 3UL );
    vec[2] = 1;
-   
+
    checkSize    ( vec, 7UL );
    checkCapacity( vec, 3UL );
    checkNonZeros( vec, 1UL );
@@ -180,10 +180,10 @@ void CompressedVector::testSubscript()
           << "   Expected result:\n( 0 0 1 0 0 0 0 )\n";
       throw std::runtime_error( oss.str() );
    }
-   
+
    // Adding the second element
    vec[5] = 2;
-   
+
    checkSize    ( vec, 7UL );
    checkCapacity( vec, 3UL );
    checkNonZeros( vec, 2UL );
@@ -197,14 +197,14 @@ void CompressedVector::testSubscript()
           << "   Expected result:\n( 0 0 1 0 0 2 0 )\n";
       throw std::runtime_error( oss.str() );
    }
-   
+
    // Adding the third element
    vec[3] = 3;
-   
+
    checkSize    ( vec, 7UL );
    checkCapacity( vec, 3UL );
    checkNonZeros( vec, 3UL );
-   
+
    if( vec[2] != 1 || vec[3] != 3 || vec[5] != 2 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
@@ -214,10 +214,10 @@ void CompressedVector::testSubscript()
           << "   Expected result:\n( 0 0 1 3 0 2 0 )\n";
       throw std::runtime_error( oss.str() );
    }
-   
+
    // Adding the fourth element
    vec[0] = 4;
-   
+
    checkSize    ( vec, 7UL );
    checkCapacity( vec, 4UL );
    checkNonZeros( vec, 4UL );
@@ -250,7 +250,7 @@ void CompressedVector::testNonZeros()
 
    // Initialization check
    blaze::CompressedVector<int,blaze::rowVector> vec( 7UL, 3UL );
-   
+
    checkSize    ( vec, 7UL );
    checkCapacity( vec, 3UL );
    checkNonZeros( vec, 0UL );
@@ -258,14 +258,14 @@ void CompressedVector::testNonZeros()
    // Adding two non-zero elements
    vec[2] = 1;
    vec[5] = 2;
-   
+
    checkSize    ( vec, 7UL );
    checkCapacity( vec, 3UL );
    checkNonZeros( vec, 2UL );
-   
+
    // Adding a third non-zero elements
    vec[3] = 0;
-   
+
    checkSize    ( vec, 7UL );
    checkCapacity( vec, 3UL );
    checkNonZeros( vec, 3UL );
@@ -292,11 +292,11 @@ void CompressedVector::testReset()
    vec[3] = 2;
    vec[7] = 3;
    vec[9] = 4;
-   
+
    checkSize    ( vec, 11UL );
    checkCapacity( vec,  4UL );
    checkNonZeros( vec,  4UL );
-   
+
    if( vec[1] != 1 || vec[3] != 2 || vec[7] != 3 || vec[9] != 4 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
@@ -306,10 +306,10 @@ void CompressedVector::testReset()
           << "   Expected result:\n( 0 1 0 3 0 0 0 3 0 4 0 )\n";
       throw std::runtime_error( oss.str() );
    }
-   
+
    // Resetting the vector
    vec.reset();
-   
+
    checkSize    ( vec, 11UL );
    checkNonZeros( vec,  0UL );
 }
@@ -334,11 +334,11 @@ void CompressedVector::testClear()
    vec[0] = 1;
    vec[7] = 2;
    vec[8] = 3;
-   
+
    checkSize    ( vec, 9UL );
    checkCapacity( vec, 3UL );
    checkNonZeros( vec, 3UL );
-   
+
    if( vec[0] != 1 || vec[7] != 2 || vec[8] != 3 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
@@ -348,10 +348,10 @@ void CompressedVector::testClear()
           << "   Expected result:\n( 1 0 0 0 0 0 0 2 3 )\n";
       throw std::runtime_error( oss.str() );
    }
-   
+
    // Clearing the vector
    vec.clear();
-   
+
    checkSize    ( vec, 0UL );
    checkNonZeros( vec, 0UL );
 }
@@ -370,21 +370,21 @@ void CompressedVector::testClear()
 void CompressedVector::testAppend()
 {
    test_ = "CompressedVector::append()";
-   
+
    // Initialization check
    blaze::CompressedVector<int,blaze::rowVector> vec( 9UL, 4UL );
-   
+
    checkSize    ( vec, 9UL );
    checkCapacity( vec, 4UL );
    checkNonZeros( vec, 0UL );
-   
+
    // Appending an element
    vec.append( 1, 1 );
-   
+
    checkSize    ( vec, 9UL );
    checkCapacity( vec, 4UL );
    checkNonZeros( vec, 1UL );
-   
+
    if( vec[1] != 1 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
@@ -394,16 +394,16 @@ void CompressedVector::testAppend()
           << "   Expected result:\n( 0 1 0 0 0 0 0 0 0 )\n";
       throw std::runtime_error( oss.str() );
    }
-   
+
    // Appending three more elements
    vec.append( 3, 2 );
    vec.append( 4, 3 );
    vec.append( 8, 4 );
-   
+
    checkSize    ( vec, 9UL );
    checkCapacity( vec, 4UL );
    checkNonZeros( vec, 4UL );
-   
+
    if( vec[1] != 1 || vec[3] != 2 || vec[4] != 3 || vec[8] != 4 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
@@ -429,20 +429,20 @@ void CompressedVector::testAppend()
 void CompressedVector::testInsert()
 {
    test_ = "CompressedVector::insert()";
-   
+
    // Initialization check
    blaze::CompressedVector<int,blaze::rowVector> vec( 7UL );
-   
+
    checkSize    ( vec, 7UL );
    checkNonZeros( vec, 0UL );
-   
+
    // Inserting a non-zero element
    vec.insert( 4, 1 );
-   
+
    checkSize    ( vec, 7UL );
    checkCapacity( vec, 1UL );
    checkNonZeros( vec, 1UL );
-   
+
    if( vec[4] != 1 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
@@ -452,14 +452,14 @@ void CompressedVector::testInsert()
           << "   Expected result:\n( 0 0 0 0 1 0 0 )\n";
       throw std::runtime_error( oss.str() );
    }
-   
+
    // Inserting a second non-zero element
    vec.insert( 6, 2 );
-   
+
    checkSize    ( vec, 7UL );
    checkCapacity( vec, 2UL );
    checkNonZeros( vec, 2UL );
-   
+
    if( vec[4] != 1 || vec[6] != 2 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
@@ -469,14 +469,14 @@ void CompressedVector::testInsert()
           << "   Expected result:\n( 0 0 0 0 1 0 2 )\n";
       throw std::runtime_error( oss.str() );
    }
-   
+
    // Inserting a third non-zero element
    vec.insert( 2, 3 );
-   
+
    checkSize    ( vec, 7UL );
    checkCapacity( vec, 3UL );
    checkNonZeros( vec, 3UL );
-   
+
    if( vec[2] != 3 || vec[4] != 1 || vec[6] != 2 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
@@ -486,14 +486,14 @@ void CompressedVector::testInsert()
           << "   Expected result:\n( 0 0 3 0 1 0 2 )\n";
       throw std::runtime_error( oss.str() );
    }
-   
+
    // Inserting a fourth non-zero element
    vec.insert( 3, 4 );
-   
+
    checkSize    ( vec, 7UL );
    checkCapacity( vec, 4UL );
    checkNonZeros( vec, 4UL );
-   
+
    if( vec[2] != 3 || vec[3] != 4 || vec[4] != 1 || vec[6] != 2 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
@@ -519,23 +519,23 @@ void CompressedVector::testInsert()
 void CompressedVector::testFind()
 {
    test_ = "CompressedVector::find()";
-   
+
    typedef blaze::CompressedVector<int,blaze::rowVector>::ConstIterator  ConstIterator;
-   
+
    // Initialization check
    blaze::CompressedVector<int,blaze::rowVector> vec( 8UL, 3UL );
    vec[0] = 1;
    vec[2] = 2;
    vec[7] = 3;
-   
+
    checkSize    ( vec, 8UL );
    checkCapacity( vec, 3UL );
    checkNonZeros( vec, 3UL );
-   
+
    // Searching for the first element
    {
       ConstIterator pos( vec.find( 0 ) );
-      
+
       if( pos == vec.end() ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -558,11 +558,11 @@ void CompressedVector::testFind()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    // Searching for the second element
    {
       ConstIterator pos( vec.find( 2 ) );
-      
+
       if( pos == vec.end() ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -585,11 +585,11 @@ void CompressedVector::testFind()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    // Searching for the third element
    {
       ConstIterator pos( vec.find( 7 ) );
-      
+
       if( pos == vec.end() ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -612,11 +612,11 @@ void CompressedVector::testFind()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    // Searching for a non-existing non-zero element
    {
       ConstIterator pos( vec.find( 5 ) );
-      
+
       if( pos != vec.end() ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -649,25 +649,26 @@ void CompressedVector::testResize()
 
    // Initialization check
    blaze::CompressedVector<int,blaze::rowVector> vec;
-   
-   checkSize( vec, 0UL );
-   
+
+   checkSize    ( vec, 0UL );
+   checkNonZeros( vec, 0UL );
+
    // Increasing the size of the vector
    vec.resize( 5UL );
-   
+
    checkSize    ( vec, 5UL );
    checkNonZeros( vec, 0UL );
-   
+
    // Further increasing the size of the vector and preserving the elements
    vec[0] = 1;
    vec[2] = 2;
    vec[4] = 3;
    vec.resize( 9UL, true );
-   
+
    checkSize    ( vec, 9UL );
    checkCapacity( vec, 3UL );
    checkNonZeros( vec, 3UL );
-   
+
    if( vec[0] != 1 || vec[2] != 2 || vec[4] != 3 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
@@ -677,14 +678,14 @@ void CompressedVector::testResize()
           << "   Expected result:\n( 1 0 2 0 3 )\n";
       throw std::runtime_error( oss.str() );
    }
-   
+
    // Decreasing the size of the vector and preserving the elements
    vec.resize( 2UL, true );
-   
+
    checkSize    ( vec, 2UL );
    checkCapacity( vec, 1UL );
    checkNonZeros( vec, 1UL );
-   
+
    if( vec[0] != 1 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
@@ -694,10 +695,10 @@ void CompressedVector::testResize()
           << "   Expected result:\n( 1 0 )\n";
       throw std::runtime_error( oss.str() );
    }
-   
+
    // Further decreasing the size of the vector
    vec.resize( 1UL );
-   
+
    checkSize( vec, 1UL );
 }
 //*************************************************************************************************
@@ -718,20 +719,23 @@ void CompressedVector::testReserve()
 
    // Initialization check
    blaze::CompressedVector<int,blaze::rowVector> vec;
-   
-   checkSize( vec, 0UL );
-   
+
+   checkSize    ( vec, 0UL );
+   checkNonZeros( vec, 0UL );
+
    // Increasing the capacity of the vector
    vec.reserve( 10UL );
-   
+
    checkSize    ( vec,  0UL );
    checkCapacity( vec, 10UL );
-   
+   checkNonZeros( vec,  0UL );
+
    // Further increasing the capacity of the vector
    vec.reserve( 20UL );
-   
+
    checkSize    ( vec,  0UL );
    checkCapacity( vec, 20UL );
+   checkNonZeros( vec,  0UL );
 }
 //*************************************************************************************************
 
@@ -754,7 +758,7 @@ void CompressedVector::testLength()
    blaze::CompressedVector<double,blaze::rowVector> vec( 5UL, 2UL );
    vec[1] = 3.0;
    vec[4] = 4.0;
-   
+
    checkSize    ( vec, 5UL );
    checkCapacity( vec, 2UL );
    checkNonZeros( vec, 2UL );
@@ -768,10 +772,10 @@ void CompressedVector::testLength()
           << "   Expected result:\n( 3 4 )\n";
       throw std::runtime_error( oss.str() );
    }
-   
+
    // Computing the vector length
    const double length( vec.length() );
-   
+
    if( !blaze::equal( length, 5.0 ) ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
@@ -781,10 +785,10 @@ void CompressedVector::testLength()
           << "   Expected result: 5\n";
       throw std::runtime_error( oss.str() );
    }
-   
+
    // Computing the vector square length
    const double sqrLength( vec.sqrLength() );
-   
+
    if( !blaze::equal( vec.sqrLength(), 25.0 ) ) {
       std::ostringstream oss;
       oss << " Test: CompressedVector::sqrLength()\n"
@@ -818,11 +822,11 @@ void CompressedVector::testNormalize()
    vec[1] = 2.0;
    vec[2] = 3.0;
    vec[3] = 4.0;
-   
+
    checkSize    ( vec, 10UL );
    checkCapacity( vec,  4UL );
    checkNonZeros( vec,  4UL );
-   
+
    if( vec[0] != 1.0 || vec[1] != 2.0 || vec[2] != 3.0 || vec[3] != 4.0 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
@@ -832,10 +836,10 @@ void CompressedVector::testNormalize()
           << "   Expected result:\n( 1 2 3 4 0 0 0 0 0 0 )\n";
       throw std::runtime_error( oss.str() );
    }
-   
+
    // Acquiring normalized vector
    const blaze::CompressedVector<double,blaze::rowVector> normalized( vec.getNormalized() );
-   
+
    if( !blaze::equal( normalized.length(), 1.0 ) ) {
       std::ostringstream oss;
       oss << " Test: CompressedVector::getNormalized()\n"
@@ -845,10 +849,10 @@ void CompressedVector::testNormalize()
           << "   Expected result: 1\n";
       throw std::runtime_error( oss.str() );
    }
-   
+
    // Normalizing the vector
    vec.normalize();
-   
+
    if( !blaze::equal( vec.length(), 1.0 ) ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
@@ -881,11 +885,11 @@ void CompressedVector::testScale()
       vec[1] = 1;
       vec[3] = 2;
       vec[5] = 3;
-      
+
       checkSize    ( vec, 6UL );
       checkCapacity( vec, 3UL );
       checkNonZeros( vec, 3UL );
-   
+
       if( vec[1] != 1 || vec[3] != 2 || vec[5] != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -898,11 +902,11 @@ void CompressedVector::testScale()
 
       // Integral scaling of the vector
       vec.scale( 2 );
-      
+
       checkSize    ( vec, 6UL );
       checkCapacity( vec, 3UL );
       checkNonZeros( vec, 3UL );
-   
+
       if( vec[1] != 2 || vec[3] != 4 || vec[5] != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -912,14 +916,14 @@ void CompressedVector::testScale()
              << "   Expected result:\n( 0 2 0 4 0 6 )\n";
          throw std::runtime_error( oss.str() );
       }
-   
+
       // Floating point scaling of the vector
       vec.scale( 0.5 );
-      
+
       checkSize    ( vec, 6UL );
       checkCapacity( vec, 3UL );
       checkNonZeros( vec, 3UL );
-   
+
       if( vec[1] != 1 || vec[3] != 2 || vec[5] != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -930,19 +934,19 @@ void CompressedVector::testScale()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    {
       using blaze::complex;
-   
+
       blaze::CompressedVector<complex<float>,blaze::rowVector> vec( 2UL, 2UL );
       vec[0] = complex<float>( 1.0F, 0.0F );
       vec[1] = complex<float>( 2.0F, 0.0F );
       vec.scale( complex<float>( 3.0F, 0.0F ) );
-      
+
       checkSize    ( vec, 2UL );
       checkCapacity( vec, 2UL );
       checkNonZeros( vec, 2UL );
-      
+
       // TODO
       /*
       else if( vec[0] != complex<float>( 3.0F, 0.0F ) || vec[1] != complex<float>( 6.0F, 0.0F ) ) {
@@ -982,13 +986,13 @@ void CompressedVector::testSwap()
    blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 2UL );
    vec2[0] = 4;
    vec2[4] = 2;
-   
+
    swap( vec1, vec2 );
-   
+
    checkSize    ( vec1, 5UL );
    checkCapacity( vec1, 2UL );
    checkNonZeros( vec1, 2UL );
-   
+
    if( vec1[0] != 4 || vec1[4] != 2 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
@@ -998,11 +1002,11 @@ void CompressedVector::testSwap()
           << "   Expected result:\n( 4 0 0 0 2 )\n";
       throw std::runtime_error( oss.str() );
    }
-   
+
    checkSize    ( vec2, 12UL );
    checkCapacity( vec2,  4UL );
    checkNonZeros( vec2,  4UL );
-   
+
    if( vec2[1] != 1 || vec2[4] != 2 || vec2[7] != 3 || vec2[10] != 4 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
@@ -1034,9 +1038,9 @@ void CompressedVector::testMinimum()
       vec[1] =  1;
       vec[3] =  4;
       vec[7] =  3;
-   
+
       const int minimum = min( vec );
-   
+
       if( minimum != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -1047,16 +1051,16 @@ void CompressedVector::testMinimum()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    {
       blaze::CompressedVector<int,blaze::rowVector> vec( 8UL, 4UL );
       vec[1] =  -4;
       vec[3] =  -2;
       vec[5] =   8;
       vec[7] =  -3;
-   
+
       const int minimum = min( vec );
-   
+
       if( minimum != -4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -1067,14 +1071,14 @@ void CompressedVector::testMinimum()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    {
       blaze::CompressedVector<int,blaze::rowVector> vec( 8UL, 2UL );
       vec[5] =   8;
       vec[6] =  -3;
-   
+
       const int minimum = min( vec );
-   
+
       if( minimum != -3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -1107,9 +1111,9 @@ void CompressedVector::testMaximum()
       vec[1] = -1;
       vec[3] = -4;
       vec[7] = -3;
-   
+
       const int maximum = max( vec );
-   
+
       if( maximum != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -1120,16 +1124,16 @@ void CompressedVector::testMaximum()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    {
       blaze::CompressedVector<int,blaze::rowVector> vec( 8UL, 4UL );
       vec[1] =  4;
       vec[3] =  2;
       vec[5] = -8;
       vec[7] =  3;
-   
+
       const int maximum = max( vec );
-   
+
       if( maximum != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -1140,14 +1144,14 @@ void CompressedVector::testMaximum()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    {
       blaze::CompressedVector<int,blaze::rowVector> vec( 8UL, 2UL );
       vec[5] = -8;
       vec[6] =  3;
-   
+
       const int maximum = max( vec );
-   
+
       if( maximum != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"

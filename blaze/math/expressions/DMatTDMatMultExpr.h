@@ -345,7 +345,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    friend inline void assign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -886,7 +886,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    friend inline void assign( SparseMatrix<MT,SO>& lhs, const DMatTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       typedef typename SelectType< SO, OppositeType, ResultType >::Type  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
@@ -923,7 +923,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    friend inline void addAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -1469,7 +1469,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    friend inline void subAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -2265,7 +2265,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    friend inline void assign( DenseMatrix<MT3,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -2809,7 +2809,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    friend inline void assign( SparseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       typedef typename SelectType< SO, OppositeType, ResultType >::Type  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
@@ -2844,7 +2844,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    friend inline void addAssign( DenseMatrix<MT3,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -3377,7 +3377,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    friend inline void subAssign( DenseMatrix<MT3,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -3958,7 +3958,7 @@ inline const DMatTDMatMultExpr<T1,T2>
    operator*( const DenseMatrix<T1,false>& lhs, const DenseMatrix<T2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
-      
+
    if( (~lhs).columns() != (~rhs).rows() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 

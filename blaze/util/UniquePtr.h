@@ -131,7 +131,7 @@ class UniquePtr : private NonCopyable
    Deleter deleter_;  //!< Resource deleter.
    //@}
    //**********************************************************************************************
-   
+
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_NOT_BE_ARRAY_TYPE( T );
@@ -236,7 +236,7 @@ inline typename UniquePtr<T,D>::Pointer UniquePtr<T,D>::operator->() const /* th
 //
 // This function returns a pointer to the managed resource (or NULL in case no resource is
 // currently managed). Note however that the ownership remains with the unqiue pointer.
-*/ 
+*/
 template< typename T    // Type of the resource
         , typename D >  // Type of the deleter
 inline typename UniquePtr<T,D>::Pointer UniquePtr<T,D>::get() const /* throw() */

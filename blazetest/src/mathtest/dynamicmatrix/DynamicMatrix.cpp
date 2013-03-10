@@ -62,7 +62,7 @@ DynamicMatrix::DynamicMatrix()
    testAlignment< complex<float>       >( "complex<float>"       );
    testAlignment< complex<double>      >( "complex<double>"      );
    testAlignment< complex<long double> >( "complex<long double>" );
-   
+
    testConstructors();
    testFunctionCall();
    testNonZeros();
@@ -106,25 +106,35 @@ void DynamicMatrix::testConstructors()
    // Default constructor
    {
       test_ = "Row-major DynamicMatrix default constructor";
-   
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat;
+
+      checkRows   ( mat, 0UL );
+      checkColumns( mat, 0UL );
+   }
+
+   // Size constructor
+   {
+      test_ = "Row-major DynamicMatrix size constructor";
+
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 4UL );
-      
+
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  4UL );
       checkCapacity( mat, 12UL );
    }
-   
+
    // Homogeneous initialization
    {
       test_ = "Row-major DynamicMatrix homogeneous initialization constructor";
-   
+
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 4UL, 2 );
-      
+
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  4UL );
       checkCapacity( mat, 12UL );
       checkNonZeros( mat, 12UL );
-   
+
       if( mat(0,0) != 2 || mat(0,1) != 2 || mat(0,2) != 2 || mat(0,3) != 2 ||
           mat(1,0) != 2 || mat(1,1) != 2 || mat(1,2) != 2 || mat(1,3) != 2 ||
           mat(2,0) != 2 || mat(2,1) != 2 || mat(2,2) != 2 || mat(2,3) != 2 ) {
@@ -137,19 +147,19 @@ void DynamicMatrix::testConstructors()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    // Array initialization
    {
       test_ = "DynamicVector array initialization constructor";
-   
+
       int array[2][3] = { { 1, 2, 3 }, { 4, 5, 6 } };
       blaze::DynamicMatrix<int,blaze::rowVector> mat( array );
-      
+
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
-      
+
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
           mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
          std::ostringstream oss;
@@ -173,14 +183,14 @@ void DynamicMatrix::testConstructors()
       mat1(1,0) = 4;
       mat1(1,1) = 5;
       mat1(1,2) = 6;
-      
+
       blaze::DynamicMatrix<int,blaze::rowMajor> mat2( mat1 );
-      
+
       checkRows    ( mat2, 2UL );
       checkColumns ( mat2, 3UL );
       checkCapacity( mat2, 6UL );
       checkNonZeros( mat2, 6UL );
-   
+
       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
          std::ostringstream oss;
@@ -192,34 +202,44 @@ void DynamicMatrix::testConstructors()
          throw std::runtime_error( oss.str() );
       }
    }
-   
-   
+
+
    //=====================================================================================
    // Column-major matrix tests
    //=====================================================================================
-   
+
    // Default constructor
    {
       test_ = "Column-major DynamicMatrix default constructor";
-   
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat;
+
+      checkRows   ( mat, 0UL );
+      checkColumns( mat, 0UL );
+   }
+
+   // Size constructor
+   {
+      test_ = "Column-major DynamicMatrix size constructor";
+
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 4UL );
-      
+
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  4UL );
       checkCapacity( mat, 12UL );
    }
-   
+
    // Homogeneous initialization
    {
       test_ = "Column-major DynamicMatrix homogeneous initialization constructor";
-   
+
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 4UL, 2 );
-      
+
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  4UL );
       checkCapacity( mat, 12UL );
       checkNonZeros( mat, 12UL );
-   
+
       if( mat(0,0) != 2 || mat(0,1) != 2 || mat(0,2) != 2 || mat(0,3) != 2 ||
           mat(1,0) != 2 || mat(1,1) != 2 || mat(1,2) != 2 || mat(1,3) != 2 ||
           mat(2,0) != 2 || mat(2,1) != 2 || mat(2,2) != 2 || mat(2,3) != 2 ) {
@@ -232,19 +252,19 @@ void DynamicMatrix::testConstructors()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    // Array initialization
    {
       test_ = "DynamicVector array initialization constructor";
-   
+
       int array[2][3] = { { 1, 2, 3 }, { 4, 5, 6 } };
       blaze::DynamicMatrix<int,blaze::columnVector> mat( array );
-      
+
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
-      
+
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
           mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
          std::ostringstream oss;
@@ -256,7 +276,7 @@ void DynamicMatrix::testConstructors()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    // Copy constructor
    {
       test_ = "Column-major DynamicMatrix copy constructor";
@@ -268,14 +288,14 @@ void DynamicMatrix::testConstructors()
       mat1(1,0) = 4;
       mat1(1,1) = 5;
       mat1(1,2) = 6;
-      
+
       blaze::DynamicMatrix<int,blaze::columnMajor> mat2( mat1 );
-      
+
       checkRows    ( mat2, 2UL );
       checkColumns ( mat2, 3UL );
       checkCapacity( mat2, 6UL );
       checkNonZeros( mat2, 6UL );
-   
+
       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
          std::ostringstream oss;
@@ -313,7 +333,7 @@ void DynamicMatrix::testFunctionCall()
       // Writing the first element
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 5UL, 0 );
       mat(2,1) = 1;
-   
+
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
@@ -328,10 +348,10 @@ void DynamicMatrix::testFunctionCall()
              << "   Expected result:\n( 0 0 0 0 0 )\n( 0 0 0 0 0 )\n( 0 1 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
-   
+
       // Writing the second element
       mat(1,4) = 2;
-   
+
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
@@ -346,10 +366,10 @@ void DynamicMatrix::testFunctionCall()
              << "   Expected result:\n( 0 0 0 0 0 )\n( 0 0 0 0 2 )\n( 0 1 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
-   
+
       // Writing the third element
       mat(0,3) = 3;
-   
+
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
@@ -364,10 +384,10 @@ void DynamicMatrix::testFunctionCall()
              << "   Expected result:\n( 0 0 0 3 0 )\n( 0 0 0 0 2 )\n( 0 1 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
-   
+
       // Writing the fourth element
       mat(2,2) = 4;
-   
+
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
@@ -384,7 +404,7 @@ void DynamicMatrix::testFunctionCall()
       }
    }
 
-   
+
    //=====================================================================================
    // Column-major matrix tests
    //=====================================================================================
@@ -395,7 +415,7 @@ void DynamicMatrix::testFunctionCall()
       // Writing the first element
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 5UL, 0 );
       mat(2,1) = 1;
-   
+
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
@@ -410,10 +430,10 @@ void DynamicMatrix::testFunctionCall()
              << "   Expected result:\n( 0 0 0 0 0 )\n( 0 0 0 0 0 )\n( 0 1 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
-   
+
       // Writing the second element
       mat(1,4) = 2;
-   
+
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
@@ -428,10 +448,10 @@ void DynamicMatrix::testFunctionCall()
              << "   Expected result:\n( 0 0 0 0 0 )\n( 0 0 0 0 2 )\n( 0 1 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
-   
+
       // Writing the third element
       mat(0,3) = 3;
-   
+
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
@@ -446,10 +466,10 @@ void DynamicMatrix::testFunctionCall()
              << "   Expected result:\n( 0 0 0 3 0 )\n( 0 0 0 0 2 )\n( 0 1 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
-   
+
       // Writing the fourth element
       mat(2,2) = 4;
-   
+
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
@@ -489,12 +509,12 @@ void DynamicMatrix::testNonZeros()
 
       {
          blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 0 );
-      
+
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 0UL );
-   
+
          if( mat(0,0) != 0 || mat(0,1) != 0 || mat(0,2) != 0 ||
              mat(1,0) != 0 || mat(1,1) != 0 || mat(1,2) != 0 ) {
             std::ostringstream oss;
@@ -513,12 +533,12 @@ void DynamicMatrix::testNonZeros()
          mat(0,2) = 2;
          mat(1,1) = 3;
          mat(1,2) = 0;
-      
+
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 3UL );
-   
+
          if( mat(0,0) != 0 || mat(0,1) != 1 || mat(0,2) != 2 ||
              mat(1,0) != 0 || mat(1,1) != 3 || mat(1,2) != 0 ) {
             std::ostringstream oss;
@@ -531,8 +551,8 @@ void DynamicMatrix::testNonZeros()
          }
       }
    }
-   
-   
+
+
    //=====================================================================================
    // Column-major matrix tests
    //=====================================================================================
@@ -542,12 +562,12 @@ void DynamicMatrix::testNonZeros()
 
       {
          blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 0 );
-      
+
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 0UL );
-   
+
          if( mat(0,0) != 0 || mat(0,1) != 0 || mat(0,2) != 0 ||
              mat(1,0) != 0 || mat(1,1) != 0 || mat(1,2) != 0 ) {
             std::ostringstream oss;
@@ -566,12 +586,12 @@ void DynamicMatrix::testNonZeros()
          mat(0,2) = 2;
          mat(1,1) = 3;
          mat(1,2) = 0;
-      
+
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 3UL );
-   
+
          if( mat(0,0) != 0 || mat(0,1) != 1 || mat(0,2) != 2 ||
              mat(1,0) != 0 || mat(1,1) != 3 || mat(1,2) != 0 ) {
             std::ostringstream oss;
@@ -614,12 +634,12 @@ void DynamicMatrix::testReset()
       mat(1,0) = 4;
       mat(1,1) = 5;
       mat(1,2) = 6;
-   
+
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
-   
+
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
           mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
          std::ostringstream oss;
@@ -630,15 +650,15 @@ void DynamicMatrix::testReset()
              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
          throw std::runtime_error( oss.str() );
       }
-   
+
       // Resetting the matrix
       mat.reset();
-   
+
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 0UL );
-   
+
       if( mat(0,0) != 0 || mat(0,1) != 0 || mat(0,2) != 0 ||
           mat(1,0) != 0 || mat(1,1) != 0 || mat(1,2) != 0 ) {
          std::ostringstream oss;
@@ -650,8 +670,8 @@ void DynamicMatrix::testReset()
          throw std::runtime_error( oss.str() );
       }
    }
-   
-   
+
+
    //=====================================================================================
    // Column-major matrix tests
    //=====================================================================================
@@ -667,12 +687,12 @@ void DynamicMatrix::testReset()
       mat(1,0) = 4;
       mat(1,1) = 5;
       mat(1,2) = 6;
-   
+
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
-   
+
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
           mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
          std::ostringstream oss;
@@ -683,15 +703,15 @@ void DynamicMatrix::testReset()
              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
          throw std::runtime_error( oss.str() );
       }
-   
+
       // Resetting the matrix
       mat.reset();
-   
+
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 0UL );
-   
+
       if( mat(0,0) != 0 || mat(0,1) != 0 || mat(0,2) != 0 ||
           mat(1,0) != 0 || mat(1,1) != 0 || mat(1,2) != 0 ) {
          std::ostringstream oss;
@@ -733,12 +753,12 @@ void DynamicMatrix::testClear()
       mat(1,0) = 4;
       mat(1,1) = 5;
       mat(1,2) = 6;
-   
+
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
-   
+
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
           mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
          std::ostringstream oss;
@@ -749,16 +769,16 @@ void DynamicMatrix::testClear()
              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
          throw std::runtime_error( oss.str() );
       }
-   
+
       // Clearing the matrix
       mat.clear();
-   
+
       checkRows    ( mat, 0UL );
       checkColumns ( mat, 0UL );
       checkNonZeros( mat, 0UL );
    }
-   
-   
+
+
    //=====================================================================================
    // Column-major matrix tests
    //=====================================================================================
@@ -774,12 +794,12 @@ void DynamicMatrix::testClear()
       mat(1,0) = 4;
       mat(1,1) = 5;
       mat(1,2) = 6;
-   
+
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
-   
+
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
           mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
          std::ostringstream oss;
@@ -790,10 +810,10 @@ void DynamicMatrix::testClear()
              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
          throw std::runtime_error( oss.str() );
       }
-   
+
       // Clearing the matrix
       mat.clear();
-   
+
       checkRows    ( mat, 0UL );
       checkColumns ( mat, 0UL );
       checkNonZeros( mat, 0UL );
@@ -819,30 +839,30 @@ void DynamicMatrix::testResize()
 
    {
       test_ = "Row-major DynamicMatrix::resize()";
-      
+
       // Initialization check
       blaze::DynamicMatrix<int,blaze::rowMajor> mat;
 
       checkRows    ( mat, 0UL );
       checkColumns ( mat, 0UL );
       checkNonZeros( mat, 0UL );
-      
+
       // Increasing the size of the matrix
       mat.resize( 2UL, 1UL );
-   
+
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 2UL );
-      
+
       // Further increasing the size of the matrix and preserving the elements
       mat(0,0) = 1;
       mat(1,0) = 2;
       mat.resize( 3UL, 2UL, true );
-      
+
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 6UL );
-      
+
       if( mat(0,0) != 1 || mat(1,0) != 2 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -852,17 +872,17 @@ void DynamicMatrix::testResize()
              << "   Expected result:\n( 1 x )\n( 2 x )\n( x x )\n";
          throw std::runtime_error( oss.str() );
       }
-      
+
       // Decreasing the size of the matrix and preserving the elements
       mat(0,1) = 3;
       mat(1,1) = 4;
       mat.resize( 2UL, 2UL, true );
-   
+
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
-   
+
       if( mat(0,0) != 1 || mat(0,1) != 3 || mat(1,0) != 2 || mat(1,1) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -872,46 +892,46 @@ void DynamicMatrix::testResize()
              << "   Expected result:\n( 1 3 )\n( 2 4 )\n";
          throw std::runtime_error( oss.str() );
       }
-      
+
       // Further decreasing the size of the matrix
       mat.resize( 1UL, 1UL );
-   
+
       checkRows    ( mat, 1UL );
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 1UL );
    }
-   
-   
+
+
    //=====================================================================================
    // Column-major matrix tests
    //=====================================================================================
 
    {
       test_ = "Column-major DynamicMatrix::resize()";
-      
+
       // Initialization check
       blaze::DynamicMatrix<int,blaze::columnMajor> mat;
 
       checkRows    ( mat, 0UL );
       checkColumns ( mat, 0UL );
       checkNonZeros( mat, 0UL );
-      
+
       // Increasing the size of the matrix
       mat.resize( 2UL, 1UL );
-   
+
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 2UL );
-      
+
       // Further increasing the size of the matrix and preserving the elements
       mat(0,0) = 1;
       mat(1,0) = 2;
       mat.resize( 3UL, 2UL, true );
-      
+
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 6UL );
-      
+
       if( mat(0,0) != 1 || mat(1,0) != 2 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -921,17 +941,17 @@ void DynamicMatrix::testResize()
              << "   Expected result:\n( 1 x )\n( 2 x )\n( x x )\n";
          throw std::runtime_error( oss.str() );
       }
-      
+
       // Decreasing the size of the matrix and preserving the elements
       mat(0,1) = 3;
       mat(1,1) = 4;
       mat.resize( 2UL, 2UL, true );
-   
+
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
-   
+
       if( mat(0,0) != 1 || mat(0,1) != 3 || mat(1,0) != 2 || mat(1,1) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -941,10 +961,10 @@ void DynamicMatrix::testResize()
              << "   Expected result:\n( 1 3 )\n( 2 4 )\n";
          throw std::runtime_error( oss.str() );
       }
-      
+
       // Further decreasing the size of the matrix
       mat.resize( 1UL, 1UL );
-   
+
       checkRows    ( mat, 1UL );
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 1UL );
@@ -973,29 +993,29 @@ void DynamicMatrix::testExtend()
 
       // Initialization check
       blaze::DynamicMatrix<int,blaze::rowMajor> mat;
-   
+
       checkRows    ( mat, 0UL );
       checkColumns ( mat, 0UL );
       checkNonZeros( mat, 0UL );
-   
+
       // Increasing the size of the matrix
       mat.extend( 2UL, 2UL );
-   
+
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 3UL );
-      
+
       // Further increasing the size of the matrix and preserving the elements
       mat(0,0) = 1;
       mat(0,1) = 2;
       mat(1,0) = 3;
       mat(1,1) = 4;
       mat.extend( 1UL, 1UL, true );
-   
+
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 9UL );
-   
+
       if( mat(0,0) != 1 || mat(0,1) != 2 ||
           mat(1,0) != 3 || mat(1,1) != 4 ) {
          std::ostringstream oss;
@@ -1006,16 +1026,16 @@ void DynamicMatrix::testExtend()
              << "   Expected result:\n( 1 2 x )\n( 3 4 x )\n( x x x )\n";
          throw std::runtime_error( oss.str() );
       }
-   
+
       // Further increasing the size of the matrix
       mat.extend( 4UL, 10UL, false );
-   
+
       checkRows    ( mat,  7UL );
       checkColumns ( mat, 13UL );
       checkCapacity( mat, 91UL );
    }
-   
-   
+
+
    //=====================================================================================
    // Column-major matrix tests
    //=====================================================================================
@@ -1025,29 +1045,29 @@ void DynamicMatrix::testExtend()
 
       // Initialization check
       blaze::DynamicMatrix<int,blaze::columnMajor> mat;
-   
+
       checkRows    ( mat, 0UL );
       checkColumns ( mat, 0UL );
       checkNonZeros( mat, 0UL );
-   
+
       // Increasing the size of the matrix
       mat.extend( 2UL, 2UL );
-   
+
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 3UL );
-      
+
       // Further increasing the size of the matrix and preserving the elements
       mat(0,0) = 1;
       mat(0,1) = 2;
       mat(1,0) = 3;
       mat(1,1) = 4;
       mat.extend( 1UL, 1UL, true );
-   
+
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 9UL );
-   
+
       if( mat(0,0) != 1 || mat(0,1) != 2 ||
           mat(1,0) != 3 || mat(1,1) != 4 ) {
          std::ostringstream oss;
@@ -1058,10 +1078,10 @@ void DynamicMatrix::testExtend()
              << "   Expected result:\n( 1 2 x )\n( 3 4 x )\n( x x x )\n";
          throw std::runtime_error( oss.str() );
       }
-   
+
       // Further increasing the size of the matrix
       mat.extend( 4UL, 10UL, false );
-   
+
       checkRows    ( mat,  7UL );
       checkColumns ( mat, 13UL );
       checkCapacity( mat, 91UL );
@@ -1090,54 +1110,54 @@ void DynamicMatrix::testReserve()
 
       // Initialization check
       blaze::DynamicMatrix<int,blaze::rowMajor> mat;
-   
+
       checkRows    ( mat, 0UL );
       checkColumns ( mat, 0UL );
       checkNonZeros( mat, 0UL );
-   
+
       // Increasing the capacity of the matrix
       mat.reserve( 10UL );
-   
+
       checkRows    ( mat,  0UL );
       checkColumns ( mat,  0UL );
       checkCapacity( mat, 10UL );
       checkNonZeros( mat,  0UL );
-   
+
       // Further increasing the capacity of the matrix
       mat.reserve( 20UL );
-   
+
       checkRows    ( mat,  0UL );
       checkColumns ( mat,  0UL );
       checkCapacity( mat, 20UL );
       checkNonZeros( mat,  0UL );
    }
-   
-   
+
+
    //=====================================================================================
    // Column-major matrix tests
    //=====================================================================================
 
    {
       test_ = "Column-major DynamicMatrix::reserve()";
-      
+
       // Initialization check
       blaze::DynamicMatrix<int,blaze::columnMajor> mat;
-   
+
       checkRows    ( mat, 0UL );
       checkColumns ( mat, 0UL );
       checkNonZeros( mat, 0UL );
-   
+
       // Increasing the capacity of the matrix
       mat.reserve( 10UL );
-   
+
       checkRows    ( mat,  0UL );
       checkColumns ( mat,  0UL );
       checkCapacity( mat, 10UL );
       checkNonZeros( mat,  0UL );
-   
+
       // Further increasing the capacity of the matrix
       mat.reserve( 20UL );
-   
+
       checkRows    ( mat,  0UL );
       checkColumns ( mat,  0UL );
       checkCapacity( mat, 20UL );
@@ -1163,74 +1183,76 @@ void DynamicMatrix::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major DynamicMatrix::normalize()";
+      test_ = "Row-major DynamicMatrix::transpose()";
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL );
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 5UL, 0 );
       mat(0,0) = 1;
-      mat(0,1) = 2;
-      mat(0,2) = 3;
-      mat(1,0) = 4;
-      mat(1,1) = 5;
-      mat(1,2) = 6;
-      mat(2,0) = 7;
-      mat(2,1) = 8;
-      mat(2,2) = 9;
-      
+      mat(0,2) = 2;
+      mat(0,4) = 3;
+      mat(1,1) = 4;
+      mat(1,3) = 5;
+      mat(2,0) = 6;
+      mat(2,2) = 7;
+      mat(2,4) = 8;
+
       mat.transpose();
-   
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 9UL );
-      checkNonZeros( mat, 9UL );
-   
-      if( mat(0,0) != 1 || mat(0,1) != 4 || mat(0,2) != 7 ||
-          mat(1,0) != 2 || mat(1,1) != 5 || mat(1,2) != 8 ||
-          mat(2,0) != 3 || mat(2,1) != 6 || mat(2,2) != 9 ) {
+
+      checkRows    ( mat,  5UL );
+      checkColumns ( mat,  3UL );
+      checkCapacity( mat, 15UL );
+      checkNonZeros( mat,  8UL );
+
+      if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 6 ||
+          mat(1,0) != 0 || mat(1,1) != 4 || mat(1,2) != 0 ||
+          mat(2,0) != 2 || mat(2,1) != 0 || mat(2,2) != 7 ||
+          mat(3,0) != 0 || mat(3,1) != 5 || mat(3,2) != 0 ||
+          mat(4,0) != 3 || mat(4,1) != 0 || mat(4,2) != 8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 4 7 )\n( 2 5 8 )\n( 3 6 9 )\n";
+             << "   Expected result:\n( 1 0 6 )\n( 0 4 0 )\n( 2 0 7 )\n( 0 5 0 )\n( 3 0 8 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
-   
-   
+
+
    //=====================================================================================
    // Column-major matrix tests
    //=====================================================================================
-   
-   {
-      test_ = "Column-major DynamicMatrix::normalize()";
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL );
+   {
+      test_ = "Column-major DynamicMatrix::transpose()";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 5UL, 0 );
       mat(0,0) = 1;
-      mat(0,1) = 2;
-      mat(0,2) = 3;
-      mat(1,0) = 4;
-      mat(1,1) = 5;
-      mat(1,2) = 6;
-      mat(2,0) = 7;
-      mat(2,1) = 8;
-      mat(2,2) = 9;
-      
+      mat(0,2) = 2;
+      mat(0,4) = 3;
+      mat(1,1) = 4;
+      mat(1,3) = 5;
+      mat(2,0) = 6;
+      mat(2,2) = 7;
+      mat(2,4) = 8;
+
       mat.transpose();
-   
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 9UL );
-      checkNonZeros( mat, 9UL );
-   
-      if( mat(0,0) != 1 || mat(0,1) != 4 || mat(0,2) != 7 ||
-          mat(1,0) != 2 || mat(1,1) != 5 || mat(1,2) != 8 ||
-          mat(2,0) != 3 || mat(2,1) != 6 || mat(2,2) != 9 ) {
+
+      checkRows    ( mat,  5UL );
+      checkColumns ( mat,  3UL );
+      checkCapacity( mat, 15UL );
+      checkNonZeros( mat,  8UL );
+
+      if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 6 ||
+          mat(1,0) != 0 || mat(1,1) != 4 || mat(1,2) != 0 ||
+          mat(2,0) != 2 || mat(2,1) != 0 || mat(2,2) != 7 ||
+          mat(3,0) != 0 || mat(3,1) != 5 || mat(3,2) != 0 ||
+          mat(4,0) != 3 || mat(4,1) != 0 || mat(4,2) != 8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 4 7 )\n( 2 5 8 )\n( 3 6 9 )\n";
+             << "   Expected result:\n( 1 0 6 )\n( 0 4 0 )\n( 2 0 7 )\n( 0 5 0 )\n( 3 0 8 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1252,19 +1274,19 @@ void DynamicMatrix::testIsDiagonal()
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
-   
+
    {
       test_ = "Row-major DynamicMatrix::isDiagonal()";
-   
+
       // Non-quadratic matrix
       {
          blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 0 );
-      
+
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 0UL );
-   
+
          if( mat.isDiagonal() != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -1274,17 +1296,17 @@ void DynamicMatrix::testIsDiagonal()
             throw std::runtime_error( oss.str() );
          }
       }
-   
+
       // Default initialized matrix
       {
          // Initialization check
          blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
-      
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 0UL );
-   
+
          if( mat.isDiagonal() != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -1294,7 +1316,7 @@ void DynamicMatrix::testIsDiagonal()
             throw std::runtime_error( oss.str() );
          }
       }
-   
+
       // Diagonal matrix
       {
          // Initialization check
@@ -1302,12 +1324,12 @@ void DynamicMatrix::testIsDiagonal()
          mat(0,0) = 1;
          mat(1,1) = 2;
          mat(2,2) = 3;
-      
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 3UL );
-   
+
          if( mat.isDiagonal() != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -1317,7 +1339,7 @@ void DynamicMatrix::testIsDiagonal()
             throw std::runtime_error( oss.str() );
          }
       }
-   
+
       // Non-diagonal matrix
       {
          // Initialization check
@@ -1326,12 +1348,12 @@ void DynamicMatrix::testIsDiagonal()
          mat(0,2) = 4;
          mat(1,1) = 2;
          mat(2,2) = 3;
-      
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 4UL );
-   
+
          if( mat.isDiagonal() != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -1342,23 +1364,23 @@ void DynamicMatrix::testIsDiagonal()
          }
       }
    }
-   
+
    //=====================================================================================
    // Column-major matrix tests
    //=====================================================================================
-   
+
    {
       test_ = "Column-major DynamicMatrix::isDiagonal()";
-   
+
       // Non-quadratic matrix
       {
          blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 0 );
-      
+
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 0UL );
-   
+
          if( mat.isDiagonal() != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -1368,17 +1390,17 @@ void DynamicMatrix::testIsDiagonal()
             throw std::runtime_error( oss.str() );
          }
       }
-   
+
       // Default initialized matrix
       {
          // Initialization check
          blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
-      
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 0UL );
-   
+
          if( mat.isDiagonal() != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -1388,7 +1410,7 @@ void DynamicMatrix::testIsDiagonal()
             throw std::runtime_error( oss.str() );
          }
       }
-   
+
       // Diagonal matrix
       {
          // Initialization check
@@ -1396,12 +1418,12 @@ void DynamicMatrix::testIsDiagonal()
          mat(0,0) = 1;
          mat(1,1) = 2;
          mat(2,2) = 3;
-      
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 3UL );
-   
+
          if( mat.isDiagonal() != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -1411,7 +1433,7 @@ void DynamicMatrix::testIsDiagonal()
             throw std::runtime_error( oss.str() );
          }
       }
-   
+
       // Non-diagonal matrix
       {
          // Initialization check
@@ -1420,12 +1442,12 @@ void DynamicMatrix::testIsDiagonal()
          mat(0,2) = 4;
          mat(1,1) = 2;
          mat(2,2) = 3;
-      
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 4UL );
-   
+
          if( mat.isDiagonal() != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -1454,19 +1476,19 @@ void DynamicMatrix::testIsSymmetric()
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
-   
+
    {
       test_ = "Row-major DynamicMatrix::isSymmetric()";
-      
+
       // Non-quadratic matrix
       {
          blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 0 );
-      
+
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 0UL );
-   
+
          if( mat.isSymmetric() != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -1476,17 +1498,17 @@ void DynamicMatrix::testIsSymmetric()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // Default initialized matrix
       {
          // Initialization check
          blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
-      
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 0UL );
-   
+
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -1496,7 +1518,7 @@ void DynamicMatrix::testIsSymmetric()
             throw std::runtime_error( oss.str() );
          }
       }
-   
+
       // Diagonal matrix
       {
          // Initialization check
@@ -1504,12 +1526,12 @@ void DynamicMatrix::testIsSymmetric()
          mat(0,0) = 1;
          mat(1,1) = 2;
          mat(2,2) = 3;
-      
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 3UL );
-   
+
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -1519,7 +1541,7 @@ void DynamicMatrix::testIsSymmetric()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // Non-symmetric matrix
       {
          // Initialization check
@@ -1528,12 +1550,12 @@ void DynamicMatrix::testIsSymmetric()
          mat(0,2) = 4;
          mat(1,1) = 2;
          mat(2,2) = 3;
-      
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 4UL );
-   
+
          if( mat.isSymmetric() != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -1543,7 +1565,7 @@ void DynamicMatrix::testIsSymmetric()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // Symmetric matrix
       {
          // Initialization check
@@ -1553,12 +1575,12 @@ void DynamicMatrix::testIsSymmetric()
          mat(1,1) = 2;
          mat(2,0) = 4;
          mat(2,2) = 3;
-      
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 5UL );
-   
+
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -1569,24 +1591,24 @@ void DynamicMatrix::testIsSymmetric()
          }
       }
    }
-   
-   
+
+
    //=====================================================================================
    // Column-major matrix tests
    //=====================================================================================
-   
+
    {
       test_ = "Column-major DynamicMatrix::isSymmetric()";
-      
+
       // Non-quadratic matrix
       {
          blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 0 );
-      
+
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 0UL );
-   
+
          if( mat.isSymmetric() != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -1596,17 +1618,17 @@ void DynamicMatrix::testIsSymmetric()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // Default initialized matrix
       {
          // Initialization check
          blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
-      
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 0UL );
-   
+
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -1616,7 +1638,7 @@ void DynamicMatrix::testIsSymmetric()
             throw std::runtime_error( oss.str() );
          }
       }
-   
+
       // Diagonal matrix
       {
          // Initialization check
@@ -1624,12 +1646,12 @@ void DynamicMatrix::testIsSymmetric()
          mat(0,0) = 1;
          mat(1,1) = 2;
          mat(2,2) = 3;
-      
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 3UL );
-   
+
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -1639,7 +1661,7 @@ void DynamicMatrix::testIsSymmetric()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // Non-symmetric matrix
       {
          // Initialization check
@@ -1648,12 +1670,12 @@ void DynamicMatrix::testIsSymmetric()
          mat(0,2) = 4;
          mat(1,1) = 2;
          mat(2,2) = 3;
-      
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 4UL );
-   
+
          if( mat.isSymmetric() != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -1663,7 +1685,7 @@ void DynamicMatrix::testIsSymmetric()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // Symmetric matrix
       {
          // Initialization check
@@ -1673,12 +1695,12 @@ void DynamicMatrix::testIsSymmetric()
          mat(1,1) = 2;
          mat(2,0) = 4;
          mat(2,2) = 3;
-      
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 5UL );
-   
+
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -1719,12 +1741,12 @@ void DynamicMatrix::testScale()
       mat(1,1) = 4;
       mat(2,0) = 5;
       mat(2,1) = 6;
-      
+
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
-   
+
       if( mat(0,0) != 1 || mat(0,1) != 2 ||
           mat(1,0) != 3 || mat(1,1) != 4 ||
           mat(2,0) != 5 || mat(2,1) != 6 ) {
@@ -1736,15 +1758,15 @@ void DynamicMatrix::testScale()
              << "   Expected result:\n( 1 2 )\n( 3 4 )\n( 5 6 )\n";
          throw std::runtime_error( oss.str() );
       }
-   
+
       // Integral scaling of the matrix
       mat.scale( 2 );
-      
+
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
-   
+
       if( mat(0,0) !=  2 || mat(0,1) !=  4 ||
           mat(1,0) !=  6 || mat(1,1) !=  8 ||
           mat(2,0) != 10 || mat(2,1) != 12 ) {
@@ -1756,15 +1778,15 @@ void DynamicMatrix::testScale()
              << "   Expected result:\n(  2  4 )\n(  6  8 )\n( 10 12 )\n";
          throw std::runtime_error( oss.str() );
       }
-   
+
       // Floating point scaling of the matrix
       mat.scale( 0.5 );
-      
+
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
-   
+
       if( mat(0,0) != 1 || mat(0,1) != 2 ||
           mat(1,0) != 3 || mat(1,1) != 4 ||
           mat(2,0) != 5 || mat(2,1) != 6 ) {
@@ -1777,22 +1799,22 @@ void DynamicMatrix::testScale()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    {
       using blaze::complex;
-   
+
       blaze::DynamicMatrix<complex<float>,blaze::rowMajor> mat( 2UL, 2UL );
       mat(0,0) = complex<float>( 1.0F, 0.0F );
       mat(0,1) = complex<float>( 2.0F, 0.0F );
       mat(1,0) = complex<float>( 3.0F, 0.0F );
       mat(1,1) = complex<float>( 4.0F, 0.0F );
       mat.scale( complex<float>( 3.0F, 0.0F ) );
-      
+
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
-   
+
       if( mat(0,0) != complex<float>( 3.0F, 0.0F ) || mat(0,1) != complex<float>(  6.0F, 0.0F ) ||
           mat(1,0) != complex<float>( 9.0F, 0.0F ) || mat(1,1) != complex<float>( 12.0F, 0.0F ) ) {
          std::ostringstream oss;
@@ -1804,12 +1826,12 @@ void DynamicMatrix::testScale()
          throw std::runtime_error( oss.str() );
       }
    }
-   
-   
+
+
    //=====================================================================================
    // Column-major matrix tests
    //=====================================================================================
-   
+
    {
       test_ = "Column-major DynamicMatrix::scale()";
 
@@ -1821,12 +1843,12 @@ void DynamicMatrix::testScale()
       mat(1,1) = 5;
       mat(2,0) = 3;
       mat(2,1) = 6;
-      
+
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
-   
+
       if( mat(0,0) != 1 || mat(0,1) != 4 ||
           mat(1,0) != 2 || mat(1,1) != 5 ||
           mat(2,0) != 3 || mat(2,1) != 6 ) {
@@ -1838,15 +1860,15 @@ void DynamicMatrix::testScale()
              << "   Expected result:\n( 1 4 )\n( 2 5 )\n( 3 6 )\n";
          throw std::runtime_error( oss.str() );
       }
-   
+
       // Integral scaling of the matrix
       mat.scale( 2 );
-      
+
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
-   
+
       if( mat(0,0) != 2 || mat(0,1) !=  8 ||
           mat(1,0) != 4 || mat(1,1) != 10 ||
           mat(2,0) != 6 || mat(2,1) != 12 ) {
@@ -1858,15 +1880,15 @@ void DynamicMatrix::testScale()
              << "   Expected result:\n(  2  8 )\n(  4 10 )\n(  6 12 )\n";
          throw std::runtime_error( oss.str() );
       }
-   
+
       // Floating point scaling of the matrix
       mat.scale( 0.5 );
-      
+
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
-   
+
       if( mat(0,0) != 1 || mat(0,1) != 4 ||
           mat(1,0) != 2 || mat(1,1) != 5 ||
           mat(2,0) != 3 || mat(2,1) != 6 ) {
@@ -1879,22 +1901,22 @@ void DynamicMatrix::testScale()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    {
       using blaze::complex;
-   
+
       blaze::DynamicMatrix<complex<float>,blaze::columnMajor> mat( 2UL, 2UL );
       mat(0,0) = complex<float>( 1.0F, 0.0F );
       mat(0,1) = complex<float>( 2.0F, 0.0F );
       mat(1,0) = complex<float>( 3.0F, 0.0F );
       mat(1,1) = complex<float>( 4.0F, 0.0F );
       mat.scale( complex<float>( 3.0F, 0.0F ) );
-      
+
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
-   
+
       if( mat(0,0) != complex<float>( 3.0F, 0.0F ) || mat(0,1) != complex<float>(  6.0F, 0.0F ) ||
           mat(1,0) != complex<float>( 9.0F, 0.0F ) || mat(1,1) != complex<float>( 12.0F, 0.0F ) ) {
          std::ostringstream oss;
@@ -1939,14 +1961,14 @@ void DynamicMatrix::testSwap()
       mat2(0,1) = 3;
       mat2(1,0) = 2;
       mat2(1,1) = 1;
-   
+
       swap( mat1, mat2 );
-   
+
       checkRows    ( mat1, 2UL );
       checkColumns ( mat1, 2UL );
       checkCapacity( mat1, 4UL );
       checkNonZeros( mat1, 4UL );
-   
+
       if( mat1(0,0) != 4 || mat1(0,1) != 3 || mat1(1,0) != 2 || mat1(1,1) != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -1956,12 +1978,12 @@ void DynamicMatrix::testSwap()
              << "   Expected result:\n( 4 3 )\n( 2 1 )\n";
          throw std::runtime_error( oss.str() );
       }
-   
+
       checkRows    ( mat2, 2UL );
       checkColumns ( mat2, 2UL );
       checkCapacity( mat2, 4UL );
       checkNonZeros( mat2, 3UL );
-   
+
       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(1,0) != 0 || mat2(1,1) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -1972,7 +1994,7 @@ void DynamicMatrix::testSwap()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
 
    //=====================================================================================
    // Column-major matrix tests
@@ -1992,14 +2014,14 @@ void DynamicMatrix::testSwap()
       mat2(0,1) = 2;
       mat2(1,0) = 3;
       mat2(1,1) = 1;
-   
+
       swap( mat1, mat2 );
-   
+
       checkRows    ( mat1, 2UL );
       checkColumns ( mat1, 2UL );
       checkCapacity( mat1, 4UL );
       checkNonZeros( mat1, 4UL );
-   
+
       if( mat1(0,0) != 4 || mat1(0,1) != 2 || mat1(1,0) != 3 || mat1(1,1) != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -2009,12 +2031,12 @@ void DynamicMatrix::testSwap()
              << "   Expected result:\n( 4 2 )\n( 3 1 )\n";
          throw std::runtime_error( oss.str() );
       }
-   
+
       checkRows    ( mat2, 2UL );
       checkColumns ( mat2, 2UL );
       checkCapacity( mat2, 4UL );
       checkNonZeros( mat2, 3UL );
-   
+
       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(1,0) != 2 || mat2(1,1) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"

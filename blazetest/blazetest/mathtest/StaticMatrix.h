@@ -76,7 +76,7 @@ class StaticMatrix
    //@{
    template< typename Type >
    void testAlignment( const std::string& type );
-   
+
    void testConstructors();
    void testFunctionCall();
    void testNonZeros    ();
@@ -86,28 +86,28 @@ class StaticMatrix
    void testIsSymmetric ();
    void testScale       ();
    void testSwap        ();
-   
+
    template< typename Type >
    void checkRows( const Type& matrix, size_t expectedRows ) const;
-   
+
    template< typename Type >
    void checkColumns( const Type& matrix, size_t expectedColumns ) const;
-   
+
    template< typename Type >
    void checkCapacity( const Type& matrix, size_t minCapacity ) const;
-   
+
    template< typename Type >
    void checkNonZeros( const Type& matrix, size_t nonzeros ) const;
    //@}
    //**********************************************************************************************
-   
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
    std::string test_;  //!< Label of the currently performed test.
    //@}
    //**********************************************************************************************
-   
+
    //**Type definitions****************************************************************************
    typedef blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor>  MT;   //!< Type of the static matrix
    typedef typename MT::TransposeType                        TMT;  //!< Transpose static matrix type
@@ -153,7 +153,7 @@ void StaticMatrix::testAlignment( const std::string& type )
       blaze::StaticMatrix<Type,7UL,5UL,blaze::rowMajor> mat;
       const size_t alignment( blaze::AlignmentTrait<Type>::value );
       const size_t deviation( reinterpret_cast<size_t>( &mat(0UL,0UL) ) % alignment );
-      
+
       if( deviation != 0UL ) {
          std::ostringstream oss;
          oss << " Test: StaticMatrix<" << type << ",7,5,rowMajor> alignment test\n"
@@ -164,13 +164,13 @@ void StaticMatrix::testAlignment( const std::string& type )
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    // Testing the alignment of the column-major matrix instance
    {
       blaze::StaticMatrix<Type,7UL,5UL,blaze::columnMajor> mat;
       const size_t alignment( blaze::AlignmentTrait<Type>::value );
       const size_t deviation( reinterpret_cast<size_t>( &mat(0UL,0UL) ) % alignment );
-      
+
       if( deviation != 0UL ) {
          std::ostringstream oss;
          oss << " Test: StaticMatrix<" << type << ",7,5,columnMajor> alignment test\n"

@@ -461,7 +461,7 @@ inline const DVecDVecAddExpr<T1,T2,TF>
    operator+( const DenseVector<T1,TF>& lhs, const DenseVector<T2,TF>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
-   
+
    if( (~lhs).size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 

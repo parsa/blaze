@@ -73,7 +73,7 @@ void init( ::flens::GeCCSMatrix< ::flens::CCS<Type,::flens::IndexBaseZero<IndexT
 {
    typedef ::flens::IndexBaseZero<IndexType>                              IndexBase;
    typedef ::flens::CoordStorage<Type,::flens::CoordColRowCmp,IndexBase>  Coord;
-   
+
    const IndexType M( rows    );
    const IndexType N( columns );
 

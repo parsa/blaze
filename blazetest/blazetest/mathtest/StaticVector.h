@@ -85,25 +85,25 @@ class StaticVector
    void testSwap        ();
    void testMinimum     ();
    void testMaximum     ();
-   
+
    template< typename Type >
    void checkSize( const Type& vector, size_t expectedSize ) const;
-   
+
    template< typename Type >
    void checkCapacity( const Type& vector, size_t minCapacity ) const;
-   
+
    template< typename Type >
    void checkNonZeros( const Type& vector, size_t nonzeros ) const;
    //@}
    //**********************************************************************************************
-   
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
    std::string test_;  //!< Label of the currently performed test.
    //@}
    //**********************************************************************************************
-   
+
    //**Type definitions****************************************************************************
    typedef blaze::StaticVector<int,4UL,blaze::rowVector>  VT;   //!< Type of the static vector
    typedef typename VT::TransposeType                     TVT;  //!< Transpose static vector type
@@ -146,7 +146,7 @@ void StaticVector::testAlignment( const std::string& type )
    blaze::StaticVector<Type,7UL,blaze::rowVector> vec;
    const size_t alignment( blaze::AlignmentTrait<Type>::value );
    const size_t deviation( reinterpret_cast<size_t>( &vec[0] ) % alignment );
-   
+
    if( deviation != 0UL ) {
       std::ostringstream oss;
       oss << " Test: StaticVector" << type << ",7,rowVector> alignment test\n"

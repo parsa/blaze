@@ -52,7 +52,7 @@ int main()
 
       // Creator type definitions
       typedef blazetest::Creator<MCa>  CMCa;
-      
+
       // Running tests with small matrices
       for( size_t i=0UL; i<=6UL; ++i ) {
          for( size_t j=0UL; j<=6UL; ++j ) {

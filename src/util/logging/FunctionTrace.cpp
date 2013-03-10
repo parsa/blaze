@@ -60,17 +60,17 @@ FunctionTrace::FunctionTrace( const std::string& file, const std::string& functi
    // Writing the trace information
    std::ostringstream oss;
    oss << "[TRACE   ]";
-   
+
    // Writing the elapsed time
    const time_t elapsed( theSystemClock()->elapsed() );
    const time_t hours  ( elapsed / time_t( 3600 ) );
    const time_t minutes( ( elapsed % time_t( 3600 ) ) / time_t( 60 ) );
    const time_t seconds( elapsed % time_t( 60 ) );
    oss << boost::format( "[%03d:%02d:%02d]" ) % hours % minutes % seconds;
-   
+
    // Writing the message string
    oss << " + Entering function '" << function_ << "' in file '" << file_ << "'\n";
-   
+
    // Logging the message string
    boost::shared_ptr<Logger> logger( Logger::instance() );
    logger->log( oss.str() );
@@ -94,17 +94,17 @@ FunctionTrace::~FunctionTrace()
    // Writing the trace information
    std::ostringstream oss;
    oss << "[TRACE   ]";
-   
+
    // Writing the elapsed time
    const time_t elapsed( theSystemClock()->elapsed() );
    const time_t hours  ( elapsed / time_t( 3600 ) );
    const time_t minutes( ( elapsed % time_t( 3600 ) ) / time_t( 60 ) );
    const time_t seconds( elapsed % time_t( 60 ) );
    oss << boost::format( "[%03d:%02d:%02d]" ) % hours % minutes % seconds;
-   
+
    // Writing the message string
    oss << " - Leaving function '" << function_ << "' in file '" << file_ << "'\n";
-   
+
    // Logging the message string
    boost::shared_ptr<Logger> logger( Logger::instance() );
    logger->log( oss.str() );

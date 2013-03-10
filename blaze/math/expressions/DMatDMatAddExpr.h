@@ -277,7 +277,7 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      
+
       if( !IsExpression<MT1>::value && (~lhs).isAliased( &rhs.lhs_ ) ) {
          addAssign( ~lhs, rhs.rhs_ );
       }

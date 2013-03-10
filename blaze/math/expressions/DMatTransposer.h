@@ -147,7 +147,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
       return dm_.reset();
    }
    //**********************************************************************************************
-   
+
    //**********************************************************************************************
    /*!\brief Returns whether the matrix is aliased with the given address \a alias.
    //
@@ -676,7 +676,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
       return dm_.reset();
    }
    //**********************************************************************************************
-   
+
    //**********************************************************************************************
    /*!\brief Returns whether the matrix is aliased with the given address \a alias.
    //

@@ -182,7 +182,7 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
       return matrix_(i,j) * scalar_;
    }
    //**********************************************************************************************
-   
+
    //**Get function********************************************************************************
    /*!\brief Access to the intrinsic elements of the matrix.
    //

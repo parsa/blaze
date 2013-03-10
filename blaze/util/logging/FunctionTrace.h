@@ -48,8 +48,6 @@ namespace logging {
 /*!\brief RAII object for function tracing.
 // \ingroup logging
 //
-// The FunctionTrace class is a 
-
 // The FunctionTrace class is an auxiliary helper class for the tracing of function calls. It
 // is implemented as a wrapper around the Logger class and is responsible for the atomicity of
 // the logging operations of trace information.
@@ -118,7 +116,7 @@ class FunctionTrace : private NonCopyable
    int main( int argc, char** argv )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       // ...
    }
    \endcode

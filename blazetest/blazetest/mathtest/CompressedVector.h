@@ -89,25 +89,25 @@ class CompressedVector
    void testSwap        ();
    void testMinimum     ();
    void testMaximum     ();
-   
+
    template< typename Type >
    void checkSize( const Type& vector, size_t expectedSize ) const;
-   
+
    template< typename Type >
    void checkCapacity( const Type& vector, size_t minCapacity ) const;
-   
+
    template< typename Type >
    void checkNonZeros( const Type& vector, size_t nonzeros ) const;
    //@}
    //**********************************************************************************************
-   
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
    std::string test_;  //!< Label of the currently performed test.
    //@}
    //**********************************************************************************************
-   
+
    //**Type definitions****************************************************************************
    typedef blaze::CompressedVector<int,blaze::rowVector>  VT;   //!< Type of the compressed vector
    typedef typename VT::TransposeType                     TVT;  //!< Transpose compressed vector type

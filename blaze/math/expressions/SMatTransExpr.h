@@ -364,7 +364,7 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
       assign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -394,7 +394,7 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
       assign( SparseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -424,7 +424,7 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
       addAssign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -458,7 +458,7 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
       subAssign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -501,7 +501,7 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
    friend inline Operand trans( const SMatTransExpr<MT2,SO2>& sm )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       return sm.sm_;
    }
    /*! \endcond */
@@ -545,7 +545,7 @@ template< typename MT  // Type of the sparse matrix
 inline const SMatTransExpr<MT,!SO> trans( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
-      
+
    return SMatTransExpr<MT,!SO>( ~sm );
 }
 //*************************************************************************************************

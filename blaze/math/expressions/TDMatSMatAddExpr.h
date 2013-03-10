@@ -222,10 +222,10 @@ class TDMatSMatAddExpr : public DenseMatrix< TDMatSMatAddExpr<MT1,MT2>, false >
    friend inline void assign( DenseMatrix<MT,SO2>& lhs, const TDMatSMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      
+
       if( !IsExpression<MT1>::value && (~lhs).isAliased( &rhs.lhs_ ) ) {
          addAssign( ~lhs, rhs.rhs_ );
       }
@@ -254,7 +254,7 @@ class TDMatSMatAddExpr : public DenseMatrix< TDMatSMatAddExpr<MT1,MT2>, false >
    friend inline void assign( SparseMatrix<MT,SO2>& lhs, const TDMatSMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       typedef typename SelectType< SO2, OppositeType, ResultType >::Type  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
@@ -291,7 +291,7 @@ class TDMatSMatAddExpr : public DenseMatrix< TDMatSMatAddExpr<MT1,MT2>, false >
    friend inline void addAssign( DenseMatrix<MT,SO2>& lhs, const TDMatSMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -323,7 +323,7 @@ class TDMatSMatAddExpr : public DenseMatrix< TDMatSMatAddExpr<MT1,MT2>, false >
    friend inline void subAssign( DenseMatrix<MT,SO2>& lhs, const TDMatSMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -402,7 +402,7 @@ const TDMatSMatAddExpr<T1,T2>
    operator+( const DenseMatrix<T1,true>& lhs, const SparseMatrix<T2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
-      
+
    if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
@@ -448,7 +448,7 @@ const TDMatSMatAddExpr<T1,T2>
    operator+( const SparseMatrix<T2,false>& lhs, const DenseMatrix<T1,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
-      
+
    if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
@@ -486,7 +486,7 @@ inline const typename AddExprTrait< TDMatSMatAddExpr<T1,T2>, T3 >::Type
    operator+( const TDMatSMatAddExpr<T1,T2>& lhs, const DenseMatrix<T3,SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
-      
+
    return ( lhs.leftOperand() + (~rhs) ) + lhs.rightOperand();
 }
 /*! \endcond */
@@ -514,7 +514,7 @@ inline const typename SubExprTrait< TDMatSMatAddExpr<T1,T2>, T3 >::Type
    operator-( const TDMatSMatAddExpr<T1,T2>& lhs, const DenseMatrix<T3,SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
-      
+
    return ( lhs.leftOperand() - (~rhs) ) + lhs.rightOperand();
 }
 /*! \endcond */

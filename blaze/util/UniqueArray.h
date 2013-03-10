@@ -129,7 +129,7 @@ class UniqueArray : private NonCopyable
    Deleter deleter_;  //!< Resource deleter.
    //@}
    //**********************************************************************************************
-   
+
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_NOT_BE_ARRAY_TYPE( T );
@@ -219,7 +219,7 @@ inline typename UniqueArray<T,D>::Reference UniqueArray<T,D>::operator[]( size_t
 //
 // This function returns a pointer to the managed array (or NULL in case no array is
 // currently managed). Note however that the ownership remains with the unqiue pointer.
-*/ 
+*/
 template< typename T    // Type of the array elements
         , typename D >  // Type of the deleter
 inline typename UniqueArray<T,D>::Pointer UniqueArray<T,D>::get() const /* throw() */

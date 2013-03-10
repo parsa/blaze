@@ -198,7 +198,7 @@ class SMatEvalExpr : public SparseMatrix< SMatEvalExpr<MT,SO>, SO >
    friend inline void assign( DenseMatrix<MT2,SO2>& lhs, const SMatEvalExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -224,7 +224,7 @@ class SMatEvalExpr : public SparseMatrix< SMatEvalExpr<MT,SO>, SO >
    friend inline void assign( SparseMatrix<MT2,SO2>& lhs, const SMatEvalExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -250,7 +250,7 @@ class SMatEvalExpr : public SparseMatrix< SMatEvalExpr<MT,SO>, SO >
    friend inline void addAssign( DenseMatrix<MT2,SO2>& lhs, const SMatEvalExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -276,7 +276,7 @@ class SMatEvalExpr : public SparseMatrix< SMatEvalExpr<MT,SO>, SO >
    friend inline void addAssign( SparseMatrix<MT2,SO2>& lhs, const SMatEvalExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -302,7 +302,7 @@ class SMatEvalExpr : public SparseMatrix< SMatEvalExpr<MT,SO>, SO >
    friend inline void subAssign( DenseMatrix<MT2,SO2>& lhs, const SMatEvalExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -328,7 +328,7 @@ class SMatEvalExpr : public SparseMatrix< SMatEvalExpr<MT,SO>, SO >
    friend inline void subAssign( SparseMatrix<MT2,SO2>& lhs, const SMatEvalExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -354,7 +354,7 @@ class SMatEvalExpr : public SparseMatrix< SMatEvalExpr<MT,SO>, SO >
    friend inline void multAssign( DenseMatrix<MT2,SO2>& lhs, const SMatEvalExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -380,7 +380,7 @@ class SMatEvalExpr : public SparseMatrix< SMatEvalExpr<MT,SO>, SO >
    friend inline void multAssign( SparseMatrix<MT2,SO2>& lhs, const SMatEvalExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -429,7 +429,7 @@ template< typename MT  // Type of the sparse matrix
 inline const SMatEvalExpr<MT,SO> eval( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
-      
+
    return SMatEvalExpr<MT,SO>( ~sm );
 }
 //*************************************************************************************************

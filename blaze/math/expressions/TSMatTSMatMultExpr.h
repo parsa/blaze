@@ -287,7 +287,7 @@ class TSMatTSMatMultExpr : public SparseMatrix< TSMatTSMatMultExpr<MT1,MT2>, tru
       assign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -343,7 +343,7 @@ class TSMatTSMatMultExpr : public SparseMatrix< TSMatTSMatMultExpr<MT1,MT2>, tru
       assign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -390,7 +390,7 @@ class TSMatTSMatMultExpr : public SparseMatrix< TSMatTSMatMultExpr<MT1,MT2>, tru
    friend inline void assign( SparseMatrix<MT,false>& lhs, const TSMatTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -421,7 +421,7 @@ class TSMatTSMatMultExpr : public SparseMatrix< TSMatTSMatMultExpr<MT1,MT2>, tru
    friend inline void assign( SparseMatrix<MT,true>& lhs, const TSMatTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -533,7 +533,7 @@ class TSMatTSMatMultExpr : public SparseMatrix< TSMatTSMatMultExpr<MT1,MT2>, tru
    friend inline void addAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -585,7 +585,7 @@ class TSMatTSMatMultExpr : public SparseMatrix< TSMatTSMatMultExpr<MT1,MT2>, tru
    friend inline void subAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-      
+
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -680,7 +680,7 @@ inline const TSMatTSMatMultExpr<T1,T2>
    operator*( const SparseMatrix<T1,true>& lhs, const SparseMatrix<T2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
-      
+
    if( (~lhs).columns() != (~rhs).rows() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
