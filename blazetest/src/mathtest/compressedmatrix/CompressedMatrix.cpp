@@ -111,6 +111,9 @@ void CompressedMatrix::testConstructors()
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 4UL );
       checkNonZeros( mat, 0UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 0UL );
    }
 
    // Size/Non-zeros constructor
@@ -123,6 +126,9 @@ void CompressedMatrix::testConstructors()
       checkColumns ( mat, 4UL );
       checkCapacity( mat, 5UL );
       checkNonZeros( mat, 0UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 0UL );
    }
 
    // Copy constructor
@@ -140,6 +146,8 @@ void CompressedMatrix::testConstructors()
       checkColumns ( mat2, 3UL );
       checkCapacity( mat2, 3UL );
       checkNonZeros( mat2, 3UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
 
       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 2 ||
           mat2(1,0) != 0 || mat2(1,1) != 3 || mat2(1,2) != 0 ) {
@@ -178,6 +186,10 @@ void CompressedMatrix::testConstructors()
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 4UL );
       checkNonZeros( mat, 0UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 0UL );
+      checkNonZeros( mat, 3UL, 0UL );
    }
 
    // Size/Non-zeros constructor
@@ -190,6 +202,10 @@ void CompressedMatrix::testConstructors()
       checkColumns ( mat, 4UL );
       checkCapacity( mat, 5UL );
       checkNonZeros( mat, 0UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 0UL );
+      checkNonZeros( mat, 3UL, 0UL );
    }
 
    // Copy constructor
@@ -207,6 +223,9 @@ void CompressedMatrix::testConstructors()
       checkColumns ( mat2, 3UL );
       checkCapacity( mat2, 3UL );
       checkNonZeros( mat2, 3UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 1UL );
 
       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 2 ||
           mat2(1,0) != 0 || mat2(1,1) != 3 || mat2(1,2) != 0 ) {
@@ -250,6 +269,9 @@ void CompressedMatrix::testFunctionCall()
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 1UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 1UL );
 
       if( mat(2,1) != 1 ) {
          std::ostringstream oss;
@@ -268,6 +290,9 @@ void CompressedMatrix::testFunctionCall()
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
 
       if( mat(2,1) != 1 || mat(1,4) != 2 ) {
          std::ostringstream oss;
@@ -286,6 +311,9 @@ void CompressedMatrix::testFunctionCall()
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
 
       if( mat(2,1) != 1 || mat(1,4) != 2 || mat(0,3) != 3 ) {
          std::ostringstream oss;
@@ -304,6 +332,9 @@ void CompressedMatrix::testFunctionCall()
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 2UL );
 
       if( mat(2,1) != 1 || mat(1,4) != 2 || mat(0,3) != 3 || mat(2,2) != 4 ) {
          std::ostringstream oss;
@@ -332,6 +363,11 @@ void CompressedMatrix::testFunctionCall()
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 1UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 0UL );
+      checkNonZeros( mat, 3UL, 0UL );
+      checkNonZeros( mat, 4UL, 0UL );
 
       if( mat(2,1) != 1 ) {
          std::ostringstream oss;
@@ -350,6 +386,11 @@ void CompressedMatrix::testFunctionCall()
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 0UL );
+      checkNonZeros( mat, 3UL, 0UL );
+      checkNonZeros( mat, 4UL, 1UL );
 
       if( mat(2,1) != 1 || mat(1,4) != 2 ) {
          std::ostringstream oss;
@@ -368,6 +409,11 @@ void CompressedMatrix::testFunctionCall()
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 0UL );
+      checkNonZeros( mat, 3UL, 1UL );
+      checkNonZeros( mat, 4UL, 1UL );
 
       if( mat(2,1) != 1 || mat(1,4) != 2 || mat(0,3) != 3 ) {
          std::ostringstream oss;
@@ -386,6 +432,11 @@ void CompressedMatrix::testFunctionCall()
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 1UL );
+      checkNonZeros( mat, 4UL, 1UL );
 
       if( mat(2,1) != 1 || mat(1,4) != 2 || mat(0,3) != 3 || mat(2,2) != 4 ) {
          std::ostringstream oss;
@@ -426,6 +477,12 @@ void CompressedMatrix::testNonZeros()
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 2UL );
       checkNonZeros( mat, 0UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 0UL );
+      checkNonZeros( mat, 3UL, 0UL );
+      checkNonZeros( mat, 4UL, 0UL );
+      checkNonZeros( mat, 5UL, 0UL );
 
       // Adding two non-zero elements
       mat(2,2) = 1;
@@ -435,6 +492,12 @@ void CompressedMatrix::testNonZeros()
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 2UL );
       checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 0UL );
+      checkNonZeros( mat, 4UL, 1UL );
+      checkNonZeros( mat, 5UL, 0UL );
 
       // Adding a third non-zero element
       mat(1,4) = 3;
@@ -443,6 +506,12 @@ void CompressedMatrix::testNonZeros()
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 0UL );
+      checkNonZeros( mat, 4UL, 1UL );
+      checkNonZeros( mat, 5UL, 0UL );
    }
 
 
@@ -460,6 +529,11 @@ void CompressedMatrix::testNonZeros()
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 2UL );
       checkNonZeros( mat, 0UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 0UL );
+      checkNonZeros( mat, 3UL, 0UL );
+      checkNonZeros( mat, 4UL, 0UL );
 
       // Adding two non-zero elements
       mat(2,2) = 1;
@@ -469,6 +543,11 @@ void CompressedMatrix::testNonZeros()
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 2UL );
       checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 0UL );
+      checkNonZeros( mat, 4UL, 0UL );
 
       // Adding a third non-zero element
       mat(1,4) = 3;
@@ -477,6 +556,11 @@ void CompressedMatrix::testNonZeros()
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 0UL );
+      checkNonZeros( mat, 4UL, 1UL );
    }
 }
 //*************************************************************************************************
@@ -511,6 +595,10 @@ void CompressedMatrix::testReset()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 0UL );
+      checkNonZeros( mat, 3UL, 1UL );
 
       if( mat(0,0) != 1 || mat(1,1) != 2 || mat(1,2) != 3 || mat(3,1) != 4 ) {
          std::ostringstream oss;
@@ -528,6 +616,10 @@ void CompressedMatrix::testReset()
       checkRows    ( mat, 4UL );
       checkColumns ( mat, 3UL );
       checkNonZeros( mat, 0UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 0UL );
+      checkNonZeros( mat, 3UL, 0UL );
    }
 
 
@@ -549,6 +641,9 @@ void CompressedMatrix::testReset()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 1UL );
 
       if( mat(0,0) != 1 || mat(1,1) != 2 || mat(1,2) != 3 || mat(3,1) != 4 ) {
          std::ostringstream oss;
@@ -566,6 +661,9 @@ void CompressedMatrix::testReset()
       checkRows    ( mat, 4UL );
       checkColumns ( mat, 3UL );
       checkNonZeros( mat, 0UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 0UL );
    }
 }
 //*************************************************************************************************
@@ -600,6 +698,10 @@ void CompressedMatrix::testClear()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 0UL );
+      checkNonZeros( mat, 3UL, 1UL );
 
       if( mat(0,0) != 1 || mat(1,1) != 2 || mat(1,2) != 3 || mat(3,1) != 4 ) {
          std::ostringstream oss;
@@ -638,6 +740,9 @@ void CompressedMatrix::testClear()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 1UL );
 
       if( mat(0,0) != 1 || mat(1,1) != 2 || mat(1,2) != 3 || mat(3,1) != 4 ) {
          std::ostringstream oss;
@@ -690,6 +795,10 @@ void CompressedMatrix::testAppend()
          checkColumns ( mat, 4UL );
          checkCapacity( mat, 5UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 3UL, 0UL );
 
          // Appending one non-zero element
          mat.append( 2UL, 1UL, 1 );
@@ -698,6 +807,10 @@ void CompressedMatrix::testAppend()
          checkColumns ( mat, 4UL );
          checkCapacity( mat, 5UL );
          checkNonZeros( mat, 1UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 3UL, 0UL );
 
          if( mat(2,1) != 1 ) {
             std::ostringstream oss;
@@ -717,6 +830,10 @@ void CompressedMatrix::testAppend()
          checkColumns ( mat, 4UL );
          checkCapacity( mat, 5UL );
          checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 3UL, 0UL );
 
          if( mat(2,1) != 1 || mat(0,0) != 2 || mat(0,3) != 3 ) {
             std::ostringstream oss;
@@ -736,6 +853,10 @@ void CompressedMatrix::testAppend()
          checkColumns ( mat, 4UL );
          checkCapacity( mat, 5UL );
          checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 3UL, 2UL );
 
          if( mat(2,1) != 1 || mat(0,0) != 2 || mat(0,3) != 3 || mat(3,1) != 4 || mat(3,2) != 5 ) {
             std::ostringstream oss;
@@ -764,6 +885,10 @@ void CompressedMatrix::testAppend()
          checkColumns ( mat, 4UL );
          checkCapacity( mat, 5UL );
          checkNonZeros( mat, 1UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 3UL, 0UL );
 
          if( mat(0,1) != 1 ) {
             std::ostringstream oss;
@@ -784,6 +909,10 @@ void CompressedMatrix::testAppend()
          checkColumns ( mat, 4UL );
          checkCapacity( mat, 5UL );
          checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 3UL, 0UL );
 
          if( mat(0,1) != 1 || mat(1,1) != 2 || mat(1,3) != 3 ) {
             std::ostringstream oss;
@@ -804,6 +933,10 @@ void CompressedMatrix::testAppend()
          checkColumns ( mat, 4UL );
          checkCapacity( mat, 5UL );
          checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 3UL, 2UL );
 
          if( mat(0,1) != 1 || mat(1,1) != 2 || mat(1,3) != 3 || mat(3,0) != 4 || mat(3,1) != 5 ) {
             std::ostringstream oss;
@@ -837,6 +970,10 @@ void CompressedMatrix::testAppend()
          checkColumns ( mat, 4UL );
          checkCapacity( mat, 5UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 3UL, 0UL );
 
          // Appending one non-zero element
          mat.append( 1UL, 2UL, 1 );
@@ -845,6 +982,10 @@ void CompressedMatrix::testAppend()
          checkColumns ( mat, 4UL );
          checkCapacity( mat, 5UL );
          checkNonZeros( mat, 1UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 3UL, 0UL );
 
          if( mat(1,2) != 1 ) {
             std::ostringstream oss;
@@ -864,6 +1005,10 @@ void CompressedMatrix::testAppend()
          checkColumns ( mat, 4UL );
          checkCapacity( mat, 5UL );
          checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 3UL, 0UL );
 
          if( mat(1,2) != 1 || mat(0,0) != 2 || mat(3,0) != 3 ) {
             std::ostringstream oss;
@@ -883,6 +1028,10 @@ void CompressedMatrix::testAppend()
          checkColumns ( mat, 4UL );
          checkCapacity( mat, 5UL );
          checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 3UL, 2UL );
 
          if( mat(1,2) != 1 || mat(0,0) != 2 || mat(3,0) != 3 || mat(1,3) != 4 || mat(2,3) != 5 ) {
             std::ostringstream oss;
@@ -911,6 +1060,10 @@ void CompressedMatrix::testAppend()
          checkColumns ( mat, 4UL );
          checkCapacity( mat, 5UL );
          checkNonZeros( mat, 1UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 3UL, 0UL );
 
          if( mat(1,0) != 1 ) {
             std::ostringstream oss;
@@ -931,6 +1084,10 @@ void CompressedMatrix::testAppend()
          checkColumns ( mat, 4UL );
          checkCapacity( mat, 5UL );
          checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 3UL, 0UL );
 
          if( mat(1,0) != 1 || mat(1,1) != 2 || mat(3,1) != 3 ) {
             std::ostringstream oss;
@@ -951,6 +1108,10 @@ void CompressedMatrix::testAppend()
          checkColumns ( mat, 4UL );
          checkCapacity( mat, 5UL );
          checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 3UL, 2UL );
 
          if( mat(1,0) != 1 || mat(1,1) != 2 || mat(3,1) != 3 || mat(0,3) != 4 || mat(1,3) != 5 ) {
             std::ostringstream oss;
@@ -991,6 +1152,10 @@ void CompressedMatrix::testInsert()
       checkRows    ( mat, 4UL );
       checkColumns ( mat, 5UL );
       checkNonZeros( mat, 0UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 0UL );
+      checkNonZeros( mat, 3UL, 0UL );
 
       // Inserting a non-zero element
       mat.insert( 2UL, 3UL, 1 );
@@ -999,6 +1164,10 @@ void CompressedMatrix::testInsert()
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 1UL );
       checkNonZeros( mat, 1UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 0UL );
 
       if( mat(2,3) != 1 ) {
          std::ostringstream oss;
@@ -1017,6 +1186,10 @@ void CompressedMatrix::testInsert()
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 2UL );
       checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 2UL );
+      checkNonZeros( mat, 3UL, 0UL );
 
       if( mat(2,3) != 1 || mat(2,4) != 2 ) {
          std::ostringstream oss;
@@ -1035,6 +1208,10 @@ void CompressedMatrix::testInsert()
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 3UL );
+      checkNonZeros( mat, 3UL, 0UL );
 
       if( mat(2,3) != 1 || mat(2,4) != 2 || mat(2,2) != 3 ) {
          std::ostringstream oss;
@@ -1053,6 +1230,10 @@ void CompressedMatrix::testInsert()
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 3UL );
+      checkNonZeros( mat, 3UL, 0UL );
 
       if( mat(2,3) != 1 || mat(2,4) != 2 || mat(2,2) != 3 || mat(0,1) != 4 ) {
          std::ostringstream oss;
@@ -1071,6 +1252,10 @@ void CompressedMatrix::testInsert()
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 5UL );
       checkNonZeros( mat, 5UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 3UL );
+      checkNonZeros( mat, 3UL, 1UL );
 
       if( mat(2,3) != 1 || mat(2,4) != 2 || mat(2,2) != 3 || mat(0,1) != 4 || mat(3,2) != 5 ) {
          std::ostringstream oss;
@@ -1092,93 +1277,113 @@ void CompressedMatrix::testInsert()
       test_ = "Column-major CompressedMatrix::insert()";
 
       // Initialization check
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 5UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 5UL, 4UL );
 
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 5UL );
+      checkRows    ( mat, 5UL );
+      checkColumns ( mat, 4UL );
       checkNonZeros( mat, 0UL );
 
       // Inserting a non-zero element
-      mat.insert( 2UL, 3UL, 1 );
+      mat.insert( 3UL, 2UL, 1 );
 
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 5UL );
+      checkRows    ( mat, 5UL );
+      checkColumns ( mat, 4UL );
       checkCapacity( mat, 1UL );
       checkNonZeros( mat, 1UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 0UL );
 
-      if( mat(2,3) != 1 ) {
+      if( mat(3,2) != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Inserting an element failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 0 0 0 0 0 )\n( 0 0 0 0 0 )\n( 0 0 0 1 0 )\n( 0 0 0 0 0 )\n";
+             << "   Expected result:\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 1 0 )\n( 0 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Inserting a second non-zero element
-      mat.insert( 2UL, 4UL, 2 );
+      mat.insert( 4UL, 2UL, 2 );
 
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 5UL );
+      checkRows    ( mat, 5UL );
+      checkColumns ( mat, 4UL );
       checkCapacity( mat, 2UL );
       checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 2UL );
+      checkNonZeros( mat, 3UL, 0UL );
 
-      if( mat(2,3) != 1 || mat(2,4) != 2 ) {
+      if( mat(3,2) != 1 || mat(4,2) != 2 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Inserting an element failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 0 0 0 0 0 )\n( 0 0 0 0 0 )\n( 0 0 0 1 2 )\n( 0 0 0 0 0 )\n";
+             << "   Expected result:\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 1 0 )\n( 0 0 2 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Inserting a third non-zero element
       mat.insert( 2UL, 2UL, 3 );
 
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 5UL );
+      checkRows    ( mat, 5UL );
+      checkColumns ( mat, 4UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 3UL );
+      checkNonZeros( mat, 3UL, 0UL );
 
-      if( mat(2,3) != 1 || mat(2,4) != 2 || mat(2,2) != 3 ) {
+      if( mat(3,2) != 1 || mat(4,2) != 2 || mat(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Inserting an element failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 0 0 0 0 0 )\n( 0 0 0 0 0 )\n( 0 0 3 1 2 )\n( 0 0 0 0 0 )\n";
+             << "   Expected result:\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 3 0 )\n( 0 0 1 0 )\n( 0 0 2 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Inserting a fourth non-zero element
-      mat.insert( 0UL, 1UL, 4 );
+      mat.insert( 1UL, 0UL, 4 );
 
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 5UL );
+      checkRows    ( mat, 5UL );
+      checkColumns ( mat, 4UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 3UL );
+      checkNonZeros( mat, 3UL, 0UL );
 
-      if( mat(2,3) != 1 || mat(2,4) != 2 || mat(2,2) != 3 || mat(0,1) != 4 ) {
+      if( mat(3,2) != 1 || mat(4,2) != 2 || mat(2,2) != 3 || mat(1,0) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Inserting an element failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 0 4 0 0 0 )\n( 0 0 0 0 0 )\n( 0 0 3 1 2 )\n( 0 0 0 0 0 )\n";
+             << "   Expected result:\n( 0 0 0 0 )\n( 4 0 0 0 )\n( 0 0 3 0 )\n( 0 0 1 0 )\n( 0 0 2 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Inserting a fifth non-zero element
-      mat.insert( 3UL, 2UL, 5 );
+      mat.insert( 2UL, 3UL, 5 );
 
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 5UL );
+      checkRows    ( mat, 5UL );
+      checkColumns ( mat, 4UL );
       checkCapacity( mat, 5UL );
       checkNonZeros( mat, 5UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 3UL );
+      checkNonZeros( mat, 3UL, 1UL );
 
-      if( mat(2,3) != 1 || mat(2,4) != 2 || mat(2,2) != 3 || mat(0,1) != 4 || mat(3,2) != 5 ) {
+      if( mat(3,2) != 1 || mat(4,2) != 2 || mat(2,2) != 3 || mat(1,0) != 4 || mat(2,3) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Inserting an element failed\n"
@@ -1222,6 +1427,14 @@ void CompressedMatrix::testFind()
       checkColumns ( mat, 6UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 0UL );
+      checkNonZeros( mat, 4UL, 0UL );
+      checkNonZeros( mat, 5UL, 0UL );
+      checkNonZeros( mat, 6UL, 1UL );
+      checkNonZeros( mat, 7UL, 0UL );
 
       // Searching for the first element
       {
@@ -1343,6 +1556,12 @@ void CompressedMatrix::testFind()
       checkColumns ( mat, 6UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 1UL );
+      checkNonZeros( mat, 4UL, 0UL );
+      checkNonZeros( mat, 5UL, 1UL );
 
       // Searching for the first element
       {
@@ -1478,6 +1697,9 @@ void CompressedMatrix::testResize()
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 4UL );
       checkNonZeros( mat, 0UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 0UL );
 
       // Increasing the rows and decreasing the columns while preserving the elements
       mat(1,0) = 1;
@@ -1488,6 +1710,11 @@ void CompressedMatrix::testResize()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 2UL );
       checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 0UL );
+      checkNonZeros( mat, 4UL, 0UL );
 
       if( mat(1,0) != 1 || mat(2,2) != 2 ) {
          std::ostringstream oss;
@@ -1507,6 +1734,10 @@ void CompressedMatrix::testResize()
       checkColumns ( mat, 4UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 0UL );
 
       if( mat(1,0) != 1 || mat(2,2) != 2 || mat(0,1) != 3 ) {
          std::ostringstream oss;
@@ -1526,6 +1757,12 @@ void CompressedMatrix::testResize()
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 1UL );
+      checkNonZeros( mat, 4UL, 0UL );
+      checkNonZeros( mat, 5UL, 0UL );
 
       if( mat(1,0) != 1 || mat(2,2) != 2 || mat(0,1) != 3 || mat(3,2) != 4 ) {
          std::ostringstream oss;
@@ -1548,6 +1785,10 @@ void CompressedMatrix::testResize()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 1UL );
 
       if( mat(1,0) != 1 || mat(2,2) != 2 || mat(0,1) != 3 || mat(3,2) != 4 ) {
          std::ostringstream oss;
@@ -1587,6 +1828,10 @@ void CompressedMatrix::testResize()
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 4UL );
       checkNonZeros( mat, 0UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 0UL );
+      checkNonZeros( mat, 3UL, 0UL );
 
       // Increasing the rows and decreasing the columns while preserving the elements
       mat(1,0) = 1;
@@ -1597,6 +1842,9 @@ void CompressedMatrix::testResize()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 2UL );
       checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 1UL );
 
       if( mat(1,0) != 1 || mat(2,2) != 2 ) {
          std::ostringstream oss;
@@ -1616,6 +1864,10 @@ void CompressedMatrix::testResize()
       checkColumns ( mat, 4UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 0UL );
 
       if( mat(1,0) != 1 || mat(2,2) != 2 || mat(0,1) != 3 ) {
          std::ostringstream oss;
@@ -1635,6 +1887,11 @@ void CompressedMatrix::testResize()
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 2UL );
+      checkNonZeros( mat, 3UL, 0UL );
+      checkNonZeros( mat, 4UL, 0UL );
 
       if( mat(1,0) != 1 || mat(2,2) != 2 || mat(0,1) != 3 || mat(3,2) != 4 ) {
          std::ostringstream oss;
@@ -1657,6 +1914,9 @@ void CompressedMatrix::testResize()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 2UL );
 
       if( mat(1,0) != 1 || mat(2,2) != 2 || mat(0,1) != 3 || mat(3,2) != 4 ) {
          std::ostringstream oss;
@@ -1789,6 +2049,11 @@ void CompressedMatrix::testTranspose()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 8UL );
       checkNonZeros( mat, 8UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 2UL );
+      checkNonZeros( mat, 3UL, 1UL );
+      checkNonZeros( mat, 4UL, 2UL );
 
       if( mat(0,0) != 1 || mat(2,0) != 2 || mat(4,0) != 3 || mat(1,1) != 4 ||
           mat(3,1) != 5 || mat(0,2) != 6 || mat(2,2) != 7 || mat(4,2) != 8 ) {
@@ -1826,6 +2091,9 @@ void CompressedMatrix::testTranspose()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 8UL );
       checkNonZeros( mat, 8UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 3UL );
 
       if( mat(0,0) != 1 || mat(2,0) != 2 || mat(4,0) != 3 || mat(1,1) != 4 ||
           mat(3,1) != 5 || mat(0,2) != 6 || mat(2,2) != 7 || mat(4,2) != 8 ) {
@@ -1867,6 +2135,8 @@ void CompressedMatrix::testIsDiagonal()
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
 
          if( mat.isDiagonal() != false ) {
             std::ostringstream oss;
@@ -1886,6 +2156,9 @@ void CompressedMatrix::testIsDiagonal()
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
 
          if( mat.isDiagonal() != true ) {
             std::ostringstream oss;
@@ -1909,6 +2182,9 @@ void CompressedMatrix::testIsDiagonal()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 3UL );
          checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
          if( mat.isDiagonal() != true ) {
             std::ostringstream oss;
@@ -1933,6 +2209,9 @@ void CompressedMatrix::testIsDiagonal()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 4UL );
          checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
          if( mat.isDiagonal() != false ) {
             std::ostringstream oss;
@@ -1959,6 +2238,9 @@ void CompressedMatrix::testIsDiagonal()
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
 
          if( mat.isDiagonal() != false ) {
             std::ostringstream oss;
@@ -1978,6 +2260,9 @@ void CompressedMatrix::testIsDiagonal()
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
 
          if( mat.isDiagonal() != true ) {
             std::ostringstream oss;
@@ -2001,6 +2286,9 @@ void CompressedMatrix::testIsDiagonal()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 3UL );
          checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
          if( mat.isDiagonal() != true ) {
             std::ostringstream oss;
@@ -2025,6 +2313,9 @@ void CompressedMatrix::testIsDiagonal()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 4UL );
          checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( mat.isDiagonal() != false ) {
             std::ostringstream oss;
@@ -2065,6 +2356,8 @@ void CompressedMatrix::testIsSymmetric()
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
 
          if( mat.isSymmetric() != false ) {
             std::ostringstream oss;
@@ -2084,6 +2377,9 @@ void CompressedMatrix::testIsSymmetric()
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
 
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
@@ -2107,6 +2403,9 @@ void CompressedMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 3UL );
          checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
@@ -2131,6 +2430,9 @@ void CompressedMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 4UL );
          checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
          if( mat.isSymmetric() != false ) {
             std::ostringstream oss;
@@ -2156,6 +2458,9 @@ void CompressedMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 5UL );
          checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
@@ -2183,6 +2488,9 @@ void CompressedMatrix::testIsSymmetric()
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
 
          if( mat.isSymmetric() != false ) {
             std::ostringstream oss;
@@ -2202,6 +2510,9 @@ void CompressedMatrix::testIsSymmetric()
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
 
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
@@ -2225,6 +2536,9 @@ void CompressedMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 3UL );
          checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
@@ -2249,6 +2563,9 @@ void CompressedMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 4UL );
          checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( mat.isSymmetric() != false ) {
             std::ostringstream oss;
@@ -2274,6 +2591,9 @@ void CompressedMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 5UL );
          checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
@@ -2317,6 +2637,9 @@ void CompressedMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
 
       if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,1) != 3 ) {
          std::ostringstream oss;
@@ -2335,6 +2658,9 @@ void CompressedMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
 
       if( mat(0,0) != 2 || mat(1,0) != 4 || mat(2,1) != 6 ) {
          std::ostringstream oss;
@@ -2353,6 +2679,9 @@ void CompressedMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
 
       if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,1) != 3 ) {
          std::ostringstream oss;
@@ -2377,6 +2706,8 @@ void CompressedMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 2UL );
       checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
 
       // TODO
       /*
@@ -2410,6 +2741,8 @@ void CompressedMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 1UL );
 
       if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,1) != 3 ) {
          std::ostringstream oss;
@@ -2428,6 +2761,8 @@ void CompressedMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 1UL );
 
       if( mat(0,0) != 2 || mat(1,0) != 4 || mat(2,1) != 6 ) {
          std::ostringstream oss;
@@ -2446,6 +2781,8 @@ void CompressedMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 1UL );
 
       if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,1) != 3 ) {
          std::ostringstream oss;
@@ -2470,6 +2807,8 @@ void CompressedMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 2UL );
       checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
 
       // TODO
       /*
@@ -2521,6 +2860,9 @@ void CompressedMatrix::testSwap()
       checkColumns ( mat1, 4UL );
       checkCapacity( mat1, 3UL );
       checkNonZeros( mat1, 3UL );
+      checkNonZeros( mat1, 0UL, 2UL );
+      checkNonZeros( mat1, 1UL, 0UL );
+      checkNonZeros( mat1, 2UL, 1UL );
 
       if( mat1(0,1) != 3 || mat1(0,2) != 4 || mat1(2,0) != 5 ) {
          std::ostringstream oss;
@@ -2536,6 +2878,11 @@ void CompressedMatrix::testSwap()
       checkColumns ( mat2, 2UL );
       checkCapacity( mat2, 2UL );
       checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 0UL );
+      checkNonZeros( mat2, 2UL, 0UL );
+      checkNonZeros( mat2, 3UL, 1UL );
+      checkNonZeros( mat2, 4UL, 0UL );
 
       if( mat2(0,0) != 1 || mat2(3,1) != 2 ) {
          std::ostringstream oss;
@@ -2571,6 +2918,10 @@ void CompressedMatrix::testSwap()
       checkColumns ( mat1, 4UL );
       checkCapacity( mat1, 3UL );
       checkNonZeros( mat1, 3UL );
+      checkNonZeros( mat1, 0UL, 1UL );
+      checkNonZeros( mat1, 1UL, 1UL );
+      checkNonZeros( mat1, 2UL, 1UL );
+      checkNonZeros( mat1, 3UL, 0UL );
 
       if( mat1(0,1) != 3 || mat1(0,2) != 4 || mat1(2,0) != 5 ) {
          std::ostringstream oss;
@@ -2578,7 +2929,7 @@ void CompressedMatrix::testSwap()
              << " Error: Swapping the first matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << mat1 << "\n"
-             << "   Expected result:\n( 0 3 4 )\n( 0 0 0 )\n( 5 0 0 )\n";
+             << "   Expected result:\n( 0 3 4 0 )\n( 0 0 0 0 )\n( 5 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2586,6 +2937,8 @@ void CompressedMatrix::testSwap()
       checkColumns ( mat2, 2UL );
       checkCapacity( mat2, 2UL );
       checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
 
       if( mat2(0,0) != 1 || mat2(3,1) != 2 ) {
          std::ostringstream oss;
