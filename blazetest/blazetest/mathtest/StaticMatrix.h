@@ -32,6 +32,7 @@
 #include <string>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/StaticMatrix.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blazetest/system/Types.h>
@@ -97,7 +98,10 @@ class StaticMatrix
    void checkCapacity( const Type& matrix, size_t minCapacity ) const;
 
    template< typename Type >
-   void checkNonZeros( const Type& matrix, size_t nonzeros ) const;
+   void checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const;
+
+   template< typename Type >
+   void checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const;
    //@}
    //**********************************************************************************************
 
@@ -270,15 +274,15 @@ void StaticMatrix::checkCapacity( const Type& matrix, size_t minCapacity ) const
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of non-zero elements of the given static matrix.
+/*!\brief Checking the total number of non-zero elements of the given static matrix.
 //
 // \param matrix The static matrix to be checked.
 // \param expectedNonZeros The expected number of non-zero elements of the static matrix.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of non-zero elements of the given static matrix. In
-// case the actual number of non-zero elements does not correspond to the given expected
+// This function checks the total number of non-zero elements of the given static matrix.
+// In case the actual number of non-zero elements does not correspond to the given expected
 // number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the static matrix
@@ -290,6 +294,36 @@ void StaticMatrix::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) 
           << " Error: Invalid number of non-zero elements\n"
           << " Details:\n"
           << "   Number of non-zeros         : " << matrix.nonZeros() << "\n"
+          << "   Expected number of non-zeros: " << expectedNonZeros << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checking the number of non-zero elements in a specific row/column of the given static matrix.
+//
+// \param matrix The static matrix to be checked.
+// \param index The row/column to be checked.
+// \param expectedNonZeros The expected number of non-zero elements in the specified row/column.
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function checks the number of non-zero elements in the specified row/column of the
+// given static matrix. In case the actual number of non-zero elements does not correspond
+// to the given expected number, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >  // Type of the static matrix
+void StaticMatrix::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
+{
+   if( matrix.nonZeros( index ) != expectedNonZeros ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Invalid number of non-zero elements in "
+          << ( blaze::IsRowMajorMatrix<Type>::value ? "row " : "column " ) << index << "\n"
+          << " Details:\n"
+          << "   Number of non-zeros         : " << matrix.nonZeros( index ) << "\n"
           << "   Expected number of non-zeros: " << expectedNonZeros << "\n";
       throw std::runtime_error( oss.str() );
    }

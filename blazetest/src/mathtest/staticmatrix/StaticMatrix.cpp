@@ -108,6 +108,9 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat,  4UL );
       checkCapacity( mat, 12UL );
       checkNonZeros( mat,  0UL );
+      checkNonZeros( mat,  0UL, 0UL );
+      checkNonZeros( mat,  1UL, 0UL );
+      checkNonZeros( mat,  2UL, 0UL );
 
       if( mat(0,0) != 0 || mat(0,1) != 0 || mat(0,2) != 0 || mat(0,3) != 0 ||
           mat(1,0) != 0 || mat(1,1) != 0 || mat(1,2) != 0 || mat(1,3) != 0 ||
@@ -133,6 +136,9 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat,  4UL );
       checkCapacity( mat, 12UL );
       checkNonZeros( mat, 12UL );
+      checkNonZeros( mat, 0UL, 4UL );
+      checkNonZeros( mat, 1UL, 4UL );
+      checkNonZeros( mat, 2UL, 4UL );
 
       if( mat(0,0) != 2 || mat(0,1) != 2 || mat(0,2) != 2 || mat(0,3) != 2 ||
           mat(1,0) != 2 || mat(1,1) != 2 || mat(1,2) != 2 || mat(1,3) != 2 ||
@@ -157,6 +163,7 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 2UL );
       checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 2UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 ) {
          std::ostringstream oss;
@@ -179,6 +186,8 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 2UL );
       checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
 
       if( mat(0,0) != 1 || mat(1,0) != 2 ) {
          std::ostringstream oss;
@@ -201,6 +210,7 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 3UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ) {
          std::ostringstream oss;
@@ -223,6 +233,9 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
 
       if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 ) {
          std::ostringstream oss;
@@ -245,6 +258,7 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 4UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 4UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 ) {
          std::ostringstream oss;
@@ -267,6 +281,8 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(1,0) != 3 || mat(1,1) != 4 ) {
          std::ostringstream oss;
@@ -289,6 +305,10 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 1UL );
 
       if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 ) {
          std::ostringstream oss;
@@ -311,6 +331,7 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 5UL );
       checkNonZeros( mat, 5UL );
+      checkNonZeros( mat, 0UL, 5UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 || mat(0,4) != 5 ) {
          std::ostringstream oss;
@@ -333,6 +354,11 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 5UL );
       checkNonZeros( mat, 5UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 1UL );
+      checkNonZeros( mat, 4UL, 1UL );
 
       if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 || mat(4,0) != 5 ) {
          std::ostringstream oss;
@@ -355,6 +381,7 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 6UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 6UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
           mat(0,3) != 4 || mat(0,4) != 5 || mat(0,5) != 6 ) {
@@ -378,6 +405,8 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
           mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
@@ -401,6 +430,9 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 2UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 ||
           mat(1,0) != 3 || mat(1,1) != 4 ||
@@ -425,6 +457,12 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 1UL );
+      checkNonZeros( mat, 4UL, 1UL );
+      checkNonZeros( mat, 5UL, 1UL );
 
       if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 ||
           mat(3,0) != 4 || mat(4,0) != 5 || mat(5,0) != 6 ) {
@@ -448,6 +486,7 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 7UL );
       checkCapacity( mat, 7UL );
       checkNonZeros( mat, 7UL );
+      checkNonZeros( mat, 0UL, 7UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 ||
           mat(0,4) != 5 || mat(0,5) != 6 || mat(0,6) != 7 ) {
@@ -471,6 +510,13 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 7UL );
       checkNonZeros( mat, 7UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 1UL );
+      checkNonZeros( mat, 4UL, 1UL );
+      checkNonZeros( mat, 5UL, 1UL );
+      checkNonZeros( mat, 6UL, 1UL );
 
       if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 ||
           mat(4,0) != 5 || mat(5,0) != 6 || mat(6,0) != 7 ) {
@@ -494,6 +540,7 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 8UL );
       checkCapacity( mat, 8UL );
       checkNonZeros( mat, 8UL );
+      checkNonZeros( mat, 0UL, 8UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 ||
           mat(0,4) != 5 || mat(0,5) != 6 || mat(0,6) != 7 || mat(0,7) != 8 ) {
@@ -517,6 +564,8 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 4UL );
       checkCapacity( mat, 8UL );
       checkNonZeros( mat, 8UL );
+      checkNonZeros( mat, 0UL, 4UL );
+      checkNonZeros( mat, 1UL, 4UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 ||
           mat(1,0) != 5 || mat(1,1) != 6 || mat(1,2) != 7 || mat(1,3) != 8 ) {
@@ -540,6 +589,10 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 8UL );
       checkNonZeros( mat, 8UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 2UL );
+      checkNonZeros( mat, 3UL, 2UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(1,0) != 3 || mat(1,1) != 4 ||
           mat(2,0) != 5 || mat(2,1) != 6 || mat(3,0) != 7 || mat(3,1) != 8 ) {
@@ -563,6 +616,14 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 8UL );
       checkNonZeros( mat, 8UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 1UL );
+      checkNonZeros( mat, 4UL, 1UL );
+      checkNonZeros( mat, 5UL, 1UL );
+      checkNonZeros( mat, 6UL, 1UL );
+      checkNonZeros( mat, 7UL, 1UL );
 
       if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 ||
           mat(4,0) != 5 || mat(5,0) != 6 || mat(6,0) != 7 || mat(7,0) != 8 ) {
@@ -586,6 +647,7 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 9UL );
       checkCapacity( mat, 9UL );
       checkNonZeros( mat, 9UL );
+      checkNonZeros( mat, 0UL, 9UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 || mat(0,4) != 5 ||
           mat(0,5) != 6 || mat(0,6) != 7 || mat(0,7) != 8 || mat(0,8) != 9 ) {
@@ -609,6 +671,9 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 9UL );
       checkNonZeros( mat, 9UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
+      checkNonZeros( mat, 2UL, 3UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
           mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ||
@@ -633,6 +698,15 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 9UL );
       checkNonZeros( mat, 9UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 1UL );
+      checkNonZeros( mat, 4UL, 1UL );
+      checkNonZeros( mat, 5UL, 1UL );
+      checkNonZeros( mat, 6UL, 1UL );
+      checkNonZeros( mat, 7UL, 1UL );
+      checkNonZeros( mat, 8UL, 1UL );
 
       if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 || mat(4,0) != 5 ||
           mat(5,0) != 6 || mat(6,0) != 7 || mat(7,0) != 8 || mat(8,0) != 9 ) {
@@ -656,6 +730,7 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 10UL );
       checkCapacity( mat, 10UL );
       checkNonZeros( mat, 10UL );
+      checkNonZeros( mat,  0UL, 10UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 || mat(0,4) != 5 ||
           mat(0,5) != 6 || mat(0,6) != 7 || mat(0,7) != 8 || mat(0,8) != 9 || mat(0,9) != 10 ) {
@@ -679,6 +754,8 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 10UL );
       checkNonZeros( mat, 10UL );
+      checkNonZeros( mat,  0UL, 5UL );
+      checkNonZeros( mat,  1UL, 5UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 || mat(0,4) != 5 ||
           mat(1,0) != 6 || mat(1,1) != 7 || mat(1,2) != 8 || mat(1,3) != 9 || mat(1,4) != 10 ) {
@@ -702,6 +779,11 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat,  2UL );
       checkCapacity( mat, 10UL );
       checkNonZeros( mat, 10UL );
+      checkNonZeros( mat,  0UL, 2UL );
+      checkNonZeros( mat,  1UL, 2UL );
+      checkNonZeros( mat,  2UL, 2UL );
+      checkNonZeros( mat,  3UL, 2UL );
+      checkNonZeros( mat,  4UL, 2UL );
 
       if( mat(0,0) != 1 || mat(0,1) !=  2 ||
           mat(1,0) != 3 || mat(1,1) !=  4 ||
@@ -728,6 +810,16 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat,  1UL );
       checkCapacity( mat, 10UL );
       checkNonZeros( mat, 10UL );
+      checkNonZeros( mat,  0UL, 1UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 1UL );
+      checkNonZeros( mat,  3UL, 1UL );
+      checkNonZeros( mat,  4UL, 1UL );
+      checkNonZeros( mat,  5UL, 1UL );
+      checkNonZeros( mat,  6UL, 1UL );
+      checkNonZeros( mat,  7UL, 1UL );
+      checkNonZeros( mat,  8UL, 1UL );
+      checkNonZeros( mat,  9UL, 1UL );
 
       if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 || mat(4,0) != 5 ||
           mat(5,0) != 6 || mat(6,0) != 7 || mat(7,0) != 8 || mat(8,0) != 9 || mat(9,0) != 10 ) {
@@ -753,6 +845,8 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat2, 3UL );
       checkCapacity( mat2, 6UL );
       checkNonZeros( mat2, 6UL );
+      checkNonZeros( mat2, 0UL, 3UL );
+      checkNonZeros( mat2, 1UL, 3UL );
 
       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
@@ -781,6 +875,10 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat,  4UL );
       checkCapacity( mat, 12UL );
       checkNonZeros( mat,  0UL );
+      checkNonZeros( mat,  0UL, 0UL );
+      checkNonZeros( mat,  1UL, 0UL );
+      checkNonZeros( mat,  2UL, 0UL );
+      checkNonZeros( mat,  3UL, 0UL );
 
       if( mat(0,0) != 0 || mat(0,1) != 0 || mat(0,2) != 0 || mat(0,3) != 0 ||
           mat(1,0) != 0 || mat(1,1) != 0 || mat(1,2) != 0 || mat(1,3) != 0 ||
@@ -805,6 +903,10 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat,  4UL );
       checkCapacity( mat, 12UL );
       checkNonZeros( mat, 12UL );
+      checkNonZeros( mat,  0UL, 3UL );
+      checkNonZeros( mat,  1UL, 3UL );
+      checkNonZeros( mat,  2UL, 3UL );
+      checkNonZeros( mat,  3UL, 3UL );
 
       if( mat(0,0) != 2 || mat(0,1) != 2 || mat(0,2) != 2 || mat(0,3) != 2 ||
           mat(1,0) != 2 || mat(1,1) != 2 || mat(1,2) != 2 || mat(1,3) != 2 ||
@@ -829,6 +931,8 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 2UL );
       checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 ) {
          std::ostringstream oss;
@@ -851,6 +955,7 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 2UL );
       checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 2UL );
 
       if( mat(0,0) != 1 || mat(1,0) != 2 ) {
          std::ostringstream oss;
@@ -873,6 +978,9 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ) {
          std::ostringstream oss;
@@ -895,6 +1003,7 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 3UL );
       checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 3UL );
 
       if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 ) {
          std::ostringstream oss;
@@ -917,6 +1026,10 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 4UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 1UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 ) {
          std::ostringstream oss;
@@ -939,6 +1052,8 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 3 || mat(1,0) != 2 || mat(1,1) != 4 ) {
          std::ostringstream oss;
@@ -961,6 +1076,7 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 4UL );
 
       if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 ) {
          std::ostringstream oss;
@@ -983,6 +1099,11 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 5UL );
       checkNonZeros( mat, 5UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 1UL );
+      checkNonZeros( mat, 4UL, 1UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 || mat(0,4) != 5 ) {
          std::ostringstream oss;
@@ -1005,6 +1126,7 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 5UL );
       checkNonZeros( mat, 5UL );
+      checkNonZeros( mat, 0UL, 5UL );
 
       if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 || mat(4,0) != 5 ) {
          std::ostringstream oss;
@@ -1027,6 +1149,12 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 6UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 1UL );
+      checkNonZeros( mat, 4UL, 1UL );
+      checkNonZeros( mat, 5UL, 1UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
           mat(0,3) != 4 || mat(0,4) != 5 || mat(0,5) != 6 ) {
@@ -1050,6 +1178,9 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 2UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 3 || mat(0,2) != 5 ||
           mat(1,0) != 2 || mat(1,1) != 4 || mat(1,2) != 6 ) {
@@ -1073,6 +1204,8 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 4 ||
           mat(1,0) != 2 || mat(1,1) != 5 ||
@@ -1097,6 +1230,7 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 6UL );
 
       if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 ||
           mat(3,0) != 4 || mat(4,0) != 5 || mat(5,0) != 6 ) {
@@ -1120,6 +1254,13 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 7UL );
       checkCapacity( mat, 7UL );
       checkNonZeros( mat, 7UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 1UL );
+      checkNonZeros( mat, 4UL, 1UL );
+      checkNonZeros( mat, 5UL, 1UL );
+      checkNonZeros( mat, 6UL, 1UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 ||
           mat(0,4) != 5 || mat(0,5) != 6 || mat(0,6) != 7 ) {
@@ -1143,6 +1284,7 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 7UL );
       checkNonZeros( mat, 7UL );
+      checkNonZeros( mat, 0UL, 7UL );
 
       if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 ||
           mat(4,0) != 5 || mat(5,0) != 6 || mat(6,0) != 7 ) {
@@ -1166,6 +1308,14 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 8UL );
       checkCapacity( mat, 8UL );
       checkNonZeros( mat, 8UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 1UL );
+      checkNonZeros( mat, 4UL, 1UL );
+      checkNonZeros( mat, 5UL, 1UL );
+      checkNonZeros( mat, 6UL, 1UL );
+      checkNonZeros( mat, 7UL, 1UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 ||
           mat(0,4) != 5 || mat(0,5) != 6 || mat(0,6) != 7 || mat(0,7) != 8 ) {
@@ -1189,6 +1339,10 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 4UL );
       checkCapacity( mat, 8UL );
       checkNonZeros( mat, 8UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 2UL );
+      checkNonZeros( mat, 3UL, 2UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 3 || mat(0,2) != 5 || mat(0,3) != 7 ||
           mat(1,0) != 2 || mat(1,1) != 4 || mat(1,2) != 6 || mat(1,3) != 8 ) {
@@ -1212,6 +1366,8 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 8UL );
       checkNonZeros( mat, 8UL );
+      checkNonZeros( mat, 0UL, 4UL );
+      checkNonZeros( mat, 1UL, 4UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 5 || mat(1,0) != 2 || mat(1,1) != 6 ||
           mat(2,0) != 3 || mat(2,1) != 7 || mat(3,0) != 4 || mat(3,1) != 8 ) {
@@ -1235,6 +1391,7 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 8UL );
       checkNonZeros( mat, 8UL );
+      checkNonZeros( mat, 0UL, 8UL );
 
       if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 ||
           mat(4,0) != 5 || mat(5,0) != 6 || mat(6,0) != 7 || mat(7,0) != 8 ) {
@@ -1258,6 +1415,15 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 9UL );
       checkCapacity( mat, 9UL );
       checkNonZeros( mat, 9UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 1UL );
+      checkNonZeros( mat, 4UL, 1UL );
+      checkNonZeros( mat, 5UL, 1UL );
+      checkNonZeros( mat, 6UL, 1UL );
+      checkNonZeros( mat, 7UL, 1UL );
+      checkNonZeros( mat, 8UL, 1UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 || mat(0,4) != 5 ||
           mat(0,5) != 6 || mat(0,6) != 7 || mat(0,7) != 8 || mat(0,8) != 9 ) {
@@ -1281,6 +1447,9 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 9UL );
       checkNonZeros( mat, 9UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
+      checkNonZeros( mat, 2UL, 3UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 4 || mat(0,2) != 7 ||
           mat(1,0) != 2 || mat(1,1) != 5 || mat(1,2) != 8 ||
@@ -1305,6 +1474,7 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 9UL );
       checkNonZeros( mat, 9UL );
+      checkNonZeros( mat, 0UL, 9UL );
 
       if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 || mat(4,0) != 5 ||
           mat(5,0) != 6 || mat(6,0) != 7 || mat(7,0) != 8 || mat(8,0) != 9 ) {
@@ -1328,6 +1498,16 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat, 10UL );
       checkCapacity( mat, 10UL );
       checkNonZeros( mat, 10UL );
+      checkNonZeros( mat,  0UL, 1UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 1UL );
+      checkNonZeros( mat,  3UL, 1UL );
+      checkNonZeros( mat,  4UL, 1UL );
+      checkNonZeros( mat,  5UL, 1UL );
+      checkNonZeros( mat,  6UL, 1UL );
+      checkNonZeros( mat,  7UL, 1UL );
+      checkNonZeros( mat,  8UL, 1UL );
+      checkNonZeros( mat,  9UL, 1UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 || mat(0,4) != 5 ||
           mat(0,5) != 6 || mat(0,6) != 7 || mat(0,7) != 8 || mat(0,8) != 9 || mat(0,9) != 10 ) {
@@ -1351,6 +1531,11 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 10UL );
       checkNonZeros( mat, 10UL );
+      checkNonZeros( mat,  0UL, 2UL );
+      checkNonZeros( mat,  1UL, 2UL );
+      checkNonZeros( mat,  2UL, 2UL );
+      checkNonZeros( mat,  3UL, 2UL );
+      checkNonZeros( mat,  4UL, 2UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 3 || mat(0,2) != 5 || mat(0,3) != 7 || mat(0,4) != 9 ||
           mat(1,0) != 2 || mat(1,1) != 4 || mat(1,2) != 6 || mat(1,3) != 8 || mat(1,4) != 10 ) {
@@ -1374,6 +1559,8 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat,  2UL );
       checkCapacity( mat, 10UL );
       checkNonZeros( mat, 10UL );
+      checkNonZeros( mat,  0UL, 5UL );
+      checkNonZeros( mat,  1UL, 5UL );
 
       if( mat(0,0) != 1 || mat(0,1) !=  6 ||
           mat(1,0) != 2 || mat(1,1) !=  7 ||
@@ -1400,6 +1587,7 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat,  1UL );
       checkCapacity( mat, 10UL );
       checkNonZeros( mat, 10UL );
+      checkNonZeros( mat,  0UL, 10UL );
 
       if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 || mat(4,0) != 5 ||
           mat(5,0) != 6 || mat(6,0) != 7 || mat(7,0) != 8 || mat(8,0) != 9 || mat(9,0) != 10 ) {
@@ -1425,6 +1613,9 @@ void StaticMatrix::testConstructors()
       checkColumns ( mat2, 3UL );
       checkCapacity( mat2, 6UL );
       checkNonZeros( mat2, 6UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+      checkNonZeros( mat2, 2UL, 2UL );
 
       if( mat2(0,0) != 1 || mat2(0,1) != 3 || mat2(0,2) != 5 ||
           mat2(1,0) != 2 || mat2(1,1) != 4 || mat2(1,2) != 6 ) {
@@ -1468,6 +1659,7 @@ void StaticMatrix::testFunctionCall()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  1UL );
+      checkNonZeros( mat,  2UL, 1UL );
 
       if( mat(2,1) != 1 ) {
          std::ostringstream oss;
@@ -1486,6 +1678,8 @@ void StaticMatrix::testFunctionCall()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  2UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 1UL );
 
       if( mat(2,1) != 1 || mat(1,4) != 2 ) {
          std::ostringstream oss;
@@ -1504,6 +1698,9 @@ void StaticMatrix::testFunctionCall()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  3UL );
+      checkNonZeros( mat,  0UL, 1UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 1UL );
 
       if( mat(2,1) != 1 || mat(1,4) != 2 || mat(0,3) != 3 ) {
          std::ostringstream oss;
@@ -1522,6 +1719,9 @@ void StaticMatrix::testFunctionCall()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  4UL );
+      checkNonZeros( mat,  0UL, 1UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 2UL );
 
       if( mat(2,1) != 1 || mat(1,4) != 2 || mat(0,3) != 3 || mat(2,2) != 4 ) {
          std::ostringstream oss;
@@ -1550,6 +1750,7 @@ void StaticMatrix::testFunctionCall()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  1UL );
+      checkNonZeros( mat,  1UL, 1UL );
 
       if( mat(2,1) != 1 ) {
          std::ostringstream oss;
@@ -1568,6 +1769,8 @@ void StaticMatrix::testFunctionCall()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  2UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  4UL, 1UL );
 
       if( mat(2,1) != 1 || mat(1,4) != 2 ) {
          std::ostringstream oss;
@@ -1586,6 +1789,9 @@ void StaticMatrix::testFunctionCall()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  3UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  3UL, 1UL );
+      checkNonZeros( mat,  4UL, 1UL );
 
       if( mat(2,1) != 1 || mat(1,4) != 2 || mat(0,3) != 3 ) {
          std::ostringstream oss;
@@ -1604,6 +1810,10 @@ void StaticMatrix::testFunctionCall()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  4UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 1UL );
+      checkNonZeros( mat,  3UL, 1UL );
+      checkNonZeros( mat,  4UL, 1UL );
 
       if( mat(2,1) != 1 || mat(1,4) != 2 || mat(0,3) != 3 || mat(2,2) != 4 ) {
          std::ostringstream oss;
@@ -1644,6 +1854,8 @@ void StaticMatrix::testNonZeros()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
 
          if( mat(0,0) != 0 || mat(0,1) != 0 || mat(0,2) != 0 ||
              mat(1,0) != 0 || mat(1,1) != 0 || mat(1,2) != 0 ) {
@@ -1664,6 +1876,8 @@ void StaticMatrix::testNonZeros()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 2UL );
 
          if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 0 ||
              mat(1,0) != 3 || mat(1,1) != 4 || mat(1,2) != 0 ) {
@@ -1693,6 +1907,9 @@ void StaticMatrix::testNonZeros()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
 
          if( mat(0,0) != 0 || mat(0,1) != 0 || mat(0,2) != 0 ||
              mat(1,0) != 0 || mat(1,1) != 0 || mat(1,2) != 0 ) {
@@ -1713,6 +1930,9 @@ void StaticMatrix::testNonZeros()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
          if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 4 ||
              mat(1,0) != 2 || mat(1,1) != 3 || mat(1,2) != 0 ) {
@@ -1755,6 +1975,8 @@ void StaticMatrix::testReset()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
           mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
@@ -1774,6 +1996,8 @@ void StaticMatrix::testReset()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 0UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
 
       if( mat(0,0) != 0 || mat(0,1) != 0 || mat(0,2) != 0 ||
           mat(1,0) != 0 || mat(1,1) != 0 || mat(1,2) != 0 ) {
@@ -1802,6 +2026,9 @@ void StaticMatrix::testReset()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 2UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 3 || mat(0,2) != 5 ||
           mat(1,0) != 2 || mat(1,1) != 4 || mat(1,2) != 6 ) {
@@ -1821,6 +2048,9 @@ void StaticMatrix::testReset()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 0UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 0UL );
 
       if( mat(0,0) != 0 || mat(0,1) != 0 || mat(0,2) != 0 ||
           mat(1,0) != 0 || mat(1,1) != 0 || mat(1,2) != 0 ) {
@@ -1863,6 +2093,9 @@ void StaticMatrix::testTranspose()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 9UL );
       checkNonZeros( mat, 9UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
+      checkNonZeros( mat, 2UL, 3UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 4 || mat(0,2) != 7 ||
           mat(1,0) != 2 || mat(1,1) != 5 || mat(1,2) != 8 ||
@@ -1893,6 +2126,9 @@ void StaticMatrix::testTranspose()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 9UL );
       checkNonZeros( mat, 9UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
+      checkNonZeros( mat, 2UL, 3UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
           mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ||
@@ -1936,6 +2172,8 @@ void StaticMatrix::testIsDiagonal()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
 
          if( mat.isDiagonal() != false ) {
             std::ostringstream oss;
@@ -1956,6 +2194,9 @@ void StaticMatrix::testIsDiagonal()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
 
          if( mat.isDiagonal() != true ) {
             std::ostringstream oss;
@@ -1976,6 +2217,9 @@ void StaticMatrix::testIsDiagonal()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
          if( mat.isDiagonal() != true ) {
             std::ostringstream oss;
@@ -1996,6 +2240,9 @@ void StaticMatrix::testIsDiagonal()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
          if( mat.isDiagonal() != false ) {
             std::ostringstream oss;
@@ -2023,6 +2270,9 @@ void StaticMatrix::testIsDiagonal()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
 
          if( mat.isDiagonal() != false ) {
             std::ostringstream oss;
@@ -2043,6 +2293,9 @@ void StaticMatrix::testIsDiagonal()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
 
          if( mat.isDiagonal() != true ) {
             std::ostringstream oss;
@@ -2063,6 +2316,9 @@ void StaticMatrix::testIsDiagonal()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
          if( mat.isDiagonal() != true ) {
             std::ostringstream oss;
@@ -2083,6 +2339,9 @@ void StaticMatrix::testIsDiagonal()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
          if( mat.isDiagonal() != false ) {
             std::ostringstream oss;
@@ -2124,6 +2383,8 @@ void StaticMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
 
          if( mat.isSymmetric() != false ) {
             std::ostringstream oss;
@@ -2144,6 +2405,9 @@ void StaticMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
 
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
@@ -2164,6 +2428,9 @@ void StaticMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
@@ -2184,6 +2451,9 @@ void StaticMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
          if( mat.isSymmetric() != false ) {
             std::ostringstream oss;
@@ -2204,6 +2474,9 @@ void StaticMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
@@ -2232,6 +2505,9 @@ void StaticMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
 
          if( mat.isSymmetric() != false ) {
             std::ostringstream oss;
@@ -2252,6 +2528,9 @@ void StaticMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
 
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
@@ -2272,6 +2551,9 @@ void StaticMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
@@ -2292,6 +2574,9 @@ void StaticMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
          if( mat.isSymmetric() != false ) {
             std::ostringstream oss;
@@ -2312,6 +2597,9 @@ void StaticMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
@@ -2352,6 +2640,9 @@ void StaticMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 2UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 ||
           mat(1,0) != 3 || mat(1,1) != 4 ||
@@ -2372,6 +2663,9 @@ void StaticMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 2UL );
 
       if( mat(0,0) !=  2 || mat(0,1) !=  4 ||
           mat(1,0) !=  6 || mat(1,1) !=  8 ||
@@ -2392,6 +2686,9 @@ void StaticMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 2UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 ||
           mat(1,0) != 3 || mat(1,1) != 4 ||
@@ -2420,6 +2717,8 @@ void StaticMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
 
       if( mat(0,0) != complex<float>( 3.0F, 0.0F ) || mat(0,1) != complex<float>(  6.0F, 0.0F ) ||
           mat(1,0) != complex<float>( 9.0F, 0.0F ) || mat(1,1) != complex<float>( 12.0F, 0.0F ) ) {
@@ -2448,6 +2747,8 @@ void StaticMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 4 ||
           mat(1,0) != 2 || mat(1,1) != 5 ||
@@ -2468,6 +2769,8 @@ void StaticMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
 
       if( mat(0,0) != 2 || mat(0,1) !=  8 ||
           mat(1,0) != 4 || mat(1,1) != 10 ||
@@ -2488,6 +2791,8 @@ void StaticMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 4 ||
           mat(1,0) != 2 || mat(1,1) != 5 ||
@@ -2516,6 +2821,8 @@ void StaticMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
 
       if( mat(0,0) != complex<float>( 3.0F, 0.0F ) || mat(0,1) != complex<float>(  6.0F, 0.0F ) ||
           mat(1,0) != complex<float>( 9.0F, 0.0F ) || mat(1,1) != complex<float>( 12.0F, 0.0F ) ) {
@@ -2559,6 +2866,8 @@ void StaticMatrix::testSwap()
       checkColumns ( mat1, 2UL );
       checkCapacity( mat1, 4UL );
       checkNonZeros( mat1, 4UL );
+      checkNonZeros( mat1, 0UL, 2UL );
+      checkNonZeros( mat1, 1UL, 2UL );
 
       if( mat1(0,0) != 4 || mat1(0,1) != 3 || mat1(1,0) != 2 || mat1(1,1) != 1 ) {
          std::ostringstream oss;
@@ -2574,6 +2883,8 @@ void StaticMatrix::testSwap()
       checkColumns ( mat2, 2UL );
       checkCapacity( mat2, 4UL );
       checkNonZeros( mat2, 3UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
 
       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(1,0) != 0 || mat2(1,1) != 3 ) {
          std::ostringstream oss;
@@ -2603,6 +2914,8 @@ void StaticMatrix::testSwap()
       checkColumns ( mat1, 2UL );
       checkCapacity( mat1, 4UL );
       checkNonZeros( mat1, 4UL );
+      checkNonZeros( mat1, 0UL, 2UL );
+      checkNonZeros( mat1, 1UL, 2UL );
 
       if( mat1(0,0) != 4 || mat1(0,1) != 2 || mat1(1,0) != 3 || mat1(1,1) != 1 ) {
          std::ostringstream oss;
@@ -2618,6 +2931,8 @@ void StaticMatrix::testSwap()
       checkColumns ( mat2, 2UL );
       checkCapacity( mat2, 4UL );
       checkNonZeros( mat2, 3UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
 
       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(1,0) != 2 || mat2(1,1) != 3 ) {
          std::ostringstream oss;
