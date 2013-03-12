@@ -133,6 +133,9 @@ void DynamicMatrix::testConstructors()
       checkColumns ( mat,  4UL );
       checkCapacity( mat, 12UL );
       checkNonZeros( mat, 12UL );
+      checkNonZeros( mat,  0UL, 4UL );
+      checkNonZeros( mat,  1UL, 4UL );
+      checkNonZeros( mat,  2UL, 4UL );
 
       if( mat(0,0) != 2 || mat(0,1) != 2 || mat(0,2) != 2 || mat(0,3) != 2 ||
           mat(1,0) != 2 || mat(1,1) != 2 || mat(1,2) != 2 || mat(1,3) != 2 ||
@@ -149,15 +152,17 @@ void DynamicMatrix::testConstructors()
 
    // Array initialization
    {
-      test_ = "DynamicVector array initialization constructor";
+      test_ = "Row-major DynamicMatrix array initialization constructor";
 
       int array[2][3] = { { 1, 2, 3 }, { 4, 5, 6 } };
-      blaze::DynamicMatrix<int,blaze::rowVector> mat( array );
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( array );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
           mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
@@ -189,6 +194,8 @@ void DynamicMatrix::testConstructors()
       checkColumns ( mat2, 3UL );
       checkCapacity( mat2, 6UL );
       checkNonZeros( mat2, 6UL );
+      checkNonZeros( mat2, 0UL, 3UL );
+      checkNonZeros( mat2, 1UL, 3UL );
 
       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
@@ -238,6 +245,10 @@ void DynamicMatrix::testConstructors()
       checkColumns ( mat,  4UL );
       checkCapacity( mat, 12UL );
       checkNonZeros( mat, 12UL );
+      checkNonZeros( mat,  0UL, 3UL );
+      checkNonZeros( mat,  1UL, 3UL );
+      checkNonZeros( mat,  2UL, 3UL );
+      checkNonZeros( mat,  3UL, 3UL );
 
       if( mat(0,0) != 2 || mat(0,1) != 2 || mat(0,2) != 2 || mat(0,3) != 2 ||
           mat(1,0) != 2 || mat(1,1) != 2 || mat(1,2) != 2 || mat(1,3) != 2 ||
@@ -254,15 +265,18 @@ void DynamicMatrix::testConstructors()
 
    // Array initialization
    {
-      test_ = "DynamicVector array initialization constructor";
+      test_ = "Column-major DynamicMatrix array initialization constructor";
 
       int array[2][3] = { { 1, 2, 3 }, { 4, 5, 6 } };
-      blaze::DynamicMatrix<int,blaze::columnVector> mat( array );
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( array );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 2UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
           mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
@@ -294,6 +308,9 @@ void DynamicMatrix::testConstructors()
       checkColumns ( mat2, 3UL );
       checkCapacity( mat2, 6UL );
       checkNonZeros( mat2, 6UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+      checkNonZeros( mat2, 2UL, 2UL );
 
       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
@@ -337,6 +354,9 @@ void DynamicMatrix::testFunctionCall()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  1UL );
+      checkNonZeros( mat,  0UL, 0UL );
+      checkNonZeros( mat,  1UL, 0UL );
+      checkNonZeros( mat,  2UL, 1UL );
 
       if( mat(2,1) != 1 ) {
          std::ostringstream oss;
@@ -355,6 +375,9 @@ void DynamicMatrix::testFunctionCall()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  2UL );
+      checkNonZeros( mat,  0UL, 0UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 1UL );
 
       if( mat(2,1) != 1 || mat(1,4) != 2 ) {
          std::ostringstream oss;
@@ -373,6 +396,9 @@ void DynamicMatrix::testFunctionCall()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  3UL );
+      checkNonZeros( mat,  0UL, 1UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 1UL );
 
       if( mat(2,1) != 1 || mat(1,4) != 2 || mat(0,3) != 3 ) {
          std::ostringstream oss;
@@ -391,6 +417,9 @@ void DynamicMatrix::testFunctionCall()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  4UL );
+      checkNonZeros( mat,  0UL, 1UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 2UL );
 
       if( mat(2,1) != 1 || mat(1,4) != 2 || mat(0,3) != 3 || mat(2,2) != 4 ) {
          std::ostringstream oss;
@@ -419,6 +448,11 @@ void DynamicMatrix::testFunctionCall()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  1UL );
+      checkNonZeros( mat,  0UL, 0UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 0UL );
+      checkNonZeros( mat,  3UL, 0UL );
+      checkNonZeros( mat,  4UL, 0UL );
 
       if( mat(2,1) != 1 ) {
          std::ostringstream oss;
@@ -437,6 +471,11 @@ void DynamicMatrix::testFunctionCall()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  2UL );
+      checkNonZeros( mat,  0UL, 0UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 0UL );
+      checkNonZeros( mat,  3UL, 0UL );
+      checkNonZeros( mat,  4UL, 1UL );
 
       if( mat(2,1) != 1 || mat(1,4) != 2 ) {
          std::ostringstream oss;
@@ -455,6 +494,11 @@ void DynamicMatrix::testFunctionCall()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  3UL );
+      checkNonZeros( mat,  0UL, 0UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 0UL );
+      checkNonZeros( mat,  3UL, 1UL );
+      checkNonZeros( mat,  4UL, 1UL );
 
       if( mat(2,1) != 1 || mat(1,4) != 2 || mat(0,3) != 3 ) {
          std::ostringstream oss;
@@ -473,6 +517,11 @@ void DynamicMatrix::testFunctionCall()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  4UL );
+      checkNonZeros( mat,  0UL, 0UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 1UL );
+      checkNonZeros( mat,  3UL, 1UL );
+      checkNonZeros( mat,  4UL, 1UL );
 
       if( mat(2,1) != 1 || mat(1,4) != 2 || mat(0,3) != 3 || mat(2,2) != 4 ) {
          std::ostringstream oss;
@@ -513,6 +562,8 @@ void DynamicMatrix::testNonZeros()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
 
          if( mat(0,0) != 0 || mat(0,1) != 0 || mat(0,2) != 0 ||
              mat(1,0) != 0 || mat(1,1) != 0 || mat(1,2) != 0 ) {
@@ -537,6 +588,8 @@ void DynamicMatrix::testNonZeros()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
 
          if( mat(0,0) != 0 || mat(0,1) != 1 || mat(0,2) != 2 ||
              mat(1,0) != 0 || mat(1,1) != 3 || mat(1,2) != 0 ) {
@@ -566,6 +619,9 @@ void DynamicMatrix::testNonZeros()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
 
          if( mat(0,0) != 0 || mat(0,1) != 0 || mat(0,2) != 0 ||
              mat(1,0) != 0 || mat(1,1) != 0 || mat(1,2) != 0 ) {
@@ -590,6 +646,9 @@ void DynamicMatrix::testNonZeros()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
          if( mat(0,0) != 0 || mat(0,1) != 1 || mat(0,2) != 2 ||
              mat(1,0) != 0 || mat(1,1) != 3 || mat(1,2) != 0 ) {
@@ -638,6 +697,8 @@ void DynamicMatrix::testReset()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
           mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
@@ -657,6 +718,8 @@ void DynamicMatrix::testReset()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 0UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
 
       if( mat(0,0) != 0 || mat(0,1) != 0 || mat(0,2) != 0 ||
           mat(1,0) != 0 || mat(1,1) != 0 || mat(1,2) != 0 ) {
@@ -691,6 +754,9 @@ void DynamicMatrix::testReset()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 2UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
           mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
@@ -710,6 +776,9 @@ void DynamicMatrix::testReset()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 0UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 0UL );
 
       if( mat(0,0) != 0 || mat(0,1) != 0 || mat(0,2) != 0 ||
           mat(1,0) != 0 || mat(1,1) != 0 || mat(1,2) != 0 ) {
@@ -757,6 +826,8 @@ void DynamicMatrix::testClear()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
           mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
@@ -798,6 +869,9 @@ void DynamicMatrix::testClear()
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 2UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
           mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
@@ -881,6 +955,8 @@ void DynamicMatrix::testResize()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 3 || mat(1,0) != 2 || mat(1,1) != 4 ) {
          std::ostringstream oss;
@@ -950,6 +1026,8 @@ void DynamicMatrix::testResize()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 3 || mat(1,0) != 2 || mat(1,1) != 4 ) {
          std::ostringstream oss;
@@ -1200,6 +1278,11 @@ void DynamicMatrix::testTranspose()
       checkColumns ( mat,  3UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  8UL );
+      checkNonZeros( mat,  0UL, 2UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 2UL );
+      checkNonZeros( mat,  3UL, 1UL );
+      checkNonZeros( mat,  4UL, 2UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 6 ||
           mat(1,0) != 0 || mat(1,1) != 4 || mat(1,2) != 0 ||
@@ -1240,6 +1323,9 @@ void DynamicMatrix::testTranspose()
       checkColumns ( mat,  3UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  8UL );
+      checkNonZeros( mat,  0UL, 3UL );
+      checkNonZeros( mat,  1UL, 2UL );
+      checkNonZeros( mat,  2UL, 3UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 6 ||
           mat(1,0) != 0 || mat(1,1) != 4 || mat(1,2) != 0 ||
@@ -1285,6 +1371,8 @@ void DynamicMatrix::testIsDiagonal()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
 
          if( mat.isDiagonal() != false ) {
             std::ostringstream oss;
@@ -1305,6 +1393,9 @@ void DynamicMatrix::testIsDiagonal()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
 
          if( mat.isDiagonal() != true ) {
             std::ostringstream oss;
@@ -1328,6 +1419,9 @@ void DynamicMatrix::testIsDiagonal()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
          if( mat.isDiagonal() != true ) {
             std::ostringstream oss;
@@ -1352,6 +1446,9 @@ void DynamicMatrix::testIsDiagonal()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
          if( mat.isDiagonal() != false ) {
             std::ostringstream oss;
@@ -1379,6 +1476,9 @@ void DynamicMatrix::testIsDiagonal()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
 
          if( mat.isDiagonal() != false ) {
             std::ostringstream oss;
@@ -1399,6 +1499,9 @@ void DynamicMatrix::testIsDiagonal()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
 
          if( mat.isDiagonal() != true ) {
             std::ostringstream oss;
@@ -1422,6 +1525,9 @@ void DynamicMatrix::testIsDiagonal()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
          if( mat.isDiagonal() != true ) {
             std::ostringstream oss;
@@ -1446,6 +1552,9 @@ void DynamicMatrix::testIsDiagonal()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( mat.isDiagonal() != false ) {
             std::ostringstream oss;
@@ -1487,6 +1596,8 @@ void DynamicMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
 
          if( mat.isSymmetric() != false ) {
             std::ostringstream oss;
@@ -1507,6 +1618,9 @@ void DynamicMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
 
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
@@ -1530,6 +1644,9 @@ void DynamicMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
@@ -1554,6 +1671,9 @@ void DynamicMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
          if( mat.isSymmetric() != false ) {
             std::ostringstream oss;
@@ -1579,6 +1699,9 @@ void DynamicMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
@@ -1607,6 +1730,9 @@ void DynamicMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 6UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
 
          if( mat.isSymmetric() != false ) {
             std::ostringstream oss;
@@ -1627,6 +1753,9 @@ void DynamicMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
 
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
@@ -1650,6 +1779,9 @@ void DynamicMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
@@ -1674,6 +1806,9 @@ void DynamicMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( mat.isSymmetric() != false ) {
             std::ostringstream oss;
@@ -1699,6 +1834,9 @@ void DynamicMatrix::testIsSymmetric()
          checkColumns ( mat, 3UL );
          checkCapacity( mat, 9UL );
          checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( mat.isSymmetric() != true ) {
             std::ostringstream oss;
@@ -1745,6 +1883,9 @@ void DynamicMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 2UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 ||
           mat(1,0) != 3 || mat(1,1) != 4 ||
@@ -1765,6 +1906,9 @@ void DynamicMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 2UL );
 
       if( mat(0,0) !=  2 || mat(0,1) !=  4 ||
           mat(1,0) !=  6 || mat(1,1) !=  8 ||
@@ -1785,6 +1929,9 @@ void DynamicMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 2UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 2 ||
           mat(1,0) != 3 || mat(1,1) != 4 ||
@@ -1813,6 +1960,8 @@ void DynamicMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
 
       if( mat(0,0) != complex<float>( 3.0F, 0.0F ) || mat(0,1) != complex<float>(  6.0F, 0.0F ) ||
           mat(1,0) != complex<float>( 9.0F, 0.0F ) || mat(1,1) != complex<float>( 12.0F, 0.0F ) ) {
@@ -1847,6 +1996,8 @@ void DynamicMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 4 ||
           mat(1,0) != 2 || mat(1,1) != 5 ||
@@ -1867,6 +2018,8 @@ void DynamicMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
 
       if( mat(0,0) != 2 || mat(0,1) !=  8 ||
           mat(1,0) != 4 || mat(1,1) != 10 ||
@@ -1887,6 +2040,8 @@ void DynamicMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 6UL );
       checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
 
       if( mat(0,0) != 1 || mat(0,1) != 4 ||
           mat(1,0) != 2 || mat(1,1) != 5 ||
@@ -1915,6 +2070,8 @@ void DynamicMatrix::testScale()
       checkColumns ( mat, 2UL );
       checkCapacity( mat, 4UL );
       checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
 
       if( mat(0,0) != complex<float>( 3.0F, 0.0F ) || mat(0,1) != complex<float>(  6.0F, 0.0F ) ||
           mat(1,0) != complex<float>( 9.0F, 0.0F ) || mat(1,1) != complex<float>( 12.0F, 0.0F ) ) {
@@ -1967,6 +2124,8 @@ void DynamicMatrix::testSwap()
       checkColumns ( mat1, 2UL );
       checkCapacity( mat1, 4UL );
       checkNonZeros( mat1, 4UL );
+      checkNonZeros( mat1, 0UL, 2UL );
+      checkNonZeros( mat1, 1UL, 2UL );
 
       if( mat1(0,0) != 4 || mat1(0,1) != 3 || mat1(1,0) != 2 || mat1(1,1) != 1 ) {
          std::ostringstream oss;
@@ -1982,6 +2141,8 @@ void DynamicMatrix::testSwap()
       checkColumns ( mat2, 2UL );
       checkCapacity( mat2, 4UL );
       checkNonZeros( mat2, 3UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
 
       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(1,0) != 0 || mat2(1,1) != 3 ) {
          std::ostringstream oss;
@@ -2020,6 +2181,8 @@ void DynamicMatrix::testSwap()
       checkColumns ( mat1, 2UL );
       checkCapacity( mat1, 4UL );
       checkNonZeros( mat1, 4UL );
+      checkNonZeros( mat1, 0UL, 2UL );
+      checkNonZeros( mat1, 1UL, 2UL );
 
       if( mat1(0,0) != 4 || mat1(0,1) != 2 || mat1(1,0) != 3 || mat1(1,1) != 1 ) {
          std::ostringstream oss;
@@ -2035,6 +2198,8 @@ void DynamicMatrix::testSwap()
       checkColumns ( mat2, 2UL );
       checkCapacity( mat2, 4UL );
       checkNonZeros( mat2, 3UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
 
       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(1,0) != 2 || mat2(1,1) != 3 ) {
          std::ostringstream oss;
