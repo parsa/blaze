@@ -1659,6 +1659,8 @@ void StaticMatrix::testFunctionCall()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  1UL );
+      checkNonZeros( mat,  0UL, 0UL );
+      checkNonZeros( mat,  1UL, 0UL );
       checkNonZeros( mat,  2UL, 1UL );
 
       if( mat(2,1) != 1 ) {
@@ -1678,6 +1680,7 @@ void StaticMatrix::testFunctionCall()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  2UL );
+      checkNonZeros( mat,  0UL, 0UL );
       checkNonZeros( mat,  1UL, 1UL );
       checkNonZeros( mat,  2UL, 1UL );
 
@@ -1750,7 +1753,11 @@ void StaticMatrix::testFunctionCall()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  1UL );
+      checkNonZeros( mat,  0UL, 0UL );
       checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 0UL );
+      checkNonZeros( mat,  3UL, 0UL );
+      checkNonZeros( mat,  4UL, 0UL );
 
       if( mat(2,1) != 1 ) {
          std::ostringstream oss;
@@ -1769,7 +1776,10 @@ void StaticMatrix::testFunctionCall()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  2UL );
+      checkNonZeros( mat,  0UL, 0UL );
       checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 0UL );
+      checkNonZeros( mat,  3UL, 0UL );
       checkNonZeros( mat,  4UL, 1UL );
 
       if( mat(2,1) != 1 || mat(1,4) != 2 ) {
@@ -1789,7 +1799,9 @@ void StaticMatrix::testFunctionCall()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  3UL );
+      checkNonZeros( mat,  0UL, 0UL );
       checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 0UL );
       checkNonZeros( mat,  3UL, 1UL );
       checkNonZeros( mat,  4UL, 1UL );
 
@@ -1810,6 +1822,7 @@ void StaticMatrix::testFunctionCall()
       checkColumns ( mat,  5UL );
       checkCapacity( mat, 15UL );
       checkNonZeros( mat,  4UL );
+      checkNonZeros( mat,  0UL, 0UL );
       checkNonZeros( mat,  1UL, 1UL );
       checkNonZeros( mat,  2UL, 1UL );
       checkNonZeros( mat,  3UL, 1UL );
