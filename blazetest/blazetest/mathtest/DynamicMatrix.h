@@ -79,6 +79,7 @@ class DynamicMatrix
    void testAlignment( const std::string& type );
 
    void testConstructors();
+   void testAssignment  ();
    void testFunctionCall();
    void testNonZeros    ();
    void testReset       ();

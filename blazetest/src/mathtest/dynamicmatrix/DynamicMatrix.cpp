@@ -63,6 +63,7 @@ DynamicMatrix::DynamicMatrix()
    testAlignment< complex<long double> >( "complex<long double>" );
 
    testConstructors();
+   testAssignment();
    testFunctionCall();
    testNonZeros();
    testReset();
@@ -99,7 +100,7 @@ DynamicMatrix::DynamicMatrix()
 void DynamicMatrix::testConstructors()
 {
    //=====================================================================================
-   // Row-major matrix tests
+   // Row-major default constructor
    //=====================================================================================
 
    // Default constructor
@@ -108,13 +109,48 @@ void DynamicMatrix::testConstructors()
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat;
 
-      checkRows   ( mat, 0UL );
-      checkColumns( mat, 0UL );
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
    }
 
-   // Size constructor
+
+   //=====================================================================================
+   // Row-major size constructor
+   //=====================================================================================
+
    {
-      test_ = "Row-major DynamicMatrix size constructor";
+      test_ = "Row-major DynamicMatrix size constructor (0x0)";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 0UL, 0UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Row-major DynamicMatrix size constructor (0x4)";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 0UL, 4UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 4UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Row-major DynamicMatrix size constructor (3x0)";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 0UL );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Row-major DynamicMatrix size constructor (3x4)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 4UL );
 
@@ -123,9 +159,43 @@ void DynamicMatrix::testConstructors()
       checkCapacity( mat, 12UL );
    }
 
-   // Homogeneous initialization
+
+   //=====================================================================================
+   // Row-major homogeneous initialization
+   //=====================================================================================
+
    {
-      test_ = "Row-major DynamicMatrix homogeneous initialization constructor";
+      test_ = "Row-major DynamicMatrix homogeneous initialization constructor (0x0)";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 0UL, 0UL, 2 );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Row-major DynamicMatrix homogeneous initialization constructor (0x4)";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 0UL, 4UL, 2 );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 4UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Row-major DynamicMatrix homogeneous initialization constructor (3x0)";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 0UL, 2 );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Row-major DynamicMatrix homogeneous initialization constructor (3x4)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 4UL, 2 );
 
@@ -150,7 +220,11 @@ void DynamicMatrix::testConstructors()
       }
    }
 
-   // Array initialization
+
+   //=====================================================================================
+   // Row-major array initialization
+   //=====================================================================================
+
    {
       test_ = "Row-major DynamicMatrix array initialization constructor";
 
@@ -176,9 +250,46 @@ void DynamicMatrix::testConstructors()
       }
    }
 
-   // Copy constructor
+
+   //=====================================================================================
+   // Row-major copy constructor
+   //=====================================================================================
+
    {
-      test_ = "Row-major DynamicMatrix copy constructor";
+      test_ = "Row-major DynamicMatrix copy constructor (0x0)";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 0UL, 0UL );
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( mat1 );
+
+      checkRows    ( mat2, 0UL );
+      checkColumns ( mat2, 0UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Row-major DynamicMatrix copy constructor (0x3)";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 0UL, 3UL );
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( mat1 );
+
+      checkRows    ( mat2, 0UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Row-major DynamicMatrix copy constructor (2x0)";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 2UL, 0UL );
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( mat1 );
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 0UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Row-major DynamicMatrix copy constructor (2x3)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL );
       mat1(0,0) = 1;
@@ -211,22 +322,56 @@ void DynamicMatrix::testConstructors()
 
 
    //=====================================================================================
-   // Column-major matrix tests
+   // Column-major default constructor
    //=====================================================================================
 
-   // Default constructor
    {
       test_ = "Column-major DynamicMatrix default constructor";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat;
 
-      checkRows   ( mat, 0UL );
-      checkColumns( mat, 0UL );
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
    }
 
-   // Size constructor
+
+   //=====================================================================================
+   // Column-major size constructor
+   //=====================================================================================
+
    {
-      test_ = "Column-major DynamicMatrix size constructor";
+      test_ = "Column-major DynamicMatrix size constructor (0x0)";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 0UL, 0UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Column-major DynamicMatrix size constructor (0x4)";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 0UL, 4UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 4UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Column-major DynamicMatrix size constructor (3x0)";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 0UL );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Column-major DynamicMatrix size constructor (3x4)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 4UL );
 
@@ -235,9 +380,43 @@ void DynamicMatrix::testConstructors()
       checkCapacity( mat, 12UL );
    }
 
-   // Homogeneous initialization
+
+   //=====================================================================================
+   // Column-major homogeneous initialization
+   //=====================================================================================
+
    {
-      test_ = "Column-major DynamicMatrix homogeneous initialization constructor";
+      test_ = "Column-major DynamicMatrix homogeneous initialization constructor (0x0)";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 0UL, 0UL, 2 );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Column-major DynamicMatrix homogeneous initialization constructor (0x4)";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 0UL, 4UL, 2 );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 4UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Column-major DynamicMatrix homogeneous initialization constructor (3x0)";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 0UL, 2 );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Column-major DynamicMatrix homogeneous initialization constructor (3x4)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 4UL, 2 );
 
@@ -263,7 +442,11 @@ void DynamicMatrix::testConstructors()
       }
    }
 
-   // Array initialization
+
+   //=====================================================================================
+   // Column-major array initialization
+   //=====================================================================================
+
    {
       test_ = "Column-major DynamicMatrix array initialization constructor";
 
@@ -290,9 +473,46 @@ void DynamicMatrix::testConstructors()
       }
    }
 
-   // Copy constructor
+
+   //=====================================================================================
+   // Column-major copy constructor
+   //=====================================================================================
+
    {
-      test_ = "Column-major DynamicMatrix copy constructor";
+      test_ = "Column-major DynamicMatrix copy constructor (0x0)";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 0UL, 0UL );
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( mat1 );
+
+      checkRows    ( mat2, 0UL );
+      checkColumns ( mat2, 0UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Column-major DynamicMatrix copy constructor (0x3)";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 0UL, 3UL );
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( mat1 );
+
+      checkRows    ( mat2, 0UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Column-major DynamicMatrix copy constructor (2x0)";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 2UL, 0UL );
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( mat1 );
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 0UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Column-major DynamicMatrix copy constructor (2x3)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL );
       mat1(0,0) = 1;
@@ -317,6 +537,291 @@ void DynamicMatrix::testConstructors()
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the DynamicMatrix assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of all assignment operators of the DynamicMatrix class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DynamicMatrix::testAssignment()
+{
+   //=====================================================================================
+   // Row-major homogeneous assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major DynamicMatrix homogeneous assignment";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 4UL );
+      mat = 2;
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 12UL );
+      checkNonZeros( mat, 12UL );
+      checkNonZeros( mat,  0UL, 4UL );
+      checkNonZeros( mat,  1UL, 4UL );
+      checkNonZeros( mat,  2UL, 4UL );
+
+      if( mat(0,0) != 2 || mat(0,1) != 2 || mat(0,2) != 2 || mat(0,3) != 2 ||
+          mat(1,0) != 2 || mat(1,1) != 2 || mat(1,2) != 2 || mat(1,3) != 2 ||
+          mat(2,0) != 2 || mat(2,1) != 2 || mat(2,2) != 2 || mat(2,3) != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 2 2 2 2 )\n( 2 2 2 2 )\n( 2 2 2 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major array assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major DynamicMatrix array assignment";
+
+      int array[2][3] = { { 1, 2, 3 }, { 4, 5, 6 } };
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat;
+      mat = array;
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 6UL );
+      checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
+
+      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
+          mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major copy assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix copy assignment";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL );
+      mat1(0,0) = 1;
+      mat1(0,1) = 2;
+      mat1(0,2) = 3;
+      mat1(1,0) = 4;
+      mat1(1,1) = 5;
+      mat1(1,2) = 6;
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 6UL );
+      checkNonZeros( mat2, 0UL, 3UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
+          mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix copy assignment";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL );
+      mat1(0,0) = 1;
+      mat1(0,1) = 2;
+      mat1(0,2) = 3;
+      mat1(1,0) = 4;
+      mat1(1,1) = 5;
+      mat1(1,2) = 6;
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 6UL );
+      checkNonZeros( mat2, 0UL, 3UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
+          mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major homogeneous assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major DynamicMatrix homogeneous assigment";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 4UL );
+      mat = 2;
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 12UL );
+      checkNonZeros( mat, 12UL );
+      checkNonZeros( mat,  0UL, 3UL );
+      checkNonZeros( mat,  1UL, 3UL );
+      checkNonZeros( mat,  2UL, 3UL );
+      checkNonZeros( mat,  3UL, 3UL );
+
+      if( mat(0,0) != 2 || mat(0,1) != 2 || mat(0,2) != 2 || mat(0,3) != 2 ||
+          mat(1,0) != 2 || mat(1,1) != 2 || mat(1,2) != 2 || mat(1,3) != 2 ||
+          mat(2,0) != 2 || mat(2,1) != 2 || mat(2,2) != 2 || mat(2,3) != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 2 2 2 2 )\n( 2 2 2 2 )\n( 2 2 2 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major array assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major DynamicMatrix array initialization constructor";
+
+      int array[2][3] = { { 1, 2, 3 }, { 4, 5, 6 } };
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat;
+      mat = array;
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 6UL );
+      checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 2UL );
+
+      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
+          mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major copy assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major DynamicMatrix copy assignment";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL );
+      mat1(0,0) = 1;
+      mat1(0,1) = 2;
+      mat1(0,2) = 3;
+      mat1(1,0) = 4;
+      mat1(1,1) = 5;
+      mat1(1,2) = 6;
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 6UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
+          mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix copy assignment";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL );
+      mat1(0,0) = 1;
+      mat1(0,1) = 2;
+      mat1(0,2) = 3;
+      mat1(1,0) = 4;
+      mat1(1,1) = 5;
+      mat1(1,2) = 6;
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 6UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
+          mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat2 << "\n"
              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
@@ -920,14 +1425,28 @@ void DynamicMatrix::testResize()
       checkColumns ( mat, 0UL );
       checkNonZeros( mat, 0UL );
 
-      // Increasing the size of the matrix
+      // Resizing to 0x3
+      mat.resize( 0UL, 3UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 0UL );
+
+      // Resizing to 5x0
+      mat.resize( 5UL, 0UL );
+
+      checkRows    ( mat, 5UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+
+      // Resizing to 2x1
       mat.resize( 2UL, 1UL );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 2UL );
 
-      // Further increasing the size of the matrix and preserving the elements
+      // Resizing to 3x2 and preserving the elements
       mat(0,0) = 1;
       mat(1,0) = 2;
       mat.resize( 3UL, 2UL, true );
@@ -946,7 +1465,7 @@ void DynamicMatrix::testResize()
          throw std::runtime_error( oss.str() );
       }
 
-      // Decreasing the size of the matrix and preserving the elements
+      // Resizing to 2x2 and preserving the elements
       mat(0,1) = 3;
       mat(1,1) = 4;
       mat.resize( 2UL, 2UL, true );
@@ -968,12 +1487,19 @@ void DynamicMatrix::testResize()
          throw std::runtime_error( oss.str() );
       }
 
-      // Further decreasing the size of the matrix
+      // Resizing to 1x1
       mat.resize( 1UL, 1UL );
 
       checkRows    ( mat, 1UL );
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 1UL );
+
+      // Resizing to 0x0
+      mat.resize( 0UL, 0UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
    }
 
 
@@ -991,14 +1517,28 @@ void DynamicMatrix::testResize()
       checkColumns ( mat, 0UL );
       checkNonZeros( mat, 0UL );
 
-      // Increasing the size of the matrix
+      // Resizing to 0x3
+      mat.resize( 0UL, 3UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 0UL );
+
+      // Resizing to 5x0
+      mat.resize( 5UL, 0UL );
+
+      checkRows    ( mat, 5UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+
+      // Resizing to 2x1
       mat.resize( 2UL, 1UL );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 2UL );
 
-      // Further increasing the size of the matrix and preserving the elements
+      // Resizing to 3x2 and preserving the elements
       mat(0,0) = 1;
       mat(1,0) = 2;
       mat.resize( 3UL, 2UL, true );
@@ -1017,7 +1557,7 @@ void DynamicMatrix::testResize()
          throw std::runtime_error( oss.str() );
       }
 
-      // Decreasing the size of the matrix and preserving the elements
+      // Resizing to 2x2 and preserving the elements
       mat(0,1) = 3;
       mat(1,1) = 4;
       mat.resize( 2UL, 2UL, true );
@@ -1039,12 +1579,19 @@ void DynamicMatrix::testResize()
          throw std::runtime_error( oss.str() );
       }
 
-      // Further decreasing the size of the matrix
+      // Resizing to 1x1
       mat.resize( 1UL, 1UL );
 
       checkRows    ( mat, 1UL );
       checkColumns ( mat, 1UL );
       checkCapacity( mat, 1UL );
+
+      // Resizing to 0x0
+      mat.resize( 0UL, 0UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
    }
 }
 //*************************************************************************************************
