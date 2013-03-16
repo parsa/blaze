@@ -65,6 +65,7 @@ StaticVector::StaticVector()
    testAlignment< complex<long double> >( "complex<long double>" );
 
    testConstructors();
+   testAssignment();
    testSubscript();
    testNonZeros();
    testReset();
@@ -280,6 +281,88 @@ void StaticVector::testConstructors()
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 2 3 4 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the StaticVector assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of all assignment operators of the StaticVector class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void StaticVector::testAssignment()
+{
+   // Homogeneous assignment
+   {
+      test_ = "StaticVector homogeneous assignment";
+
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec;
+      vec = 2;
+
+      checkSize    ( vec, 5UL );
+      checkCapacity( vec, 5UL );
+      checkNonZeros( vec, 5UL );
+
+      if( vec[0] != 2 || vec[1] != 2 || vec[2] != 2 || vec[3] != 2 || vec[4] != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 2 2 2 2 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Array assignment
+   {
+      test_ = "StaticVector array assignment";
+
+      int array[4] = { 1, 2, 3, 4 };
+      blaze::StaticVector<int,4UL,blaze::rowVector> vec;
+      vec = array;
+
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
+
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 2 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Copy assignment
+   {
+      test_ = "StaticVector copy assignment";
+
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec1( 1, 2, 3, 4, 5 );
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec2;
+      vec2 = vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 5UL );
+
+      if( vec2[0] != 1 || vec2[1] != 2 || vec2[2] != 3 || vec2[3] != 4 || vec2[4] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << vec2 << "\n"
              << "   Expected result:\n( 1 2 3 4 5 )\n";
