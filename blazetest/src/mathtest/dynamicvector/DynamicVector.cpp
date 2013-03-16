@@ -101,7 +101,10 @@ DynamicVector::DynamicVector()
 */
 void DynamicVector::testConstructors()
 {
+   //=====================================================================================
    // Default constructor
+   //=====================================================================================
+
    {
       test_ = "DynamicVector default constructor";
 
@@ -111,9 +114,22 @@ void DynamicVector::testConstructors()
       checkNonZeros( vec, 0UL );
    }
 
+
+   //=====================================================================================
    // Size constructor
+   //=====================================================================================
+
    {
-      test_ = "DynamicVector size constructor";
+      test_ = "DynamicVector size constructor (size 0)";
+
+      blaze::DynamicVector<int,blaze::rowVector> vec( 0UL );
+
+      checkSize    ( vec, 0UL );
+      checkNonZeros( vec, 0UL );
+   }
+
+   {
+      test_ = "DynamicVector size constructor (size 10)";
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 10UL );
 
@@ -121,9 +137,22 @@ void DynamicVector::testConstructors()
       checkCapacity( vec, 10UL );
    }
 
+
+   //=====================================================================================
    // Homogeneous initialization
+   //=====================================================================================
+
    {
-      test_ = "DynamicVector homogeneous initialization constructor";
+      test_ = "DynamicVector homogeneous initialization constructor (size 0)";
+
+      blaze::DynamicVector<int,blaze::rowVector> vec( 0UL, 2 );
+
+      checkSize    ( vec, 0UL );
+      checkNonZeros( vec, 0UL );
+   }
+
+   {
+      test_ = "DynamicVector homogeneous initialization constructor (size 3)";
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 3UL, 2 );
 
@@ -142,9 +171,13 @@ void DynamicVector::testConstructors()
       }
    }
 
+
+   //=====================================================================================
    // Array initialization
+   //=====================================================================================
+
    {
-      test_ = "DynamicVector array initialization constructor";
+      test_ = "DynamicVector array initialization constructor (size 4)";
 
       int array[4] = { 1, 2, 3, 4 };
       blaze::DynamicVector<int,blaze::rowVector> vec( array );
@@ -164,9 +197,23 @@ void DynamicVector::testConstructors()
       }
    }
 
+
+   //=====================================================================================
    // Copy constructor
+   //=====================================================================================
+
    {
-      test_ = "DynamicVector copy constructor";
+      test_ = "DynamicVector copy constructor (size 0)";
+
+      blaze::DynamicVector<int,blaze::rowVector> vec1( 0UL );
+      blaze::DynamicVector<int,blaze::rowVector> vec2( vec1 );
+
+      checkSize    ( vec2, 0UL );
+      checkNonZeros( vec2, 0UL );
+   }
+
+   {
+      test_ = "DynamicVector copy constructor (size 5)";
 
       blaze::DynamicVector<int,blaze::rowVector> vec1( 5UL );
       vec1[0] = 1;
@@ -184,6 +231,93 @@ void DynamicVector::testConstructors()
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 2 3 4 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the DynamicVector assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of all assignment operators of the DynamicVector class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DynamicVector::testAssignment()
+{
+   // Homogeneous assignment
+   {
+      test_ = "DynamicVector homogeneous assignment";
+
+      blaze::DynamicVector<int,blaze::rowVector> vec( 3UL );
+      vec = 2;
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 3UL );
+      checkNonZeros( vec, 3UL );
+
+      if( vec[0] != 2 || vec[1] != 2 || vec[2] != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 2 2 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Array assignment
+   {
+      test_ = "DynamicVector array assignment";
+
+      int array[4] = { 1, 2, 3, 4 };
+      blaze::DynamicVector<int,blaze::rowVector> vec;
+      vec = array;
+
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
+
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 2 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Copy assignment
+   {
+      test_ = "DynamicVector copy assignment";
+
+      blaze::DynamicVector<int,blaze::rowVector> vec1( 5UL );
+      vec1[0] = 1;
+      vec1[1] = 2;
+      vec1[2] = 3;
+      vec1[3] = 4;
+      vec1[4] = 5;
+      blaze::DynamicVector<int,blaze::rowVector> vec2;
+      vec2 = vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 5UL );
+
+      if( vec2[0] != 1 || vec2[1] != 2 || vec2[2] != 3 || vec2[3] != 4 || vec2[4] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << vec2 << "\n"
              << "   Expected result:\n( 1 2 3 4 5 )\n";
@@ -452,13 +586,19 @@ void DynamicVector::testResize()
    checkSize    ( vec, 0UL );
    checkNonZeros( vec, 0UL );
 
-   // Increasing the size of the vector
+   // Resizing to 0
+   vec.resize( 0UL );
+
+   checkSize    ( vec, 0UL );
+   checkNonZeros( vec, 0UL );
+
+   // Resizing to 3
    vec.resize( 3UL );
 
    checkSize    ( vec, 3UL );
    checkCapacity( vec, 3UL );
 
-   // Further increasing the size of the vector and preserving the elements
+   // Resizing to 5 and preserving the elements
    vec[0] = 1;
    vec[1] = 2;
    vec[2] = 3;
@@ -477,7 +617,7 @@ void DynamicVector::testResize()
       throw std::runtime_error( oss.str() );
    }
 
-   // Decreasing the size of the vector and preserving the elements
+   // Resizing to 2 and preserving the elements
    vec.resize( 2UL, true );
 
    checkSize    ( vec, 2UL );
@@ -494,11 +634,17 @@ void DynamicVector::testResize()
       throw std::runtime_error( oss.str() );
    }
 
-   // Further decreasing the size of the vector
+   // Resizing to 1
    vec.resize( 1UL );
 
    checkSize    ( vec, 1UL );
    checkCapacity( vec, 1UL );
+
+   // Resizing to 0
+   vec.resize( 0 );
+
+   checkSize    ( vec, 0UL );
+   checkNonZeros( vec, 0UL );
 }
 //*************************************************************************************************
 

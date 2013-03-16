@@ -77,6 +77,7 @@ class DynamicVector
    void testAlignment( const std::string& type );
 
    void testConstructors();
+   void testAssignment  ();
    void testSubscript   ();
    void testNonZeros    ();
    void testReset       ();
