@@ -50,6 +50,7 @@ namespace compressedmatrix {
 CompressedMatrix::CompressedMatrix()
 {
    testConstructors();
+   testAssignment();
    testFunctionCall();
    testNonZeros();
    testReset();
@@ -88,7 +89,7 @@ CompressedMatrix::CompressedMatrix()
 void CompressedMatrix::testConstructors()
 {
    //=====================================================================================
-   // Row-major matrix tests
+   // Row-major default constructor
    //=====================================================================================
 
    // Default constructor
@@ -102,9 +103,43 @@ void CompressedMatrix::testConstructors()
       checkNonZeros( mat, 0UL );
    }
 
-   // Size constructor
+
+   //=====================================================================================
+   // Row-major size constructor
+   //=====================================================================================
+
    {
-      test_ = "Row-major CompressedMatrix size constructor";
+      test_ = "Row-major CompressedMatrix size constructor (0x0)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 0UL, 0UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Row-major CompressedMatrix size constructor (0x4)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 0UL, 4UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 4UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Row-major CompressedMatrix size constructor (3x0)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 0UL );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Row-major CompressedMatrix size constructor (3x4)";
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 4UL );
 
@@ -116,9 +151,46 @@ void CompressedMatrix::testConstructors()
       checkNonZeros( mat, 2UL, 0UL );
    }
 
-   // Size/Non-zeros constructor
+
+   //=====================================================================================
+   // Row-major size/non-zeros constructor
+   //=====================================================================================
+
    {
-      test_ = "Row-major CompressedMatrix size/non-zeros constructor";
+      test_ = "Row-major CompressedMatrix size/non-zeros constructor (0x0)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 0UL, 0UL, 5UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkCapacity( mat, 5UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Row-major CompressedMatrix size/non-zeros constructor (0x4)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 0UL, 4UL, 5UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 4UL );
+      checkCapacity( mat, 5UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Row-major CompressedMatrix size/non-zeros constructor (3x0)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 0UL, 5UL );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 0UL );
+      checkCapacity( mat, 5UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Row-major CompressedMatrix size/non-zeros constructor (3x4)";
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 4UL, 5UL );
 
@@ -131,9 +203,46 @@ void CompressedMatrix::testConstructors()
       checkNonZeros( mat, 2UL, 0UL );
    }
 
-   // Copy constructor
+
+   //=====================================================================================
+   // Row-major copy constructor
+   //=====================================================================================
+
    {
-      test_ = "Row-major CompressedMatrix copy constructor";
+      test_ = "Row-major CompressedMatrix copy constructor (0x0)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 0UL, 0UL, 3UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( mat1 );
+
+      checkRows    ( mat2, 0UL );
+      checkColumns ( mat2, 0UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Row-major CompressedMatrix copy constructor (0x3)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 0UL, 3UL, 3UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( mat1 );
+
+      checkRows    ( mat2, 0UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Row-major CompressedMatrix copy constructor (2x0)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 0UL, 3UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( mat1 );
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 0UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Row-major CompressedMatrix copy constructor (2x3)";
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 3UL );
       mat1(0,0) = 1;
@@ -163,10 +272,9 @@ void CompressedMatrix::testConstructors()
 
 
    //=====================================================================================
-   // Column-major matrix tests
+   // Column-major default constructor
    //=====================================================================================
 
-   // Default constructor
    {
       test_ = "Column-major CompressedMatrix default constructor";
 
@@ -177,9 +285,43 @@ void CompressedMatrix::testConstructors()
       checkNonZeros( mat, 0UL );
    }
 
-   // Size constructor
+
+   //=====================================================================================
+   // Column-major size constructor
+   //=====================================================================================
+
    {
-      test_ = "Column-major CompressedMatrix size constructor";
+      test_ = "Column-major CompressedMatrix size constructor (0x0)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 0UL, 0UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Column-major CompressedMatrix size constructor (0x4)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 0UL, 4UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 4UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Column-major CompressedMatrix size constructor (3x0)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 0UL );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Column-major CompressedMatrix size constructor (3x4)";
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 4UL );
 
@@ -192,9 +334,46 @@ void CompressedMatrix::testConstructors()
       checkNonZeros( mat, 3UL, 0UL );
    }
 
-   // Size/Non-zeros constructor
+
+   //=====================================================================================
+   // Column-major size/non-zeros constructor
+   //=====================================================================================
+
    {
-      test_ = "Column-major CompressedMatrix size/non-zeros constructor";
+      test_ = "Column-major CompressedMatrix size/non-zeros constructor (0x0)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 0UL, 0UL, 5UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkCapacity( mat, 5UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Column-major CompressedMatrix size/non-zeros constructor (0x4)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 0UL, 4UL, 5UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 4UL );
+      checkCapacity( mat, 5UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Column-major CompressedMatrix size/non-zeros constructor (3x0)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 0UL, 5UL );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 0UL );
+      checkCapacity( mat, 5UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Column-major CompressedMatrix size/non-zeros constructor (3x4)";
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 4UL, 5UL );
 
@@ -208,11 +387,48 @@ void CompressedMatrix::testConstructors()
       checkNonZeros( mat, 3UL, 0UL );
    }
 
-   // Copy constructor
-   {
-      test_ = "Column-major CompressedMatrix copy constructor";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL );
+   //=====================================================================================
+   // Column-major copy constructor
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CompressedMatrix copy constructor (0x0)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 0UL, 0UL, 3UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( mat1 );
+
+      checkRows    ( mat2, 0UL );
+      checkColumns ( mat2, 0UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Column-major CompressedMatrix copy constructor (0x3)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 0UL, 3UL, 3UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( mat1 );
+
+      checkRows    ( mat2, 0UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Column-major CompressedMatrix copy constructor (2x0)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 0UL, 3UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( mat1 );
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 0UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Column-major CompressedMatrix copy constructor (2x3)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 3UL );
       mat1(0,0) = 1;
       mat1(0,2) = 2;
       mat1(1,1) = 3;
@@ -232,6 +448,151 @@ void CompressedMatrix::testConstructors()
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 2 )\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the CompressedMatrix assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of all assignment operators of the CompressedMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void CompressedMatrix::testAssignment()
+{
+   //=====================================================================================
+   // Row-major copy assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major CompressedMatrix copy assignment";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 3UL );
+      mat1(0,0) = 1;
+      mat1(0,2) = 2;
+      mat1(1,1) = 3;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 3UL );
+      checkNonZeros( mat2, 3UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 2 ||
+          mat2(1,0) != 0 || mat2(1,1) != 3 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 2 )\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major CompressedMatrix copy assignment";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 3UL );
+      mat1(0,0) = 1;
+      mat1(0,2) = 2;
+      mat1(1,1) = 3;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 3UL );
+      checkNonZeros( mat2, 3UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 2 ||
+          mat2(1,0) != 0 || mat2(1,1) != 3 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 2 )\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major copy assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major CompressedMatrix copy assignment";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 3UL );
+      mat1(0,0) = 1;
+      mat1(0,2) = 2;
+      mat1(1,1) = 3;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 3UL );
+      checkNonZeros( mat2, 3UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 1UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 2 ||
+          mat2(1,0) != 0 || mat2(1,1) != 3 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 2 )\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major CompressedMatrix copy assignment";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 3UL );
+      mat1(0,0) = 1;
+      mat1(0,2) = 2;
+      mat1(1,1) = 3;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 3UL );
+      checkNonZeros( mat2, 3UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 1UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 2 ||
+          mat2(1,0) != 0 || mat2(1,1) != 3 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat2 << "\n"
              << "   Expected result:\n( 1 0 2 )\n( 0 3 0 )\n";
@@ -1266,6 +1627,20 @@ void CompressedMatrix::testInsert()
              << "   Expected result:\n( 0 4 0 0 0 )\n( 0 0 0 0 0 )\n( 0 0 3 1 2 )\n( 0 0 5 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
+
+      // Trying to insert an already existing element
+      try {
+         mat.insert( 3UL, 2UL, 6 );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting an existing element succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 4 0 0 0 )\n( 0 0 0 0 0 )\n( 0 0 3 1 2 )\n( 0 0 5 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ex ) {}
    }
 
 
@@ -1389,9 +1764,23 @@ void CompressedMatrix::testInsert()
              << " Error: Inserting an element failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 0 4 0 0 0 )\n( 0 0 0 0 0 )\n( 0 0 3 1 2 )\n( 0 0 5 0 0 )\n";
+             << "   Expected result:\n( 0 0 0 0 )\n( 4 0 0 0 )\n( 0 0 3 5 )\n( 0 0 1 0 )\n( 0 0 2 0 )\n";
          throw std::runtime_error( oss.str() );
       }
+
+      // Trying to insert an already existing element
+      try {
+         mat.insert( 2UL, 3UL, 6 );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting an existing element succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 0 0 0 )\n( 4 0 0 0 )\n( 0 0 3 5 )\n( 0 0 1 0 )\n( 0 0 2 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ex ) {}
    }
 }
 //*************************************************************************************************
@@ -1691,7 +2080,21 @@ void CompressedMatrix::testResize()
       checkColumns ( mat, 0UL );
       checkNonZeros( mat, 0UL );
 
-      // Increasing the size of the matrix
+      // Resizing to 0x3
+      mat.resize( 0UL, 3UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 0UL );
+
+      // Resizing to 5x0
+      mat.resize( 5UL, 0UL );
+
+      checkRows    ( mat, 5UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+
+      // Resizing to 3x4
       mat.resize( 3UL, 4UL );
 
       checkRows    ( mat, 3UL );
@@ -1701,7 +2104,7 @@ void CompressedMatrix::testResize()
       checkNonZeros( mat, 1UL, 0UL );
       checkNonZeros( mat, 2UL, 0UL );
 
-      // Increasing the rows and decreasing the columns while preserving the elements
+      // Resizing to 5x3 and preserving the elements
       mat(1,0) = 1;
       mat(2,2) = 2;
       mat.resize( 5UL, 3UL, true );
@@ -1726,7 +2129,7 @@ void CompressedMatrix::testResize()
          throw std::runtime_error( oss.str() );
       }
 
-      // Decreasing the rows and increasing the columns while preserving the elements
+      // Resizing to 4x4 and preserving the elements
       mat(0,1) = 3;
       mat.resize( 4UL, 4UL, true );
 
@@ -1749,7 +2152,7 @@ void CompressedMatrix::testResize()
          throw std::runtime_error( oss.str() );
       }
 
-      // Increasing both rows and columns while preserving the elements
+      // Resizing to 6x5 and preserving the elements
       mat(3,2) = 4;
       mat.resize( 6UL, 5UL, true );
 
@@ -1775,7 +2178,7 @@ void CompressedMatrix::testResize()
          throw std::runtime_error( oss.str() );
       }
 
-      // Decreasing both rows and columns while preserving the elements
+      // Resizing to 4x3 and preserving the elements
       mat(0,4) = 5;
       mat(5,2) = 6;
       mat(5,4) = 7;
@@ -1800,11 +2203,18 @@ void CompressedMatrix::testResize()
          throw std::runtime_error( oss.str() );
       }
 
-      // Further decreasing rows and columns while not preserving the elements
+      // Resizing to 2x2
       mat.resize( 2UL, 2UL );
 
       checkRows   ( mat, 2UL );
       checkColumns( mat, 2UL );
+
+      // Resizing to 0x0
+      mat.resize( 0UL, 0UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
    }
 
 
@@ -1822,7 +2232,21 @@ void CompressedMatrix::testResize()
       checkColumns ( mat, 0UL );
       checkNonZeros( mat, 0UL );
 
-      // Increasing the size of the matrix
+      // Resizing to 0x3
+      mat.resize( 0UL, 3UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 0UL );
+
+      // Resizing to 5x0
+      mat.resize( 5UL, 0UL );
+
+      checkRows    ( mat, 5UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+
+      // Resizing to 3x4
       mat.resize( 3UL, 4UL );
 
       checkRows    ( mat, 3UL );
@@ -1833,7 +2257,7 @@ void CompressedMatrix::testResize()
       checkNonZeros( mat, 2UL, 0UL );
       checkNonZeros( mat, 3UL, 0UL );
 
-      // Increasing the rows and decreasing the columns while preserving the elements
+      // Resizing to 5x3 and preserving the elements
       mat(1,0) = 1;
       mat(2,2) = 2;
       mat.resize( 5UL, 3UL, true );
@@ -1856,7 +2280,7 @@ void CompressedMatrix::testResize()
          throw std::runtime_error( oss.str() );
       }
 
-      // Decreasing the rows and increasing the columns while preserving the elements
+      // Resizing to 4x4 and preserving the elements
       mat(0,1) = 3;
       mat.resize( 4UL, 4UL, true );
 
@@ -1879,7 +2303,7 @@ void CompressedMatrix::testResize()
          throw std::runtime_error( oss.str() );
       }
 
-      // Increasing both rows and columns while preserving the elements
+      // Resizing to 6x5 and preserving the elements
       mat(3,2) = 4;
       mat.resize( 6UL, 5UL, true );
 
@@ -1904,7 +2328,7 @@ void CompressedMatrix::testResize()
          throw std::runtime_error( oss.str() );
       }
 
-      // Decreasing both rows and columns while preserving the elements
+      // Resizing to 4x3 and preserving the elements
       mat(0,4) = 5;
       mat(5,2) = 6;
       mat(5,4) = 7;
@@ -1928,11 +2352,18 @@ void CompressedMatrix::testResize()
          throw std::runtime_error( oss.str() );
       }
 
-      // Further decreasing rows and columns while not preserving the elements
+      // Resizing to 2x2
       mat.resize( 2UL, 2UL );
 
       checkRows   ( mat, 2UL );
       checkColumns( mat, 2UL );
+
+      // Resizing to 0x0
+      mat.resize( 0UL, 0UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
    }
 }
 //*************************************************************************************************

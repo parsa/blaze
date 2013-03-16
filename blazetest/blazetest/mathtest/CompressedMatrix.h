@@ -75,6 +75,7 @@ class CompressedMatrix
    /*!\name Test functions */
    //@{
    void testConstructors();
+   void testAssignment  ();
    void testFunctionCall();
    void testNonZeros    ();
    void testReset       ();
