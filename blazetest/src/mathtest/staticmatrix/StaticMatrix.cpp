@@ -63,6 +63,7 @@ StaticMatrix::StaticMatrix()
    testAlignment< complex<long double> >( "complex<long double>" );
 
    testConstructors();
+   testAssignment();
    testFunctionCall();
    testNonZeros();
    testReset();
@@ -95,10 +96,9 @@ StaticMatrix::StaticMatrix()
 void StaticMatrix::testConstructors()
 {
    //=====================================================================================
-   // Row-major matrix tests
+   // Row-major default constructor
    //=====================================================================================
 
-   // Default constructor
    {
       test_ = "Row-major StaticMatrix default constructor";
 
@@ -126,7 +126,10 @@ void StaticMatrix::testConstructors()
    }
 
 
-   // Homogeneous initialization
+   //=====================================================================================
+   // Row-major homogeneous initialization
+   //=====================================================================================
+
    {
       test_ = "Row-major StaticMatrix homogeneous initialization constructor";
 
@@ -153,7 +156,11 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 1x2 initialization constructor
+
+   //=====================================================================================
+   // Row-major initialization constructors
+   //=====================================================================================
+
    {
       test_ = "Row-major StaticMatrix 1x2 initialization constructor";
 
@@ -176,7 +183,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 2x1 initialization constructor
    {
       test_ = "Row-major StaticMatrix 2x1 initialization constructor";
 
@@ -200,7 +206,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 1x3 initialization constructor
    {
       test_ = "Row-major StaticMatrix 1x3 initialization constructor";
 
@@ -223,7 +228,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 3x1 initialization constructor
    {
       test_ = "Row-major StaticMatrix 3x1 initialization constructor";
 
@@ -248,7 +252,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 1x4 initialization constructor
    {
       test_ = "Row-major StaticMatrix 1x4 initialization constructor";
 
@@ -271,7 +274,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 2x2 initialization constructor
    {
       test_ = "Row-major StaticMatrix 2x2 initialization constructor";
 
@@ -295,7 +297,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 4x1 initialization constructor
    {
       test_ = "Row-major StaticMatrix 4x1 initialization constructor";
 
@@ -321,7 +322,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 1x5 initialization constructor
    {
       test_ = "Row-major StaticMatrix 1x5 initialization constructor";
 
@@ -344,7 +344,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 5x1 initialization constructor
    {
       test_ = "Row-major StaticMatrix 5x1 initialization constructor";
 
@@ -371,7 +370,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 1x6 initialization constructor
    {
       test_ = "Row-major StaticMatrix 1x6 initialization constructor";
 
@@ -395,7 +393,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 2x3 initialization constructor
    {
       test_ = "Row-major StaticMatrix 2x3 initialization constructor";
 
@@ -420,7 +417,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 3x2 initialization constructor
    {
       test_ = "Row-major StaticMatrix 3x2 initialization constructor";
 
@@ -447,7 +443,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 6x1 initialization constructor
    {
       test_ = "Row-major StaticMatrix 6x1 initialization constructor";
 
@@ -476,7 +471,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 1x7 initialization constructor
    {
       test_ = "Row-major StaticMatrix 1x7 initialization constructor";
 
@@ -500,7 +494,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 7x1 initialization constructor
    {
       test_ = "Row-major StaticMatrix 7x1 initialization constructor";
 
@@ -530,7 +523,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 1x8 initialization constructor
    {
       test_ = "Row-major StaticMatrix 1x8 initialization constructor";
 
@@ -554,7 +546,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 2x4 initialization constructor
    {
       test_ = "Row-major StaticMatrix 2x4 initialization constructor";
 
@@ -579,7 +570,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 4x2 initialization constructor
    {
       test_ = "Row-major StaticMatrix 4x2 initialization constructor";
 
@@ -606,7 +596,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 8x1 initialization constructor
    {
       test_ = "Row-major StaticMatrix 8x1 initialization constructor";
 
@@ -637,7 +626,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 1x9 initialization constructor
    {
       test_ = "Row-major StaticMatrix 1x9 initialization constructor";
 
@@ -661,7 +649,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 3x3 initialization constructor
    {
       test_ = "Row-major StaticMatrix 3x3 initialization constructor";
 
@@ -688,7 +675,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 9x1 initialization constructor
    {
       test_ = "Row-major StaticMatrix 9x1 initialization constructor";
 
@@ -720,7 +706,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 1x10 initialization constructor
    {
       test_ = "Row-major StaticMatrix 1x10 initialization constructor";
 
@@ -744,7 +729,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 2x5 initialization constructor
    {
       test_ = "Row-major StaticMatrix 2x5 initialization constructor";
 
@@ -769,7 +753,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 5x2 initialization constructor
    {
       test_ = "Row-major StaticMatrix 5x2 initialization constructor";
 
@@ -800,7 +783,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 10x1 initialization constructor
    {
       test_ = "Row-major StaticMatrix 10x1 initialization constructor";
 
@@ -834,7 +816,11 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // Copy constructor
+
+   //=====================================================================================
+   // Row-major copy constructor
+   //=====================================================================================
+
    {
       test_ = "Row-major StaticMatrix copy constructor";
 
@@ -862,10 +848,9 @@ void StaticMatrix::testConstructors()
 
 
    //=====================================================================================
-   // Column-major matrix tests
+   // Column-major default constructor
    //=====================================================================================
 
-   // Default constructor
    {
       test_ = "Column-major StaticMatrix default constructor";
 
@@ -893,7 +878,11 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // Homogeneous initialization
+
+   //=====================================================================================
+   // Column-major homogeneous initialization
+   //=====================================================================================
+
    {
       test_ = "Column-major StaticMatrix homogeneous initialization constructor";
 
@@ -921,7 +910,11 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 1x2 initialization constructor
+
+   //=====================================================================================
+   // Column-major initialization constructors
+   //=====================================================================================
+
    {
       test_ = "Column-major StaticMatrix 1x2 initialization constructor";
 
@@ -945,7 +938,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 2x1 initialization constructor
    {
       test_ = "Column-major StaticMatrix 2x1 initialization constructor";
 
@@ -968,7 +960,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 1x3 initialization constructor
    {
       test_ = "Column-major StaticMatrix 1x3 initialization constructor";
 
@@ -993,7 +984,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 3x1 initialization constructor
    {
       test_ = "Column-major StaticMatrix 3x1 initialization constructor";
 
@@ -1016,7 +1006,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 1x4 initialization constructor
    {
       test_ = "Column-major StaticMatrix 1x4 initialization constructor";
 
@@ -1042,7 +1031,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 2x2 initialization constructor
    {
       test_ = "Column-major StaticMatrix 2x2 initialization constructor";
 
@@ -1066,7 +1054,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 4x1 initialization constructor
    {
       test_ = "Column-major StaticMatrix 4x1 initialization constructor";
 
@@ -1089,7 +1076,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 1x5 initialization constructor
    {
       test_ = "Column-major StaticMatrix 1x5 initialization constructor";
 
@@ -1116,7 +1102,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 5x1 initialization constructor
    {
       test_ = "Column-major StaticMatrix 5x1 initialization constructor";
 
@@ -1139,7 +1124,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 1x6 initialization constructor
    {
       test_ = "Column-major StaticMatrix 1x6 initialization constructor";
 
@@ -1168,7 +1152,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 2x3 initialization constructor
    {
       test_ = "Column-major StaticMatrix 2x3 initialization constructor";
 
@@ -1194,7 +1177,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-    // 3x2 initialization constructor
    {
       test_ = "Column-major StaticMatrix 3x2 initialization constructor";
 
@@ -1220,7 +1202,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 6x1 initialization constructor
    {
       test_ = "Column-major StaticMatrix 6x1 initialization constructor";
 
@@ -1244,7 +1225,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 1x7 initialization constructor
    {
       test_ = "Column-major StaticMatrix 1x7 initialization constructor";
 
@@ -1274,7 +1254,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 7x1 initialization constructor
    {
       test_ = "Column-major StaticMatrix 7x1 initialization constructor";
 
@@ -1298,7 +1277,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 1x8 initialization constructor
    {
       test_ = "Column-major StaticMatrix 1x8 initialization constructor";
 
@@ -1329,7 +1307,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 2x4 initialization constructor
    {
       test_ = "Column-major StaticMatrix 2x4 initialization constructor";
 
@@ -1356,7 +1333,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 4x2 initialization constructor
    {
       test_ = "Column-major StaticMatrix 4x2 initialization constructor";
 
@@ -1381,7 +1357,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 8x1 initialization constructor
    {
       test_ = "Column-major StaticMatrix 8x1 initialization constructor";
 
@@ -1405,7 +1380,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 1x9 initialization constructor
    {
       test_ = "Column-major StaticMatrix 1x9 initialization constructor";
 
@@ -1437,7 +1411,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 3x3 initialization constructor
    {
       test_ = "Column-major StaticMatrix 3x3 initialization constructor";
 
@@ -1464,7 +1437,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 9x1 initialization constructor
    {
       test_ = "Column-major StaticMatrix 9x1 initialization constructor";
 
@@ -1488,7 +1460,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 1x10 initialization constructor
    {
       test_ = "Column-major StaticMatrix 1x10 initialization constructor";
 
@@ -1521,7 +1492,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 2x5 initialization constructor
    {
       test_ = "Column-major StaticMatrix 2x5 initialization constructor";
 
@@ -1549,7 +1519,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 5x2 initialization constructor
    {
       test_ = "Column-major StaticMatrix 5x2 initialization constructor";
 
@@ -1577,7 +1546,6 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // 10x1 initialization constructor
    {
       test_ = "Column-major StaticMatrix 10x1 initialization constructor";
 
@@ -1602,7 +1570,11 @@ void StaticMatrix::testConstructors()
       }
    }
 
-   // Copy constructor
+
+   //=====================================================================================
+   // Column-major copy constructor
+   //=====================================================================================
+
    {
       test_ = "Column-major StaticMatrix copy constructor";
 
@@ -1622,6 +1594,200 @@ void StaticMatrix::testConstructors()
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 3 5 )\n( 2 4 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the StaticMatrix assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of all assignment operators of the StaticMatrix class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void StaticMatrix::testAssignment()
+{
+   //=====================================================================================
+   // Row-major homogeneous assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major StaticMatrix homogeneous assignment";
+
+      blaze::StaticMatrix<int,3UL,4UL,blaze::rowMajor> mat;
+      mat = 2;
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 12UL );
+      checkNonZeros( mat, 12UL );
+      checkNonZeros( mat, 0UL, 4UL );
+      checkNonZeros( mat, 1UL, 4UL );
+      checkNonZeros( mat, 2UL, 4UL );
+
+      if( mat(0,0) != 2 || mat(0,1) != 2 || mat(0,2) != 2 || mat(0,3) != 2 ||
+          mat(1,0) != 2 || mat(1,1) != 2 || mat(1,2) != 2 || mat(1,3) != 2 ||
+          mat(2,0) != 2 || mat(2,1) != 2 || mat(2,2) != 2 || mat(2,3) != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 2 2 2 2 )\n( 2 2 2 2 )\n( 2 2 2 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major copy assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major StaticMatrix copy assignment";
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat1( 1, 2, 3, 4, 5, 6 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 6UL );
+      checkNonZeros( mat2, 0UL, 3UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
+          mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row-major copy assignment for  failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major StaticMatrix copy assignment";
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat1( 1, 2, 3, 4, 5, 6 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 6UL );
+      checkNonZeros( mat2, 0UL, 3UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 3 || mat2(0,2) != 5 ||
+          mat2(1,0) != 2 || mat2(1,1) != 4 || mat2(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 3 5 )\n( 2 4 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major homogeneous assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major StaticMatrix homogeneous assignment";
+
+      blaze::StaticMatrix<int,3UL,4UL,blaze::columnMajor> mat;
+      mat = 2;
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 12UL );
+      checkNonZeros( mat, 12UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
+      checkNonZeros( mat, 2UL, 3UL );
+      checkNonZeros( mat, 3UL, 3UL );
+
+      if( mat(0,0) != 2 || mat(0,1) != 2 || mat(0,2) != 2 || mat(0,3) != 2 ||
+          mat(1,0) != 2 || mat(1,1) != 2 || mat(1,2) != 2 || mat(1,3) != 2 ||
+          mat(2,0) != 2 || mat(2,1) != 2 || mat(2,2) != 2 || mat(2,3) != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 2 2 2 2 )\n( 2 2 2 2 )\n( 2 2 2 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major copy assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major StaticMatrix copy assignment";
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat1( 1, 2, 3, 4, 5, 6 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 6UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
+          mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major StaticMatrix copy assignment";
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat1( 1, 2, 3, 4, 5, 6 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 6UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 3 || mat2(0,2) != 5 ||
+          mat2(1,0) != 2 || mat2(1,1) != 4 || mat2(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat2 << "\n"
              << "   Expected result:\n( 1 3 5 )\n( 2 4 6 )\n";
