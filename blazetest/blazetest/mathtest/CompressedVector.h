@@ -74,6 +74,7 @@ class CompressedVector
    /*!\name Test functions */
    //@{
    void testConstructors();
+   void testAssignment  ();
    void testSubscript   ();
    void testNonZeros    ();
    void testReset       ();

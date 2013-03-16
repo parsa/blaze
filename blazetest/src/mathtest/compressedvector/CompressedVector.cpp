@@ -51,6 +51,7 @@ namespace compressedvector {
 CompressedVector::CompressedVector()
 {
    testConstructors();
+   testAssignment();
    testSubscript();
    testNonZeros();
    testReset();
@@ -89,7 +90,10 @@ CompressedVector::CompressedVector()
 */
 void CompressedVector::testConstructors()
 {
+   //=====================================================================================
    // Default constructor
+   //=====================================================================================
+
    {
       test_ = "CompressedVector default constructor";
 
@@ -99,9 +103,22 @@ void CompressedVector::testConstructors()
       checkNonZeros( vec, 0UL );
    }
 
+
+   //=====================================================================================
    // Size constructor
+   //=====================================================================================
+
    {
-      test_ = "CompressedVector size constructor";
+      test_ = "CompressedVector size constructor (size 0)";
+
+      blaze::CompressedVector<int,blaze::rowVector> vec( 0UL );
+
+      checkSize    ( vec, 0UL );
+      checkNonZeros( vec, 0UL );
+   }
+
+   {
+      test_ = "CompressedVector size constructor (size 5)";
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 5UL );
 
@@ -109,9 +126,23 @@ void CompressedVector::testConstructors()
       checkNonZeros( vec, 0UL );
    }
 
+
+   //=====================================================================================
    // Size/Non-zeros constructor
+   //=====================================================================================
+
    {
-      test_ = "CompressedVector size/non-zeros constructor";
+      test_ = "CompressedVector size/non-zeros constructor (size 0)";
+
+      blaze::CompressedVector<int,blaze::rowVector> vec( 0UL, 3UL );
+
+      checkSize    ( vec, 0UL );
+      checkCapacity( vec, 3UL );
+      checkNonZeros( vec, 0UL );
+   }
+
+   {
+      test_ = "CompressedVector size/non-zeros constructor (size 7)";
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 7UL, 3UL );
 
@@ -120,9 +151,23 @@ void CompressedVector::testConstructors()
       checkNonZeros( vec, 0UL );
    }
 
+
+   //=====================================================================================
    // Copy constructor
+   //=====================================================================================
+
    {
-      test_ = "CompressedVector copy constructor";
+      test_ = "CompressedVector copy constructor (size 0)";
+
+      blaze::CompressedVector<int,blaze::rowVector> vec1( 0UL, 3UL );
+      blaze::CompressedVector<int,blaze::rowVector> vec2( vec1 );
+
+      checkSize    ( vec2, 0UL );
+      checkNonZeros( vec2, 0UL );
+   }
+
+   {
+      test_ = "CompressedVector copy constructor (size 7)";
 
       blaze::CompressedVector<int,blaze::rowVector> vec1( 7UL, 3UL );
       vec1[0] = 1;
@@ -138,6 +183,49 @@ void CompressedVector::testConstructors()
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 2 0 4 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the CompressedVector assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of all assignment operators of the CompressedVector class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void CompressedVector::testAssignment()
+{
+   //=====================================================================================
+   // Copy assignment
+   //=====================================================================================
+
+   {
+      test_ = "CompressedVector copy assignment";
+
+      blaze::CompressedVector<int,blaze::rowVector> vec1( 7UL, 3UL );
+      vec1[0] = 1;
+      vec1[1] = 2;
+      vec1[3] = 4;
+      blaze::CompressedVector<int,blaze::rowVector> vec2;
+      vec2 = vec1;
+
+      checkSize    ( vec2, 7UL );
+      checkCapacity( vec2, 3UL );
+      checkNonZeros( vec2, 3UL );
+
+      if( vec2[0] != 1 || vec2[1] != 2 || vec2[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << vec2 << "\n"
              << "   Expected result:\n( 1 2 0 4 0 0 0 )\n";
@@ -502,6 +590,20 @@ void CompressedVector::testInsert()
           << "   Expected result:\n( 0 0 3 4 1 0 2 )\n";
       throw std::runtime_error( oss.str() );
    }
+
+   // Trying to insert an already existing element
+   try {
+      vec.insert( 3UL, 5 );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Inserting an existing element succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 0 0 3 4 1 0 2 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ex ) {}
 }
 //*************************************************************************************************
 
@@ -652,13 +754,19 @@ void CompressedVector::testResize()
    checkSize    ( vec, 0UL );
    checkNonZeros( vec, 0UL );
 
-   // Increasing the size of the vector
+   // Resizing to 0
+   vec.resize( 0UL );
+
+   checkSize    ( vec, 0UL );
+   checkNonZeros( vec, 0UL );
+
+   // Resizing to 5
    vec.resize( 5UL );
 
    checkSize    ( vec, 5UL );
    checkNonZeros( vec, 0UL );
 
-   // Further increasing the size of the vector and preserving the elements
+   // Resizing to 9 and preserving the elements
    vec[0] = 1;
    vec[2] = 2;
    vec[4] = 3;
@@ -678,7 +786,7 @@ void CompressedVector::testResize()
       throw std::runtime_error( oss.str() );
    }
 
-   // Decreasing the size of the vector and preserving the elements
+   // Resizing to 2 and preserving the elements
    vec.resize( 2UL, true );
 
    checkSize    ( vec, 2UL );
@@ -695,10 +803,16 @@ void CompressedVector::testResize()
       throw std::runtime_error( oss.str() );
    }
 
-   // Further decreasing the size of the vector
+   // Resizing to 1
    vec.resize( 1UL );
 
    checkSize( vec, 1UL );
+
+   // Resizing to 0
+   vec.resize( 0UL );
+
+   checkSize    ( vec, 0UL );
+   checkNonZeros( vec, 0UL );
 }
 //*************************************************************************************************
 
