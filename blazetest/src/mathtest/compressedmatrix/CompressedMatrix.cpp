@@ -205,6 +205,68 @@ void CompressedMatrix::testConstructors()
 
 
    //=====================================================================================
+   // Row-major size/vector constructor
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CompressedMatrix size/vector constructor (0x0)";
+
+      std::vector<size_t> nonzeros;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 0UL, 0UL, nonzeros );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkCapacity( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Row-major CompressedMatrix size/vector constructor (0x5)";
+
+      std::vector<size_t> nonzeros;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 0UL, 5UL, nonzeros );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 5UL );
+      checkCapacity( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Row-major CompressedMatrix size/vector constructor (3x4)";
+
+      std::vector<size_t> nonzeros( 3UL );
+      nonzeros[0] = 2UL;
+      nonzeros[1] = 1UL;
+      nonzeros[2] = 3UL;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 4UL, nonzeros );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 4UL );
+      checkCapacity( mat, 6UL );
+      checkNonZeros( mat, 0UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 0UL );
+
+      mat.append( 0UL, 0UL, 1 );
+      mat.append( 0UL, 1UL, 2 );
+      mat.append( 1UL, 0UL, 3 );
+      mat.append( 2UL, 0UL, 4 );
+      mat.append( 2UL, 1UL, 5 );
+      mat.append( 2UL, 2UL, 6 );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 4UL );
+      checkCapacity( mat, 6UL );
+      checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 3UL );
+   }
+
+
+   //=====================================================================================
    // Row-major copy constructor
    //=====================================================================================
 
@@ -385,6 +447,68 @@ void CompressedMatrix::testConstructors()
       checkNonZeros( mat, 1UL, 0UL );
       checkNonZeros( mat, 2UL, 0UL );
       checkNonZeros( mat, 3UL, 0UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major size/vector constructor
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CompressedMatrix size/vector constructor (0x0)";
+
+      std::vector<size_t> nonzeros;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 0UL, 0UL, nonzeros );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkCapacity( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Column-major CompressedMatrix size/vector constructor (5x0)";
+
+      std::vector<size_t> nonzeros;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 5UL, 0UL, nonzeros );
+
+      checkRows    ( mat, 5UL );
+      checkColumns ( mat, 0UL );
+      checkCapacity( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Column-major CompressedMatrix size/vector constructor (4x3)";
+
+      std::vector<size_t> nonzeros( 3UL );
+      nonzeros[0] = 2UL;
+      nonzeros[1] = 1UL;
+      nonzeros[2] = 3UL;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 3UL, nonzeros );
+
+      checkRows    ( mat, 4UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 6UL );
+      checkNonZeros( mat, 0UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 0UL );
+
+      mat.append( 0UL, 0UL, 1 );
+      mat.append( 1UL, 0UL, 2 );
+      mat.append( 0UL, 1UL, 3 );
+      mat.append( 0UL, 2UL, 4 );
+      mat.append( 1UL, 2UL, 5 );
+      mat.append( 2UL, 2UL, 6 );
+
+      checkRows    ( mat, 4UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 6UL );
+      checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 3UL );
    }
 
 
