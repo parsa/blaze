@@ -30,6 +30,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Equal.h>
@@ -41,7 +42,6 @@
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/Types.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/Types.h
-//  \brief Header file for all types of the math module
+//  \file blaze/math/Forward.h
+//  \brief Header file for all forward declarations of the math module
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,16 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TYPES_H_
-#define _BLAZE_MATH_TYPES_H_
+#ifndef _BLAZE_MATH_FORWARD_H_
+#define _BLAZE_MATH_FORWARD_H_
+
+
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/math/dense/Forward.h>
+#include <blaze/math/sparse/Forward.h>
 
 
 namespace blaze {
@@ -31,14 +39,8 @@ namespace blaze {
 //
 //=================================================================================================
 
-template< typename, bool > class CompressedMatrix;
-template< typename, bool > class CompressedVector;
-template< typename, bool > class DynamicVector;
-template< typename, bool > class DynamicMatrix;
 template< typename > class Quaternion;
 template< typename > class RotationMatrix;
-template< typename, size_t, size_t, bool > class StaticMatrix;
-template< typename, size_t, bool > class StaticVector;
 
 } // namespace blaze
 

@@ -33,6 +33,7 @@
 #include <limits>
 #include <blaze/math/Accuracy.h>
 #include <blaze/math/DenseMatrix.h>
+#include <blaze/math/Forward.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
@@ -40,7 +41,6 @@
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/Types.h>
 #include <blaze/system/Precision.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>

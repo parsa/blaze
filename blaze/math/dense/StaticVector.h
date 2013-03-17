@@ -31,6 +31,7 @@
 #include <cmath>
 #include <stdexcept>
 #include <blaze/math/expressions/DenseVector.h>
+#include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -43,7 +44,6 @@
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/Types.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/system/TransposeFlag.h>
