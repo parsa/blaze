@@ -42,6 +42,11 @@ template< typename Type >  // Type of the data element
 class SparseElement
 {
  public:
+   //**Type definitions****************************************************************************
+   typedef Type    ValueType;  //!< The value type of the sparse element.
+   typedef size_t  IndexType;  //!< The index type of the sparse element.
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    inline SparseElement();
    inline SparseElement( const Type& v, size_t i );
