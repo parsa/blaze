@@ -63,7 +63,7 @@ namespace blaze {
 // </ul>
 //
 //
-// \n \section specializations Creating custom specializations
+// \n \section crosstrait_specializations Creating custom specializations
 //
 // It is possible to specialize the CrossTrait template for additional user-defined data types.
 // The following example shows the according specialization for the cross product between two
