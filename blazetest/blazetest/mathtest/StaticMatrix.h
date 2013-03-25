@@ -298,6 +298,16 @@ void StaticMatrix::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) 
           << "   Expected number of non-zeros: " << expectedNonZeros << "\n";
       throw std::runtime_error( oss.str() );
    }
+
+   if( matrix.capacity() < matrix.nonZeros() ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Invalid capacity detected\n"
+          << " Details:\n"
+          << "   Number of non-zeros: " << matrix.nonZeros() << "\n"
+          << "   Capacity           : " << matrix.capacity() << "\n";
+      throw std::runtime_error( oss.str() );
+   }
 }
 //*************************************************************************************************
 
@@ -326,6 +336,17 @@ void StaticMatrix::checkNonZeros( const Type& matrix, size_t index, size_t expec
           << " Details:\n"
           << "   Number of non-zeros         : " << matrix.nonZeros( index ) << "\n"
           << "   Expected number of non-zeros: " << expectedNonZeros << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   if( matrix.capacity( index ) < matrix.nonZeros( index ) ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Invalid capacity detected in "
+          << ( blaze::IsRowMajorMatrix<Type>::value ? "row " : "column " ) << index << "\n"
+          << " Details:\n"
+          << "   Number of non-zeros: " << matrix.nonZeros( index ) << "\n"
+          << "   Capacity           : " << matrix.capacity( index ) << "\n";
       throw std::runtime_error( oss.str() );
    }
 }
