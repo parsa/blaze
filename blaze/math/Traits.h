@@ -31,6 +31,7 @@
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/CMathTrait.h>
+#include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CrossExprTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivExprTrait.h>
@@ -68,6 +69,7 @@
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SMatAbsExprTrait.h>
 #include <blaze/math/traits/SMatDMatAddExprTrait.h>
 #include <blaze/math/traits/SMatDMatMultExprTrait.h>
