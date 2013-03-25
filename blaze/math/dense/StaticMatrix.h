@@ -38,9 +38,11 @@
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
@@ -282,9 +284,11 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
                               inline size_t        columns() const;
                               inline size_t        spacing() const;
                               inline size_t        capacity() const;
+                              inline size_t        capacity( size_t i ) const;
                               inline size_t        nonZeros() const;
                               inline size_t        nonZeros( size_t i ) const;
                               inline void          reset();
+                              inline void          reset( size_t i );
                               inline StaticMatrix& transpose();
                               inline bool          isDiagonal() const;
                               inline bool          isSymmetric() const;
@@ -1763,6 +1767,29 @@ inline size_t StaticMatrix<Type,M,N,SO>::capacity() const
 
 
 //*************************************************************************************************
+/*!\brief Returns the current capacity of the specified row/column.
+//
+// \param i The index of the row/column.
+// \return The current capacity of row/column \a i.
+//
+// This function returns the current capacity of the specified row/column. In case the
+// storage order is set to \a rowMajor the function returns the capacity of row \a i,
+// in case the storage flag is set to \a columnMajor the function returns the capacity
+// of column \a i.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline size_t StaticMatrix<Type,M,N,SO>::capacity( size_t i ) const
+{
+   BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
+   return NN;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns the total number of non-zero elements in the matrix
 //
 // \return The number of non-zero elements in the matrix.
@@ -1786,10 +1813,15 @@ inline size_t StaticMatrix<Type,M,N,SO>::nonZeros() const
 
 
 //*************************************************************************************************
-/*!\brief Returns the number of non-zero elements in the specified row.
+/*!\brief Returns the number of non-zero elements in the specified row/column.
 //
-// \param i The index of the row.
-// \return The number of non-zero elements of row \a i.
+// \param i The index of the row/column.
+// \return The number of non-zero elements of row/column \a i.
+//
+// This function returns the current number of non-zero elements in the specified row/column.
+// In case the storage order is set to \a rowMajor the function returns the number of non-zero
+// elements in row \a i, in case the storage flag is set to \a columnMajor the function returns
+// the number of non-zero elements in column \a i.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -1827,6 +1859,32 @@ inline void StaticMatrix<Type,M,N,SO>::reset()
    for( size_t i=0UL; i<M; ++i )
       for( size_t j=0UL; j<N; ++j )
          reset( v_[i*NN+j] );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Reset the specified row/column to the default initial values.
+//
+// \param i The index of the row/column.
+// \return void
+//
+// This function resets the values in the specified row/column to their default value. In case
+// the storage order is set to \a rowMajor the function resets the values in row \a i, in case
+// the storage order is set to \a columnMajor the function resets the values in column \a i.
+// Note that the capacity of the row/column remains unchanged.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline void StaticMatrix<Type,M,N,SO>::reset( size_t i )
+{
+   using blaze::reset;
+
+   BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
+   for( size_t j=0UL; j<N; ++j )
+      reset( v_[i*NN+j] );
 }
 //*************************************************************************************************
 
@@ -2526,9 +2584,11 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
                               inline size_t        columns() const;
                               inline size_t        spacing() const;
                               inline size_t        capacity() const;
+                              inline size_t        capacity( size_t j ) const;
                               inline size_t        nonZeros() const;
                               inline size_t        nonZeros( size_t j ) const;
                               inline void          reset();
+                              inline void          reset( size_t i );
                               inline StaticMatrix& transpose();
                               inline bool          isDiagonal() const;
                               inline bool          isSymmetric() const;
@@ -3986,6 +4046,7 @@ inline size_t StaticMatrix<Type,M,N,true>::spacing() const
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the maximum capacity of the matrix.
 //
 // \return The capacity of the matrix.
@@ -3997,6 +4058,26 @@ inline size_t StaticMatrix<Type,M,N,true>::capacity() const
 {
    return MM*N;
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the current capacity of the specified column.
+//
+// \param j The index of the column.
+// \return The current capacity of column \a j.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline size_t StaticMatrix<Type,M,N,true>::capacity( size_t j ) const
+{
+   BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
+   return MM;
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -4067,6 +4148,31 @@ inline void StaticMatrix<Type,M,N,true>::reset()
    for( size_t j=0UL; j<N; ++j )
       for( size_t i=0UL; i<M; ++i )
          reset( v_[i+j*MM] );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Reset the specified column to the default initial values.
+//
+// \param j The index of the column.
+// \return void
+//
+// This function reset the values in the specified column to their default value. Note that
+// the capacity of the column remains unchanged.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline void StaticMatrix<Type,M,N,true>::reset( size_t j )
+{
+   using blaze::reset;
+
+   BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
+   for( size_t i=0UL; i<M; ++i )
+      reset( v_[i+j*MM] );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4995,6 +5101,44 @@ struct MathTrait< StaticMatrix<T1,M,N,SO>, StaticMatrix<T2,M,N,SO> >
 {
    typedef StaticMatrix< typename MathTrait<T1,T2>::HighType, M, N, SO >  HighType;
    typedef StaticMatrix< typename MathTrait<T1,T2>::LowType , M, N, SO >  LowType;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ROWTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, size_t M, size_t N, bool SO >
+struct RowTrait< StaticMatrix<T1,M,N,SO> >
+{
+   typedef StaticVector<T1,N,true>  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  COLUMNTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, size_t M, size_t N, bool SO >
+struct ColumnTrait< StaticMatrix<T1,M,N,SO> >
+{
+   typedef StaticVector<T1,N,false>  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
