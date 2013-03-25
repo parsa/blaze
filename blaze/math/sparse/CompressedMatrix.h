@@ -40,9 +40,11 @@
 #include <blaze/math/sparse/MatrixAccessProxy.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -304,6 +306,7 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
                               inline size_t            nonZeros() const;
                               inline size_t            nonZeros( size_t i ) const;
                               inline void              reset();
+                              inline void              reset( size_t i );
                               inline void              clear();
                                      Iterator          insert ( size_t i, size_t j, const Type& value );
                               inline Iterator          find   ( size_t i, size_t j );
@@ -1175,6 +1178,27 @@ inline void CompressedMatrix<Type,SO>::reset()
 {
    for( size_t i=0UL; i<m_; ++i )
       end_[i] = begin_[i];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Reset the specified row/column to the default initial values.
+//
+// \param i The index of the row/column.
+// \return void
+//
+// This function resets the values in the specified row/column to their default value. In case
+// the storage order is set to \a rowMajor the function resets the values in row \a i, in case
+// the storage order is set to \a columnMajor the function resets the values in column \a i.
+// Note that the capacity of the row/column remains unchanged.
+*/
+template< typename Type  // Data type of the sparse matrix
+        , bool SO >      // Storage order
+inline void CompressedMatrix<Type,SO>::reset( size_t i )
+{
+   BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
+   end_[i] = begin_[i];
 }
 //*************************************************************************************************
 
@@ -2174,6 +2198,7 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
                               inline size_t            nonZeros() const;
                               inline size_t            nonZeros( size_t j ) const;
                               inline void              reset();
+                              inline void              reset( size_t j );
                               inline void              clear();
                                      Iterator          insert ( size_t i, size_t j, const Type& value );
                               inline Iterator          find   ( size_t i, size_t j );
@@ -3035,6 +3060,26 @@ inline void CompressedMatrix<Type,true>::reset()
 {
    for( size_t j=0UL; j<n_; ++j )
       end_[j] = begin_[j];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Reset the specified column to the default initial values.
+//
+// \param j The index of the column.
+// \return void
+//
+// This function reset the values in the specified column to their default value. Note that
+// the capacity of the column remains unchanged.
+*/
+template< typename Type >  // Data type of the sparse matrix
+inline void CompressedMatrix<Type,true>::reset( size_t j )
+{
+   BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
+   end_[j] = begin_[j];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4394,6 +4439,44 @@ struct MathTrait< CompressedMatrix<T1,SO>, CompressedMatrix<T2,SO> >
 {
    typedef CompressedMatrix< typename MathTrait<T1,T2>::HighType, SO >  HighType;
    typedef CompressedMatrix< typename MathTrait<T1,T2>::LowType , SO >  LowType;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ROWTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, bool SO >
+struct RowTrait< CompressedMatrix<T1,SO> >
+{
+   typedef CompressedVector<T1,true>  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  COLUMNTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, bool SO >
+struct ColumnTrait< CompressedMatrix<T1,SO> >
+{
+   typedef CompressedVector<T1,false>  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
