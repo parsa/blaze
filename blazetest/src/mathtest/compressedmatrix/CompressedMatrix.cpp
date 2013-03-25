@@ -1091,11 +1091,33 @@ void CompressedMatrix::testReset()
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+             << "   Expected result:\n( 1 0 0 )\n( 0 2 3 )\n( 0 0 0 )\n( 0 4 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      // Resetting the matrix
+      // Resetting row 1
+      mat.reset( 1UL );
+
+      checkRows    ( mat, 4UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 4UL );
+      checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 0UL );
+      checkNonZeros( mat, 3UL, 1UL );
+
+      if( mat(0,0) != 1 || mat(3,1) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Reset operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 0 0 )\n( 0 0 0 )\n( 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resetting the entire matrix
       mat.reset();
 
       checkRows    ( mat, 4UL );
@@ -1136,11 +1158,32 @@ void CompressedMatrix::testReset()
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+             << "   Expected result:\n( 1 0 0 )\n( 0 2 3 )\n( 0 0 0 )\n( 0 4 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      // Resetting the matrix
+      // Resetting column 1
+      mat.reset( 1UL );
+
+      checkRows    ( mat, 4UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 4UL );
+      checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 1UL );
+
+      if( mat(0,0) != 1 || mat(1,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Reset operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 0 3 )\n( 0 0 0 )\n( 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resetting the entire matrix
       mat.reset();
 
       checkRows    ( mat, 4UL );
