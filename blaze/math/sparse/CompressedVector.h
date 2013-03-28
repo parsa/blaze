@@ -296,7 +296,7 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
                               inline void                   reset();
                               inline void                   clear();
                                      void                   append( size_t index, const Type& value );
-                                     Type&                  insert( size_t index, const Type& value );
+                                     Iterator               insert( size_t index, const Type& value );
                                      void                   erase ( size_t index );
                               inline Iterator               find  ( size_t index );
                               inline ConstIterator          find  ( size_t index ) const;
@@ -1033,7 +1033,8 @@ void CompressedVector<Type,TF>::append( size_t index, const Type& value )
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-Type& CompressedVector<Type,TF>::insert( size_t index, const Type& value )
+inline typename CompressedVector<Type,TF>::Iterator
+   CompressedVector<Type,TF>::insert( size_t index, const Type& value )
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid compressed vector access index" );
 
@@ -1048,7 +1049,7 @@ Type& CompressedVector<Type,TF>::insert( size_t index, const Type& value )
       pos->index_ = index;
       ++end_;
 
-      return pos->value_;
+      return pos;
    }
    else {
       size_t newCapacity( extendCapacity() );
@@ -1063,7 +1064,7 @@ Type& CompressedVector<Type,TF>::insert( size_t index, const Type& value )
       delete [] newBegin;
       capacity_ = newCapacity;
 
-      return tmp->value_;
+      return tmp;
    }
 }
 //*************************************************************************************************
