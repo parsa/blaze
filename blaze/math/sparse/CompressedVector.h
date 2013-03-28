@@ -852,7 +852,7 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, CompressedVector<Type,TF> >::Type&
    CompressedVector<Type,TF>::operator*=( Other rhs )
 {
-   for( Iterator element=begin_; element<end_; ++element )
+   for( Iterator element=begin_; element!=end_; ++element )
       element->value_ *= rhs;
    return *this;
 }
@@ -1507,7 +1507,7 @@ inline void CompressedVector<Type,TF>::addAssign( const DenseVector<VT,TF>& rhs 
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   AddType tmp( *this + (~rhs) );
+   const AddType tmp( *this + (~rhs) );
    reset();
    assign( tmp );
 }
@@ -1562,7 +1562,7 @@ inline void CompressedVector<Type,TF>::subAssign( const DenseVector<VT,TF>& rhs 
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   SubType tmp( *this - (~rhs) );
+   const SubType tmp( *this - (~rhs) );
    reset();
    assign( tmp );
 }
