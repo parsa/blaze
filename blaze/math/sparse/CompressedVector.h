@@ -297,6 +297,7 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
                               inline void                   clear();
                                      void                   append( size_t index, const Type& value );
                                      Type&                  insert( size_t index, const Type& value );
+                                     void                   erase ( size_t index );
                               inline Iterator               find  ( size_t index );
                               inline ConstIterator          find  ( size_t index ) const;
                               inline void                   resize( size_t n, bool preserve=true );
@@ -1064,6 +1065,28 @@ Type& CompressedVector<Type,TF>::insert( size_t index, const Type& value )
 
       return tmp->value_;
    }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Erasing an element from the compressed vector.
+//
+// \param index The index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \return void
+//
+// This function erases an element from the compressed vector.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+void CompressedVector<Type,TF>::erase( size_t index )
+{
+   BLAZE_USER_ASSERT( index < size_, "Invalid compressed vector access index" );
+
+   const Iterator pos( find( index ) );
+   if( pos == end_ )
+      return;
+   end_ = std::copy( pos+1, end_, pos );
 }
 //*************************************************************************************************
 
