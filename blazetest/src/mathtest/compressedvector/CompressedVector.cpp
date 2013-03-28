@@ -58,6 +58,7 @@ CompressedVector::CompressedVector()
    testClear();
    testAppend();
    testInsert();
+   testErase();
    testFind();
    testResize();
    testReserve();
@@ -604,6 +605,112 @@ void CompressedVector::testInsert()
       throw std::runtime_error( oss.str() );
    }
    catch( std::invalid_argument& ex ) {}
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the erase member function of CompressedVector.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the erase member function of CompressedVector. In case
+// an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void CompressedVector::testErase()
+{
+   test_ = "CompressedVector::erase()";
+
+   // Initialization check
+   blaze::CompressedVector<int,blaze::rowVector> vec( 9UL, 5UL );
+   vec[0] = 1;
+   vec[2] = 2;
+   vec[5] = 3;
+   vec[7] = 4;
+   vec[8] = 5;
+
+   checkSize    ( vec, 9UL );
+   checkCapacity( vec, 5UL );
+   checkNonZeros( vec, 5UL );
+
+   if( vec[0] != 1 || vec[2] != 2 || vec[5] != 3 || vec[7] != 4 || vec[8] != 5 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Initialization failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 1 0 2 0 0 3 0 4 5 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Erasing the element at index 0
+   vec.erase( 0UL );
+
+   checkSize    ( vec, 9UL );
+   checkCapacity( vec, 5UL );
+   checkNonZeros( vec, 4UL );
+
+   if( vec[2] != 2 || vec[5] != 3 || vec[7] != 4 || vec[8] != 5 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Initialization failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 0 0 2 0 0 3 0 4 5 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Erasing the element at index 8
+   vec.erase( 8UL );
+
+   checkSize    ( vec, 9UL );
+   checkCapacity( vec, 5UL );
+   checkNonZeros( vec, 3UL );
+
+   if( vec[2] != 2 || vec[5] != 3 || vec[7] != 4 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Initialization failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 0 0 2 0 0 3 0 4 0 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Erasing the element at index 5
+   vec.erase( 5UL );
+
+   checkSize    ( vec, 9UL );
+   checkCapacity( vec, 5UL );
+   checkNonZeros( vec, 2UL );
+
+   if( vec[2] != 2 || vec[7] != 4 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Initialization failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 0 0 2 0 0 0 0 4 0 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Trying to erase a zero element
+   vec.erase( 1UL );
+
+   checkSize    ( vec, 9UL );
+   checkCapacity( vec, 5UL );
+   checkNonZeros( vec, 2UL );
+
+   if( vec[2] != 2 || vec[7] != 4 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Initialization failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 0 0 2 0 0 0 0 4 0 )\n";
+      throw std::runtime_error( oss.str() );
+   }
 }
 //*************************************************************************************************
 

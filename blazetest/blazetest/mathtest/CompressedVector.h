@@ -81,6 +81,7 @@ class CompressedVector
    void testClear       ();
    void testAppend      ();
    void testInsert      ();
+   void testErase       ();
    void testFind        ();
    void testResize      ();
    void testReserve     ();
