@@ -309,6 +309,7 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
                               inline void              reset( size_t i );
                               inline void              clear();
                                      Iterator          insert ( size_t i, size_t j, const Type& value );
+                                     void              erase  ( size_t i, size_t j );
                               inline Iterator          find   ( size_t i, size_t j );
                               inline ConstIterator     find   ( size_t i, size_t j ) const;
                                      void              resize ( size_t m, size_t n, bool preserve=true );
@@ -1310,6 +1311,30 @@ inline typename CompressedMatrix<Type,SO>::Iterator
 
 
 //*************************************************************************************************
+/*!\brief Erasing an element from the sparse matrix.
+//
+// \param i The row index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \return void
+//
+// This function erases an element from the sparse matrix.
+*/
+template< typename Type  // Data type of the sparse matrix
+        , bool SO >      // Storage order
+inline void CompressedMatrix<Type,SO>::erase( size_t i, size_t j )
+{
+   BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
+   BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
+
+   const Iterator pos( find( i, j ) );
+   if( pos == end_[i] )
+      return;
+   end_[i] = std::copy( pos+1, end_[i], pos );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Searches for a specific matrix element.
 //
 // \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
@@ -2201,6 +2226,7 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
                               inline void              reset( size_t j );
                               inline void              clear();
                                      Iterator          insert ( size_t i, size_t j, const Type& value );
+                                     void              erase  ( size_t i, size_t j );
                               inline Iterator          find   ( size_t i, size_t j );
                               inline ConstIterator     find   ( size_t i, size_t j ) const;
                                      void              resize ( size_t m, size_t n, bool preserve=true );
@@ -3190,6 +3216,29 @@ inline typename CompressedMatrix<Type,true>::Iterator
    }
 }
 /*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Erasing an element from the sparse matrix.
+//
+// \param i The row index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \return void
+//
+// This function erases an element from the sparse matrix.
+*/
+template< typename Type >  // Data type of the sparse matrix
+inline void CompressedMatrix<Type,true>::erase( size_t i, size_t j )
+{
+   BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
+   BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
+
+   const Iterator pos( find( i, j ) );
+   if( pos == end_[j] )
+      return;
+   end_[j] = std::copy( pos+1, end_[j], pos );
+}
 //*************************************************************************************************
 
 
