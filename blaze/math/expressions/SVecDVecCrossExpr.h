@@ -127,7 +127,7 @@ class SVecDVecCrossExpr : public DenseVector< SVecDVecCrossExpr<VT1,VT2>, false 
    enum { vectorizable = 0 };
 
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = !IsComputation<VT2>::value };
+   enum { canAlias = 1 };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -201,7 +201,8 @@ class SVecDVecCrossExpr : public DenseVector< SVecDVecCrossExpr<VT1,VT2>, false 
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return !IsComputation<VT2>::value && rhs_.isAliased( alias );
+      return ( lhs_.isAliased( alias ) ) ||
+             ( !IsComputation<VT2>::value && rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 
