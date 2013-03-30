@@ -124,7 +124,7 @@ class SVecDVecSubExpr : public DenseVector< SVecDVecSubExpr<VT1,VT2,TF>, TF >
    enum { vectorizable = 0 };
 
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = IsComputation<VT2>::value && CanAlias<VT2>::value };
+   enum { canAlias = 1 };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -191,7 +191,8 @@ class SVecDVecSubExpr : public DenseVector< SVecDVecSubExpr<VT1,VT2,TF>, TF >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return IsComputation<VT2>::value && CanAlias<VT2>::value && rhs_.isAliased( alias );
+      return ( lhs_.isAliased( alias ) ) ||
+             ( IsComputation<VT2>::value && CanAlias<VT2>::value && rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 
@@ -274,8 +275,8 @@ class SVecDVecSubExpr : public DenseVector< SVecDVecSubExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      addAssign( ~lhs, rhs.lhs_ );
       subAssign( ~lhs, rhs.rhs_ );
+      addAssign( ~lhs, rhs.lhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -303,8 +304,8 @@ class SVecDVecSubExpr : public DenseVector< SVecDVecSubExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      subAssign( ~lhs, rhs.lhs_ );
       addAssign( ~lhs, rhs.rhs_ );
+      subAssign( ~lhs, rhs.lhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
