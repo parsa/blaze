@@ -51,7 +51,7 @@ namespace dynamicmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the DynamicMatrix math test.
+/*!\brief Auxiliary class for all tests of the DynamicMatrix class template.
 //
 // The DynamicMatrix class represents a test suite for the blaze::DynamicMatrix class template.
 // It performs a series of both compile time as well as runtime tests.

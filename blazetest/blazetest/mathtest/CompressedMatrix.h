@@ -50,7 +50,7 @@ namespace compressedmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the CompressedMatrix math test.
+/*!\brief Auxiliary class for all tests of the CompressedMatrix class template.
 //
 // The CompressedMatrix class represents a test suite for the blaze::CompressedMatrix class
 // template. It performs a series of both compile time as well as runtime tests.

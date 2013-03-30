@@ -49,7 +49,7 @@ namespace staticvector {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the StaticVector math test.
+/*!\brief Auxiliary class for all tests of the StaticVector class template.
 //
 // The StaticVector class represents a test suite for the blaze::StaticVector class template.
 // It performs a series of both compile time as well as runtime tests.

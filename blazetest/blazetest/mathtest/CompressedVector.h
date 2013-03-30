@@ -49,7 +49,7 @@ namespace compressedvector {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the CompressedVector math test.
+/*!\brief Auxiliary class for all tests of the CompressedVector class template.
 //
 // The CompressedVector class represents a test suite for the blaze::CompressedVector class
 // template. It performs a series of both compile time as well as runtime tests.

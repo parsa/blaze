@@ -49,7 +49,7 @@ namespace dynamicvector {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the DynamicVector math test.
+/*!\brief Auxiliary class for all tests of the DynamicVector class template.
 //
 // The DynamicVector class represents a test suite for the blaze::DynamicVector class template.
 // It performs a series of both compile time as well as runtime tests.

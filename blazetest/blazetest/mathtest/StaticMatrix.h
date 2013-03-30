@@ -51,7 +51,7 @@ namespace staticmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the StaticMatrix math test.
+/*!\brief Auxiliary class for all tests of the StaticMatrix class template.
 //
 // The StaticMatrix class represents a test suite for the blaze::StaticMatrix class template.
 // It performs a series of both compile time as well as runtime tests.
