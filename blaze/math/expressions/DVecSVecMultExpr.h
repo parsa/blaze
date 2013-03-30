@@ -139,7 +139,7 @@ class DVecSVecMultExpr : public SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF >
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = !RequiresEvaluation<VT1>::value || !RequiresEvaluation<VT2>::value };
+   enum { canAlias = 1 };
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -364,8 +364,7 @@ class DVecSVecMultExpr : public SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( !RequiresEvaluation<VT1>::value && lhs_.isAliased( alias ) ) ||
-             ( !RequiresEvaluation<VT2>::value && rhs_.isAliased( alias ) );
+      return ( lhs_.isAliased( alias ) || rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 
