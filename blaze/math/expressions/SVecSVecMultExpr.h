@@ -42,7 +42,6 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
-#include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/logging/FunctionTrace.h>
@@ -119,8 +118,8 @@ class SVecSVecMultExpr : public SparseVector< SVecSVecMultExpr<VT1,VT2,TF>, TF >
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( !RequiresEvaluation<VT1>::value && ( !IsComputation<VT1>::value || CanAlias<VT1>::value ) ) ||
-                     ( !RequiresEvaluation<VT2>::value && ( !IsComputation<VT2>::value || CanAlias<VT2>::value ) ) };
+   enum { canAlias = ( !IsComputation<VT1>::value || CanAlias<VT1>::value ) ||
+                     ( !IsComputation<VT2>::value || CanAlias<VT2>::value ) };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -194,10 +193,8 @@ class SVecSVecMultExpr : public SparseVector< SVecSVecMultExpr<VT1,VT2,TF>, TF >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( ( !IsComputation<VT1>::value || CanAlias<VT1>::value ) &&
-               !RequiresEvaluation<VT1>::value && lhs_.isAliased( alias ) ) ||
-             ( ( !IsComputation<VT2>::value || CanAlias<VT2>::value ) &&
-               !RequiresEvaluation<VT2>::value && rhs_.isAliased( alias ) );
+      return ( ( !IsComputation<VT1>::value || CanAlias<VT1>::value ) && lhs_.isAliased( alias ) ) ||
+             ( ( !IsComputation<VT2>::value || CanAlias<VT2>::value ) && rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 
