@@ -38,6 +38,8 @@
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
+#include <blaze/math/typetraits/CanAlias.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/util/Assert.h>
@@ -125,7 +127,8 @@ class SVecSVecCrossExpr : public DenseVector< SVecSVecCrossExpr<VT1,VT2>, false 
    enum { vectorizable = 0 };
 
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = 0 };
+   enum { canAlias = ( !IsComputation<VT1>::value || CanAlias<VT1>::value ) ||
+                     ( !IsComputation<VT2>::value || CanAlias<VT2>::value ) };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -199,7 +202,8 @@ class SVecSVecCrossExpr : public DenseVector< SVecSVecCrossExpr<VT1,VT2>, false 
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return false;
+      return ( ( !IsComputation<VT1>::value || CanAlias<VT1>::value ) && lhs_.isAliased( alias ) ) ||
+             ( ( !IsComputation<VT2>::value || CanAlias<VT2>::value ) && rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 
