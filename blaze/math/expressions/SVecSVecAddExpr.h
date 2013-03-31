@@ -35,6 +35,7 @@
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseVector.h>
+#include <blaze/math/Functions.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -43,7 +44,6 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsTemporary.h>
-#include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/DisableIf.h>
@@ -122,8 +122,8 @@ class SVecSVecAddExpr : public SparseVector< SVecSVecAddExpr<VT1,VT2,TF>, TF >
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( !RequiresEvaluation<VT1>::value && ( !IsComputation<VT1>::value || CanAlias<VT1>::value ) ) ||
-                     ( !RequiresEvaluation<VT2>::value && ( !IsComputation<VT2>::value || CanAlias<VT2>::value ) ) };
+   enum { canAlias = ( !IsComputation<VT1>::value || CanAlias<VT1>::value ) ||
+                     ( !IsComputation<VT2>::value || CanAlias<VT2>::value ) };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -165,7 +165,7 @@ class SVecSVecAddExpr : public SparseVector< SVecSVecAddExpr<VT1,VT2,TF>, TF >
    // \return The number of non-zero elements in the sparse vector.
    */
    inline size_t nonZeros() const {
-      return lhs_.nonZeros() + rhs_.nonZeros();
+      return min( lhs_.size(), lhs_.nonZeros() + rhs_.nonZeros() );
    }
    //**********************************************************************************************
 
@@ -197,10 +197,8 @@ class SVecSVecAddExpr : public SparseVector< SVecSVecAddExpr<VT1,VT2,TF>, TF >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( ( !IsComputation<VT1>::value || CanAlias<VT1>::value ) &&
-               !RequiresEvaluation<VT1>::value && lhs_.isAliased( alias ) ) ||
-             ( ( !IsComputation<VT2>::value || CanAlias<VT2>::value ) &&
-               !RequiresEvaluation<VT2>::value && rhs_.isAliased( alias ) );
+      return ( ( !IsComputation<VT1>::value || CanAlias<VT1>::value ) && lhs_.isAliased( alias ) ) ||
+             ( ( !IsComputation<VT2>::value || CanAlias<VT2>::value ) && rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 
