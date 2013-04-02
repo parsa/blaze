@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/system/SSE.h
+//  \file blaze/system/Vectorization.h
 //  \brief System settings for the SSE mode
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
@@ -19,13 +19,21 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_SYSTEM_SSE_H_
-#define _BLAZE_SYSTEM_SSE_H_
+#ifndef _BLAZE_SYSTEM_VECTORIZATION_H_
+#define _BLAZE_SYSTEM_VECTORIZATION_H_
+
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/config/Vectorization.h>
+
+
 
 
 //=================================================================================================
 //
-//  SSE MODE CONFIGURATION
+//  SSE/AVX/MIC MODE CONFIGURATION
 //
 //=================================================================================================
 
@@ -38,7 +46,7 @@
 // the linear algebra operations by SSE intrinsics. In case the SSE mode is disabled, the
 // Blaze library chooses default, non-vectorized functionality for the operations.
 */
-#if defined(__SSE__) || ( _M_IX86_FP > 0 )
+#if BLAZE_USE_VECTORIZATION && ( defined(__SSE__) || ( _M_IX86_FP > 0 ) )
 #  define BLAZE_SSE_MODE 1
 #else
 #  define BLAZE_SSE_MODE 0
@@ -55,7 +63,7 @@
 // the linear algebra operations by SSE2 intrinsics. In case the SSE2 mode is disabled, the
 // Blaze library chooses default, non-vectorized functionality for the operations.
 */
-#if defined(__SSE2__) || ( _M_IX86_FP > 1 )
+#if BLAZE_USE_VECTORIZATION && ( defined(__SSE2__) || ( _M_IX86_FP > 1 ) )
 #  define BLAZE_SSE2_MODE 1
 #else
 #  define BLAZE_SSE2_MODE 0
@@ -72,7 +80,7 @@
 // the linear algebra operations by SSE3 intrinsics. In case the SSE3 mode is disabled, the
 // Blaze library chooses default, non-vectorized functionality for the operations.
 */
-#if defined(__SSE3__)
+#if BLAZE_USE_VECTORIZATION && defined(__SSE3__)
 #  define BLAZE_SSE3_MODE 1
 #else
 #  define BLAZE_SSE3_MODE 0
@@ -89,7 +97,7 @@
 // the linear algebra operations by SSSE3 intrinsics. In case the SSSE3 mode is disabled, the
 // Blaze library chooses default, non-vectorized functionality for the operations.
 */
-#if defined(__SSSE3__)
+#if BLAZE_USE_VECTORIZATION && defined(__SSSE3__)
 #  define BLAZE_SSSE3_MODE 1
 #else
 #  define BLAZE_SSSE3_MODE 0
@@ -106,7 +114,7 @@
 // the linear algebra operations by SSE4 intrinsics. In case the SSE4 mode is disabled,
 // the Blaze library chooses default, non-vectorized functionality for the operations.
 */
-#if defined(__SSE4_2__) || defined(__SSE4_1__)
+#if BLAZE_USE_VECTORIZATION && ( defined(__SSE4_2__) || defined(__SSE4_1__) )
 #  define BLAZE_SSE4_MODE 1
 #else
 #  define BLAZE_SSE4_MODE 0
@@ -123,7 +131,7 @@
 // the linear algebra operations by AVX intrinsics. In case the AVX mode is disabled,
 // the Blaze library chooses default, non-vectorized functionality for the operations.
 */
-#if defined(__AVX__)
+#if BLAZE_USE_VECTORIZATION && defined(__AVX__)
 #  define BLAZE_AVX_MODE 1
 #else
 #  define BLAZE_AVX_MODE 0
@@ -140,7 +148,7 @@
 // the linear algebra operations by MIC intrinsics. In case the MIC mode is disabled,
 // the Blaze library chooses default, non-vectorized functionality for the operations.
 */
-#if defined(__MIC__)
+#if BLAZE_USE_VECTORIZATION && defined(__MIC__)
 #  define BLAZE_MIC_MODE 1
 #else
 #  define BLAZE_MIC_MODE 0
@@ -152,7 +160,7 @@
 
 //=================================================================================================
 //
-//  SSE INCLUDE FILE CONFIGURATION
+//  SSE/AVX/MIC INCLUDE FILE CONFIGURATION
 //
 //=================================================================================================
 

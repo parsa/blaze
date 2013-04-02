@@ -28,7 +28,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/intrinsics/BasicTypes.h>
-#include <blaze/system/SSE.h>
+#include <blaze/system/Vectorization.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Integral.h>
 #include <blaze/util/EnableIf.h>

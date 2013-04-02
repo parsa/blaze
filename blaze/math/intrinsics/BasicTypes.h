@@ -27,7 +27,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/system/SSE.h>
+#include <blaze/system/Vectorization.h>
 #include <blaze/util/Types.h>
 
 

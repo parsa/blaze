@@ -28,7 +28,7 @@
 //*************************************************************************************************
 
 #include <boost/type_traits/alignment_of.hpp>
-#include <blaze/system/SSE.h>
+#include <blaze/system/Vectorization.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/typetraits/IsVectorizable.h>

@@ -29,7 +29,7 @@
 
 #include <boost/type_traits/remove_cv.hpp>
 #include <blaze/math/intrinsics/BasicTypes.h>
-#include <blaze/system/SSE.h>
+#include <blaze/system/Vectorization.h>
 #include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Volatile.h>

@@ -28,7 +28,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/intrinsics/IntrinsicTrait.h>
-#include <blaze/system/SSE.h>
+#include <blaze/system/Vectorization.h>
 
 
 namespace blaze {
