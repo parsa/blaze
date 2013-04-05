@@ -1936,9 +1936,17 @@ src/mathtest/smatsmatmult/MCbMCb 2>&1 | tee -a result.txt
 
 
 #==================================================================================================
+# Aliasing
+#==================================================================================================
+
+echo " Running aliasing tests..." 2>&1 | tee -a result.txt
+src/mathtest/aliasing/Aliasing 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
 # Utility classes
 #==================================================================================================
 
 echo " Running utility class tests..." 2>&1 | tee -a result.txt
-src/utiltest/uniqueptr/UniquePtr     2>&1 | tee -a result.txt
-src/utiltest/uniquearray/UniqueArray 2>&1 | tee -a result.txt
+src/utiltest/uniqueptr/ClassTest   2>&1 | tee -a result.txt
+src/utiltest/uniquearray/ClassTest 2>&1 | tee -a result.txt

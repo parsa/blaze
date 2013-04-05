@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/utiltest/uniquearray/UniqueArray.cpp
-//  \brief Source file for the UniqueArray test
+//  \file src/utiltest/uniqueptr/UniquePtr.cpp
+//  \brief Source file for the UniquePtr test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -28,8 +28,8 @@
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
-#include <blaze/util/UniqueArray.h>
-#include <blazetest/utiltest/UniqueArray.h>
+#include <blaze/util/UniquePtr.h>
+#include <blazetest/utiltest/uniqueptr/ClassTest.h>
 #include <blazetest/utiltest/Resource.h>
 
 
@@ -37,7 +37,7 @@ namespace blazetest {
 
 namespace utiltest {
 
-namespace uniquearray {
+namespace uniqueptr {
 
 //=================================================================================================
 //
@@ -46,11 +46,11 @@ namespace uniquearray {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the UniqueArray class.
+/*!\brief Constructor for the ClassTest class.
 //
 // \exception std::runtime_error Operation error detected.
 */
-UniqueArray::UniqueArray()
+ClassTest::ClassTest()
 {
    testSingleResource();
    testRelease();
@@ -70,17 +70,17 @@ UniqueArray::UniqueArray()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the general functionality of UniqueArray with a single resource.
+/*!\brief Test of the general functionality of UniquePtr with a single resource.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs an initial general test of the UniqueArray functionality. It checks
+// This function performs an initial general test of the UniquePtr functionality. It checks
 // the number of Resource instances prior, during, and after passing a unique pointer a
 // dynamically allocated Resource object. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-void UniqueArray::testSingleResource()
+void ClassTest::testSingleResource()
 {
    // Initial check of the resource counter
    if( Resource::getCount() != 0U ) {
@@ -95,18 +95,18 @@ void UniqueArray::testSingleResource()
 
    // Acquiring a resource
    {
-      blaze::UniqueArray<Resource> array( new Resource[3] );
+      blaze::UniquePtr<Resource> ptr( new Resource() );
 
-      if( Resource::getCount() != 3U ) {
+      if( Resource::getCount() != 1U ) {
          std::ostringstream oss;
          oss << " Test: Acquiring a resource\n"
              << " Error: Invalid counter value\n"
              << " Details:\n"
              << "   Found counter    = " << Resource::getCount() << "\n"
-             << "   Expected counter = 3\n";
+             << "   Expected counter = 1\n";
          throw std::runtime_error( oss.str() );
       }
-      else if( array.get() == NULL ) {
+      else if( ptr.get() == NULL ) {
          std::ostringstream oss;
          oss << " Test: Acquiring a resource\n"
              << " Error: Acquiring the resource failed\n"
@@ -131,15 +131,15 @@ void UniqueArray::testSingleResource()
 
 
 //*************************************************************************************************
-/*!\brief Test of the release function of the UniqueArray class template.
+/*!\brief Test of the release function of the UniquePtr class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the release function of the UniqueArray class template.
+// This function performs a test of the release function of the UniquePtr class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void UniqueArray::testRelease()
+void ClassTest::testRelease()
 {
    // Initial check of the resource counter
    if( Resource::getCount() != 0U ) {
@@ -154,18 +154,18 @@ void UniqueArray::testRelease()
 
    {
       // Acquiring a resource
-      blaze::UniqueArray<Resource> array( new Resource[4] );
+      blaze::UniquePtr<Resource> ptr( new Resource() );
 
-      if( Resource::getCount() != 4U ) {
+      if( Resource::getCount() != 1U ) {
          std::ostringstream oss;
          oss << " Test: Acquiring a resource\n"
              << " Error: Invalid counter value\n"
              << " Details:\n"
              << "   Found counter    = " << Resource::getCount() << "\n"
-             << "   Expected counter = 4\n";
+             << "   Expected counter = 1\n";
          throw std::runtime_error( oss.str() );
       }
-      else if( array.get() == NULL ) {
+      else if( ptr.get() == NULL ) {
          std::ostringstream oss;
          oss << " Test: Acquiring a resource\n"
              << " Error: Acquiring the resource failed\n"
@@ -175,18 +175,18 @@ void UniqueArray::testRelease()
       }
 
       // Releasing the resource
-      Resource* resource = array.release();
+      Resource* resource = ptr.release();
 
-      if( Resource::getCount() != 4U ) {
+      if( Resource::getCount() != 1U ) {
          std::ostringstream oss;
          oss << " Test: Releasing the resource\n"
              << " Error: Invalid counter value\n"
              << " Details:\n"
              << "   Found counter    = " << Resource::getCount() << "\n"
-             << "   Expected counter = 4\n";
+             << "   Expected counter = 1\n";
          throw std::runtime_error( oss.str() );
       }
-      else if( array.get() != NULL ) {
+      else if( ptr.get() != NULL ) {
          std::ostringstream oss;
          oss << " Test: Releasing the resource\n"
              << " Error: Releasing the resource failed\n"
@@ -196,7 +196,7 @@ void UniqueArray::testRelease()
       }
 
       // Manual destruction of the resource
-      delete[] resource;
+      delete resource;
    }
 
    // Final check of the resource counter
@@ -214,15 +214,15 @@ void UniqueArray::testRelease()
 
 
 //*************************************************************************************************
-/*!\brief Test of the reset function of the UniqueArray class template.
+/*!\brief Test of the reset function of the UniquePtr class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the reset function of the UniqueArray class template.
+// This function performs a test of the reset function of the UniquePtr class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void UniqueArray::testReset()
+void ClassTest::testReset()
 {
    // Initial check of the resource counter
    if( Resource::getCount() != 0U ) {
@@ -237,18 +237,18 @@ void UniqueArray::testReset()
 
    {
       // Acquiring a resource
-      blaze::UniqueArray<Resource> array( new Resource[5] );
+      blaze::UniquePtr<Resource> ptr( new Resource() );
 
-      if( Resource::getCount() != 5U ) {
+      if( Resource::getCount() != 1U ) {
          std::ostringstream oss;
          oss << " Test: Acquiring a resource\n"
              << " Error: Invalid counter value\n"
              << " Details:\n"
              << "   Found counter    = " << Resource::getCount() << "\n"
-             << "   Expected counter = 5\n";
+             << "   Expected counter = 1\n";
          throw std::runtime_error( oss.str() );
       }
-      else if( array.get() == NULL ) {
+      else if( ptr.get() == NULL ) {
          std::ostringstream oss;
          oss << " Test: Acquiring a resource\n"
              << " Error: Acquiring the resource failed\n"
@@ -258,7 +258,7 @@ void UniqueArray::testReset()
       }
 
       // Resetting the resource
-      array.reset();
+      ptr.reset();
 
       if( Resource::getCount() != 0U ) {
          std::ostringstream oss;
@@ -269,7 +269,7 @@ void UniqueArray::testReset()
              << "   Expected counter = 0\n";
          throw std::runtime_error( oss.str() );
       }
-      else if( array.get() != NULL ) {
+      else if( ptr.get() != NULL ) {
          std::ostringstream oss;
          oss << " Test: Resetting the resource\n"
              << " Error: Resetting the resource failed\n"
@@ -294,16 +294,16 @@ void UniqueArray::testReset()
 
 
 //*************************************************************************************************
-/*!\brief Test of the reset function of the UniqueArray class template with self assignment.
+/*!\brief Test of the reset function of the UniquePtr class template with self assignment.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs an extended test of the release function of the UniqueArray class
+// This function performs an extended test of the release function of the UniquePtr class
 // template involving self assignment. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-void UniqueArray::testSelfReset()
+void ClassTest::testSelfReset()
 {
    // Initial check of the resource counter
    if( Resource::getCount() != 0U ) {
@@ -318,18 +318,18 @@ void UniqueArray::testSelfReset()
 
    {
       // Acquiring a resource
-      blaze::UniqueArray<Resource> array( new Resource[6] );
+      blaze::UniquePtr<Resource> ptr( new Resource() );
 
-      if( Resource::getCount() != 6U ) {
+      if( Resource::getCount() != 1U ) {
          std::ostringstream oss;
          oss << " Test: Acquiring a resource\n"
              << " Error: Invalid counter value\n"
              << " Details:\n"
              << "   Found counter    = " << Resource::getCount() << "\n"
-             << "   Expected counter = 6\n";
+             << "   Expected counter = 1\n";
          throw std::runtime_error( oss.str() );
       }
-      else if( array.get() == NULL ) {
+      else if( ptr.get() == NULL ) {
          std::ostringstream oss;
          oss << " Test: Acquiring a resource\n"
              << " Error: Acquiring the resource failed\n"
@@ -338,19 +338,19 @@ void UniqueArray::testSelfReset()
          throw std::runtime_error( oss.str() );
       }
 
-      // Self-resetting the unique array
-      array.reset( array.get() );
+      // Self-resetting the unique ptr
+      ptr.reset( ptr.get() );
 
-      if( Resource::getCount() != 6U ) {
+      if( Resource::getCount() != 1U ) {
          std::ostringstream oss;
-         oss << " Test: Self-resetting the unique array\n"
+         oss << " Test: Self-resetting the unique ptr\n"
              << " Error: Invalid counter value\n"
              << " Details:\n"
              << "   Found counter    = " << Resource::getCount() << "\n"
-             << "   Expected counter = 6\n";
+             << "   Expected counter = 1\n";
          throw std::runtime_error( oss.str() );
       }
-      else if( array.get() == NULL ) {
+      else if( ptr.get() == NULL ) {
          std::ostringstream oss;
          oss << " Test: Self-resetting the resource\n"
              << " Error: Self-resetting the resource failed\n"
@@ -375,15 +375,15 @@ void UniqueArray::testSelfReset()
 
 
 //*************************************************************************************************
-/*!\brief Test of the swap functionality of the UniqueArray class template.
+/*!\brief Test of the swap functionality of the UniquePtr class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the swap function of the UniqueArray class template.
+// This function performs a test of the swap function of the UniquePtr class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void UniqueArray::testSwap()
+void ClassTest::testSwap()
 {
    // Initial check of the resource counter
    if( Resource::getCount() != 0U ) {
@@ -398,19 +398,19 @@ void UniqueArray::testSwap()
 
    {
       // Acquiring two resources
-      blaze::UniqueArray<Resource> array1( new Resource[3] );
-      blaze::UniqueArray<Resource> array2( new Resource[5] );
+      blaze::UniquePtr<Resource> ptr1( new Resource() );
+      blaze::UniquePtr<Resource> ptr2( new Resource() );
 
-      if( Resource::getCount() != 8U ) {
+      if( Resource::getCount() != 2U ) {
          std::ostringstream oss;
          oss << " Test: Acquiring two resources\n"
              << " Error: Invalid counter value\n"
              << " Details:\n"
              << "   Found counter    = " << Resource::getCount() << "\n"
-             << "   Expected counter = 8\n";
+             << "   Expected counter = 2\n";
          throw std::runtime_error( oss.str() );
       }
-      else if( array1.get() == NULL ) {
+      else if( ptr1.get() == NULL ) {
          std::ostringstream oss;
          oss << " Test: Acquiring two resources\n"
              << " Error: Acquiring the resource for the first unique pointer failed\n"
@@ -418,7 +418,7 @@ void UniqueArray::testSwap()
              << "   Instance counter = " << Resource::getCount() << "\n";
          throw std::runtime_error( oss.str() );
       }
-      else if( array2.get() == NULL ) {
+      else if( ptr2.get() == NULL ) {
          std::ostringstream oss;
          oss << " Test: Acquiring two resources\n"
              << " Error: Acquiring the resource for the second unique pointer failed\n"
@@ -428,18 +428,18 @@ void UniqueArray::testSwap()
       }
 
       // Swapping the resources
-      swap( array1, array2 );
+      swap( ptr1, ptr2 );
 
-      if( Resource::getCount() != 8U ) {
+      if( Resource::getCount() != 2U ) {
          std::ostringstream oss;
          oss << " Test: Swapping the resources\n"
              << " Error: Invalid counter value\n"
              << " Details:\n"
              << "   Found counter    = " << Resource::getCount() << "\n"
-             << "   Expected counter = 8\n";
+             << "   Expected counter = 2\n";
          throw std::runtime_error( oss.str() );
       }
-      else if( array1.get() == NULL ) {
+      else if( ptr1.get() == NULL ) {
          std::ostringstream oss;
          oss << " Test: Swapping the resources\n"
              << " Error: The first unique pointer was reset\n"
@@ -447,7 +447,7 @@ void UniqueArray::testSwap()
              << "   Instance counter = " << Resource::getCount() << "\n";
          throw std::runtime_error( oss.str() );
       }
-      else if( array2.get() == NULL ) {
+      else if( ptr2.get() == NULL ) {
          std::ostringstream oss;
          oss << " Test: Swapping the resources\n"
              << " Error: The second unique pointer was reset\n"
@@ -470,7 +470,7 @@ void UniqueArray::testSwap()
 }
 //*************************************************************************************************
 
-} // namespace uniquearray
+} // namespace uniqueptr
 
 } // namespace utiltest
 
@@ -488,14 +488,14 @@ void UniqueArray::testSwap()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running UniqueArray test..." << std::endl;
+   std::cout << "   Running UniquePtr class test..." << std::endl;
 
    try
    {
-      RUN_UNIQUEARRAY_TEST;
+      RUN_UNIQUEPTR_CLASS_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during UniqueArray test:\n"
+      std::cerr << "\n\n ERROR DETECTED during UniquePtr class test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

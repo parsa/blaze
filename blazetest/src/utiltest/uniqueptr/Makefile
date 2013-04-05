@@ -37,7 +37,7 @@ default: $(BIN)
 
 
 # Build rules
-UniquePtr: UniquePtr.o
+ClassTest: ClassTest.o
 	@$(CXX) -o $@ $< $(LIBRARIES)
 
 

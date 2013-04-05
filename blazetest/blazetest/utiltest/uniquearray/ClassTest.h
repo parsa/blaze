@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/utiltest/UniquePtr.h
-//  \brief Header file for the UniquePtr test
+//  \file blazetest/utiltest/uniquearray/ClassTest.h
+//  \brief Header file for the UniqueArray test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,15 +19,15 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_UTILTEST_UNIQUEPTR_H_
-#define _BLAZETEST_UTILTEST_UNIQUEPTR_H_
+#ifndef _BLAZETEST_UTILTEST_UNIQUEARRAY_CLASSTEST_H_
+#define _BLAZETEST_UTILTEST_UNIQUEARRAY_CLASSTEST_H_
 
 
 namespace blazetest {
 
 namespace utiltest {
 
-namespace uniqueptr {
+namespace uniquearray {
 
 //=================================================================================================
 //
@@ -36,18 +36,17 @@ namespace uniqueptr {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for the test of the UniquePtr class template.
+/*!\brief Auxiliary class for the test of the UniqueArray class template.
 //
-// The UniquePtr class template represents the collection of tests for the UniquePtr class
-// template.
+// This class represents the collection of tests for the UniqueArray class template.
 */
-class UniquePtr
+class ClassTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit UniquePtr();
+   explicit ClassTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -80,13 +79,13 @@ class UniquePtr
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the UniquePtr class template.
+/*!\brief Testing the functionality of the UniqueArray class template.
 //
 // \return void
 */
 inline void runTest()
 {
-   UniquePtr();
+   ClassTest();
 }
 //*************************************************************************************************
 
@@ -101,16 +100,16 @@ inline void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the UniquePtr test.
+/*!\brief Macro for the execution of the UniqueArray class test.
 */
-#define RUN_UNIQUEPTR_TEST \
-   blazetest::utiltest::uniqueptr::runTest();
+#define RUN_UNIQUEARRAY_CLASS_TEST \
+   blazetest::utiltest::uniquearray::runTest();
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace uniqueptr
+} // namespace uniquearray
 
-} // namespace utiltest
+} // namespace mathtest
 
 } // namespace blazetest
 

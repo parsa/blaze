@@ -37,7 +37,7 @@ default: $(BIN)
 
 
 # Build rules
-UniqueArray: UniqueArray.o
+ClassTest: ClassTest.o
 	@$(CXX) -o $@ $< $(LIBRARIES)
 
 
