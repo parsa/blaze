@@ -29,7 +29,7 @@
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DMatSMatAdd.h>
+#include <blazetest/mathtest/dmatsmatadd/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -58,11 +58,11 @@ int main()
       typedef blazetest::Creator<MCb>     CMCb;
 
       // Running the tests
-      RUN_DMATSMATADD_TEST( CM16x8a(), CMCb( 16UL, 8UL,   0UL ) );
-      RUN_DMATSMATADD_TEST( CM16x8a(), CMCb( 16UL, 8UL,  32UL ) );
-      RUN_DMATSMATADD_TEST( CM16x8a(), CMCb( 16UL, 8UL,  64UL ) );
-      RUN_DMATSMATADD_TEST( CM16x8a(), CMCb( 16UL, 8UL,  96UL ) );
-      RUN_DMATSMATADD_TEST( CM16x8a(), CMCb( 16UL, 8UL, 128UL ) );
+      RUN_DMATSMATADD_OPERATION_TEST( CM16x8a(), CMCb( 16UL, 8UL,   0UL ) );
+      RUN_DMATSMATADD_OPERATION_TEST( CM16x8a(), CMCb( 16UL, 8UL,  32UL ) );
+      RUN_DMATSMATADD_OPERATION_TEST( CM16x8a(), CMCb( 16UL, 8UL,  64UL ) );
+      RUN_DMATSMATADD_OPERATION_TEST( CM16x8a(), CMCb( 16UL, 8UL,  96UL ) );
+      RUN_DMATSMATADD_OPERATION_TEST( CM16x8a(), CMCb( 16UL, 8UL, 128UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense matrix/sparse matrix addition:\n"

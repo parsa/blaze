@@ -29,7 +29,7 @@
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DMatSMatAdd.h>
+#include <blazetest/mathtest/dmatsmatadd/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -61,16 +61,16 @@ int main()
       for( size_t i=0UL; i<=6UL; ++i ) {
          for( size_t j=0UL; j<=6UL; ++j ) {
             for( size_t k=0UL; k<=i*j; ++k ) {
-               RUN_DMATSMATADD_TEST( CMDb( i, j ), CMCa( i, j, k ) );
+               RUN_DMATSMATADD_OPERATION_TEST( CMDb( i, j ), CMCa( i, j, k ) );
             }
          }
       }
 
       // Running tests with large matrices
-      RUN_DMATSMATADD_TEST( CMDb(  67UL,  67UL ), CMCa(  67UL,  67UL,  7UL ) );
-      RUN_DMATSMATADD_TEST( CMDb(  67UL, 127UL ), CMCa(  67UL, 127UL, 13UL ) );
-      RUN_DMATSMATADD_TEST( CMDb( 128UL,  64UL ), CMCa( 128UL,  64UL,  8UL ) );
-      RUN_DMATSMATADD_TEST( CMDb( 128UL, 128UL ), CMCa( 128UL, 128UL, 16UL ) );
+      RUN_DMATSMATADD_OPERATION_TEST( CMDb(  67UL,  67UL ), CMCa(  67UL,  67UL,  7UL ) );
+      RUN_DMATSMATADD_OPERATION_TEST( CMDb(  67UL, 127UL ), CMCa(  67UL, 127UL, 13UL ) );
+      RUN_DMATSMATADD_OPERATION_TEST( CMDb( 128UL,  64UL ), CMCa( 128UL,  64UL,  8UL ) );
+      RUN_DMATSMATADD_OPERATION_TEST( CMDb( 128UL, 128UL ), CMCa( 128UL, 128UL, 16UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense matrix/sparse matrix addition:\n"
