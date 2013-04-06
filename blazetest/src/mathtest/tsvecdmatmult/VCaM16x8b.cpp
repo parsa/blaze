@@ -29,7 +29,7 @@
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/TSVecDMatMult.h>
+#include <blazetest/mathtest/tsvecdmatmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -58,11 +58,11 @@ int main()
       typedef blazetest::Creator<M16x8b>  CM16x8b;
 
       // Running the tests
-      RUN_TSVECDMATMULT_TEST( CVCa( 16UL,  0UL ), CM16x8b() );
-      RUN_TSVECDMATMULT_TEST( CVCa( 16UL,  4UL ), CM16x8b() );
-      RUN_TSVECDMATMULT_TEST( CVCa( 16UL,  8UL ), CM16x8b() );
-      RUN_TSVECDMATMULT_TEST( CVCa( 16UL, 12UL ), CM16x8b() );
-      RUN_TSVECDMATMULT_TEST( CVCa( 16UL, 16UL ), CM16x8b() );
+      RUN_TSVECDMATMULT_OPERATION_TEST( CVCa( 16UL,  0UL ), CM16x8b() );
+      RUN_TSVECDMATMULT_OPERATION_TEST( CVCa( 16UL,  4UL ), CM16x8b() );
+      RUN_TSVECDMATMULT_OPERATION_TEST( CVCa( 16UL,  8UL ), CM16x8b() );
+      RUN_TSVECDMATMULT_OPERATION_TEST( CVCa( 16UL, 12UL ), CM16x8b() );
+      RUN_TSVECDMATMULT_OPERATION_TEST( CVCa( 16UL, 16UL ), CM16x8b() );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during sparse vector/dense matrix multiplication:\n"

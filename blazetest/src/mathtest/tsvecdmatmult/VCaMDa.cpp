@@ -29,7 +29,7 @@
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/TSVecDMatMult.h>
+#include <blazetest/mathtest/tsvecdmatmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -60,16 +60,16 @@ int main()
       for( size_t i=0UL; i<=6UL; ++i ) {
          for( size_t j=0UL; j<=6UL; ++j ) {
             for( size_t k=0UL; k<=i; ++k ) {
-               RUN_TSVECDMATMULT_TEST( CVCa( i, k ), CMDa( i, j ) );
+               RUN_TSVECDMATMULT_OPERATION_TEST( CVCa( i, k ), CMDa( i, j ) );
             }
          }
       }
 
       // Running tests with large vectors and matrices
-      RUN_TSVECDMATMULT_TEST( CVCa(  67UL,  7UL ), CMDa(  67UL, 127UL ) );
-      RUN_TSVECDMATMULT_TEST( CVCa( 127UL, 13UL ), CMDa( 127UL,  67UL ) );
-      RUN_TSVECDMATMULT_TEST( CVCa(  64UL,  8UL ), CMDa(  64UL, 128UL ) );
-      RUN_TSVECDMATMULT_TEST( CVCa( 128UL, 16UL ), CMDa( 128UL,  64UL ) );
+      RUN_TSVECDMATMULT_OPERATION_TEST( CVCa(  67UL,  7UL ), CMDa(  67UL, 127UL ) );
+      RUN_TSVECDMATMULT_OPERATION_TEST( CVCa( 127UL, 13UL ), CMDa( 127UL,  67UL ) );
+      RUN_TSVECDMATMULT_OPERATION_TEST( CVCa(  64UL,  8UL ), CMDa(  64UL, 128UL ) );
+      RUN_TSVECDMATMULT_OPERATION_TEST( CVCa( 128UL, 16UL ), CMDa( 128UL,  64UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during sparse vector/dense matrix multiplication:\n"
