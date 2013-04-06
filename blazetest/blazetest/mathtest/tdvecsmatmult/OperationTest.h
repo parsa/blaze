@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/TDVecSMatMult.h
-//  \brief Header file for the dense vector/sparse matrix multiplication math test
+//  \file blazetest/mathtest/tdvecsmatmult/OperationTest.h
+//  \brief Header file for the dense vector/sparse matrix multiplication operation test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_TDVECSMATMULT_H_
-#define _BLAZETEST_MATHTEST_TDVECSMATMULT_H_
+#ifndef _BLAZETEST_MATHTEST_TDVECSMATMULT_OPERATIONTEST_H_
+#define _BLAZETEST_MATHTEST_TDVECSMATMULT_OPERATIONTEST_H_
 
 
 //*************************************************************************************************
@@ -62,15 +62,15 @@ namespace tdvecsmatmult {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the dense vector/sparse matrix multiplication math test.
+/*!\brief Auxiliary class template for the dense vector/sparse matrix multiplication operation test.
 //
-// The TDVecSMatMult class template represents one particular vector/matrix multiplication test
-// between a vector and a matrix of particular types. The two template arguments \a VT and \a MT
-// represent the types of the left-hand side vector and right-hand side matrix, respectively.
+// This class template represents one particular vector/matrix multiplication test between a
+// vector and a matrix of particular types. The two template arguments \a VT and \a MT represent
+// the types of the left-hand side vector and right-hand side matrix, respectively.
 */
 template< typename VT    // Type of the left-hand side dense vector
         , typename MT >  // Type of the right-hand side sparse matrix
-class TDVecSMatMult
+class OperationTest
 {
  private:
    //**Type definitions****************************************************************************
@@ -101,7 +101,7 @@ class TDVecSMatMult
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit TDVecSMatMult( const Creator<VT>& creator1, const Creator<MT>& creator2 );
+   explicit OperationTest( const Creator<VT>& creator1, const Creator<MT>& creator2 );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -205,7 +205,7 @@ class TDVecSMatMult
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the TDVecSMatMult class template.
+/*!\brief Constructor for the dense vector/sparse matrix multiplication operation test.
 //
 // \param creator1 The creator for the left-hand side dense vector of the multiplication.
 // \param creator2 The creator for the right-hand side sparse matrix of the multiplication.
@@ -213,7 +213,7 @@ class TDVecSMatMult
 */
 template< typename VT    // Type of the left-hand side dense vector
         , typename MT >  // Type of the right-hand side sparse matrix
-TDVecSMatMult<VT,MT>::TDVecSMatMult( const Creator<VT>& creator1, const Creator<MT>& creator2 )
+OperationTest<VT,MT>::OperationTest( const Creator<VT>& creator1, const Creator<MT>& creator2 )
    : lhs_ ( trans( creator1() ) )  // The left-hand side dense vector
    , rhs_ ( creator2() )           // The right-hand side sparse matrix
    , dres_()                       // The dense result vector
@@ -261,7 +261,7 @@ TDVecSMatMult<VT,MT>::TDVecSMatMult( const Creator<VT>& creator1, const Creator<
 */
 template< typename VT    // Type of the left-hand side dense vector
         , typename MT >  // Type of the right-hand side sparse matrix
-void TDVecSMatMult<VT,MT>::testInitialStatus()
+void OperationTest<VT,MT>::testInitialStatus()
 {
    //=====================================================================================
    // Performing initial tests with the given types
@@ -390,7 +390,7 @@ void TDVecSMatMult<VT,MT>::testInitialStatus()
 */
 template< typename VT    // Type of the left-hand side dense vector
         , typename MT >  // Type of the right-hand side sparse matrix
-void TDVecSMatMult<VT,MT>::testAssignment()
+void OperationTest<VT,MT>::testAssignment()
 {
    //=====================================================================================
    // Performing an assignment with the given types
@@ -482,7 +482,7 @@ void TDVecSMatMult<VT,MT>::testAssignment()
 */
 template< typename VT    // Type of the left-hand side dense vector
         , typename MT >  // Type of the right-hand side sparse matrix
-void TDVecSMatMult<VT,MT>::testElementAccess()
+void OperationTest<VT,MT>::testElementAccess()
 {
    using blaze::equal;
 
@@ -614,7 +614,7 @@ void TDVecSMatMult<VT,MT>::testElementAccess()
 */
 template< typename VT    // Type of the left-hand side dense vector
         , typename MT >  // Type of the right-hand side sparse matrix
-void TDVecSMatMult<VT,MT>::testBasicOperation()
+void OperationTest<VT,MT>::testBasicOperation()
 {
 #if BLAZETEST_MATHTEST_TEST_BASIC_OPERATION
    if( BLAZETEST_MATHTEST_TEST_BASIC_OPERATION > 1 )
@@ -1013,7 +1013,7 @@ void TDVecSMatMult<VT,MT>::testBasicOperation()
 */
 template< typename VT    // Type of the left-hand side dense vector
         , typename MT >  // Type of the right-hand side sparse matrix
-void TDVecSMatMult<VT,MT>::testNegatedOperation()
+void OperationTest<VT,MT>::testNegatedOperation()
 {
 #if BLAZETEST_MATHTEST_TEST_NEGATED_OPERATION
    if( BLAZETEST_MATHTEST_TEST_NEGATED_OPERATION > 1 )
@@ -1414,7 +1414,7 @@ void TDVecSMatMult<VT,MT>::testNegatedOperation()
 template< typename VT    // Type of the left-hand side dense vector
         , typename MT >  // Type of the right-hand side sparse matrix
 template< typename T >   // Type of the scalar
-void TDVecSMatMult<VT,MT>::testScaledOperation( T scalar )
+void OperationTest<VT,MT>::testScaledOperation( T scalar )
 {
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T );
 
@@ -2728,7 +2728,7 @@ void TDVecSMatMult<VT,MT>::testScaledOperation( T scalar )
 */
 template< typename VT    // Type of the left-hand side dense vector
         , typename MT >  // Type of the right-hand side sparse matrix
-void TDVecSMatMult<VT,MT>::testTransposeOperation()
+void OperationTest<VT,MT>::testTransposeOperation()
 {
 #if BLAZETEST_MATHTEST_TEST_TRANSPOSE_OPERATION
    if( BLAZETEST_MATHTEST_TEST_TRANSPOSE_OPERATION > 1 )
@@ -3127,7 +3127,7 @@ void TDVecSMatMult<VT,MT>::testTransposeOperation()
 */
 template< typename VT    // Type of the left-hand side dense vector
         , typename MT >  // Type of the right-hand side sparse matrix
-void TDVecSMatMult<VT,MT>::testAbsOperation()
+void OperationTest<VT,MT>::testAbsOperation()
 {
 #if BLAZETEST_MATHTEST_TEST_ABS_OPERATION
    if( BLAZETEST_MATHTEST_TEST_ABS_OPERATION > 1 )
@@ -3535,7 +3535,7 @@ void TDVecSMatMult<VT,MT>::testAbsOperation()
 template< typename VT    // Type of the left-hand side dense vector
         , typename MT >  // Type of the right-hand side sparse matrix
 template< typename RT >  // Type of the right-hand side operand
-void TDVecSMatMult<VT,MT>::checkResults()
+void OperationTest<VT,MT>::checkResults()
 {
    using blaze::IsRowMajorMatrix;
 
@@ -3586,7 +3586,7 @@ void TDVecSMatMult<VT,MT>::checkResults()
 template< typename VT    // Type of the left-hand side dense vector
         , typename MT >  // Type of the right-hand side sparse matrix
 template< typename RT >  // Type of the right-hand side operand
-void TDVecSMatMult<VT,MT>::checkTransposeResults()
+void OperationTest<VT,MT>::checkTransposeResults()
 {
    using blaze::IsRowMajorMatrix;
 
@@ -3643,7 +3643,7 @@ template< typename VT    // Type of the left-hand side dense vector
 void runTest( const Creator<VT>& creator1, const Creator<MT>& creator2 )
 {
    for( size_t rep=0; rep<repetitions; ++rep ) {
-      TDVecSMatMult<VT,MT>( creator1, creator2 );
+      OperationTest<VT,MT>( creator1, creator2 );
    }
 }
 //*************************************************************************************************
@@ -3661,7 +3661,7 @@ void runTest( const Creator<VT>& creator1, const Creator<MT>& creator2 )
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the execution of a dense vector/sparse matrix multiplication test case.
 */
-#define RUN_TDVECSMATMULT_TEST( C1, C2 ) \
+#define RUN_TDVECSMATMULT_OPERATION_TEST( C1, C2 ) \
    blazetest::mathtest::tdvecsmatmult::runTest( C1, C2 )
 /*! \endcond */
 //*************************************************************************************************

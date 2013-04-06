@@ -29,7 +29,7 @@
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/StaticVector.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/TDVecSMatMult.h>
+#include <blazetest/mathtest/tdvecsmatmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -60,7 +60,7 @@ int main()
       // Running the tests
       for( size_t i=0UL; i<=6UL; ++i ) {
          for( size_t j=0UL; j<=3UL*i; ++j ) {
-            RUN_TDVECSMATMULT_TEST( CV3a(), CMCb( 3UL, i, j ) );
+            RUN_TDVECSMATMULT_OPERATION_TEST( CV3a(), CMCb( 3UL, i, j ) );
          }
       }
    }
