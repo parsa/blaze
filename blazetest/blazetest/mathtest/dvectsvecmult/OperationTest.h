@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/DVecTSVecMult.h
-//  \brief Header file for the dense vector/sparse vector outer product math test
+//  \file blazetest/mathtest/dvectsvecmult/OperationTest.h
+//  \brief Header file for the dense vector/sparse vector outer product operation test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DVECTSVECMULT_H_
-#define _BLAZETEST_MATHTEST_DVECTSVECMULT_H_
+#ifndef _BLAZETEST_MATHTEST_DVECTSVECMULT_OPERATIONTEST_H_
+#define _BLAZETEST_MATHTEST_DVECTSVECMULT_OPERATIONTEST_H_
 
 
 //*************************************************************************************************
@@ -61,15 +61,15 @@ namespace dvectsvecmult {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the dense vector/sparse vector multiplication math test.
+/*!\brief Auxiliary class template for the dense vector/sparse vector multiplication operation test.
 //
-// The DVecTSVecMult class template represents one particular outer product test between two
-// vectors of a particular type. The two template arguments \a VT1 and \a VT2 represent the
-// types of the left-hand side and right-hand side vector, respectively.
+// This class template represents one particular outer product test between two vectors of a
+// particular type. The two template arguments \a VT1 and \a VT2 represent the types of the
+// left-hand side and right-hand side vector, respectively.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
-class DVecTSVecMult
+class OperationTest
 {
  private:
    //**Type definitions****************************************************************************
@@ -109,7 +109,7 @@ class DVecTSVecMult
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit DVecTSVecMult( const Creator<VT1>& creator1, const Creator<VT2>& creator2 );
+   explicit OperationTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -229,7 +229,7 @@ class DVecTSVecMult
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the DVecTSVecMult class template.
+/*!\brief Constructor for the dense vector/sparse vector outer product operation test.
 //
 // \param creator1 The creator for the left-hand side dense vector of the vector outer product.
 // \param creator2 The creator for the right-hand side sparse vector of the vector outer product.
@@ -237,7 +237,7 @@ class DVecTSVecMult
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
-DVecTSVecMult<VT1,VT2>::DVecTSVecMult( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
+OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
    : lhs_( creator1() )           // The left-hand side dense vector
    , rhs_( trans( creator2() ) )  // The right-hand side sparse vector
    , dres_()                      // The dense result matrix
@@ -287,7 +287,7 @@ DVecTSVecMult<VT1,VT2>::DVecTSVecMult( const Creator<VT1>& creator1, const Creat
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
-void DVecTSVecMult<VT1,VT2>::testInitialStatus()
+void OperationTest<VT1,VT2>::testInitialStatus()
 {
    // Checking the size of the left-hand side operand
    if( lhs_.size() != reflhs_.size() ) {
@@ -355,7 +355,7 @@ void DVecTSVecMult<VT1,VT2>::testInitialStatus()
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
-void DVecTSVecMult<VT1,VT2>::testAssignment()
+void OperationTest<VT1,VT2>::testAssignment()
 {
    try {
       lhs_ = reflhs_;
@@ -412,7 +412,7 @@ void DVecTSVecMult<VT1,VT2>::testAssignment()
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
-void DVecTSVecMult<VT1,VT2>::testElementAccess()
+void OperationTest<VT1,VT2>::testElementAccess()
 {
    using blaze::equal;
 
@@ -482,7 +482,7 @@ void DVecTSVecMult<VT1,VT2>::testElementAccess()
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
-void DVecTSVecMult<VT1,VT2>::testBasicOperation()
+void OperationTest<VT1,VT2>::testBasicOperation()
 {
 #if BLAZETEST_MATHTEST_TEST_BASIC_OPERATION
    if( BLAZETEST_MATHTEST_TEST_BASIC_OPERATION > 1 )
@@ -679,7 +679,7 @@ void DVecTSVecMult<VT1,VT2>::testBasicOperation()
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
-void DVecTSVecMult<VT1,VT2>::testNegatedOperation()
+void OperationTest<VT1,VT2>::testNegatedOperation()
 {
 #if BLAZETEST_MATHTEST_TEST_NEGATED_OPERATION
    if( BLAZETEST_MATHTEST_TEST_NEGATED_OPERATION > 1 )
@@ -878,7 +878,7 @@ void DVecTSVecMult<VT1,VT2>::testNegatedOperation()
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
 template< typename T >    // Type of the scalar
-void DVecTSVecMult<VT1,VT2>::testScaledOperation( T scalar )
+void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 {
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T );
 
@@ -1608,7 +1608,7 @@ void DVecTSVecMult<VT1,VT2>::testScaledOperation( T scalar )
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
-void DVecTSVecMult<VT1,VT2>::testTransposeOperation()
+void OperationTest<VT1,VT2>::testTransposeOperation()
 {
 #if BLAZETEST_MATHTEST_TEST_TRANSPOSE_OPERATION
    if( BLAZETEST_MATHTEST_TEST_TRANSPOSE_OPERATION > 1 )
@@ -1687,7 +1687,7 @@ void DVecTSVecMult<VT1,VT2>::testTransposeOperation()
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
-void DVecTSVecMult<VT1,VT2>::testAbsOperation()
+void OperationTest<VT1,VT2>::testAbsOperation()
 {
 #if BLAZETEST_MATHTEST_TEST_ABS_OPERATION
    if( BLAZETEST_MATHTEST_TEST_ABS_OPERATION > 1 )
@@ -1891,7 +1891,7 @@ void DVecTSVecMult<VT1,VT2>::testAbsOperation()
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
-void DVecTSVecMult<VT1,VT2>::checkResults()
+void OperationTest<VT1,VT2>::checkResults()
 {
    if( !isEqual( dres_, refres_ ) || !isEqual( odres_, refres_ ) ) {
       std::ostringstream oss;
@@ -1940,7 +1940,7 @@ void DVecTSVecMult<VT1,VT2>::checkResults()
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
-void DVecTSVecMult<VT1,VT2>::checkTransposeResults()
+void OperationTest<VT1,VT2>::checkTransposeResults()
 {
    if( !isEqual( tdres_, refres_ ) || !isEqual( todres_, refres_ ) ) {
       std::ostringstream oss;
@@ -1997,7 +1997,7 @@ template< typename VT1    // Type of the left-hand side dense vector
 void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
 {
    for( size_t rep=0; rep<repetitions; ++rep ) {
-      DVecTSVecMult<VT1,VT2>( creator1, creator2 );
+      OperationTest<VT1,VT2>( creator1, creator2 );
    }
 }
 //*************************************************************************************************
@@ -2015,8 +2015,8 @@ void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the definition of a dense vector/sparse vector outer product test case.
 */
-#define DEFINE_DVECTSVECMULT_TEST( VT1, VT2 ) \
-   extern template class blazetest::mathtest::dvectsvecmult::DVecTSVecMult<VT1,VT2>
+#define DEFINE_DVECTSVECMULT_OPERATION_TEST( VT1, VT2 ) \
+   extern template class blazetest::mathtest::dvectsvecmult::OperationTest<VT1,VT2>
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2025,7 +2025,7 @@ void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the execution of a dense vector/sparse vector outer product test case.
 */
-#define RUN_DVECTSVECMULT_TEST( C1, C2 ) \
+#define RUN_DVECTSVECMULT_OPERATION_TEST( C1, C2 ) \
    blazetest::mathtest::dvectsvecmult::runTest( C1, C2 )
 /*! \endcond */
 //*************************************************************************************************

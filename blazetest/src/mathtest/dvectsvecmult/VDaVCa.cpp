@@ -29,7 +29,7 @@
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/DynamicVector.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DVecTSVecMult.h>
+#include <blazetest/mathtest/dvectsvecmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -60,20 +60,20 @@ int main()
       for( size_t i=0UL; i<=8UL; ++i ) {
          for( size_t j=0UL; j<=8UL; ++j ) {
             for( size_t k=0UL; k<=j; ++k ) {
-               RUN_DVECTSVECMULT_TEST( CVDa( i ), CVCa( j, k ) );
+               RUN_DVECTSVECMULT_OPERATION_TEST( CVDa( i ), CVCa( j, k ) );
             }
          }
       }
 
       // Running tests with large vectors
-      RUN_DVECTSVECMULT_TEST( CVDa(  67UL ), CVCa(  67UL,  7UL ) );
-      RUN_DVECTSVECMULT_TEST( CVDa(  67UL ), CVCa( 127UL, 13UL ) );
-      RUN_DVECTSVECMULT_TEST( CVDa( 127UL ), CVCa(  67UL,  7UL ) );
-      RUN_DVECTSVECMULT_TEST( CVDa( 127UL ), CVCa( 127UL, 13UL ) );
-      RUN_DVECTSVECMULT_TEST( CVDa(  64UL ), CVCa(  64UL,  8UL ) );
-      RUN_DVECTSVECMULT_TEST( CVDa(  64UL ), CVCa( 128UL, 16UL ) );
-      RUN_DVECTSVECMULT_TEST( CVDa( 128UL ), CVCa(  64UL,  8UL ) );
-      RUN_DVECTSVECMULT_TEST( CVDa( 128UL ), CVCa( 128UL, 16UL ) );
+      RUN_DVECTSVECMULT_OPERATION_TEST( CVDa(  67UL ), CVCa(  67UL,  7UL ) );
+      RUN_DVECTSVECMULT_OPERATION_TEST( CVDa(  67UL ), CVCa( 127UL, 13UL ) );
+      RUN_DVECTSVECMULT_OPERATION_TEST( CVDa( 127UL ), CVCa(  67UL,  7UL ) );
+      RUN_DVECTSVECMULT_OPERATION_TEST( CVDa( 127UL ), CVCa( 127UL, 13UL ) );
+      RUN_DVECTSVECMULT_OPERATION_TEST( CVDa(  64UL ), CVCa(  64UL,  8UL ) );
+      RUN_DVECTSVECMULT_OPERATION_TEST( CVDa(  64UL ), CVCa( 128UL, 16UL ) );
+      RUN_DVECTSVECMULT_OPERATION_TEST( CVDa( 128UL ), CVCa(  64UL,  8UL ) );
+      RUN_DVECTSVECMULT_OPERATION_TEST( CVDa( 128UL ), CVCa( 128UL, 16UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense vector/sparse vector outer product:\n"
