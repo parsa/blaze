@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/staticmatrix/StaticMatrix.cpp
-//  \brief Source file for the StaticMatrix test
+//  \file src/mathtest/staticmatrix/ClassTest.cpp
+//  \brief Source file for the StaticMatrix class test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -27,7 +27,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/util/Complex.h>
-#include <blazetest/mathtest/StaticMatrix.h>
+#include <blazetest/mathtest/staticmatrix/ClassTest.h>
 
 
 namespace blazetest {
@@ -43,11 +43,11 @@ namespace staticmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the StaticMatrix test class.
+/*!\brief Constructor for the StaticMatrix class test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-StaticMatrix::StaticMatrix()
+ClassTest::ClassTest()
 {
    testAlignment< signed char          >( "signed char"          );
    testAlignment< unsigned char        >( "unsigned char"        );
@@ -93,7 +93,7 @@ StaticMatrix::StaticMatrix()
 // This function performs a test of all constructors of the StaticMatrix class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void StaticMatrix::testConstructors()
+void ClassTest::testConstructors()
 {
    //=====================================================================================
    // Row-major default constructor
@@ -1613,7 +1613,7 @@ void StaticMatrix::testConstructors()
 // This function performs a test of all assignment operators of the StaticMatrix class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void StaticMatrix::testAssignment()
+void ClassTest::testAssignment()
 {
    //=====================================================================================
    // Row-major homogeneous assignment
@@ -1808,7 +1808,7 @@ void StaticMatrix::testAssignment()
 // of the StaticMatrix class template. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-void StaticMatrix::testFunctionCall()
+void ClassTest::testFunctionCall()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2017,7 +2017,7 @@ void StaticMatrix::testFunctionCall()
 // This function performs a test of the nonZeros member function of StaticMatrix. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void StaticMatrix::testNonZeros()
+void ClassTest::testNonZeros()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2138,7 +2138,7 @@ void StaticMatrix::testNonZeros()
 // This function performs a test of the reset member function of StaticMatrix. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void StaticMatrix::testReset()
+void ClassTest::testReset()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2298,7 +2298,7 @@ void StaticMatrix::testReset()
 // This function performs a test of the transpose member functions of the StaticMatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void StaticMatrix::testTranspose()
+void ClassTest::testTranspose()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2377,7 +2377,7 @@ void StaticMatrix::testTranspose()
 // This function performs a test of the isDiagonal member functions of the StaticMatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void StaticMatrix::testIsDiagonal()
+void ClassTest::testIsDiagonal()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2588,7 +2588,7 @@ void StaticMatrix::testIsDiagonal()
 // This function performs a test of the isSymmetric member functions of the StaticMatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void StaticMatrix::testIsSymmetric()
+void ClassTest::testIsSymmetric()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2846,7 +2846,7 @@ void StaticMatrix::testIsSymmetric()
 // This function performs a test of the scale member function of StaticMatrix.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void StaticMatrix::testScale()
+void ClassTest::testScale()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -3070,7 +3070,7 @@ void StaticMatrix::testScale()
 // This function performs a test of the swap function of the StaticMatrix class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void StaticMatrix::testSwap()
+void ClassTest::testSwap()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -3187,14 +3187,14 @@ void StaticMatrix::testSwap()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running StaticMatrix test..." << std::endl;
+   std::cout << "   Running StaticMatrix class test..." << std::endl;
 
    try
    {
-      RUN_STATICMATRIX_TEST;
+      RUN_STATICMATRIX_CLASS_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during StaticMatrix test:\n"
+      std::cerr << "\n\n ERROR DETECTED during StaticMatrix class test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

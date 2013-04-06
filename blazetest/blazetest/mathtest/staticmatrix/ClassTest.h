@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/StaticMatrix.h
+//  \file blazetest/mathtest/staticmatrix/ClassTest.h
 //  \brief Header file for the StaticMatrix math test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_STATICMATRIX_H_
-#define _BLAZETEST_MATHTEST_STATICMATRIX_H_
+#ifndef _BLAZETEST_MATHTEST_STATICMATRIX_CLASSTEST_H_
+#define _BLAZETEST_MATHTEST_STATICMATRIX_CLASSTEST_H_
 
 
 //*************************************************************************************************
@@ -53,16 +53,16 @@ namespace staticmatrix {
 //*************************************************************************************************
 /*!\brief Auxiliary class for all tests of the StaticMatrix class template.
 //
-// The StaticMatrix class represents a test suite for the blaze::StaticMatrix class template.
-// It performs a series of both compile time as well as runtime tests.
+// This class represents a test suite for the blaze::StaticMatrix class template. It performs
+// a series of both compile time as well as runtime tests.
 */
-class StaticMatrix
+class ClassTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit StaticMatrix();
+   explicit ClassTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -151,7 +151,7 @@ class StaticMatrix
 // \a std::runtime_error exception is thrown.
 */
 template< typename Type >
-void StaticMatrix::testAlignment( const std::string& type )
+void ClassTest::testAlignment( const std::string& type )
 {
    const size_t alignment( blaze::AlignmentTrait<Type>::value );
 
@@ -211,7 +211,7 @@ void StaticMatrix::testAlignment( const std::string& type )
 // exception is thrown.
 */
 template< typename Type >  // Type of the static matrix
-void StaticMatrix::checkRows( const Type& matrix, size_t expectedRows ) const
+void ClassTest::checkRows( const Type& matrix, size_t expectedRows ) const
 {
    if( matrix.rows() != expectedRows ) {
       std::ostringstream oss;
@@ -239,7 +239,7 @@ void StaticMatrix::checkRows( const Type& matrix, size_t expectedRows ) const
 // a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the static matrix
-void StaticMatrix::checkColumns( const Type& matrix, size_t expectedColumns ) const
+void ClassTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 {
    if( matrix.columns() != expectedColumns ) {
       std::ostringstream oss;
@@ -267,7 +267,7 @@ void StaticMatrix::checkColumns( const Type& matrix, size_t expectedColumns ) co
 // thrown.
 */
 template< typename Type >  // Type of the static matrix
-void StaticMatrix::checkCapacity( const Type& matrix, size_t minCapacity ) const
+void ClassTest::checkCapacity( const Type& matrix, size_t minCapacity ) const
 {
    if( matrix.capacity() < minCapacity ) {
       std::ostringstream oss;
@@ -295,7 +295,7 @@ void StaticMatrix::checkCapacity( const Type& matrix, size_t minCapacity ) const
 // number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the static matrix
-void StaticMatrix::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
+void ClassTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
 {
    if( matrix.nonZeros() != expectedNonZeros ) {
       std::ostringstream oss;
@@ -334,7 +334,7 @@ void StaticMatrix::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) 
 // to the given expected number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the static matrix
-void StaticMatrix::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
+void ClassTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
 {
    if( matrix.nonZeros( index ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -376,7 +376,7 @@ void StaticMatrix::checkNonZeros( const Type& matrix, size_t index, size_t expec
 */
 void runTest()
 {
-   StaticMatrix();
+   ClassTest();
 }
 //*************************************************************************************************
 
@@ -391,9 +391,9 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the StaticMatrix test.
+/*!\brief Macro for the execution of the StaticMatrix class test.
 */
-#define RUN_STATICMATRIX_TEST \
+#define RUN_STATICMATRIX_CLASS_TEST \
    blazetest::mathtest::staticmatrix::runTest()
 /*! \endcond */
 //*************************************************************************************************

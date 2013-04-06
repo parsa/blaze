@@ -45,7 +45,7 @@ namespace staticvector {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the StaticVector test class.
+/*!\brief Constructor for the StaticVector class test.
 //
 // \exception std::runtime_error Operation error detected.
 */

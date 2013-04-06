@@ -37,7 +37,7 @@ default: $(BIN)
 
 
 # Build rules
-StaticMatrix: StaticMatrix.o
+ClassTest: ClassTest.o
 	@$(CXX) -o $@ $< $(LIBRARIES)
 
 
