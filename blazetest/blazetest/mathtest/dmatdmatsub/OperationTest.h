@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/DMatDMatSub.h
-//  \brief Header file for the dense matrix/dense matrix subtraction math test
+//  \file blazetest/mathtest/dmatdmatsub/OperationTest.h
+//  \brief Header file for the dense matrix/dense matrix subtraction operation test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -62,13 +62,13 @@ namespace dmatdmatsub {
 //*************************************************************************************************
 /*!\brief Auxiliary class template for the dense matrix/dense matrix subtraction math test.
 //
-// The DMatDMatSub class template represents one particular matrix subtraction test between two
-// matrices of a particular type. The two template arguments \a MT1 and \a MT2 represent the
-// types of the left-hand side and right-hand side matrix, respectively.
+// This class template represents one particular matrix subtraction test between two matrices
+// of a particular type. The two template arguments \a MT1 and \a MT2 represent the types of
+// the left-hand side and right-hand side matrix, respectively.
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-class DMatDMatSub
+class OperationTest
 {
  private:
    //**Type definitions****************************************************************************
@@ -110,7 +110,7 @@ class DMatDMatSub
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit DMatDMatSub( const Creator<MT1>& creator1, const Creator<MT2>& creator2 );
+   explicit OperationTest( const Creator<MT1>& creator1, const Creator<MT2>& creator2 );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -240,7 +240,7 @@ class DMatDMatSub
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the DMatDMatSub class template.
+/*!\brief Constructor for the dense matrix/dense matrix subtraction operation test.
 //
 // \param creator1 The creator for the left-hand side dense matrix of the matrix subtraction.
 // \param creator2 The creator for the right-hand side dense matrix of the matrix subtraction.
@@ -248,7 +248,7 @@ class DMatDMatSub
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-DMatDMatSub<MT1,MT2>::DMatDMatSub( const Creator<MT1>& creator1, const Creator<MT2>& creator2 )
+OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creator<MT2>& creator2 )
    : lhs_( creator1() )  // The left-hand side dense matrix
    , rhs_( creator2() )  // The right-hand side dense matrix
    , olhs_( lhs_ )       // The left-hand side dense matrix with opposite storage order
@@ -300,7 +300,7 @@ DMatDMatSub<MT1,MT2>::DMatDMatSub( const Creator<MT1>& creator1, const Creator<M
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-void DMatDMatSub<MT1,MT2>::testInitialStatus()
+void OperationTest<MT1,MT2>::testInitialStatus()
 {
    //=====================================================================================
    // Performing initial tests with the row-major types
@@ -481,7 +481,7 @@ void DMatDMatSub<MT1,MT2>::testInitialStatus()
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-void DMatDMatSub<MT1,MT2>::testAssignment()
+void OperationTest<MT1,MT2>::testAssignment()
 {
    //=====================================================================================
    // // Performing an assignment with the row-major types
@@ -588,7 +588,7 @@ void DMatDMatSub<MT1,MT2>::testAssignment()
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-void DMatDMatSub<MT1,MT2>::testElementAccess()
+void OperationTest<MT1,MT2>::testElementAccess()
 {
    using blaze::equal;
 
@@ -831,7 +831,7 @@ void DMatDMatSub<MT1,MT2>::testElementAccess()
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-void DMatDMatSub<MT1,MT2>::testBasicOperation()
+void OperationTest<MT1,MT2>::testBasicOperation()
 {
 #if BLAZETEST_MATHTEST_TEST_BASIC_OPERATION
    if( BLAZETEST_MATHTEST_TEST_BASIC_OPERATION > 1 )
@@ -1418,7 +1418,7 @@ void DMatDMatSub<MT1,MT2>::testBasicOperation()
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-void DMatDMatSub<MT1,MT2>::testNegatedOperation()
+void OperationTest<MT1,MT2>::testNegatedOperation()
 {
 #if BLAZETEST_MATHTEST_TEST_NEGATED_OPERATION
    if( BLAZETEST_MATHTEST_TEST_NEGATED_OPERATION > 1 )
@@ -2007,7 +2007,7 @@ void DMatDMatSub<MT1,MT2>::testNegatedOperation()
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
 template< typename T >    // Type of the scalar
-void DMatDMatSub<MT1,MT2>::testScaledOperation( T scalar )
+void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 {
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T );
 
@@ -3907,7 +3907,7 @@ void DMatDMatSub<MT1,MT2>::testScaledOperation( T scalar )
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-void DMatDMatSub<MT1,MT2>::testTransposeOperation()
+void OperationTest<MT1,MT2>::testTransposeOperation()
 {
 #if BLAZETEST_MATHTEST_TEST_TRANSPOSE_OPERATION
    if( BLAZETEST_MATHTEST_TEST_TRANSPOSE_OPERATION > 1 )
@@ -4112,7 +4112,7 @@ void DMatDMatSub<MT1,MT2>::testTransposeOperation()
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-void DMatDMatSub<MT1,MT2>::testAbsOperation()
+void OperationTest<MT1,MT2>::testAbsOperation()
 {
 #if BLAZETEST_MATHTEST_TEST_ABS_OPERATION
    if( BLAZETEST_MATHTEST_TEST_ABS_OPERATION > 1 )
@@ -4710,7 +4710,7 @@ template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
 template< typename LT     // Type of the left-hand side operand
         , typename RT >   // Type of the right-hand side operand
-void DMatDMatSub<MT1,MT2>::checkResults()
+void OperationTest<MT1,MT2>::checkResults()
 {
    using blaze::IsRowMajorMatrix;
 
@@ -4764,7 +4764,7 @@ template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
 template< typename LT     // Type of the left-hand side operand
         , typename RT >   // Type of the right-hand side operand
-void DMatDMatSub<MT1,MT2>::checkTransposeResults()
+void OperationTest<MT1,MT2>::checkTransposeResults()
 {
    using blaze::IsRowMajorMatrix;
 
@@ -4823,7 +4823,7 @@ template< typename MT1    // Type of the left-hand side dense matrix
 void runTest( const Creator<MT1>& creator1, const Creator<MT2>& creator2 )
 {
    for( size_t rep=0; rep<repetitions; ++rep ) {
-      DMatDMatSub<MT1,MT2>( creator1, creator2 );
+      OperationTest<MT1,MT2>( creator1, creator2 );
    }
 }
 //*************************************************************************************************
@@ -4841,8 +4841,8 @@ void runTest( const Creator<MT1>& creator1, const Creator<MT2>& creator2 )
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the definition of a dense matrix/dense matrix subtraction test case.
 */
-#define DEFINE_DMATDMATSUB_TEST( MT1, MT2 ) \
-   extern template class blazetest::mathtest::dmatdmatsub::DMatDMatSub<MT1,MT2>
+#define DEFINE_DMATDMATSUB_OPERATION_TEST( MT1, MT2 ) \
+   extern template class blazetest::mathtest::dmatdmatsub::OperationTest<MT1,MT2>
 /*! \endcond */
 //*************************************************************************************************
 
@@ -4851,7 +4851,7 @@ void runTest( const Creator<MT1>& creator1, const Creator<MT2>& creator2 )
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the execution of a dense matrix/dense matrix subtraction test case.
 */
-#define RUN_DMATDMATSUB_TEST( C1, C2 ) \
+#define RUN_DMATDMATSUB_OPERATION_TEST( C1, C2 ) \
    blazetest::mathtest::dmatdmatsub::runTest( C1, C2 )
 /*! \endcond */
 //*************************************************************************************************

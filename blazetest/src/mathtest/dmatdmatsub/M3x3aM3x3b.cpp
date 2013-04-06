@@ -28,7 +28,7 @@
 #include <iostream>
 #include <blaze/math/StaticMatrix.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DMatDMatSub.h>
+#include <blazetest/mathtest/dmatdmatsub/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -57,7 +57,7 @@ int main()
       typedef blazetest::Creator<M3x3b>  CM3x3b;
 
       // Running the tests
-      RUN_DMATDMATSUB_TEST( CM3x3a(), CM3x3b() );
+      RUN_DMATDMATSUB_OPERATION_TEST( CM3x3a(), CM3x3b() );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense matrix/dense matrix subtraction:\n"
