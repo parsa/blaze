@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/utiltest/uniqueptr/UniquePtr.cpp
-//  \brief Source file for the UniquePtr test
+//  \file src/utiltest/uniqueptr/ClassTest.cpp
+//  \brief Source file for the UniquePtr class test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -46,7 +46,7 @@ namespace uniqueptr {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the ClassTest class.
+/*!\brief Constructor for the UniquePtr class test.
 //
 // \exception std::runtime_error Operation error detected.
 */

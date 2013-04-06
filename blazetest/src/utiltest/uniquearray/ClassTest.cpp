@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/utiltest/uniquearray/UniqueArray.cpp
-//  \brief Source file for the UniqueArray test
+//  \file src/utiltest/uniquearray/ClassTest.cpp
+//  \brief Source file for the UniqueArray class test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -46,7 +46,7 @@ namespace uniquearray {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the ClassTest class.
+/*!\brief Constructor for the UniqueArray class test.
 //
 // \exception std::runtime_error Operation error detected.
 */
