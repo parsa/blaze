@@ -29,7 +29,7 @@
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/StaticVector.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/TSVecDVecMult.h>
+#include <blazetest/mathtest/tsvecdvecmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -59,7 +59,7 @@ int main()
 
       // Running the tests
       for( size_t i=0UL; i<=5UL; ++i ) {
-         RUN_TSVECDVECMULT_TEST( CVCb( 5UL, i ), CV5a() );
+         RUN_TSVECDVECMULT_OPERATION_TEST( CVCb( 5UL, i ), CV5a() );
       }
    }
    catch( std::exception& ex ) {
