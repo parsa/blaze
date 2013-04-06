@@ -28,7 +28,7 @@
 #include <iostream>
 #include <blaze/math/CompressedVector.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/SVecSVecMult.h>
+#include <blazetest/mathtest/svecsvecmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -57,14 +57,14 @@ int main()
       for( size_t i=0UL; i<=8UL; ++i ) {
          for( size_t j=0UL; j<=i; ++j ) {
             for( size_t k=0UL; k<=i; ++k ) {
-               RUN_SVECSVECMULT_TEST( CVCa( i, j ), CVCa( i, k ) );
+               RUN_SVECSVECMULT_OPERATION_TEST( CVCa( i, j ), CVCa( i, k ) );
             }
          }
       }
 
       // Running tests with large vectors
-      RUN_SVECSVECMULT_TEST( CVCa( 127UL, 13UL ), CVCa( 127UL, 13UL ) );
-      RUN_SVECSVECMULT_TEST( CVCa( 128UL, 16UL ), CVCa( 128UL, 16UL ) );
+      RUN_SVECSVECMULT_OPERATION_TEST( CVCa( 127UL, 13UL ), CVCa( 127UL, 13UL ) );
+      RUN_SVECSVECMULT_OPERATION_TEST( CVCa( 128UL, 16UL ), CVCa( 128UL, 16UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during sparse vector/sparse vector multiplication:\n"
