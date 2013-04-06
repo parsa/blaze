@@ -28,7 +28,7 @@
 #include <iostream>
 #include <blaze/math/StaticVector.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/TDVecDVecMult.h>
+#include <blazetest/mathtest/tdvecdvecmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -54,7 +54,7 @@ int main()
       typedef blazetest::Creator<V2b>  CV2b;
 
       // Running the tests
-      RUN_TDVECDVECMULT_TEST( CV2b(), CV2b() );
+      RUN_TDVECDVECMULT_OPERATION_TEST( CV2b(), CV2b() );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense vector/dense vector inner product:\n"
