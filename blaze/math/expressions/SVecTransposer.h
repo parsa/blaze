@@ -143,7 +143,7 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
    // not allowed. In case the sparse matrix already contains an element with row index \a index,
    // a \a std::invalid_argument exception is thrown.
    */
-   inline ElementType& insert( size_t index, const ElementType& value ) {
+   inline Iterator insert( size_t index, const ElementType& value ) {
       return sv_.insert( index, value );
    }
    //**********************************************************************************************
