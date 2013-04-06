@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/StaticVector.h
-//  \brief Header file for the StaticVector math test
+//  \file blazetest/mathtest/staticvector/ClassTest.h
+//  \brief Header file for the StaticVector class test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_STATICVECTOR_H_
-#define _BLAZETEST_MATHTEST_STATICVECTOR_H_
+#ifndef _BLAZETEST_MATHTEST_STATICVECTOR_CLASSTEST_H_
+#define _BLAZETEST_MATHTEST_STATICVECTOR_CLASSTEST_H_
 
 
 //*************************************************************************************************
@@ -51,16 +51,16 @@ namespace staticvector {
 //*************************************************************************************************
 /*!\brief Auxiliary class for all tests of the StaticVector class template.
 //
-// The StaticVector class represents a test suite for the blaze::StaticVector class template.
-// It performs a series of both compile time as well as runtime tests.
+// This class represents a test suite for the blaze::StaticVector class template. It performs a
+// series of both compile time as well as runtime tests.
 */
-class StaticVector
+class ClassTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit StaticVector();
+   explicit ClassTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -142,7 +142,7 @@ class StaticVector
 // element type. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >
-void StaticVector::testAlignment( const std::string& type )
+void ClassTest::testAlignment( const std::string& type )
 {
    blaze::StaticVector<Type,7UL,blaze::rowVector> vec;
    const size_t alignment( blaze::AlignmentTrait<Type>::value );
@@ -174,7 +174,7 @@ void StaticVector::testAlignment( const std::string& type )
 // thrown.
 */
 template< typename Type >  // Type of the static vector
-void StaticVector::checkSize( const Type& vector, size_t expectedSize ) const
+void ClassTest::checkSize( const Type& vector, size_t expectedSize ) const
 {
    if( vector.size() != expectedSize ) {
       std::ostringstream oss;
@@ -202,7 +202,7 @@ void StaticVector::checkSize( const Type& vector, size_t expectedSize ) const
 // thrown.
 */
 template< typename Type >  // Type of the static vector
-void StaticVector::checkCapacity( const Type& vector, size_t minCapacity ) const
+void ClassTest::checkCapacity( const Type& vector, size_t minCapacity ) const
 {
    if( vector.capacity() < minCapacity ) {
       std::ostringstream oss;
@@ -230,7 +230,7 @@ void StaticVector::checkCapacity( const Type& vector, size_t minCapacity ) const
 // number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the static vector
-void StaticVector::checkNonZeros( const Type& vector, size_t expectedNonZeros ) const
+void ClassTest::checkNonZeros( const Type& vector, size_t expectedNonZeros ) const
 {
    if( vector.nonZeros() != expectedNonZeros ) {
       std::ostringstream oss;
@@ -260,7 +260,7 @@ void StaticVector::checkNonZeros( const Type& vector, size_t expectedNonZeros ) 
 */
 void runTest()
 {
-   StaticVector();
+   ClassTest();
 }
 //*************************************************************************************************
 
@@ -275,9 +275,9 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the StaticVector test.
+/*!\brief Macro for the execution of the StaticVector class test.
 */
-#define RUN_STATICVECTOR_TEST \
+#define RUN_STATICVECTOR_CLASS_TEST \
    blazetest::mathtest::staticvector::runTest()
 /*! \endcond */
 //*************************************************************************************************

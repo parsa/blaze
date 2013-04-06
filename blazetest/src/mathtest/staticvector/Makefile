@@ -37,7 +37,7 @@ default: $(BIN)
 
 
 # Build rules
-StaticVector: StaticVector.o
+ClassTest: ClassTest.o
 	@$(CXX) -o $@ $< $(LIBRARIES)
 
 

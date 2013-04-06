@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/staticvector/StaticVector.cpp
-//  \brief Source file for the StaticVector test
+//  \file src/mathtest/staticvector/ClassTest.cpp
+//  \brief Source file for the StaticVector class test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -29,7 +29,7 @@
 #include <blaze/math/shims/Equal.h>
 #include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/Complex.h>
-#include <blazetest/mathtest/StaticVector.h>
+#include <blazetest/mathtest/staticvector/ClassTest.h>
 
 
 namespace blazetest {
@@ -49,7 +49,7 @@ namespace staticvector {
 //
 // \exception std::runtime_error Operation error detected.
 */
-StaticVector::StaticVector()
+ClassTest::ClassTest()
 {
    testAlignment< signed char          >( "signed char"          );
    testAlignment< unsigned char        >( "unsigned char"        );
@@ -95,7 +95,7 @@ StaticVector::StaticVector()
 // This function performs a test of all constructors of the StaticVector class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void StaticVector::testConstructors()
+void ClassTest::testConstructors()
 {
    // Default constructor
    {
@@ -300,7 +300,7 @@ void StaticVector::testConstructors()
 // This function performs a test of all assignment operators of the StaticVector class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void StaticVector::testAssignment()
+void ClassTest::testAssignment()
 {
    // Homogeneous assignment
    {
@@ -383,7 +383,7 @@ void StaticVector::testAssignment()
 // of the StaticVector class template. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-void StaticVector::testSubscript()
+void ClassTest::testSubscript()
 {
    test_ = "StaticVector::operator[]";
 
@@ -468,7 +468,7 @@ void StaticVector::testSubscript()
 // This function performs a test of the nonZeros member function of StaticVector. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void StaticVector::testNonZeros()
+void ClassTest::testNonZeros()
 {
    test_ = "StaticVector::nonZeros()";
 
@@ -520,7 +520,7 @@ void StaticVector::testNonZeros()
 // This function performs a test of the reset member function of StaticVector. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void StaticVector::testReset()
+void ClassTest::testReset()
 {
    test_ = "StaticVector::reset()";
 
@@ -571,7 +571,7 @@ void StaticVector::testReset()
 // StaticVector class template. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-void StaticVector::testNormalize()
+void ClassTest::testNormalize()
 {
    test_ = "StaticVector::normalize()";
 
@@ -630,7 +630,7 @@ void StaticVector::testNormalize()
 // This function performs a test of the scale member function of StaticVector.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void StaticVector::testScale()
+void ClassTest::testScale()
 {
    test_ = "StaticVector::scale()";
 
@@ -722,7 +722,7 @@ void StaticVector::testScale()
 // This function performs a test of the swap function of the StaticVector class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void StaticVector::testSwap()
+void ClassTest::testSwap()
 {
    test_ = "StaticVector swap";
 
@@ -771,7 +771,7 @@ void StaticVector::testSwap()
 // This function performs a test of the min function used with the StaticVector class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void StaticVector::testMinimum()
+void ClassTest::testMinimum()
 {
    test_ = "min() function";
 
@@ -851,7 +851,7 @@ void StaticVector::testMinimum()
 // This function performs a test of the max function used with the StaticVector class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void StaticVector::testMaximum()
+void ClassTest::testMaximum()
 {
    test_ = "max() function";
 
@@ -939,14 +939,14 @@ void StaticVector::testMaximum()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running StaticVector test..." << std::endl;
+   std::cout << "   Running StaticVector class test..." << std::endl;
 
    try
    {
-      RUN_STATICVECTOR_TEST;
+      RUN_STATICVECTOR_CLASS_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during StaticVector test:\n"
+      std::cerr << "\n\n ERROR DETECTED during StaticVector class test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }
