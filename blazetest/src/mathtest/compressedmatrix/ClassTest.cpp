@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/compressedmatrix/CompressedMatrix.cpp
-//  \brief Source file for the CompressedMatrix test
+//  \file src/mathtest/compressedmatrix/ClassTest.cpp
+//  \brief Source file for the CompressedMatrix class test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -27,7 +27,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/util/Complex.h>
-#include <blazetest/mathtest/CompressedMatrix.h>
+#include <blazetest/mathtest/compressedmatrix/ClassTest.h>
 
 
 namespace blazetest {
@@ -43,11 +43,11 @@ namespace compressedmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the CompressedMatrix test class.
+/*!\brief Constructor for the CompressedMatrix class test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-CompressedMatrix::CompressedMatrix()
+ClassTest::ClassTest()
 {
    testConstructors();
    testAssignment();
@@ -87,7 +87,7 @@ CompressedMatrix::CompressedMatrix()
 // This function performs a test of all constructors of the CompressedMatrix class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedMatrix::testConstructors()
+void ClassTest::testConstructors()
 {
    //=====================================================================================
    // Row-major default constructor
@@ -592,7 +592,7 @@ void CompressedMatrix::testConstructors()
 // This function performs a test of all assignment operators of the CompressedMatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedMatrix::testAssignment()
+void ClassTest::testAssignment()
 {
    //=====================================================================================
    // Row-major copy assignment
@@ -738,7 +738,7 @@ void CompressedMatrix::testAssignment()
 // of the CompressedMatrix class template. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-void CompressedMatrix::testFunctionCall()
+void ClassTest::testFunctionCall()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -947,7 +947,7 @@ void CompressedMatrix::testFunctionCall()
 // This function performs a test of the nonZeros member function of CompressedMatrix. In
 // case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedMatrix::testNonZeros()
+void ClassTest::testNonZeros()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -1061,7 +1061,7 @@ void CompressedMatrix::testNonZeros()
 // This function performs a test of the reset member function of CompressedMatrix. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedMatrix::testReset()
+void ClassTest::testReset()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -1207,7 +1207,7 @@ void CompressedMatrix::testReset()
 // This function performs a test of the clear member function of CompressedMatrix. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedMatrix::testClear()
+void ClassTest::testClear()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -1303,7 +1303,7 @@ void CompressedMatrix::testClear()
 // This function performs a test of the append member function of CompressedMatrix. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedMatrix::testAppend()
+void ClassTest::testAppend()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -1666,7 +1666,7 @@ void CompressedMatrix::testAppend()
 // This function performs a test of the insert member function of CompressedMatrix. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedMatrix::testInsert()
+void ClassTest::testInsert()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -1963,7 +1963,7 @@ void CompressedMatrix::testInsert()
 // This function performs a test of the erase member function of CompressedMatrix. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedMatrix::testErase()
+void ClassTest::testErase()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2238,7 +2238,7 @@ void CompressedMatrix::testErase()
 // This function performs a test of the find member function of CompressedMatrix. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedMatrix::testFind()
+void ClassTest::testFind()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2507,7 +2507,7 @@ void CompressedMatrix::testFind()
 // This function performs a test of the resize member function of CompressedMatrix. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedMatrix::testResize()
+void ClassTest::testResize()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2821,7 +2821,7 @@ void CompressedMatrix::testResize()
 // This function performs a test of the reserve member function of CompressedMatrix. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedMatrix::testReserve()
+void ClassTest::testReserve()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2898,7 +2898,7 @@ void CompressedMatrix::testReserve()
 // This function performs a test of the transpose member functions of the CompressedMatrix
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedMatrix::testTranspose()
+void ClassTest::testTranspose()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2993,7 +2993,7 @@ void CompressedMatrix::testTranspose()
 // This function performs a test of the isDiagonal member functions of the CompressedMatrix
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedMatrix::testIsDiagonal()
+void ClassTest::testIsDiagonal()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -3214,7 +3214,7 @@ void CompressedMatrix::testIsDiagonal()
 // This function performs a test of the isSymmetric member functions of the CompressedMatrix
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedMatrix::testIsSymmetric()
+void ClassTest::testIsSymmetric()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -3492,7 +3492,7 @@ void CompressedMatrix::testIsSymmetric()
 // This function performs a test of the scale member function of CompressedMatrix.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedMatrix::testScale()
+void ClassTest::testScale()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -3710,7 +3710,7 @@ void CompressedMatrix::testScale()
 // This function performs a test of the swap function of the CompressedMatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedMatrix::testSwap()
+void ClassTest::testSwap()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -3845,14 +3845,14 @@ void CompressedMatrix::testSwap()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running CompressedMatrix test..." << std::endl;
+   std::cout << "   Running CompressedMatrix class test..." << std::endl;
 
    try
    {
-      RUN_COMPRESSEDMATRIX_TEST;
+      RUN_COMPRESSEDMATRIX_CLASS_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during CompressedMatrix test:\n"
+      std::cerr << "\n\n ERROR DETECTED during CompressedMatrix class test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

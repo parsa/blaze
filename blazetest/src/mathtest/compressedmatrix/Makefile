@@ -37,7 +37,7 @@ default: $(BIN)
 
 
 # Build rules
-CompressedMatrix: CompressedMatrix.o
+ClassTest: ClassTest.o
 	@$(CXX) -o $@ $< $(LIBRARIES)
 
 

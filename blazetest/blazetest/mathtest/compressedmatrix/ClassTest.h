@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/CompressedMatrix.h
-//  \brief Header file for the CompressedMatrix math test
+//  \file blazetest/mathtest/compressedmatrix/ClassTest.h
+//  \brief Header file for the CompressedMatrix class test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_COMPRESSEDMATRIX_H_
-#define _BLAZETEST_MATHTEST_COMPRESSEDMATRIX_H_
+#ifndef _BLAZETEST_MATHTEST_COMPRESSEDMATRIX_CLASSTEST_H_
+#define _BLAZETEST_MATHTEST_COMPRESSEDMATRIX_CLASSTEST_H_
 
 
 //*************************************************************************************************
@@ -52,16 +52,16 @@ namespace compressedmatrix {
 //*************************************************************************************************
 /*!\brief Auxiliary class for all tests of the CompressedMatrix class template.
 //
-// The CompressedMatrix class represents a test suite for the blaze::CompressedMatrix class
-// template. It performs a series of both compile time as well as runtime tests.
+// This class represents a test suite for the blaze::CompressedMatrix class template. It performs
+// a series of both compile time as well as runtime tests.
 */
-class CompressedMatrix
+class ClassTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit CompressedMatrix();
+   explicit ClassTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -155,7 +155,7 @@ class CompressedMatrix
 // \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the compressed matrix
-void CompressedMatrix::checkRows( const Type& matrix, size_t expectedRows ) const
+void ClassTest::checkRows( const Type& matrix, size_t expectedRows ) const
 {
    if( matrix.rows() != expectedRows ) {
       std::ostringstream oss;
@@ -183,7 +183,7 @@ void CompressedMatrix::checkRows( const Type& matrix, size_t expectedRows ) cons
 // a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the compressed matrix
-void CompressedMatrix::checkColumns( const Type& matrix, size_t expectedColumns ) const
+void ClassTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 {
    if( matrix.columns() != expectedColumns ) {
       std::ostringstream oss;
@@ -211,7 +211,7 @@ void CompressedMatrix::checkColumns( const Type& matrix, size_t expectedColumns 
 // thrown.
 */
 template< typename Type >  // Type of the compressed matrix
-void CompressedMatrix::checkCapacity( const Type& matrix, size_t minCapacity ) const
+void ClassTest::checkCapacity( const Type& matrix, size_t minCapacity ) const
 {
    if( matrix.capacity() < minCapacity ) {
       std::ostringstream oss;
@@ -239,7 +239,7 @@ void CompressedMatrix::checkCapacity( const Type& matrix, size_t minCapacity ) c
 // number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the compressed matrix
-void CompressedMatrix::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
+void ClassTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
 {
    if( matrix.nonZeros() != expectedNonZeros ) {
       std::ostringstream oss;
@@ -278,7 +278,7 @@ void CompressedMatrix::checkNonZeros( const Type& matrix, size_t expectedNonZero
 // to the given expected number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the compressed matrix
-void CompressedMatrix::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
+void ClassTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
 {
    if( matrix.nonZeros( index ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -320,7 +320,7 @@ void CompressedMatrix::checkNonZeros( const Type& matrix, size_t index, size_t e
 */
 void runTest()
 {
-   CompressedMatrix();
+   ClassTest();
 }
 //*************************************************************************************************
 
@@ -335,9 +335,9 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the CompressedMatrix test.
+/*!\brief Macro for the execution of the CompressedMatrix class test.
 */
-#define RUN_COMPRESSEDMATRIX_TEST \
+#define RUN_COMPRESSEDMATRIX_CLASS_TEST \
    blazetest::mathtest::compressedmatrix::runTest()
 /*! \endcond */
 //*************************************************************************************************
