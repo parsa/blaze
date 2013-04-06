@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blazetest/mathtest/staticmatrix/ClassTest.h
-//  \brief Header file for the StaticMatrix math test
+//  \brief Header file for the StaticMatrix class test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //

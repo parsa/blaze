@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/DynamicVector.h
-//  \brief Header file for the DynamicVector math test
+//  \file blazetest/mathtest/dynamicvector/ClassTest.h
+//  \brief Header file for the DynamicVector class test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DYNAMICVECTOR_H_
-#define _BLAZETEST_MATHTEST_DYNAMICVECTOR_H_
+#ifndef _BLAZETEST_MATHTEST_DYNAMICVECTOR_CLASSTEST_H_
+#define _BLAZETEST_MATHTEST_DYNAMICVECTOR_CLASSTEST_H_
 
 
 //*************************************************************************************************
@@ -51,16 +51,16 @@ namespace dynamicvector {
 //*************************************************************************************************
 /*!\brief Auxiliary class for all tests of the DynamicVector class template.
 //
-// The DynamicVector class represents a test suite for the blaze::DynamicVector class template.
-// It performs a series of both compile time as well as runtime tests.
+// This class represents a test suite for the blaze::DynamicVector class template. It performs
+// a series of both compile time as well as runtime tests.
 */
-class DynamicVector
+class ClassTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit DynamicVector();
+   explicit ClassTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -147,7 +147,7 @@ class DynamicVector
 // element type. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >
-void DynamicVector::testAlignment( const std::string& type )
+void ClassTest::testAlignment( const std::string& type )
 {
    blaze::DynamicVector<Type,blaze::rowVector> vec( 7UL );
    const size_t alignment( blaze::AlignmentTrait<Type>::value );
@@ -179,7 +179,7 @@ void DynamicVector::testAlignment( const std::string& type )
 // thrown.
 */
 template< typename Type >  // Type of the dynamic vector
-void DynamicVector::checkSize( const Type& vector, size_t expectedSize ) const
+void ClassTest::checkSize( const Type& vector, size_t expectedSize ) const
 {
    if( vector.size() != expectedSize ) {
       std::ostringstream oss;
@@ -207,7 +207,7 @@ void DynamicVector::checkSize( const Type& vector, size_t expectedSize ) const
 // thrown.
 */
 template< typename Type >  // Type of the dynamic vector
-void DynamicVector::checkCapacity( const Type& vector, size_t minCapacity ) const
+void ClassTest::checkCapacity( const Type& vector, size_t minCapacity ) const
 {
    if( vector.capacity() < minCapacity ) {
       std::ostringstream oss;
@@ -235,7 +235,7 @@ void DynamicVector::checkCapacity( const Type& vector, size_t minCapacity ) cons
 // number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dynamic vector
-void DynamicVector::checkNonZeros( const Type& vector, size_t expectedNonZeros ) const
+void ClassTest::checkNonZeros( const Type& vector, size_t expectedNonZeros ) const
 {
    if( vector.nonZeros() != expectedNonZeros ) {
       std::ostringstream oss;
@@ -265,7 +265,7 @@ void DynamicVector::checkNonZeros( const Type& vector, size_t expectedNonZeros )
 */
 void runTest()
 {
-   DynamicVector();
+   ClassTest();
 }
 //*************************************************************************************************
 
@@ -280,9 +280,9 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the DynamicVector test.
+/*!\brief Macro for the execution of the DynamicVector class test.
 */
-#define RUN_DYNAMICVECTOR_TEST \
+#define RUN_DYNAMICVECTOR_CLASS_TEST \
    blazetest::mathtest::dynamicvector::runTest()
 /*! \endcond */
 //*************************************************************************************************

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/dynamicvector/DynamicVector.cpp
-//  \brief Source file for the DynamicVector test
+//  \file src/mathtest/dynamicvector/ClassTest.cpp
+//  \brief Source file for the DynamicVector class test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -29,7 +29,7 @@
 #include <blaze/math/shims/Equal.h>
 #include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/Complex.h>
-#include <blazetest/mathtest/DynamicVector.h>
+#include <blazetest/mathtest/dynamicvector/ClassTest.h>
 
 
 namespace blazetest {
@@ -45,11 +45,11 @@ namespace dynamicvector {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the DynamicVector test class.
+/*!\brief Constructor for the DynamicVector class test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-DynamicVector::DynamicVector()
+ClassTest::ClassTest()
 {
    testAlignment< signed char          >( "signed char"          );
    testAlignment< unsigned char        >( "unsigned char"        );
@@ -99,7 +99,7 @@ DynamicVector::DynamicVector()
 // This function performs a test of all constructors of the DynamicVector class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicVector::testConstructors()
+void ClassTest::testConstructors()
 {
    //=====================================================================================
    // Default constructor
@@ -250,7 +250,7 @@ void DynamicVector::testConstructors()
 // This function performs a test of all assignment operators of the DynamicVector class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicVector::testAssignment()
+void ClassTest::testAssignment()
 {
    // Homogeneous assignment
    {
@@ -338,7 +338,7 @@ void DynamicVector::testAssignment()
 // of the DynamicVector class template. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-void DynamicVector::testSubscript()
+void ClassTest::testSubscript()
 {
    test_ = "DynamicVector::operator[]";
 
@@ -423,7 +423,7 @@ void DynamicVector::testSubscript()
 // This function performs a test of the nonZeros member function of DynamicVector. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicVector::testNonZeros()
+void ClassTest::testNonZeros()
 {
    test_ = "DynamicVector::nonZeros()";
 
@@ -479,7 +479,7 @@ void DynamicVector::testNonZeros()
 // This function performs a test of the reset member function of DynamicVector. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicVector::testReset()
+void ClassTest::testReset()
 {
    test_ = "DynamicVector::reset()";
 
@@ -533,7 +533,7 @@ void DynamicVector::testReset()
 // This function performs a test of the clear member function of DynamicVector. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicVector::testClear()
+void ClassTest::testClear()
 {
    test_ = "DynamicVector::clear()";
 
@@ -576,7 +576,7 @@ void DynamicVector::testClear()
 // This function performs a test of the resize member function of DynamicVector. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicVector::testResize()
+void ClassTest::testResize()
 {
    test_ = "DynamicVector::resize()";
 
@@ -658,7 +658,7 @@ void DynamicVector::testResize()
 // This function performs a test of the extend member function of DynamicVector. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicVector::testExtend()
+void ClassTest::testExtend()
 {
    test_ = "DynamicVector::extend()";
 
@@ -712,7 +712,7 @@ void DynamicVector::testExtend()
 // This function performs a test of the reserve member function of DynamicVector. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicVector::testReserve()
+void ClassTest::testReserve()
 {
    test_ = "DynamicVector::reserve()";
 
@@ -748,7 +748,7 @@ void DynamicVector::testReserve()
 // This function performs a test of the length and sqrLength member functions of DynamicVector.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicVector::testLength()
+void ClassTest::testLength()
 {
    test_ = "DynamicVector::length()";
 
@@ -810,7 +810,7 @@ void DynamicVector::testLength()
 // the DynamicVector class template. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-void DynamicVector::testNormalize()
+void ClassTest::testNormalize()
 {
    test_ = "DynamicVector::normalize()";
 
@@ -873,7 +873,7 @@ void DynamicVector::testNormalize()
 // This function performs a test of the scale member function of DynamicVector.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicVector::testScale()
+void ClassTest::testScale()
 {
    test_ = "DynamicVector::scale()";
 
@@ -969,7 +969,7 @@ void DynamicVector::testScale()
 // This function performs a test of the swap function of the DynamicVector class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicVector::testSwap()
+void ClassTest::testSwap()
 {
    test_ = "DynamicVector swap";
 
@@ -1026,7 +1026,7 @@ void DynamicVector::testSwap()
 // This function performs a test of the min function used with the DynamicVector class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicVector::testMinimum()
+void ClassTest::testMinimum()
 {
    test_ = "min() function";
 
@@ -1114,7 +1114,7 @@ void DynamicVector::testMinimum()
 // This function performs a test of the max function used with the DynamicVector class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicVector::testMaximum()
+void ClassTest::testMaximum()
 {
    test_ = "max() function";
 
@@ -1210,14 +1210,14 @@ void DynamicVector::testMaximum()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running DynamicVector test..." << std::endl;
+   std::cout << "   Running DynamicVector class test..." << std::endl;
 
    try
    {
-      RUN_DYNAMICVECTOR_TEST;
+      RUN_DYNAMICVECTOR_CLASS_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during DynamicVector test:\n"
+      std::cerr << "\n\n ERROR DETECTED during DynamicVector class test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

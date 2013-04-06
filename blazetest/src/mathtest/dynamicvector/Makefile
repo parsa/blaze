@@ -37,7 +37,7 @@ default: $(BIN)
 
 
 # Build rules
-DynamicVector: DynamicVector.o
+ClassTest: ClassTest.o
 	@$(CXX) -o $@ $< $(LIBRARIES)
 
 
