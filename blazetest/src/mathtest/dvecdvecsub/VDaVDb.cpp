@@ -28,7 +28,7 @@
 #include <iostream>
 #include <blaze/math/DynamicVector.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DVecDVecSub.h>
+#include <blazetest/mathtest/dvecdvecsub/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -58,12 +58,12 @@ int main()
 
       // Running tests with small vectors
       for( size_t i=0UL; i<=6UL; ++i ) {
-         RUN_DVECDVECSUB_TEST( CVDa( i ), CVDb( i ) );
+         RUN_DVECDVECSUB_OPERATION_TEST( CVDa( i ), CVDb( i ) );
       }
 
       // Running tests with large vectors
-      RUN_DVECDVECSUB_TEST( CVDa( 127UL ), CVDb( 127UL ) );
-      RUN_DVECDVECSUB_TEST( CVDa( 128UL ), CVDb( 128UL ) );
+      RUN_DVECDVECSUB_OPERATION_TEST( CVDa( 127UL ), CVDb( 127UL ) );
+      RUN_DVECDVECSUB_OPERATION_TEST( CVDa( 128UL ), CVDb( 128UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense vector/dense vector subtraction:\n"

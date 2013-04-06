@@ -29,7 +29,7 @@
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/StaticVector.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DVecDVecSub.h>
+#include <blazetest/mathtest/dvecdvecsub/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -58,7 +58,7 @@ int main()
       typedef blazetest::Creator<V5b>  CV5b;
 
       // Running the tests
-      RUN_DVECDVECSUB_TEST( CVDa( 5UL ), CV5b() );
+      RUN_DVECDVECSUB_OPERATION_TEST( CVDa( 5UL ), CV5b() );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense vector/dense vector subtraction:\n"

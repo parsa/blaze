@@ -62,9 +62,9 @@ namespace dvecdvecadd {
 //*************************************************************************************************
 /*!\brief Auxiliary class template for the dense vector/dense vector addition math test.
 //
-// The DVecDVecAdd class template represents one particular vector addition test between two
-// vectors of a particular type. The two template arguments \a VT1 and \a VT2 represent the
-// types of the left-hand side and right-hand side vector, respectively.
+// This class template represents one particular vector addition test between two vectors of
+// a particular type. The two template arguments \a VT1 and \a VT2 represent the types of the
+// left-hand side and right-hand side vector, respectively.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
