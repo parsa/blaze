@@ -29,7 +29,7 @@
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/TSVecSMatMult.h>
+#include <blazetest/mathtest/tsvecsmatmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -62,17 +62,17 @@ int main()
          for( size_t j=0UL; j<=6UL; ++j ) {
             for( size_t k=0UL; k<=i; ++k ) {
                for( size_t l=0UL; l<=i*j; ++l ) {
-                  RUN_TSVECSMATMULT_TEST( CVCb( i, k ), CMCa( i, j, l ) );
+                  RUN_TSVECSMATMULT_OPERATION_TEST( CVCb( i, k ), CMCa( i, j, l ) );
                }
             }
          }
       }
 
       // Running tests with large vectors and matrices
-      RUN_TSVECSMATMULT_TEST( CVCb(  67UL,  7UL ), CMCa(  67UL, 127UL, 13UL ) );
-      RUN_TSVECSMATMULT_TEST( CVCb( 127UL, 13UL ), CMCa( 127UL,  67UL,  7UL ) );
-      RUN_TSVECSMATMULT_TEST( CVCb(  64UL,  8UL ), CMCa(  64UL, 128UL, 16UL ) );
-      RUN_TSVECSMATMULT_TEST( CVCb( 128UL, 16UL ), CMCa( 128UL,  64UL,  8UL ) );
+      RUN_TSVECSMATMULT_OPERATION_TEST( CVCb(  67UL,  7UL ), CMCa(  67UL, 127UL, 13UL ) );
+      RUN_TSVECSMATMULT_OPERATION_TEST( CVCb( 127UL, 13UL ), CMCa( 127UL,  67UL,  7UL ) );
+      RUN_TSVECSMATMULT_OPERATION_TEST( CVCb(  64UL,  8UL ), CMCa(  64UL, 128UL, 16UL ) );
+      RUN_TSVECSMATMULT_OPERATION_TEST( CVCb( 128UL, 16UL ), CMCa( 128UL,  64UL,  8UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during sparse vector/sparse matrix multiplication:\n"
