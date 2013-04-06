@@ -28,7 +28,7 @@
 #include <iostream>
 #include <blaze/math/CompressedMatrix.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/SMatSMatSub.h>
+#include <blazetest/mathtest/smatsmatsub/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -58,17 +58,17 @@ int main()
          for( size_t j=0UL; j<=6UL; ++j ) {
             for( size_t k=0UL; k<=i*j; ++k ) {
                for( size_t l=0UL; l<=i*j; ++l ) {
-                  RUN_SMATSMATSUB_TEST( CMCb( i, j, k ), CMCb( i, j, l ) );
+                  RUN_SMATSMATSUB_OPERATION_TEST( CMCb( i, j, k ), CMCb( i, j, l ) );
                }
             }
          }
       }
 
       // Running tests with large matrices
-      RUN_SMATSMATSUB_TEST( CMCb(  67UL,  67UL,  7UL ), CMCb(  67UL,  67UL,  7UL ) );
-      RUN_SMATSMATSUB_TEST( CMCb(  67UL, 127UL, 13UL ), CMCb(  67UL, 127UL, 13UL ) );
-      RUN_SMATSMATSUB_TEST( CMCb( 128UL,  64UL,  8UL ), CMCb( 128UL,  64UL,  8UL ) );
-      RUN_SMATSMATSUB_TEST( CMCb( 128UL, 128UL, 16UL ), CMCb( 128UL, 128UL, 16UL ) );
+      RUN_SMATSMATSUB_OPERATION_TEST( CMCb(  67UL,  67UL,  7UL ), CMCb(  67UL,  67UL,  7UL ) );
+      RUN_SMATSMATSUB_OPERATION_TEST( CMCb(  67UL, 127UL, 13UL ), CMCb(  67UL, 127UL, 13UL ) );
+      RUN_SMATSMATSUB_OPERATION_TEST( CMCb( 128UL,  64UL,  8UL ), CMCb( 128UL,  64UL,  8UL ) );
+      RUN_SMATSMATSUB_OPERATION_TEST( CMCb( 128UL, 128UL, 16UL ), CMCb( 128UL, 128UL, 16UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during sparse matrix/sparse matrix subtraction:\n"
