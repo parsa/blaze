@@ -28,7 +28,7 @@
 #include <iostream>
 #include <blaze/math/StaticMatrix.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DMatDMatAdd.h>
+#include <blazetest/mathtest/dmatdmatadd/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -54,7 +54,7 @@ int main()
       typedef blazetest::Creator<M6x6a>  CM6x6a;
 
       // Running the tests
-      RUN_DMATDMATADD_TEST( CM6x6a(), CM6x6a() );
+      RUN_DMATDMATADD_OPERATION_TEST( CM6x6a(), CM6x6a() );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense matrix/dense matrix addition:\n"

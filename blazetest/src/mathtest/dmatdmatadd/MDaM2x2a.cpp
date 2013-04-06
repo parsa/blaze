@@ -29,7 +29,7 @@
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DMatDMatAdd.h>
+#include <blazetest/mathtest/dmatdmatadd/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -57,7 +57,7 @@ int main()
       typedef blazetest::Creator<M2x2a>  CM2x2a;
 
       // Running the tests
-      RUN_DMATDMATADD_TEST( CMDa( 2UL, 2UL ), CM2x2a() );
+      RUN_DMATDMATADD_OPERATION_TEST( CMDa( 2UL, 2UL ), CM2x2a() );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense matrix/dense matrix addition:\n"

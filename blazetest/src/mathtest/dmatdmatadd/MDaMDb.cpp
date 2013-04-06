@@ -28,7 +28,7 @@
 #include <iostream>
 #include <blaze/math/DynamicMatrix.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DMatDMatAdd.h>
+#include <blazetest/mathtest/dmatdmatadd/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -59,15 +59,15 @@ int main()
       // Running tests with small matrices
       for( size_t i=0UL; i<=9UL; ++i ) {
          for( size_t j=0UL; j<=9UL; ++j ) {
-            RUN_DMATDMATADD_TEST( CMDa( i, j ), CMDb( i, j ) );
+            RUN_DMATDMATADD_OPERATION_TEST( CMDa( i, j ), CMDb( i, j ) );
          }
       }
 
       // Running tests with large matrices
-      RUN_DMATDMATADD_TEST( CMDa(  67UL,  67UL ), CMDb(  67UL,  67UL ) );
-      RUN_DMATDMATADD_TEST( CMDa(  67UL, 127UL ), CMDb(  67UL, 127UL ) );
-      RUN_DMATDMATADD_TEST( CMDa( 128UL,  64UL ), CMDb( 128UL,  64UL ) );
-      RUN_DMATDMATADD_TEST( CMDa( 128UL, 128UL ), CMDb( 128UL, 128UL ) );
+      RUN_DMATDMATADD_OPERATION_TEST( CMDa(  67UL,  67UL ), CMDb(  67UL,  67UL ) );
+      RUN_DMATDMATADD_OPERATION_TEST( CMDa(  67UL, 127UL ), CMDb(  67UL, 127UL ) );
+      RUN_DMATDMATADD_OPERATION_TEST( CMDa( 128UL,  64UL ), CMDb( 128UL,  64UL ) );
+      RUN_DMATDMATADD_OPERATION_TEST( CMDa( 128UL, 128UL ), CMDb( 128UL, 128UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense matrix/dense matrix addition:\n"
