@@ -29,7 +29,7 @@
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DMatSMatMult.h>
+#include <blazetest/mathtest/dmatsmatmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -60,7 +60,7 @@ int main()
       // Running the tests
       for( size_t i=0UL; i<=4UL; ++i ) {
          for( size_t j=0UL; j<=i*2UL; ++j ) {
-            RUN_DMATSMATMULT_TEST( CM2x2a(), CMCb( 2UL, i, j ) );
+            RUN_DMATSMATMULT_OPERATION_TEST( CM2x2a(), CMCb( 2UL, i, j ) );
          }
       }
    }
