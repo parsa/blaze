@@ -29,7 +29,7 @@
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DMatSMatSub.h>
+#include <blazetest/mathtest/dmatsmatsub/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -58,10 +58,10 @@ int main()
       typedef blazetest::Creator<MCb>     CMCb;
 
       // Running the tests
-      RUN_DMATSMATSUB_TEST( CM7x13a(), CMCb( 7UL, 13UL,  0UL ) );
-      RUN_DMATSMATSUB_TEST( CM7x13a(), CMCb( 7UL, 13UL, 30UL ) );
-      RUN_DMATSMATSUB_TEST( CM7x13a(), CMCb( 7UL, 13UL, 60UL ) );
-      RUN_DMATSMATSUB_TEST( CM7x13a(), CMCb( 7UL, 13UL, 91UL ) );
+      RUN_DMATSMATSUB_OPERATION_TEST( CM7x13a(), CMCb( 7UL, 13UL,  0UL ) );
+      RUN_DMATSMATSUB_OPERATION_TEST( CM7x13a(), CMCb( 7UL, 13UL, 30UL ) );
+      RUN_DMATSMATSUB_OPERATION_TEST( CM7x13a(), CMCb( 7UL, 13UL, 60UL ) );
+      RUN_DMATSMATSUB_OPERATION_TEST( CM7x13a(), CMCb( 7UL, 13UL, 91UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense matrix/sparse matrix subtraction:\n"
