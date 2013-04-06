@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/compressedvector/CompressedVector.cpp
-//  \brief Source file for the CompressedVector test
+//  \file src/mathtest/compressedvector/ClassTest.cpp
+//  \brief Source file for the CompressedVector class test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -28,7 +28,7 @@
 #include <iostream>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/util/Complex.h>
-#include <blazetest/mathtest/CompressedVector.h>
+#include <blazetest/mathtest/compressedvector/ClassTest.h>
 
 
 namespace blazetest {
@@ -44,11 +44,11 @@ namespace compressedvector {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the CompressedVector test class.
+/*!\brief Constructor for the CompressedVector class test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-CompressedVector::CompressedVector()
+ClassTest::ClassTest()
 {
    testConstructors();
    testAssignment();
@@ -89,7 +89,7 @@ CompressedVector::CompressedVector()
 // This function performs a test of all constructors of the CompressedVector class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedVector::testConstructors()
+void ClassTest::testConstructors()
 {
    //=====================================================================================
    // Default constructor
@@ -203,7 +203,7 @@ void CompressedVector::testConstructors()
 // This function performs a test of all assignment operators of the CompressedVector class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedVector::testAssignment()
+void ClassTest::testAssignment()
 {
    //=====================================================================================
    // Copy assignment
@@ -247,7 +247,7 @@ void CompressedVector::testAssignment()
 // of the CompressedVector class template. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-void CompressedVector::testSubscript()
+void ClassTest::testSubscript()
 {
    test_ = "CompressedVector::operator[]";
 
@@ -332,7 +332,7 @@ void CompressedVector::testSubscript()
 // This function performs a test of the nonZeros member function of CompressedVector. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedVector::testNonZeros()
+void ClassTest::testNonZeros()
 {
    test_ = "CompressedVector::nonZeros()";
 
@@ -370,7 +370,7 @@ void CompressedVector::testNonZeros()
 // This function performs a test of the reset member function of CompressedVector. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedVector::testReset()
+void ClassTest::testReset()
 {
    test_ = "CompressedVector::reset()";
 
@@ -413,7 +413,7 @@ void CompressedVector::testReset()
 // This function performs a test of the clear member function of CompressedVector. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedVector::testClear()
+void ClassTest::testClear()
 {
    test_ = "CompressedVector::clear()";
 
@@ -455,7 +455,7 @@ void CompressedVector::testClear()
 // This function performs a test of the append member function of CompressedVector. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedVector::testAppend()
+void ClassTest::testAppend()
 {
    test_ = "CompressedVector::append()";
 
@@ -514,7 +514,7 @@ void CompressedVector::testAppend()
 // This function performs a test of the insert member function of CompressedVector. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedVector::testInsert()
+void ClassTest::testInsert()
 {
    test_ = "CompressedVector::insert()";
 
@@ -618,7 +618,7 @@ void CompressedVector::testInsert()
 // This function performs a test of the erase member function of CompressedVector. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedVector::testErase()
+void ClassTest::testErase()
 {
    test_ = "CompressedVector::erase()";
 
@@ -724,7 +724,7 @@ void CompressedVector::testErase()
 // This function performs a test of the find member function of CompressedVector. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedVector::testFind()
+void ClassTest::testFind()
 {
    test_ = "CompressedVector::find()";
 
@@ -851,7 +851,7 @@ void CompressedVector::testFind()
 // This function performs a test of the resize member function of CompressedVector. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedVector::testResize()
+void ClassTest::testResize()
 {
    test_ = "CompressedVector::resize()";
 
@@ -933,7 +933,7 @@ void CompressedVector::testResize()
 // This function performs a test of the reserve member function of CompressedVector. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedVector::testReserve()
+void ClassTest::testReserve()
 {
    test_ = "CompressedVector::reserve()";
 
@@ -970,7 +970,7 @@ void CompressedVector::testReserve()
 // CompressedVector. In case an error is detected, a \a std::runtime_error exception
 // is thrown.
 */
-void CompressedVector::testLength()
+void ClassTest::testLength()
 {
    test_ = "CompressedVector::length()";
 
@@ -1032,7 +1032,7 @@ void CompressedVector::testLength()
 // the CompressedVector class template. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-void CompressedVector::testNormalize()
+void ClassTest::testNormalize()
 {
    test_ = "CompressedVector::normalize()";
 
@@ -1095,7 +1095,7 @@ void CompressedVector::testNormalize()
 // This function performs a test of the scale member function of CompressedVector.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedVector::testScale()
+void ClassTest::testScale()
 {
    test_ = "CompressedVector::scale()";
 
@@ -1193,7 +1193,7 @@ void CompressedVector::testScale()
 // This function performs a test of the swap function of the CompressedVector class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedVector::testSwap()
+void ClassTest::testSwap()
 {
    test_ = "CompressedVector swap";
 
@@ -1249,7 +1249,7 @@ void CompressedVector::testSwap()
 // This function performs a test of the min function used with the CompressedVector class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedVector::testMinimum()
+void ClassTest::testMinimum()
 {
    test_ = "min() function";
 
@@ -1322,7 +1322,7 @@ void CompressedVector::testMinimum()
 // This function performs a test of the max function used with the CompressedVector class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void CompressedVector::testMaximum()
+void ClassTest::testMaximum()
 {
    test_ = "max() function";
 
@@ -1403,14 +1403,14 @@ void CompressedVector::testMaximum()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running CompressedVector test..." << std::endl;
+   std::cout << "   Running CompressedVector class test..." << std::endl;
 
    try
    {
-      RUN_COMPRESSEDVECTOR_TEST;
+      RUN_COMPRESSEDVECTOR_CLASS_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during CompressedVector test:\n"
+      std::cerr << "\n\n ERROR DETECTED during CompressedVector class test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

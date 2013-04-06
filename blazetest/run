@@ -25,9 +25,9 @@
 #==================================================================================================
 
 echo " Running vector tests..." 2>&1 | tee -a result.txt
-src/mathtest/staticvector/ClassTest            2>&1 | tee -a result.txt
-src/mathtest/dynamicvector/ClassTest           2>&1 | tee -a result.txt
-src/mathtest/compressedvector/CompressedVector 2>&1 | tee -a result.txt
+src/mathtest/staticvector/ClassTest     2>&1 | tee -a result.txt
+src/mathtest/dynamicvector/ClassTest    2>&1 | tee -a result.txt
+src/mathtest/compressedvector/ClassTest 2>&1 | tee -a result.txt
 
 
 #==================================================================================================

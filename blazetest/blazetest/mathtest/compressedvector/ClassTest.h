@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/CompressedVector.h
-//  \brief Header file for the CompressedVector math test
+//  \file blazetest/mathtest/compressedvector/ClassTest.h
+//  \brief Header file for the CompressedVector class test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_COMPRESSEDVECTOR_H_
-#define _BLAZETEST_MATHTEST_COMPRESSEDVECTOR_H_
+#ifndef _BLAZETEST_MATHTEST_COMPRESSEDVECTOR_CLASSTEST_H_
+#define _BLAZETEST_MATHTEST_COMPRESSEDVECTOR_CLASSTEST_H_
 
 
 //*************************************************************************************************
@@ -51,16 +51,16 @@ namespace compressedvector {
 //*************************************************************************************************
 /*!\brief Auxiliary class for all tests of the CompressedVector class template.
 //
-// The CompressedVector class represents a test suite for the blaze::CompressedVector class
-// template. It performs a series of both compile time as well as runtime tests.
+// This class represents a test suite for the blaze::CompressedVector class template. It performs
+// a series of both compile time as well as runtime tests.
 */
-class CompressedVector
+class ClassTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit CompressedVector();
+   explicit ClassTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -149,7 +149,7 @@ class CompressedVector
 // thrown.
 */
 template< typename Type >  // Type of the compressed vector
-void CompressedVector::checkSize( const Type& vector, size_t expectedSize ) const
+void ClassTest::checkSize( const Type& vector, size_t expectedSize ) const
 {
    if( vector.size() != expectedSize ) {
       std::ostringstream oss;
@@ -177,7 +177,7 @@ void CompressedVector::checkSize( const Type& vector, size_t expectedSize ) cons
 // thrown.
 */
 template< typename Type >  // Type of the compressed vector
-void CompressedVector::checkCapacity( const Type& vector, size_t minCapacity ) const
+void ClassTest::checkCapacity( const Type& vector, size_t minCapacity ) const
 {
    if( vector.capacity() < minCapacity ) {
       std::ostringstream oss;
@@ -205,7 +205,7 @@ void CompressedVector::checkCapacity( const Type& vector, size_t minCapacity ) c
 // a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the compressed vector
-void CompressedVector::checkNonZeros( const Type& vector, size_t expectedNonZeros ) const
+void ClassTest::checkNonZeros( const Type& vector, size_t expectedNonZeros ) const
 {
    if( vector.nonZeros() != expectedNonZeros ) {
       std::ostringstream oss;
@@ -235,7 +235,7 @@ void CompressedVector::checkNonZeros( const Type& vector, size_t expectedNonZero
 */
 void runTest()
 {
-   CompressedVector();
+   ClassTest();
 }
 //*************************************************************************************************
 
@@ -250,9 +250,9 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the CompressedVector test.
+/*!\brief Macro for the execution of the CompressedVector class test.
 */
-#define RUN_COMPRESSEDVECTOR_TEST \
+#define RUN_COMPRESSEDVECTOR_CLASS_TEST \
    blazetest::mathtest::compressedvector::runTest()
 /*! \endcond */
 //*************************************************************************************************
