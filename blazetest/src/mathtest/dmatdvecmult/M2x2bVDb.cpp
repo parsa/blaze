@@ -29,7 +29,7 @@
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DMatDVecMult.h>
+#include <blazetest/mathtest/dmatdvecmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -57,7 +57,7 @@ int main()
       typedef blazetest::Creator<VDb>    CVDb;
 
       // Running the tests
-      RUN_DMATDVECMULT_TEST( CM2x2b(), CVDb( 2UL ) );
+      RUN_DMATDVECMULT_OPERATION_TEST( CM2x2b(), CVDb( 2UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense matrix/dense vector multiplication:\n"

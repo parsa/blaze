@@ -29,7 +29,7 @@
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/StaticVector.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DMatDVecMult.h>
+#include <blazetest/mathtest/dmatdvecmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -59,7 +59,7 @@ int main()
 
       // Running the tests
       for( size_t i=0UL; i<=8UL; ++i ) {
-         RUN_DMATDVECMULT_TEST( CMDa( i, 5UL ), CV5b() );
+         RUN_DMATDVECMULT_OPERATION_TEST( CMDa( i, 5UL ), CV5b() );
       }
    }
    catch( std::exception& ex ) {
