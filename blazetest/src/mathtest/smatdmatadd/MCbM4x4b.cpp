@@ -29,7 +29,7 @@
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/SMatDMatAdd.h>
+#include <blazetest/mathtest/smatdmatadd/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -58,7 +58,7 @@ int main()
 
       // Running the tests
       for( size_t i=0UL; i<=16UL; ++i ) {
-         RUN_SMATDMATADD_TEST( CMCb( 4UL, 4UL, i ), CM4x4b() );
+         RUN_SMATDMATADD_OPERATION_TEST( CMCb( 4UL, 4UL, i ), CM4x4b() );
       }
    }
    catch( std::exception& ex ) {
