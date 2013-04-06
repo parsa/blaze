@@ -29,7 +29,7 @@
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/StaticVector.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DVecDVecCross.h>
+#include <blazetest/mathtest/dvecdveccross/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -58,7 +58,7 @@ int main()
       typedef blazetest::Creator<V3a>  CV3a;
 
       // Running the tests
-      RUN_DVECDVECCROSS_TEST( CVDb( 3UL ), CV3a() );
+      RUN_DVECDVECCROSS_OPERATION_TEST( CVDb( 3UL ), CV3a() );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense vector/dense vector cross product:\n"

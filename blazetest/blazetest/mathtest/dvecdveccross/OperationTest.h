@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/DVecDVecCross.h
-//  \brief Header file for the dense vector/dense vector cross product math test
+//  \file blazetest/mathtest/dvecdveccross/OperationTest.h
+//  \brief Header file for the dense vector/dense vector cross product operation test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DVECDVECCROSS_H_
-#define _BLAZETEST_MATHTEST_DVECDVECCROSS_H_
+#ifndef _BLAZETEST_MATHTEST_DVECDVECCROSS_OPERATIONTEST_H_
+#define _BLAZETEST_MATHTEST_DVECDVECCROSS_OPERATIONTEST_H_
 
 
 //*************************************************************************************************
@@ -60,15 +60,15 @@ namespace dvecdveccross {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the dense vector/dense vector cross product math test.
+/*!\brief Auxiliary class template for the dense vector/dense vector cross product operation test.
 //
-// The DVecDVecCross class template represents one particular vector cross product test between
-// two vectors of a particular type. The two template arguments \a VT1 and \a VT2 represent the
-// types of the left-hand side and right-hand side vector, respectively.
+// This class template represents one particular vector cross product test between two vectors
+// of a particular type. The two template arguments \a VT1 and \a VT2 represent the types of the
+// left-hand side and right-hand side vector, respectively.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-class DVecDVecCross
+class OperationTest
 {
  private:
    //**Type definitions****************************************************************************
@@ -96,7 +96,7 @@ class DVecDVecCross
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit DVecDVecCross( const Creator<VT1>& creator1, const Creator<VT2>& creator2 );
+   explicit OperationTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -187,7 +187,7 @@ class DVecDVecCross
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the DVecDVecCross class template.
+/*!\brief Constructor for the dense vector/dense vector cross product operation test.
 //
 // \param creator1 The creator for the left-hand side dense vector of the vector cross product.
 // \param creator2 The creator for the right-hand side dense vector of the vector cross product.
@@ -195,7 +195,7 @@ class DVecDVecCross
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-DVecDVecCross<VT1,VT2>::DVecDVecCross( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
+OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
    : lhs_( creator1() )  // The left-hand side dense vector
    , rhs_( creator2() )  // The right-hand side dense vector
    , reflhs_( lhs_ )     // The reference left-hand side vector
@@ -250,7 +250,7 @@ DVecDVecCross<VT1,VT2>::DVecDVecCross( const Creator<VT1>& creator1, const Creat
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-void DVecDVecCross<VT1,VT2>::testInitialStatus()
+void OperationTest<VT1,VT2>::testInitialStatus()
 {
    // Checking the size of the left-hand side operand
    if( lhs_.size() != reflhs_.size() ) {
@@ -318,7 +318,7 @@ void DVecDVecCross<VT1,VT2>::testInitialStatus()
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-void DVecDVecCross<VT1,VT2>::testAssignment()
+void OperationTest<VT1,VT2>::testAssignment()
 {
    try {
       lhs_ = reflhs_;
@@ -375,7 +375,7 @@ void DVecDVecCross<VT1,VT2>::testAssignment()
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-void DVecDVecCross<VT1,VT2>::testElementAccess()
+void OperationTest<VT1,VT2>::testElementAccess()
 {
    using blaze::equal;
 
@@ -448,7 +448,7 @@ void DVecDVecCross<VT1,VT2>::testElementAccess()
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-void DVecDVecCross<VT1,VT2>::testBasicOperation()
+void OperationTest<VT1,VT2>::testBasicOperation()
 {
 #if BLAZETEST_MATHTEST_TEST_BASIC_OPERATION
    if( BLAZETEST_MATHTEST_TEST_BASIC_OPERATION > 1 )
@@ -687,7 +687,7 @@ void DVecDVecCross<VT1,VT2>::testBasicOperation()
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-void DVecDVecCross<VT1,VT2>::testNegatedOperation()
+void OperationTest<VT1,VT2>::testNegatedOperation()
 {
 #if BLAZETEST_MATHTEST_TEST_NEGATED_OPERATION
    if( BLAZETEST_MATHTEST_TEST_NEGATED_OPERATION > 1 )
@@ -930,7 +930,7 @@ void DVecDVecCross<VT1,VT2>::testNegatedOperation()
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
 template< typename T >    // Type of the scalar
-void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
+void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 {
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T );
 
@@ -1770,7 +1770,7 @@ void DVecDVecCross<VT1,VT2>::testScaledOperation( T scalar )
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-void DVecDVecCross<VT1,VT2>::testTransposeOperation()
+void OperationTest<VT1,VT2>::testTransposeOperation()
 {
 #if BLAZETEST_MATHTEST_TEST_TRANSPOSE_OPERATION
    if( BLAZETEST_MATHTEST_TEST_TRANSPOSE_OPERATION > 1 )
@@ -2011,7 +2011,7 @@ void DVecDVecCross<VT1,VT2>::testTransposeOperation()
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-void DVecDVecCross<VT1,VT2>::testAbsOperation()
+void OperationTest<VT1,VT2>::testAbsOperation()
 {
 #if BLAZETEST_MATHTEST_TEST_ABS_OPERATION
    if( BLAZETEST_MATHTEST_TEST_ABS_OPERATION > 1 )
@@ -2260,7 +2260,7 @@ void DVecDVecCross<VT1,VT2>::testAbsOperation()
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-void DVecDVecCross<VT1,VT2>::checkResults()
+void OperationTest<VT1,VT2>::checkResults()
 {
    if( !isEqual( dres_, refres_ ) ) {
       std::ostringstream oss;
@@ -2308,7 +2308,7 @@ void DVecDVecCross<VT1,VT2>::checkResults()
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-void DVecDVecCross<VT1,VT2>::checkTransposeResults()
+void OperationTest<VT1,VT2>::checkTransposeResults()
 {
    using blaze::IsTransposeVector;
 
@@ -2365,7 +2365,7 @@ template< typename VT1    // Type of the left-hand side dense vector
 void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
 {
    for( size_t rep=0; rep<repetitions; ++rep ) {
-      DVecDVecCross<VT1,VT2>( creator1, creator2 );
+      OperationTest<VT1,VT2>( creator1, creator2 );
    }
 }
 //*************************************************************************************************
@@ -2383,8 +2383,8 @@ void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the definition of a dense vector/dense vector cross product test case.
 */
-#define DEFINE_DVECDVECCROSS_TEST( VT1, VT2 ) \
-   extern template class blazetest::mathtest::dvecdveccross::DVecDVecCross<VT1,VT2>
+#define DEFINE_DVECDVECCROSS_OPERATION_TEST( VT1, VT2 ) \
+   extern template class blazetest::mathtest::dvecdveccross::OperationTest<VT1,VT2>
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2393,7 +2393,7 @@ void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the execution of a dense vector/dense vector cross product test case.
 */
-#define RUN_DVECDVECCROSS_TEST( C1, C2 ) \
+#define RUN_DVECDVECCROSS_OPERATION_TEST( C1, C2 ) \
    blazetest::mathtest::dvecdveccross::runTest( C1, C2 )
 /*! \endcond */
 //*************************************************************************************************
