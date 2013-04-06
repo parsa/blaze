@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DMATSMATADD_H_
-#define _BLAZETEST_MATHTEST_DMATSMATADD_H_
+#ifndef _BLAZETEST_MATHTEST_DMATSMATADD_OPERATIONTEST_H_
+#define _BLAZETEST_MATHTEST_DMATSMATADD_OPERATIONTEST_H_
 
 
 //*************************************************************************************************

@@ -29,7 +29,7 @@
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/DynamicVector.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DVecSVecAdd.h>
+#include <blazetest/mathtest/dvecsvecadd/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -60,13 +60,13 @@ int main()
       // Running tests with small vectors
       for( size_t i=0UL; i<=6UL; ++i ) {
          for( size_t j=0UL; j<=i; ++j ) {
-            RUN_DVECSVECADD_TEST( CVDa( i ), CVCb( i, j ) );
+            RUN_DVECSVECADD_OPERATION_TEST( CVDa( i ), CVCb( i, j ) );
          }
       }
 
       // Running tests with large vectors
-      RUN_DVECSVECADD_TEST( CVDa( 127UL ), CVCb( 127UL, 13UL ) );
-      RUN_DVECSVECADD_TEST( CVDa( 128UL ), CVCb( 128UL, 16UL ) );
+      RUN_DVECSVECADD_OPERATION_TEST( CVDa( 127UL ), CVCb( 127UL, 13UL ) );
+      RUN_DVECSVECADD_OPERATION_TEST( CVDa( 128UL ), CVCb( 128UL, 16UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense vector/sparse vector addition:\n"

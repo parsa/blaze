@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DMATSVECMULT_H_
-#define _BLAZETEST_MATHTEST_DMATSVECMULT_H_
+#ifndef _BLAZETEST_MATHTEST_DMATSVECMULT_OPERATIONTEST_H_
+#define _BLAZETEST_MATHTEST_DMATSVECMULT_OPERATIONTEST_H_
 
 
 //*************************************************************************************************
