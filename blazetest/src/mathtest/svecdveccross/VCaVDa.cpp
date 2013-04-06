@@ -29,7 +29,7 @@
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/DynamicVector.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/SVecDVecCross.h>
+#include <blazetest/mathtest/svecdveccross/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -58,7 +58,7 @@ int main()
 
       // Running the tests
       for( size_t i=0UL; i<=3UL; ++i ) {
-         RUN_SVECDVECCROSS_TEST( CVCa( 3UL, i ), CVDa( 3UL ) );
+         RUN_SVECDVECCROSS_OPERATION_TEST( CVCa( 3UL, i ), CVDa( 3UL ) );
       }
    }
    catch( std::exception& ex ) {
