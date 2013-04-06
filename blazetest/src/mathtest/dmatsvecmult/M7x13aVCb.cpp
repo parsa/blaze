@@ -29,7 +29,7 @@
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DMatSVecMult.h>
+#include <blazetest/mathtest/dmatsvecmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -58,10 +58,10 @@ int main()
       typedef blazetest::Creator<VCb>     CVCb;
 
       // Running the tests
-      RUN_DMATSVECMULT_TEST( CM7x13a(), CVCb( 13UL,  0UL ) );
-      RUN_DMATSVECMULT_TEST( CM7x13a(), CVCb( 13UL,  4UL ) );
-      RUN_DMATSVECMULT_TEST( CM7x13a(), CVCb( 13UL,  8UL ) );
-      RUN_DMATSVECMULT_TEST( CM7x13a(), CVCb( 13UL, 13UL ) );
+      RUN_DMATSVECMULT_OPERATION_TEST( CM7x13a(), CVCb( 13UL,  0UL ) );
+      RUN_DMATSVECMULT_OPERATION_TEST( CM7x13a(), CVCb( 13UL,  4UL ) );
+      RUN_DMATSVECMULT_OPERATION_TEST( CM7x13a(), CVCb( 13UL,  8UL ) );
+      RUN_DMATSVECMULT_OPERATION_TEST( CM7x13a(), CVCb( 13UL, 13UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense matrix/sparse vector multiplication:\n"

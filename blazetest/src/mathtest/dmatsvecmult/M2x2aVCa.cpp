@@ -29,7 +29,7 @@
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DMatSVecMult.h>
+#include <blazetest/mathtest/dmatsvecmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -58,7 +58,7 @@ int main()
 
       // Running the tests
       for( size_t i=0UL; i<=2UL; ++i ) {
-         RUN_DMATSVECMULT_TEST( CM2x2a(), CVCa( 2UL, i ) );
+         RUN_DMATSVECMULT_OPERATION_TEST( CM2x2a(), CVCa( 2UL, i ) );
       }
    }
    catch( std::exception& ex ) {
