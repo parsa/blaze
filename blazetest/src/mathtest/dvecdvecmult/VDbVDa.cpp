@@ -28,7 +28,7 @@
 #include <iostream>
 #include <blaze/math/DynamicVector.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DVecDVecMult.h>
+#include <blazetest/mathtest/dvecdvecmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -58,12 +58,12 @@ int main()
 
       // Running tests with small vectors
       for( size_t i=0UL; i<=6UL; ++i ) {
-         RUN_DVECDVECMULT_TEST( CVDb( i ), CVDa( i ) );
+         RUN_DVECDVECMULT_OPERATION_TEST( CVDb( i ), CVDa( i ) );
       }
 
       // Running tests with large vectors
-      RUN_DVECDVECMULT_TEST( CVDb( 127UL ), CVDa( 127UL ) );
-      RUN_DVECDVECMULT_TEST( CVDb( 128UL ), CVDa( 128UL ) );
+      RUN_DVECDVECMULT_OPERATION_TEST( CVDb( 127UL ), CVDa( 127UL ) );
+      RUN_DVECDVECMULT_OPERATION_TEST( CVDb( 128UL ), CVDa( 128UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense vector/dense vector multiplication:\n"

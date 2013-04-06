@@ -28,7 +28,7 @@
 #include <iostream>
 #include <blaze/math/StaticVector.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DVecDVecMult.h>
+#include <blazetest/mathtest/dvecdvecmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -54,7 +54,7 @@ int main()
       typedef blazetest::Creator<V6b>  CV6b;
 
       // Running the tests
-      RUN_DVECDVECMULT_TEST( CV6b(), CV6b() );
+      RUN_DVECDVECMULT_OPERATION_TEST( CV6b(), CV6b() );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense vector/dense vector multiplication:\n"

@@ -60,7 +60,7 @@ namespace dvecdvecadd {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the dense vector/dense vector addition math test.
+/*!\brief Auxiliary class template for the dense vector/dense vector addition operation test.
 //
 // This class template represents one particular vector addition test between two vectors of
 // a particular type. The two template arguments \a VT1 and \a VT2 represent the types of the
@@ -209,7 +209,7 @@ class OperationTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the DVecDVecAdd operation test.
+/*!\brief Constructor for the dense vector/dense vector addition operation test.
 //
 // \param creator1 The creator for the left-hand side dense vector of the vector addition.
 // \param creator2 The creator for the right-hand side dense vector of the vector addition.
