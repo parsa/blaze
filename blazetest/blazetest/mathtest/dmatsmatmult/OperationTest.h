@@ -60,7 +60,7 @@ namespace dmatsmatmult {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the dense matrix/sparse matrix multiplication math test.
+/*!\brief Auxiliary class template for the dense matrix/sparse matrix multiplication operation test.
 //
 // This class template represents one particular matrix multiplication test between two matrices
 // of a particular type. The two template arguments \a MT1 and \a MT2 represent the types of the

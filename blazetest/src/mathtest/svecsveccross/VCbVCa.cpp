@@ -28,7 +28,7 @@
 #include <iostream>
 #include <blaze/math/CompressedVector.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/SVecSVecCross.h>
+#include <blazetest/mathtest/svecsveccross/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -59,7 +59,7 @@ int main()
       // Running tests with small vectors
       for( size_t i=0UL; i<=3UL; ++i ) {
          for( size_t j=0UL; j<=3UL; ++j ) {
-            RUN_SVECSVECCROSS_TEST( CVCb( 3UL, i ), CVCa( 3UL, j ) );
+            RUN_SVECSVECCROSS_OPERATION_TEST( CVCb( 3UL, i ), CVCa( 3UL, j ) );
          }
       }
    }

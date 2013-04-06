@@ -60,7 +60,7 @@ namespace svecsvecadd {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the sparse vector/sparse vector addition math test.
+/*!\brief Auxiliary class template for the sparse vector/sparse vector addition operation test.
 //
 // This class template represents one particular vector addition test between two vectors of
 // a particular type. The two template arguments \a VT1 and \a VT2 represent the types of the

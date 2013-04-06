@@ -60,7 +60,7 @@ namespace svecdvecmult {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the sparse vector/dense vector multiplication math test.
+/*!\brief Auxiliary class template for the sparse vector/dense vector multiplication operation test.
 //
 // This class template represents one particular vector multiplication test between two vectors
 // of a particular type. The two template arguments \a VT1 and \a VT2 represent the types of the

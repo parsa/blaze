@@ -60,7 +60,7 @@ namespace dmatsmatadd {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the dense matrix/sparse matrix addition math test.
+/*!\brief Auxiliary class template for the dense matrix/sparse matrix addition operation test.
 //
 // This class template represents one particular matrix addition test between two matrices of
 // a particular type. The two template arguments \a MT1 and \a MT2 represent the types of the

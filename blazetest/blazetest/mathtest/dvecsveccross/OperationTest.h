@@ -60,7 +60,7 @@ namespace dvecsveccross {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the dense vector/sparse vector cross product math test.
+/*!\brief Auxiliary class template for the dense vector/sparse vector cross product operation test.
 //
 // This class template represents one particular vector cross product test between two vectors
 // of a particular type. The two template arguments \a VT1 and \a VT2 represent the types of the

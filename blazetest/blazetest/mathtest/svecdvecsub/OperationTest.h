@@ -60,7 +60,7 @@ namespace svecdvecsub {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the sparse vector/dense vector subtraction math test.
+/*!\brief Auxiliary class template for the sparse vector/dense vector subtraction operation test.
 //
 // This class template represents one particular vector subtraction test between two vectors
 // of a particular type. The two template arguments \a VT1 and \a VT2 represent the types of

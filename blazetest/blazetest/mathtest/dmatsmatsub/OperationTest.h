@@ -60,7 +60,7 @@ namespace dmatsmatsub {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the dense matrix/sparse matrix subtraction math test.
+/*!\brief Auxiliary class template for the dense matrix/sparse matrix subtraction operation test.
 //
 // This class template represents one particular matrix subtraction test between two matrices
 // of a particular type. The two template arguments \a MT1 and \a MT2 represent the types of

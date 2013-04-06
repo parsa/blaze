@@ -62,7 +62,7 @@ namespace dmatsvecmult {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the dense matrix/sparse vector multiplication math test.
+/*!\brief Auxiliary class template for the dense matrix/sparse vector multiplication operation test.
 //
 // This class template represents one particular matrix/vector multiplication test between a
 // matrix and a vector of particular types. The two template arguments \a MT and \a VT represent
