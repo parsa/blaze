@@ -37,7 +37,7 @@ default: $(BIN)
 
 
 # Build rules
-DynamicMatrix: DynamicMatrix.o
+ClassTest: ClassTest.o
 	@$(CXX) -o $@ $< $(LIBRARIES)
 
 

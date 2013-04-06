@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/DynamicMatrix.h
-//  \brief Header file for the DynamicMatrix math test
+//  \file blazetest/mathtest/dynamicmatrix/ClassTest.h
+//  \brief Header file for the DynamicMatrix class test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DYNAMICMATRIX_H_
-#define _BLAZETEST_MATHTEST_DYNAMICMATRIX_H_
+#ifndef _BLAZETEST_MATHTEST_DYNAMICMATRIX_CLASSTEST_H_
+#define _BLAZETEST_MATHTEST_DYNAMICMATRIX_CLASSTEST_H_
 
 
 //*************************************************************************************************
@@ -53,16 +53,16 @@ namespace dynamicmatrix {
 //*************************************************************************************************
 /*!\brief Auxiliary class for all tests of the DynamicMatrix class template.
 //
-// The DynamicMatrix class represents a test suite for the blaze::DynamicMatrix class template.
-// It performs a series of both compile time as well as runtime tests.
+// This class represents a test suite for the blaze::DynamicMatrix class template. It performs
+// a series of both compile time as well as runtime tests.
 */
-class DynamicMatrix
+class ClassTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit DynamicMatrix();
+   explicit ClassTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -155,7 +155,7 @@ class DynamicMatrix
 // is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >
-void DynamicMatrix::testAlignment( const std::string& type )
+void ClassTest::testAlignment( const std::string& type )
 {
    const size_t alignment( blaze::AlignmentTrait<Type>::value );
 
@@ -215,7 +215,7 @@ void DynamicMatrix::testAlignment( const std::string& type )
 // exception is thrown.
 */
 template< typename Type >  // Type of the dynamic matrix
-void DynamicMatrix::checkRows( const Type& matrix, size_t expectedRows ) const
+void ClassTest::checkRows( const Type& matrix, size_t expectedRows ) const
 {
    if( matrix.rows() != expectedRows ) {
       std::ostringstream oss;
@@ -243,7 +243,7 @@ void DynamicMatrix::checkRows( const Type& matrix, size_t expectedRows ) const
 // a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dynamic matrix
-void DynamicMatrix::checkColumns( const Type& matrix, size_t expectedColumns ) const
+void ClassTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 {
    if( matrix.columns() != expectedColumns ) {
       std::ostringstream oss;
@@ -271,7 +271,7 @@ void DynamicMatrix::checkColumns( const Type& matrix, size_t expectedColumns ) c
 // thrown.
 */
 template< typename Type >  // Type of the dynamic matrix
-void DynamicMatrix::checkCapacity( const Type& matrix, size_t minCapacity ) const
+void ClassTest::checkCapacity( const Type& matrix, size_t minCapacity ) const
 {
    if( matrix.capacity() < minCapacity ) {
       std::ostringstream oss;
@@ -299,7 +299,7 @@ void DynamicMatrix::checkCapacity( const Type& matrix, size_t minCapacity ) cons
 // number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dynamic matrix
-void DynamicMatrix::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
+void ClassTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
 {
    if( matrix.nonZeros() != expectedNonZeros ) {
       std::ostringstream oss;
@@ -338,7 +338,7 @@ void DynamicMatrix::checkNonZeros( const Type& matrix, size_t expectedNonZeros )
 // to the given expected number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dynamic matrix
-void DynamicMatrix::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
+void ClassTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
 {
    if( matrix.nonZeros( index ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -380,7 +380,7 @@ void DynamicMatrix::checkNonZeros( const Type& matrix, size_t index, size_t expe
 */
 void runTest()
 {
-   DynamicMatrix();
+   ClassTest();
 }
 //*************************************************************************************************
 
@@ -395,9 +395,9 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the DynamicMatrix test.
+/*!\brief Macro for the execution of the DynamicMatrix class test.
 */
-#define RUN_DYNAMICMATRIX_TEST \
+#define RUN_DYNAMICMATRIX_CLASS_TEST \
    blazetest::mathtest::dynamicmatrix::runTest()
 /*! \endcond */
 //*************************************************************************************************

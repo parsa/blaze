@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/dynamicmatrix/DynamicMatrix.cpp
-//  \brief Source file for the DynamicMatrix test
+//  \file src/mathtest/dynamicmatrix/ClassTest.cpp
+//  \brief Source file for the DynamicMatrix class test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -43,11 +43,11 @@ namespace dynamicmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the DynamicMatrix test class.
+/*!\brief Constructor for the DynamicMatrix class test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-DynamicMatrix::DynamicMatrix()
+ClassTest::ClassTest()
 {
    testAlignment< signed char          >( "signed char"          );
    testAlignment< unsigned char        >( "unsigned char"        );
@@ -97,7 +97,7 @@ DynamicMatrix::DynamicMatrix()
 // This function performs a test of all constructors of the DynamicMatrix class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicMatrix::testConstructors()
+void ClassTest::testConstructors()
 {
    //=====================================================================================
    // Row-major default constructor
@@ -556,7 +556,7 @@ void DynamicMatrix::testConstructors()
 // This function performs a test of all assignment operators of the DynamicMatrix class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicMatrix::testAssignment()
+void ClassTest::testAssignment()
 {
    //=====================================================================================
    // Row-major homogeneous assignment
@@ -842,7 +842,7 @@ void DynamicMatrix::testAssignment()
 // of the DynamicMatrix class template. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-void DynamicMatrix::testFunctionCall()
+void ClassTest::testFunctionCall()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -1051,7 +1051,7 @@ void DynamicMatrix::testFunctionCall()
 // This function performs a test of the nonZeros member function of DynamicMatrix. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicMatrix::testNonZeros()
+void ClassTest::testNonZeros()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -1180,7 +1180,7 @@ void DynamicMatrix::testNonZeros()
 // This function performs a test of the reset member function of DynamicMatrix. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicMatrix::testReset()
+void ClassTest::testReset()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -1352,7 +1352,7 @@ void DynamicMatrix::testReset()
 // This function performs a test of the clear member function of DynamicMatrix. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicMatrix::testClear()
+void ClassTest::testClear()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -1452,7 +1452,7 @@ void DynamicMatrix::testClear()
 // This function performs a test of the resize member function of DynamicMatrix. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicMatrix::testResize()
+void ClassTest::testResize()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -1649,7 +1649,7 @@ void DynamicMatrix::testResize()
 // This function performs a test of the extend member function of DynamicMatrix. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicMatrix::testExtend()
+void ClassTest::testExtend()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -1766,7 +1766,7 @@ void DynamicMatrix::testExtend()
 // This function performs a test of the reserve member function of DynamicMatrix. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicMatrix::testReserve()
+void ClassTest::testReserve()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -1843,7 +1843,7 @@ void DynamicMatrix::testReserve()
 // This function performs a test of the transpose member functions of the DynamicMatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicMatrix::testTranspose()
+void ClassTest::testTranspose()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -1944,7 +1944,7 @@ void DynamicMatrix::testTranspose()
 // This function performs a test of the isDiagonal member functions of the DynamicMatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicMatrix::testIsDiagonal()
+void ClassTest::testIsDiagonal()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2169,7 +2169,7 @@ void DynamicMatrix::testIsDiagonal()
 // This function performs a test of the isSymmetric member functions of the DynamicMatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicMatrix::testIsSymmetric()
+void ClassTest::testIsSymmetric()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2451,7 +2451,7 @@ void DynamicMatrix::testIsSymmetric()
 // This function performs a test of the scale member function of DynamicMatrix.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicMatrix::testScale()
+void ClassTest::testScale()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2687,7 +2687,7 @@ void DynamicMatrix::testScale()
 // This function performs a test of the swap function of the DynamicMatrix class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DynamicMatrix::testSwap()
+void ClassTest::testSwap()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2822,14 +2822,14 @@ void DynamicMatrix::testSwap()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running DynamicMatrix test..." << std::endl;
+   std::cout << "   Running DynamicMatrix class test..." << std::endl;
 
    try
    {
-      RUN_DYNAMICMATRIX_TEST;
+      RUN_DYNAMICMATRIX_CLASS_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during DynamicMatrix test:\n"
+      std::cerr << "\n\n ERROR DETECTED during DynamicMatrix class test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }
