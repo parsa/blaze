@@ -29,7 +29,7 @@
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/SMatDMatMult.h>
+#include <blazetest/mathtest/smatdmatmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -62,23 +62,23 @@ int main()
          for( size_t j=0UL; j<=6UL; ++j ) {
             for( size_t k=0UL; k<=6UL; ++k ) {
                for( size_t l=0UL; l<=j*i; ++l ) {
-                  RUN_SMATDMATMULT_TEST( CMCa( j, i, l ), CMDb( i, k ) );
+                  RUN_SMATDMATMULT_OPERATION_TEST( CMCa( j, i, l ), CMDb( i, k ) );
                }
             }
          }
       }
 
       // Running tests with large matrices
-      RUN_SMATDMATMULT_TEST( CMCa(  31UL,  67UL,  7UL ), CMDb(  67UL,  31UL ) );
-      RUN_SMATDMATMULT_TEST( CMCa(  31UL,  67UL,  7UL ), CMDb(  67UL, 127UL ) );
-      RUN_SMATDMATMULT_TEST( CMCa(  67UL,  67UL,  7UL ), CMDb(  67UL,  67UL ) );
-      RUN_SMATDMATMULT_TEST( CMCa( 127UL,  67UL, 13UL ), CMDb(  67UL,  31UL ) );
-      RUN_SMATDMATMULT_TEST( CMCa( 127UL,  67UL, 13UL ), CMDb(  67UL, 127UL ) );
-      RUN_SMATDMATMULT_TEST( CMCa(  32UL,  64UL,  8UL ), CMDb(  64UL,  32UL ) );
-      RUN_SMATDMATMULT_TEST( CMCa(  32UL,  64UL,  8UL ), CMDb(  64UL, 128UL ) );
-      RUN_SMATDMATMULT_TEST( CMCa(  64UL,  64UL,  8UL ), CMDb(  64UL,  64UL ) );
-      RUN_SMATDMATMULT_TEST( CMCa( 128UL,  64UL, 16UL ), CMDb(  64UL,  32UL ) );
-      RUN_SMATDMATMULT_TEST( CMCa( 128UL,  64UL, 16UL ), CMDb(  64UL, 128UL ) );
+      RUN_SMATDMATMULT_OPERATION_TEST( CMCa(  31UL,  67UL,  7UL ), CMDb(  67UL,  31UL ) );
+      RUN_SMATDMATMULT_OPERATION_TEST( CMCa(  31UL,  67UL,  7UL ), CMDb(  67UL, 127UL ) );
+      RUN_SMATDMATMULT_OPERATION_TEST( CMCa(  67UL,  67UL,  7UL ), CMDb(  67UL,  67UL ) );
+      RUN_SMATDMATMULT_OPERATION_TEST( CMCa( 127UL,  67UL, 13UL ), CMDb(  67UL,  31UL ) );
+      RUN_SMATDMATMULT_OPERATION_TEST( CMCa( 127UL,  67UL, 13UL ), CMDb(  67UL, 127UL ) );
+      RUN_SMATDMATMULT_OPERATION_TEST( CMCa(  32UL,  64UL,  8UL ), CMDb(  64UL,  32UL ) );
+      RUN_SMATDMATMULT_OPERATION_TEST( CMCa(  32UL,  64UL,  8UL ), CMDb(  64UL, 128UL ) );
+      RUN_SMATDMATMULT_OPERATION_TEST( CMCa(  64UL,  64UL,  8UL ), CMDb(  64UL,  64UL ) );
+      RUN_SMATDMATMULT_OPERATION_TEST( CMCa( 128UL,  64UL, 16UL ), CMDb(  64UL,  32UL ) );
+      RUN_SMATDMATMULT_OPERATION_TEST( CMCa( 128UL,  64UL, 16UL ), CMDb(  64UL, 128UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during sparse matrix/dense matrix multiplication:\n"

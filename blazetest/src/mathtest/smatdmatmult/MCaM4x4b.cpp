@@ -29,7 +29,7 @@
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/SMatDMatMult.h>
+#include <blazetest/mathtest/smatdmatmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -59,11 +59,11 @@ int main()
 
       // Running the tests
       for( size_t i=0UL; i<=6UL; ++i ) {
-         RUN_SMATDMATMULT_TEST( CMCa( i, 4UL, 0UL        ), CM4x4b() );
-         RUN_SMATDMATMULT_TEST( CMCa( i, 4UL, i*4UL*0.25 ), CM4x4b() );
-         RUN_SMATDMATMULT_TEST( CMCa( i, 4UL, i*4UL*0.5  ), CM4x4b() );
-         RUN_SMATDMATMULT_TEST( CMCa( i, 4UL, i*4UL*0.75 ), CM4x4b() );
-         RUN_SMATDMATMULT_TEST( CMCa( i, 4UL, i*4UL      ), CM4x4b() );
+         RUN_SMATDMATMULT_OPERATION_TEST( CMCa( i, 4UL, 0UL        ), CM4x4b() );
+         RUN_SMATDMATMULT_OPERATION_TEST( CMCa( i, 4UL, i*4UL*0.25 ), CM4x4b() );
+         RUN_SMATDMATMULT_OPERATION_TEST( CMCa( i, 4UL, i*4UL*0.5  ), CM4x4b() );
+         RUN_SMATDMATMULT_OPERATION_TEST( CMCa( i, 4UL, i*4UL*0.75 ), CM4x4b() );
+         RUN_SMATDMATMULT_OPERATION_TEST( CMCa( i, 4UL, i*4UL      ), CM4x4b() );
       }
    }
    catch( std::exception& ex ) {
