@@ -29,7 +29,7 @@
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/DynamicVector.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/SVecDVecMult.h>
+#include <blazetest/mathtest/svecdvecmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -59,13 +59,13 @@ int main()
       // Running tests with small vectors
       for( size_t i=0UL; i<=6UL; ++i ) {
          for( size_t j=0UL; j<=i; ++j ) {
-            RUN_SVECDVECMULT_TEST( CVCb( i, j ), CVDb( i ) );
+            RUN_SVECDVECMULT_OPERATION_TEST( CVCb( i, j ), CVDb( i ) );
          }
       }
 
       // Running tests with large vectors
-      RUN_SVECDVECMULT_TEST( CVCb( 127UL, 13UL ), CVDb( 127UL ) );
-      RUN_SVECDVECMULT_TEST( CVCb( 128UL, 16UL ), CVDb( 128UL ) );
+      RUN_SVECDVECMULT_OPERATION_TEST( CVCb( 127UL, 13UL ), CVDb( 127UL ) );
+      RUN_SVECDVECMULT_OPERATION_TEST( CVCb( 128UL, 16UL ), CVDb( 128UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during sparse vector/dense vector multiplication:\n"
