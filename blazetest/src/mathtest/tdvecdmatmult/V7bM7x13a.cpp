@@ -29,7 +29,7 @@
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StaticVector.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/TDVecDMatMult.h>
+#include <blazetest/mathtest/tdvecdmatmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -58,7 +58,7 @@ int main()
       typedef blazetest::Creator<M7x13a>  CM7x13a;
 
       // Running the tests
-      RUN_TDVECDMATMULT_TEST( CV7b(), CM7x13a() );
+      RUN_TDVECDMATMULT_OPERATION_TEST( CV7b(), CM7x13a() );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense vector/dense matrix multiplication:\n"
