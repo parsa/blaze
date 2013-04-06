@@ -28,7 +28,7 @@
 #include <iostream>
 #include <blaze/math/StaticMatrix.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DMatDMatMult.h>
+#include <blazetest/mathtest/dmatdmatmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -56,9 +56,9 @@ int main()
       typedef blazetest::Creator<MDb>  CMDb;
 
       // Running the tests
-      RUN_DMATDMATMULT_TEST( CM6x6b(), CMDb( 6UL, 3UL ) );
-      RUN_DMATDMATMULT_TEST( CM6x6b(), CMDb( 6UL, 6UL ) );
-      RUN_DMATDMATMULT_TEST( CM6x6b(), CMDb( 6UL, 9UL ) );
+      RUN_DMATDMATMULT_OPERATION_TEST( CM6x6b(), CMDb( 6UL, 3UL ) );
+      RUN_DMATDMATMULT_OPERATION_TEST( CM6x6b(), CMDb( 6UL, 6UL ) );
+      RUN_DMATDMATMULT_OPERATION_TEST( CM6x6b(), CMDb( 6UL, 9UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense matrix/dense matrix multiplication:\n"

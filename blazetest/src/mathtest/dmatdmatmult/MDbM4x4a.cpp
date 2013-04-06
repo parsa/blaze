@@ -29,7 +29,7 @@
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DMatDMatMult.h>
+#include <blazetest/mathtest/dmatdmatmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -58,9 +58,9 @@ int main()
       typedef blazetest::Creator<M4x4a>  CM4x4a;
 
       // Running the tests
-      RUN_DMATDMATMULT_TEST( CMDb( 3UL, 4UL ), CM4x4a() );
-      RUN_DMATDMATMULT_TEST( CMDb( 4UL, 4UL ), CM4x4a() );
-      RUN_DMATDMATMULT_TEST( CMDb( 5UL, 4UL ), CM4x4a() );
+      RUN_DMATDMATMULT_OPERATION_TEST( CMDb( 3UL, 4UL ), CM4x4a() );
+      RUN_DMATDMATMULT_OPERATION_TEST( CMDb( 4UL, 4UL ), CM4x4a() );
+      RUN_DMATDMATMULT_OPERATION_TEST( CMDb( 5UL, 4UL ), CM4x4a() );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense matrix/dense matrix multiplication:\n"

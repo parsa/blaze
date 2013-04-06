@@ -28,7 +28,7 @@
 #include <iostream>
 #include <blaze/math/DynamicMatrix.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DMatDMatMult.h>
+#include <blazetest/mathtest/dmatdmatmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -57,22 +57,22 @@ int main()
       for( size_t i=0UL; i<=6UL; ++i ) {
          for( size_t j=0UL; j<=6UL; ++j ) {
             for( size_t k=0UL; k<=6UL; ++k ) {
-               RUN_DMATDMATMULT_TEST( CMDa( i, j ), CMDa( j, k ) );
+               RUN_DMATDMATMULT_OPERATION_TEST( CMDa( i, j ), CMDa( j, k ) );
             }
          }
       }
 
       // Running tests with large matrices
-      RUN_DMATDMATMULT_TEST( CMDa( 15UL, 37UL ), CMDa(  37UL, 15UL ) );
-      RUN_DMATDMATMULT_TEST( CMDa( 15UL, 37UL ), CMDa(  37UL, 63UL ) );
-      RUN_DMATDMATMULT_TEST( CMDa( 37UL, 37UL ), CMDa(  37UL, 37UL ) );
-      RUN_DMATDMATMULT_TEST( CMDa( 63UL, 37UL ), CMDa(  37UL, 15UL ) );
-      RUN_DMATDMATMULT_TEST( CMDa( 63UL, 37UL ), CMDa(  37UL, 63UL ) );
-      RUN_DMATDMATMULT_TEST( CMDa( 16UL, 32UL ), CMDa(  32UL, 16UL ) );
-      RUN_DMATDMATMULT_TEST( CMDa( 16UL, 32UL ), CMDa(  32UL, 64UL ) );
-      RUN_DMATDMATMULT_TEST( CMDa( 32UL, 32UL ), CMDa(  32UL, 32UL ) );
-      RUN_DMATDMATMULT_TEST( CMDa( 64UL, 32UL ), CMDa(  32UL, 16UL ) );
-      RUN_DMATDMATMULT_TEST( CMDa( 64UL, 32UL ), CMDa(  32UL, 64UL ) );
+      RUN_DMATDMATMULT_OPERATION_TEST( CMDa( 15UL, 37UL ), CMDa(  37UL, 15UL ) );
+      RUN_DMATDMATMULT_OPERATION_TEST( CMDa( 15UL, 37UL ), CMDa(  37UL, 63UL ) );
+      RUN_DMATDMATMULT_OPERATION_TEST( CMDa( 37UL, 37UL ), CMDa(  37UL, 37UL ) );
+      RUN_DMATDMATMULT_OPERATION_TEST( CMDa( 63UL, 37UL ), CMDa(  37UL, 15UL ) );
+      RUN_DMATDMATMULT_OPERATION_TEST( CMDa( 63UL, 37UL ), CMDa(  37UL, 63UL ) );
+      RUN_DMATDMATMULT_OPERATION_TEST( CMDa( 16UL, 32UL ), CMDa(  32UL, 16UL ) );
+      RUN_DMATDMATMULT_OPERATION_TEST( CMDa( 16UL, 32UL ), CMDa(  32UL, 64UL ) );
+      RUN_DMATDMATMULT_OPERATION_TEST( CMDa( 32UL, 32UL ), CMDa(  32UL, 32UL ) );
+      RUN_DMATDMATMULT_OPERATION_TEST( CMDa( 64UL, 32UL ), CMDa(  32UL, 16UL ) );
+      RUN_DMATDMATMULT_OPERATION_TEST( CMDa( 64UL, 32UL ), CMDa(  32UL, 64UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense matrix/dense matrix multiplication:\n"

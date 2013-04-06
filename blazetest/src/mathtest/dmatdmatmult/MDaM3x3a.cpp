@@ -29,7 +29,7 @@
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DMatDMatMult.h>
+#include <blazetest/mathtest/dmatdmatmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -57,9 +57,9 @@ int main()
       typedef blazetest::Creator<M3x3a>  CM3x3a;
 
       // Running the tests
-      RUN_DMATDMATMULT_TEST( CMDa( 2UL, 3UL ), CM3x3a() );
-      RUN_DMATDMATMULT_TEST( CMDa( 3UL, 3UL ), CM3x3a() );
-      RUN_DMATDMATMULT_TEST( CMDa( 5UL, 3UL ), CM3x3a() );
+      RUN_DMATDMATMULT_OPERATION_TEST( CMDa( 2UL, 3UL ), CM3x3a() );
+      RUN_DMATDMATMULT_OPERATION_TEST( CMDa( 3UL, 3UL ), CM3x3a() );
+      RUN_DMATDMATMULT_OPERATION_TEST( CMDa( 5UL, 3UL ), CM3x3a() );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense matrix/dense matrix multiplication:\n"
