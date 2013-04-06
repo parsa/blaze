@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/TSVecSVecMult.h
-//  \brief Header file for the sparse vector/sparse vector inner product math test
+//  \file blazetest/mathtest/tsvecsvecmult/OperationTest.h
+//  \brief Header file for the sparse vector/sparse vector inner product operation test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_TSVECSVECMULT_H_
-#define _BLAZETEST_MATHTEST_TSVECSVECMULT_H_
+#ifndef _BLAZETEST_MATHTEST_TSVECSVECMULT_OPERATIONTEST_H_
+#define _BLAZETEST_MATHTEST_TSVECSVECMULT_OPERATIONTEST_H_
 
 
 //*************************************************************************************************
@@ -58,15 +58,15 @@ namespace tsvecsvecmult {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the sparse vector/sparse vector inner product math test.
+/*!\brief Auxiliary class template for the sparse vector/sparse vector inner product operation test.
 //
-// The TSVecSVecMult class template represents one particular inner product test between two
-// vectors of a particular type. The two template arguments \a VT1 and \a VT2 represent the
-// types of the left-hand side and right-hand side vector, respectively.
+// This class template represents one particular inner product test between two vectors of a
+// particular type. The two template arguments \a VT1 and \a VT2 represent the types of the
+// left-hand side and right-hand side vector, respectively.
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side sparse vector
-class TSVecSVecMult
+class OperationTest
 {
  private:
    //**Type definitions****************************************************************************
@@ -86,7 +86,7 @@ class TSVecSVecMult
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit TSVecSVecMult( const Creator<VT1>& creator1, const Creator<VT2>& creator2 );
+   explicit OperationTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -157,7 +157,7 @@ class TSVecSVecMult
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the TSVecSVecMult class template.
+/*!\brief Constructor for the sparse vector/sparse vector inner product operation test.
 //
 // \param creator1 The creator for the left-hand side sparse vector of the vector inner product.
 // \param creator2 The creator for the right-hand side sparse vector of the vector inner product.
@@ -165,7 +165,7 @@ class TSVecSVecMult
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side sparse vector
-TSVecSVecMult<VT1,VT2>::TSVecSVecMult( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
+OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
    : lhs_( trans( creator1() ) )  // The left-hand side sparse vector
    , rhs_( creator2() )           // The right-hand side sparse vector
    , res_()                       // The result of the inner product
@@ -200,7 +200,7 @@ TSVecSVecMult<VT1,VT2>::TSVecSVecMult( const Creator<VT1>& creator1, const Creat
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side sparse vector
-void TSVecSVecMult<VT1,VT2>::testInitialStatus()
+void OperationTest<VT1,VT2>::testInitialStatus()
 {
    // Checking the size of the left-hand side operand
    if( lhs_.size() != reflhs_.size() ) {
@@ -268,7 +268,7 @@ void TSVecSVecMult<VT1,VT2>::testInitialStatus()
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side sparse vector
-void TSVecSVecMult<VT1,VT2>::testAssignment()
+void OperationTest<VT1,VT2>::testAssignment()
 {
    try {
       lhs_ = reflhs_;
@@ -327,7 +327,7 @@ void TSVecSVecMult<VT1,VT2>::testAssignment()
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side sparse vector
-void TSVecSVecMult<VT1,VT2>::testBasicOperation()
+void OperationTest<VT1,VT2>::testBasicOperation()
 {
 #if BLAZETEST_MATHTEST_TEST_BASIC_OPERATION
    if( BLAZETEST_MATHTEST_TEST_BASIC_OPERATION > 1 )
@@ -565,7 +565,7 @@ void TSVecSVecMult<VT1,VT2>::testBasicOperation()
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side sparse vector
-void TSVecSVecMult<VT1,VT2>::checkResult()
+void OperationTest<VT1,VT2>::checkResult()
 {
    if( !isEqual( res_, refres_ ) ) {
       std::ostringstream oss;
@@ -605,7 +605,7 @@ template< typename VT1    // Type of the left-hand side sparse vector
 void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
 {
    for( size_t rep=0; rep<repetitions; ++rep ) {
-      TSVecSVecMult<VT1,VT2>( creator1, creator2 );
+      OperationTest<VT1,VT2>( creator1, creator2 );
    }
 }
 //*************************************************************************************************
@@ -623,8 +623,8 @@ void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the definition of a sparse vector/sparse vector inner product test case.
 */
-#define DEFINE_TSVECSVECMULT_TEST( VT1, VT2 ) \
-   extern template class blazetest::mathtest::tsvecsvecmult::TSVecSVecMult<VT1,VT2>
+#define DEFINE_TSVECSVECMULT_OPERATION_TEST( VT1, VT2 ) \
+   extern template class blazetest::mathtest::tsvecsvecmult::OperationTest<VT1,VT2>
 /*! \endcond */
 //*************************************************************************************************
 
@@ -633,7 +633,7 @@ void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the execution of a sparse vector/sparse vector inner product test case.
 */
-#define RUN_TSVECSVECMULT_TEST( C1, C2 ) \
+#define RUN_TSVECSVECMULT_OPERATION_TEST( C1, C2 ) \
    blazetest::mathtest::tsvecsvecmult::runTest( C1, C2 )
 /*! \endcond */
 //*************************************************************************************************

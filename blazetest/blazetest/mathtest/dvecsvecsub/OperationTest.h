@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blazetest/mathtest/dvecsvecsub/OperationTest.h
-//  \brief Header file for the dense vector/sparse vector subtraction math test
+//  \brief Header file for the dense vector/sparse vector subtraction operation test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //

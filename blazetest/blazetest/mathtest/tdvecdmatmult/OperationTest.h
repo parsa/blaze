@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blazetest/mathtest/tdvecdmatmult/OperationTest.h
-//  \brief Header file for the dense vector/dense matrix multiplication math test
+//  \brief Header file for the dense vector/dense matrix multiplication operation test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //

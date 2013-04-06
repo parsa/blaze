@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blazetest/mathtest/svecsvecadd/OperationTest.h
-//  \brief Header file for the sparse vector/sparse vector addition math test
+//  \brief Header file for the sparse vector/sparse vector addition operation test
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
