@@ -28,7 +28,7 @@
 #include <iostream>
 #include <blaze/math/StaticVector.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/DVecDVecAdd.h>
+#include <blazetest/mathtest/dvecdvecadd/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -54,7 +54,7 @@ int main()
       typedef blazetest::Creator<V5a>  CV5a;
 
       // Running the tests
-      RUN_DVECDVECADD_TEST( CV5a(), CV5a() );
+      RUN_DVECDVECADD_OPERATION_TEST( CV5a(), CV5a() );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense vector/dense vector addition:\n"
