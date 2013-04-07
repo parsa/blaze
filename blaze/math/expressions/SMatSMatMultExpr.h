@@ -430,8 +430,10 @@ class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
             {
                if( isDefault( values[relem->index()] ) ) {
                   values[relem->index()] = lelem->value() * relem->value();
-                  indices[nonzeros] = relem->index();
-                  ++nonzeros;
+                  if( !isDefault( values[relem->index()] ) ) {
+                     indices[nonzeros] = relem->index();
+                     ++nonzeros;
+                  }
                   if( relem->index() < minIndex ) minIndex = relem->index();
                   if( relem->index() > maxIndex ) maxIndex = relem->index();
                }
@@ -451,8 +453,10 @@ class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
 
                for( size_t j=0UL; j<nonzeros; ++j ) {
                   const size_t index( indices[j] );
-                  (~lhs).append( i, index, values[index] );
-                  reset( values[index] );
+                  if( !isDefault( values[index] ) ) {
+                     (~lhs).append( i, index, values[index] );
+                     reset( values[index] );
+                  }
                }
             }
             else {

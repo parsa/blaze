@@ -468,8 +468,10 @@ class TSMatTSMatMultExpr : public SparseMatrix< TSMatTSMatMultExpr<MT1,MT2>, tru
             {
                if( isDefault( values[lelem->index()] ) ) {
                   values[lelem->index()] = lelem->value() * relem->value();
-                  indices[nonzeros] = lelem->index();
-                  ++nonzeros;
+                  if( !isDefault( values[lelem->index()] ) ) {
+                     indices[nonzeros] = lelem->index();
+                     ++nonzeros;
+                  }
                   if( lelem->index() < minIndex ) minIndex = lelem->index();
                   if( lelem->index() > maxIndex ) maxIndex = lelem->index();
                }
@@ -489,8 +491,10 @@ class TSMatTSMatMultExpr : public SparseMatrix< TSMatTSMatMultExpr<MT1,MT2>, tru
 
                for( size_t i=0UL; i<nonzeros; ++i ) {
                   const size_t index( indices[i] );
-                  (~lhs).append( index, j, values[index] );
-                  reset( values[index] );
+                  if( !isDefault( values[index] ) ) {
+                     (~lhs).append( index, j, values[index] );
+                     reset( values[index] );
+                  }
                }
             }
             else {
