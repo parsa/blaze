@@ -123,7 +123,7 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
    enum { vectorizable = 0 };
 
    //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = !IsComputation<MT2>::value };
+   enum { canAlias = 1 };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -239,7 +239,7 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( !IsComputation<MT2>::value && rhs_.isAliased( alias ) );
+      return ( lhs_.isAliased( alias ) || rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 
