@@ -254,10 +254,8 @@ class TSMatTSMatMultExpr : public SparseMatrix< TSMatTSMatMultExpr<MT1,MT2>, tru
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( ( !IsComputation<MT1>::value || CanAlias<MT1>::value ) &&
-               !RequiresEvaluation<MT1>::value && lhs_.isAliased( alias ) ) ||
-             ( ( !IsComputation<MT2>::value || CanAlias<MT2>::value ) &&
-               !RequiresEvaluation<MT2>::value && rhs_.isAliased( alias ) );
+      return ( ( !IsComputation<MT1>::value || CanAlias<MT1>::value ) && lhs_.isAliased( alias ) ) ||
+             ( ( !IsComputation<MT2>::value || CanAlias<MT2>::value ) && rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 
