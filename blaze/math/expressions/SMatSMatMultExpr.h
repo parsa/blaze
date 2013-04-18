@@ -46,7 +46,6 @@
 #include <blaze/math/traits/SMatSVecMultExprTrait.h>
 #include <blaze/math/traits/TDVecSMatMultExprTrait.h>
 #include <blaze/math/traits/TSVecSMatMultExprTrait.h>
-#include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -108,12 +107,6 @@ class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
 
    //! Composite type of the right-hand side sparse matrix expression.
    typedef typename SelectType< IsExpression<MT2>::value, const MT2, const MT2& >::Type  RightOperand;
-   //**********************************************************************************************
-
-   //**Compilation flags***************************************************************************
-   //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( !IsComputation<MT1>::value || CanAlias<MT1>::value ) ||
-                     ( !IsComputation<MT2>::value || CanAlias<MT2>::value ) };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -243,6 +236,18 @@ class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case an alias effect is detected, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return ( lhs_.isAliased( alias ) || rhs_.isAliased( alias ) );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns whether the expression is aliased with the given address \a alias.
    //
    // \param alias The alias to be checked.
@@ -250,8 +255,7 @@ class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( ( !IsComputation<MT1>::value || CanAlias<MT1>::value ) && lhs_.isAliased( alias ) ) ||
-             ( ( !IsComputation<MT2>::value || CanAlias<MT2>::value ) && rhs_.isAliased( alias ) );
+      return ( lhs_.isAliased( alias ) || rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 

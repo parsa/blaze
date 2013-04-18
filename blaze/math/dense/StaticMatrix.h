@@ -44,7 +44,6 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
@@ -201,12 +200,6 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
        data type, the \a vectorizable compilation flag is set to \a true, otherwise it is set to
        \a false. */
    enum { vectorizable = IsVectorizable<Type>::value };
-
-   //! Compilation flag for the detection of aliasing effects.
-   /*! This compilation switch indicates whether this type potentially causes compuation errors
-       due to aliasing effects. In case the type can cause aliasing effects, the \a canAlias
-       switch is set to \a true, otherwise it is set to \a false. */
-   enum { canAlias = 0 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -340,6 +333,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
+   template< typename Other > inline bool          canAlias ( const Other* alias ) const;
    template< typename Other > inline bool          isAliased( const Other* alias ) const;
                               inline IntrinsicType get      ( size_t i, size_t j ) const;
 
@@ -1533,7 +1527,7 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator=( const Ma
    if( (~rhs).rows() != M || (~rhs).columns() != N )
       throw std::invalid_argument( "Invalid assignment to static matrix" );
 
-   if( CanAlias<MT>::value && (~rhs).isAliased( this ) ) {
+   if( (~rhs).canAlias( this ) ) {
       StaticMatrix tmp( ~rhs );
       swap( tmp );
    }
@@ -1571,7 +1565,7 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator+=( const M
    if( (~rhs).rows() != M || (~rhs).columns() != N )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
-   if( CanAlias<MT>::value && (~rhs).isAliased( this ) ) {
+   if( (~rhs).canAlias( this ) ) {
       StaticMatrix tmp( ~rhs );
       addAssign( *this, tmp );
    }
@@ -1607,7 +1601,7 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator-=( const M
    if( (~rhs).rows() != M || (~rhs).columns() != N )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
-   if( CanAlias<MT>::value && (~rhs).isAliased( this ) ) {
+   if( (~rhs).canAlias( this ) ) {
       StaticMatrix tmp( ~rhs );
       subAssign( *this, tmp );
    }
@@ -2028,10 +2022,36 @@ inline void StaticMatrix<Type,M,N,SO>::swap( StaticMatrix& m ) /* throw() */
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Returns whether the matrix can alias with the given address \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this matrix, \a false if not.
+//
+// This function returns whether the given address can alias with the vector. In contrast
+// to the isAliased() function this function is allowed to use compile time expressions
+// to optimize the evaluation.
+*/
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO >         // Storage order
+template< typename Other >  // Data type of the foreign expression
+inline bool StaticMatrix<Type,M,N,SO>::canAlias( const Other* alias ) const
+{
+   return static_cast<const void*>( this ) == static_cast<const void*>( alias );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns whether the matrix is aliased with the given address \a alias.
 //
 // \param alias The alias to be checked.
 // \return \a true in case the alias corresponds to this matrix, \a false if not.
+//
+// This function returns whether the given address is aliased with the vector. In contrast
+// to the conAlias() function this function is not allowed to use compile time expressions
+// to optimize the evaluation.
 */
 template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows
@@ -2501,12 +2521,6 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
        data type, the \a vectorizable compilation flag is set to \a true, otherwise it is set to
        \a false. */
    enum { vectorizable = IsVectorizable<Type>::value };
-
-   //! Compilation flag for the detection of aliasing effects.
-   /*! This compilation switch indicates whether this type potentially causes compuation errors
-       due to aliasing effects. In case the type can cause aliasing effects, the \a canAlias
-       switch is set to \a true, otherwise it is set to \a false. */
-   enum { canAlias = 0 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -2634,6 +2648,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
+   template< typename Other > inline bool          canAlias ( const Other* alias ) const;
    template< typename Other > inline bool          isAliased( const Other* alias ) const;
                               inline IntrinsicType get      ( size_t i, size_t j ) const;
 
@@ -3819,7 +3834,7 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator=( cons
    if( (~rhs).rows() != M || (~rhs).columns() != N )
       throw std::invalid_argument( "Invalid assignment to static matrix" );
 
-   if( CanAlias<MT>::value && (~rhs).isAliased( this ) ) {
+   if( (~rhs).canAlias( this ) ) {
       StaticMatrix tmp( ~rhs );
       swap( tmp );
    }
@@ -3858,7 +3873,7 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator+=( con
    if( (~rhs).rows() != M || (~rhs).columns() != N )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
-   if( CanAlias<MT>::value && (~rhs).isAliased( this ) ) {
+   if( (~rhs).canAlias( this ) ) {
       StaticMatrix tmp( ~rhs );
       addAssign( *this, tmp );
    }
@@ -3895,7 +3910,7 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator-=( con
    if( (~rhs).rows() != M || (~rhs).columns() != N )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
-   if( CanAlias<MT>::value && (~rhs).isAliased( this ) ) {
+   if( (~rhs).canAlias( this ) ) {
       StaticMatrix tmp( ~rhs );
       subAssign( *this, tmp );
    }
@@ -4324,10 +4339,37 @@ inline void StaticMatrix<Type,M,N,true>::swap( StaticMatrix& m ) /* throw() */
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the matrix can alias with the given address \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this matrix, \a false if not.
+//
+// This function returns whether the given address can alias with the vector. In contrast
+// to the isAliased() function this function is allowed to use compile time expressions
+// to optimize the evaluation.
+*/
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N >        // Number of columns
+template< typename Other >  // Data type of the foreign expression
+inline bool StaticMatrix<Type,M,N,true>::canAlias( const Other* alias ) const
+{
+   return static_cast<const void*>( this ) == static_cast<const void*>( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the matrix is aliased with the given address \a alias.
 //
 // \param alias The alias to be checked.
 // \return \a true in case the alias corresponds to this matrix, \a false if not.
+//
+// This function returns whether the given address is aliased with the vector. In contrast
+// to the conAlias() function this function is not allowed to use compile time expressions
+// to optimize the evaluation.
 */
 template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows

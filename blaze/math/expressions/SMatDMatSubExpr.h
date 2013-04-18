@@ -118,9 +118,6 @@ class SMatDMatSubExpr : public DenseMatrix< SMatDMatSubExpr<MT1,MT2,SO>, SO >
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = 0 };
-
-   //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = IsExpression<MT2>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -193,6 +190,19 @@ class SMatDMatSubExpr : public DenseMatrix< SMatDMatSubExpr<MT1,MT2,SO>, SO >
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return ( lhs_.canAlias( alias ) ) ||
+             ( IsExpression<MT2>::value && rhs_.canAlias( alias ) );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns whether the expression is aliased with the given address \a alias.
    //
    // \param alias The alias to be checked.
@@ -200,7 +210,7 @@ class SMatDMatSubExpr : public DenseMatrix< SMatDMatSubExpr<MT1,MT2,SO>, SO >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return IsExpression<MT2>::value && rhs_.isAliased( alias );
+      return lhs_.isAliased( alias ) || rhs_.isAliased( alias );
    }
    //**********************************************************************************************
 
@@ -294,8 +304,8 @@ class SMatDMatSubExpr : public DenseMatrix< SMatDMatSubExpr<MT1,MT2,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      addAssign( ~lhs, rhs.lhs_ );
       subAssign( ~lhs, rhs.rhs_ );
+      addAssign( ~lhs, rhs.lhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -325,8 +335,8 @@ class SMatDMatSubExpr : public DenseMatrix< SMatDMatSubExpr<MT1,MT2,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      subAssign( ~lhs, rhs.lhs_ );
       addAssign( ~lhs, rhs.rhs_ );
+      subAssign( ~lhs, rhs.lhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************

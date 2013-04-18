@@ -38,7 +38,6 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
-#include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
@@ -194,9 +193,6 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = 0 };
-
-   //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = CanAlias<VT>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -254,6 +250,18 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return vector_.canAlias( alias );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns whether the expression is aliased with the given address \a alias.
    //
    // \param alias The alias to be checked.
@@ -261,7 +269,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return CanAlias<VT>::value && vector_.isAliased( alias );
+      return vector_.isAliased( alias );
    }
    //**********************************************************************************************
 

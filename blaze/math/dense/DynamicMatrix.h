@@ -44,7 +44,6 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/system/CacheSize.h>
@@ -190,12 +189,6 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
        data type, the \a vectorizable compilation flag is set to \a true, otherwise it is set to
        \a false. */
    enum { vectorizable = IsVectorizable<Type>::value };
-
-   //! Compilation flag for the detection of aliasing effects.
-   /*! This compilation switch indicates whether this type potentially causes compuation errors
-       due to aliasing effects. In case the type can cause aliasing effects, the \a canAlias
-       switch is set to \a true, otherwise it is set to \a false. */
-   enum { canAlias = 0 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -323,6 +316,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
+   template< typename Other > inline bool          canAlias ( const Other* alias ) const;
    template< typename Other > inline bool          isAliased( const Other* alias ) const;
                               inline IntrinsicType get      ( size_t i, size_t j ) const;
 
@@ -917,7 +911,7 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const Matrix<M
 {
    using blaze::assign;
 
-   if( CanAlias<MT>::value && (~rhs).isAliased( this ) ) {
+   if( (~rhs).canAlias( this ) ) {
       DynamicMatrix tmp( ~rhs );
       swap( tmp );
    }
@@ -954,7 +948,7 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator+=( const Matrix<
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
-   if( CanAlias<MT>::value && (~rhs).isAliased( this ) ) {
+   if( (~rhs).canAlias( this ) ) {
       typename MT::ResultType tmp( ~rhs );
       addAssign( *this, tmp );
    }
@@ -988,7 +982,7 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator-=( const Matrix<
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
-   if( CanAlias<MT>::value && (~rhs).isAliased( this ) ) {
+   if( (~rhs).canAlias( this ) ) {
       typename MT::ResultType tmp( ~rhs );
       subAssign( *this, tmp );
    }
@@ -1559,10 +1553,34 @@ inline size_t DynamicMatrix<Type,SO>::adjustColumns( size_t minColumns ) const
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Returns whether the matrix can alias with the given address \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this matrix, \a false if not.
+//
+// This function returns whether the given address can alias with the vector. In contrast
+// to the isAliased() function this function is allowed to use compile time expressions
+// to optimize the evaluation.
+*/
+template< typename Type     // Data type of the matrix
+        , bool SO >         // Storage order
+template< typename Other >  // Data type of the foreign expression
+inline bool DynamicMatrix<Type,SO>::canAlias( const Other* alias ) const
+{
+   return static_cast<const void*>( this ) == static_cast<const void*>( alias );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns whether the matrix is aliased with the given address \a alias.
 //
 // \param alias The alias to be checked.
 // \return \a true in case the alias corresponds to this matrix, \a false if not.
+//
+// This function returns whether the given address is aliased with the vector. In contrast
+// to the conAlias() function this function is not allowed to use compile time expressions
+// to optimize the evaluation.
 */
 template< typename Type     // Data type of the matrix
         , bool SO >         // Storage order
@@ -2155,12 +2173,6 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
        data type, the \a vectorizable compilation flag is set to \a true, otherwise it is set to
        \a false. */
    enum { vectorizable = IsVectorizable<Type>::value };
-
-   //! Compilation flag for the detection of aliasing effects.
-   /*! This compilation switch indicates whether this type potentially causes compuation errors
-       due to aliasing effects. In case the type can cause aliasing effects, the \a canAlias
-       switch is set to \a true, otherwise it is set to \a false. */
-   enum { canAlias = 0 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -2282,6 +2294,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
+   template< typename Other > inline bool          canAlias ( const Other* alias ) const;
    template< typename Other > inline bool          isAliased( const Other* alias ) const;
                               inline IntrinsicType get      ( size_t i, size_t j ) const;
 
@@ -2867,7 +2880,7 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const Matr
 {
    using blaze::assign;
 
-   if( CanAlias<MT>::value && (~rhs).isAliased( this ) ) {
+   if( (~rhs).canAlias( this ) ) {
       DynamicMatrix tmp( ~rhs );
       swap( tmp );
    }
@@ -2905,7 +2918,7 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator+=( const Mat
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
-   if( CanAlias<MT>::value && (~rhs).isAliased( this ) ) {
+   if( (~rhs).canAlias( this ) ) {
       typename MT::ResultType tmp( ~rhs );
       addAssign( *this, tmp );
    }
@@ -2940,7 +2953,7 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator-=( const Mat
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
-   if( CanAlias<MT>::value && (~rhs).isAliased( this ) ) {
+   if( (~rhs).canAlias( this ) ) {
       typename MT::ResultType tmp( ~rhs );
       subAssign( *this, tmp );
    }
@@ -3529,10 +3542,35 @@ inline size_t DynamicMatrix<Type,true>::adjustRows( size_t minRows ) const
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the matrix can alias with the given address \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this matrix, \a false if not.
+//
+// This function returns whether the given address can alias with the vector. In contrast
+// to the isAliased() function this function is allowed to use compile time expressions
+// to optimize the evaluation.
+*/
+template< typename Type >   // Data type of the matrix
+template< typename Other >  // Data type of the foreign expression
+inline bool DynamicMatrix<Type,true>::canAlias( const Other* alias ) const
+{
+   return static_cast<const void*>( this ) == static_cast<const void*>( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the matrix is aliased with the given address \a alias.
 //
 // \param alias The alias to be checked.
 // \return \a true in case the alias corresponds to this matrix, \a false if not.
+//
+// This function returns whether the given address is aliased with the vector. In contrast
+// to the conAlias() function this function is not allowed to use compile time expressions
+// to optimize the evaluation.
 */
 template< typename Type >   // Data type of the matrix
 template< typename Other >  // Data type of the foreign expression

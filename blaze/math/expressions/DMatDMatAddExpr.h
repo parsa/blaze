@@ -142,9 +142,6 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
    enum { vectorizable = MT1::vectorizable && MT2::vectorizable &&
                          IsSame<ET1,ET2>::value &&
                          IntrinsicTrait<ET1>::addition };
-
-   //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = IsExpression<MT1>::value || IsExpression<MT2>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -236,6 +233,19 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return ( IsExpression<MT1>::value && ( RequiresEvaluation<MT1>::value ? lhs_.isAliased( alias ) : lhs_.canAlias( alias ) ) ) ||
+             ( IsExpression<MT2>::value && ( RequiresEvaluation<MT2>::value ? rhs_.isAliased( alias ) : rhs_.canAlias( alias ) ) );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns whether the expression is aliased with the given address \a alias.
    //
    // \param alias The alias to be checked.
@@ -243,8 +253,7 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( IsExpression<MT1>::value && lhs_.isAliased( alias ) ) ||
-             ( IsExpression<MT2>::value && rhs_.isAliased( alias ) );
+      return ( lhs_.isAliased( alias ) || rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 

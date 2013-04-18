@@ -35,7 +35,6 @@
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/traits/AbsExprTrait.h>
-#include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -128,9 +127,6 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = 0 };
-
-   //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = CanAlias<MT>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -189,6 +185,18 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return dm_.canAlias( alias );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns whether the expression is aliased with the given address \a alias.
    //
    // \param alias The alias to be checked.
@@ -196,7 +204,7 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return CanAlias<MT>::value && dm_.isAliased( alias );
+      return dm_.isAliased( alias );
    }
    //**********************************************************************************************
 

@@ -44,7 +44,6 @@
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/system/TransposeFlag.h>
 #include <blaze/util/AlignedStorage.h>
@@ -186,12 +185,6 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
        data type, the \a vectorizable compilation flag is set to \a true, otherwise it is set to
        \a false. */
    enum { vectorizable = IsVectorizable<Type>::value };
-
-   //! Compilation flag for the detection of aliasing effects.
-   /*! This compilation switch indicates whether this type potentially causes compuation errors
-       due to aliasing effects. In case the type can cause aliasing effects, the \a canAlias
-       switch is set to \a true, otherwise it is set to \a false. */
-   enum { canAlias = 0 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -324,6 +317,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
+   template< typename Other > inline bool          canAlias ( const Other* alias ) const;
    template< typename Other > inline bool          isAliased( const Other* alias ) const;
                               inline IntrinsicType get      ( size_t index ) const;
 
@@ -1001,7 +995,7 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( const Vector
    if( (~rhs).size() != N )
       throw std::invalid_argument( "Invalid assignment to static vector" );
 
-   if( CanAlias<VT>::value && (~rhs).isAliased( this ) ) {
+   if( (~rhs).canAlias( this ) ) {
       StaticVector tmp( ~rhs );
       swap( tmp );
    }
@@ -1066,7 +1060,7 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator+=( const Vecto
    if( (~rhs).size() != N )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   if( CanAlias<VT>::value && (~rhs).isAliased( this ) ) {
+   if( (~rhs).canAlias( this ) ) {
       StaticVector tmp( ~rhs );
       addAssign( *this, tmp );
    }
@@ -1100,7 +1094,7 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator-=( const Vecto
    if( (~rhs).size() != N )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   if( CanAlias<VT>::value && (~rhs).isAliased( this ) ) {
+   if( (~rhs).canAlias( this ) ) {
       StaticVector tmp( ~rhs );
       subAssign( *this, tmp );
    }
@@ -1135,7 +1129,7 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator*=( const Vecto
    if( (~rhs).size() != N )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   if( CanAlias<VT>::value && (~rhs).isAliased( this ) ) {
+   if( (~rhs).canAlias( this ) || IsSparseVector<VT>::value ) {
       StaticVector tmp( *this * (~rhs) );
       this->operator=( tmp );
    }
@@ -1455,10 +1449,35 @@ inline void StaticVector<Type,N,TF>::swap( StaticVector& v ) /* throw() */
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Returns whether the vector can alias with the given address \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this vector, \a false if not.
+//
+// This function returns whether the given address can alias with the vector. In contrast
+// to the isAliased() function this function is allowed to use compile time expressions
+// to optimize the evaluation.
+*/
+template< typename Type     // Data type of the vector
+        , size_t N          // Number of elements
+        , bool TF >         // Transpose flag
+template< typename Other >  // Data type of the foreign expression
+inline bool StaticVector<Type,N,TF>::canAlias( const Other* alias ) const
+{
+   return static_cast<const void*>( this ) == static_cast<const void*>( alias );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns whether the vector is aliased with the given address \a alias.
 //
 // \param alias The alias to be checked.
 // \return \a true in case the alias corresponds to this vector, \a false if not.
+//
+// This function returns whether the given address is aliased with the vector. In contrast
+// to the conAlias() function this function is not allowed to use compile time expressions
+// to optimize the evaluation.
 */
 template< typename Type     // Data type of the vector
         , size_t N          // Number of elements

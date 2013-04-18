@@ -137,11 +137,6 @@ class DVecSVecMultExpr : public SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF >
    typedef typename SelectType< IsExpression<VT2>::value, const VT2, const VT2& >::Type  RightOperand;
    //**********************************************************************************************
 
-   //**Compilation flags***************************************************************************
-   //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = 1 };
-   //**********************************************************************************************
-
    //**ConstIterator class definition**************************************************************
    /*!\brief Iterator over the elements of the dense vector-sparse vector multiplication expression.
    */
@@ -353,6 +348,18 @@ class DVecSVecMultExpr : public SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF >
    */
    inline RightOperand rightOperand() const {
       return rhs_;
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return ( lhs_.canAlias( alias ) || rhs_.canAlias( alias ) );
    }
    //**********************************************************************************************
 

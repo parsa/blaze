@@ -123,9 +123,6 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = 0 };
-
-   //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = 1 };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -229,6 +226,18 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    */
    inline RightOperand rightOperand() const {
       return rhs_;
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return ( lhs_.isAliased( alias ) || rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 

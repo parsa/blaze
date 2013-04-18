@@ -38,7 +38,6 @@
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
-#include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -122,9 +121,6 @@ class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = 0 };
-
-   //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = 1 };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -184,6 +180,19 @@ class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias effect is detected, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return ( IsComputation<VT1>::value && lhs_.canAlias( alias ) ) ||
+             ( rhs_.canAlias( alias ) );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns whether the expression is aliased with the given address \a alias.
    //
    // \param alias The alias to be checked.
@@ -191,8 +200,7 @@ class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( IsComputation<VT1>::value && CanAlias<VT1>::value && lhs_.isAliased( alias ) ) ||
-             ( rhs_.isAliased( alias ) );
+      return ( lhs_.isAliased( alias ) || rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 

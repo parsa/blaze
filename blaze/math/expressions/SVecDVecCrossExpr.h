@@ -125,9 +125,6 @@ class SVecDVecCrossExpr : public DenseVector< SVecDVecCrossExpr<VT1,VT2>, false 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = 0 };
-
-   //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = 1 };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -194,6 +191,19 @@ class SVecDVecCrossExpr : public DenseVector< SVecDVecCrossExpr<VT1,VT2>, false 
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return ( lhs_.canAlias( alias ) ) ||
+             ( !IsComputation<VT2>::value && rhs_.canAlias( alias ) );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns whether the expression is aliased with the given address \a alias.
    //
    // \param alias The alias to be checked.
@@ -201,8 +211,7 @@ class SVecDVecCrossExpr : public DenseVector< SVecDVecCrossExpr<VT1,VT2>, false 
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( lhs_.isAliased( alias ) ) ||
-             ( !IsComputation<VT2>::value && rhs_.isAliased( alias ) );
+      return ( lhs_.isAliased( alias ) || rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 

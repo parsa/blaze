@@ -113,9 +113,6 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = 0 };
-
-   //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = 1 };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -189,6 +186,18 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
    */
    inline Operand operand() const {
       return dm_;
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return dm_.canAlias( alias );
    }
    //**********************************************************************************************
 

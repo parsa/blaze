@@ -40,7 +40,6 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
-#include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
@@ -152,9 +151,6 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    enum { vectorizable = MT::vectorizable &&
                          IsSame<ET,RightOperand>::value &&
                          IntrinsicTrait<ET>::multiplication };
-
-   //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = CanAlias<MT>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -239,6 +235,18 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    */
    inline RightOperand rightOperand() const {
       return scalar_;
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return matrix_.canAlias( alias );
    }
    //**********************************************************************************************
 

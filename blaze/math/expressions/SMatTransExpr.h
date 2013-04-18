@@ -113,11 +113,6 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
    typedef typename SelectType< IsExpression<MT>::value, const MT, const MT& >::Type  Operand;
    //**********************************************************************************************
 
-   //**Compilation flags***************************************************************************
-   //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = 1 };
-   //**********************************************************************************************
-
    //**ConstIterator class definition**************************************************************
    /*!\brief Iterator over the elements of the sparse matrix transposition expression.
    */
@@ -324,6 +319,18 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
    */
    inline Operand operand() const {
       return sm_;
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return sm_.canAlias( alias );
    }
    //**********************************************************************************************
 

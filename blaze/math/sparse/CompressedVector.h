@@ -47,7 +47,6 @@
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/system/Precision.h>
@@ -226,14 +225,6 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    typedef typename CMathTrait<Type>::Type  LengthType;
    //**********************************************************************************************
 
-   //**Compilation flags***************************************************************************
-   //! Compilation flag for the detection of aliasing effects.
-   /*! This compilation switch indicates whether this type potentially causes compuation errors
-       due to aliasing effects. In case the type can cause aliasing effects, the \a canAlias
-       switch is set to \a true, otherwise it is set to \a false. */
-   enum { canAlias = 0 };
-   //**********************************************************************************************
-
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -314,6 +305,7 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
+   template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
    template< typename VT >    inline void assign   ( const DenseVector <VT,TF>& rhs );
    template< typename VT >    inline void assign   ( const SparseVector<VT,TF>& rhs );
@@ -706,7 +698,7 @@ inline CompressedVector<Type,TF>&
 {
    using blaze::assign;
 
-   if( CanAlias<VT>::value && (~rhs).isAliased( this ) ) {
+   if( (~rhs).canAlias( this ) ) {
       CompressedVector tmp( rhs );
       swap( tmp );
    }
@@ -738,8 +730,7 @@ inline CompressedVector<Type,TF>&
 {
    using blaze::assign;
 
-   if( ( CanAlias<VT>::value && (~rhs).isAliased( this ) ) ||
-       (~rhs).nonZeros() > capacity_ ) {
+   if( (~rhs).canAlias( this ) || (~rhs).nonZeros() > capacity_ ) {
       CompressedVector tmp( rhs );
       swap( tmp );
    }
@@ -1402,10 +1393,34 @@ inline size_t CompressedVector<Type,TF>::extendCapacity() const
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Returns whether the vector can alias with the given address \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this vector, \a false if not.
+//
+// This function returns whether the given address can alias with the vector. In contrast
+// to the isAliased() function this function is allowed to use compile time expressions
+// to optimize the evaluation.
+*/
+template< typename Type     // Data type of the vector
+        , bool TF >         // Transpose flag
+template< typename Other >  // Data type of the foreign expression
+inline bool CompressedVector<Type,TF>::canAlias( const Other* alias ) const
+{
+   return static_cast<const void*>( this ) == static_cast<const void*>( alias );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns whether the vector is aliased with the given address \a alias.
 //
 // \param alias The alias to be checked.
 // \return \a true in case the alias corresponds to this vector, \a false if not.
+//
+// This function returns whether the given address is aliased with the vector. In contrast
+// to the conAlias() function this function is not allowed to use compile time expressions
+// to optimize the evaluation.
 */
 template< typename Type     // Data type of the vector
         , bool TF >         // Transpose flag

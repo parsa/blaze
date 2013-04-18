@@ -42,7 +42,6 @@
 #include <blaze/math/traits/TDMatSVecMultExprTrait.h>
 #include <blaze/math/traits/TDVecTDMatMultExprTrait.h>
 #include <blaze/math/traits/TSVecTDMatMultExprTrait.h>
-#include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
@@ -221,9 +220,6 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = 0 };
-
-   //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = 1 };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -309,6 +305,18 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    */
    inline RightOperand rightOperand() const {
       return rhs_;
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return ( lhs_.isAliased( alias ) || rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 
@@ -2039,9 +2047,6 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = 0 };
-
-   //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = CanAlias<MMM>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -2111,6 +2116,18 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return matrix_.canAlias( alias );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns whether the expression is aliased with the given address \a alias.
    //
    // \param alias The alias to be checked.
@@ -2118,7 +2135,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return CanAlias<MMM>::value && matrix_.isAliased( alias );
+      return matrix_.isAliased( alias );
    }
    //**********************************************************************************************
 

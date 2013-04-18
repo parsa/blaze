@@ -37,7 +37,6 @@
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
@@ -143,10 +142,6 @@ class DVecDVecMultExpr : public DenseVector< DVecDVecMultExpr<VT1,VT2,TF>, TF >
    enum { vectorizable = VT1::vectorizable && VT2::vectorizable &&
                          IsSame<ET1,ET2>::value &&
                          IntrinsicTrait<ET1>::multiplication };
-
-   //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( IsComputation<VT1>::value && CanAlias<VT1>::value ) ||
-                     ( IsComputation<VT2>::value && CanAlias<VT2>::value ) };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -222,6 +217,19 @@ class DVecDVecMultExpr : public DenseVector< DVecDVecMultExpr<VT1,VT2,TF>, TF >
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return ( IsComputation<VT1>::value && ( RequiresEvaluation<VT1>::value ? lhs_.isAliased( alias ) : lhs_.canAlias( alias ) ) ) ||
+             ( IsComputation<VT2>::value && ( RequiresEvaluation<VT2>::value ? rhs_.isAliased( alias ) : rhs_.canAlias( alias ) ) );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns whether the expression is aliased with the given address \a alias.
    //
    // \param alias The alias to be checked.
@@ -229,8 +237,7 @@ class DVecDVecMultExpr : public DenseVector< DVecDVecMultExpr<VT1,VT2,TF>, TF >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( IsComputation<VT1>::value && CanAlias<VT1>::value && lhs_.isAliased( alias ) ) ||
-             ( IsComputation<VT2>::value && CanAlias<VT2>::value && rhs_.isAliased( alias ) );
+      return ( lhs_.isAliased( alias ) || rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 

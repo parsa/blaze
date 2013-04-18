@@ -46,7 +46,6 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/system/Precision.h>
@@ -234,14 +233,6 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
    typedef const Element*              ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
-   //**Compilation flags***************************************************************************
-   //! Compilation flag for the detection of aliasing effects.
-   /*! This compilation switch indicates whether this type potentially causes compuation errors
-       due to aliasing effects. In case the type can cause aliasing effects, the \a canAlias
-       switch is set to \a true, otherwise it is set to \a false. */
-   enum { canAlias = 0 };
-   //**********************************************************************************************
-
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -335,7 +326,8 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool isAliased ( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const;
+   template< typename Other > inline bool isAliased( const Other* alias ) const;
    template< typename MT, bool SO2 > inline void assign   ( const DenseMatrix<MT,SO2>&  rhs );
    template< typename MT >           inline void assign   ( const SparseMatrix<MT,SO>&  rhs );
    template< typename MT >           inline void assign   ( const SparseMatrix<MT,!SO>& rhs );
@@ -860,7 +852,7 @@ inline CompressedMatrix<Type,SO>&
 {
    using blaze::assign;
 
-   if( CanAlias<MT>::value && (~rhs).isAliased( this ) ) {
+   if( (~rhs).canAlias( this ) ) {
       CompressedMatrix tmp( rhs );
       swap( tmp );
    }
@@ -892,7 +884,7 @@ inline CompressedMatrix<Type,SO>&
 {
    using blaze::assign;
 
-   if( ( CanAlias<MT>::value && (~rhs).isAliased( this ) ) ||
+   if( (~rhs).canAlias( this ) ||
        (~rhs).rows()     > capacity_ ||
        (~rhs).nonZeros() > capacity() ) {
       CompressedMatrix tmp( rhs );
@@ -1847,10 +1839,34 @@ inline void CompressedMatrix<Type,SO>::finalize( size_t i )
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Returns whether the matrix can alias with the given address \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this matrix, \a false if not.
+//
+// This function returns whether the given address can alias with the vector. In contrast
+// to the isAliased() function this function is allowed to use compile time expressions
+// to optimize the evaluation.
+*/
+template< typename Type     // Data type of the sparse matrix
+        , bool SO >         // Storage order
+template< typename Other >  // Data type of the foreign expression
+inline bool CompressedMatrix<Type,SO>::canAlias( const Other* alias ) const
+{
+   return static_cast<const void*>( this ) == static_cast<const void*>( alias );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns whether the matrix is aliased with the given address \a alias.
 //
 // \param alias The alias to be checked.
 // \return \a true in case the alias corresponds to this matrix, \a false if not.
+//
+// This function returns whether the given address is aliased with the vector. In contrast
+// to the conAlias() function this function is not allowed to use compile time expressions
+// to optimize the evaluation.
 */
 template< typename Type     // Data type of the sparse matrix
         , bool SO >         // Storage order
@@ -2151,14 +2167,6 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
    typedef const Element*                ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
-   //**Compilation flags***************************************************************************
-   //! Compilation flag for the detection of aliasing effects.
-   /*! This compilation switch indicates whether this type potentially causes compuation errors
-       due to aliasing effects. In case the type can cause aliasing effects, the \a canAlias
-       switch is set to \a true, otherwise it is set to \a false. */
-   enum { canAlias = 0 };
-   //**********************************************************************************************
-
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -2252,7 +2260,8 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool isAliased ( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const;
+   template< typename Other > inline bool isAliased( const Other* alias ) const;
    template< typename MT, bool SO > inline void assign   ( const DenseMatrix<MT,SO>&     rhs );
    template< typename MT >          inline void assign   ( const SparseMatrix<MT,true>&  rhs );
    template< typename MT >          inline void assign   ( const SparseMatrix<MT,false>& rhs );
@@ -2765,7 +2774,7 @@ inline CompressedMatrix<Type,true>&
 {
    using blaze::assign;
 
-   if( CanAlias<MT>::value && (~rhs).isAliased( this ) ) {
+   if( (~rhs).canAlias( this ) ) {
       CompressedMatrix tmp( rhs );
       swap( tmp );
    }
@@ -2798,7 +2807,7 @@ inline CompressedMatrix<Type,true>&
 {
    using blaze::assign;
 
-   if( ( CanAlias<MT>::value && (~rhs).isAliased( this ) ) ||
+   if( (~rhs).canAlias( this ) ||
        (~rhs).columns()  > capacity_ ||
        (~rhs).nonZeros() > capacity() ) {
       CompressedMatrix tmp( rhs );
@@ -3768,10 +3777,35 @@ inline void CompressedMatrix<Type,true>::finalize( size_t j )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the matrix can alias with the given address \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this matrix, \a false if not.
+//
+// This function returns whether the given address can alias with the vector. In contrast
+// to the isAliased() function this function is allowed to use compile time expressions
+// to optimize the evaluation.
+*/
+template< typename Type >   // Data type of the sparse matrix
+template< typename Other >  // Data type of the foreign expression
+inline bool CompressedMatrix<Type,true>::canAlias( const Other* alias ) const
+{
+   return static_cast<const void*>( this ) == static_cast<const void*>( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the matrix is aliased with the given address \a alias.
 //
 // \param alias The alias to be checked.
 // \return \a true in case the alias corresponds to this matrix, \a false if not.
+//
+// This function returns whether the given address is aliased with the vector. In contrast
+// to the conAlias() function this function is not allowed to use compile time expressions
+// to optimize the evaluation.
 */
 template< typename Type >   // Data type of the sparse matrix
 template< typename Other >  // Data type of the foreign expression

@@ -207,6 +207,19 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
    //**********************************************************************************************
 
    //**IsAliased function**************************************************************************
+   /*!\brief Returns whether the vector can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the alias corresponds to this vector, \a false if not.
+   */
+   template< typename Other >  // Data type of the foreign expression
+   inline bool canAlias( const Other* alias ) const
+   {
+      return sv_.canAlias( alias );
+   }
+   //**********************************************************************************************
+
+   //**IsAliased function**************************************************************************
    /*!\brief Returns whether the vector is aliased with the given address \a alias.
    //
    // \param alias The alias to be checked.

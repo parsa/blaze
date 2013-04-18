@@ -40,7 +40,6 @@
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
@@ -109,10 +108,6 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = 0 };
-
-   //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( !IsComputation<VT>::value ) ||
-                     ( IsComputation<MT>::value && !RequiresEvaluation<MT>::value && CanAlias<MT>::value ) };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -182,16 +177,26 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return ( vec_.isAliased( alias ) || mat_.isAliased( alias ) );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns whether the expression is aliased with the given address \a alias.
    //
    // \param alias The alias to be checked.
-   // \return \a true in case the given alias is contained in this expression, \a false if not.
+   // \return \a true in case an alias effect is detected, \a false otherwise.
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( !IsComputation<VT>::value && vec_.isAliased( alias ) ) ||
-             ( IsComputation<MT>::value && !RequiresEvaluation<MT>::value &&
-               CanAlias<MT>::value && mat_.isAliased( alias ) );
+      return ( vec_.isAliased( alias ) || mat_.isAliased( alias ) );
    }
    //**********************************************************************************************
 

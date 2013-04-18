@@ -34,7 +34,6 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
-#include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
@@ -83,9 +82,6 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = 0 };
-
-   //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = CanAlias<VT>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -131,6 +127,18 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return dv_.canAlias( alias );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns whether the expression is aliased with the given address \a alias.
    //
    // \param alias The alias to be checked.
@@ -138,7 +146,7 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return CanAlias<VT>::value && dv_.isAliased( alias );
+      return dv_.isAliased( alias );
    }
    //**********************************************************************************************
 

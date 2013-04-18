@@ -36,7 +36,6 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SVecTransposer.h>
 #include <blaze/math/Intrinsics.h>
-#include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -116,9 +115,6 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = VT::vectorizable };
-
-   //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = CanAlias<VT>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -184,6 +180,18 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
    */
    inline Operand operand() const {
       return dv_;
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return dv_.canAlias( alias );
    }
    //**********************************************************************************************
 

@@ -38,7 +38,6 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AbsExprTrait.h>
-#include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
@@ -127,11 +126,6 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
 
    //! Composite data type of the sparse matrix expression.
    typedef typename SelectType< IsExpression<MT>::value, const MT, const MT& >::Type  Operand;
-   //**********************************************************************************************
-
-   //**Compilation flags***************************************************************************
-   //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( !IsComputation<MT>::value || CanAlias<MT>::value ) && !RequiresEvaluation<MT>::value };
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -361,6 +355,18 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return sm_.canAlias( alias );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns whether the expression is aliased with the given address \a alias.
    //
    // \param alias The alias to be checked.
@@ -368,8 +374,7 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( !IsComputation<MT>::value || CanAlias<MT>::value ) &&
-             !RequiresEvaluation<MT>::value && sm_.isAliased( alias );
+      return sm_.isAliased( alias );
    }
    //**********************************************************************************************
 

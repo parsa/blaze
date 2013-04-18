@@ -149,6 +149,19 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*!\brief Returns whether the matrix can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the alias corresponds to this matrix, \a false if not.
+   */
+   template< typename Other >  // Data type of the foreign expression
+   inline bool canAlias( const Other* alias ) const
+   {
+      return dm_.canAlias( alias );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns whether the matrix is aliased with the given address \a alias.
    //
    // \param alias The alias to be checked.

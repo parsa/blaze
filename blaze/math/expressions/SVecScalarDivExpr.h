@@ -41,7 +41,6 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
-#include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
@@ -192,11 +191,6 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
 
    //! Composite type of the right-hand side scalar value.
    typedef typename DivTrait< typename BaseElementType<VT>::Type, ST >::Type  RightOperand;
-   //**********************************************************************************************
-
-   //**Compilation flags***************************************************************************
-   //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = ( !IsComputation<VT>::value || CanAlias<VT>::value ) && !RequiresEvaluation<VT>::value };
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -412,6 +406,18 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return vector_.canAlias( alias );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns whether the expression is aliased with the given address \a alias.
    //
    // \param alias The alias to be checked.
@@ -419,8 +425,7 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( !IsComputation<VT>::value || CanAlias<VT>::value ) &&
-             !RequiresEvaluation<VT>::value && vector_.isAliased( alias );
+      return vector_.isAliased( alias );
    }
    //**********************************************************************************************
 

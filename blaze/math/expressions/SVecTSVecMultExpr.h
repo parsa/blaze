@@ -119,11 +119,6 @@ class SVecTSVecMultExpr : public SparseMatrix< SVecTSVecMultExpr<VT1,VT2>, false
    typedef typename SelectType< IsComputation<VT2>::value, const RT2, CT2 >::Type  RT;
    //**********************************************************************************************
 
-   //**Compilation flags***************************************************************************
-   //! Compilation flag for the detection of aliasing effects.
-   enum { canAlias = !IsComputation<VT1>::value || !IsComputation<VT2>::value };
-   //**********************************************************************************************
-
    //**Constructor*********************************************************************************
    /*!\brief Constructor for the SVecTSVecMultExpr class.
    //
@@ -213,6 +208,18 @@ class SVecTSVecMultExpr : public SparseMatrix< SVecTSVecMultExpr<VT1,VT2>, false
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return ( lhs_.canAlias( alias ) || rhs_.canAlias( alias ) );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns whether the expression is aliased with the given address \a alias.
    //
    // \param alias The alias to be checked.
@@ -220,8 +227,7 @@ class SVecTSVecMultExpr : public SparseMatrix< SVecTSVecMultExpr<VT1,VT2>, false
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return ( !IsComputation<VT1>::value && lhs_.isAliased( alias ) ) ||
-             ( !IsComputation<VT2>::value && rhs_.isAliased( alias ) );
+      return ( lhs_.isAliased( alias ) || rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 
