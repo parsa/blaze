@@ -237,6 +237,9 @@ MDbMDa: MDbMDa.o
 MDbMDb: MDbMDb.o
 	@$(CXX) -o $@ $< $(LIBRARIES)
 
+AliasingTest: AliasingTest.o
+	@$(CXX) -o $@ $< $(LIBRARIES)
+
 
 # Cleanup
 clean:

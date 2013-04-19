@@ -1,5 +1,6 @@
 *.d
 *.o
+AliasingTest
 VCaM2x2a
 VCaM2x2b
 VCaM3x3a

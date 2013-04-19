@@ -1,5 +1,6 @@
 *.d
 *.o
+AliasingTest
 MCaV2a
 MCaV2b
 MCaV3a

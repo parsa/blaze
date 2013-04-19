@@ -25,6 +25,7 @@
 #==================================================================================================
 
 echo " Running vector tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/staticvector/ClassTest     2>&1 | tee -a result.txt
 src/mathtest/dynamicvector/ClassTest    2>&1 | tee -a result.txt
 src/mathtest/compressedvector/ClassTest 2>&1 | tee -a result.txt
@@ -35,6 +36,7 @@ src/mathtest/compressedvector/ClassTest 2>&1 | tee -a result.txt
 #==================================================================================================
 
 echo " Running matrix tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/staticmatrix/ClassTest     2>&1 | tee -a result.txt
 src/mathtest/dynamicmatrix/ClassTest    2>&1 | tee -a result.txt
 src/mathtest/compressedmatrix/ClassTest 2>&1 | tee -a result.txt
@@ -45,6 +47,7 @@ src/mathtest/compressedmatrix/ClassTest 2>&1 | tee -a result.txt
 #==================================================================================================
 
 echo " Running dense vector/dense vector addition tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/dvecdvecadd/V2aV2a 2>&1 | tee -a result.txt
 src/mathtest/dvecdvecadd/V2aV2b 2>&1 | tee -a result.txt
 src/mathtest/dvecdvecadd/V2aVDa 2>&1 | tee -a result.txt
@@ -115,12 +118,15 @@ src/mathtest/dvecdvecadd/VDbV6b 2>&1 | tee -a result.txt
 src/mathtest/dvecdvecadd/VDbVDa 2>&1 | tee -a result.txt
 src/mathtest/dvecdvecadd/VDbVDb 2>&1 | tee -a result.txt
 
+src/mathtest/dvecdvecadd/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Dense vector/sparse vector addition
 #==================================================================================================
 
 echo " Running dense vector/sparse vector addition tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/dvecsvecadd/V2aVCa 2>&1 | tee -a result.txt
 src/mathtest/dvecsvecadd/V2aVCb 2>&1 | tee -a result.txt
 src/mathtest/dvecsvecadd/V2bVCa 2>&1 | tee -a result.txt
@@ -151,12 +157,15 @@ src/mathtest/dvecsvecadd/VDaVCb 2>&1 | tee -a result.txt
 src/mathtest/dvecsvecadd/VDbVCa 2>&1 | tee -a result.txt
 src/mathtest/dvecsvecadd/VDbVCb 2>&1 | tee -a result.txt
 
+src/mathtest/dvecsvecadd/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Sparse vector/dense vector addition
 #==================================================================================================
 
 echo " Running sparse vector/dense vector addition tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/svecdvecadd/VCaV2a 2>&1 | tee -a result.txt
 src/mathtest/svecdvecadd/VCaV2b 2>&1 | tee -a result.txt
 src/mathtest/svecdvecadd/VCaV3a 2>&1 | tee -a result.txt
@@ -183,16 +192,21 @@ src/mathtest/svecdvecadd/VCbV6b 2>&1 | tee -a result.txt
 src/mathtest/svecdvecadd/VCbVDa 2>&1 | tee -a result.txt
 src/mathtest/svecdvecadd/VCbVDb 2>&1 | tee -a result.txt
 
+src/mathtest/svecdvecadd/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Sparse vector/sparse vector addition
 #==================================================================================================
 
 echo " Running sparse vector/sparse vector addition tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/svecsvecadd/VCaVCa 2>&1 | tee -a result.txt
 src/mathtest/svecsvecadd/VCaVCb 2>&1 | tee -a result.txt
 src/mathtest/svecsvecadd/VCbVCa 2>&1 | tee -a result.txt
 src/mathtest/svecsvecadd/VCbVCb 2>&1 | tee -a result.txt
+
+src/mathtest/svecsvecadd/AliasingTest 2>&1 | tee -a result.txt
 
 
 #==================================================================================================
@@ -200,6 +214,7 @@ src/mathtest/svecsvecadd/VCbVCb 2>&1 | tee -a result.txt
 #==================================================================================================
 
 echo " Running dense vector/dense vector subtraction tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/dvecdvecsub/V2aV2a 2>&1 | tee -a result.txt
 src/mathtest/dvecdvecsub/V2aV2b 2>&1 | tee -a result.txt
 src/mathtest/dvecdvecsub/V2aVDa 2>&1 | tee -a result.txt
@@ -270,12 +285,15 @@ src/mathtest/dvecdvecsub/VDbV6b 2>&1 | tee -a result.txt
 src/mathtest/dvecdvecsub/VDbVDa 2>&1 | tee -a result.txt
 src/mathtest/dvecdvecsub/VDbVDb 2>&1 | tee -a result.txt
 
+src/mathtest/dvecdvecsub/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Dense vector/sparse vector subtraction
 #==================================================================================================
 
 echo " Running dense vector/sparse vector subtraction tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/dvecsvecsub/V2aVCa 2>&1 | tee -a result.txt
 src/mathtest/dvecsvecsub/V2aVCb 2>&1 | tee -a result.txt
 src/mathtest/dvecsvecsub/V2bVCa 2>&1 | tee -a result.txt
@@ -306,12 +324,15 @@ src/mathtest/dvecsvecsub/VDaVCb 2>&1 | tee -a result.txt
 src/mathtest/dvecsvecsub/VDbVCa 2>&1 | tee -a result.txt
 src/mathtest/dvecsvecsub/VDbVCb 2>&1 | tee -a result.txt
 
+src/mathtest/dvecsvecsub/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Sparse vector/dense vector subtraction
 #==================================================================================================
 
 echo " Running sparse vector/dense vector subtraction tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/svecdvecsub/VCaV2a 2>&1 | tee -a result.txt
 src/mathtest/svecdvecsub/VCaV2b 2>&1 | tee -a result.txt
 src/mathtest/svecdvecsub/VCaV3a 2>&1 | tee -a result.txt
@@ -338,12 +359,16 @@ src/mathtest/svecdvecsub/VCbV6b 2>&1 | tee -a result.txt
 src/mathtest/svecdvecsub/VCbVDa 2>&1 | tee -a result.txt
 src/mathtest/svecdvecsub/VCbVDb 2>&1 | tee -a result.txt
 
+src/mathtest/svecdvecsub/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Sparse vector/sparse vector subtraction
 #==================================================================================================
 
 echo " Running sparse vector/sparse vector subtraction tests..." 2>&1 | tee -a result.txt
+src/mathtest/svecsvecsub/AliasingTest 2>&1 | tee -a result.txt
+
 src/mathtest/svecsvecsub/VCaVCa 2>&1 | tee -a result.txt
 src/mathtest/svecsvecsub/VCaVCb 2>&1 | tee -a result.txt
 src/mathtest/svecsvecsub/VCbVCa 2>&1 | tee -a result.txt
@@ -355,6 +380,7 @@ src/mathtest/svecsvecsub/VCbVCb 2>&1 | tee -a result.txt
 #==================================================================================================
 
 echo " Running dense vector/dense vector multiplication tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/dvecdvecmult/V2aV2a 2>&1 | tee -a result.txt
 src/mathtest/dvecdvecmult/V2aV2b 2>&1 | tee -a result.txt
 src/mathtest/dvecdvecmult/V2aVDa 2>&1 | tee -a result.txt
@@ -425,12 +451,15 @@ src/mathtest/dvecdvecmult/VDbV6b 2>&1 | tee -a result.txt
 src/mathtest/dvecdvecmult/VDbVDa 2>&1 | tee -a result.txt
 src/mathtest/dvecdvecmult/VDbVDb 2>&1 | tee -a result.txt
 
+src/mathtest/dvecdvecmult/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Dense vector/sparse vector multiplication
 #==================================================================================================
 
 echo " Running dense vector/sparse vector multiplication tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/dvecsvecmult/V2aVCa 2>&1 | tee -a result.txt
 src/mathtest/dvecsvecmult/V2aVCb 2>&1 | tee -a result.txt
 src/mathtest/dvecsvecmult/V2bVCa 2>&1 | tee -a result.txt
@@ -461,12 +490,15 @@ src/mathtest/dvecsvecmult/VDaVCb 2>&1 | tee -a result.txt
 src/mathtest/dvecsvecmult/VDbVCa 2>&1 | tee -a result.txt
 src/mathtest/dvecsvecmult/VDbVCb 2>&1 | tee -a result.txt
 
+src/mathtest/dvecsvecmult/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Sparse vector/dense vector multiplication
 #==================================================================================================
 
 echo " Running sparse vector/dense vector multiplication tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/svecdvecmult/VCaV2a 2>&1 | tee -a result.txt
 src/mathtest/svecdvecmult/VCaV2b 2>&1 | tee -a result.txt
 src/mathtest/svecdvecmult/VCaV3a 2>&1 | tee -a result.txt
@@ -493,16 +525,21 @@ src/mathtest/svecdvecmult/VCbV6b 2>&1 | tee -a result.txt
 src/mathtest/svecdvecmult/VCbVDa 2>&1 | tee -a result.txt
 src/mathtest/svecdvecmult/VCbVDb 2>&1 | tee -a result.txt
 
+src/mathtest/svecdvecmult/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Sparse vector/sparse vector multiplication
 #==================================================================================================
 
 echo " Running sparse vector/sparse vector multiplication tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/svecsvecmult/VCaVCa 2>&1 | tee -a result.txt
 src/mathtest/svecsvecmult/VCaVCb 2>&1 | tee -a result.txt
 src/mathtest/svecsvecmult/VCbVCa 2>&1 | tee -a result.txt
 src/mathtest/svecsvecmult/VCbVCb 2>&1 | tee -a result.txt
+
+src/mathtest/svecsvecmult/AliasingTest 2>&1 | tee -a result.txt
 
 
 #==================================================================================================
@@ -510,6 +547,7 @@ src/mathtest/svecsvecmult/VCbVCb 2>&1 | tee -a result.txt
 #==================================================================================================
 
 echo " Running dense vector/dense vector cross product tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/dvecdveccross/V3aV3a 2>&1 | tee -a result.txt
 src/mathtest/dvecdveccross/V3aV3b 2>&1 | tee -a result.txt
 src/mathtest/dvecdveccross/V3aVDa 2>&1 | tee -a result.txt
@@ -528,12 +566,15 @@ src/mathtest/dvecdveccross/VDbV3b 2>&1 | tee -a result.txt
 src/mathtest/dvecdveccross/VDbVDa 2>&1 | tee -a result.txt
 src/mathtest/dvecdveccross/VDbVDb 2>&1 | tee -a result.txt
 
+src/mathtest/dvecdveccross/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Dense vector/sparse vector cross product
 #==================================================================================================
 
 echo " Running dense vector/sparse vector cross product tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/dvecsveccross/V3aVCa 2>&1 | tee -a result.txt
 src/mathtest/dvecsveccross/V3aVCb 2>&1 | tee -a result.txt
 src/mathtest/dvecsveccross/V3bVCa 2>&1 | tee -a result.txt
@@ -544,12 +585,15 @@ src/mathtest/dvecsveccross/VDaVCb 2>&1 | tee -a result.txt
 src/mathtest/dvecsveccross/VDbVCa 2>&1 | tee -a result.txt
 src/mathtest/dvecsveccross/VDbVCb 2>&1 | tee -a result.txt
 
+src/mathtest/dvecsveccross/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Sparse vector/dense vector cross product
 #==================================================================================================
 
 echo " Running sparse vector/dense vector cross product tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/svecdveccross/VCaV3a 2>&1 | tee -a result.txt
 src/mathtest/svecdveccross/VCaV3b 2>&1 | tee -a result.txt
 src/mathtest/svecdveccross/VCaVDa 2>&1 | tee -a result.txt
@@ -560,16 +604,21 @@ src/mathtest/svecdveccross/VCbV3b 2>&1 | tee -a result.txt
 src/mathtest/svecdveccross/VCbVDa 2>&1 | tee -a result.txt
 src/mathtest/svecdveccross/VCbVDb 2>&1 | tee -a result.txt
 
+src/mathtest/svecdveccross/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Sparse vector/sparse vector cross product
 #==================================================================================================
 
 echo " Running sparse vector/sparse vector cross product tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/svecsveccross/VCaVCa 2>&1 | tee -a result.txt
 src/mathtest/svecsveccross/VCaVCb 2>&1 | tee -a result.txt
 src/mathtest/svecsveccross/VCbVCa 2>&1 | tee -a result.txt
 src/mathtest/svecsveccross/VCbVCb 2>&1 | tee -a result.txt
+
+src/mathtest/svecsveccross/AliasingTest 2>&1 | tee -a result.txt
 
 
 #==================================================================================================
@@ -577,6 +626,7 @@ src/mathtest/svecsveccross/VCbVCb 2>&1 | tee -a result.txt
 #==================================================================================================
 
 echo " Running dense vector/dense vector inner product tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/tdvecdvecmult/V2aV2a 2>&1 | tee -a result.txt
 src/mathtest/tdvecdvecmult/V2aV2b 2>&1 | tee -a result.txt
 src/mathtest/tdvecdvecmult/V2aVDa 2>&1 | tee -a result.txt
@@ -653,6 +703,7 @@ src/mathtest/tdvecdvecmult/VDbVDb 2>&1 | tee -a result.txt
 #==================================================================================================
 
 echo " Running dense vector/sparse vector inner product tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/tdvecsvecmult/V2aVCa 2>&1 | tee -a result.txt
 src/mathtest/tdvecsvecmult/V2aVCb 2>&1 | tee -a result.txt
 src/mathtest/tdvecsvecmult/V2bVCa 2>&1 | tee -a result.txt
@@ -689,6 +740,7 @@ src/mathtest/tdvecsvecmult/VDbVCb 2>&1 | tee -a result.txt
 #==================================================================================================
 
 echo " Running sparse vector/dense vector inner product tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/tsvecdvecmult/VCaV2a 2>&1 | tee -a result.txt
 src/mathtest/tsvecdvecmult/VCaV2b 2>&1 | tee -a result.txt
 src/mathtest/tsvecdvecmult/VCbV2a 2>&1 | tee -a result.txt
@@ -725,6 +777,7 @@ src/mathtest/tsvecdvecmult/VCbVDb 2>&1 | tee -a result.txt
 #==================================================================================================
 
 echo " Running sparse vector/sparse vector inner product tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/tsvecsvecmult/VCaVCa 2>&1 | tee -a result.txt
 src/mathtest/tsvecsvecmult/VCaVCb 2>&1 | tee -a result.txt
 src/mathtest/tsvecsvecmult/VCbVCa 2>&1 | tee -a result.txt
@@ -736,6 +789,7 @@ src/mathtest/tsvecsvecmult/VCbVCb 2>&1 | tee -a result.txt
 #==================================================================================================
 
 echo " Running dense vector/dense vector outer product tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/dvectdvecmult/V2aV2a 2>&1 | tee -a result.txt
 src/mathtest/dvectdvecmult/V2aV2b 2>&1 | tee -a result.txt
 src/mathtest/dvectdvecmult/V2aV3a 2>&1 | tee -a result.txt
@@ -886,12 +940,15 @@ src/mathtest/dvectdvecmult/VDbV6b 2>&1 | tee -a result.txt
 src/mathtest/dvectdvecmult/VDbVDa 2>&1 | tee -a result.txt
 src/mathtest/dvectdvecmult/VDbVDb 2>&1 | tee -a result.txt
 
+src/mathtest/dvectdvecmult/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Dense vector/sparse vector outer product
 #==================================================================================================
 
 echo " Running dense vector/sparse vector outer product tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/dvectsvecmult/V2aVCa 2>&1 | tee -a result.txt
 src/mathtest/dvectsvecmult/V2aVCb 2>&1 | tee -a result.txt
 src/mathtest/dvectsvecmult/V2bVCa 2>&1 | tee -a result.txt
@@ -922,12 +979,15 @@ src/mathtest/dvectsvecmult/VDaVCb 2>&1 | tee -a result.txt
 src/mathtest/dvectsvecmult/VDbVCa 2>&1 | tee -a result.txt
 src/mathtest/dvectsvecmult/VDbVCb 2>&1 | tee -a result.txt
 
+src/mathtest/dvectsvecmult/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Sparse vector/dense vector outer product
 #==================================================================================================
 
 echo " Running sparse vector/dense vector outer product tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/svectdvecmult/VCaV2a 2>&1 | tee -a result.txt
 src/mathtest/svectdvecmult/VCaV2b 2>&1 | tee -a result.txt
 src/mathtest/svectdvecmult/VCaV3a 2>&1 | tee -a result.txt
@@ -954,16 +1014,21 @@ src/mathtest/svectdvecmult/VCbV6b 2>&1 | tee -a result.txt
 src/mathtest/svectdvecmult/VCbVDa 2>&1 | tee -a result.txt
 src/mathtest/svectdvecmult/VCbVDb 2>&1 | tee -a result.txt
 
+src/mathtest/svectdvecmult/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Sparse vector/sparse vector outer product
 #==================================================================================================
 
 echo " Running sparse vector/sparse vector outer product tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/svectsvecmult/VCaVCa 2>&1 | tee -a result.txt
 src/mathtest/svectsvecmult/VCaVCb 2>&1 | tee -a result.txt
 src/mathtest/svectsvecmult/VCbVCa 2>&1 | tee -a result.txt
 src/mathtest/svectsvecmult/VCbVCb 2>&1 | tee -a result.txt
+
+src/mathtest/svectsvecmult/AliasingTest 2>&1 | tee -a result.txt
 
 
 #==================================================================================================
@@ -971,6 +1036,7 @@ src/mathtest/svectsvecmult/VCbVCb 2>&1 | tee -a result.txt
 #==================================================================================================
 
 echo " Running dense matrix/dense vector multiplication tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/dmatdvecmult/M2x2aV2a 2>&1 | tee -a result.txt
 src/mathtest/dmatdvecmult/M2x2aV2b 2>&1 | tee -a result.txt
 src/mathtest/dmatdvecmult/M2x2aVDa 2>&1 | tee -a result.txt
@@ -1059,12 +1125,15 @@ src/mathtest/dmatdvecmult/MDbV6b 2>&1 | tee -a result.txt
 src/mathtest/dmatdvecmult/MDbVDa 2>&1 | tee -a result.txt
 src/mathtest/dmatdvecmult/MDbVDb 2>&1 | tee -a result.txt
 
+src/mathtest/dmatdvecmult/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Dense matrix/sparse vector multiplication
 #==================================================================================================
 
 echo " Running dense matrix/sparse vector multiplication tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/dmatsvecmult/M2x2aVCa 2>&1 | tee -a result.txt
 src/mathtest/dmatsvecmult/M2x2aVCb 2>&1 | tee -a result.txt
 src/mathtest/dmatsvecmult/M2x2bVCa 2>&1 | tee -a result.txt
@@ -1105,12 +1174,15 @@ src/mathtest/dmatsvecmult/MDaVCb 2>&1 | tee -a result.txt
 src/mathtest/dmatsvecmult/MDbVCa 2>&1 | tee -a result.txt
 src/mathtest/dmatsvecmult/MDbVCb 2>&1 | tee -a result.txt
 
+src/mathtest/dmatsvecmult/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Sparse matrix/dense vector multiplication
 #==================================================================================================
 
 echo " Running sparse matrix/dense vector multiplication tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/smatdvecmult/MCaV2a 2>&1 | tee -a result.txt
 src/mathtest/smatdvecmult/MCaV2b 2>&1 | tee -a result.txt
 src/mathtest/smatdvecmult/MCaV3a 2>&1 | tee -a result.txt
@@ -1137,16 +1209,21 @@ src/mathtest/smatdvecmult/MCbV6b 2>&1 | tee -a result.txt
 src/mathtest/smatdvecmult/MCbVDa 2>&1 | tee -a result.txt
 src/mathtest/smatdvecmult/MCbVDb 2>&1 | tee -a result.txt
 
+src/mathtest/smatdvecmult/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Sparse matrix/sparse vector multiplication
 #==================================================================================================
 
 echo " Running sparse matrix/sparse vector multiplication tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/smatsvecmult/MCaVCa 2>&1 | tee -a result.txt
 src/mathtest/smatsvecmult/MCaVCb 2>&1 | tee -a result.txt
 src/mathtest/smatsvecmult/MCbVCa 2>&1 | tee -a result.txt
 src/mathtest/smatsvecmult/MCbVCb 2>&1 | tee -a result.txt
+
+src/mathtest/smatsvecmult/AliasingTest 2>&1 | tee -a result.txt
 
 
 #==================================================================================================
@@ -1154,6 +1231,7 @@ src/mathtest/smatsvecmult/MCbVCb 2>&1 | tee -a result.txt
 #==================================================================================================
 
 echo " Running dense vector/dense matrix multiplication tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/tdvecdmatmult/V2aM2x2a 2>&1 | tee -a result.txt
 src/mathtest/tdvecdmatmult/V2aM2x2b 2>&1 | tee -a result.txt
 src/mathtest/tdvecdmatmult/V2aMDa   2>&1 | tee -a result.txt
@@ -1242,12 +1320,15 @@ src/mathtest/tdvecdmatmult/VDbM16x8b 2>&1 | tee -a result.txt
 src/mathtest/tdvecdmatmult/VDbMDa    2>&1 | tee -a result.txt
 src/mathtest/tdvecdmatmult/VDbMDb    2>&1 | tee -a result.txt
 
+src/mathtest/tdvecdmatmult/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Sparse vector/dense matrix multiplication
 #==================================================================================================
 
 echo " Running sparse vector/dense matrix multiplication tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/tsvecdmatmult/VCaM2x2a  2>&1 | tee -a result.txt
 src/mathtest/tsvecdmatmult/VCaM2x2b  2>&1 | tee -a result.txt
 src/mathtest/tsvecdmatmult/VCaM3x3a  2>&1 | tee -a result.txt
@@ -1282,12 +1363,15 @@ src/mathtest/tsvecdmatmult/VCbM16x8b 2>&1 | tee -a result.txt
 src/mathtest/tsvecdmatmult/VCbMDa    2>&1 | tee -a result.txt
 src/mathtest/tsvecdmatmult/VCbMDb    2>&1 | tee -a result.txt
 
+src/mathtest/tsvecdmatmult/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Dense vector/sparse matrix multiplication
 #==================================================================================================
 
 echo " Running dense vector/sparse matrix multiplication tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/tdvecsmatmult/V2aMCa 2>&1 | tee -a result.txt
 src/mathtest/tdvecsmatmult/V2aMCb 2>&1 | tee -a result.txt
 src/mathtest/tdvecsmatmult/V2bMCa 2>&1 | tee -a result.txt
@@ -1318,16 +1402,21 @@ src/mathtest/tdvecsmatmult/VDaMCb 2>&1 | tee -a result.txt
 src/mathtest/tdvecsmatmult/VDbMCa 2>&1 | tee -a result.txt
 src/mathtest/tdvecsmatmult/VDbMCb 2>&1 | tee -a result.txt
 
+src/mathtest/tdvecsmatmult/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Sparse vector/sparse matrix multiplication
 #==================================================================================================
 
 echo " Running sparse vector/sparse matrix multiplication tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/tsvecsmatmult/VCaMCa 2>&1 | tee -a result.txt
 src/mathtest/tsvecsmatmult/VCaMCb 2>&1 | tee -a result.txt
 src/mathtest/tsvecsmatmult/VCbMCa 2>&1 | tee -a result.txt
 src/mathtest/tsvecsmatmult/VCbMCb 2>&1 | tee -a result.txt
+
+src/mathtest/tsvecsmatmult/AliasingTest 2>&1 | tee -a result.txt
 
 
 #==================================================================================================
@@ -1335,6 +1424,7 @@ src/mathtest/tsvecsmatmult/VCbMCb 2>&1 | tee -a result.txt
 #==================================================================================================
 
 echo " Running dense matrix/dense matrix addition tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/dmatdmatadd/M2x2aM2x2a 2>&1 | tee -a result.txt
 src/mathtest/dmatdmatadd/M2x2aM2x2b 2>&1 | tee -a result.txt
 src/mathtest/dmatdmatadd/M2x2aMDa   2>&1 | tee -a result.txt
@@ -1431,12 +1521,15 @@ src/mathtest/dmatdmatadd/MDbM16x8b 2>&1 | tee -a result.txt
 src/mathtest/dmatdmatadd/MDbMDa    2>&1 | tee -a result.txt
 src/mathtest/dmatdmatadd/MDbMDb    2>&1 | tee -a result.txt
 
+src/mathtest/dmatdmatadd/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Dense matrix/sparse matrix addition
 #==================================================================================================
 
 echo " Running dense matrix/sparse matrix addition tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/dmatsmatadd/M2x2aMCa 2>&1 | tee -a result.txt
 src/mathtest/dmatsmatadd/M2x2aMCb 2>&1 | tee -a result.txt
 src/mathtest/dmatsmatadd/M2x2bMCa 2>&1 | tee -a result.txt
@@ -1477,12 +1570,15 @@ src/mathtest/dmatsmatadd/MDaMCb 2>&1 | tee -a result.txt
 src/mathtest/dmatsmatadd/MDbMCa 2>&1 | tee -a result.txt
 src/mathtest/dmatsmatadd/MDbMCb 2>&1 | tee -a result.txt
 
+src/mathtest/dmatsmatadd/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Sparse matrix/dense matrix addition
 #==================================================================================================
 
 echo " Running sparse matrix/dense matrix addition tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/smatdmatadd/MCaM2x2a  2>&1 | tee -a result.txt
 src/mathtest/smatdmatadd/MCaM2x2b  2>&1 | tee -a result.txt
 src/mathtest/smatdmatadd/MCaM3x3a  2>&1 | tee -a result.txt
@@ -1523,10 +1619,13 @@ src/mathtest/smatdmatadd/MCbMDb    2>&1 | tee -a result.txt
 #==================================================================================================
 
 echo " Running sparse matrix/sparse matrix addition tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/smatsmatadd/MCaMCa 2>&1 | tee -a result.txt
 src/mathtest/smatsmatadd/MCaMCb 2>&1 | tee -a result.txt
 src/mathtest/smatsmatadd/MCbMCa 2>&1 | tee -a result.txt
 src/mathtest/smatsmatadd/MCbMCb 2>&1 | tee -a result.txt
+
+src/mathtest/smatsmatadd/AliasingTest 2>&1 | tee -a result.txt
 
 
 #==================================================================================================
@@ -1534,6 +1633,7 @@ src/mathtest/smatsmatadd/MCbMCb 2>&1 | tee -a result.txt
 #==================================================================================================
 
 echo " Running dense matrix/dense matrix subtraction tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/dmatdmatsub/M2x2aM2x2a 2>&1 | tee -a result.txt
 src/mathtest/dmatdmatsub/M2x2aM2x2b 2>&1 | tee -a result.txt
 src/mathtest/dmatdmatsub/M2x2aMDa 2>&1   | tee -a result.txt
@@ -1630,12 +1730,15 @@ src/mathtest/dmatdmatsub/MDbM16x8b 2>&1 | tee -a result.txt
 src/mathtest/dmatdmatsub/MDbMDa 2>&1    | tee -a result.txt
 src/mathtest/dmatdmatsub/MDbMDb 2>&1    | tee -a result.txt
 
+src/mathtest/dmatdmatsub/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Dense matrix/sparse matrix subtraction
 #==================================================================================================
 
 echo " Running dense matrix/sparse matrix subtraction tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/dmatsmatsub/M2x2aMCa 2>&1 | tee -a result.txt
 src/mathtest/dmatsmatsub/M2x2aMCb 2>&1 | tee -a result.txt
 src/mathtest/dmatsmatsub/M2x2bMCa 2>&1 | tee -a result.txt
@@ -1676,12 +1779,15 @@ src/mathtest/dmatsmatsub/MDaMCb 2>&1 | tee -a result.txt
 src/mathtest/dmatsmatsub/MDbMCa 2>&1 | tee -a result.txt
 src/mathtest/dmatsmatsub/MDbMCb 2>&1 | tee -a result.txt
 
+src/mathtest/dmatsmatsub/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Sparse matrix/dense matrix subtraction
 #==================================================================================================
 
 echo " Running sparse matrix/dense matrix subtraction tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/smatdmatsub/MCaM2x2a 2>&1  | tee -a result.txt
 src/mathtest/smatdmatsub/MCaM2x2b 2>&1  | tee -a result.txt
 src/mathtest/smatdmatsub/MCaM3x3a 2>&1  | tee -a result.txt
@@ -1716,16 +1822,21 @@ src/mathtest/smatdmatsub/MCbM16x8b 2>&1 | tee -a result.txt
 src/mathtest/smatdmatsub/MCbMDa 2>&1    | tee -a result.txt
 src/mathtest/smatdmatsub/MCbMDb 2>&1    | tee -a result.txt
 
+src/mathtest/smatdmatsub/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Sparse matrix/sparse matrix subtraction
 #==================================================================================================
 
 echo " Running sparse matrix/sparse matrix subtraction tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/smatsmatsub/MCaMCa 2>&1 | tee -a result.txt
 src/mathtest/smatsmatsub/MCaMCb 2>&1 | tee -a result.txt
 src/mathtest/smatsmatsub/MCbMCa 2>&1 | tee -a result.txt
 src/mathtest/smatsmatsub/MCbMCb 2>&1 | tee -a result.txt
+
+src/mathtest/smatsmatsub/AliasingTest 2>&1 | tee -a result.txt
 
 
 #==================================================================================================
@@ -1733,6 +1844,7 @@ src/mathtest/smatsmatsub/MCbMCb 2>&1 | tee -a result.txt
 #==================================================================================================
 
 echo " Running dense matrix/dense matrix multiplication tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/dmatdmatmult/M2x2aM2x2a 2>&1 | tee -a result.txt
 src/mathtest/dmatdmatmult/M2x2aM2x2b 2>&1 | tee -a result.txt
 src/mathtest/dmatdmatmult/M2x2aMDa 2>&1   | tee -a result.txt
@@ -1837,12 +1949,15 @@ src/mathtest/dmatdmatmult/MDbM7x9b 2>&1 | tee -a result.txt
 src/mathtest/dmatdmatmult/MDbMDa 2>&1   | tee -a result.txt
 src/mathtest/dmatdmatmult/MDbMDb 2>&1   | tee -a result.txt
 
+src/mathtest/dmatdmatmult/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Dense matrix/sparse matrix multiplication
 #==================================================================================================
 
 echo " Running dense matrix/sparse matrix multiplication tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/dmatsmatmult/M2x2aMCa 2>&1 | tee -a result.txt
 src/mathtest/dmatsmatmult/M2x2aMCb 2>&1 | tee -a result.txt
 src/mathtest/dmatsmatmult/M2x2bMCa 2>&1 | tee -a result.txt
@@ -1883,12 +1998,15 @@ src/mathtest/dmatsmatmult/MDaMCb 2>&1 | tee -a result.txt
 src/mathtest/dmatsmatmult/MDbMCa 2>&1 | tee -a result.txt
 src/mathtest/dmatsmatmult/MDbMCb 2>&1 | tee -a result.txt
 
+src/mathtest/dmatsmatmult/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Sparse matrix/dense matrix multiplication
 #==================================================================================================
 
 echo " Running sparse matrix/dense matrix multiplication tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/smatdmatmult/MCaM2x2a  2>&1 | tee -a result.txt
 src/mathtest/smatdmatmult/MCaM2x2b  2>&1 | tee -a result.txt
 src/mathtest/smatdmatmult/MCaM3x3a  2>&1 | tee -a result.txt
@@ -1923,24 +2041,21 @@ src/mathtest/smatdmatmult/MCbM16x8b 2>&1 | tee -a result.txt
 src/mathtest/smatdmatmult/MCbMDa    2>&1 | tee -a result.txt
 src/mathtest/smatdmatmult/MCbMDb    2>&1 | tee -a result.txt
 
+src/mathtest/smatdmatmult/AliasingTest 2>&1 | tee -a result.txt
+
 
 #==================================================================================================
 # Sparse matrix/sparse matrix multiplication
 #==================================================================================================
 
 echo " Running sparse matrix/sparse matrix multiplication tests..." 2>&1 | tee -a result.txt
+
 src/mathtest/smatsmatmult/MCaMCa 2>&1 | tee -a result.txt
 src/mathtest/smatsmatmult/MCaMCb 2>&1 | tee -a result.txt
 src/mathtest/smatsmatmult/MCbMCa 2>&1 | tee -a result.txt
 src/mathtest/smatsmatmult/MCbMCb 2>&1 | tee -a result.txt
 
-
-#==================================================================================================
-# Aliasing
-#==================================================================================================
-
-echo " Running aliasing tests..." 2>&1 | tee -a result.txt
-src/mathtest/aliasing/Aliasing 2>&1 | tee -a result.txt
+src/mathtest/smatsmatmult/AliasingTest 2>&1 | tee -a result.txt
 
 
 #==================================================================================================

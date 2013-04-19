@@ -1,5 +1,6 @@
 *.d
 *.o
+AliasingTest
 MCaM2x2a
 MCaM2x2b
 MCaM3x3a

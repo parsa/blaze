@@ -91,6 +91,9 @@ VCbVDa: VCbVDa.o
 VCbVDb: VCbVDb.o
 	@$(CXX) -o $@ $< $(LIBRARIES)
 
+AliasingTest: AliasingTest.o
+	@$(CXX) -o $@ $< $(LIBRARIES)
+
 
 # Cleanup
 clean:

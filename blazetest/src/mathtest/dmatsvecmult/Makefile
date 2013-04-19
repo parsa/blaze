@@ -109,6 +109,9 @@ MDbVCa: MDbVCa.o
 MDbVCb: MDbVCb.o
 	@$(CXX) -o $@ $< $(LIBRARIES)
 
+AliasingTest: AliasingTest.o
+	@$(CXX) -o $@ $< $(LIBRARIES)
+
 
 # Cleanup
 clean:

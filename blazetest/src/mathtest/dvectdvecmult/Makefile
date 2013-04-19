@@ -331,6 +331,9 @@ VDbVDa: VDbVDa.o
 VDbVDb: VDbVDb.o
 	@$(CXX) -o $@ $< $(LIBRARIES)
 
+AliasingTest: AliasingTest.o
+	@$(CXX) -o $@ $< $(LIBRARIES)
+
 
 # Cleanup
 clean:

@@ -205,6 +205,9 @@ VDbMDa: VDbMDa.o
 VDbMDb: VDbMDb.o
 	@$(CXX) -o $@ $< $(LIBRARIES)
 
+AliasingTest: AliasingTest.o
+	@$(CXX) -o $@ $< $(LIBRARIES)
+
 
 # Cleanup
 clean:

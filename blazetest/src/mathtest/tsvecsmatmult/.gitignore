@@ -1,5 +1,6 @@
 *.d
 *.o
+AliasingTest
 VCaMCa
 VCaMCb
 VCbMCa

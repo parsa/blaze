@@ -46,6 +46,9 @@ MCbMCa: MCbMCa.o
 MCbMCb: MCbMCb.o
 	@$(CXX) -o $@ $< $(LIBRARIES)
 
+AliasingTest: AliasingTest.o
+	@$(CXX) -o $@ $< $(LIBRARIES)
+
 
 # Cleanup
 clean:

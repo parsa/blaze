@@ -46,6 +46,9 @@ VCbVCa: VCbVCa.o
 VCbVCb: VCbVCb.o
 	@$(CXX) -o $@ $< $(LIBRARIES)
 
+AliasingTest: AliasingTest.o
+	@$(CXX) -o $@ $< $(LIBRARIES)
+
 
 # Cleanup
 clean:
