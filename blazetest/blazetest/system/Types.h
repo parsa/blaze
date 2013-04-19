@@ -42,6 +42,14 @@ using std::size_t;
 
 
 //*************************************************************************************************
+/*!\class blazetest::ptrdiff_t
+// \brief Pointer difference type of the Blaze test suite.
+*/
+using std::ptrdiff_t;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\class blazetest::complex
 // \brief Complex data type of the Blaze test suite.
 */
