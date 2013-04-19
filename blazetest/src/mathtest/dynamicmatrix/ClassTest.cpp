@@ -27,7 +27,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/util/Complex.h>
-#include <blazetest/mathtest/DynamicMatrix.h>
+#include <blazetest/mathtest/dynamicmatrix/ClassTest.h>
 
 
 namespace blazetest {
