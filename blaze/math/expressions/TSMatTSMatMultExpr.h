@@ -58,6 +58,7 @@
 #include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/Byte.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
@@ -459,6 +460,7 @@ class TSMatTSMatMultExpr : public SparseMatrix< TSMatTSMatMultExpr<MT1,MT2>, tru
 
       // Performing the matrix-matrix multiplication
       std::vector<ElementType> values ( (~lhs).rows(), ElementType() );
+      std::vector<byte>        valid  ( (~lhs).rows(), 0   );
       std::vector<size_t>      indices( (~lhs).rows(), 0UL );
       size_t minIndex( inf ), maxIndex( 0UL );
 
@@ -470,12 +472,11 @@ class TSMatTSMatMultExpr : public SparseMatrix< TSMatTSMatMultExpr<MT1,MT2>, tru
             const LeftIterator lend( A.end( relem->index() ) );
             for( LeftIterator lelem=A.begin( relem->index() ); lelem!=lend; ++lelem )
             {
-               if( isDefault( values[lelem->index()] ) ) {
+               if( !valid[lelem->index()] ) {
                   values[lelem->index()] = lelem->value() * relem->value();
-                  if( !isDefault( values[lelem->index()] ) ) {
-                     indices[nonzeros] = lelem->index();
-                     ++nonzeros;
-                  }
+                  valid [relem->index()] = 1;
+                  indices[nonzeros] = lelem->index();
+                  ++nonzeros;
                   if( lelem->index() < minIndex ) minIndex = lelem->index();
                   if( lelem->index() > maxIndex ) maxIndex = lelem->index();
                }
@@ -484,6 +485,8 @@ class TSMatTSMatMultExpr : public SparseMatrix< TSMatTSMatMultExpr<MT1,MT2>, tru
                }
             }
          }
+
+         BLAZE_INTERNAL_ASSERT( nonzeros <= (~lhs).rows(), "Invalid number of non-zero elements" );
 
          if( nonzeros > 0UL )
          {
@@ -498,6 +501,7 @@ class TSMatTSMatMultExpr : public SparseMatrix< TSMatTSMatMultExpr<MT1,MT2>, tru
                   if( !isDefault( values[index] ) ) {
                      (~lhs).append( index, j, values[index] );
                      reset( values[index] );
+                     reset( valid [index] );
                   }
                }
             }
@@ -506,6 +510,7 @@ class TSMatTSMatMultExpr : public SparseMatrix< TSMatTSMatMultExpr<MT1,MT2>, tru
                   if( !isDefault( values[i] ) ) {
                      (~lhs).append( i, j, values[i] );
                      reset( values[i] );
+                     reset( valid [i] );
                   }
                }
             }
