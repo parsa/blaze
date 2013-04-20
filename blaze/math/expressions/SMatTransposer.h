@@ -212,25 +212,29 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    // \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
    // \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
    // \param value The value of the element to be appended.
+   // \param check \a true if the new value should be checked for default values, \a false if not.
    // \return void
    //
    // This function provides a very efficient way to fill a sparse matrix with elements. It
    // appends a new element to the end of the specified row/column without any additional
-   // parameter verification or memory allocation. Therefore it is strictly necessary to
-   // keep the following preconditions in mind:
+   // memory allocation. Therefore it is strictly necessary to keep the following preconditions
+   // in mind:
    //
    //  - the index of the new element must be strictly larger than the largest index of
    //    non-zero elements in the specified row/column of the sparse matrix
    //  - the current number of non-zero elements in row/column \a i must be smaller than
    //    the capacity of row/column \a i.
    //
-   // Ignoring these preconditions might result in undefined behavior!
+   // Ignoring these preconditions might result in undefined behavior! The optional \a check
+   // parameter specifies whether the new value should be tested for a default value. If the new
+   // value is a default value (for instance 0 in case of an integral element type) the value is
+   // not appended. Per default the values are not tested.
    //
    // \b Note: Although append() does not allocate new memory, it still invalidates all iterators
    // returned by the end() functions!
    */
-   inline void append( size_t i, size_t j, const ElementType& value ) {
-      sm_.append( j, i, value );
+   inline void append( size_t i, size_t j, const ElementType& value, bool check=false ) {
+      sm_.append( j, i, value, check );
    }
    //**********************************************************************************************
 
@@ -536,25 +540,29 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    // \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
    // \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
    // \param value The value of the element to be appended.
+   // \param check \a true if the new value should be checked for default values, \a false if not.
    // \return void
    //
    // This function provides a very efficient way to fill a sparse matrix with elements. It
-   // appends a new element to the end of the specified column without any additional parameter
-   // verification or memory allocation. Therefore it is strictly necessary to keep the following
-   // preconditions in mind:
+   // appends a new element to the end of the specified column without any additional memory
+   // allocation. Therefore it is strictly necessary to keep the following preconditions in
+   // mind:
    //
    //  - the index of the new element must be strictly larger than the largest index of non-zero
    //    elements in the specified column of the sparse matrix
    //  - the current number of non-zero elements in column \a j must be smaller than the capacity
    //    of column \a j.
    //
-   // Ignoring these preconditions might result in undefined behavior!
+   // Ignoring these preconditions might result in undefined behavior! The optional \a check
+   // parameter specifies whether the new value should be tested for a default value. If the new
+   // value is a default value (for instance 0 in case of an integral element type) the value is
+   // not appended. Per default the values are not tested.
    //
    // \b Note: Although append() does not allocate new memory, it still invalidates all iterators
    // returned by the end() functions!
    */
-   void append( size_t i, size_t j, const ElementType& value ) {
-      sm_.append( j, i, value );
+   void append( size_t i, size_t j, const ElementType& value, bool check=false ) {
+      sm_.append( j, i, value, false );
    }
    //**********************************************************************************************
 

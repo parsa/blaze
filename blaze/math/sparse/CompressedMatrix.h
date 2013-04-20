@@ -318,7 +318,7 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
    //**Low-level utility functions*****************************************************************
    /*!\name Low-level utility functions */
    //@{
-   inline void append  ( size_t i, size_t j, const Type& value );
+   inline void append  ( size_t i, size_t j, const Type& value, bool check=false );
    inline void finalize( size_t i );
    //@}
    //**********************************************************************************************
@@ -1757,19 +1757,22 @@ void CompressedMatrix<Type,SO>::reserveElements( size_t nonzeros )
 // \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
 // \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
 // \param value The value of the element to be appended.
+// \param check \a true if the new value should be checked for default values, \a false if not.
 // \return void
 //
 // This function provides a very efficient way to fill a sparse matrix with elements. It appends
-// a new element to the end of the specified row/column without any additional parameter verification
-// or memory allocation. Therefore it is strictly necessary to keep the following preconditions
-// in mind:
+// a new element to the end of the specified row/column without any additional memory allocation.
+// Therefore it is strictly necessary to keep the following preconditions in mind:
 //
 //  - the index of the new element must be strictly larger than the largest index of non-zero
 //    elements in the specified row/column of the sparse matrix
 //  - the current number of non-zero elements in the matrix must be smaller than the capacity
 //    of the matrix
 //
-// Ignoring these preconditions might result in undefined behavior!
+// Ignoring these preconditions might result in undefined behavior! The optional \a check
+// parameter specifies whether the new value should be tested for a default value. If the new
+// value is a default value (for instance 0 in case of an integral element type) the value is
+// not appended. Per default the values are not tested.
 //
 // In combination with the reserve() and the finalize() function, append() provides the most
 // efficient way to add new elements to a (new created) sparse matrix:
@@ -1790,7 +1793,7 @@ void CompressedMatrix<Type,SO>::reserveElements( size_t nonzeros )
 */
 template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
-inline void CompressedMatrix<Type,SO>::append( size_t i, size_t j, const Type& value )
+inline void CompressedMatrix<Type,SO>::append( size_t i, size_t j, const Type& value, bool check )
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < n_, "Invalid column access index" );
@@ -1798,8 +1801,11 @@ inline void CompressedMatrix<Type,SO>::append( size_t i, size_t j, const Type& v
    BLAZE_USER_ASSERT( begin_[i] == end_[i] || j > ( end_[i]-1UL )->index_, "Index is not strictly increasing" );
 
    end_[i]->value_ = value;
-   end_[i]->index_ = j;
-   ++end_[i];
+
+   if( !check || !isDefault( end_[i]->value_ ) ) {
+      end_[i]->index_ = j;
+      ++end_[i];
+   }
 }
 //*************************************************************************************************
 
@@ -2252,7 +2258,7 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline void append  ( size_t i, size_t j, const Type& value );
+   inline void append  ( size_t i, size_t j, const Type& value, bool check=false );
    inline void finalize( size_t j );
    //@}
    //**********************************************************************************************
@@ -3693,19 +3699,22 @@ void CompressedMatrix<Type,true>::reserveElements( size_t nonzeros )
 // \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
 // \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
 // \param value The value of the element to be appended.
+// \param check \a true if the new value should be checked for default values, \a false if not.
 // \return void
 //
 // This function provides a very efficient way to fill a sparse matrix with elements. It appends
-// a new element to the end of the specified column without any additional parameter verification
-// or memory allocation. Therefore it is strictly necessary to keep the following preconditions
-// in mind:
+// a new element to the end of the specified column without any additional memory allocation.
+// Therefore it is strictly necessary to keep the following preconditions in mind:
 //
 //  - the index of the new element must be strictly larger than the largest index of non-zero
 //    elements in the specified column of the sparse matrix
 //  - the current number of non-zero elements in the matrix must be smaller than the capacity of
 //    the matrix.
 //
-// Ignoring these preconditions might result in undefined behavior!
+// Ignoring these preconditions might result in undefined behavior! The optional \a check
+// parameter specifies whether the new value should be tested for a default value. If the new
+// value is a default value (for instance 0 in case of an integral element type) the value is
+// not appended. Per default the values are not tested.
 //
 // In combination with the reserve() and the finalize() function, append() provides the most
 // efficient way to add new elements to a (new created) sparse matrix:
@@ -3725,7 +3734,7 @@ void CompressedMatrix<Type,true>::reserveElements( size_t nonzeros )
 // returned by the end() functions!
 */
 template< typename Type >  // Data type of the sparse matrix
-inline void CompressedMatrix<Type,true>::append( size_t i, size_t j, const Type& value )
+inline void CompressedMatrix<Type,true>::append( size_t i, size_t j, const Type& value, bool check )
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < n_, "Invalid column access index" );
@@ -3733,8 +3742,11 @@ inline void CompressedMatrix<Type,true>::append( size_t i, size_t j, const Type&
    BLAZE_USER_ASSERT( begin_[j] == end_[j] || i > ( end_[j]-1UL )->index_, "Index is not strictly increasing" );
 
    end_[j]->value_ = value;
-   end_[j]->index_ = i;
-   ++end_[j];
+
+   if( !check || !isDefault( end_[j]->value_ ) ) {
+      end_[j]->index_ = i;
+      ++end_[j];
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
