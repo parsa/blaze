@@ -28,7 +28,6 @@
 //*************************************************************************************************
 
 #include <blaze/math/typetraits/BaseElementType.h>
-#include <blaze/math/typetraits/CanAlias.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
