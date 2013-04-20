@@ -185,24 +185,28 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
    //
    // \param index The index of the new element. The index has to be in the range \f$[0..N-1]\f$.
    // \param value The value of the element to be appended.
+   // \param check \a true if the new value should be checked for default values, \a false if not.
    // \return void
    //
    // This function provides a very efficient way to fill a sparse vector with elements. It
-   // appends a new element to the end of the sparse vector without any additional check or
-   // memory allocation. Therefore it is strictly necessary to keep the following preconditions
-   // in mind:
+   // appends a new element to the end of the sparse vector without any additional memory
+   // allocation. Therefore it is strictly necessary to keep the following preconditions in
+   // mind:
    //
    //  - the index of the new element must be strictly larger than the largest index of non-zero
    //    elements in the sparse vector
    //  - the current number of non-zero elements must be smaller than the capacity of the vector
    //
-   // Ignoring these preconditions might result in undefined behavior!
+   // Ignoring these preconditions might result in undefined behavior! The optional \a check
+   // parameter specifies whether the new value should be tested for a default value. If the new
+   // value is a default value (for instance 0 in case of an integral element type) the value is
+   // not appended. Per default the values are not tested.
    //
    // \b Note: Although append() does not allocate new memory, it still invalidates all iterators
    // returned by the end() functions!
    */
-   inline void append( size_t index, const ElementType& value ) {
-      sv_.append( index, value );
+   inline void append( size_t index, const ElementType& value, bool check=false ) {
+      sv_.append( index, value, check );
    }
    //**********************************************************************************************
 

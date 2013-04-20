@@ -286,7 +286,6 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
                               inline size_t                 nonZeros() const;
                               inline void                   reset();
                               inline void                   clear();
-                                     void                   append( size_t index, const Type& value );
                                      Iterator               insert( size_t index, const Type& value );
                                      void                   erase ( size_t index );
                               inline Iterator               find  ( size_t index );
@@ -299,6 +298,13 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
                               inline const CompressedVector getNormalized() const;
    template< typename Other > inline CompressedVector&      scale( Other scalar );
                               inline void                   swap( CompressedVector& sv ) /* throw() */;
+   //@}
+   //**********************************************************************************************
+
+   //**Low-level utility functions*****************************************************************
+   /*!\name Low-level utility functions */
+   //@{
+   inline void append( size_t index, const Type& value, bool check=false );
    //@}
    //**********************************************************************************************
 
@@ -975,42 +981,6 @@ inline void CompressedVector<Type,TF>::clear()
 
 
 //*************************************************************************************************
-/*!\brief Appending an element to the compressed vector.
-//
-// \param index The index of the new element. The index has to be in the range \f$[0..N-1]\f$.
-// \param value The value of the element to be appended.
-// \return void
-//
-// This function provides a very efficient way to fill a compressed vector with elements. It
-// appends a new element to the end of the compressed vector without any additional check or
-// memory allocation. Therefore it is strictly necessary to keep the following preconditions
-// in mind:
-//
-//  - the index of the new element must be strictly larger than the largest index of non-zero
-//    elements in the compressed vector
-//  - the current number of non-zero elements must be smaller than the capacity of the vector
-//
-// Ignoring these preconditions might result in undefined behavior!
-//
-// \b Note: Although append() does not allocate new memory, it still invalidates all iterators
-// returned by the end() functions!
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-void CompressedVector<Type,TF>::append( size_t index, const Type& value )
-{
-   BLAZE_USER_ASSERT( index < size_, "Invalid compressed vector access index" );
-   BLAZE_USER_ASSERT( nonZeros() < capacity(), "Not enough reserved space" );
-   BLAZE_USER_ASSERT( begin_ == end_ || (end_-1UL)->index_ < index, "Index is not strictly increasing" );
-
-   end_->value_ = value;
-   end_->index_ = index;
-   ++end_;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Inserting an element into the compressed vector.
 //
 // \param index The index of the new element. The index has to be in the range \f$[0..N-1]\f$.
@@ -1380,6 +1350,56 @@ inline size_t CompressedVector<Type,TF>::extendCapacity() const
    BLAZE_INTERNAL_ASSERT( nonzeros > capacity_, "Invalid capacity value" );
 
    return nonzeros;
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  LOW-LEVEL UTILITY FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Appending an element to the compressed vector.
+//
+// \param index The index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be appended.
+// \param check \a true if the new value should be checked for default values, \a false if not.
+// \return void
+//
+// This function provides a very efficient way to fill a compressed vector with elements. It
+// appends a new element to the end of the compressed vector without any memory allocation.
+// Therefore it is strictly necessary to keep the following preconditions in mind:
+//
+//  - the index of the new element must be strictly larger than the largest index of non-zero
+//    elements in the compressed vector
+//  - the current number of non-zero elements must be smaller than the capacity of the vector
+//
+// Ignoring these preconditions might result in undefined behavior! The optional \a check
+// parameter specifies whether the new value should be tested for a default value. If the new
+// value is a default value (for instance 0 in case of an integral element type) the value is
+// not appended. Per default the values are not tested.
+//
+// \b Note: Although append() does not allocate new memory, it still invalidates all iterators
+// returned by the end() functions!
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline void CompressedVector<Type,TF>::append( size_t index, const Type& value, bool check )
+{
+   BLAZE_USER_ASSERT( index < size_, "Invalid compressed vector access index" );
+   BLAZE_USER_ASSERT( nonZeros() < capacity(), "Not enough reserved space" );
+   BLAZE_USER_ASSERT( begin_ == end_ || (end_-1UL)->index_ < index, "Index is not strictly increasing" );
+
+   end_->value_ = value;
+
+   if( !check || !isDefault( end_->value_ ) ) {
+      end_->index_ = index;
+      ++end_;
+   }
 }
 //*************************************************************************************************
 
