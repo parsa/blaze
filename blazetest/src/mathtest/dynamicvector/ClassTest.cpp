@@ -65,6 +65,7 @@ ClassTest::ClassTest()
    testAlignment< complex<long double> >( "complex<long double>" );
 
    testConstructors();
+   testAssignment();
    testSubscript();
    testNonZeros();
    testReset();
