@@ -96,7 +96,10 @@ class MatrixAccessProxy
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   inline ~MatrixAccessProxy();
+   //@}
    //**********************************************************************************************
 
    //**Operators***********************************************************************************
@@ -161,7 +164,8 @@ inline MatrixAccessProxy<MT>::MatrixAccessProxy( MT& sv, size_t i, size_t j )
    , j_ ( j  )  // Column-index of the accessed sparse matrix element
 {
    const Iterator element( sm_.find( i_, j_ ) );
-   if( element == ( rmm ? sm_.end(i_) : sm_.end(j_) ) )
+   const size_t index( rmm ? i_ : j_ );
+   if( element == sm_.end(index) )
       sm_.insert( i_, j_, ElementType() );
 }
 //*************************************************************************************************
@@ -178,7 +182,31 @@ inline MatrixAccessProxy<MT>::MatrixAccessProxy( const MatrixAccessProxy& map )
    , i_ ( map.i_  )  // Row-index of the accessed sparse matrix element
    , j_ ( map.j_  )  // Column-index of the accessed sparse matrix element
 {
-   BLAZE_INTERNAL_ASSERT( sm_.find(i_,j_) != ( rmm ? sm_.end(i_) : sm_.end(j_) ), "Missing matrix element detected" );
+   const size_t index( rmm ? i_ : j_ );
+   BLAZE_INTERNAL_ASSERT( sm_.find(i_,j_) != sm_.end(index), "Missing matrix element detected" );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CONSTRUCTORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief The destructor for MatrixAccessProxy.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline MatrixAccessProxy<MT>::~MatrixAccessProxy()
+{
+   const Iterator element( sm_.find( i_, j_ ) );
+   const size_t index( rmm ? i_ : j_ );
+   BLAZE_INTERNAL_ASSERT( element != sm_.end(index), "Missing matrix element detected" );
+   if( isDefault( element->value() ) )
+      sm_.erase( index, element );
 }
 //*************************************************************************************************
 
@@ -324,7 +352,8 @@ template< typename MT >  // Type of the sparse matrix
 inline typename MatrixAccessProxy<MT>::Reference MatrixAccessProxy<MT>::get() const
 {
    const Iterator element( sm_.find( i_, j_ ) );
-   BLAZE_INTERNAL_ASSERT( element != ( rmm ? sm_.end(i_) : sm_.end(j_) ), "Missing matrix element detected" );
+   const size_t index( rmm ? i_ : j_ );
+   BLAZE_INTERNAL_ASSERT( element != sm_.end(index), "Missing matrix element detected" );
    return element->value();
 }
 //*************************************************************************************************
@@ -340,7 +369,8 @@ template< typename MT >  // Type of the sparse matrix
 inline void MatrixAccessProxy<MT>::set( ConstReference value ) const
 {
    const Iterator element( sm_.find( i_, j_ ) );
-   BLAZE_INTERNAL_ASSERT( element != ( rmm ? sm_.end(i_) : sm_.end(j_) ), "Missing matrix element detected" );
+   const size_t index( rmm ? i_ : j_ );
+   BLAZE_INTERNAL_ASSERT( element != sm_.end(index), "Missing matrix element detected" );
    element->value() = value;
 }
 //*************************************************************************************************
