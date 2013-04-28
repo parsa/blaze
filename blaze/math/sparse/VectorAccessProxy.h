@@ -27,6 +27,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/shims/IsDefault.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Types.h>
 
@@ -92,7 +93,10 @@ class VectorAccessProxy
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   inline ~VectorAccessProxy();
+   //@}
    //**********************************************************************************************
 
    //**Operators***********************************************************************************
@@ -171,6 +175,28 @@ inline VectorAccessProxy<VT>::VectorAccessProxy( const VectorAccessProxy& vap )
    , i_ ( vap.i_  )  // Index of the accessed sparse vector element
 {
    BLAZE_INTERNAL_ASSERT( sv_.find( i_ ) != sv_.end(), "Missing vector element detected" );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DESTRUCTOR
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief The destructor for VectorAccessProxy.
+*/
+template< typename VT >  // Type of the sparse vector
+inline VectorAccessProxy<VT>::~VectorAccessProxy()
+{
+   const Iterator element( sv_.find( i_ ) );
+   BLAZE_INTERNAL_ASSERT( element != sv_.end(), "Missing vector element detected" );
+   if( isDefault( element->value() ) )
+      sv_.erase( element );
 }
 //*************************************************************************************************
 
