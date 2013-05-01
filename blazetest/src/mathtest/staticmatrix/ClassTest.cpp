@@ -26,6 +26,8 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <blaze/math/CompressedMatrix.h>
+#include <blaze/math/DynamicMatrix.h>
 #include <blaze/util/Complex.h>
 #include <blazetest/mathtest/staticmatrix/ClassTest.h>
 
@@ -64,6 +66,10 @@ ClassTest::ClassTest()
 
    testConstructors();
    testAssignment();
+   testAddAssign();
+   testSubAssign();
+   testMultAssign();
+   testDivAssign();
    testFunctionCall();
    testNonZeros();
    testReset();
@@ -1652,7 +1658,7 @@ void ClassTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Row-major/row-major StaticMatrix copy assignment";
+      test_ = "Row-major StaticMatrix copy assignment";
 
       blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat1( 1, 2, 3, 4, 5, 6 );
       blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2;
@@ -1669,7 +1675,44 @@ void ClassTest::testAssignment()
           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Row-major copy assignment for  failed\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major dense matrix assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major StaticMatrix dense matrix assignment";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL );
+      mat1(0,0) = 1;
+      mat1(0,1) = 2;
+      mat1(0,2) = 3;
+      mat1(1,0) = 4;
+      mat1(1,1) = 5;
+      mat1(1,2) = 6;
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 6UL );
+      checkNonZeros( mat2, 0UL, 3UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
+          mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat2 << "\n"
              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
@@ -1678,7 +1721,7 @@ void ClassTest::testAssignment()
    }
 
    {
-      test_ = "Row-major/column-major StaticMatrix copy assignment";
+      test_ = "Row-major/column-major StaticMatrix dense matrix assignment";
 
       blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat1( 1, 2, 3, 4, 5, 6 );
       blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2;
@@ -1699,6 +1742,73 @@ void ClassTest::testAssignment()
              << " Details:\n"
              << "   Result:\n" << mat2 << "\n"
              << "   Expected result:\n( 1 3 5 )\n( 2 4 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major sparse matrix assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major StaticMatrix dense matrix assignment";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,0) = 1;
+      mat1(0,1) = 2;
+      mat1(1,0) = 3;
+      mat1(1,2) = 4;
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 0 ||
+          mat2(1,0) != 3 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 2 0 )\n( 3 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major StaticMatrix dense matrix assignment";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL );
+      mat1(0,0) = 1;
+      mat1(0,1) = 2;
+      mat1(1,0) = 3;
+      mat1(1,2) = 4;
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 0 ||
+          mat2(1,0) != 3 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 2 0 )\n( 3 0 4 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1742,9 +1852,47 @@ void ClassTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Column-major/row-major StaticMatrix copy assignment";
+      test_ = "Column-major StaticMatrix copy assignment";
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat1( 1, 2, 3, 4, 5, 6 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat1( 1, 2, 3, 4, 5, 6 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 6UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 3 || mat2(0,2) != 5 ||
+          mat2(1,0) != 2 || mat2(1,1) != 4 || mat2(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 3 5 )\n( 2 4 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense matrix assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major StaticMatrix dense matrix assignment";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL );
+      mat1(0,0) = 1;
+      mat1(0,1) = 2;
+      mat1(0,2) = 3;
+      mat1(1,0) = 4;
+      mat1(1,1) = 5;
+      mat1(1,2) = 6;
       blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2;
       mat2 = mat1;
 
@@ -1769,7 +1917,7 @@ void ClassTest::testAssignment()
    }
 
    {
-      test_ = "Column-major/column-major StaticMatrix copy assignment";
+      test_ = "Column-major/column-major StaticMatrix dense matrix assignment";
 
       blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat1( 1, 2, 3, 4, 5, 6 );
       blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2;
@@ -1791,6 +1939,787 @@ void ClassTest::testAssignment()
              << " Details:\n"
              << "   Result:\n" << mat2 << "\n"
              << "   Expected result:\n( 1 3 5 )\n( 2 4 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major StaticMatrix dense matrix assignment";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,0) = 1;
+      mat1(0,1) = 2;
+      mat1(1,0) = 3;
+      mat1(1,2) = 4;
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 1UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 0 ||
+          mat2(1,0) != 3 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 2 0 )\n( 3 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major StaticMatrix dense matrix assignment";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL );
+      mat1(0,0) = 1;
+      mat1(0,1) = 2;
+      mat1(1,0) = 3;
+      mat1(1,2) = 4;
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 1UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 0 ||
+          mat2(1,0) != 3 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 2 0 )\n( 3 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the StaticMatrix addition assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the addition assignment operators of the StaticMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testAddAssign()
+{
+   //=====================================================================================
+   // Row-major dense matrix addition assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major StaticMatrix dense matrix addition assignment";
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat1( 1,  2, 0, -3, 0, 4 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 0, -2, 6,  5, 0, 0 );
+
+      mat2 += mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major StaticMatrix dense matrix addition assignment";
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat1( 1, -3, 2, 0, 0, 4 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor>    mat2( 0, -2, 6, 5, 0, 0 );
+
+      mat2 += mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major sparse matrix addition assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major StaticMatrix sparse matrix addition assignment";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,0) =  1;
+      mat1(0,1) =  2;
+      mat1(1,0) = -3;
+      mat1(1,2) =  4;
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 0, -2, 6, 5, 0, 0 );
+
+      mat2 += mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major StaticMatrix sparse matrix addition assignment";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,0) =  1;
+      mat1(0,1) =  2;
+      mat1(1,0) = -3;
+      mat1(1,2) =  4;
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 0, -2, 6, 5, 0, 0 );
+
+      mat2 += mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense matrix addition assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major StaticMatrix dense matrix addition assignment";
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor>    mat1( 1, 2,  0, -3, 0, 4 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 0, 5, -2,  0, 6, 0 );
+
+      mat2 += mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 0UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major StaticMatrix dense matrix addition assignment";
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat1( 1, -3, 2, 0, 0, 4 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 0, 5, -2,  0, 6, 0 );
+
+      mat2 += mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 0UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix addition assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major StaticMatrix sparse matrix addition assignment";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,0) =  1;
+      mat1(0,1) =  2;
+      mat1(1,0) = -3;
+      mat1(1,2) =  4;
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 0, 5, -2,  0, 6, 0 );
+
+      mat2 += mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 0UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major StaticMatrix sparse matrix addition assignment";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,0) =  1;
+      mat1(0,1) =  2;
+      mat1(1,0) = -3;
+      mat1(1,2) =  4;
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 0, 5, -2,  0, 6, 0 );
+
+      mat2 += mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 0UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the StaticMatrix subtraction assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the subtraction assignment operators of the StaticMatrix
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testSubAssign()
+{
+   //=====================================================================================
+   // Row-major dense matrix subtraction assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major StaticMatrix dense matrix subtraction assignment";
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat1( -1, -2, 0, 3, 0, -4 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2(  0, -2, 6, 5, 0,  0 );
+
+      mat2 -= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major StaticMatrix dense matrix subtraction assignment";
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat1( -1,  3, -2, 0, 0, -4 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor>    mat2(  0, -2,  6, 5, 0,  0 );
+
+      mat2 -= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major sparse matrix subtraction assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major StaticMatrix sparse matrix subtraction assignment";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,0) = -1;
+      mat1(0,1) = -2;
+      mat1(1,0) =  3;
+      mat1(1,2) = -4;
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 0, -2, 6, 5, 0, 0 );
+
+      mat2 -= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major StaticMatrix sparse matrix subtraction assignment";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,0) = -1;
+      mat1(0,1) = -2;
+      mat1(1,0) =  3;
+      mat1(1,2) = -4;
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 0, -2, 6, 5, 0, 0 );
+
+      mat2 -= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense matrix subtraction assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major StaticMatrix dense matrix subtraction assignment";
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor>    mat1( -1, -2,  0, 3, 0, -4 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2(  0,  5, -2, 0, 6,  0 );
+
+      mat2 -= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 0UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major StaticMatrix dense matrix subtraction assignment";
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat1( -1, 3, -2, 0, 0, -4 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2(  0, 5, -2, 0, 6,  0 );
+
+      mat2 -= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 0UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix subtraction assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major StaticMatrix sparse matrix subtraction assignment";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,0) = -1;
+      mat1(0,1) = -2;
+      mat1(1,0) =  3;
+      mat1(1,2) = -4;
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 0, 5, -2,  0, 6, 0 );
+
+      mat2 -= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 0UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major StaticMatrix sparse matrix subtraction assignment";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,0) = -1;
+      mat1(0,1) = -2;
+      mat1(1,0) =  3;
+      mat1(1,2) = -4;
+
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 0, 5, -2,  0, 6, 0 );
+
+      mat2 -= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 0UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the StaticMatrix multiplication assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the multiplication assignment operators of the StaticMatrix
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testMultAssign()
+{
+   //=====================================================================================
+   // Row-major scalar multiplication assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major scalar multiplication assignment";
+
+      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( 0 );
+      mat(1,2) =  1;
+      mat(2,0) = -2;
+      mat(2,2) =  3;
+
+      mat *= 2;
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 2UL );
+
+      if( mat(0,0) !=  0 || mat(0,1) != 0 || mat(0,2) != 0 ||
+          mat(1,0) !=  0 || mat(1,1) != 0 || mat(1,2) != 2 ||
+          mat(2,0) != -4 || mat(2,1) != 0 || mat(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 )\n(  0 0 2 )\n( -4 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major scalar multiplication assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major scalar multiplication assignment";
+
+      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( 0 );
+      mat(1,2) =  1;
+      mat(2,0) = -2;
+      mat(2,2) =  3;
+
+      mat *= 2;
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 2UL );
+
+      if( mat(0,0) !=  0 || mat(0,1) != 0 || mat(0,2) != 0 ||
+          mat(1,0) !=  0 || mat(1,1) != 0 || mat(1,2) != 2 ||
+          mat(2,0) != -4 || mat(2,1) != 0 || mat(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 )\n(  0 0 2 )\n( -4 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the StaticMatrix division assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the division assignment operators of the StaticMatrix
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testDivAssign()
+{
+   //=====================================================================================
+   // Row-major scalar division assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major scalar division assignment";
+
+      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( 0 );
+      mat(1,2) =  2;
+      mat(2,0) = -4;
+      mat(2,2) =  6;
+
+      mat /= 2;
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 2UL );
+
+      if( mat(0,0) !=  0 || mat(0,1) != 0 || mat(0,2) != 0 ||
+          mat(1,0) !=  0 || mat(1,1) != 0 || mat(1,2) != 1 ||
+          mat(2,0) != -2 || mat(2,1) != 0 || mat(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 )\n(  0 0 1 )\n( -2 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major scalar division assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major scalar division assignment";
+
+      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( 0 );
+      mat(1,2) =  2;
+      mat(2,0) = -4;
+      mat(2,2) =  6;
+
+      mat /= 2;
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 2UL );
+
+      if( mat(0,0) !=  0 || mat(0,1) != 0 || mat(0,2) != 0 ||
+          mat(1,0) !=  0 || mat(1,1) != 0 || mat(1,2) != 1 ||
+          mat(2,0) != -2 || mat(2,1) != 0 || mat(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 )\n(  0 0 1 )\n( -2 0 3 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
