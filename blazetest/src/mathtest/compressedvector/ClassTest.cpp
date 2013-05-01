@@ -726,8 +726,11 @@ void ClassTest::testErase()
    {
       test_ = "CompressedVector::erase( Iterator )";
 
+      typedef blaze::CompressedVector<int,blaze::rowVector>  VectorType;
+      typedef VectorType::Iterator  Iterator;
+
       // Initialization check
-      blaze::CompressedVector<int,blaze::rowVector> vec( 9UL, 5UL );
+      VectorType vec( 9UL, 5UL );
       vec[0] = 1;
       vec[2] = 2;
       vec[5] = 3;
@@ -749,71 +752,121 @@ void ClassTest::testErase()
       }
 
       // Erasing the element at index 0
-      vec.erase( vec.find( 0UL ) );
+      {
+         Iterator pos = vec.erase( vec.find( 0UL ) );
 
-      checkSize    ( vec, 9UL );
-      checkCapacity( vec, 5UL );
-      checkNonZeros( vec, 4UL );
+         checkSize    ( vec, 9UL );
+         checkCapacity( vec, 5UL );
+         checkNonZeros( vec, 4UL );
 
-      if( vec[2] != 2 || vec[5] != 3 || vec[7] != 4 || vec[8] != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 0 0 2 0 0 3 0 4 5 )\n";
-         throw std::runtime_error( oss.str() );
+         if( vec[2] != 2 || vec[5] != 3 || vec[7] != 4 || vec[8] != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << vec << "\n"
+                << "   Expected result:\n( 0 0 2 0 0 3 0 4 5 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos->value() != 2 || pos->index() != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 2\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
       // Erasing the element at index 8
-      vec.erase( vec.find( 8UL ) );
+      {
+         Iterator pos = vec.erase( vec.find( 8UL ) );
 
-      checkSize    ( vec, 9UL );
-      checkCapacity( vec, 5UL );
-      checkNonZeros( vec, 3UL );
+         checkSize    ( vec, 9UL );
+         checkCapacity( vec, 5UL );
+         checkNonZeros( vec, 3UL );
 
-      if( vec[2] != 2 || vec[5] != 3 || vec[7] != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 0 0 2 0 0 3 0 4 0 )\n";
-         throw std::runtime_error( oss.str() );
+         if( vec[2] != 2 || vec[5] != 3 || vec[7] != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << vec << "\n"
+                << "   Expected result:\n( 0 0 2 0 0 3 0 4 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos != vec.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
       // Erasing the element at index 5
-      vec.erase( vec.find( 5UL ) );
+      {
+         Iterator pos = vec.erase( vec.find( 5UL ) );
 
-      checkSize    ( vec, 9UL );
-      checkCapacity( vec, 5UL );
-      checkNonZeros( vec, 2UL );
+         checkSize    ( vec, 9UL );
+         checkCapacity( vec, 5UL );
+         checkNonZeros( vec, 2UL );
 
-      if( vec[2] != 2 || vec[7] != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 0 0 2 0 0 0 0 4 0 )\n";
-         throw std::runtime_error( oss.str() );
+         if( vec[2] != 2 || vec[7] != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << vec << "\n"
+                << "   Expected result:\n( 0 0 2 0 0 0 0 4 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos->value() != 4 || pos->index() != 7 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 4\n"
+                << "   Expected index: 7\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
       // Trying to erase a zero element
-      vec.erase( vec.find( 1UL ) );
+      {
+         Iterator pos = vec.erase( vec.find( 1UL ) );
 
-      checkSize    ( vec, 9UL );
-      checkCapacity( vec, 5UL );
-      checkNonZeros( vec, 2UL );
+         checkSize    ( vec, 9UL );
+         checkCapacity( vec, 5UL );
+         checkNonZeros( vec, 2UL );
 
-      if( vec[2] != 2 || vec[7] != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 0 0 2 0 0 0 0 4 0 )\n";
-         throw std::runtime_error( oss.str() );
+         if( vec[2] != 2 || vec[7] != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << vec << "\n"
+                << "   Expected result:\n( 0 0 2 0 0 0 0 4 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos != vec.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 }
