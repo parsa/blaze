@@ -26,6 +26,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <blaze/math/DynamicMatrix.h>
 #include <blaze/util/Complex.h>
 #include <blazetest/mathtest/compressedmatrix/ClassTest.h>
 
@@ -51,6 +52,10 @@ ClassTest::ClassTest()
 {
    testConstructors();
    testAssignment();
+   testAddAssign();
+   testSubAssign();
+   testMultAssign();
+   testDivAssign();
    testFunctionCall();
    testNonZeros();
    testReset();
@@ -599,7 +604,7 @@ void ClassTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Row-major/row-major CompressedMatrix copy assignment";
+      test_ = "Row-major CompressedMatrix copy assignment";
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 3UL );
       mat1(0,0) = 1;
@@ -628,32 +633,138 @@ void ClassTest::testAssignment()
       }
    }
 
+
+   //=====================================================================================
+   // Row-major dense matrix assignment
+   //=====================================================================================
+
    {
-      test_ = "Row-major/row-major CompressedMatrix copy assignment";
+      test_ = "Row-major/row-major CompressedMatrix dense matrix assignment";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 3UL );
-      mat1(0,0) = 1;
-      mat1(0,2) = 2;
-      mat1(1,1) = 3;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 3UL, 2UL, 0 );
+      mat1(0,1) = 1;
+      mat1(1,1) = 2;
+      mat1(2,0) = 3;
+      mat1(2,1) = 4;
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL );
       mat2 = mat1;
 
-      checkRows    ( mat2, 2UL );
-      checkColumns ( mat2, 3UL );
-      checkCapacity( mat2, 3UL );
-      checkNonZeros( mat2, 3UL );
-      checkNonZeros( mat2, 0UL, 2UL );
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 2UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 1UL );
       checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 2UL );
 
-      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 2 ||
-          mat2(1,0) != 0 || mat2(1,1) != 3 || mat2(1,2) != 0 ) {
+      if( mat2(0,0) != 0 || mat2(0,1) != 1 ||
+          mat2(1,0) != 0 || mat2(1,1) != 2 ||
+          mat2(2,0) != 3 || mat2(2,1) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat2 << "\n"
-             << "   Expected result:\n( 1 0 2 )\n( 0 3 0 )\n";
+             << "   Expected result:\n( 0 1 )\n( 0 2 )\n( 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix dense matrix assignment";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 3UL, 2UL, 0 );
+      mat1(0,1) = 1;
+      mat1(1,1) = 2;
+      mat1(2,0) = 3;
+      mat1(2,1) = 4;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL );
+      mat2 = mat1;
+
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 2UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) != 1 ||
+          mat2(1,0) != 0 || mat2(1,1) != 2 ||
+          mat2(2,0) != 3 || mat2(2,1) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0 1 )\n( 0 2 )\n( 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major sparse matrix assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major CompressedMatrix sparse matrix assignment";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL );
+      mat2 = trans( mat1 );
+
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 2UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) != 2 ||
+          mat2(1,0) != 0 || mat2(1,1) != 3 ||
+          mat2(2,0) != 1 || mat2(2,1) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0 2 )\n( 0 3 )\n( 1 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix sparse matrix assignment";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,0) = 1;
+      mat1(0,2) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 2UL );
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 2 ||
+          mat2(1,0) != 0 || mat2(1,1) != 3 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 2 )\n( 0 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -664,9 +775,9 @@ void ClassTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Column-major/row-major CompressedMatrix copy assignment";
+      test_ = "Column-major CompressedMatrix copy assignment";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 3UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 3UL );
       mat1(0,0) = 1;
       mat1(0,2) = 2;
       mat1(1,1) = 3;
@@ -694,33 +805,920 @@ void ClassTest::testAssignment()
       }
    }
 
+
+   //=====================================================================================
+   // Column-major dense matrix assignment
+   //=====================================================================================
+
    {
-      test_ = "Column-major/column-major CompressedMatrix copy assignment";
+      test_ = "Column-major/row-major CompressedMatrix dense matrix assignment";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 3UL );
-      mat1(0,0) = 1;
-      mat1(0,2) = 2;
-      mat1(1,1) = 3;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 3UL, 2UL, 0 );
+      mat1(0,1) = 1;
+      mat1(1,1) = 2;
+      mat1(2,0) = 3;
+      mat1(2,1) = 4;
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL );
       mat2 = mat1;
 
-      checkRows    ( mat2, 2UL );
-      checkColumns ( mat2, 3UL );
-      checkCapacity( mat2, 3UL );
-      checkNonZeros( mat2, 3UL );
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 2UL );
+      checkNonZeros( mat2, 4UL );
       checkNonZeros( mat2, 0UL, 1UL );
-      checkNonZeros( mat2, 1UL, 1UL );
-      checkNonZeros( mat2, 2UL, 1UL );
+      checkNonZeros( mat2, 1UL, 3UL );
 
-      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 2 ||
-          mat2(1,0) != 0 || mat2(1,1) != 3 || mat2(1,2) != 0 ) {
+      if( mat2(0,0) != 0 || mat2(0,1) != 1 ||
+          mat2(1,0) != 0 || mat2(1,1) != 2 ||
+          mat2(2,0) != 3 || mat2(2,1) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat2 << "\n"
-             << "   Expected result:\n( 1 0 2 )\n( 0 3 0 )\n";
+             << "   Expected result:\n( 0 1 )\n( 0 2 )\n( 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major CompressedMatrix dense matrix assignment";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 3UL, 2UL, 0 );
+      mat1(0,1) = 1;
+      mat1(1,1) = 2;
+      mat1(2,0) = 3;
+      mat1(2,1) = 4;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL );
+      mat2 = mat1;
+
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 2UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) != 1 ||
+          mat2(1,0) != 0 || mat2(1,1) != 2 ||
+          mat2(2,0) != 3 || mat2(2,1) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0 1 )\n( 0 2 )\n( 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major CompressedMatrix sparse matrix assignment";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,0) = 1;
+      mat1(0,2) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 2UL );
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 2 ||
+          mat2(1,0) != 0 || mat2(1,1) != 3 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 2 )\n( 0 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/Column-major CompressedMatrix sparse matrix assignment";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL );
+      mat2 = trans( mat1 );
+
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 2UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) != 2 ||
+          mat2(1,0) != 0 || mat2(1,1) != 3 ||
+          mat2(2,0) != 1 || mat2(2,1) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0 2 )\n( 0 3 )\n( 1 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the CompressedMatrix addition assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the addition assignment operators of the CompressedMatrix
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testAddAssign()
+{
+   //=====================================================================================
+   // Row-major dense matrix addition assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major CompressedMatrix dense matrix addition assignment";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 0 );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 += mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 5UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+
+      if( mat2(0,0) != 5 || mat2(0,1) !=  0 || mat2(0,2) != 7 ||
+          mat2(1,0) != 2 || mat2(1,1) != 10 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 5  0 7 )\n( 2 10 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix dense matrix addition assignment";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 0 );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 += mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 5UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+
+      if( mat2(0,0) != 5 || mat2(0,1) !=  0 || mat2(0,2) != 7 ||
+          mat2(1,0) != 2 || mat2(1,1) != 10 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 5  0 7 )\n( 2 10 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major sparse matrix addition assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major CompressedMatrix sparse matrix addition assignment";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 += mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 5UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+
+      if( mat2(0,0) != 5 || mat2(0,1) !=  0 || mat2(0,2) != 7 ||
+          mat2(1,0) != 2 || mat2(1,1) != 10 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 5  0 7 )\n( 2 10 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix sparse matrix addition assignment";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 += mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 5UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+
+      if( mat2(0,0) != 5 || mat2(0,1) !=  0 || mat2(0,2) != 7 ||
+          mat2(1,0) != 2 || mat2(1,1) != 10 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 5  0 7 )\n( 2 10 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense matrix addition assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major CompressedMatrix dense matrix addition assignment";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 0 );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 += mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 5UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 5 || mat2(0,1) !=  0 || mat2(0,2) != 7 ||
+          mat2(1,0) != 2 || mat2(1,1) != 10 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 5  0 7 )\n( 2 10 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix dense matrix addition assignment";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 0 );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 += mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 5UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 5 || mat2(0,1) !=  0 || mat2(0,2) != 7 ||
+          mat2(1,0) != 2 || mat2(1,1) != 10 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 5  0 7 )\n( 2 10 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix addition assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major CompressedMatrix sparse matrix addition assignment";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 += mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 5UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 5 || mat2(0,1) !=  0 || mat2(0,2) != 7 ||
+          mat2(1,0) != 2 || mat2(1,1) != 10 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 5  0 7 )\n( 2 10 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major CompressedMatrix sparse matrix addition assignment";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 += mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 5UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 5 || mat2(0,1) !=  0 || mat2(0,2) != 7 ||
+          mat2(1,0) != 2 || mat2(1,1) != 10 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 5  0 7 )\n( 2 10 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the CompressedMatrix subtraction assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the subtraction assignment operators of the CompressedMatrix
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testSubAssign()
+{
+   //=====================================================================================
+   // Row-major dense matrix subtraction assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major CompressedMatrix dense matrix subtraction assignment";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 0 );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 -= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 5UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+
+      if( mat2(0,0) !=  5 || mat2(0,1) != 0 || mat2(0,2) !=  5 ||
+          mat2(1,0) != -2 || mat2(1,1) != 4 || mat2(1,2) != -4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(  5 0  5 )\n( -2 4 -4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix dense matrix subtraction assignment";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 0 );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 -= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 5UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+
+      if( mat2(0,0) !=  5 || mat2(0,1) != 0 || mat2(0,2) !=  5 ||
+          mat2(1,0) != -2 || mat2(1,1) != 4 || mat2(1,2) != -4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(  5 0  5 )\n( -2 4 -4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major sparse matrix subtraction assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major CompressedMatrix sparse matrix subtraction assignment";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 -= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 5UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+
+      if( mat2(0,0) !=  5 || mat2(0,1) != 0 || mat2(0,2) !=  5 ||
+          mat2(1,0) != -2 || mat2(1,1) != 4 || mat2(1,2) != -4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(  5 0  5 )\n( -2 4 -4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix sparse matrix subtraction assignment";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 -= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 5UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+
+      if( mat2(0,0) !=  5 || mat2(0,1) != 0 || mat2(0,2) !=  5 ||
+          mat2(1,0) != -2 || mat2(1,1) != 4 || mat2(1,2) != -4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(  5 0  5 )\n( -2 4 -4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense matrix subtraction assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major CompressedMatrix dense matrix subtraction assignment";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 0 );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 -= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 5UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) !=  5 || mat2(0,1) != 0 || mat2(0,2) !=  5 ||
+          mat2(1,0) != -2 || mat2(1,1) != 4 || mat2(1,2) != -4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(  5 0  5 )\n( -2 4 -4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix dense matrix subtraction assignment";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 0 );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 -= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 5UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) !=  5 || mat2(0,1) != 0 || mat2(0,2) !=  5 ||
+          mat2(1,0) != -2 || mat2(1,1) != 4 || mat2(1,2) != -4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(  5 0  5 )\n( -2 4 -4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix subtraction assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major CompressedMatrix sparse matrix subtraction assignment";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 -= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 5UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) !=  5 || mat2(0,1) != 0 || mat2(0,2) !=  5 ||
+          mat2(1,0) != -2 || mat2(1,1) != 4 || mat2(1,2) != -4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(  5 0  5 )\n( -2 4 -4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major CompressedMatrix sparse matrix subtraction assignment";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 -= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 5UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) !=  5 || mat2(0,1) != 0 || mat2(0,2) !=  5 ||
+          mat2(1,0) != -2 || mat2(1,1) != 4 || mat2(1,2) != -4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(  5 0  5 )\n( -2 4 -4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the CompressedMatrix multiplication assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the multiplication assignment operators of the CompressedMatrix
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testMultAssign()
+{
+   //=====================================================================================
+   // Row-major scalar multiplication assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major scalar multiplication assignment";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
+      mat(1,2) =  1;
+      mat(2,0) = -2;
+      mat(2,2) =  3;
+
+      mat *= 2;
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 2UL );
+
+      if( mat(0,0) !=  0 || mat(0,1) != 0 || mat(0,2) != 0 ||
+          mat(1,0) !=  0 || mat(1,1) != 0 || mat(1,2) != 2 ||
+          mat(2,0) != -4 || mat(2,1) != 0 || mat(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 )\n(  0 0 2 )\n( -4 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major scalar multiplication assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major scalar multiplication assignment";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
+      mat(1,2) =  1;
+      mat(2,0) = -2;
+      mat(2,2) =  3;
+
+      mat *= 2;
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 2UL );
+
+      if( mat(0,0) !=  0 || mat(0,1) != 0 || mat(0,2) != 0 ||
+          mat(1,0) !=  0 || mat(1,1) != 0 || mat(1,2) != 2 ||
+          mat(2,0) != -4 || mat(2,1) != 0 || mat(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 )\n(  0 0 2 )\n( -4 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the CompressedMatrix division assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the division assignment operators of the CompressedMatrix
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testDivAssign()
+{
+   //=====================================================================================
+   // Row-major scalar division assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major scalar division assignment";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
+      mat(1,2) =  2;
+      mat(2,0) = -4;
+      mat(2,2) =  6;
+
+      mat /= 2;
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 2UL );
+
+      if( mat(0,0) !=  0 || mat(0,1) != 0 || mat(0,2) != 0 ||
+          mat(1,0) !=  0 || mat(1,1) != 0 || mat(1,2) != 1 ||
+          mat(2,0) != -2 || mat(2,1) != 0 || mat(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 )\n(  0 0 1 )\n( -2 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major scalar division assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major scalar division assignment";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
+      mat(1,2) =  2;
+      mat(2,0) = -4;
+      mat(2,2) =  6;
+
+      mat /= 2;
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 2UL );
+
+      if( mat(0,0) !=  0 || mat(0,1) != 0 || mat(0,2) != 0 ||
+          mat(1,0) !=  0 || mat(1,1) != 0 || mat(1,2) != 1 ||
+          mat(2,0) != -2 || mat(2,1) != 0 || mat(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 )\n(  0 0 1 )\n( -2 0 3 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
