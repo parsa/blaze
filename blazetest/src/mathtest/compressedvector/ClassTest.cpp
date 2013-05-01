@@ -26,6 +26,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <blaze/math/DynamicVector.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/util/Complex.h>
 #include <blazetest/mathtest/compressedvector/ClassTest.h>
@@ -52,6 +53,9 @@ ClassTest::ClassTest()
 {
    testConstructors();
    testAssignment();
+   testAddAssign();
+   testSubAssign();
+   testMultAssign();
    testSubscript();
    testNonZeros();
    testReset();
@@ -230,6 +234,373 @@ void ClassTest::testAssignment()
              << " Details:\n"
              << "   Result:\n" << vec2 << "\n"
              << "   Expected result:\n( 1 2 0 4 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Dense vector assignment
+   //=====================================================================================
+
+   {
+      test_ = "CompressedVector dense vector assignment";
+
+      blaze::DynamicVector<int,blaze::rowVector> vec1( 5UL, 0 );
+      vec1[0] = 10;
+      vec1[1] = 11;
+      vec1[2] = 12;
+      vec1[4] = 13;
+      blaze::CompressedVector<int,blaze::rowVector> vec2;
+      vec2 = vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkNonZeros( vec2, 4UL );
+
+      if( vec2[0] != 10 || vec2[1] != 11 || vec2[2] != 12 || vec2[3] != 0 || vec2[4] != 13 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 10 11 12 0 13 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Sparse vector assignment
+   //=====================================================================================
+
+   {
+      test_ = "CompressedVector sparse vector assignment";
+
+      blaze::CompressedVector<int,blaze::columnVector> vec1( 7UL, 3UL );
+      vec1[0] = 1;
+      vec1[1] = 2;
+      vec1[3] = 4;
+      blaze::CompressedVector<int,blaze::rowVector> vec2;
+      vec2 = trans( vec1 );
+
+      checkSize    ( vec2, 7UL );
+      checkNonZeros( vec2, 3UL );
+
+      if( vec2[0] != 1 || vec2[1] != 2 || vec2[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 2 0 4 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the CompressedVector addition assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the addition assignment operators of the CompressedVector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testAddAssign()
+{
+   //=====================================================================================
+   // Dense vector addition assignment
+   //=====================================================================================
+
+   {
+      test_ = "CompressedVector dense vector addition assignment";
+
+      blaze::DynamicVector<int,blaze::rowVector> vec1( 5UL, 0 );
+      vec1[0] = 10;
+      vec1[1] = 11;
+      vec1[2] = 12;
+      vec1[4] = 13;
+      blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 3UL );
+      vec2[0] = 1;
+      vec2[1] = 2;
+      vec2[3] = 4;
+
+      vec2 += vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkNonZeros( vec2, 5UL );
+
+      if( vec2[0] != 11 || vec2[1] != 13 || vec2[2] != 12 || vec2[3] != 4 || vec2[4] != 13 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 11 13 12 4 13 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Sparse vector addition assignment
+   //=====================================================================================
+
+   {
+      test_ = "CompressedVector sparse vector addition assignment";
+
+      blaze::CompressedVector<int,blaze::columnVector> vec1( 5UL, 3UL );
+      vec1[0] = 1;
+      vec1[1] = 2;
+      vec1[3] = 4;
+      blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 2UL );
+      vec2[1] = 5;
+      vec2[2] = 6;
+
+      vec2 += trans( vec1 );
+
+      checkSize    ( vec2, 5UL );
+      checkNonZeros( vec2, 4UL );
+
+      if( vec2[0] != 1 || vec2[1] != 7 || vec2[2] != 6 || vec2[3] != 4 || vec2[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 7 6 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the CompressedVector subtraction assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the subtraction assignment operators of the CompressedVector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testSubAssign()
+{
+   //=====================================================================================
+   // Dense vector subtraction assignment
+   //=====================================================================================
+
+   {
+      test_ = "CompressedVector dense vector subtraction assignment";
+
+      blaze::DynamicVector<int,blaze::rowVector> vec1( 5UL, 0 );
+      vec1[0] = 10;
+      vec1[1] = 11;
+      vec1[2] = 12;
+      vec1[4] = 13;
+      blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 3UL );
+      vec2[0] = 1;
+      vec2[1] = 2;
+      vec2[3] = 4;
+
+      vec2 -= vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkNonZeros( vec2, 5UL );
+
+      if( vec2[0] != -9 || vec2[1] != -9 || vec2[2] != -12 || vec2[3] != 4 || vec2[4] != -13 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( -9 -9 -12 4 -13 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Sparse vector subtraction assignment
+   //=====================================================================================
+
+   {
+      test_ = "CompressedVector sparse vector subtraction assignment";
+
+      blaze::CompressedVector<int,blaze::columnVector> vec1( 5UL, 3UL );
+      vec1[0] = 1;
+      vec1[1] = 2;
+      vec1[3] = 4;
+      blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 2UL );
+      vec2[1] = 5;
+      vec2[2] = 6;
+
+      vec2 -= trans( vec1 );
+
+      checkSize    ( vec2, 5UL );
+      checkNonZeros( vec2, 4UL );
+
+      if( vec2[0] != -1 || vec2[1] != 3 || vec2[2] != 6 || vec2[3] != -4 || vec2[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( -1 3 6 -4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the CompressedVector multiplication assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the multiplication assignment operators of the CompressedVector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testMultAssign()
+{
+   //=====================================================================================
+   // Dense vector multiplication assignment
+   //=====================================================================================
+
+   {
+      test_ = "CompressedVector dense vector multiplication assignment";
+
+      blaze::DynamicVector<int,blaze::rowVector> vec1( 5UL, 0 );
+      vec1[0] = 10;
+      vec1[1] = 11;
+      vec1[2] = 12;
+      vec1[4] = 13;
+      blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 3UL );
+      vec2[0] = 1;
+      vec2[1] = 2;
+      vec2[3] = 4;
+
+      vec2 *= vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkNonZeros( vec2, 3UL );
+
+      if( vec2[0] != 10 || vec2[1] != 22 || vec2[2] != 0 || vec2[3] != 0 || vec2[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 10 22 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Sparse vector multiplication assignment
+   //=====================================================================================
+
+   {
+      test_ = "CompressedVector sparse vector multiplication assignment";
+
+      blaze::CompressedVector<int,blaze::columnVector> vec1( 5UL, 3UL );
+      vec1[0] = 1;
+      vec1[1] = 2;
+      vec1[3] = 4;
+      blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 2UL );
+      vec2[1] = 5;
+      vec2[2] = 6;
+
+      vec2 *= trans( vec1 );
+
+      checkSize    ( vec2, 5UL );
+      checkNonZeros( vec2, 1UL );
+
+      if( vec2[0] != 0 || vec2[1] != 10 || vec2[2] != 0 || vec2[3] != 0 || vec2[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 0 10 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Scalar multiplication assignment
+   //=====================================================================================
+
+   {
+      test_ = "CompressedVector scalar multiplication assignment";
+
+      blaze::CompressedVector<int,blaze::columnVector> vec1( 5UL, 3UL );
+      vec1[0] = 1;
+      vec1[1] = 2;
+      vec1[3] = 4;
+
+      vec1 *= 2;
+
+      checkSize    ( vec1, 5UL );
+      checkNonZeros( vec1, 3UL );
+
+      if( vec1[0] != 2 || vec1[1] != 4 || vec1[2] != 0 || vec1[3] != 8 || vec1[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec1 << "\n"
+             << "   Expected result:\n( 2 4 0 8 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the CompressedVector division assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the division assignment operators of the CompressedVector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testDivAssign()
+{
+   //=====================================================================================
+   // Scalar division assignment
+   //=====================================================================================
+
+   {
+      test_ = "CompressedVector scalar division assignment";
+
+      blaze::CompressedVector<int,blaze::columnVector> vec1( 5UL, 3UL );
+      vec1[0] = 2;
+      vec1[1] = 4;
+      vec1[3] = 8;
+
+      vec1 /= 2;
+
+      checkSize    ( vec1, 5UL );
+      checkNonZeros( vec1, 3UL );
+
+      if( vec1[0] != 1 || vec1[1] != 2 || vec1[2] != 0 || vec1[3] != 4 || vec1[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec1 << "\n"
+             << "   Expected result:\n( 1 2 0 4 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }

@@ -75,6 +75,10 @@ class ClassTest
    //@{
    void testConstructors();
    void testAssignment  ();
+   void testAddAssign   ();
+   void testSubAssign   ();
+   void testMultAssign  ();
+   void testDivAssign   ();
    void testSubscript   ();
    void testNonZeros    ();
    void testReset       ();
