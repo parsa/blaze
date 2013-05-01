@@ -63,7 +63,11 @@ class SparseElement
    // No explicitly declared copy assignment operator.
    template< typename Other > SparseElement& operator=( const SparseElement<Other>& rhs );
 
-   inline SparseElement& operator=( const Type& v );
+   inline SparseElement& operator= ( const Type& v );
+   inline SparseElement& operator+=( const Type& v );
+   inline SparseElement& operator-=( const Type& v );
+   inline SparseElement& operator*=( const Type& v );
+   inline SparseElement& operator/=( const Type& v );
    //@}
    //**********************************************************************************************
 
@@ -154,7 +158,7 @@ inline SparseElement<Type>& SparseElement<Type>::operator=( const SparseElement<
 
 
 //*************************************************************************************************
-/*!\brief Assignment operator for the value of the sparse element.
+/*!\brief Assignment to the value of the sparse element.
 //
 // \param v The new sparse element value.
 // \return Reference to the assigned sparse element.
@@ -163,6 +167,66 @@ template< typename Type >  // Data type of the sparse element
 inline SparseElement<Type>& SparseElement<Type>::operator=( const Type& v )
 {
    value_ = v;
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Addition assignment to the value of the sparse element.
+//
+// \param v The right-hand side value to be added to the sparse element value.
+// \return Reference to the assigned sparse element.
+*/
+template< typename Type >  // Data type of the sparse element
+inline SparseElement<Type>& SparseElement<Type>::operator+=( const Type& v )
+{
+   value_ += v;
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Subtraction assignment to the value of the sparse element.
+//
+// \param v The right-hand side value to be subtracted from the sparse element value.
+// \return Reference to the assigned sparse element.
+*/
+template< typename Type >  // Data type of the sparse element
+inline SparseElement<Type>& SparseElement<Type>::operator-=( const Type& v )
+{
+   value_ -= v;
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Multiplication assignment to the value of the sparse element.
+//
+// \param v The right-hand side value for the multiplication.
+// \return Reference to the assigned sparse element.
+*/
+template< typename Type >  // Data type of the sparse element
+inline SparseElement<Type>& SparseElement<Type>::operator*=( const Type& v )
+{
+   value_ *= v;
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division assignment to the value of the sparse element.
+//
+// \param v The right-hand side value for the division
+// \return Reference to the assigned sparse element.
+*/
+template< typename Type >  // Data type of the sparse element
+inline SparseElement<Type>& SparseElement<Type>::operator/=( const Type& v )
+{
+   value_ /= v;
    return *this;
 }
 //*************************************************************************************************
