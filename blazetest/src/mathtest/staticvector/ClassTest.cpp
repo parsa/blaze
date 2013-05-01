@@ -26,8 +26,9 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <blaze/math/CompressedVector.h>
+#include <blaze/math/DynamicVector.h>
 #include <blaze/math/shims/Equal.h>
-#include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/Complex.h>
 #include <blazetest/mathtest/staticvector/ClassTest.h>
 
@@ -66,6 +67,10 @@ ClassTest::ClassTest()
 
    testConstructors();
    testAssignment();
+   testAddAssign();
+   testSubAssign();
+   testMultAssign();
+   testDivAssign();
    testSubscript();
    testNonZeros();
    testReset();
@@ -366,6 +371,315 @@ void ClassTest::testAssignment()
              << " Details:\n"
              << "   Result:\n" << vec2 << "\n"
              << "   Expected result:\n( 1 2 3 4 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Dense vector assignment
+   {
+      test_ = "StaticVector dense vector assignment";
+
+      blaze::DynamicVector<int,blaze::rowVector> vec1( 5UL );
+      vec1[0] = 1;
+      vec1[1] = 2;
+      vec1[2] = 3;
+      vec1[3] = 4;
+      vec1[4] = 5;
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec2;
+      vec2 = vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 5UL );
+
+      if( vec2[0] != 1 || vec2[1] != 2 || vec2[2] != 3 || vec2[3] != 4 || vec2[4] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 2 3 4 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Sparse vector assignment
+   {
+      test_ = "StaticVector sparse vector assignment";
+
+      blaze::CompressedVector<int,blaze::rowVector> vec1( 5UL );
+      vec1[0] = 1;
+      vec1[2] = 2;
+      vec1[3] = 3;
+      blaze::DynamicVector<int,blaze::rowVector> vec2;
+      vec2 = vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 3UL );
+
+      if( vec2[0] != 1 || vec2[1] != 0 || vec2[2] != 2 || vec2[3] != 3 || vec2[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 0 2 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the StaticVector addition assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the addition assignment operators of the StaticVector class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testAddAssign()
+{
+   // Dense vector addition assignment
+   {
+      test_ = "StaticVector dense vector addition assignment";
+
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec1( 1, 0, -2,  3, 0 );
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec2( 0, 4,  2, -6, 7 );
+
+      vec2 += vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 4UL );
+
+      if( vec2[0] != 1 || vec2[1] != 4 || vec2[2] != 0 || vec2[3] != -3 || vec2[4] != 7 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 4 0 -3 7 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Sparse vector addition assignment
+   {
+      test_ = "DynamicVector sparse vector addition assignment";
+
+      blaze::CompressedVector<int,blaze::rowVector> vec1( 5UL, 3UL );
+      vec1[0] =  1;
+      vec1[2] = -2;
+      vec1[3] =  3;
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec2( 0, 4, 2, -6, 7 );
+
+      vec2 += vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 4UL );
+
+      if( vec2[0] != 1 || vec2[1] != 4 || vec2[2] != 0 || vec2[3] != -3 || vec2[4] != 7 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 4 0 -3 7 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the StaticVector subtraction assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the subtraction assignment operators of the StaticVector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testSubAssign()
+{
+   // Dense vector subtraction assignment
+   {
+      test_ = "StaticVector dense vector subtraction assignment";
+
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec1( -1, 0, 2, -3, 0 );
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec2(  0, 4, 2, -6, 7 );
+
+      vec2 -= vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 4UL );
+
+      if( vec2[0] != 1 || vec2[1] != 4 || vec2[2] != 0 || vec2[3] != -3 || vec2[4] != 7 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 4 0 -3 7 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Sparse vector subtraction assignment
+   {
+      test_ = "DynamicVector sparse vector subtraction assignment";
+
+      blaze::CompressedVector<int,blaze::rowVector> vec1( 5UL, 3UL );
+      vec1[0] = -1;
+      vec1[2] =  2;
+      vec1[3] = -3;
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec2( 0, 4, 2, -6, 7 );
+
+      vec2 -= vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 4UL );
+
+      if( vec2[0] != 1 || vec2[1] != 4 || vec2[2] != 0 || vec2[3] != -3 || vec2[4] != 7 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 4 0 -3 7 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the StaticVector multiplication assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the multiplication assignment operators of the StaticVector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testMultAssign()
+{
+   // Dense vector multiplication assignment
+   {
+      test_ = "StaticVector dense vector multiplication assignment";
+
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec1( 1, 0, -2,  3, 0 );
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec2( 0, 4,  2, -6, 7 );
+
+      vec2 *= vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 2UL );
+
+      if( vec2[0] != 0 || vec2[1] != 0 || vec2[2] != -4 || vec2[3] != -18 || vec2[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 0 0 -4 -18 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Sparse vector multiplication assignment
+   {
+      test_ = "DynamicVector sparse vector multiplication assignment";
+
+      blaze::CompressedVector<int,blaze::rowVector> vec1( 5UL, 3UL );
+      vec1[0] =  1;
+      vec1[2] = -2;
+      vec1[3] =  3;
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec2( 0, 4, 2, -6, 7 );
+
+      vec2 *= vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 2UL );
+
+      if( vec2[0] != 0 || vec2[1] != 0 || vec2[2] != -4 || vec2[3] != -18 || vec2[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 0 0 -4 -18 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Scalar multiplication assignment
+   {
+      test_ = "StaticVector scalar multiplication assignment";
+
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec( 1, 0, -2, 3, 0 );
+
+      vec *= 2;
+
+      checkSize    ( vec, 5UL );
+      checkCapacity( vec, 5UL );
+      checkNonZeros( vec, 3UL );
+
+      if( vec[0] != 2 || vec[1] != 0 || vec[2] != -4 || vec[3] != 6 || vec[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 2 0 -4 6 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the StaticVector division assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the division assignment operators of the StaticVector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testDivAssign()
+{
+   // Scalar division assignment
+   {
+      test_ = "StaticVector scalar division assignment";
+
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec( 2, 0, -4, 6, 0 );
+
+      vec /= 2;
+
+      checkSize    ( vec, 5UL );
+      checkCapacity( vec, 5UL );
+      checkNonZeros( vec, 3UL );
+
+      if( vec[0] != 1 || vec[1] != 0 || vec[2] != -2 || vec[3] != 3 || vec[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 0 -2 3 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }

@@ -32,6 +32,7 @@
 #include <string>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blazetest/system/Types.h>
 
@@ -78,6 +79,10 @@ class ClassTest
 
    void testConstructors();
    void testAssignment  ();
+   void testAddAssign   ();
+   void testSubAssign   ();
+   void testMultAssign  ();
+   void testDivAssign   ();
    void testSubscript   ();
    void testNonZeros    ();
    void testReset       ();
