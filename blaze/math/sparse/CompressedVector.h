@@ -287,16 +287,16 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
                               inline void                   reset();
                               inline void                   clear();
                                      Iterator               insert( size_t index, const Type& value );
-                                     void                   erase ( size_t index );
-                                     void                   erase ( Iterator pos );
+                              inline void                   erase ( size_t index );
+                              inline Iterator               erase ( Iterator pos );
                               inline Iterator               find  ( size_t index );
                               inline ConstIterator          find  ( size_t index ) const;
                               inline void                   resize( size_t n, bool preserve=true );
-                              inline void                   reserve( size_t n );
+                                     void                   reserve( size_t n );
                               inline LengthType             length() const;
                               inline const Type             sqrLength() const;
-                              inline CompressedVector&      normalize();
-                              inline const CompressedVector getNormalized() const;
+                                     CompressedVector&      normalize();
+                                     const CompressedVector getNormalized() const;
    template< typename Other > inline CompressedVector&      scale( Other scalar );
                               inline void                   swap( CompressedVector& sv ) /* throw() */;
    //@}
@@ -995,7 +995,7 @@ inline void CompressedVector<Type,TF>::clear()
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline typename CompressedVector<Type,TF>::Iterator
+typename CompressedVector<Type,TF>::Iterator
    CompressedVector<Type,TF>::insert( size_t index, const Type& value )
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid compressed vector access index" );
@@ -1042,7 +1042,7 @@ inline typename CompressedVector<Type,TF>::Iterator
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-void CompressedVector<Type,TF>::erase( size_t index )
+inline void CompressedVector<Type,TF>::erase( size_t index )
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid compressed vector access index" );
 
@@ -1057,18 +1057,19 @@ void CompressedVector<Type,TF>::erase( size_t index )
 /*!\brief Erasing an element from the compressed vector.
 //
 // \param pos Iterator to the element to be erased.
-// \return void
+// \return Iterator to the element after the erased element.
 //
 // This function erases an element from the compressed vector.
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-void CompressedVector<Type,TF>::erase( Iterator pos )
+inline typename CompressedVector<Type,TF>::Iterator CompressedVector<Type,TF>::erase( Iterator pos )
 {
    BLAZE_USER_ASSERT( pos >= begin_ && pos <= end_, "Invalid compressed vector iterator" );
 
    if( pos != end_ )
       end_ = std::copy( pos+1, end_, pos );
+   return pos;
 }
 //*************************************************************************************************
 
@@ -1159,7 +1160,7 @@ inline void CompressedVector<Type,TF>::resize( size_t n, bool preserve )
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline void CompressedVector<Type,TF>::reserve( size_t n )
+void CompressedVector<Type,TF>::reserve( size_t n )
 {
    if( n > capacity_ ) {
       const size_t newCapacity( n );
@@ -1260,7 +1261,7 @@ inline const Type CompressedVector<Type,TF>::sqrLength() const
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::normalize()
+CompressedVector<Type,TF>& CompressedVector<Type,TF>::normalize()
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( Type );
 
@@ -1290,7 +1291,7 @@ inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::normalize()
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline const CompressedVector<Type,TF> CompressedVector<Type,TF>::getNormalized() const
+const CompressedVector<Type,TF> CompressedVector<Type,TF>::getNormalized() const
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( Type );
 

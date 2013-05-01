@@ -300,8 +300,8 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
                               inline void              reset( size_t i );
                               inline void              clear();
                                      Iterator          insert ( size_t i, size_t j, const Type& value );
-                                     void              erase  ( size_t i, size_t j );
-                                     void              erase  ( size_t i, Iterator pos );
+                              inline void              erase  ( size_t i, size_t j );
+                              inline Iterator          erase  ( size_t i, Iterator pos );
                               inline Iterator          find   ( size_t i, size_t j );
                               inline ConstIterator     find   ( size_t i, size_t j ) const;
                                      void              resize ( size_t m, size_t n, bool preserve=true );
@@ -344,7 +344,7 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
    /*!\name Utility functions */
    //@{
    inline size_t extendCapacity() const;
-   inline void   reserveElements( size_t nonzeros );
+          void   reserveElements( size_t nonzeros );
    //@}
    //**********************************************************************************************
 
@@ -1230,7 +1230,7 @@ inline void CompressedMatrix<Type,SO>::clear()
 */
 template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::Iterator
+typename CompressedMatrix<Type,SO>::Iterator
    CompressedMatrix<Type,SO>::insert( size_t i, size_t j, const Type& value )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
@@ -1331,19 +1331,22 @@ inline void CompressedMatrix<Type,SO>::erase( size_t i, size_t j )
 //
 // \param i The row index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
 // \param pos Iterator to the element to be erased.
-// \return void
+// \return Iterator to the element after the erased element.
 //
 // This function erases an element from the sparse matrix.
 */
 template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
-inline void CompressedMatrix<Type,SO>::erase( size_t i, Iterator pos )
+inline typename CompressedMatrix<Type,SO>::Iterator
+   CompressedMatrix<Type,SO>::erase( size_t i, Iterator pos )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( pos >= begin_[i] && pos <= end_[i], "Invalid compressed vector iterator" );
 
    if( pos != end_[i] )
       end_[i] = std::copy( pos+1, end_[i], pos );
+
+   return pos;
 }
 //*************************************************************************************************
 
@@ -1492,7 +1495,7 @@ void CompressedMatrix<Type,SO>::resize( size_t m, size_t n, bool preserve )
 */
 template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
-void CompressedMatrix<Type,SO>::reserve( size_t nonzeros )
+inline void CompressedMatrix<Type,SO>::reserve( size_t nonzeros )
 {
    if( nonzeros > capacity() )
       reserveElements( nonzeros );
@@ -1574,7 +1577,7 @@ void CompressedMatrix<Type,SO>::reserve( size_t i, size_t nonzeros )
 */
 template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
-CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::transpose()
+inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::transpose()
 {
    CompressedMatrix tmp( trans( *this ) );
    swap( tmp );
@@ -1624,7 +1627,7 @@ bool CompressedMatrix<Type,SO>::isDiagonal() const
 */
 template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
-inline bool CompressedMatrix<Type,SO>::isSymmetric() const
+bool CompressedMatrix<Type,SO>::isSymmetric() const
 {
    if( m_ != n_ ) return false;
 
@@ -2262,8 +2265,8 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
                               inline void              reset( size_t j );
                               inline void              clear();
                                      Iterator          insert ( size_t i, size_t j, const Type& value );
-                                     void              erase  ( size_t i, size_t j );
-                                     void              erase  ( size_t j, Iterator pos );
+                              inline void              erase  ( size_t i, size_t j );
+                              inline Iterator          erase  ( size_t j, Iterator pos );
                               inline Iterator          find   ( size_t i, size_t j );
                               inline ConstIterator     find   ( size_t i, size_t j ) const;
                                      void              resize ( size_t m, size_t n, bool preserve=true );
@@ -2306,7 +2309,7 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
    /*!\name Utility functions */
    //@{
    inline size_t extendCapacity() const;
-   inline void   reserveElements( size_t nonzeros );
+          void   reserveElements( size_t nonzeros );
    //@}
    //**********************************************************************************************
 
@@ -3183,7 +3186,7 @@ inline void CompressedMatrix<Type,true>::clear()
 // column index \a j, a \a std::invalid_argument exception is thrown.
 */
 template< typename Type >  // Data type of the sparse matrix
-inline typename CompressedMatrix<Type,true>::Iterator
+typename CompressedMatrix<Type,true>::Iterator
    CompressedMatrix<Type,true>::insert( size_t i, size_t j, const Type& value )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
@@ -3273,9 +3276,8 @@ inline void CompressedMatrix<Type,true>::erase( size_t i, size_t j )
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
    const Iterator pos( find( i, j ) );
-   if( pos == end_[j] )
-      return;
-   end_[j] = std::copy( pos+1, end_[j], pos );
+   if( pos != end_[j] )
+      end_[j] = std::copy( pos+1, end_[j], pos );
 }
 //*************************************************************************************************
 
@@ -3290,13 +3292,16 @@ inline void CompressedMatrix<Type,true>::erase( size_t i, size_t j )
 // This function erases an element from the sparse matrix.
 */
 template< typename Type >  // Data type of the sparse matrix
-inline void CompressedMatrix<Type,true>::erase( size_t j, Iterator pos )
+inline typename CompressedMatrix<Type,true>::Iterator
+   CompressedMatrix<Type,true>::erase( size_t j, Iterator pos )
 {
    BLAZE_USER_ASSERT( j < columns()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( pos >= begin_[j] && pos <= end_[j], "Invalid compressed vector iterator" );
 
    if( pos != end_[j] )
       end_[j] = std::copy( pos+1, end_[j], pos );
+
+   return pos;
 }
 //*************************************************************************************************
 
@@ -3448,7 +3453,7 @@ void CompressedMatrix<Type,true>::resize( size_t m, size_t n, bool preserve )
 // are preserved.
 */
 template< typename Type >  // Data type of the sparse matrix
-void CompressedMatrix<Type,true>::reserve( size_t nonzeros )
+inline void CompressedMatrix<Type,true>::reserve( size_t nonzeros )
 {
    if( nonzeros > capacity() )
       reserveElements( nonzeros );
@@ -3529,7 +3534,7 @@ void CompressedMatrix<Type,true>::reserve( size_t j, size_t nonzeros )
 // \return Reference to the transposed matrix.
 */
 template< typename Type >  // Data type of the sparse matrix
-CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::transpose()
+inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::transpose()
 {
    CompressedMatrix tmp( trans( *this ) );
    swap( tmp );
@@ -3581,7 +3586,7 @@ bool CompressedMatrix<Type,true>::isDiagonal() const
 // \return \a true if the matrix is symmetric, \a false if not.
 */
 template< typename Type >  // Data type of the sparse matrix
-inline bool CompressedMatrix<Type,true>::isSymmetric() const
+bool CompressedMatrix<Type,true>::isSymmetric() const
 {
    if( m_ != n_ ) return false;
 
