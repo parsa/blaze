@@ -27,8 +27,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseVector.h>
-#include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/util/Assert.h>
@@ -393,7 +393,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, !TF );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE( VT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    /*! \endcond */
    //**********************************************************************************************
 };

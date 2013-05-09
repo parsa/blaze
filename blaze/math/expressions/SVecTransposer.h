@@ -27,7 +27,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/constraints/Expression.h>
+#include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -327,7 +327,7 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, !TF );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE( VT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    /*! \endcond */
    //**********************************************************************************************
 };
