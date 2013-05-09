@@ -4108,7 +4108,7 @@ inline void CompressedMatrix<Type,true>::subAssign( const SparseMatrix<MT,SO>& r
 
 //=================================================================================================
 //
-//  GLOBAL OPERATORS
+//  COMPRESSEDMATRIX OPERATORS
 //
 //=================================================================================================
 

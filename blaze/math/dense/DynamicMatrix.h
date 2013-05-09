@@ -4116,7 +4116,7 @@ inline void DynamicMatrix<Type,true>::subAssign( const SparseMatrix<MT,false>& r
 
 //=================================================================================================
 //
-//  GLOBAL OPERATORS
+//  DYNAMICMATRIX OPERATORS
 //
 //=================================================================================================
 

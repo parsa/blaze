@@ -1654,7 +1654,7 @@ inline void CompressedVector<Type,TF>::subAssign( const SparseVector<VT,TF>& rhs
 
 //=================================================================================================
 //
-//  GLOBAL OPERATORS
+//  COMPRESSEDVECTOR OPERATORS
 //
 //=================================================================================================
 
