@@ -1341,7 +1341,7 @@ inline typename CompressedMatrix<Type,SO>::Iterator
    CompressedMatrix<Type,SO>::erase( size_t i, Iterator pos )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
-   BLAZE_USER_ASSERT( pos >= begin_[i] && pos <= end_[i], "Invalid compressed vector iterator" );
+   BLAZE_USER_ASSERT( pos >= begin_[i] && pos <= end_[i], "Invalid compressed matrix iterator" );
 
    if( pos != end_[i] )
       end_[i] = std::copy( pos+1, end_[i], pos );
@@ -3296,7 +3296,7 @@ inline typename CompressedMatrix<Type,true>::Iterator
    CompressedMatrix<Type,true>::erase( size_t j, Iterator pos )
 {
    BLAZE_USER_ASSERT( j < columns()   , "Invalid row access index"    );
-   BLAZE_USER_ASSERT( pos >= begin_[j] && pos <= end_[j], "Invalid compressed vector iterator" );
+   BLAZE_USER_ASSERT( pos >= begin_[j] && pos <= end_[j], "Invalid compressed matrix iterator" );
 
    if( pos != end_[j] )
       end_[j] = std::copy( pos+1, end_[j], pos );
