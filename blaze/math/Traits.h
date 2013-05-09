@@ -41,6 +41,7 @@
 #include <blaze/math/traits/DMatDMatMultExprTrait.h>
 #include <blaze/math/traits/DMatDMatSubExprTrait.h>
 #include <blaze/math/traits/DMatDVecMultExprTrait.h>
+#include <blaze/math/traits/DMatEvalExprTrait.h>
 #include <blaze/math/traits/DMatScalarDivExprTrait.h>
 #include <blaze/math/traits/DMatScalarMultExprTrait.h>
 #include <blaze/math/traits/DMatSMatAddExprTrait.h>
@@ -59,6 +60,7 @@
 #include <blaze/math/traits/DVecDVecCrossExprTrait.h>
 #include <blaze/math/traits/DVecDVecMultExprTrait.h>
 #include <blaze/math/traits/DVecDVecSubExprTrait.h>
+#include <blaze/math/traits/DVecEvalExprTrait.h>
 #include <blaze/math/traits/DVecScalarDivExprTrait.h>
 #include <blaze/math/traits/DVecScalarMultExprTrait.h>
 #include <blaze/math/traits/DVecSVecAddExprTrait.h>
@@ -68,6 +70,7 @@
 #include <blaze/math/traits/DVecTDVecMultExprTrait.h>
 #include <blaze/math/traits/DVecTransExprTrait.h>
 #include <blaze/math/traits/DVecTSVecMultExprTrait.h>
+#include <blaze/math/traits/EvalExprTrait.h>
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -77,6 +80,7 @@
 #include <blaze/math/traits/SMatDMatMultExprTrait.h>
 #include <blaze/math/traits/SMatDMatSubExprTrait.h>
 #include <blaze/math/traits/SMatDVecMultExprTrait.h>
+#include <blaze/math/traits/SMatEvalExprTrait.h>
 #include <blaze/math/traits/SMatScalarDivExprTrait.h>
 #include <blaze/math/traits/SMatScalarMultExprTrait.h>
 #include <blaze/math/traits/SMatSMatAddExprTrait.h>
@@ -97,6 +101,7 @@
 #include <blaze/math/traits/SVecDVecCrossExprTrait.h>
 #include <blaze/math/traits/SVecDVecMultExprTrait.h>
 #include <blaze/math/traits/SVecDVecSubExprTrait.h>
+#include <blaze/math/traits/SVecEvalExprTrait.h>
 #include <blaze/math/traits/SVecScalarDivExprTrait.h>
 #include <blaze/math/traits/SVecScalarMultExprTrait.h>
 #include <blaze/math/traits/SVecSVecAddExprTrait.h>
@@ -110,6 +115,7 @@
 #include <blaze/math/traits/TDMatDMatAddExprTrait.h>
 #include <blaze/math/traits/TDMatDMatMultExprTrait.h>
 #include <blaze/math/traits/TDMatDMatSubExprTrait.h>
+#include <blaze/math/traits/TDMatEvalExprTrait.h>
 #include <blaze/math/traits/TDMatScalarDivExprTrait.h>
 #include <blaze/math/traits/TDMatScalarMultExprTrait.h>
 #include <blaze/math/traits/TDMatSMatAddExprTrait.h>
@@ -127,6 +133,7 @@
 #include <blaze/math/traits/TDVecAbsExprTrait.h>
 #include <blaze/math/traits/TDVecDMatMultExprTrait.h>
 #include <blaze/math/traits/TDVecDVecMultExprTrait.h>
+#include <blaze/math/traits/TDVecEvalExprTrait.h>
 #include <blaze/math/traits/TDVecScalarDivExprTrait.h>
 #include <blaze/math/traits/TDVecScalarMultExprTrait.h>
 #include <blaze/math/traits/TDVecSMatMultExprTrait.h>
@@ -145,6 +152,7 @@
 #include <blaze/math/traits/TSMatDMatAddExprTrait.h>
 #include <blaze/math/traits/TSMatDMatMultExprTrait.h>
 #include <blaze/math/traits/TSMatDMatSubExprTrait.h>
+#include <blaze/math/traits/TSMatEvalExprTrait.h>
 #include <blaze/math/traits/TSMatScalarDivExprTrait.h>
 #include <blaze/math/traits/TSMatScalarMultExprTrait.h>
 #include <blaze/math/traits/TSMatSMatAddExprTrait.h>
@@ -162,6 +170,7 @@
 #include <blaze/math/traits/TSVecAbsExprTrait.h>
 #include <blaze/math/traits/TSVecDMatMultExprTrait.h>
 #include <blaze/math/traits/TSVecDVecMultExprTrait.h>
+#include <blaze/math/traits/TSVecEvalExprTrait.h>
 #include <blaze/math/traits/TSVecScalarDivExprTrait.h>
 #include <blaze/math/traits/TSVecScalarMultExprTrait.h>
 #include <blaze/math/traits/TSVecSMatMultExprTrait.h>
