@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/CompressedVector.h
-//  \brief Implementation of an arbitrarily sized compressed vector
+//  \brief Header file for the complete CompressedVector implementation
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //

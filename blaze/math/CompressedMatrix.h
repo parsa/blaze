@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/CompressedMatrix.h
-//  \brief Implementation of a compressed MxN matrix
+//  \brief Header file for the complete CompressedMatrix implementation
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
