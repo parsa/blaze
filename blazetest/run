@@ -379,12 +379,13 @@ src/mathtest/svecdvecsub/AliasingTest 2>&1 | tee -a result.txt
 #==================================================================================================
 
 echo " Running sparse vector/sparse vector subtraction tests..." 2>&1 | tee -a result.txt
-src/mathtest/svecsvecsub/AliasingTest 2>&1 | tee -a result.txt
 
 src/mathtest/svecsvecsub/VCaVCa 2>&1 | tee -a result.txt
 src/mathtest/svecsvecsub/VCaVCb 2>&1 | tee -a result.txt
 src/mathtest/svecsvecsub/VCbVCa 2>&1 | tee -a result.txt
 src/mathtest/svecsvecsub/VCbVCb 2>&1 | tee -a result.txt
+
+src/mathtest/svecsvecsub/AliasingTest 2>&1 | tee -a result.txt
 
 
 #==================================================================================================
