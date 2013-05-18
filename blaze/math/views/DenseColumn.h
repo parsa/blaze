@@ -88,15 +88,6 @@ namespace blaze {
 //        This template parameter doesn't have to be explicitly defined, but is automatically
 //        derived from the first template parameter.
 //
-// A dense column can be used like any other column vector. The elements of the dense column can
-// be directly accessed with the subscript operator. The numbering of the column elements is
-
-                             \f[\left(\begin{array}{*{5}{c}}
-                             0 & 1 & 2 & \cdots & N-1 \\
-                             \end{array}\right),\f]
-
-// where N is the number of rows of the referenced matrix.\n
-//
 // A reference to a dense column can be conventiently created via the column() function. The
 // column can be either used as an alias to grant write access to a specific column of a matrix
 // primitive on the left-hand side of an assignment or to grant read-access to a specific column
@@ -114,14 +105,17 @@ namespace blaze {
    x = column( A * B, 3UL );
    \endcode
 
-// It is possible to create a column view on both row-major and column-major matrices. However,
-// please note that creating a column view on a matrix stored in row-major fashion can result
-// in a considerable performance decrease in comparison to a column view on a column-major matrix
-// due to the storage of the matrix elements.
-//
-// The follwoing example gives an impression of the use of DenseColumn. All operations (addition,
-// subtraction, multiplication, scaling, ...) can be performed on all possible combinations of
-// dense and sparse vectors with fitting element types:
+// A dense column can be used like any other column vector. The elements of the dense column can
+// be directly accessed with the subscript operator. The numbering of the column elements is
+
+                             \f[\left(\begin{array}{*{5}{c}}
+                             0 & 1 & 2 & \cdots & N-1 \\
+                             \end{array}\right),\f]
+
+// where N is the number of rows of the referenced matrix. The following example gives an
+// impression of the use of DenseColumn. All operations (addition, subtraction, multiplication,
+// scaling, ...) can be performed on all possible combinations of dense and sparse vectors with
+// fitting element types:
 
    \code
    using blaze::DynamicVector;
@@ -132,27 +126,57 @@ namespace blaze {
    CompressedVector<double,columnVector> c( 2UL );
    c[1] = 3.0;
 
-   DynamicMatrix<double,columnMajor> A( 3UL, 2UL );  // Non-initialized 3x2 matrix
-   column( A, 0UL ) = 1.0;                           // Initialization of the 1st column of A
-   column( A, 1UL ) = a;                             // Initialization of the 2nd column of A
-   column( A, 2UL ) = c;                             // Initialization of the 3rd column of A
+   typedef DynamicMatrix<double,columnMajor>  MatrixType;
+   MatrixType A( 2UL, 4UL );  // Non-initialized 2x4 matrix
 
-   b = column( A, 0UL ) + a;                 // Dense vector/dense vector addition
-   b = c + column( A, 1UL );                 // Sparse vector/dense vector addition
-   b = column( A, 0UL ) * column( A, 2UL );  // Component-wise vector multiplication
+   typedef DenseColumn<DenseMatrix>  RowType;
+   RowType col0( column( A, 0UL ) );  // Reference to the 0th column of A
+
+   col0[0] = 0UL;           // Manual initialization of the 0th column of A
+   col0[1] = 0UL;
+   column( A, 1UL ) = 1.0;  // Homogeneous initialization of the 1st column of A
+   column( A, 2UL ) = a;    // Dense vector initialization of the 2nd column of A
+   column( A, 3UL ) = c;    // Sparse vector initialization of the 3rd column of A
+
+   b = col0 + a;                 // Dense vector/dense vector addition
+   b = c + column( A, 1UL );     // Sparse vector/dense vector addition
+   b = col0 * column( A, 2UL );  // Component-wise vector multiplication
 
    column( A, 1UL ) *= 2.0;     // In-place scaling of the 1st column
    b = column( A, 1UL ) * 2.0;  // Scaling of the 1st column
    b = 2.0 * column( A, 1UL );  // Scaling of the 1st column
 
-   column( A, 0UL ) += a;                 // Addition assignment
-   column( A, 0UL ) -= c;                 // Subtraction assignment
-   column( A, 0UL ) *= column( A, 2UL );  // Multiplication assignment
+   column( A, 2UL ) += a;                 // Addition assignment
+   column( A, 2UL ) -= c;                 // Subtraction assignment
+   column( A, 2UL ) *= column( A, 0UL );  // Multiplication assignment
 
    double scalar = trans( c ) * column( A, 1UL );  // Scalar/dot/inner product between two vectors
 
    A = column( A, 1UL ) * trans( c );  // Outer product between two vectors
    \endcode
+
+// It is possible to create a column view on both row-major and column-major matrices. However,
+// please note that creating a column view on a matrix stored in row-major fashion can result
+// in a considerable performance decrease in comparison to a column view on a column-major matrix
+// due to the non-contiguous storage of the matrix elements. Therefore care has to be taken in
+// the choice of the most suitable storage order:
+
+   \code
+   // Setup of two row-major matrices
+   DynamicMatrix<double,rowMajor> A( 128UL, 128UL );
+   DynamicMatrix<double,rowMajor> B( 128UL, 128UL );
+   // ... Resizing and initialization
+
+   // The computation of the 15th column of the multiplication between A and B ...
+   DynamicVector<double,columnVector> x = column( A * B, 15UL );
+
+   // ... is essentially the same as the following computation, which multiplies
+   // A with the 15th column of the row-major matrix B.
+   DynamicVector<double,rowVector> x = A * column( B, 15UL );
+   \endcode
+
+// Although Blaze performs the resulting matrix/vector multiplication as efficiently as possible
+// using a column-major storage order for matrix B would result in a more efficient evaluation.
 */
 template< typename MT                                 // Type of the dense matrix
         , bool SO = IsColumnMajorMatrix<MT>::value >  // Storage order

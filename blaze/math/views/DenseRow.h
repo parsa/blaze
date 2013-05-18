@@ -88,15 +88,6 @@ namespace blaze {
 //        This template parameter doesn't have to be explicitly defined, but is automatically
 //        derived from the first template parameter.
 //
-// A dense row can be used like any other row vector. The elements of the dense row can be
-// directly accessed with the subscript operator. The numbering of the row elements is
-
-                             \f[\left(\begin{array}{*{5}{c}}
-                             0 & 1 & 2 & \cdots & N-1 \\
-                             \end{array}\right),\f]
-
-// where N is the number of columns of the referenced matrix.\n
-//
 // A reference to a dense row can be conventiently created via the row() function. The row can
 // be either used as an alias to grant write access to a specific row of a matrix primitive on
 // the left-hand side of an assignment or to grant read-access to a specific row of a matrix
@@ -114,45 +105,79 @@ namespace blaze {
    x = row( A * B, 3UL );
    \endcode
 
-// It is possible to create a row view on both row-major and column-major matrices. However,
-// please note that creating a row view on a matrix stored in column-major fashion can result
-// in a considerable performance decrease in comparison to a row view on a row-major matrix
-// due to the storage of the matrix elements.
-//
-// The follwoing example gives an impression of the use of DenseRow. All operations (addition,
-// subtraction, multiplication, scaling, ...) can be performed on all possible combinations of
-// dense and sparse vectors with fitting element types:
+// A dense row can be used like any other row vector. The elements of the dense row can be
+// directly accessed with the subscript operator. The numbering of the row elements is
+
+                             \f[\left(\begin{array}{*{5}{c}}
+                             0 & 1 & 2 & \cdots & N-1 \\
+                             \end{array}\right),\f]
+
+// where N is the number of columns of the referenced matrix. The following example gives an
+// impression of the use of DenseRow. All operations (addition, subtraction, multiplication,
+// scaling, ...) can be performed on all possible combinations of dense and sparse vectors
+// with fitting element types:
 
    \code
    using blaze::DynamicVector;
    using blaze::CompressedVector;
    using blaze::DynamicMatrix;
+   using blaze::DenseRow;
 
    DynamicVector<double,rowVector> a( 2UL, 2.0 ), b;
    CompressedVector<double,rowVector> c( 2UL );
    c[1] = 3.0;
 
-   DynamicMatrix<double,rowMajor> A( 3UL, 2UL );  // Non-initialized 3x2 matrix
-   row( A, 0UL ) = 1.0;                           // Initialization of the 1st row of A
-   row( A, 1UL ) = a;                             // Initialization of the 2nd row of A
-   row( A, 2UL ) = c;                             // Initialization of the 3rd row of A
+   typedef DynamicMatrix<double,rowMajor>  DenseMatrix;
+   DenseMatrix A( 4UL, 2UL );  // Non-initialized 4x2 matrix
 
-   b = row( A, 0UL ) + a;              // Dense vector/dense vector addition
-   b = c + row( A, 1UL );              // Sparse vector/dense vector addition
-   b = row( A, 0UL ) * row( A, 2UL );  // Component-wise vector multiplication
+   typedef DenseRow<DenseMatrix>  RowType;
+   RowType row0( row( A, 0UL ) );  // Reference to the 0th row of A
+
+   row0[0] = 0UL;        // Manual initialization of the 0th row of A
+   row0[1] = 0UL;
+   row( A, 1UL ) = 1.0;  // Homogeneous initialization of the 1st row of A
+   row( A, 2UL ) = a;    // Dense vector initialization of the 2nd row of A
+   row( A, 3UL ) = c;    // Sparse vector initialization of the 3rd row of A
+
+   b = row0 + a;              // Dense vector/dense vector addition
+   b = c + row( A, 1UL );     // Sparse vector/dense vector addition
+   b = row0 * row( A, 2UL );  // Component-wise vector multiplication
 
    row( A, 1UL ) *= 2.0;     // In-place scaling of the 1st row
    b = row( A, 1UL ) * 2.0;  // Scaling of the 1st row
    b = 2.0 * row( A, 1UL );  // Scaling of the 1st row
 
-   row( A, 0UL ) += a;              // Addition assignment
-   row( A, 0UL ) -= c;              // Subtraction assignment
-   row( A, 0UL ) *= row( A, 2UL );  // Multiplication assignment
+   row( A, 2UL ) += a;              // Addition assignment
+   row( A, 2UL ) -= c;              // Subtraction assignment
+   row( A, 2UL ) *= row( A, 0UL );  // Multiplication assignment
 
    double scalar = row( A, 1UL ) * trans( c );  // Scalar/dot/inner product between two vectors
 
    A = trans( c ) * row( A, 1UL );  // Outer product between two vectors
    \endcode
+
+// It is possible to create a row view on both row-major and column-major matrices. However,
+// please note that creating a row view on a matrix stored in column-major fashion can result
+// in a considerable performance decrease in comparison to a row view on a row-major matrix
+// due to the non-contiguous storage of the matrix elements. Therefore care has to be taken
+// in the choice of the most suitable storage order:
+
+   \code
+   // Setup of two column-major matrices
+   DynamicMatrix<double,columnMajor> A( 128UL, 128UL );
+   DynamicMatrix<double,columnMajor> B( 128UL, 128UL );
+   // ... Resizing and initialization
+
+   // The computation of the 15th row of the multiplication between A and B ...
+   DynamicVector<double,rowVector> x = row( A * B, 15UL );
+
+   // ... is essentially the same as the following computation, which multiplies
+   // the 15th row of the column-major matrix A with B.
+   DynamicVector<double,rowVector> x = row( A, 15UL ) * B;
+   \endcode
+
+// Although Blaze performs the resulting vector/matrix multiplication as efficiently as possible
+// using a row-major storage order for matrix A would result in a more efficient evaluation.
 */
 template< typename MT                              // Type of the dense matrix
         , bool SO = IsRowMajorMatrix<MT>::value >  // Storage order
