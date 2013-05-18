@@ -40,6 +40,7 @@
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blazetest/system/MathTest.h>
@@ -131,6 +132,8 @@ class OperationTest
    template< typename T > void testScaledOperation   ( T scalar );
                           void testTransposeOperation();
                           void testAbsOperation      ();
+                          void testRowOperation      ();
+                          void testColumnOperation   ();
    //@}
    //**********************************************************************************************
 
@@ -277,6 +280,8 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testScaledOperation( 1.1 );
    testTransposeOperation();
    testAbsOperation();
+   testRowOperation();
+   testColumnOperation();
 }
 //*************************************************************************************************
 
@@ -4670,6 +4675,1700 @@ void OperationTest<MT1,MT2>::testAbsOperation()
             std::ostringstream oss;
             oss << " Test : " << test_ << "\n"
                 << " Error: Failed subtraction assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the row-wise dense matrix/dense matrix addition.
+//
+// \return void
+// \exception std::runtime_error Addition error detected.
+//
+// This function tests the row-wise matrix addition with plain assignment, addition assignment,
+// and subtraction assignment. In case any error resulting from the addition or the subsequent
+// assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testRowOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_ROW_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_ROW_OPERATION > 1 )
+   {
+      if( lhs_.rows() == 0UL )
+         return;
+
+
+      //=====================================================================================
+      // Row-wise addition
+      //=====================================================================================
+
+      // Row-wise addition with the given matrices
+      {
+         test_ = "Row-wise addition with the given matrices";
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) = row( lhs_ + rhs_, i );
+               row( odres_ , i ) = row( lhs_ + rhs_, i );
+               row( sres_  , i ) = row( lhs_ + rhs_, i );
+               row( osres_ , i ) = row( lhs_ + rhs_, i );
+               row( refres_, i ) = row( reflhs_ + refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) = row( lhs_ + orhs_, i );
+               row( odres_ , i ) = row( lhs_ + orhs_, i );
+               row( sres_  , i ) = row( lhs_ + orhs_, i );
+               row( osres_ , i ) = row( lhs_ + orhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1  ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) = row( olhs_ + rhs_, i );
+               row( odres_ , i ) = row( olhs_ + rhs_, i );
+               row( sres_  , i ) = row( olhs_ + rhs_, i );
+               row( osres_ , i ) = row( olhs_ + rhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) = row( olhs_ + orhs_, i );
+               row( odres_ , i ) = row( olhs_ + orhs_, i );
+               row( sres_  , i ) = row( olhs_ + orhs_, i );
+               row( osres_ , i ) = row( olhs_ + orhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Row-wise addition with evaluated matrices
+      {
+         test_ = "Row-wise addition with evaluated matrices";
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) = row( eval( lhs_ ) + eval( rhs_ ), i );
+               row( odres_ , i ) = row( eval( lhs_ ) + eval( rhs_ ), i );
+               row( sres_  , i ) = row( eval( lhs_ ) + eval( rhs_ ), i );
+               row( osres_ , i ) = row( eval( lhs_ ) + eval( rhs_ ), i );
+               row( refres_, i ) = row( eval( reflhs_ ) + eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) = row( eval( lhs_ ) + eval( orhs_ ), i );
+               row( odres_ , i ) = row( eval( lhs_ ) + eval( orhs_ ), i );
+               row( sres_  , i ) = row( eval( lhs_ ) + eval( orhs_ ), i );
+               row( osres_ , i ) = row( eval( lhs_ ) + eval( orhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1  ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) = row( eval( olhs_ ) + eval( rhs_ ), i );
+               row( odres_ , i ) = row( eval( olhs_ ) + eval( rhs_ ), i );
+               row( sres_  , i ) = row( eval( olhs_ ) + eval( rhs_ ), i );
+               row( osres_ , i ) = row( eval( olhs_ ) + eval( rhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) = row( eval( olhs_ ) + eval( orhs_ ), i );
+               row( odres_ , i ) = row( eval( olhs_ ) + eval( orhs_ ), i );
+               row( sres_  , i ) = row( eval( olhs_ ) + eval( orhs_ ), i );
+               row( osres_ , i ) = row( eval( olhs_ ) + eval( orhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Row-wise addition with addition assignment
+      //=====================================================================================
+
+      // Row-wise addition with addition assignment with the given matrices
+      {
+         test_ = "Row-wise addition with addition assignment with the given matrices";
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) += row( lhs_ + rhs_, i );
+               row( odres_ , i ) += row( lhs_ + rhs_, i );
+               row( sres_  , i ) += row( lhs_ + rhs_, i );
+               row( osres_ , i ) += row( lhs_ + rhs_, i );
+               row( refres_, i ) += row( reflhs_ + refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) += row( lhs_ + orhs_, i );
+               row( odres_ , i ) += row( lhs_ + orhs_, i );
+               row( sres_  , i ) += row( lhs_ + orhs_, i );
+               row( osres_ , i ) += row( lhs_ + orhs_, i );
+               row( refres_, i ) += row( reflhs_ + refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1  ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) += row( olhs_ + rhs_, i );
+               row( odres_ , i ) += row( olhs_ + rhs_, i );
+               row( sres_  , i ) += row( olhs_ + rhs_, i );
+               row( osres_ , i ) += row( olhs_ + rhs_, i );
+               row( refres_, i ) += row( reflhs_ + refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) += row( olhs_ + orhs_, i );
+               row( odres_ , i ) += row( olhs_ + orhs_, i );
+               row( sres_  , i ) += row( olhs_ + orhs_, i );
+               row( osres_ , i ) += row( olhs_ + orhs_, i );
+               row( refres_, i ) += row( reflhs_ + refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Row-wise addition with addition assignment with evaluated matrices
+      {
+         test_ = "Row-wise addition with addition assignment with evaluated matrices";
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) += row( eval( lhs_ ) + eval( rhs_ ), i );
+               row( odres_ , i ) += row( eval( lhs_ ) + eval( rhs_ ), i );
+               row( sres_  , i ) += row( eval( lhs_ ) + eval( rhs_ ), i );
+               row( osres_ , i ) += row( eval( lhs_ ) + eval( rhs_ ), i );
+               row( refres_, i ) += row( eval( reflhs_ ) + eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) += row( eval( lhs_ ) + eval( orhs_ ), i );
+               row( odres_ , i ) += row( eval( lhs_ ) + eval( orhs_ ), i );
+               row( sres_  , i ) += row( eval( lhs_ ) + eval( orhs_ ), i );
+               row( osres_ , i ) += row( eval( lhs_ ) + eval( orhs_ ), i );
+               row( refres_, i ) += row( eval( reflhs_ ) + eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1  ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) += row( eval( olhs_ ) + eval( rhs_ ), i );
+               row( odres_ , i ) += row( eval( olhs_ ) + eval( rhs_ ), i );
+               row( sres_  , i ) += row( eval( olhs_ ) + eval( rhs_ ), i );
+               row( osres_ , i ) += row( eval( olhs_ ) + eval( rhs_ ), i );
+               row( refres_, i ) += row( eval( reflhs_ ) + eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) += row( eval( olhs_ ) + eval( orhs_ ), i );
+               row( odres_ , i ) += row( eval( olhs_ ) + eval( orhs_ ), i );
+               row( sres_  , i ) += row( eval( olhs_ ) + eval( orhs_ ), i );
+               row( osres_ , i ) += row( eval( olhs_ ) + eval( orhs_ ), i );
+               row( refres_, i ) += row( eval( reflhs_ ) + eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Row-wise addition with subtraction assignment
+      //=====================================================================================
+
+      // Row-wise addition with subtraction assignment with the given matrices
+      {
+         test_ = "Row-wise addition with subtraction assignment with the given matrices";
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) -= row( lhs_ + rhs_, i );
+               row( odres_ , i ) -= row( lhs_ + rhs_, i );
+               row( sres_  , i ) -= row( lhs_ + rhs_, i );
+               row( osres_ , i ) -= row( lhs_ + rhs_, i );
+               row( refres_, i ) -= row( reflhs_ + refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed subtraction assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) -= row( lhs_ + orhs_, i );
+               row( odres_ , i ) -= row( lhs_ + orhs_, i );
+               row( sres_  , i ) -= row( lhs_ + orhs_, i );
+               row( osres_ , i ) -= row( lhs_ + orhs_, i );
+               row( refres_, i ) -= row( reflhs_ + refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed subtraction assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1  ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) -= row( olhs_ + rhs_, i );
+               row( odres_ , i ) -= row( olhs_ + rhs_, i );
+               row( sres_  , i ) -= row( olhs_ + rhs_, i );
+               row( osres_ , i ) -= row( olhs_ + rhs_, i );
+               row( refres_, i ) -= row( reflhs_ + refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed subtraction assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) -= row( olhs_ + orhs_, i );
+               row( odres_ , i ) -= row( olhs_ + orhs_, i );
+               row( sres_  , i ) -= row( olhs_ + orhs_, i );
+               row( osres_ , i ) -= row( olhs_ + orhs_, i );
+               row( refres_, i ) -= row( reflhs_ + refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed subtraction assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Row-wise addition with subtraction assignment with evaluated matrices
+      {
+         test_ = "Row-wise addition with subtraction assignment with evaluated matrices";
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) -= row( eval( lhs_ ) + eval( rhs_ ), i );
+               row( odres_ , i ) -= row( eval( lhs_ ) + eval( rhs_ ), i );
+               row( sres_  , i ) -= row( eval( lhs_ ) + eval( rhs_ ), i );
+               row( osres_ , i ) -= row( eval( lhs_ ) + eval( rhs_ ), i );
+               row( refres_, i ) -= row( eval( reflhs_ ) + eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed subtraction assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) -= row( eval( lhs_ ) + eval( orhs_ ), i );
+               row( odres_ , i ) -= row( eval( lhs_ ) + eval( orhs_ ), i );
+               row( sres_  , i ) -= row( eval( lhs_ ) + eval( orhs_ ), i );
+               row( osres_ , i ) -= row( eval( lhs_ ) + eval( orhs_ ), i );
+               row( refres_, i ) -= row( eval( reflhs_ ) + eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed subtraction assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1  ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) -= row( eval( olhs_ ) + eval( rhs_ ), i );
+               row( odres_ , i ) -= row( eval( olhs_ ) + eval( rhs_ ), i );
+               row( sres_  , i ) -= row( eval( olhs_ ) + eval( rhs_ ), i );
+               row( osres_ , i ) -= row( eval( olhs_ ) + eval( rhs_ ), i );
+               row( refres_, i ) -= row( eval( reflhs_ ) + eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed subtraction assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) -= row( eval( olhs_ ) + eval( orhs_ ), i );
+               row( odres_ , i ) -= row( eval( olhs_ ) + eval( orhs_ ), i );
+               row( sres_  , i ) -= row( eval( olhs_ ) + eval( orhs_ ), i );
+               row( osres_ , i ) -= row( eval( olhs_ ) + eval( orhs_ ), i );
+               row( refres_, i ) -= row( eval( reflhs_ ) + eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed subtraction assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Row-wise addition with multiplication assignment
+      //=====================================================================================
+
+      // Row-wise addition with multiplication assignment with the given matrices
+      {
+         test_ = "Row-wise addition with multiplication assignment with the given matrices";
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) *= row( lhs_ + rhs_, i );
+               row( odres_ , i ) *= row( lhs_ + rhs_, i );
+               row( sres_  , i ) *= row( lhs_ + rhs_, i );
+               row( osres_ , i ) *= row( lhs_ + rhs_, i );
+               row( refres_, i ) *= row( reflhs_ + refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed multiplication assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) *= row( lhs_ + orhs_, i );
+               row( odres_ , i ) *= row( lhs_ + orhs_, i );
+               row( sres_  , i ) *= row( lhs_ + orhs_, i );
+               row( osres_ , i ) *= row( lhs_ + orhs_, i );
+               row( refres_, i ) *= row( reflhs_ + refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed multiplication assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1  ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) *= row( olhs_ + rhs_, i );
+               row( odres_ , i ) *= row( olhs_ + rhs_, i );
+               row( sres_  , i ) *= row( olhs_ + rhs_, i );
+               row( osres_ , i ) *= row( olhs_ + rhs_, i );
+               row( refres_, i ) *= row( reflhs_ + refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed multiplication assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) *= row( olhs_ + orhs_, i );
+               row( odres_ , i ) *= row( olhs_ + orhs_, i );
+               row( sres_  , i ) *= row( olhs_ + orhs_, i );
+               row( osres_ , i ) *= row( olhs_ + orhs_, i );
+               row( refres_, i ) *= row( reflhs_ + refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed multiplication assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Row-wise addition with multiplication assignment with evaluated matrices
+      {
+         test_ = "Row-wise addition with multiplication assignment with evaluated matrices";
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) *= row( eval( lhs_ ) + eval( rhs_ ), i );
+               row( odres_ , i ) *= row( eval( lhs_ ) + eval( rhs_ ), i );
+               row( sres_  , i ) *= row( eval( lhs_ ) + eval( rhs_ ), i );
+               row( osres_ , i ) *= row( eval( lhs_ ) + eval( rhs_ ), i );
+               row( refres_, i ) *= row( eval( reflhs_ ) + eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed multiplication assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) *= row( eval( lhs_ ) + eval( orhs_ ), i );
+               row( odres_ , i ) *= row( eval( lhs_ ) + eval( orhs_ ), i );
+               row( sres_  , i ) *= row( eval( lhs_ ) + eval( orhs_ ), i );
+               row( osres_ , i ) *= row( eval( lhs_ ) + eval( orhs_ ), i );
+               row( refres_, i ) *= row( eval( reflhs_ ) + eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed multiplication assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1  ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) *= row( eval( olhs_ ) + eval( rhs_ ), i );
+               row( odres_ , i ) *= row( eval( olhs_ ) + eval( rhs_ ), i );
+               row( sres_  , i ) *= row( eval( olhs_ ) + eval( rhs_ ), i );
+               row( osres_ , i ) *= row( eval( olhs_ ) + eval( rhs_ ), i );
+               row( refres_, i ) *= row( eval( reflhs_ ) + eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed multiplication assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+               row( dres_  , i ) *= row( eval( olhs_ ) + eval( orhs_ ), i );
+               row( odres_ , i ) *= row( eval( olhs_ ) + eval( orhs_ ), i );
+               row( sres_  , i ) *= row( eval( olhs_ ) + eval( orhs_ ), i );
+               row( osres_ , i ) *= row( eval( olhs_ ) + eval( orhs_ ), i );
+               row( refres_, i ) *= row( eval( reflhs_ ) + eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed multiplication assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the column-wise dense matrix/dense matrix addition.
+//
+// \return void
+// \exception std::runtime_error Addition error detected.
+//
+// This function tests the column-wise matrix addition with plain assignment, addition assignment,
+// and subtraction assignment. In case any error resulting from the addition or the subsequent
+// assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testColumnOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_COLUMN_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_COLUMN_OPERATION > 1 )
+   {
+      if( lhs_.columns() == 0UL )
+         return;
+
+
+      //=====================================================================================
+      // Column-wise addition
+      //=====================================================================================
+
+      // Column-wise addition with the given matrices
+      {
+         test_ = "Column-wise addition with the given matrices";
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) = column( lhs_ + rhs_, j );
+               column( odres_ , j ) = column( lhs_ + rhs_, j );
+               column( sres_  , j ) = column( lhs_ + rhs_, j );
+               column( osres_ , j ) = column( lhs_ + rhs_, j );
+               column( refres_, j ) = column( reflhs_ + refrhs_, j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) = column( lhs_ + orhs_, j );
+               column( odres_ , j ) = column( lhs_ + orhs_, j );
+               column( sres_  , j ) = column( lhs_ + orhs_, j );
+               column( osres_ , j ) = column( lhs_ + orhs_, j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1  ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) = column( olhs_ + rhs_, j );
+               column( odres_ , j ) = column( olhs_ + rhs_, j );
+               column( sres_  , j ) = column( olhs_ + rhs_, j );
+               column( osres_ , j ) = column( olhs_ + rhs_, j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) = column( olhs_ + orhs_, j );
+               column( odres_ , j ) = column( olhs_ + orhs_, j );
+               column( sres_  , j ) = column( olhs_ + orhs_, j );
+               column( osres_ , j ) = column( olhs_ + orhs_, j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Column-wise addition with evaluated matrices
+      {
+         test_ = "Column-wise addition with evaluated matrices";
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) = column( eval( lhs_ ) + eval( rhs_ ), j );
+               column( odres_ , j ) = column( eval( lhs_ ) + eval( rhs_ ), j );
+               column( sres_  , j ) = column( eval( lhs_ ) + eval( rhs_ ), j );
+               column( osres_ , j ) = column( eval( lhs_ ) + eval( rhs_ ), j );
+               column( refres_, j ) = column( eval( reflhs_ ) + eval( refrhs_ ), j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) = column( eval( lhs_ ) + eval( orhs_ ), j );
+               column( odres_ , j ) = column( eval( lhs_ ) + eval( orhs_ ), j );
+               column( sres_  , j ) = column( eval( lhs_ ) + eval( orhs_ ), j );
+               column( osres_ , j ) = column( eval( lhs_ ) + eval( orhs_ ), j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1  ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) = column( eval( olhs_ ) + eval( rhs_ ), j );
+               column( odres_ , j ) = column( eval( olhs_ ) + eval( rhs_ ), j );
+               column( sres_  , j ) = column( eval( olhs_ ) + eval( rhs_ ), j );
+               column( osres_ , j ) = column( eval( olhs_ ) + eval( rhs_ ), j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) = column( eval( olhs_ ) + eval( orhs_ ), j );
+               column( odres_ , j ) = column( eval( olhs_ ) + eval( orhs_ ), j );
+               column( sres_  , j ) = column( eval( olhs_ ) + eval( orhs_ ), j );
+               column( osres_ , j ) = column( eval( olhs_ ) + eval( orhs_ ), j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Column-wise addition with addition assignment
+      //=====================================================================================
+
+      // Column-wise addition with addition assignment with the given matrices
+      {
+         test_ = "Column-wise addition with addition assignment with the given matrices";
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) += column( lhs_ + rhs_, j );
+               column( odres_ , j ) += column( lhs_ + rhs_, j );
+               column( sres_  , j ) += column( lhs_ + rhs_, j );
+               column( osres_ , j ) += column( lhs_ + rhs_, j );
+               column( refres_, j ) += column( reflhs_ + refrhs_, j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) += column( lhs_ + orhs_, j );
+               column( odres_ , j ) += column( lhs_ + orhs_, j );
+               column( sres_  , j ) += column( lhs_ + orhs_, j );
+               column( osres_ , j ) += column( lhs_ + orhs_, j );
+               column( refres_, j ) += column( reflhs_ + refrhs_, j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1  ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) += column( olhs_ + rhs_, j );
+               column( odres_ , j ) += column( olhs_ + rhs_, j );
+               column( sres_  , j ) += column( olhs_ + rhs_, j );
+               column( osres_ , j ) += column( olhs_ + rhs_, j );
+               column( refres_, j ) += column( reflhs_ + refrhs_, j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) += column( olhs_ + orhs_, j );
+               column( odres_ , j ) += column( olhs_ + orhs_, j );
+               column( sres_  , j ) += column( olhs_ + orhs_, j );
+               column( osres_ , j ) += column( olhs_ + orhs_, j );
+               column( refres_, j ) += column( reflhs_ + refrhs_, j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Row-wise addition with addition assignment with evaluated matrices
+      {
+         test_ = "Row-wise addition with addition assignment with evaluated matrices";
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) += column( eval( lhs_ ) + eval( rhs_ ), j );
+               column( odres_ , j ) += column( eval( lhs_ ) + eval( rhs_ ), j );
+               column( sres_  , j ) += column( eval( lhs_ ) + eval( rhs_ ), j );
+               column( osres_ , j ) += column( eval( lhs_ ) + eval( rhs_ ), j );
+               column( refres_, j ) += column( eval( reflhs_ ) + eval( refrhs_ ), j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) += column( eval( lhs_ ) + eval( orhs_ ), j );
+               column( odres_ , j ) += column( eval( lhs_ ) + eval( orhs_ ), j );
+               column( sres_  , j ) += column( eval( lhs_ ) + eval( orhs_ ), j );
+               column( osres_ , j ) += column( eval( lhs_ ) + eval( orhs_ ), j );
+               column( refres_, j ) += column( eval( reflhs_ ) + eval( refrhs_ ), j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1  ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) += column( eval( olhs_ ) + eval( rhs_ ), j );
+               column( odres_ , j ) += column( eval( olhs_ ) + eval( rhs_ ), j );
+               column( sres_  , j ) += column( eval( olhs_ ) + eval( rhs_ ), j );
+               column( osres_ , j ) += column( eval( olhs_ ) + eval( rhs_ ), j );
+               column( refres_, j ) += column( eval( reflhs_ ) + eval( refrhs_ ), j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) += column( eval( olhs_ ) + eval( orhs_ ), j );
+               column( odres_ , j ) += column( eval( olhs_ ) + eval( orhs_ ), j );
+               column( sres_  , j ) += column( eval( olhs_ ) + eval( orhs_ ), j );
+               column( osres_ , j ) += column( eval( olhs_ ) + eval( orhs_ ), j );
+               column( refres_, j ) += column( eval( reflhs_ ) + eval( refrhs_ ), j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed addition assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Column-wise addition with subtraction assignment
+      //=====================================================================================
+
+      // Column-wise addition with subtraction assignment with the given matrices
+      {
+         test_ = "Column-wise addition with subtraction assignment with the given matrices";
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) -= column( lhs_ + rhs_, j );
+               column( odres_ , j ) -= column( lhs_ + rhs_, j );
+               column( sres_  , j ) -= column( lhs_ + rhs_, j );
+               column( osres_ , j ) -= column( lhs_ + rhs_, j );
+               column( refres_, j ) -= column( reflhs_ + refrhs_, j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed subtraction assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) -= column( lhs_ + orhs_, j );
+               column( odres_ , j ) -= column( lhs_ + orhs_, j );
+               column( sres_  , j ) -= column( lhs_ + orhs_, j );
+               column( osres_ , j ) -= column( lhs_ + orhs_, j );
+               column( refres_, j ) -= column( reflhs_ + refrhs_, j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed subtraction assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1  ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) -= column( olhs_ + rhs_, j );
+               column( odres_ , j ) -= column( olhs_ + rhs_, j );
+               column( sres_  , j ) -= column( olhs_ + rhs_, j );
+               column( osres_ , j ) -= column( olhs_ + rhs_, j );
+               column( refres_, j ) -= column( reflhs_ + refrhs_, j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed subtraction assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) -= column( olhs_ + orhs_, j );
+               column( odres_ , j ) -= column( olhs_ + orhs_, j );
+               column( sres_  , j ) -= column( olhs_ + orhs_, j );
+               column( osres_ , j ) -= column( olhs_ + orhs_, j );
+               column( refres_, j ) -= column( reflhs_ + refrhs_, j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed subtraction assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Row-wise addition with subtraction assignment with evaluated matrices
+      {
+         test_ = "Row-wise addition with subtraction assignment with evaluated matrices";
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) -= column( eval( lhs_ ) + eval( rhs_ ), j );
+               column( odres_ , j ) -= column( eval( lhs_ ) + eval( rhs_ ), j );
+               column( sres_  , j ) -= column( eval( lhs_ ) + eval( rhs_ ), j );
+               column( osres_ , j ) -= column( eval( lhs_ ) + eval( rhs_ ), j );
+               column( refres_, j ) -= column( eval( reflhs_ ) + eval( refrhs_ ), j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed subtraction assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) -= column( eval( lhs_ ) + eval( orhs_ ), j );
+               column( odres_ , j ) -= column( eval( lhs_ ) + eval( orhs_ ), j );
+               column( sres_  , j ) -= column( eval( lhs_ ) + eval( orhs_ ), j );
+               column( osres_ , j ) -= column( eval( lhs_ ) + eval( orhs_ ), j );
+               column( refres_, j ) -= column( eval( reflhs_ ) + eval( refrhs_ ), j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed subtraction assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1  ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) -= column( eval( olhs_ ) + eval( rhs_ ), j );
+               column( odres_ , j ) -= column( eval( olhs_ ) + eval( rhs_ ), j );
+               column( sres_  , j ) -= column( eval( olhs_ ) + eval( rhs_ ), j );
+               column( osres_ , j ) -= column( eval( olhs_ ) + eval( rhs_ ), j );
+               column( refres_, j ) -= column( eval( reflhs_ ) + eval( refrhs_ ), j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed subtraction assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) -= column( eval( olhs_ ) + eval( orhs_ ), j );
+               column( odres_ , j ) -= column( eval( olhs_ ) + eval( orhs_ ), j );
+               column( sres_  , j ) -= column( eval( olhs_ ) + eval( orhs_ ), j );
+               column( osres_ , j ) -= column( eval( olhs_ ) + eval( orhs_ ), j );
+               column( refres_, j ) -= column( eval( reflhs_ ) + eval( refrhs_ ), j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed subtraction assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Column-wise addition with multiplication assignment
+      //=====================================================================================
+
+      // Column-wise addition with multiplication assignment with the given matrices
+      {
+         test_ = "Column-wise addition with multiplication assignment with the given matrices";
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) *= column( lhs_ + rhs_, j );
+               column( odres_ , j ) *= column( lhs_ + rhs_, j );
+               column( sres_  , j ) *= column( lhs_ + rhs_, j );
+               column( osres_ , j ) *= column( lhs_ + rhs_, j );
+               column( refres_, j ) *= column( reflhs_ + refrhs_, j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed multiplication assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) *= column( lhs_ + orhs_, j );
+               column( odres_ , j ) *= column( lhs_ + orhs_, j );
+               column( sres_  , j ) *= column( lhs_ + orhs_, j );
+               column( osres_ , j ) *= column( lhs_ + orhs_, j );
+               column( refres_, j ) *= column( reflhs_ + refrhs_, j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed multiplication assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1  ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) *= column( olhs_ + rhs_, j );
+               column( odres_ , j ) *= column( olhs_ + rhs_, j );
+               column( sres_  , j ) *= column( olhs_ + rhs_, j );
+               column( osres_ , j ) *= column( olhs_ + rhs_, j );
+               column( refres_, j ) *= column( reflhs_ + refrhs_, j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed multiplication assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) *= column( olhs_ + orhs_, j );
+               column( odres_ , j ) *= column( olhs_ + orhs_, j );
+               column( sres_  , j ) *= column( olhs_ + orhs_, j );
+               column( osres_ , j ) *= column( olhs_ + orhs_, j );
+               column( refres_, j ) *= column( reflhs_ + refrhs_, j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed multiplication assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Row-wise addition with multiplication assignment with evaluated matrices
+      {
+         test_ = "Row-wise addition with multiplication assignment with evaluated matrices";
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) *= column( eval( lhs_ ) + eval( rhs_ ), j );
+               column( odres_ , j ) *= column( eval( lhs_ ) + eval( rhs_ ), j );
+               column( sres_  , j ) *= column( eval( lhs_ ) + eval( rhs_ ), j );
+               column( osres_ , j ) *= column( eval( lhs_ ) + eval( rhs_ ), j );
+               column( refres_, j ) *= column( eval( reflhs_ ) + eval( refrhs_ ), j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed multiplication assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) *= column( eval( lhs_ ) + eval( orhs_ ), j );
+               column( odres_ , j ) *= column( eval( lhs_ ) + eval( orhs_ ), j );
+               column( sres_  , j ) *= column( eval( lhs_ ) + eval( orhs_ ), j );
+               column( osres_ , j ) *= column( eval( lhs_ ) + eval( orhs_ ), j );
+               column( refres_, j ) *= column( eval( reflhs_ ) + eval( refrhs_ ), j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed multiplication assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT1  ).name() << "\n"
+                << "   Right-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) *= column( eval( olhs_ ) + eval( rhs_ ), j );
+               column( odres_ , j ) *= column( eval( olhs_ ) + eval( rhs_ ), j );
+               column( sres_  , j ) *= column( eval( olhs_ ) + eval( rhs_ ), j );
+               column( osres_ , j ) *= column( eval( olhs_ ) + eval( rhs_ ), j );
+               column( refres_, j ) *= column( eval( reflhs_ ) + eval( refrhs_ ), j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed multiplication assignment operation\n"
+                << " Details:\n"
+                << "   Left-hand side column-major dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side row-major dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Error message: " << ex.what() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+               column( dres_  , j ) *= column( eval( olhs_ ) + eval( orhs_ ), j );
+               column( odres_ , j ) *= column( eval( olhs_ ) + eval( orhs_ ), j );
+               column( sres_  , j ) *= column( eval( olhs_ ) + eval( orhs_ ), j );
+               column( osres_ , j ) *= column( eval( olhs_ ) + eval( orhs_ ), j );
+               column( refres_, j ) *= column( eval( reflhs_ ) + eval( refrhs_ ), j );
+            }
+         }
+         catch( std::exception& ex ) {
+            std::ostringstream oss;
+            oss << " Test : " << test_ << "\n"
+                << " Error: Failed multiplication assignment operation\n"
                 << " Details:\n"
                 << "   Left-hand side column-major dense matrix type:\n"
                 << "     " << typeid( OMT1 ).name() << "\n"

@@ -156,6 +156,52 @@ typedef double  TypeB;
 
 
 //*************************************************************************************************
+/*!\brief Compilation switch for the row tests.
+//
+// This compilation switch triggers the row tests for all test scenarios. In case the row
+// tests are activated, all operations resulting in matrices are tested in combination with
+// a row operation. The following example demonstrates this by means of the matrix addition:
+
+   \code
+   blaze::DynamicMatrix<double> A, B, C;
+   for( size_t i=0UL; i<A.rows(); ++i )
+      row( C, i ) = row( A + B, i );  // Row-wise matrix addition
+   \endcode
+
+// The following settings are possible:
+//
+//   - 0: The row tests are not included in the compilation process and not executed
+//   - 1: The row tests are included in the compilation process, but not executed
+//   - 2: The row tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_ROW_OPERATION 2
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Compilation switch for the column tests.
+//
+// This compilation switch triggers the column tests for all test scenarios. In case the column
+// tests are activated, all operations resulting in matrices are tested in combination with
+// a column operation. The following example demonstrates this by means of the matrix addition:
+
+   \code
+   blaze::DynamicMatrix<double> A, B, C;
+   for( size_t i=0UL; i<A.column(); ++i )
+      column( C, i ) = column( A + B, i );  // Column-wise matrix addition
+   \endcode
+
+// The following settings are possible:
+//
+//   - 0: The column tests are not included in the compilation process and not executed
+//   - 1: The column tests are included in the compilation process, but not executed
+//   - 2: The column tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_COLUMN_OPERATION 2
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Number of repetitions for a single test case.
 //
 // The \a repetitions value specifies the number of repetitions for each single test case. In
