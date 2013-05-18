@@ -103,7 +103,7 @@ namespace blaze {
 //  - TF  : specifies whether the vector is a row vector (\a blaze::rowVector) or a column
 //          vector (\a blaze::columnVector). The default value is \a blaze::columnVector.
 //
-// These contiguously stored elements can be direclty accessed with the subscript operator. The
+// These contiguously stored elements can be directly accessed with the subscript operator. The
 // numbering of the vector elements is
 
                              \f[\left(\begin{array}{*{5}{c}}
@@ -120,7 +120,7 @@ namespace blaze {
    using blaze::CompressedVector;
    using blaze::DynamicMatrix;
 
-   DynamicVector<double> a( 2 );  // Default constructed, non-initialized 2D vectors
+   DynamicVector<double> a( 2 );  // Non-initialized 2D vector of size 2
    a[0] = 1.0;                    // Initialization of the first element
    a[1] = 2.0;                    // Initialization of the second element
 

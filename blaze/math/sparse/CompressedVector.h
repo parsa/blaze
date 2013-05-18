@@ -101,8 +101,8 @@ namespace blaze {
 // functions. The following example demonstrates all options:
 
    \code
-   // Creating a non-transpose compressed vector of size 100
-   CompressedVector<double,false> a( 100 );
+   // Creating a compressed column vector of size 100
+   CompressedVector<double,columnVector> a( 100 );
 
    // The subscript operator provides access to all possible elements of the compressed vector,
    // including the zero elements. In case the subscript operator is used to access an element
@@ -111,14 +111,14 @@ namespace blaze {
 
    // An alternative for inserting elements into the vector is the insert() function. However,
    // it inserts the element only in case the element is not already contained in the vector.
-   A.insert( 50, 3.7 );
+   a.insert( 50, 3.7 );
 
    // A very efficient way to add new elements to a sparse vector is the append() function.
    // Note that append() requires that the appended element's index is strictly larger than
    // the currently largest non-zero index of the vector and that the vector's capacity
    // is large enough to hold the new element.
    a.reserve( 10 );
-   A.append( 51, -2.1 );
+   a.append( 51, -2.1 );
 
    // In order to traverse all non-zero elements currently stored in the vector, the begin()
    // and end() functions can be used. In the example, all non-zero elements of vector are
@@ -164,8 +164,6 @@ namespace blaze {
 
    A = a * trans( b );  // Outer product between two vectors
    \endcode
-
-
 */
 template< typename Type                     // Data type of the vector
         , bool TF = defaultTransposeFlag >  // Transpose flag
