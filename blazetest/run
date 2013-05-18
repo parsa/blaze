@@ -43,6 +43,18 @@ src/mathtest/compressedmatrix/ClassTest 2>&1 | tee -a result.txt
 
 
 #==================================================================================================
+# Views
+#==================================================================================================
+
+echo " Running view tests..." 2>&1 | tee -a result.txt
+
+src/mathtest/denserow/ClassTest     2>&1 | tee -a result.txt
+src/mathtest/densecolumn/ClassTest  2>&1 | tee -a result.txt
+src/mathtest/sparserow/ClassTest    2>&1 | tee -a result.txt
+src/mathtest/sparsecolumn/ClassTest 2>&1 | tee -a result.txt
+
+
+#==================================================================================================
 # Dense vector/dense vector addition
 #==================================================================================================
 
