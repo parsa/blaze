@@ -36,6 +36,8 @@
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/traits/AddExprTrait.h>
+#include <blaze/math/traits/ColumnExprTrait.h>
+#include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
@@ -488,6 +490,66 @@ inline const typename SubExprTrait< SMatTDMatSubExpr<T1,T2>, T3 >::Type
 
 //=================================================================================================
 //
+//  GLOBAL OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given sparse matrix/transpose dense matrix
+//        subtraction.
+// \ingroup views
+//
+// \param dm The constant sparse matrix/transpose dense matrix subtraction.
+// \param index The index of the row.
+// \return View on the specified row of the subtraction.
+//
+// This function returns an expression representing the specified row of the given sparse
+// matrix/transpose dense matrix subtraction.
+*/
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+inline typename RowExprTrait< SMatTDMatSubExpr<MT1,MT2> >::Type
+   row( const SMatTDMatSubExpr<MT1,MT2>& dm, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return row( dm.leftOperand(), index ) - row( dm.rightOperand(), index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given sparse matrix/transpose dense matrix
+//        subtraction.
+// \ingroup views
+//
+// \param dm The constant sparse matrix/transpose dense matrix subtraction.
+// \param index The index of the column.
+// \return View on the specified column of the subtraction.
+//
+// This function returns an expression representing the specified column of the given sparse
+// matrix/transpose dense matrix subtraction.
+*/
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+inline typename ColumnExprTrait< SMatTDMatSubExpr<MT1,MT2> >::Type
+   column( const SMatTDMatSubExpr<MT1,MT2>& dm, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return column( dm.leftOperand(), index ) - column( dm.rightOperand(), index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
@@ -566,6 +628,36 @@ struct DMatTDMatSubExprTrait< SMatTDMatSubExpr<MT1,MT2>, MT3 >
                               , typename SMatTDMatSubExprTrait< MT1, typename TDMatTDMatAddExprTrait<MT2,MT3>::Type >::Type
                               , INVALID_TYPE >::Type  Type;
    /*! \endcond */
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct RowExprTrait< SMatTDMatSubExpr<MT1,MT2> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SubExprTrait< typename RowExprTrait<const MT1>::Type
+                                , typename RowExprTrait<const MT2>::Type >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct ColumnExprTrait< SMatTDMatSubExpr<MT1,MT2> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SubExprTrait< typename ColumnExprTrait<const MT1>::Type
+                                , typename ColumnExprTrait<const MT2>::Type >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -38,6 +38,8 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AbsExprTrait.h>
+#include <blaze/math/traits/ColumnExprTrait.h>
+#include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
@@ -633,6 +635,56 @@ inline const SMatAbsExpr<MT,SO> abs( const SparseMatrix<MT,SO>& sm )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given sparse matrix abs operation.
+// \ingroup views
+//
+// \param dm The constant sparse matrix abs operation.
+// \param index The index of the row.
+// \return View on the specified row of the abs operation.
+//
+// This function returns an expression representing the specified row of the given sparse
+// matrix abs operation.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline typename RowExprTrait< SMatAbsExpr<MT,SO> >::Type
+   row( const SMatAbsExpr<MT,SO>& dm, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return abs( row( dm.operand(), index ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given sparse matrix abs operation.
+// \ingroup views
+//
+// \param dm The constant sparse matrix abs operation.
+// \param index The index of the column.
+// \return View on the specified column of the abs operation.
+//
+// This function returns an expression representing the specified column of the given sparse
+// matrix abs operation.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline typename RowExprTrait< SMatAbsExpr<MT,SO> >::Type
+   column( const SMatAbsExpr<MT,SO>& dm, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return abs( column( dm.operand(), index ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -660,6 +712,42 @@ inline const SMatAbsExpr<MT,TF>& abs( const SMatAbsExpr<MT,TF>& sm )
 
    return sm;
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  EXPRESSION TRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct RowExprTrait< SMatAbsExpr<MT,SO> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename AbsExprTrait< typename RowExprTrait<const MT>::Type >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct ColumnExprTrait< SMatAbsExpr<MT,SO> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename AbsExprTrait< typename ColumnExprTrait<const MT>::Type >::Type  Type;
+   //**********************************************************************************************
+};
 /*! \endcond */
 //*************************************************************************************************
 

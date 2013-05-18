@@ -36,8 +36,10 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
@@ -677,6 +679,100 @@ inline const SVecTSVecMultExpr<T1,T2>
 
    return SVecTSVecMultExpr<T1,T2>( ~lhs, ~rhs );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given sparse vector/sparse vector outer product.
+// \ingroup views
+//
+// \param sm The constant sparse vector/sparse vector outer product.
+// \param index The index of the row.
+// \return View on the specified row of the outer product.
+//
+// This function returns an expression representing the specified row of the given sparse
+// vector/sparse vector outer product.
+*/
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side sparse vector
+inline typename RowExprTrait< SVecTSVecMultExpr<VT1,VT2> >::Type
+   row( const SVecTSVecMultExpr<VT1,VT2>& sm, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sm.leftOperand()[index] * sm.rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given sparse vector/sparse vector outer product.
+// \ingroup views
+//
+// \param sm The constant sparse vector/sparse vector outer product.
+// \param index The index of the column.
+// \return View on the specified column of the outer product.
+//
+// This function returns an expression representing the specified column of the given sparse
+// vector/sparse vector outer product.
+*/
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side sparse vector
+inline typename ColumnExprTrait< SVecTSVecMultExpr<VT1,VT2> >::Type
+   column( const SVecTSVecMultExpr<VT1,VT2>& sm, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sm.leftOperand() * sm.rightOperand()[index];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  EXPRESSION TRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT1, typename VT2 >
+struct RowExprTrait< SVecTSVecMultExpr<VT1,VT2> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename MultExprTrait< typename VT1::ReturnType, VT2 >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT1, typename VT2 >
+struct ColumnExprTrait< SVecTSVecMultExpr<VT1,VT2> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename MultExprTrait< VT1, typename VT2::ReturnType >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

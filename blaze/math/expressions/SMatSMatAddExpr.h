@@ -38,6 +38,8 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/ColumnExprTrait.h>
+#include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -620,6 +622,102 @@ inline const SMatSMatAddExpr<T1,T2>
 
    return SMatSMatAddExpr<T1,T2>( ~lhs, ~rhs );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given sparse matrix/sparse matrix addition.
+// \ingroup views
+//
+// \param sm The constant sparse matrix/sparse matrix addition.
+// \param index The index of the row.
+// \return View on the specified row of the addition.
+//
+// This function returns an expression representing the specified row of the given sparse
+// matrix/sparse matrix addition.
+*/
+template< typename T1    // Type of the left-hand side sparse matrix
+        , typename T2 >  // Type of the right-hand side sparse matrix
+inline typename RowExprTrait< SMatSMatAddExpr<T1,T2> >::Type
+   row( const SMatSMatAddExpr<T1,T2>& sm, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return row( sm.leftOperand(), index ) + row( sm.rightOperand(), index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given sparse matrix/sparse matrix addition.
+// \ingroup views
+//
+// \param sm The constant sparse matrix/sparse matrix addition.
+// \param index The index of the column.
+// \return View on the specified column of the addition.
+//
+// This function returns an expression representing the specified column of the given sparse
+// matrix/sparse matrix addition.
+*/
+template< typename T1    // Type of the left-hand side sparse matrix
+        , typename T2 >  // Type of the right-hand side sparse matrix
+inline typename ColumnExprTrait< SMatSMatAddExpr<T1,T2> >::Type
+   column( const SMatSMatAddExpr<T1,T2>& sm, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return column( sm.leftOperand(), index ) + column( sm.rightOperand(), index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  EXPRESSION TRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct RowExprTrait< SMatSMatAddExpr<MT1,MT2> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename AddExprTrait< typename RowExprTrait<const MT1>::Type
+                                , typename RowExprTrait<const MT2>::Type >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct ColumnExprTrait< SMatSMatAddExpr<MT1,MT2> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename AddExprTrait< typename ColumnExprTrait<const MT1>::Type
+                                , typename ColumnExprTrait<const MT2>::Type >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

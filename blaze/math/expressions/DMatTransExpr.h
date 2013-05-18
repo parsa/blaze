@@ -34,6 +34,9 @@
 #include <blaze/math/expressions/DMatTransposer.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/traits/ColumnExprTrait.h>
+#include <blaze/math/traits/RowExprTrait.h>
+#include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -432,6 +435,92 @@ inline const DMatTransExpr<MT,!SO> trans( const DenseMatrix<MT,SO>& dm )
 
    return DMatTransExpr<MT,!SO>( ~dm );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given dense matrix transpose operation.
+// \ingroup views
+//
+// \param dm The constant dense matrix trans operation.
+// \param index The index of the row.
+// \return View on the specified row of the transpose operation.
+//
+// This function returns an expression representing the specified row of the given dense
+// matrix transpose operation.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline typename RowExprTrait< DMatTransExpr<MT,SO> >::Type
+   row( const DMatTransExpr<MT,SO>& dm, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( column( dm.operand(), index ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given dense matrix transpose operation.
+// \ingroup views
+//
+// \param dm The constant dense matrix trans operation.
+// \param index The index of the column.
+// \return View on the specified column of the transpose operation.
+//
+// This function returns an expression representing the specified column of the given dense
+// matrix transpose operation.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline typename ColumnExprTrait< DMatTransExpr<MT,SO> >::Type
+   column( const DMatTransExpr<MT,SO>& dm, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( row( dm.operand(), index ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  EXPRESSION TRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct RowExprTrait< DMatTransExpr<MT,SO> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename TransExprTrait< typename ColumnExprTrait<const MT>::Type >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct ColumnExprTrait< DMatTransExpr<MT,SO> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename TransExprTrait< typename RowExprTrait<const MT>::Type >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

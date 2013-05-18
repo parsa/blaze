@@ -35,6 +35,8 @@
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/traits/AbsExprTrait.h>
+#include <blaze/math/traits/ColumnExprTrait.h>
+#include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -460,6 +462,56 @@ inline const DMatAbsExpr<MT,SO> abs( const DenseMatrix<MT,SO>& dm )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given dense matrix abs operation.
+// \ingroup views
+//
+// \param dm The constant dense matrix abs operation.
+// \param index The index of the row.
+// \return View on the specified row of the abs operation.
+//
+// This function returns an expression representing the specified row of the given dense
+// matrix abs operation.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline typename RowExprTrait< DMatAbsExpr<MT,SO> >::Type
+   row( const DMatAbsExpr<MT,SO>& dm, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return abs( row( dm.operand(), index ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given dense matrix abs operation.
+// \ingroup views
+//
+// \param dm The constant dense matrix abs operation.
+// \param index The index of the column.
+// \return View on the specified column of the abs operation.
+//
+// This function returns an expression representing the specified column of the given dense
+// matrix abs operation.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline typename ColumnExprTrait< DMatAbsExpr<MT,SO> >::Type
+   column( const DMatAbsExpr<MT,SO>& dm, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return abs( column( dm.operand(), index ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -480,13 +532,49 @@ inline const DMatAbsExpr<MT,SO> abs( const DenseMatrix<MT,SO>& dm )
 // on a dense matrix absolute value expression.
 */
 template< typename MT  // Type of the dense matrix
-        , bool TF >    // Transpose flag
-inline const DMatAbsExpr<MT,TF>& abs( const DMatAbsExpr<MT,TF>& dm )
+        , bool SO >    // Storage order
+inline const DMatAbsExpr<MT,SO>& abs( const DMatAbsExpr<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
    return dm;
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  EXPRESSION TRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct RowExprTrait< DMatAbsExpr<MT,SO> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename AbsExprTrait< typename RowExprTrait<const MT>::Type >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct ColumnExprTrait< DMatAbsExpr<MT,SO> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename AbsExprTrait< typename ColumnExprTrait<const MT>::Type >::Type  Type;
+   //**********************************************************************************************
+};
 /*! \endcond */
 //*************************************************************************************************
 

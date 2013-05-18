@@ -34,7 +34,9 @@
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
-#include <blaze/math/typetraits/IsComputation.h>
+#include <blaze/math/traits/ColumnExprTrait.h>
+#include <blaze/math/traits/EvalExprTrait.h>
+#include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
@@ -437,6 +439,92 @@ inline const SMatEvalExpr<MT,SO> eval( const SparseMatrix<MT,SO>& sm )
 
    return SMatEvalExpr<MT,SO>( ~sm );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given sparse matrix evaluation operation.
+// \ingroup views
+//
+// \param sm The constant sparse matrix evaluation operation.
+// \param index The index of the row.
+// \return View on the specified row of the evaluation operation.
+//
+// This function returns an expression representing the specified row of the given sparse
+// matrix evaluation operation.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline typename RowExprTrait< SMatEvalExpr<MT,SO> >::Type
+   row( const SMatEvalExpr<MT,SO>& sm, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return eval( row( sm.operand(), index ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given sparse matrix evaluation operation.
+// \ingroup views
+//
+// \param sm The constant sparse matrix evaluation operation.
+// \param index The index of the column.
+// \return View on the specified column of the evaluation operation.
+//
+// This function returns an expression representing the specified column of the given sparse
+// matrix evaluation operation.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline typename ColumnExprTrait< SMatEvalExpr<MT,SO> >::Type
+   column( const SMatEvalExpr<MT,SO>& sm, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return eval( column( sm.operand(), index ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  EXPRESSION TRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct RowExprTrait< SMatEvalExpr<MT,SO> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename EvalExprTrait< typename RowExprTrait<const MT>::Type >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct ColumnExprTrait< SMatEvalExpr<MT,SO> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename EvalExprTrait< typename ColumnExprTrait<const MT>::Type >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

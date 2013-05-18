@@ -41,7 +41,10 @@
 #include <blaze/math/Infinity.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/traits/ColumnExprTrait.h>
+#include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SMatDVecMultExprTrait.h>
 #include <blaze/math/traits/SMatSVecMultExprTrait.h>
 #include <blaze/math/traits/TDVecSMatMultExprTrait.h>
@@ -695,6 +698,66 @@ inline const SMatSMatMultExpr<T1,T2>
 
 //=================================================================================================
 //
+//  GLOBAL OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given sparse matrix/sparse matrix
+//        multiplication.
+// \ingroup views
+//
+// \param sm The constant sparse matrix/sparse matrix multiplication.
+// \param index The index of the row.
+// \return View on the specified row of the multiplication.
+//
+// This function returns an expression representing the specified row of the given sparse
+// matrix/sparse matrix multiplication.
+*/
+template< typename T1    // Type of the left-hand side sparse matrix
+        , typename T2 >  // Type of the right-hand side sparse matrix
+inline typename RowExprTrait< SMatSMatMultExpr<T1,T2> >::Type
+   row( const SMatSMatMultExpr<T1,T2>& sm, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return row( sm.leftOperand(), index ) * sm.rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given sparse matrix/sparse matrix
+//        multiplication.
+// \ingroup views
+//
+// \param sm The constant sparse matrix/sparse matrix multiplication.
+// \param index The index of the column.
+// \return View on the specified column of the multiplication.
+//
+// This function returns an expression representing the specified column of the given sparse
+// matrix/sparse matrix multiplication.
+*/
+template< typename T1    // Type of the left-hand side sparse matrix
+        , typename T2 >  // Type of the right-hand side sparse matrix
+inline typename ColumnExprTrait< SMatSMatMultExpr<T1,T2> >::Type
+   column( const SMatSMatMultExpr<T1,T2>& sm, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sm.leftOperand() * column( sm.rightOperand(), index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
@@ -765,6 +828,34 @@ struct TSVecSMatMultExprTrait< VT, SMatSMatMultExpr<MT1,MT2> >
                                 IsSparseMatrix<MT2>::value && IsRowMajorMatrix<MT2>::value
                               , typename TSVecSMatMultExprTrait< typename TSVecSMatMultExprTrait<VT,MT1>::Type, MT2 >::Type
                               , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct RowExprTrait< SMatSMatMultExpr<MT1,MT2> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename MultExprTrait< typename RowExprTrait<const MT1>::Type, MT2 >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct ColumnExprTrait< SMatSMatMultExpr<MT1,MT2> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename MultExprTrait< MT1, typename ColumnExprTrait<const MT2>::Type >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

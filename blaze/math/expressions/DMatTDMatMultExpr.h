@@ -37,9 +37,12 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/DMatDVecMultExprTrait.h>
 #include <blaze/math/traits/DMatSVecMultExprTrait.h>
+#include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/TDMatDVecMultExprTrait.h>
 #include <blaze/math/traits/TDMatSVecMultExprTrait.h>
 #include <blaze/math/traits/TDVecDMatMultExprTrait.h>
@@ -3987,6 +3990,66 @@ inline const DMatTDMatMultExpr<T1,T2>
 
 //=================================================================================================
 //
+//  GLOBAL OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given dense matrix/transpose dense matrix
+//        multiplication.
+// \ingroup views
+//
+// \param dm The constant dense matrix/transpose dense matrix multiplication.
+// \param index The index of the row.
+// \return View on the specified row of the multiplication.
+//
+// This function returns an expression representing the specified row of the given dense
+// matrix/transpose dense matrix multiplication.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+inline typename RowExprTrait< DMatTDMatMultExpr<MT1,MT2> >::Type
+   row( const DMatTDMatMultExpr<MT1,MT2>& dm, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return row( dm.leftOperand(), index ) * dm.rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given dense matrix/transpose dense matrix
+//        multiplication.
+// \ingroup views
+//
+// \param dm The constant dense matrix/transpose dense matrix multiplication.
+// \param index The index of the column.
+// \return View on the specified column of the multiplication.
+//
+// This function returns an expression representing the specified column of the given dense
+// matrix/transpose dense matrix multiplication.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+inline typename ColumnExprTrait< DMatTDMatMultExpr<MT1,MT2> >::Type
+   column( const DMatTDMatMultExpr<MT1,MT2>& dm, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return dm.leftOperand() * column( dm.rightOperand(), index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
@@ -4057,6 +4120,34 @@ struct TSVecDMatMultExprTrait< VT, DMatTDMatMultExpr<MT1,MT2> >
                                 IsDenseMatrix<MT2>::value && IsColumnMajorMatrix<MT2>::value
                               , typename TDVecTDMatMultExprTrait< typename TSVecDMatMultExprTrait<VT,MT1>::Type, MT2 >::Type
                               , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct RowExprTrait< DMatTDMatMultExpr<MT1,MT2> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename MultExprTrait< typename RowExprTrait<const MT1>::Type, MT2 >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct ColumnExprTrait< DMatTDMatMultExpr<MT1,MT2> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename MultExprTrait< MT1, typename ColumnExprTrait<const MT2>::Type >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

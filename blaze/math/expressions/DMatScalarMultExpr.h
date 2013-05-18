@@ -35,10 +35,12 @@
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/Intrinsics.h>
+#include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/DivExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
@@ -1218,6 +1220,66 @@ inline const typename MultExprTrait< SMatScalarMultExpr<MT1,ST1,SO1>, DMatScalar
 
 //=================================================================================================
 //
+//  GLOBAL OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given dense matrix/scalar multiplication.
+// \ingroup views
+//
+// \param dm The constant dense matrix/scalar multiplication.
+// \param index The index of the row.
+// \return View on the specified row of the multiplication.
+//
+// This function returns an expression representing the specified row of the given dense
+// matrix/scalar multiplication.
+*/
+template< typename MT  // Type of the left-hand side dense matrix
+        , typename ST  // Type of the right-hand side scalar value
+        , bool SO >    // Storage order
+inline typename RowExprTrait< DMatScalarMultExpr<MT,ST,SO> >::Type
+   row( const DMatScalarMultExpr<MT,ST,SO>& dm, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return row( dm.leftOperand(), index ) * dm.rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given dense matrix/scalar multiplication.
+// \ingroup views
+//
+// \param dm The constant dense matrix/scalar multiplication.
+// \param index The index of the column.
+// \return View on the specified column of the multiplication.
+//
+// This function returns an expression representing the specified column of the given dense
+// matrix/scalar multiplication.
+*/
+template< typename MT  // Type of the left-hand side dense matrix
+        , typename ST  // Type of the right-hand side scalar value
+        , bool SO >    // Storage order
+inline typename ColumnExprTrait< DMatScalarMultExpr<MT,ST,SO> >::Type
+   column( const DMatScalarMultExpr<MT,ST,SO>& dm, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return column( dm.leftOperand(), index ) * dm.rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  DMATSCALARMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
@@ -2280,6 +2342,50 @@ struct TSMatTDMatMultExprTrait< SMatScalarMultExpr<MT1,ST1,true>, DMatScalarMult
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
                               , typename TDMatScalarMultExprTrait<typename TSMatTDMatMultExprTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
                               , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ROWEXPRTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename ST, bool SO >
+struct RowExprTrait< DMatScalarMultExpr<MT,ST,SO> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename MultExprTrait< typename RowExprTrait<const MT>::Type, ST >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  COLUMNEXPRTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename ST, bool SO >
+struct ColumnExprTrait< DMatScalarMultExpr<MT,ST,SO> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename MultExprTrait< typename ColumnExprTrait<const MT>::Type, ST >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

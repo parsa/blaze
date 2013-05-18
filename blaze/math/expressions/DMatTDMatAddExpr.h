@@ -36,6 +36,8 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/ColumnExprTrait.h>
+#include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -538,6 +540,104 @@ inline const DMatTDMatAddExpr<T2,T1>
 
    return DMatTDMatAddExpr<T2,T1>( ~rhs, ~lhs );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given dense matrix/transpose dense matrix
+//        addition.
+// \ingroup views
+//
+// \param dm The constant dense matrix/transpose dense matrix addition.
+// \param index The index of the row.
+// \return View on the specified row of the addition.
+//
+// This function returns an expression representing the specified row of the given dense
+// matrix/transpose dense matrix addition.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+inline typename RowExprTrait< DMatTDMatAddExpr<MT1,MT2> >::Type
+   row( const DMatTDMatAddExpr<MT1,MT2>& dm, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return row( dm.leftOperand(), index ) + row( dm.rightOperand(), index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given dense matrix/transpose dense matrix
+//        addition.
+// \ingroup views
+//
+// \param dm The constant dense matrix/transpose dense matrix addition.
+// \param index The index of the column.
+// \return View on the specified column of the addition.
+//
+// This function returns an expression representing the specified column of the given dense
+// matrix/transpose dense matrix addition.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+inline typename ColumnExprTrait< DMatTDMatAddExpr<MT1,MT2> >::Type
+   column( const DMatTDMatAddExpr<MT1,MT2>& dm, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return column( dm.leftOperand(), index ) + column( dm.rightOperand(), index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  EXPRESSION TRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct RowExprTrait< DMatTDMatAddExpr<MT1,MT2> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename AddExprTrait< typename RowExprTrait<const MT1>::Type
+                                , typename RowExprTrait<const MT2>::Type >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct ColumnExprTrait< DMatTDMatAddExpr<MT1,MT2> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename AddExprTrait< typename ColumnExprTrait<const MT1>::Type
+                                , typename ColumnExprTrait<const MT2>::Type >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
