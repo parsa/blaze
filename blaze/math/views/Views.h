@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/Forward.h
-//  \brief Header file for all forward declarations of the math module
+//  \file blaze/math/views/Views.h
+//  \brief Views module documentation
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,30 +19,20 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_FORWARD_H_
-#define _BLAZE_MATH_FORWARD_H_
+#ifndef _BLAZE_MATH_VIEWS_VIEWS_H_
+#define _BLAZE_MATH_VIEWS_VIEWS_H_
 
-
-//*************************************************************************************************
-// Includes
-//*************************************************************************************************
-
-#include <blaze/math/dense/Forward.h>
-#include <blaze/math/sparse/Forward.h>
-#include <blaze/math/views/Forward.h>
-
-
-namespace blaze {
 
 //=================================================================================================
 //
-//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//  DOXYGEN DOCUMENTATION
 //
 //=================================================================================================
 
-template< typename > class Quaternion;
-template< typename > class RotationMatrix;
-
-} // namespace blaze
+//*************************************************************************************************
+/*!\defgroup views Views
+// \ingroup math
+*/
+//*************************************************************************************************
 
 #endif
