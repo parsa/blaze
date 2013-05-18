@@ -185,7 +185,7 @@ void ClassTest::testConstructors()
    {
       test_ = "DynamicVector array initialization constructor (size 4)";
 
-      int array[4] = { 1, 2, 3, 4 };
+      const int array[4] = { 1, 2, 3, 4 };
       blaze::DynamicVector<int,blaze::rowVector> vec( array );
 
       checkSize    ( vec, 4UL );
@@ -284,7 +284,7 @@ void ClassTest::testAssignment()
    {
       test_ = "DynamicVector array assignment";
 
-      int array[4] = { 1, 2, 3, 4 };
+      const int array[4] = { 1, 2, 3, 4 };
       blaze::DynamicVector<int,blaze::rowVector> vec;
       vec = array;
 

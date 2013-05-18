@@ -234,7 +234,7 @@ void ClassTest::testConstructors()
    {
       test_ = "Row-major DynamicMatrix array initialization constructor";
 
-      int array[2][3] = { { 1, 2, 3 }, { 4, 5, 6 } };
+      const int array[2][3] = { { 1, 2, 3 }, { 4, 5, 6 } };
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( array );
 
       checkRows    ( mat, 2UL );
@@ -456,7 +456,7 @@ void ClassTest::testConstructors()
    {
       test_ = "Column-major DynamicMatrix array initialization constructor";
 
-      int array[2][3] = { { 1, 2, 3 }, { 4, 5, 6 } };
+      const int array[2][3] = { { 1, 2, 3 }, { 4, 5, 6 } };
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( array );
 
       checkRows    ( mat, 2UL );
@@ -603,7 +603,7 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major DynamicMatrix array assignment";
 
-      int array[2][3] = { { 1, 2, 3 }, { 4, 5, 6 } };
+      const int array[2][3] = { { 1, 2, 3 }, { 4, 5, 6 } };
       blaze::DynamicMatrix<int,blaze::rowMajor> mat;
       mat = array;
 
@@ -843,7 +843,7 @@ void ClassTest::testAssignment()
    {
       test_ = "Column-major DynamicMatrix array initialization constructor";
 
-      int array[2][3] = { { 1, 2, 3 }, { 4, 5, 6 } };
+      const int array[2][3] = { { 1, 2, 3 }, { 4, 5, 6 } };
       blaze::DynamicMatrix<int,blaze::columnMajor> mat;
       mat = array;
 
