@@ -562,7 +562,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    // returned by the end() functions!
    */
    void append( size_t i, size_t j, const ElementType& value, bool check=false ) {
-      sm_.append( j, i, value, false );
+      sm_.append( j, i, value, check );
    }
    //**********************************************************************************************
 
