@@ -51,7 +51,8 @@ namespace logging {
 //*************************************************************************************************
 /*!\brief Constructor for the FunctionTrace class.
 //
-// \param level The level of the log section.
+// \param file The name of the file the traced function is contained in
+// \param function The name of the traced function
 */
 FunctionTrace::FunctionTrace( const std::string& file, const std::string& function )
    : file_    ( file     )  // The file name the traced function is contained in
