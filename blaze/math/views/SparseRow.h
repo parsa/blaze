@@ -2524,11 +2524,9 @@ inline void SparseRow<MT,false>::assign( const DenseVector<VT,true>& rhs )
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    for( size_t j=0UL; j<(~rhs).size(); ++j ) {
-      if( !isDefault( (~rhs)[j] ) ) {
-         matrix_(row_,j) = (~rhs)[j];
-      }
-      else {
-         matrix_.erase( row_, j );
+      const typename MT::Iterator pos = matrix_.insert( row_, j, (~rhs)[j] );
+      if( isDefault( pos->value() ) ) {
+         matrix_.erase( j, pos );
       }
    }
 }

@@ -2524,11 +2524,9 @@ inline void SparseColumn<MT,false>::assign( const DenseVector<VT,false>& rhs )
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    for( size_t i=0UL; i<(~rhs).size(); ++i ) {
-      if( !isDefault( (~rhs)[i] ) ) {
-         matrix_(i,col_) = (~rhs)[i];
-      }
-      else {
-         matrix_.erase( i, col_ );
+      const typename MT::Iterator pos = matrix_.insert( i, col_, (~rhs)[i] );
+      if( isDefault( pos->value() ) ) {
+         matrix_.erase( i, pos );
       }
    }
 }
