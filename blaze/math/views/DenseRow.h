@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/DenseRow.h
+//  \file blaze/math/views/DenseRow.h
 //  \brief Header file for the DenseRow class template
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved

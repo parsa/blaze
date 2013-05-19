@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/SparseColumn.h
+//  \file blaze/math/views/SparseColumn.h
 //  \brief Header file for the SparseColumn class template
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved

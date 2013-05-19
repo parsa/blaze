@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/SparseRow.h
+//  \file blaze/math/views/SparseRow.h
 //  \brief Header file for the SparseRow class template
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved

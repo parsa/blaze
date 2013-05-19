@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/DenseColumn.h
+//  \file blaze/math/views/DenseColumn.h
 //  \brief Header file for the DenseColumn class template
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
