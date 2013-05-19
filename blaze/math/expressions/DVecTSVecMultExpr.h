@@ -53,6 +53,7 @@
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -366,6 +367,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    // \return The number of non-zero elements of row \a i.
    */
    inline size_t nonZeros( size_t i ) const {
+      UNUSED_PARAMETER( i );
       return rhs_.nonZeros();
    }
    //**********************************************************************************************

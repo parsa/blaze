@@ -68,6 +68,7 @@
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -1142,6 +1143,7 @@ template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
 inline size_t DynamicMatrix<Type,SO>::capacity( size_t i ) const
 {
+   UNUSED_PARAMETER( i );
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    return nn_;
 }
@@ -3116,6 +3118,7 @@ inline size_t DynamicMatrix<Type,true>::capacity() const
 template< typename Type >  // Data type of the sparse matrix
 inline size_t DynamicMatrix<Type,true>::capacity( size_t j ) const
 {
+   UNUSED_PARAMETER( j );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    return mm_;
 }
@@ -4257,6 +4260,7 @@ template< typename Type  // Data type of the matrix
 inline const DynamicMatrix<Type,SO> inv( const DynamicMatrix<Type,SO>& m )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( Type );
+   UNUSED_PARAMETER( m );
 
    return DynamicMatrix<Type,SO>();
 }

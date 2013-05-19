@@ -63,6 +63,7 @@
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -4245,6 +4246,7 @@ template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
 inline const CompressedMatrix<Type,SO> inv( const CompressedMatrix<Type,SO>& m )
 {
+   UNUSED_PARAMETER( m );
    return CompressedMatrix<Type,SO>();
 }
 //*************************************************************************************************

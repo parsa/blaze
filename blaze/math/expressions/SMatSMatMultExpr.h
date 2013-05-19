@@ -65,6 +65,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -215,6 +216,7 @@ class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
    // \return The number of non-zero elements of row \a i.
    */
    inline size_t nonZeros( size_t i ) const {
+      UNUSED_PARAMETER( i );
       return 0UL;
    }
    //**********************************************************************************************

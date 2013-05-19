@@ -69,6 +69,7 @@
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -219,6 +220,7 @@ class TSMatTSMatMultExpr : public SparseMatrix< TSMatTSMatMultExpr<MT1,MT2>, tru
    // \return The number of non-zero elements of row \a i.
    */
    inline size_t nonZeros( size_t i ) const {
+      UNUSED_PARAMETER( i );
       return 0UL;
    }
    //**********************************************************************************************
