@@ -110,7 +110,8 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
        will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseSinglePrecisionKernel {
-      enum { value = IsFloat<typename T1::ElementType>::value &&
+      enum { value = T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                     IsFloat<typename T1::ElementType>::value &&
                      IsFloat<typename T2::ElementType>::value &&
                      IsFloat<typename T3::ElementType>::value };
    };
@@ -125,7 +126,8 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
        will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseDoublePrecisionKernel {
-      enum { value = IsDouble<typename T1::ElementType>::value &&
+      enum { value = T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                     IsDouble<typename T1::ElementType>::value &&
                      IsDouble<typename T2::ElementType>::value &&
                      IsDouble<typename T3::ElementType>::value };
    };
@@ -141,7 +143,8 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    template< typename T1, typename T2, typename T3 >
    struct UseSinglePrecisionComplexKernel {
       typedef complex<float>  Type;
-      enum { value = IsSame<typename T1::ElementType,Type>::value &&
+      enum { value = T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                     IsSame<typename T1::ElementType,Type>::value &&
                      IsSame<typename T2::ElementType,Type>::value &&
                      IsSame<typename T3::ElementType,Type>::value };
    };
@@ -157,7 +160,8 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    template< typename T1, typename T2, typename T3 >
    struct UseDoublePrecisionComplexKernel {
       typedef complex<double>  Type;
-      enum { value = IsSame<typename T1::ElementType,Type>::value &&
+      enum { value = T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                     IsSame<typename T1::ElementType,Type>::value &&
                      IsSame<typename T2::ElementType,Type>::value &&
                      IsSame<typename T3::ElementType,Type>::value };
    };
@@ -1512,7 +1516,8 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
        \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
    struct UseSinglePrecisionKernel {
-      enum { value = IsFloat<typename T1::ElementType>::value &&
+      enum { value = T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                     IsFloat<typename T1::ElementType>::value &&
                      IsFloat<typename T2::ElementType>::value &&
                      IsFloat<typename T3::ElementType>::value &&
                      !IsComplex<T4>::value };
@@ -1526,7 +1531,8 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
        \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
    struct UseDoublePrecisionKernel {
-      enum { value = IsDouble<typename T1::ElementType>::value &&
+      enum { value = T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                     IsDouble<typename T1::ElementType>::value &&
                      IsDouble<typename T2::ElementType>::value &&
                      IsDouble<typename T3::ElementType>::value &&
                      !IsComplex<T4>::value };
@@ -1541,7 +1547,8 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    template< typename T1, typename T2, typename T3 >
    struct UseSinglePrecisionComplexKernel {
       typedef complex<float>  Type;
-      enum { value = IsSame<typename T1::ElementType,Type>::value &&
+      enum { value = T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                     IsSame<typename T1::ElementType,Type>::value &&
                      IsSame<typename T2::ElementType,Type>::value &&
                      IsSame<typename T3::ElementType,Type>::value };
    };
@@ -1555,7 +1562,8 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    template< typename T1, typename T2, typename T3 >
    struct UseDoublePrecisionComplexKernel {
       typedef complex<double>  Type;
-      enum { value = IsSame<typename T1::ElementType,Type>::value &&
+      enum { value = T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                     IsSame<typename T1::ElementType,Type>::value &&
                      IsSame<typename T2::ElementType,Type>::value &&
                      IsSame<typename T3::ElementType,Type>::value };
    };
