@@ -635,7 +635,7 @@ inline Type* DynamicVector<Type,TF>::data()
 
 
 //*************************************************************************************************
-/*!\brief Low-level data access to the matrix elements.
+/*!\brief Low-level data access to the vector elements.
 //
 // \return Pointer to the internal element storage.
 */
