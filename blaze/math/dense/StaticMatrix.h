@@ -238,8 +238,10 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    //@{
    inline Reference      operator()( size_t i, size_t j );
    inline ConstReference operator()( size_t i, size_t j ) const;
-   inline Type*          data();
-   inline const Type*    data() const;
+   inline Type*          data  ();
+   inline const Type*    data  () const;
+   inline Type*          data  ( size_t i );
+   inline const Type*    data  ( size_t i ) const;
    inline Iterator       begin ( size_t i );
    inline ConstIterator  begin ( size_t i ) const;
    inline ConstIterator  cbegin( size_t i ) const;
@@ -1279,6 +1281,42 @@ template< typename Type  // Data type of the matrix
 inline const Type* StaticMatrix<Type,M,N,SO>::data() const
 {
    return v_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Low-level data access to the matrix elements of row/column \a i.
+//
+// \param i The row/column index.
+// \return Pointer to the internal element storage.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline Type* StaticMatrix<Type,M,N,SO>::data( size_t i )
+{
+   BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
+   return v_ + i*NN;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Low-level data access to the matrix elements of row/column \a i.
+//
+// \param i The row/column index.
+// \return Pointer to the internal element storage.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline const Type* StaticMatrix<Type,M,N,SO>::data( size_t i ) const
+{
+   BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
+   return v_ + i*NN;
 }
 //*************************************************************************************************
 
@@ -2561,12 +2599,14 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    inline ConstReference operator()( size_t i, size_t j ) const;
    inline Type*          data();
    inline const Type*    data() const;
-   inline Iterator       begin ( size_t i );
-   inline ConstIterator  begin ( size_t i ) const;
-   inline ConstIterator  cbegin( size_t i ) const;
-   inline Iterator       end   ( size_t i );
-   inline ConstIterator  end   ( size_t i ) const;
-   inline ConstIterator  cend  ( size_t i ) const;
+   inline Type*          data  ( size_t j );
+   inline const Type*    data  ( size_t j ) const;
+   inline Iterator       begin ( size_t j );
+   inline ConstIterator  begin ( size_t j ) const;
+   inline ConstIterator  cbegin( size_t j ) const;
+   inline Iterator       end   ( size_t j );
+   inline ConstIterator  end   ( size_t j ) const;
+   inline ConstIterator  cend  ( size_t j ) const;
    //@}
    //**********************************************************************************************
 
@@ -3604,6 +3644,44 @@ template< typename Type  // Data type of the matrix
 inline const Type* StaticMatrix<Type,M,N,true>::data() const
 {
    return v_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Low-level data access to the matrix elements of column \a j.
+//
+// \param j The column index.
+// \return Pointer to the internal element storage.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline Type* StaticMatrix<Type,M,N,true>::data( size_t j )
+{
+   BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
+   return v_ + j*MM;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Low-level data access to the matrix elements of column \a j.
+//
+// \param j The column index.
+// \return Pointer to the internal element storage.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline const Type* StaticMatrix<Type,M,N,true>::data( size_t j ) const
+{
+   BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
+   return v_ + j*MM;
 }
 /*! \endcond */
 //*************************************************************************************************
