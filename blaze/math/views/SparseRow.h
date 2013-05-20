@@ -89,7 +89,7 @@ namespace blaze {
 //        This template parameter doesn't have to be explicitly defined, but is automatically
 //        derived from the first template parameter.
 //
-// A reference to a sparse row can be conventiently created via the row() function. The row can
+// A reference to a sparse row can conveniently be created via the row() function. The row can
 // be either used as an alias to grant write access to a specific row of a matrix primitive on
 // the left-hand side of an assignment or to grant read-access to a specific row of a matrix
 // primitive or expression on the right-hand side of an assignment:
@@ -3057,6 +3057,27 @@ struct MultTrait< SparseRow<T1,SO1>, SparseRow<T2,SO2> >
 {
    typedef typename MultTrait< typename SparseRow<T1,SO1>::ResultType,
                                typename SparseRow<T2,SO2>::ResultType >::Type  Type;
+};
+
+template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
+struct MultTrait< SparseRow<T1,SO1>, StaticMatrix<T2,M,N,SO2> >
+{
+   typedef typename MultTrait< typename SparseRow<T1,SO1>::ResultType,
+                               StaticMatrix<T2,M,N,SO2> >::Type  Type;
+};
+
+template< typename T1, bool SO1, typename T2, bool SO2 >
+struct MultTrait< SparseRow<T1,SO1>, DynamicMatrix<T2,SO2> >
+{
+   typedef typename MultTrait< typename SparseRow<T1,SO1>::ResultType,
+                               DynamicMatrix<T2,SO2> >::Type  Type;
+};
+
+template< typename T1, bool SO1, typename T2, bool SO2 >
+struct MultTrait< SparseRow<T1,SO1>, CompressedMatrix<T2,SO2> >
+{
+   typedef typename MultTrait< typename SparseRow<T1,SO1>::ResultType,
+                               CompressedMatrix<T2,SO2> >::Type  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
