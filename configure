@@ -116,7 +116,7 @@ DOCDIR="\$(INSTALL_PATH)/doc"
 
 if test $COMPILER = "gcc"; then
    CXX="g++"
-   CXXFLAGS="-Werror -Wall -Wextra -Wshadow -Woverloaded-virtual -ansi --param inline-unit-growth=150 --param max-inline-insns-single=500 --param large-function-growth=600 -O3 $COMPILER_FLAGS"
+   CXXFLAGS="-Werror -Wall -Wextra -Wshadow -Woverloaded-virtual -Wno-unused-local-typedefs -ansi --param inline-unit-growth=150 --param max-inline-insns-single=500 --param large-function-growth=600 -O3 $COMPILER_FLAGS"
 fi
 if test $COMPILER = "intel"; then
    CXX="icpc"
