@@ -5258,7 +5258,7 @@ struct RowTrait< StaticMatrix<T1,M,N,SO> >
 template< typename T1, size_t M, size_t N, bool SO >
 struct ColumnTrait< StaticMatrix<T1,M,N,SO> >
 {
-   typedef StaticVector<T1,N,false>  Type;
+   typedef StaticVector<T1,M,false>  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
