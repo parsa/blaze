@@ -216,6 +216,12 @@ class DenseRow : public DenseVector< DenseRow<MT,SO>, true >
    //! Reference to a non-constant row value.
    typedef typename SelectType< useConst, ConstReference, typename MT::Reference >::Type  Reference;
 
+   //! Pointer to a constant row value.
+   typedef const ElementType*  ConstPointer;
+
+   //! Pointer to a constant row value.
+   typedef typename SelectType< useConst, ConstPointer, ElementType* >::Type  Pointer;
+
    //! Iterator over constant elements.
    typedef typename MT::ConstIterator  ConstIterator;
 
@@ -245,6 +251,8 @@ class DenseRow : public DenseVector< DenseRow<MT,SO>, true >
    //@{
    inline Reference      operator[]( size_t index );
    inline ConstReference operator[]( size_t index ) const;
+   inline Pointer        data  ();
+   inline ConstPointer   data  () const;
    inline Iterator       begin ();
    inline ConstIterator  begin () const;
    inline ConstIterator  cbegin() const;
@@ -466,6 +474,34 @@ inline typename DenseRow<MT,SO>::ConstReference DenseRow<MT,SO>::operator[]( siz
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid row access index" );
    return matrix_(row_,index);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Low-level data access to the row elements.
+//
+// \return Pointer to the internal element storage.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline typename DenseRow<MT,SO>::Pointer DenseRow<MT,SO>::data()
+{
+   return matrix_.data( row_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Low-level data access to the row elements.
+//
+// \return Pointer to the internal element storage.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline typename DenseRow<MT,SO>::ConstPointer DenseRow<MT,SO>::data() const
+{
+   return matrix_.data( row_ );
 }
 //*************************************************************************************************
 

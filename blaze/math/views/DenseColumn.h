@@ -215,6 +215,12 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO>, false >
    //! Reference to a non-constant column value.
    typedef typename SelectType< useConst, ConstReference, typename MT::Reference >::Type  Reference;
 
+   //! Pointer to a constant row value.
+   typedef const ElementType*  ConstPointer;
+
+   //! Pointer to a constant row value.
+   typedef typename SelectType< useConst, ConstPointer, ElementType* >::Type  Pointer;
+
    //! Iterator over constant elements.
    typedef typename MT::ConstIterator  ConstIterator;
 
@@ -244,6 +250,8 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO>, false >
    //@{
    inline Reference      operator[]( size_t index );
    inline ConstReference operator[]( size_t index ) const;
+   inline Pointer        data  ();
+   inline ConstPointer   data  () const;
    inline Iterator       begin ();
    inline ConstIterator  begin () const;
    inline ConstIterator  cbegin() const;
@@ -465,6 +473,34 @@ inline typename DenseColumn<MT,SO>::ConstReference DenseColumn<MT,SO>::operator[
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid column access index" );
    return matrix_(index,col_);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Low-level data access to the column elements.
+//
+// \return Pointer to the internal element storage.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline typename DenseColumn<MT,SO>::Pointer DenseColumn<MT,SO>::data()
+{
+   return matrix_.data( col_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Low-level data access to the column elements.
+//
+// \return Pointer to the internal element storage.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline typename DenseColumn<MT,SO>::ConstPointer DenseColumn<MT,SO>::data() const
+{
+   return matrix_.data( col_ );
 }
 //*************************************************************************************************
 
