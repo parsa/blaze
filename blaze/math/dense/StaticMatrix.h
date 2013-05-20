@@ -2597,8 +2597,8 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    //@{
    inline Reference      operator()( size_t i, size_t j );
    inline ConstReference operator()( size_t i, size_t j ) const;
-   inline Type*          data();
-   inline const Type*    data() const;
+   inline Type*          data  ();
+   inline const Type*    data  () const;
    inline Type*          data  ( size_t j );
    inline const Type*    data  ( size_t j ) const;
    inline Iterator       begin ( size_t j );
