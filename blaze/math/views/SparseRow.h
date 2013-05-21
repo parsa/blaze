@@ -89,23 +89,82 @@ namespace blaze {
 //        This template parameter doesn't have to be explicitly defined, but is automatically
 //        derived from the first template parameter.
 //
-// A reference to a sparse row can conveniently be created via the row() function. The row can
-// be either used as an alias to grant write access to a specific row of a matrix primitive on
-// the left-hand side of an assignment or to grant read-access to a specific row of a matrix
-// primitive or expression on the right-hand side of an assignment:
+//
+// \n \section sparse_row_setup Setup of Sparse Rows
+//
+// A reference to a sparse row can very conveniently be created via the \c row() function. This
+// reference can be treated as any other row vector, i.e. it can be assigned to, it can be
+// copied from, and it can be used in arithmetic operations. The reference can also be used on
+// both sides of an assignment: The row can be either used as an alias to grant write access to a
+// specific row of a matrix primitive on the left-hand side of an assignment or to grant read-access
+// to a specific row of a matrix primitive or expression on the right-hand side of an assignment.
+// The following two examples demonstrate this in detail:
 
    \code
-   blaze::DynamicVector<double,rowVector> x;
-   blaze::DynamicMatrix<double,rowMajor> A, B;
+   typedef blaze::DynamicVector<double,rowVector>     DenseVectorType;
+   typedef blaze::CompressedVector<double,rowVector>  SparseVectorType;
+   typedef blaze::CompressedMatrix<double,rowMajor>   SparseMatrixType;
+
+   DenseVectorType  x;
+   SparseVectorType y;
+   SparseMatrixType  A, B;
    // ... Resizing and initialization
 
    // Setting the 2nd row of matrix A to x
-   row( A, 2UL ) = x;
+   blaze::SparseRow<SparseMatrixType> row2 = row( A, 2UL );
+   row2 = x;
 
-   // Setting x to the 3rd row of the result of the matrix multiplication
-   x = row( A * B, 3UL );
+   // Setting the 3rd row of matrix B to y
+   row( B, 3UL ) = y;
+
+   // Setting x to the 1st row of matrix B
+   x = row( B, 1UL );
+
+   // Setting y to the 4th row of the result of the matrix multiplication
+   y = row( A * B, 4UL );
    \endcode
 
+// \n \section sparse_row_element_access Element access
+//
+// A sparse row can be used like any other row vector. For instance, the elements of the sparse
+// row can be directly accessed with the subscript operator. The numbering of the row elements is
+
+                             \f[\left(\begin{array}{*{5}{c}}
+                             0 & 1 & 2 & \cdots & N-1 \\
+                             \end{array}\right),\f]
+
+// where N is the number of columns of the referenced matrix. Alternatively, the elements of
+// a row can be traversed via iterators. Just as with vectors, in case of non-const rows,
+// \c begin() and \c end() return an Iterator, which allows a manipulation of the non-zero
+// value, in case of a constant rows a ConstIterator is returned:
+
+   \code
+   typedef blaze::CompressedMatrix<int,rowMajor>  MatrixType;
+   typedef blaze::SparseRow<MatrixType>           RowType;
+
+   MatrixType A( 128UL, 256UL );
+   // ... Resizing and initialization
+
+   // Creating a reference to the 31st row of matrix A
+   RowType row31 = row( A, 31UL );
+
+   for( RowType::Iterator it=row31.begin(); it!=row31.end(); ++it ) {
+      it->value() = ...;  // OK: Write access to the value of the non-zero element.
+      ... = it->value();  // OK: Read access to the value of the non-zero element.
+      it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
+      ... = it->index();  // OK: Read access to the index of the sparse element.
+   }
+
+   for( RowType::Iterator it=row31.begin(); it!=row31.end(); ++it ) {
+      it->value() = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
+      ... = it->value();  // OK: Read access to the value of the non-zero element.
+      it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
+      ... = it->index();  // OK: Read access to the index of the sparse element.
+   }
+   \endcode
+
+// \n \section sparse_row_element_insertion Element Insertion
+//
 // Inserting/accessing elements in a sparse row can be done by several alternative functions.
 // The following example demonstrates all options:
 
@@ -144,9 +203,38 @@ namespace blaze {
    }
    \endcode
 
-// The following example gives an impression of the use of SparseRow. All operations (addition,
-// subtraction, multiplication, scaling, ...) can be performed on all possible combinations of
-// dense and sparse vectors with fitting element types:
+// \n \section sparse_row_common_operations Common Operations
+//
+// The current number of row elements can be obtained via the \c size() function, the current
+// capacity via the \c capacity() function, and the number of non-zero elements via the
+// \c nonZeros() function. However, since rows are references to specific rows of a matrix,
+// several operations are not possible on views, such as resizing and swapping:
+
+   \code
+   typedef blaze::CompressedMatrix<int,rowMajor>  MatrixType;
+   typedef blaze::SparseRow<MatrixType>           RowType;
+
+   MatrixType A( 42UL, 42UL );
+   // ... Resizing and initialization
+
+   // Creating a reference to the 2nd row of matrix A
+   RowType row2 = row( A, 2UL );
+
+   row2.size();          // Returns the number of elements in the row
+   row2.capacity();      // Returns the capacity of the row
+   row2.nonZeros();      // Returns the number of non-zero elements contained in the row
+
+   row2.resize( 84UL );  // Compilation error: Cannot resize a single row of a matrix
+
+   RowType row3 = row( A, 3UL );
+   swap( row2, row3 );   // Compilation error: Swap operation not allowed
+   \endcode
+
+// \n \section sparse_row_arithmetic_operations Arithmetic Operations
+//
+// The following example gives an impression of the use of SparseRow within arithmetic operations.
+// All operations (addition, subtraction, multiplication, scaling, ...) can be performed on all
+// possible combinations of dense and sparse vectors with fitting element types:
 
    \code
    using blaze::DynamicVector;
@@ -186,11 +274,32 @@ namespace blaze {
    A = trans( c ) * row( A, 1UL );  // Outer product between two vectors
    \endcode
 
-// It is possible to create a row view on both row-major and column-major matrices. However,
-// please note that creating a row view on a matrix stored in column-major fashion can result
-// in a considerable performance decrease in comparison to a row view on a row-major matrix
-// due to the non-contiguous storage of the non-zero matrix elements. Therefore care has to
-// be taken in the choice of the most suitable storage order:
+// \n \section dense_row_on_column_major_matrix Dense Row on a Column-Major Matrix
+//
+// It is especially noteworthy that row views can be created for both row-major and column-major
+// matrices. Whereas the interface of a row-major matrix only allows to traverse a row directly
+// and the interface of a column-major matrix only allows to traverse a column, via views it is
+// also possible to traverse a row of a column-major matrix. For instance:
+
+   \code
+   typedef blaze::CompressedMatrix<int,columnMajor>  MatrixType;
+   typedef blaze::SparseRow<MatrixType>              RowType;
+
+   MatrixType A( 64UL, 32UL );
+   // ... Resizing and initialization
+
+   // Creating a reference to the 1st row of a column-major matrix A
+   RowType row1 = row( A, 1UL );
+
+   for( RowType::Iterator it=row1.begin(); it!=row1.end(); ++it ) {
+      // ...
+   }
+   \endcode
+
+// However, please note that creating a row view on a matrix stored in a column-major fashion
+// can result in a considerable performance decrease in comparison to a row view on a matrix
+// with row-major storage format. This is due to the non-contiguous storage of the matrix elements.
+// Therefore care has to be taken in the choice of the most suitable storage order:
 
    \code
    // Setup of two column-major matrices
@@ -203,7 +312,7 @@ namespace blaze {
 
    // ... is essentially the same as the following computation, which multiplies
    // the 15th row of the column-major matrix A with B.
-   ComputationVector<double,rowVector> x = row( A, 15UL ) * B;
+   CompressedVector<double,rowVector> x = row( A, 15UL ) * B;
    \endcode
 
 // Although Blaze performs the resulting vector/matrix multiplication as efficiently as possible

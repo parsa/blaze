@@ -89,24 +89,84 @@ namespace blaze {
 //        This template parameter doesn't have to be explicitly defined, but is automatically
 //        derived from the first template parameter.
 //
-// A reference to a sparse column can conveniently be created via the column() function. The row
-// can be either used as an alias to grant write access to a specific column of a matrix primitive
-// on the left-hand side of an assignment or to grant read-access to a specific column of a matrix
-// primitive or expression on the right-hand side of an assignment:
+//
+// \n \section sparse_column_setup Setup of Sparse Columns
+//
+// A reference to a sparse column can very conveniently be created via the \c column() function.
+// This reference can be treated as any other column vector, i.e. it can be assigned to, it can
+// be copied from, and it can be used in arithmetic operations. The reference can also be used on
+// both sides of an assignment: The column can be either used as an alias to grant write access
+// to a specific column of a matrix primitive on the left-hand side of an assignment or to grant
+// read-access to a specific column of a matrix primitive or expression on the right-hand side
+// of an assignment. The following two examples demonstrate this in detail:
 
    \code
-   blaze::DynamicVector<double,columnVector> x;
-   blaze::DynamicMatrix<double,columnMajor> A, B;
+   typedef blaze::DynamicVector<double,columnVector>     DenseVectorType;
+   typedef blaze::CompressedVector<double,columnVector>  SparseVectorType;
+   typedef blaze::CompressedMatrix<double,columnMajor>   SparseMatrixType;
+
+   DenseVectorType  x;
+   SparseVectorType y;
+   SparseMatrixType  A, B;
    // ... Resizing and initialization
 
    // Setting the 2nd column of matrix A to x
-   column( A, 2UL ) = x;
+   blaze::SparseColumn<SparseMatrixType> col2 = column( A, 2UL );
+   col2 = x;
 
-   // Setting x to the 3rd column of the result of the matrix multiplication
-   x = column( A * B, 3UL );
+   // Setting the 3rd column of matrix B to y
+   column( B, 3UL ) = y;
+
+   // Setting x to the 1st column of matrix B
+   x = column( B, 1UL );
+
+   // Setting y to the 4th column of the result of the matrix multiplication
+   y = column( A * B, 4UL );
    \endcode
 
-// Inserting/accessing elements in a sparse column can be done by several alternative functions.
+// \n \section sparse_column_element_access Element access
+//
+// A sparse column can be used like any other column vector. For instance, the elements of the
+// sparse column can be directly accessed with the subscript operator. The numbering of the
+// column elements is
+
+                             \f[\left(\begin{array}{*{5}{c}}
+                             0 & 1 & 2 & \cdots & N-1 \\
+                             \end{array}\right),\f]
+
+// where N is the number of rows of the referenced matrix. Alternatively, the elements of a
+// column can be traversed via iterators. Just as with vectors, in case of non-const columns,
+// \c begin() and \c end() return an Iterator, which allows a manipulation of the non-zero
+// value, in case of a constant columns a ConstIterator is returned:
+
+   \code
+   typedef blaze::CompressedMatrix<int,columnMajor>  MatrixType;
+   typedef blaze::SparseColumn<MatrixType>           ColumnType;
+
+   MatrixType A( 128UL, 256UL );
+   // ... Resizing and initialization
+
+   // Creating a reference to the 31st column of matrix A
+   ColumnType col31 = column( A, 31UL );
+
+   for( ColumnType::Iterator it=col31.begin(); it!=col31.end(); ++it ) {
+      it->value() = ...;  // OK: Write access to the value of the non-zero element.
+      ... = it->value();  // OK: Read access to the value of the non-zero element.
+      it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
+      ... = it->index();  // OK: Read access to the index of the sparse element.
+   }
+
+   for( ColumnType::Iterator it=col31.begin(); it!=col31.end(); ++it ) {
+      it->value() = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
+      ... = it->value();  // OK: Read access to the value of the non-zero element.
+      it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
+      ... = it->index();  // OK: Read access to the index of the sparse element.
+   }
+   \endcode
+
+// \n \section sparse_column_element_insertion Element Insertion
+//
+// Inserting/accessing elements in a sparse row can be done by several alternative functions.
 // The following example demonstrates all options:
 
    \code
@@ -144,9 +204,39 @@ namespace blaze {
    }
    \endcode
 
-// The following example gives an impression of the use of SparseColumn. All operations (addition,
-// subtraction, multiplication, scaling, ...) can be performed on all possible combinations of
-// dense and sparse vectors with fitting element types:
+// \n \section sparse_column_common_operations Common Operations
+//
+// The current number of column elements can be obtained via the \c size() function, the current
+// capacity via the \c capacity() function, and the number of non-zero elements via the
+// \c nonZeros() function. However, since columns are references to specific columns of a matrix,
+// several operations are not possible on views, such as resizing and swapping:
+
+   \code
+   typedef blaze::CompressedMatrix<int,columnMajor>  MatrixType;
+   typedef blaze::SparseColumn<MatrixType>           ColumnType;
+
+   MatrixType A( 42UL, 42UL );
+   // ... Resizing and initialization
+
+   // Creating a reference to the 2nd column of matrix A
+   ColumnType col2 = column( A, 2UL );
+
+   col2.size();          // Returns the number of elements in the column
+   col2.capacity();      // Returns the capacity of the column
+   col2.nonZeros();      // Returns the number of non-zero elements contained in the column
+
+   col2.resize( 84UL );  // Compilation error: Cannot resize a single column of a matrix
+
+   ColumnType col3 = column( A, 3UL );
+   swap( col2, col3 );   // Compilation error: Swap operation not allowed
+   \endcode
+
+// \n \section sparse_column_arithmetic_operations Arithmetic Operations
+//
+// The following example gives an impression of the use of SparseColumn within arithmetic
+// operations. All operations (addition, subtraction, multiplication, scaling, ...) can be
+// performed on all possible combinations of dense and sparse vectors with fitting element
+// types:
 
    \code
    using blaze::DynamicVector;
@@ -186,11 +276,32 @@ namespace blaze {
    A = column( A, 1UL ) * trans( c );  // Outer product between two vectors
    \endcode
 
-// It is possible to create a column view on both row-major and column-major matrices. However,
-// please note that creating a column view on a matrix stored in row-major fashion can result
-// in a considerable performance decrease in comparison to a column view on a column-major matrix
-// due to the non-contiguous storage of the non-zero matrix elements. Therefore care has to be
-// taken in the choice of the most suitable storage order:
+// \n \section dense_column_on_row_major_matrix Dense Column on a Row-Major Matrix
+//
+// It is especially noteworthy that column views can be created for both row-major and column-major
+// matrices. Whereas the interface of a row-major matrix only allows to traverse a row directly
+// and the interface of a column-major matrix only allows to traverse a column, via views it is
+// also possible to traverse a column of a row-major matrix. For instance:
+
+   \code
+   typedef blaze::CompressedMatrix<int,rowMajor>  MatrixType;
+   typedef blaze::SparseColumn<MatrixType>        ColumnType;
+
+   MatrixType A( 64UL, 32UL );
+   // ... Resizing and initialization
+
+   // Creating a reference to the 1st column of a row-major matrix A
+   ColumnType col1 = column( A, 1UL );
+
+   for( ColumnType::Iterator it=col1.begin(); it!=col1.end(); ++it ) {
+      // ...
+   }
+   \endcode
+
+// However, please note that creating a column view on a matrix stored in a row-major fashion
+// can result in a considerable performance decrease in comparison to a column view on a matrix
+// with column-major storage format. This is due to the non-contiguous storage of the matrix
+// elements. Therefore care has to be taken in the choice of the most suitable storage order:
 
    \code
    // Setup of two row-major matrices
