@@ -563,7 +563,7 @@ void ClassTest::testAssignment()
 
 
    //=====================================================================================
-   // Row-major sparse vector assignment
+   // Column-major sparse vector assignment
    //=====================================================================================
 
    {
