@@ -463,22 +463,26 @@ class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
             {
                std::sort( indices.begin(), indices.begin() + nonzeros );
 
-               for( size_t j=0UL; j<nonzeros; ++j ) {
+               for( size_t j=0UL; j<nonzeros; ++j )
+               {
                   const size_t index( indices[j] );
                   if( !isDefault( values[index] ) ) {
                      (~lhs).append( i, index, values[index] );
                      reset( values[index] );
-                     reset( valid [index] );
                   }
+
+                  reset( valid [index] );
                }
             }
             else {
-               for( size_t j=minIndex; j<=maxIndex; ++j ) {
+               for( size_t j=minIndex; j<=maxIndex; ++j )
+               {
                   if( !isDefault( values[j] ) ) {
                      (~lhs).append( i, j, values[j] );
                      reset( values[j] );
-                     reset( valid [j] );
                   }
+
+                  reset( valid [j] );
                }
             }
 

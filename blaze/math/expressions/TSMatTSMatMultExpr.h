@@ -501,22 +501,26 @@ class TSMatTSMatMultExpr : public SparseMatrix< TSMatTSMatMultExpr<MT1,MT2>, tru
             {
                std::sort( indices.begin(), indices.begin() + nonzeros );
 
-               for( size_t i=0UL; i<nonzeros; ++i ) {
+               for( size_t i=0UL; i<nonzeros; ++i )
+               {
                   const size_t index( indices[i] );
                   if( !isDefault( values[index] ) ) {
                      (~lhs).append( index, j, values[index] );
                      reset( values[index] );
-                     reset( valid [index] );
                   }
+
+                  reset( valid [index] );
                }
             }
             else {
-               for( size_t i=minIndex; i<=maxIndex; ++i ) {
+               for( size_t i=minIndex; i<=maxIndex; ++i )
+               {
                   if( !isDefault( values[i] ) ) {
                      (~lhs).append( i, j, values[i] );
                      reset( values[i] );
-                     reset( valid [i] );
                   }
+
+                  reset( valid [i] );
                }
             }
 
