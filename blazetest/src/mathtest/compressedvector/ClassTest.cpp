@@ -975,7 +975,7 @@ void ClassTest::testInsert()
           << "   Expected result:\n( 0 0 3 4 1 0 2 )\n";
       throw std::runtime_error( oss.str() );
    }
-   catch( std::invalid_argument& ex ) {}
+   catch( std::invalid_argument& ) {}
 }
 //*************************************************************************************************
 
@@ -1021,7 +1021,7 @@ void ClassTest::testErase()
       }
 
       // Erasing the element at index 0
-      vec.erase( 0UL );
+      vec.erase( size_t(0) );
 
       checkSize    ( vec, 9UL );
       checkCapacity( vec, 5UL );

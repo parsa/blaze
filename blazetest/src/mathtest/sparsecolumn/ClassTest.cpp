@@ -3245,7 +3245,7 @@ void ClassTest::testInsert()
              << "   Expected result:\n( 2 0 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
-      catch( std::invalid_argument& ex ) {}
+      catch( std::invalid_argument& ) {}
    }
 
 
@@ -3329,7 +3329,7 @@ void ClassTest::testInsert()
              << "   Expected result:\n( 2 0 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
-      catch( std::invalid_argument& ex ) {}
+      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************
@@ -3602,7 +3602,7 @@ void ClassTest::testErase()
       }
 
       // Erasing the non-zero element at the beginning of the column
-      col4.erase( 0UL );
+      col4.erase( size_t(0) );
 
       checkSize    ( col4 , 4UL );
       checkNonZeros( col4 , 2UL );

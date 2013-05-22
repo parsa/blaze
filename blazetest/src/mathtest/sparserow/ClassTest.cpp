@@ -3333,7 +3333,7 @@ void ClassTest::testInsert()
              << "   Expected result:\n( 2 0 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
-      catch( std::invalid_argument& ex ) {}
+      catch( std::invalid_argument& ) {}
    }
 
 
@@ -3417,7 +3417,7 @@ void ClassTest::testInsert()
              << "   Expected result:\n( 2 0 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
-      catch( std::invalid_argument& ex ) {}
+      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************
@@ -3465,7 +3465,7 @@ void ClassTest::testErase()
       }
 
       // Erasing the non-zero element at the beginning of the row
-      row4.erase( 0UL );
+      row4.erase( size_t(0) );
 
       checkSize    ( row4, 4UL );
       checkNonZeros( row4, 2UL );

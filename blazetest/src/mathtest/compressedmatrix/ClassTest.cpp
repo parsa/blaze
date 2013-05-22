@@ -2806,7 +2806,7 @@ void ClassTest::testInsert()
              << "   Expected result:\n( 0 4 0 0 0 )\n( 0 0 0 0 0 )\n( 0 0 3 1 2 )\n( 0 0 5 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
-      catch( std::invalid_argument& ex ) {}
+      catch( std::invalid_argument& ) {}
    }
 
 
@@ -2946,7 +2946,7 @@ void ClassTest::testInsert()
              << "   Expected result:\n( 0 0 0 0 )\n( 4 0 0 0 )\n( 0 0 3 5 )\n( 0 0 1 0 )\n( 0 0 2 0 )\n";
          throw std::runtime_error( oss.str() );
       }
-      catch( std::invalid_argument& ex ) {}
+      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************
@@ -3001,7 +3001,7 @@ void ClassTest::testErase()
       }
 
       // Erasing the element at (0,0)
-      mat.erase( 0UL, 0UL );
+      mat.erase( 0UL, size_t(0) );
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 5UL );
@@ -3316,7 +3316,7 @@ void ClassTest::testErase()
       }
 
       // Erasing the element at (0,0)
-      mat.erase( 0UL, 0UL );
+      mat.erase( 0UL, size_t(0) );
 
       checkRows    ( mat, 5UL );
       checkColumns ( mat, 3UL );
