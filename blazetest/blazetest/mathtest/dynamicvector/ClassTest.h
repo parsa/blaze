@@ -117,16 +117,16 @@ class ClassTest
 
    //**Type definitions****************************************************************************
    typedef blaze::DynamicVector<int,blaze::rowVector>  VT;   //!< Type of the dynamic vector
-   typedef typename VT::TransposeType                  TVT;  //!< Transpose dynamic vector type
-   typedef typename VT::ElementType                    ET;   //!< Element type of the dynamic vector
+   typedef VT::TransposeType                           TVT;  //!< Transpose dynamic vector type
+   typedef VT::ElementType                             ET;   //!< Element type of the dynamic vector
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( VT  );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( TVT );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT, typename TVT::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( typename VT::ElementType, typename TVT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT, TVT::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT::ElementType, TVT::ElementType );
    /*! \endcond */
    //**********************************************************************************************
 };

@@ -123,7 +123,7 @@ class ClassTest
 
    //**Type definitions****************************************************************************
    typedef blaze::CompressedMatrix<int,blaze::rowMajor>  MT;   //!< Row-major compressed matrix type
-   typedef typename MT::OppositeType                     TMT;  //!< Column-major compressed matrix type
+   typedef MT::OppositeType                              TMT;  //!< Column-major compressed matrix type
    typedef blaze::SparseRow<MT>                          RT;   //!< Sparse row type for row-major matrices.
    typedef blaze::SparseRow<TMT>                         TRT;  //!< Sparse row type for column-major matrices.
    //**********************************************************************************************

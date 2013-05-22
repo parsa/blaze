@@ -112,16 +112,16 @@ class ClassTest
 
    //**Type definitions****************************************************************************
    typedef blaze::StaticVector<int,4UL,blaze::rowVector>  VT;   //!< Type of the static vector
-   typedef typename VT::TransposeType                     TVT;  //!< Transpose static vector type
-   typedef typename VT::ElementType                       ET;   //!< Element type of the static vector
+   typedef VT::TransposeType                              TVT;  //!< Transpose static vector type
+   typedef VT::ElementType                                ET;   //!< Element type of the static vector
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( VT  );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( TVT );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT, typename TVT::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( typename VT::ElementType, typename TVT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT, TVT::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT::ElementType, TVT::ElementType );
    /*! \endcond */
    //**********************************************************************************************
 };

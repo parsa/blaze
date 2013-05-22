@@ -122,16 +122,16 @@ class ClassTest
 
    //**Type definitions****************************************************************************
    typedef blaze::CompressedMatrix<int,blaze::rowMajor>  MT;   //!< Type of the compressed matrix
-   typedef typename MT::TransposeType                    TMT;  //!< Transpose compressed matrix type
-   typedef typename MT::ElementType                      ET;   //!< Element type of the compressed matrix
+   typedef MT::TransposeType                             TMT;  //!< Transpose compressed matrix type
+   typedef MT::ElementType                               ET;   //!< Element type of the compressed matrix
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT  );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TMT );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT, typename TMT::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( typename MT::ElementType, typename TMT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT, TMT::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT::ElementType, TMT::ElementType );
    /*! \endcond */
    //**********************************************************************************************
 };

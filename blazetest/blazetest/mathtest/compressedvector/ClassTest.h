@@ -116,16 +116,16 @@ class ClassTest
 
    //**Type definitions****************************************************************************
    typedef blaze::CompressedVector<int,blaze::rowVector>  VT;   //!< Type of the compressed vector
-   typedef typename VT::TransposeType                     TVT;  //!< Transpose compressed vector type
-   typedef typename VT::ElementType                       ET;   //!< Element type of the compressed vector
+   typedef VT::TransposeType                              TVT;  //!< Transpose compressed vector type
+   typedef VT::ElementType                                ET;   //!< Element type of the compressed vector
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT  );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( TVT );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT, typename TVT::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( typename VT::ElementType, typename TVT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT, TVT::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT::ElementType, TVT::ElementType );
    /*! \endcond */
    //**********************************************************************************************
 };

@@ -119,7 +119,7 @@ class ClassTest
 
    //**Type definitions****************************************************************************
    typedef blaze::DynamicMatrix<int,blaze::rowMajor>  MT;   //!< Row-major dynamic matrix type
-   typedef typename MT::OppositeType                  TMT;  //!< Column-major dynamic matrix type
+   typedef MT::OppositeType                           TMT;  //!< Column-major dynamic matrix type
    typedef blaze::DenseColumn<MT>                     CT;   //!< Dense column type for row-major matrices.
    typedef blaze::DenseColumn<TMT>                    TCT;  //!< Dense column type for column-major matrices.
    //**********************************************************************************************

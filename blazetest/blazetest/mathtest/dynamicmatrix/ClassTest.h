@@ -123,16 +123,16 @@ class ClassTest
 
    //**Type definitions****************************************************************************
    typedef blaze::DynamicMatrix<int,blaze::rowMajor>  MT;   //!< Type of the dynamic matrix
-   typedef typename MT::TransposeType                 TMT;  //!< Transpose dynamic matrix type
-   typedef typename MT::ElementType                   ET;   //!< Element type of the dynamic matrix
+   typedef MT::TransposeType                          TMT;  //!< Transpose dynamic matrix type
+   typedef MT::ElementType                            ET;   //!< Element type of the dynamic matrix
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT  );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( TMT );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT, typename TMT::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( typename MT::ElementType, typename TMT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT, TMT::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT::ElementType, TMT::ElementType );
    /*! \endcond */
    //**********************************************************************************************
 };
