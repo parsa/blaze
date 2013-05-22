@@ -76,6 +76,12 @@ namespace blaze {}
 //                <li> \ref matrix_operations </li>
 //             </ul>
 //          </li>
+//          <li> Views
+//             <ul>
+//                <li> \ref view_types </li>
+//                <li> \ref view_operations </li>
+//             </ul>
+//          </li>
 //          <li> Arithmetic Operations
 //             <ul>
 //                <li> \ref addition </li>
@@ -713,7 +719,7 @@ namespace blaze {}
 //
 // \subsection vector_operations_size Size of a Vector
 //
-// Via the size() function, the current size of a vector can be queried:
+// Via the \c size() function, the current size of a vector can be queried:
 
    \code
    // Instantiating a dynamic vector with size 10
@@ -727,7 +733,7 @@ namespace blaze {}
 
 // \n \subsection vector_operations_capacity Capacity of a Vector
 //
-// Via the capacity() function the internal capacity of a DynamicVector or CompressedVector
+// Via the \c capacity() function the internal capacity of a DynamicVector or CompressedVector
 // can be queried. Note that the capacity of a vector doesn't have to be equal to the size
 // of a vector. In case of a dense vector the capacity will always be greater or equal than
 // the size of the vector, in case of a sparse vector the capacity may even be less than
@@ -741,8 +747,8 @@ namespace blaze {}
 // \n \subsection vector_operations_nonzeros Number of Non-Zero Elements
 //
 // For both dense and sparse vectors the number of non-zero elements can be determined via the
-// nonZeros() function. Sparse vectors directly return their number of non-zero elements, dense
-// vectors traverse their elements and count the number of non-zero elements.
+// \c nonZeros() function. Sparse vectors directly return their number of non-zero elements,
+// dense vectors traverse their elements and count the number of non-zero elements.
 
    \code
    blaze::DynamicVector<int> v1( 10UL );
@@ -781,8 +787,8 @@ namespace blaze {}
    \endcode
 
 // When the internal capacity of a vector is no longer sufficient, the allocation of a larger
-// junk of memory is triggered. In order to avoid frequent reallocations, the reserve() function
-// can be used up front to set the internal capacity:
+// junk of memory is triggered. In order to avoid frequent reallocations, the \c reserve()
+// function can be used up front to set the internal capacity:
 
    \code
    blaze::DynamicVector<int> v1;
@@ -819,21 +825,18 @@ namespace blaze {}
 
    \code
    blaze::CompressedVector<int> v1( 10UL );
-   v1.nonZeros();  // Returns 0
 
    for( size_t i=0UL; i<v1.size(); ++i ) {
       ... = v1[i];
    }
-
-   v1.nonZeros();  // Returns 10
    \endcode
 
-// Although the vector is initially empty (i.e. contains no non-zero elements) and is only used
-// for read access inside the for loop, after the loop the vector contains 10 non-zero elements.
-// Therefore sparse vectors offer an alternate way via the begin() and end() functions to traverse
-// only the currently contained non-zero elements by iterators. In case of non-const vectors,
-// begin() and end() return an Iterator, which allows a manipulation of the non-zero value, in
-// case of a constant vector a ConstIterator is returned:
+// Although the compressed vector is only used for read access within the for loop, using the
+// subscript operator temporarily inserts 10 non-zero elements into the vector. Therefore, all
+// vectors (sparse as well as dense) offer an alternate way via the \c begin() and \c end()
+// functions to traverse only the currently contained elements by iterators. In case of
+// non-const vectors, \c begin() and \c end() return an Iterator, which allows a manipulation
+// of the non-zero value, in case of a constant vector a ConstIterator is returned:
 
    \code
    using blaze::CompressedVector;
@@ -877,9 +880,9 @@ namespace blaze {}
 // In case the element at the given index is not yet contained in the vector, it is automatically
 // inserted. Otherwise the old value is replaced by the new value 2. The operator returns a
 // reference to the sparse vector element.\n
-// However, insertion of elements can be better controlled via the insert() function. In contrast
+// However, insertion of elements can be better controlled via the \c insert() function. In contrast
 // to the subscript operator it emits an exception in case the element is already contained in
-// the matrix. In order to check for this case, the find() function can be used:
+// the matrix. In order to check for this case, the \c find() function can be used:
 
    \code
    // In case the element at index 4 is not yet contained in the matrix it is inserted
@@ -888,9 +891,9 @@ namespace blaze {}
       v1.insert( 4, 6 );
    \endcode
 
-// Although the insert() function is very flexible, due to performance reasons it is not suited
+// Although the \c insert() function is very flexible, due to performance reasons it is not suited
 // for the setup of large sparse vectors. A very efficient, yet also very low-level way to fill
-// a sparse vector is the append() function. It requires the sparse vector to provide enough
+// a sparse vector is the \c append() function. It requires the sparse vector to provide enough
 // capacity to insert a new element. Additionally, the index of the new element must be larger
 // than the index of the previous element. Violating these conditions results in undefined
 // behavior!
@@ -937,17 +940,29 @@ namespace blaze {}
 //
 // As already mentioned, vectors can be either column vectors (blaze::columnVector) or row vectors
 // (blaze::rowVector). A column vector cannot be assigned to a row vector and vice versa. However,
-// vectors can be transposed via the trans() function:
+// vectors can be transposed via the \c trans() function:
 
    \code
    blaze::DynamicVector<int,columnVector> v1( 4UL );
-   blaze::CompressedVector<int,rowVector> v2( 6UL );
+   blaze::CompressedVector<int,rowVector> v2( 4UL );
 
    v1 = v2;            // Compilation error: Cannot assign a row vector to a column vector
    v1 = trans( v2 );   // OK: Transposing the row vector to a column vector and assigning it
                        //     to the column vector v1
    v2 = trans( v1 );   // OK: Transposing the column vector v1 and assigning it to the row vector v2
    v1 += trans( v2 );  // OK: Addition assignment of two column vectors
+   \endcode
+
+// \n \section vector_operations_swap Swap
+//
+// Via the \c swap() function it is possible to completely swap the contents of two vectors of
+// the same type:
+
+   \code
+   blaze::DynamicVector<int,columnVector> v1( 10UL );
+   blaze::DynamicVector<int,columnVector> v2( 20UL );
+
+   swap( v1, v2 );  // Swapping the contents of v1 and v2
    \endcode
 
 // \n <center> Previous: \ref vector_types &nbsp; &nbsp; Next: \ref matrix_types </center>
@@ -1036,7 +1051,7 @@ namespace blaze {}
 //**Matrix Operations******************************************************************************
 /*!\page matrix_operations Matrix Operations
 //
-// <center> Previous: \ref matrix_types &nbsp; &nbsp; Next: \ref addition </center>
+// <center> Previous: \ref matrix_types &nbsp; &nbsp; Next: \ref view_types </center>
 //
 //
 // \tableofcontents
@@ -1272,7 +1287,7 @@ namespace blaze {}
 //
 // \subsection matrix_operations_rows Number of Rows of a Matrix
 //
-// The current number of rows of a matrix can be acquired via the rows() function:
+// The current number of rows of a matrix can be acquired via the \c rows() function:
 
    \code
    // Instantiating a dynamic matrix with 10 rows and 8 columns
@@ -1286,7 +1301,7 @@ namespace blaze {}
 
 // \n \subsection matrix_operations_columns Number of Columns of a Matrix
 //
-// The current number of columns of a matrix can be acquired via the columns() function:
+// The current number of columns of a matrix can be acquired via the \c columns() function:
 
    \code
    // Instantiating a dynamic matrix with 6 rows and 8 columns
@@ -1300,11 +1315,11 @@ namespace blaze {}
 
 // \n \subsection matrix_operations_capacity Capacity of a Matrix
 //
-// The capacity() function returns the internal capacity of a DynamicMatrix or CompressedMatrix.
-// Note that the capacity of a matrix doesn't have to be equal to the size of a matrix. In case
-// of a dense matrix the capacity will always be greater or equal than the total number of
-// elements of the matrix. In case of a sparse matrix, the capacity will usually be much less
-// than the total number of elements.
+// The \c capacity() function returns the internal capacity of a DynamicMatrix or CompressedMatrix.
+// Note that the capacity of a matrix doesn't have to be equal to the size of a matrix. In case of
+// a dense matrix the capacity will always be greater or equal than the total number of elements
+// of the matrix. In case of a sparse matrix, the capacity will usually be much less than the
+// total number of elements.
 
    \code
    blaze::DynamicMatrix<float> M1( 5UL, 7UL );
@@ -1314,7 +1329,7 @@ namespace blaze {}
 // \n \subsection matrix_operations_nonzeros Number of Non-Zero Elements
 //
 // For both dense and sparse matrices the current number of non-zero elements can be queried via
-// the nonZeros() function. In case of matrices there are two flavors of the nonZeros() function:
+// the \c nonZeros() function. In case of matrices there are two flavors of the nonZeros() function:
 // One returns the total number of non-zero elements in the matrix, the second returns the number
 // of non-zero elements in a specific row (in case of a row-major matrix) or column (in case of
 // a column-major matrix). Sparse matrices directly return their number of non-zero elements,
@@ -1359,8 +1374,8 @@ namespace blaze {}
    \endcode
 
 // When the internal capacity of a matrix is no longer sufficient, the allocation of a larger
-// junk of memory is triggered. In order to avoid frequent reallocations, the reserve() function
-// can be used up front to set the internal capacity:
+// junk of memory is triggered. In order to avoid frequent reallocations, the \c reserve()
+// function can be used up front to set the internal capacity:
 
    \code
    blaze::DynamicMatrix<int> M1;
@@ -1403,24 +1418,22 @@ namespace blaze {}
 
    \code
    blaze::CompressedMatrix<int> M1( 4UL, 4UL );
-   M1.nonZeros();  // Returns 0
 
    for( size_t i=0UL; i<M1.rows(); ++i ) {
       for( size_t j=0UL; j<M1.columns(); ++j ) {
          ... = M1(i,j);
       }
    }
-
-   M1.nonZeros();  // Returns 16
    \endcode
 
-// Although the matrix is initially does not contain any non-zero element and is only used for
-// read access within the for loop, after the loop it contains 16 non-zero elements. Therefore,
-// in order to traverse only the currently contained non-zero elements of the matrix, the begin()
-// and end() functions can be used. Note that it is not possible to traverse all non-zero elements
-// of the sparse matrix, but that it is only possible to traverse elements in a row/column-wise
-// fashion. In case of a non-const matrix, begin() and end() return an Iterator, which allows a
-// manipulation of the non-zero value, in case of a constant matrix a ConstIterator is returned:
+// Although the compressed matrix is only used for read access within the for loop, using the
+// function call operator temporarily inserts 16 non-zero elements into the matrix. Therefore,
+// all matrices (sparse as well as dense) offer an alternate way via the \c begin() and \c end()
+// functions to traverse all contained elements by iterator. Note that it is not possible to
+// traverse all elements of the matrix, but that it is only possible to traverse elements in a
+// row/column-wise fashion. In case of a non-const matrix, \c begin() and \c end() return an
+// Iterator, which allows a manipulation of the non-zero value, in case of a constant matrix a
+// ConstIterator is returned:
 
    \code
    using blaze::CompressedMatrix;
@@ -1466,9 +1479,9 @@ namespace blaze {}
 // In case the element at the given position is not yet contained in the sparse matrix, it is
 // automatically inserted. Otherwise the old value is replaced by the new value 2. The operator
 // returns a reference to the sparse vector element.\n
-// However, insertion of elements can be better controlled via the insert() function. In contrast
-// to the function call operator it emits an exception in case the element is already contained
-// in the matrix. In order to check for this case, the find() function can be used:
+// However, insertion of elements can be better controlled via the \c insert() function. In
+// contrast to the function call operator it emits an exception in case the element is already
+// contained in the matrix. In order to check for this case, the \c find() function can be used:
 
    \code
    // In case the element at position (2,3) is not yet contained in the matrix it is inserted
@@ -1477,12 +1490,12 @@ namespace blaze {}
       M1.insert( 2, 3, 4 );
    \endcode
 
-// Although the insert function is very flexible, due to performance reasons it is not suited for
-// the setup of large sparse matrices. A very efficient, yet also very low-level way to fill a
-// sparse matrix is the append() function. It requires the sparse matrix to provide enough capacity
-// to insert a new element in the specified row. Additionally, the index of the new element must
-// be larger than the index of the previous element in the same row. Violating these conditions
-// results in undefined behavior!
+// Although the \c insert() function is very flexible, due to performance reasons it is not
+// suited for the setup of large sparse matrices. A very efficient, yet also very low-level
+// way to fill a sparse matrix is the \c append() function. It requires the sparse matrix to
+// provide enough capacity to insert a new element in the specified row. Additionally, the
+// index of the new element must be larger than the index of the previous element in the same
+// row. Violating these conditions results in undefined behavior!
 
    \code
    M1.reserve( 0, 3 );     // Reserving space for three non-zero elements in row 0
@@ -1492,7 +1505,7 @@ namespace blaze {}
    \endcode
 
 // The most efficient way to fill a sparse matrix with elements, however, is a combination of
-// reserve(), append(), and the finalize() function:
+// \c reserve(), \c append(), and the \c finalize() function:
 
    \code
    blaze::CompressedMatrix<int> M1( 3UL, 5UL );
@@ -1508,8 +1521,8 @@ namespace blaze {}
 // \n \section matrix_operations_reset_clear Reset/Clear
 // <hr>
 //
-// In order to reset all elements of a dense or sparse matrix, the reset() function can be used.
-// The number of rows and columns of the matrix are preserved:
+// In order to reset all elements of a dense or sparse matrix, the \c reset() function can be
+// used. The number of rows and columns of the matrix are preserved:
 
    \code
    // Setting up a single precision row-major matrix, whose elements are initialized with 2.0F.
@@ -1521,7 +1534,7 @@ namespace blaze {}
    \endcode
 
 // In order to return a matrix to its default state (i.e. the state of a default constructed
-// matrix), the clear() function can be used:
+// matrix), the \c clear() function can be used:
 
    \code
    // Setting up a single precision row-major matrix, whose elements are initialized with 2.0F.
@@ -1535,7 +1548,7 @@ namespace blaze {}
 // \n \section matrix_operations_matrix_transpose Matrix Transpose
 // <hr>
 //
-// Matrices can be transposed via the trans() function. Row-major matrices are transposed into
+// Matrices can be transposed via the \c trans() function. Row-major matrices are transposed into
 // a column-major matrix and vice versa:
 
    \code
@@ -1547,7 +1560,326 @@ namespace blaze {}
    M1 += trans( M2 );  // Addition assignment of two row-major matrices
    \endcode
 
-// \n <center> Previous: \ref matrix_types &nbsp; &nbsp; Next: \ref addition </center>
+// \n \section matrix_operations_swap Swap
+//
+// Via the \c \c swap() function it is possible to completely swap the contents of two matrices
+// of the same type:
+
+   \code
+   blaze::DynamicMatrix<int,rowMajor> M1( 10UL, 15UL );
+   blaze::DynamicMatrix<int,rowMajor> M2( 20UL, 10UL );
+
+   swap( M1, M2 );  // Swapping the contents of M1 and M2
+   \endcode
+
+// \n <center> Previous: \ref matrix_types &nbsp; &nbsp; Next: \ref view_types </center>
+*/
+//*************************************************************************************************
+
+
+//**View Types*************************************************************************************
+/*!\page view_types View Types
+//
+// <center> Previous: \ref matrix_operations &nbsp; &nbsp; Next: \ref view_operations </center> \n
+//
+//
+// \tableofcontents
+//
+//
+// Views are a very powerful feature to select a specific row or column of a matrix. The Blaze
+// library currently offers two different views on dense matrices (\ref view_types_dense_row and
+// \ref view_types_dense_column) and two views on sparse matrices (\ref view_types_sparse_row and
+// \ref view_types_sparse_column).
+//
+//
+// \n \section view_types_dense_row DenseRow
+// <hr>
+//
+// The blaze::DenseRow class template represents a reference to a specific row of a dense matrix
+// primitive. The type of the dense matrix is specified via template parameter:
+
+   \code
+   template< typename MT >
+   class DenseRow;
+   \endcode
+
+//  - MT: specifies the type of the dense matrix primitive. DenseRow can be used with any dense
+//        matrix primitive, but does not work with any matrix expression type.
+//
+//
+// \n \section view_types_dense_column DenseColumn
+// <hr>
+//
+// The blaze::DenseColumn class template represents a reference to a specific column of a dense
+// matrix primitive. The type of the dense matrix is specified via template parameter:
+
+   \code
+   template< typename MT >
+   class DenseColumn;
+   \endcode
+
+//  - MT: specifies the type of the dense matrix primitive. DenseColumn can be used with any
+//        dense matrix primitive, but does not work with any matrix expression type.
+//
+//
+// \n \section view_types_sparse_row SparseRow
+// <hr>
+//
+// The blaze::SparseRow class template represents a reference to a specific row of a sparse matrix
+// primitive. The type of the sparse matrix is specified via template parameter:
+
+   \code
+   template< typename MT >
+   class SparseRow;
+   \endcode
+
+//  - MT: specifies the type of the sparse matrix primitive. SparseRow can be used with any sparse
+//        matrix primitive, but does not work with any matrix expression type.
+//
+//
+// \n \section view_types_sparse_column SparseColumn
+// <hr>
+//
+// The blaze::SparseColumn template represents a reference to a specific column of a sparse
+// matrix primitive. The type of the sparse matrix is specified via template parameter:
+
+   \code
+   template< typename MT >
+   class SparseColumn;
+   \endcode
+
+//  - MT: specifies the type of the sparse matrix primitive. SparseColumn can be used with any
+//        sparse matrix primitive, but does not work with any matrix expression type.
+//
+//
+// \n <center> Previous: \ref matrix_operations &nbsp; &nbsp; Next: \ref view_operations </center>
+*/
+//*************************************************************************************************
+
+
+//**View Operations********************************************************************************
+/*!\page view_operations View Operations
+//
+// <center> Previous: \ref view_types &nbsp; &nbsp; Next: \ref addition </center>
+//
+//
+// \tableofcontents
+//
+//
+// \n \section view_operations_row_setup Setup of Rows
+// <hr>
+//
+// A reference to a dense or sparse row can very conveniently be created via the \c row() function.
+// This reference can be treated as any other row vector, i.e. it can be assigned to, it can be
+// copied from, and it can be used in arithmetic operations. The reference can also be used on
+// both sides of an assignment: The row can be either used as an alias to grant write access to a
+// specific row of a matrix primitive on the left-hand side of an assignment or to grant read-access
+// to a specific row of a matrix primitive or expression on the right-hand side of an assignment.
+// The following two examples demonstrate this for dense and sparse matrices:
+
+   \code
+   typedef blaze::DynamicVector<double,rowVector>     DenseVectorType;
+   typedef blaze::CompressedVector<double,rowVector>  SparseVectorType;
+   typedef blaze::DynamicMatrix<double,rowMajor>      DenseMatrixType;
+   typedef blaze::CompressedMatrix<double,rowMajor>   SparseMatrixType;
+
+   DenseVectorType  x;
+   SparseVectorType y;
+   DenseMatrixType  A, B;
+   SparseMatrixType C, D;
+   // ... Resizing and initialization
+
+   // Setting the 2nd row of matrix A to x
+   blaze::DenseRow<DenseMatrixType> row2 = row( A, 2UL );
+   row2 = x;
+
+   // Setting the 3rd row of matrix B to y
+   row( B, 3UL ) = y;
+
+   // Setting x to the 4th row of the result of the matrix multiplication
+   x = row( A * B, 4UL );
+
+   // Setting y to the 2nd row of the result of the sparse matrix multiplication
+   y = row( C * D, 2UL );
+   \endcode
+
+// \n \section view_operations_column_setup Setup of Columns
+// <hr>
+//
+// Similar to the setup of a row, a reference to a dense or sparse column can very conveniently
+// be created via the \c column() function. This reference can be treated as any other column
+// vector, i.e. it can be assigned to, copied from, and be used in arithmetic operations. The
+// column can be either used as an alias to grant write access to a specific column of a matrix
+// primitive on the left-hand side of an assignment or to grant read-access to a specific column
+// of a matrix primitive or expression on the right-hand side of an assignment. The following
+// two examples demonstrate this for dense and sparse matrices:
+
+   \code
+   typedef blaze::DynamicVector<double,columnVector>     DenseVectorType;
+   typedef blaze::CompressedVector<double,columnVector>  SparseVectorType;
+   typedef blaze::DynamicMatrix<double,columnMajor>      DenseMatrixType;
+   typedef blaze::CompressedMatrix<double,columnMajor>   SparseMatrixType;
+
+   DenseVectorType  x;
+   SparseVectorType y;
+   DenseMatrixType  A, B;
+   SparseMatrixType C, D;
+   // ... Resizing and initialization
+
+   // Setting the 1st column of matrix A to x
+   blaze::DenseColumn<DenseMatrixType> col1 = column( A, 1UL );
+   col1 = x;
+
+   // Setting the 4th column of matrix B to y
+   column( B, 4UL ) = y;
+
+   // Setting x to the 2nd column of the result of the matrix multiplication
+   x = column( A * B, 2UL );
+
+   // Setting y to the 2nd column of the result of the sparse matrix multiplication
+   y = column( C * D, 2UL );
+   \endcode
+
+// \n \section view_operations_common_operations Common Operations
+// <hr>
+//
+// A row view can be used like any other row vector and a column view can be used like any other
+// column vector. For instance, the current number of elements can be obtained via the \c size()
+// function, the current capacity via the \c capacity() function, and the number of non-zero
+// elements via the \c nonZeros() function. However, since rows and columns are references to
+// specific rows and columns of a matrix, several operations are not possible on views, such as
+// resizing and swapping. The following example shows this by means of a row view:
+
+   \code
+   typedef blaze::DynamicMatrix<int,rowMajor>  MatrixType;
+   typedef blaze::DenseRow<MatrixType>         RowType;
+
+   MatrixType A( 42UL, 42UL );
+   // ... Resizing and initialization
+
+   // Creating a reference to the 2nd row of matrix A
+   RowType row2 = row( A, 2UL );
+
+   row2.size();          // Returns the number of elements in the row
+   row2.capacity();      // Returns the capacity of the row
+   row2.nonZeros();      // Returns the number of non-zero elements contained in the row
+
+   row2.resize( 84UL );  // Compilation error: Cannot resize a single row of a matrix
+
+   RowType row3 = row( A, 3UL );
+   swap( row2, row3 );   // Compilation error: Swap operation not allowed
+   \endcode
+
+// \n \section view_operations_element_access Element Access
+// <hr>
+//
+// The elements of the row and column can be directly accessed with the subscript operator. The
+// numbering of the row/column elements is
+
+                             \f[\left(\begin{array}{*{5}{c}}
+                             0 & 1 & 2 & \cdots & N-1 \\
+                             \end{array}\right),\f]
+
+// where N is the number of columns/rows of the referenced matrix. Alternatively, the elements of
+// a row or column can be traversed via iterators. Just as with vectors, in case of non-const rows
+// or columns, \c begin() and \c end() return an Iterator, which allows a manipulation of the
+// non-zero value, in case of a constant rows or columns a ConstIterator is returned:
+
+   \code
+   typedef blaze::DynamicMatrix<int,rowMajor>  MatrixType;
+   typedef blaze::DenseRow<MatrixType>         RowType;
+
+   MatrixType A( 128UL, 256UL );
+   // ... Resizing and initialization
+
+   // Creating a reference to the 31st row of matrix A
+   RowType row31 = row( A, 31UL );
+
+   for( RowType::Iterator it=row31.begin(); it!=row31.end(); ++it ) {
+      *it = ...;  // OK; Write access to the dense row value
+      ... = *it;  // OK: Read access to the dense row value.
+   }
+
+   for( RowType::ConstIterator it=row31.begin(); it!=row31.end(); ++it ) {
+      *it = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
+      ... = *it;  // OK: Read access to the dense row value.
+   }
+   \endcode
+
+   \code
+   typedef blaze::CompressedMatrix<int,columnMajor>  MatrixType;
+   typedef blaze::SparseColumn<MatrixType>           ColumnType;
+
+   MatrixType A( 128UL, 256UL );
+   // ... Resizing and initialization
+
+   // Creating a reference to the 31st column of matrix A
+   ColumnType col31 = column( A, 31UL );
+
+   for( ColumnType::Iterator it=col31.begin(); it!=col31.end(); ++it ) {
+      it->value() = ...;  // OK: Write access to the value of the non-zero element.
+      ... = it->value();  // OK: Read access to the value of the non-zero element.
+      it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
+      ... = it->index();  // OK: Read access to the index of the sparse element.
+   }
+
+   for( ColumnType::Iterator it=col31.begin(); it!=col31.end(); ++it ) {
+      it->value() = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
+      ... = it->value();  // OK: Read access to the value of the non-zero element.
+      it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
+      ... = it->index();  // OK: Read access to the index of the sparse element.
+   }
+   \endcode
+
+// \n \section view_operations_non_fitting_storage_order Views on Matrices with Non-Fitting Storage Order
+// <hr>
+//
+// Especially noteworthy is that row and column views can be created for both row-major and
+// column-major matrices. Whereas the interface of a row-major matrix only allows to traverse
+// a row directly and the interface of a column-major matrix only allows to traverse a column,
+// via views it is possible to traverse a row of a column-major matrix or a column of a row-major
+// matrix. For instance:
+
+   \code
+   typedef blaze::CompressedMatrix<int,columnMajor>  MatrixType;
+   typedef blaze::SparseRow<MatrixType>              RowType;
+
+   MatrixType A( 64UL, 32UL );
+   // ... Resizing and initialization
+
+   // Creating a reference to the 31st row of a column-major matrix A
+   RowType row1 = row( A, 1UL );
+
+   for( RowType::Iterator it=row1.begin(); it!=row1.end(); ++it ) {
+      // ...
+   }
+   \endcode
+
+// However, please note that creating a row view on a matrix stored in a column-major fashion
+// or a column-view on a row-major matrix can result in a considerable performance decrease in
+// comparison to a view on a matrix with a fitting storage orientation. This is due to the
+// non-contiguous storage of the matrix elements. Therefore care has to be taken in the choice
+// of the most suitable storage order:
+
+   \code
+   // Setup of two column-major matrices
+   CompressedMatrix<double,columnMajor> A( 128UL, 128UL );
+   CompressedMatrix<double,columnMajor> B( 128UL, 128UL );
+   // ... Resizing and initialization
+
+   // The computation of the 15th row of the multiplication between A and B ...
+   CompressedVector<double,rowVector> x = row( A * B, 15UL );
+
+   // ... is essentially the same as the following computation, which multiplies
+   // the 15th row of the column-major matrix A with B.
+   CompressedVector<double,rowVector> x = row( A, 15UL ) * B;
+   \endcode
+
+// Although Blaze performs the resulting vector/matrix multiplication as efficiently as possible
+// using a row-major storage order for matrix A would result in a more efficient evaluation.
+//
+//
+// <center> Previous: \ref view_types &nbsp; &nbsp; Next: \ref addition </center>
 */
 //*************************************************************************************************
 
@@ -1555,7 +1887,7 @@ namespace blaze {}
 //**Addition***************************************************************************************
 /*!\page addition Addition
 //
-// <center> Previous: \ref matrix_operations &nbsp; &nbsp; Next: \ref subtraction </center> \n
+// <center> Previous: \ref view_operations &nbsp; &nbsp; Next: \ref subtraction </center> \n
 //
 // The addition of vectors and matrices is as intuitive as the addition of scalar values. For both
 // the vector addition as well as the matrix addition the addition operator can be used. It even
@@ -1614,7 +1946,7 @@ namespace blaze {}
    M3 = M1 + M2;  // Vectorized addition of two row-major, single precision dense matrices
    \endcode
 
-// \n <center> Previous: \ref matrix_operations &nbsp; &nbsp; Next: \ref subtraction </center>
+// \n <center> Previous: \ref view_operations &nbsp; &nbsp; Next: \ref subtraction </center>
 */
 //*************************************************************************************************
 
@@ -1709,8 +2041,8 @@ namespace blaze {}
    \endcode
 
 // Vectors and matrices cannot be used for as scalar value for scalar multiplications (see the
-// following example). However, each vector and matrix provides the scale() function, which can
-// be used to scale a vector or matrix element-wise with arbitrary scalar data types:
+// following example). However, each vector and matrix provides the \c scale() function, which
+// can be used to scale a vector or matrix element-wise with arbitrary scalar data types:
 
    \code
    blaze::CompressedMatrix< blaze::StaticMatrix<int,3UL,3UL> > M1;
@@ -1774,7 +2106,7 @@ namespace blaze {}
    int result = v1 * v2;  // Results in the value 15
    \endcode
 
-// The trans() function can be used to transpose a vector as necessary:
+// The \c trans() function can be used to transpose a vector as necessary:
 
    \code
    blaze::StaticVector<int,3UL,rowVector> v1(  2, 5, -1 );
@@ -1815,7 +2147,7 @@ namespace blaze {}
    StaticMatrix<int,3UL,3UL> M1 = v1 * v2;
    \endcode
 
-// The trans() function can be used to transpose a vector as necessary:
+// The \c trans() function can be used to transpose a vector as necessary:
 
    \code
    blaze::StaticVector<int,3UL,rowVector> v1(  2, 5, -1 );
