@@ -517,12 +517,12 @@ class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT1::OppositeType );
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT2::OppositeType );
+      BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE   ( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType );
 
-      const typename MT1::OppositeType A( rhs.lhs_ );
-      const typename MT2::OppositeType B( rhs.rhs_ );
-      assign( ~lhs, A * B );
+      const ResultType tmp( rhs );
+      (~lhs).reserve( tmp.nonZeros() );
+      assign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
