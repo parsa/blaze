@@ -58,6 +58,7 @@ class Rand< DynamicMatrix<Type,SO> >
    /*!\name Constructors */
    //@{
    explicit inline Rand( size_t m, size_t n );
+   explicit inline Rand( size_t m, size_t n, Type min, Type max );
    //@}
    //**********************************************************************************************
 
@@ -95,6 +96,30 @@ inline Rand< DynamicMatrix<Type,SO> >::Rand( size_t m, size_t n )
    for( size_t i=0UL; i<m; ++i ) {
       for( size_t j=0UL; j<n; ++j ) {
          matrix_(i,j) = rand<Type>();
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor of the Rand specialization for DynamicMatrix.
+//
+// \param m The number of rows of the random matrix.
+// \param n The number of columns of the random matrix.
+// \param min The smallest possible value for a matrix element.
+// \param max The largest possible value for a matrix element.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline Rand< DynamicMatrix<Type,SO> >::Rand( size_t m, size_t n, Type min, Type max )
+   : matrix_( m, n )  // The random matrix
+{
+   for( size_t i=0UL; i<m; ++i ) {
+      for( size_t j=0UL; j<n; ++j ) {
+         matrix_(i,j) = rand<Type>( min, max );
       }
    }
 }

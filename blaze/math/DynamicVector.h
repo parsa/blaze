@@ -58,6 +58,7 @@ class Rand< DynamicVector<Type,TF> >
    /*!\name Constructors */
    //@{
    explicit inline Rand( size_t n );
+   explicit inline Rand( size_t n, Type min, Type max );
    //@}
    //**********************************************************************************************
 
@@ -93,6 +94,27 @@ inline Rand< DynamicVector<Type,TF> >::Rand( size_t n )
 {
    for( size_t i=0UL; i<n; ++i ) {
       vector_[i] = rand<Type>();
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Range constructor of the Rand specialization for DynamicVector.
+//
+// \param n The size of the random vector.
+// \param min The smallest possible value for a vector element.
+// \param max The largest possible value for a vector element.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline Rand< DynamicVector<Type,TF> >::Rand( size_t n, Type min, Type max )
+   : vector_( n )  // The random vector
+{
+   for( size_t i=0UL; i<n; ++i ) {
+      vector_[i] = rand<Type>( min, max );
    }
 }
 /*! \endcond */

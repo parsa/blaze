@@ -59,6 +59,8 @@ class Rand< CompressedMatrix<Type,SO> >
    //@{
    explicit inline Rand( size_t m, size_t n );
    explicit inline Rand( size_t m, size_t n, size_t nonzeros );
+   explicit inline Rand( size_t m, size_t n, Type min, Type max );
+   explicit inline Rand( size_t m, size_t n, size_t nonzeros, Type min, Type max );
    //@}
    //**********************************************************************************************
 
@@ -128,6 +130,63 @@ inline Rand< CompressedMatrix<Type,SO> >::Rand( size_t m, size_t n, size_t nonze
 
    while( matrix_.nonZeros() < nonzeros ) {
       matrix_( rand<size_t>( 0UL, m-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<Type>();
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Range constructor of the Rand specialization for CompressedMatrix.
+//
+// \param m The number of rows of the random matrix.
+// \param n The number of columns of the random matrix.
+// \param min The smallest possible value for a vector element.
+// \param max The largest possible value for a vector element.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline Rand< CompressedMatrix<Type,SO> >::Rand( size_t m, size_t n, Type min, Type max )
+   : matrix_( m, n )  // The random matrix
+{
+   if( m == 0UL || n == 0UL ) return;
+
+   const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*m*n ) ) );
+
+   matrix_.reserve( nonzeros );
+
+   while( matrix_.nonZeros() < nonzeros ) {
+      matrix_( rand<size_t>( 0UL, m-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<Type>( min, max );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Three argument constructor of the Rand specialization for CompressedMatrix.
+//
+// \param m The number of rows of the random matrix.
+// \param n The number of columns of the random matrix.
+// \param nonzeros The number of non-zero elements of the random matrix.
+// \param min The smallest possible value for a vector element.
+// \param max The largest possible value for a vector element.
+// \exception std::invalid_argument Invalid number of non-zero elements.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline Rand< CompressedMatrix<Type,SO> >::Rand( size_t m, size_t n, size_t nonzeros, Type min, Type max )
+   : matrix_( m, n, nonzeros )  // The random matrix
+{
+   if( nonzeros > m*n )
+      throw std::invalid_argument( "Invalid number of non-zero elements" );
+
+   if( m == 0UL || n == 0UL ) return;
+
+   while( matrix_.nonZeros() < nonzeros ) {
+      matrix_( rand<size_t>( 0UL, m-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<Type>( min, max );
    }
 }
 /*! \endcond */

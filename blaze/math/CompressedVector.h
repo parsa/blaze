@@ -59,6 +59,8 @@ class Rand< CompressedVector<Type,TF> >
    //@{
    explicit inline Rand( size_t size );
    explicit inline Rand( size_t size, size_t nonzeros );
+   explicit inline Rand( size_t size, Type min, Type max );
+   explicit inline Rand( size_t size, size_t nonzeros, Type min, Type max );
    //@}
    //**********************************************************************************************
 
@@ -126,6 +128,61 @@ inline Rand< CompressedVector<Type,TF> >::Rand( size_t size, size_t nonzeros )
 
    while( vector_.nonZeros() < nonzeros ) {
       vector_[ rand<size_t>( 0UL, size-1UL ) ] = rand<Type>();
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Range constructor of the Rand specialization for CompressedVector.
+//
+// \param size The size of the random vector.
+// \param min The smallest possible value for a vector element.
+// \param max The largest possible value for a vector element.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline Rand< CompressedVector<Type,TF> >::Rand( size_t size, Type min, Type max )
+   : vector_( size )  // The random vector
+{
+   if( size == 0UL ) return;
+
+   const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*size ) ) );
+
+   vector_.reserve( nonzeros );
+
+   while( vector_.nonZeros() < nonzeros ) {
+      vector_[ rand<size_t>( 0UL, size-1UL ) ] = rand<Type>( min, max );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Range constructor of the Rand specialization for CompressedVector.
+//
+// \param size The size of the random vector.
+// \param nonzeros The number of non-zero elements of the random vector.
+// \param min The smallest possible value for a vector element.
+// \param max The largest possible value for a vector element.
+// \exception std::invalid_argument Invalid number of non-zero elements.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline Rand< CompressedVector<Type,TF> >::Rand( size_t size, size_t nonzeros, Type min, Type max )
+   : vector_( size, nonzeros )  // The random vector
+{
+   if( nonzeros > size )
+      throw std::invalid_argument( "Invalid number of non-zero elements" );
+
+   if( size == 0UL ) return;
+
+   while( vector_.nonZeros() < nonzeros ) {
+      vector_[ rand<size_t>( 0UL, size-1UL ) ] = rand<Type>( min, max );
    }
 }
 /*! \endcond */

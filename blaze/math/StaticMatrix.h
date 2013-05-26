@@ -60,6 +60,7 @@ class Rand< StaticMatrix<Type,M,N,SO> >
    /*!\name Constructors */
    //@{
    explicit inline Rand();
+   explicit inline Rand( Type min, Type max );
    //@}
    //**********************************************************************************************
 
@@ -96,6 +97,30 @@ inline Rand< StaticMatrix<Type,M,N,SO> >::Rand()
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; ++j ) {
          matrix_(i,j) = rand<Type>();
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Range constructor of the Rand specialization for StaticMatrix.
+//
+// \param min The smallest possible value for a matrix element.
+// \param max The largest possible value for a matrix element.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline Rand< StaticMatrix<Type,M,N,SO> >::Rand( Type min, Type max )
+   : matrix_()  // The random matrix
+{
+   for( size_t i=0UL; i<M; ++i ) {
+      for( size_t j=0UL; j<N; ++j ) {
+         matrix_(i,j) = rand<Type>( min, max );
       }
    }
 }

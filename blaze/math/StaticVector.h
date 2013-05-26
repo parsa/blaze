@@ -59,6 +59,7 @@ class Rand< StaticVector<Type,N,TF> >
    /*!\name Constructors */
    //@{
    explicit inline Rand();
+   explicit inline Rand( Type min, Type max );
    //@}
    //**********************************************************************************************
 
@@ -93,6 +94,27 @@ inline Rand< StaticVector<Type,N,TF> >::Rand()
 {
    for( size_t i=0UL; i<N; ++i ) {
       vector_[i] = rand<Type>();
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Range constructor of the Rand specialization for StaticVector.
+//
+// \param min The smallest possible value for a vector element.
+// \param max The largest possible value for a vector element.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline Rand< StaticVector<Type,N,TF> >::Rand( Type min, Type max )
+   : vector_()  // The random vector
+{
+   for( size_t i=0UL; i<N; ++i ) {
+      vector_[i] = rand<Type>( min, max );
    }
 }
 /*! \endcond */
