@@ -1,0 +1,123 @@
+#!/bin/bash
+#==================================================================================================
+#
+#  Run script for the dmatdmatadd module of the Blaze test suite
+#
+#  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
+#
+#  This file is part of the Blaze library. This library is free software; you can redistribute
+#  it and/or modify it under the terms of the GNU General Public License as published by the
+#  Free Software Foundation; either version 3, or (at your option) any later version.
+#
+#  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+#  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#  See the GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License along with a special
+#  exception for linking and compiling against the Blaze library, the so-called "runtime
+#  exception"; see the file COPYING. If not, see http://www.gnu.org/licenses/.
+#
+#==================================================================================================
+
+
+PATH_DMATDMATADD=$( dirname "${BASH_SOURCE[0]}" )
+
+echo " Running dense matrix/dense matrix addition tests...";
+
+$PATH_DMATDMATADD/M2x2aM2x2a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M2x2aM2x2b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M2x2aMDa;   if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M2x2aMDb;   if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M2x2bM2x2a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M2x2bM2x2b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M2x2bMDa;   if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M2x2bMDb;   if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DMATDMATADD/M3x3aM3x3a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M3x3aM3x3b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M3x3aMDa;   if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M3x3aMDb;   if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M3x3bM3x3a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M3x3bM3x3b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M3x3bMDa;   if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M3x3bMDb;   if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DMATDMATADD/M4x4aM4x4a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M4x4aM4x4b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M4x4aMDa;   if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M4x4aMDb;   if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M4x4bM4x4a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M4x4bM4x4b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M4x4bMDa;   if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M4x4bMDb;   if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DMATDMATADD/M5x5aM5x5a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M5x5aM5x5b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M5x5aMDa;   if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M5x5aMDb;   if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M5x5bM5x5a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M5x5bM5x5b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M5x5bMDa;   if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M5x5bMDb;   if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DMATDMATADD/M6x6aM6x6a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M6x6aM6x6b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M6x6aMDa;   if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M6x6aMDb;   if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M6x6bM6x6a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M6x6bM6x6b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M6x6bMDa;   if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M6x6bMDb;   if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DMATDMATADD/M7x13aM7x13a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M7x13aM7x13b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M7x13aMDa;    if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M7x13aMDb;    if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M7x13bM7x13a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M7x13bM7x13b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M7x13bMDa;    if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M7x13bMDb;    if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DMATDMATADD/M16x8aM16x8a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M16x8aM16x8b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M16x8aMDa;    if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M16x8aMDb;    if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M16x8bM16x8a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M16x8bM16x8b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M16x8bMDa;    if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/M16x8bMDb;    if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DMATDMATADD/MDaM2x2a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDaM2x2b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDaM3x3a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDaM3x3b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDaM4x4a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDaM4x4b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDaM5x5a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDaM5x5b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDaM6x6a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDaM6x6b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDaM7x13a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDaM7x13b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDaM16x8a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDaM16x8b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDaMDa;    if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDaMDb;    if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDbM2x2a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDbM2x2b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDbM3x3a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDbM3x3b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDbM4x4a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDbM4x4b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDbM5x5a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDbM5x5b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDbM6x6a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDbM6x6b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDbM7x13a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDbM7x13b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDbM16x8a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDbM16x8b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDbMDa;    if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATDMATADD/MDbMDb;    if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DMATDMATADD/AliasingTest; if [ $? != 0 ]; then exit 1; fi

@@ -1,0 +1,115 @@
+#!/bin/bash
+#==================================================================================================
+#
+#  Run script for the tdvecdmatmult module of the Blaze test suite
+#
+#  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
+#
+#  This file is part of the Blaze library. This library is free software; you can redistribute
+#  it and/or modify it under the terms of the GNU General Public License as published by the
+#  Free Software Foundation; either version 3, or (at your option) any later version.
+#
+#  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+#  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#  See the GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License along with a special
+#  exception for linking and compiling against the Blaze library, the so-called "runtime
+#  exception"; see the file COPYING. If not, see http://www.gnu.org/licenses/.
+#
+#==================================================================================================
+
+
+PATH_TDVECDMATMULT=$( dirname "${BASH_SOURCE[0]}" )
+
+echo " Running dense vector/dense matrix multiplication tests...";
+
+$PATH_TDVECDMATMULT/V2aM2x2a; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V2aM2x2b; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V2aMDa;   if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V2aMDb;   if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V2bM2x2a; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V2bM2x2b; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V2bMDa;   if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V2bMDb;   if [ $? != 0 ]; then exit 1; fi
+
+$PATH_TDVECDMATMULT/V3aM3x3a; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V3aM3x3b; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V3aMDa;   if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V3aMDb;   if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V3bM3x3a; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V3bM3x3b; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V3bMDa;   if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V3bMDb;   if [ $? != 0 ]; then exit 1; fi
+
+$PATH_TDVECDMATMULT/V4aM4x4a; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V4aM4x4b; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V4aMDa;   if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V4aMDb;   if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V4bM4x4a; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V4bM4x4b; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V4bMDa;   if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V4bMDb;   if [ $? != 0 ]; then exit 1; fi
+
+$PATH_TDVECDMATMULT/V5aM5x5a; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V5aM5x5b; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V5aMDa;   if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V5aMDb;   if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V5bM5x5a; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V5bM5x5b; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V5bMDa;   if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V5bMDb;   if [ $? != 0 ]; then exit 1; fi
+
+$PATH_TDVECDMATMULT/V6aM6x6a; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V6aM6x6b; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V6aMDa;   if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V6aMDb;   if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V6bM6x6a; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V6bM6x6b; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V6bMDa;   if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V6bMDb;   if [ $? != 0 ]; then exit 1; fi
+
+$PATH_TDVECDMATMULT/V7aM7x13a; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V7aM7x13b; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V7bM7x13a; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V7bM7x13b; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_TDVECDMATMULT/V16aM16x8a; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V16aM16x8b; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V16bM16x8a; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/V16bM16x8b; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_TDVECDMATMULT/VDaM2x2a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDaM2x2b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDaM3x3a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDaM3x3b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDaM4x4a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDaM4x4b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDaM5x5a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDaM5x5b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDaM6x6a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDaM6x6b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDaM7x13a; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDaM7x13b; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDaM16x8a; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDaM16x8b; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDaMDa;    if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDaMDb;    if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDbM2x2a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDbM2x2b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDbM3x3a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDbM3x3b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDbM4x4a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDbM4x4b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDbM5x5a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDbM5x5b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDbM6x6a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDbM6x6b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDbM7x13a; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDbM7x13b; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDbM16x8a; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDbM16x8b; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDbMDa;    if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECDMATMULT/VDbMDb;    if [ $? != 0 ]; then exit 1; fi
+
+$PATH_TDVECDMATMULT/AliasingTest; if [ $? != 0 ]; then exit 1; fi

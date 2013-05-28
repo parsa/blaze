@@ -1,0 +1,59 @@
+#!/bin/bash
+#==================================================================================================
+#
+#  Run script for the smatdmatadd module of the Blaze test suite
+#
+#  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
+#
+#  This file is part of the Blaze library. This library is free software; you can redistribute
+#  it and/or modify it under the terms of the GNU General Public License as published by the
+#  Free Software Foundation; either version 3, or (at your option) any later version.
+#
+#  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+#  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#  See the GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License along with a special
+#  exception for linking and compiling against the Blaze library, the so-called "runtime
+#  exception"; see the file COPYING. If not, see http://www.gnu.org/licenses/.
+#
+#==================================================================================================
+
+
+PATH_SMATDMATADD=$( dirname "${BASH_SOURCE[0]}" )
+
+echo " Running sparse matrix/dense matrix addition tests...";
+
+$PATH_SMATDMATADD/MCaM2x2a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCaM2x2b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCaM3x3a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCaM3x3b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCaM4x4a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCaM4x4b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCaM5x5a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCaM5x5b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCaM6x6a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCaM6x6b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCaM7x13a; if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCaM7x13b; if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCaM16x8a; if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCaM16x8b; if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCaMDa;    if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCaMDb;    if [ $? != 0 ]; then exit 1; fi
+
+$PATH_SMATDMATADD/MCbM2x2a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCbM2x2b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCbM3x3a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCbM3x3b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCbM4x4a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCbM4x4b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCbM5x5a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCbM5x5b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCbM6x6a;  if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCbM6x6b;  if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCbM7x13a; if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCbM7x13b; if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCbM16x8a; if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCbM16x8b; if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCbMDa;    if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDMATADD/MCbMDb;    if [ $? != 0 ]; then exit 1; fi

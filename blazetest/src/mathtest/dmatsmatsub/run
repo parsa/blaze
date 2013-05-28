@@ -1,0 +1,67 @@
+#!/bin/bash
+#==================================================================================================
+#
+#  Run script for the dmatsmatsub module of the Blaze test suite
+#
+#  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
+#
+#  This file is part of the Blaze library. This library is free software; you can redistribute
+#  it and/or modify it under the terms of the GNU General Public License as published by the
+#  Free Software Foundation; either version 3, or (at your option) any later version.
+#
+#  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+#  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#  See the GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License along with a special
+#  exception for linking and compiling against the Blaze library, the so-called "runtime
+#  exception"; see the file COPYING. If not, see http://www.gnu.org/licenses/.
+#
+#==================================================================================================
+
+
+PATH_DMATSMATSUB=$( dirname "${BASH_SOURCE[0]}" )
+
+echo " Running dense matrix/sparse matrix subtraction tests...";
+
+$PATH_DMATSMATSUB/M2x2aMCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/M2x2aMCb; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/M2x2bMCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/M2x2bMCb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DMATSMATSUB/M3x3aMCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/M3x3aMCb; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/M3x3bMCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/M3x3bMCb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DMATSMATSUB/M4x4aMCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/M4x4aMCb; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/M4x4bMCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/M4x4bMCb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DMATSMATSUB/M5x5aMCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/M5x5aMCb; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/M5x5bMCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/M5x5bMCb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DMATSMATSUB/M6x6aMCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/M6x6aMCb; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/M6x6bMCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/M6x6bMCb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DMATSMATSUB/M7x13aMCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/M7x13aMCb; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/M7x13bMCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/M7x13bMCb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DMATSMATSUB/M16x8aMCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/M16x8aMCb; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/M16x8bMCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/M16x8bMCb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DMATSMATSUB/MDaMCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/MDaMCb; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/MDbMCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DMATSMATSUB/MDbMCb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DMATSMATSUB/AliasingTest; if [ $? != 0 ]; then exit 1; fi

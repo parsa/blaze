@@ -1,0 +1,53 @@
+#!/bin/bash
+#==================================================================================================
+#
+#  Run script for the svecdvecmult module of the Blaze test suite
+#
+#  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
+#
+#  This file is part of the Blaze library. This library is free software; you can redistribute
+#  it and/or modify it under the terms of the GNU General Public License as published by the
+#  Free Software Foundation; either version 3, or (at your option) any later version.
+#
+#  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+#  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#  See the GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License along with a special
+#  exception for linking and compiling against the Blaze library, the so-called "runtime
+#  exception"; see the file COPYING. If not, see http://www.gnu.org/licenses/.
+#
+#==================================================================================================
+
+
+PATH_SVECDVECMULT=$( dirname "${BASH_SOURCE[0]}" )
+
+echo " Running sparse vector/dense vector multiplication tests...";
+
+$PATH_SVECDVECMULT/VCaV2a; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCaV2b; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCaV3a; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCaV3b; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCaV4a; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCaV4b; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCaV5a; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCaV5b; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCaV6a; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCaV6b; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCaVDa; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCaVDb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_SVECDVECMULT/VCbV2a; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCbV2b; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCbV3a; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCbV3b; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCbV4a; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCbV4b; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCbV5a; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCbV5b; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCbV6a; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCbV6b; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCbVDa; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCbVDb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_SVECDVECMULT/AliasingTest; if [ $? != 0 ]; then exit 1; fi

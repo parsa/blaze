@@ -1,0 +1,55 @@
+#!/bin/bash
+#==================================================================================================
+#
+#  Run script for the tdvecsvecmult module of the Blaze test suite
+#
+#  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
+#
+#  This file is part of the Blaze library. This library is free software; you can redistribute
+#  it and/or modify it under the terms of the GNU General Public License as published by the
+#  Free Software Foundation; either version 3, or (at your option) any later version.
+#
+#  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+#  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#  See the GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License along with a special
+#  exception for linking and compiling against the Blaze library, the so-called "runtime
+#  exception"; see the file COPYING. If not, see http://www.gnu.org/licenses/.
+#
+#==================================================================================================
+
+
+PATH_TDVECSVECMULT=$( dirname "${BASH_SOURCE[0]}" )
+
+echo " Running dense vector/sparse vector inner product tests...";
+
+$PATH_TDVECSVECMULT/V2aVCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSVECMULT/V2aVCb; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSVECMULT/V2bVCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSVECMULT/V2bVCb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_TDVECSVECMULT/V3aVCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSVECMULT/V3aVCb; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSVECMULT/V3bVCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSVECMULT/V3bVCb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_TDVECSVECMULT/V4aVCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSVECMULT/V4aVCb; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSVECMULT/V4bVCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSVECMULT/V4bVCb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_TDVECSVECMULT/V5aVCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSVECMULT/V5aVCb; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSVECMULT/V5bVCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSVECMULT/V5bVCb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_TDVECSVECMULT/V6aVCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSVECMULT/V6aVCb; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSVECMULT/V6bVCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSVECMULT/V6bVCb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_TDVECSVECMULT/VDaVCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSVECMULT/VDaVCb; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSVECMULT/VDbVCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSVECMULT/VDbVCb; if [ $? != 0 ]; then exit 1; fi

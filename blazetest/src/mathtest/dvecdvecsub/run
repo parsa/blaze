@@ -1,0 +1,97 @@
+#!/bin/bash
+#==================================================================================================
+#
+#  Run script for the dvecdvecsub module of the Blaze test suite
+#
+#  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
+#
+#  This file is part of the Blaze library. This library is free software; you can redistribute
+#  it and/or modify it under the terms of the GNU General Public License as published by the
+#  Free Software Foundation; either version 3, or (at your option) any later version.
+#
+#  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+#  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#  See the GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License along with a special
+#  exception for linking and compiling against the Blaze library, the so-called "runtime
+#  exception"; see the file COPYING. If not, see http://www.gnu.org/licenses/.
+#
+#==================================================================================================
+
+
+PATH_DVECDVECSUB=$( dirname "${BASH_SOURCE[0]}" )
+
+echo " Running dense vector/dense vector subtraction tests...";
+
+$PATH_DVECDVECSUB/V2aV2a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V2aV2b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V2aVDa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V2aVDb; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V2bV2a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V2bV2b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V2bVDa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V2bVDb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DVECDVECSUB/V3aV3a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V3aV3b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V3aVDa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V3aVDb; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V3bV3a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V3bV3b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V3bVDa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V3bVDb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DVECDVECSUB/V4aV4a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V4aV4b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V4aVDa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V4aVDb; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V4bV4a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V4bV4b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V4bVDa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V4bVDb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DVECDVECSUB/V5aV5a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V5aV5b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V5aVDa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V5aVDb; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V5bV5a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V5bV5b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V5bVDa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V5bVDb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DVECDVECSUB/V6aV6a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V6aV6b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V6aVDa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V6aVDb; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V6bV6a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V6bV6b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V6bVDa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/V6bVDb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DVECDVECSUB/VDaV2a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/VDaV2b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/VDaV3a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/VDaV3b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/VDaV4a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/VDaV4b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/VDaV5a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/VDaV5b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/VDaV6a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/VDaV6b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/VDaVDa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/VDaVDb; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/VDbV2a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/VDbV2b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/VDbV3a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/VDbV3b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/VDbV4a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/VDbV4b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/VDbV5a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/VDbV5b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/VDbV6a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/VDbV6b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/VDbVDa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECSUB/VDbVDb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DVECDVECSUB/AliasingTest; if [ $? != 0 ]; then exit 1; fi
