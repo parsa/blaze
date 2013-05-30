@@ -54,28 +54,18 @@ template< typename Type  // Data type of the vector
 class Rand< CompressedVector<Type,TF> >
 {
  public:
-   //**Constructors********************************************************************************
-   /*!\name Constructors */
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
    //@{
-   explicit inline Rand( size_t size );
-   explicit inline Rand( size_t size, size_t nonzeros );
-   explicit inline Rand( size_t size, Type min, Type max );
-   explicit inline Rand( size_t size, size_t nonzeros, Type min, Type max );
-   //@}
-   //**********************************************************************************************
+   inline const CompressedVector<Type,TF> generate( size_t size ) const;
+   inline const CompressedVector<Type,TF> generate( size_t size, size_t nonzeros ) const;
+   inline const CompressedVector<Type,TF> generate( size_t size, Type min, Type max ) const;
+   inline const CompressedVector<Type,TF> generate( size_t size, size_t nonzeros, Type min, Type max ) const;
 
-   //**Conversion operators************************************************************************
-   /*!\name Conversion operators */
-   //@{
-   inline operator CompressedVector<Type,TF>() const;
-   //@}
-   //**********************************************************************************************
-
- private:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   CompressedVector<Type,TF> vector_;  //!< The random vector.
+   inline void randomize( CompressedVector<Type,TF>& vector ) const;
+   inline void randomize( CompressedVector<Type,TF>& vector, size_t nonzeros ) const;
+   inline void randomize( CompressedVector<Type,TF>& vector, Type min, Type max ) const;
+   inline void randomize( CompressedVector<Type,TF>& vector, size_t nonzeros, Type min, Type max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -85,24 +75,22 @@ class Rand< CompressedVector<Type,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Single argument constructor of the Rand specialization for CompressedVector.
+/*!\brief Generation of a random CompressedVector.
 //
 // \param size The size of the random vector.
+// \return The generated random vector.
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline Rand< CompressedVector<Type,TF> >::Rand( size_t size )
-   : vector_( size )  // The random vector
+inline const CompressedVector<Type,TF>
+   Rand< CompressedVector<Type,TF> >::generate( size_t size ) const
 {
    if( size == 0UL ) return;
 
-   const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*size ) ) );
+   CompressedVector<Type,TF> vector( size );
+   randomize( vector );
 
-   vector_.reserve( nonzeros );
-
-   while( vector_.nonZeros() < nonzeros ) {
-      vector_[ rand<size_t>( 0UL, size-1UL ) ] = rand<Type>();
-   }
+   return vector;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -110,25 +98,27 @@ inline Rand< CompressedVector<Type,TF> >::Rand( size_t size )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Two argument constructor of the Rand specialization for CompressedVector.
+/*!\brief Generation of a random CompressedVector.
 //
 // \param size The size of the random vector.
 // \param nonzeros The number of non-zero elements of the random vector.
+// \return The generated random vector.
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline Rand< CompressedVector<Type,TF> >::Rand( size_t size, size_t nonzeros )
-   : vector_( size, nonzeros )  // The random vector
+inline const CompressedVector<Type,TF>
+   Rand< CompressedVector<Type,TF> >::generate( size_t size, size_t nonzeros ) const
 {
    if( nonzeros > size )
       throw std::invalid_argument( "Invalid number of non-zero elements" );
 
    if( size == 0UL ) return;
 
-   while( vector_.nonZeros() < nonzeros ) {
-      vector_[ rand<size_t>( 0UL, size-1UL ) ] = rand<Type>();
-   }
+   CompressedVector<Type,TF> vector( size, nonzeros );
+   randomize( vector, nonzeros );
+
+   return vector;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -136,26 +126,24 @@ inline Rand< CompressedVector<Type,TF> >::Rand( size_t size, size_t nonzeros )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Range constructor of the Rand specialization for CompressedVector.
+/*!\brief Generation of a random CompressedVector.
 //
 // \param size The size of the random vector.
 // \param min The smallest possible value for a vector element.
 // \param max The largest possible value for a vector element.
+// \return The generated random vector.
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline Rand< CompressedVector<Type,TF> >::Rand( size_t size, Type min, Type max )
-   : vector_( size )  // The random vector
+inline const CompressedVector<Type,TF>
+   Rand< CompressedVector<Type,TF> >::generate( size_t size, Type min, Type max ) const
 {
    if( size == 0UL ) return;
 
-   const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*size ) ) );
+   CompressedVector<Type,TF> vector( size );
+   randomize( vector, min, max );
 
-   vector_.reserve( nonzeros );
-
-   while( vector_.nonZeros() < nonzeros ) {
-      vector_[ rand<size_t>( 0UL, size-1UL ) ] = rand<Type>( min, max );
-   }
+   return vector;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -163,26 +151,56 @@ inline Rand< CompressedVector<Type,TF> >::Rand( size_t size, Type min, Type max 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Range constructor of the Rand specialization for CompressedVector.
+/*!\brief Generation of a random CompressedVector.
 //
 // \param size The size of the random vector.
 // \param nonzeros The number of non-zero elements of the random vector.
 // \param min The smallest possible value for a vector element.
 // \param max The largest possible value for a vector element.
+// \return The generated random vector.
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline Rand< CompressedVector<Type,TF> >::Rand( size_t size, size_t nonzeros, Type min, Type max )
-   : vector_( size, nonzeros )  // The random vector
+inline const CompressedVector<Type,TF>
+   Rand< CompressedVector<Type,TF> >::generate( size_t size, size_t nonzeros, Type min, Type max ) const
 {
    if( nonzeros > size )
       throw std::invalid_argument( "Invalid number of non-zero elements" );
 
    if( size == 0UL ) return;
 
-   while( vector_.nonZeros() < nonzeros ) {
-      vector_[ rand<size_t>( 0UL, size-1UL ) ] = rand<Type>( min, max );
+   CompressedVector<Type,TF> vector( size, nonzeros );
+   randomize( vector, nonzeros, min, max );
+
+   return vector;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a CompressedVector.
+//
+// \param vector The vector to be randomized.
+// \return void
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline void Rand< CompressedVector<Type,TF> >::randomize( CompressedVector<Type,TF>& vector ) const
+{
+   const size_t size( vector.size() );
+
+   if( size == 0UL ) return;
+
+   const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*size ) ) );
+
+   vector.reset();
+   vector.reserve( nonzeros );
+
+   while( vector.nonZeros() < nonzeros ) {
+      vector[ rand<size_t>( 0UL, size-1UL ) ] = rand<Type>();
    }
 }
 /*! \endcond */
@@ -191,15 +209,93 @@ inline Rand< CompressedVector<Type,TF> >::Rand( size_t size, size_t nonzeros, Ty
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Conversion to the created random CompressedVector.
+/*!\brief Randomization of a CompressedVector.
 //
-// \return The random vector.
+// \param vector The vector to be randomized.
+// \param nonzeros The number of non-zero elements of the random vector.
+// \return void
+// \exception std::invalid_argument Invalid number of non-zero elements.
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline Rand< CompressedVector<Type,TF> >::operator CompressedVector<Type,TF>() const
+inline void Rand< CompressedVector<Type,TF> >::randomize( CompressedVector<Type,TF>& vector, size_t nonzeros ) const
 {
-   return vector_;
+   const size_t size( vector.size() );
+
+   if( nonzeros > size )
+      throw std::invalid_argument( "Invalid number of non-zero elements" );
+
+   if( size == 0UL ) return;
+
+   vector.reset();
+   vector.reserve( nonzeros );
+
+   while( vector.nonZeros() < nonzeros ) {
+      vector[ rand<size_t>( 0UL, size-1UL ) ] = rand<Type>();
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a CompressedVector.
+//
+// \param vector The vector to be randomized.
+// \param min The smallest possible value for a vector element.
+// \param max The largest possible value for a vector element.
+// \return void
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline void Rand< CompressedVector<Type,TF> >::randomize( CompressedVector<Type,TF>& vector, Type min, Type max ) const
+{
+   const size_t size( vector.size() );
+
+   if( size == 0UL ) return;
+
+   const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*size ) ) );
+
+   vector.reset();
+   vector.reserve( nonzeros );
+
+   while( vector.nonZeros() < nonzeros ) {
+      vector[ rand<size_t>( 0UL, size-1UL ) ] = rand<Type>( min, max );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a CompressedVector.
+//
+// \param vector The vector to be randomized.
+// \param nonzeros The number of non-zero elements of the random vector.
+// \param min The smallest possible value for a vector element.
+// \param max The largest possible value for a vector element.
+// \return void
+// \exception std::invalid_argument Invalid number of non-zero elements.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline void Rand< CompressedVector<Type,TF> >::randomize( CompressedVector<Type,TF>& vector, size_t nonzeros, Type min, Type max ) const
+{
+   const size_t size( vector.size() );
+
+   if( nonzeros > size )
+      throw std::invalid_argument( "Invalid number of non-zero elements" );
+
+   if( size == 0UL ) return;
+
+   vector.reset();
+   vector.reserve( nonzeros );
+
+   while( vector.nonZeros() < nonzeros ) {
+      vector[ rand<size_t>( 0UL, size-1UL ) ] = rand<Type>( min, max );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************

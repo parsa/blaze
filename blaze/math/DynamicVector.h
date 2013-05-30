@@ -54,26 +54,14 @@ template< typename Type  // Data type of the vector
 class Rand< DynamicVector<Type,TF> >
 {
  public:
-   //**Constructors********************************************************************************
-   /*!\name Constructors */
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
    //@{
-   explicit inline Rand( size_t n );
-   explicit inline Rand( size_t n, Type min, Type max );
-   //@}
-   //**********************************************************************************************
+   inline const DynamicVector<Type,TF> generate( size_t n ) const;
+   inline const DynamicVector<Type,TF> generate( size_t n, Type min, Type max ) const;
 
-   //**Conversion operators************************************************************************
-   /*!\name Conversion operators */
-   //@{
-   inline operator DynamicVector<Type,TF>() const;
-   //@}
-   //**********************************************************************************************
-
- private:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   DynamicVector<Type,TF> vector_;  //!< The random vector.
+   inline void randomize( DynamicVector<Type,TF>& vector ) const;
+   inline void randomize( DynamicVector<Type,TF>& vector, Type min, Type max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -83,18 +71,18 @@ class Rand< DynamicVector<Type,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor of the Rand specialization for DynamicVector.
+/*!\brief Generation of a random DynamicVector.
 //
 // \param n The size of the random vector.
+// \return The generated random vector.
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline Rand< DynamicVector<Type,TF> >::Rand( size_t n )
-   : vector_( n )  // The random vector
+inline const DynamicVector<Type,TF> Rand< DynamicVector<Type,TF> >::generate( size_t n ) const
 {
-   for( size_t i=0UL; i<n; ++i ) {
-      vector_[i] = rand<Type>();
-   }
+   DynamicVector<Type,TF> vector( n );
+   randomize( vector );
+   return vector;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -102,19 +90,41 @@ inline Rand< DynamicVector<Type,TF> >::Rand( size_t n )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Range constructor of the Rand specialization for DynamicVector.
+/*!\brief Generation of a random DynamicVector.
 //
 // \param n The size of the random vector.
 // \param min The smallest possible value for a vector element.
 // \param max The largest possible value for a vector element.
+// \return The generated random vector.
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline Rand< DynamicVector<Type,TF> >::Rand( size_t n, Type min, Type max )
-   : vector_( n )  // The random vector
+inline const DynamicVector<Type,TF> Rand< DynamicVector<Type,TF> >::generate( size_t n, Type min, Type max ) const
 {
-   for( size_t i=0UL; i<n; ++i ) {
-      vector_[i] = rand<Type>( min, max );
+   DynamicVector<Type,TF> vector( n );
+   randomize( vector, min, max );
+   return vector;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a DynamicVector.
+//
+// \param vector The vector to be randomized.
+// \return void
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline void Rand< DynamicVector<Type,TF> >::randomize( DynamicVector<Type,TF>& vector ) const
+{
+   using blaze::randomize;
+
+   const size_t size( vector.size() );
+   for( size_t i=0UL; i<size; ++i ) {
+      randomize( vector[i] );
    }
 }
 /*! \endcond */
@@ -123,15 +133,23 @@ inline Rand< DynamicVector<Type,TF> >::Rand( size_t n, Type min, Type max )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Conversion to the created random DynamicVector.
+/*!\brief Randomization of a DynamicVector.
 //
-// \return The random vector.
+// \param vector The vector to be randomized.
+// \param min The smallest possible value for a vector element.
+// \param max The largest possible value for a vector element.
+// \return void
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline Rand< DynamicVector<Type,TF> >::operator DynamicVector<Type,TF>() const
+inline void Rand< DynamicVector<Type,TF> >::randomize( DynamicVector<Type,TF>& vector, Type min, Type max ) const
 {
-   return vector_;
+   using blaze::randomize;
+
+   const size_t size( vector.size() );
+   for( size_t i=0UL; i<size; ++i ) {
+      randomize( vector[i], min, max );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************

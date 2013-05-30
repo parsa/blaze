@@ -54,26 +54,14 @@ template< typename Type  // Data type of the matrix
 class Rand< DynamicMatrix<Type,SO> >
 {
  public:
-   //**Constructors********************************************************************************
-   /*!\name Constructors */
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
    //@{
-   explicit inline Rand( size_t m, size_t n );
-   explicit inline Rand( size_t m, size_t n, Type min, Type max );
-   //@}
-   //**********************************************************************************************
+   inline const DynamicMatrix<Type,SO> generate( size_t m, size_t n ) const;
+   inline const DynamicMatrix<Type,SO> generate( size_t m, size_t n, Type min, Type max ) const;
 
-   //**Conversion operators************************************************************************
-   /*!\name Conversion operators */
-   //@{
-   inline operator DynamicMatrix<Type,SO>() const;
-   //@}
-   //**********************************************************************************************
-
- private:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   DynamicMatrix<Type,SO> matrix_;  //!< The random matrix.
+   inline void randomize( DynamicMatrix<Type,SO>& matrix ) const;
+   inline void randomize( DynamicMatrix<Type,SO>& matrix, Type min, Type max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -83,21 +71,20 @@ class Rand< DynamicMatrix<Type,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor of the Rand specialization for DynamicMatrix.
+/*!\brief Generation of a random DynamicMatrix.
 //
 // \param m The number of rows of the random matrix.
 // \param n The number of columns of the random matrix.
+// \return The generated random matrix.
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline Rand< DynamicMatrix<Type,SO> >::Rand( size_t m, size_t n )
-   : matrix_( m, n )  // The random matrix
+inline const DynamicMatrix<Type,SO>
+   Rand< DynamicMatrix<Type,SO> >::generate( size_t m, size_t n ) const
 {
-   for( size_t i=0UL; i<m; ++i ) {
-      for( size_t j=0UL; j<n; ++j ) {
-         matrix_(i,j) = rand<Type>();
-      }
-   }
+   DynamicMatrix<Type,SO> matrix( m, n );
+   randomize( matrix );
+   return matrix;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -105,21 +92,46 @@ inline Rand< DynamicMatrix<Type,SO> >::Rand( size_t m, size_t n )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor of the Rand specialization for DynamicMatrix.
+/*!\brief Generation of a random DynamicMatrix.
 //
 // \param m The number of rows of the random matrix.
 // \param n The number of columns of the random matrix.
 // \param min The smallest possible value for a matrix element.
 // \param max The largest possible value for a matrix element.
+// \return The generated random matrix.
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline Rand< DynamicMatrix<Type,SO> >::Rand( size_t m, size_t n, Type min, Type max )
-   : matrix_( m, n )  // The random matrix
+inline const DynamicMatrix<Type,SO>
+   Rand< DynamicMatrix<Type,SO> >::generate( size_t m, size_t n, Type min, Type max ) const
 {
+   DynamicMatrix<Type,SO> matrix( m, n );
+   randomize( matrix, min, max );
+   return matrix;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a DynamicMatrix.
+//
+// \param matrix The matrix to be randomized.
+// \return void
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline void Rand< DynamicMatrix<Type,SO> >::randomize( DynamicMatrix<Type,SO>& matrix ) const
+{
+   using blaze::randomize;
+
+   const size_t m( matrix.rows()    );
+   const size_t n( matrix.columns() );
+
    for( size_t i=0UL; i<m; ++i ) {
       for( size_t j=0UL; j<n; ++j ) {
-         matrix_(i,j) = rand<Type>( min, max );
+         randomize( matrix(i,j) );
       }
    }
 }
@@ -129,15 +141,27 @@ inline Rand< DynamicMatrix<Type,SO> >::Rand( size_t m, size_t n, Type min, Type 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Conversion to the created random DynamicMatrix.
+/*!\brief Randomization of a DynamicMatrix.
 //
-// \return The random matrix.
+// \param matrix The matrix to be randomized.
+// \param min The smallest possible value for a matrix element.
+// \param max The largest possible value for a matrix element.
+// \return void
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline Rand< DynamicMatrix<Type,SO> >::operator DynamicMatrix<Type,SO>() const
+inline void Rand< DynamicMatrix<Type,SO> >::randomize( DynamicMatrix<Type,SO>& matrix, Type min, Type max ) const
 {
-   return matrix_;
+   using blaze::randomize;
+
+   const size_t m( matrix.rows()    );
+   const size_t n( matrix.columns() );
+
+   for( size_t i=0UL; i<m; ++i ) {
+      for( size_t j=0UL; j<n; ++j ) {
+         randomize( matrix(i,j), min, max );
+      }
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
