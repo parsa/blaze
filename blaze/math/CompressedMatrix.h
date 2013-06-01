@@ -54,18 +54,33 @@ template< typename Type  // Data type of the matrix
 class Rand< CompressedMatrix<Type,SO> >
 {
  public:
-   //**Utility functions***************************************************************************
-   /*!\name Utility functions */
+   //**Generate functions**************************************************************************
+   /*!\name Generate functions */
    //@{
    inline const CompressedMatrix<Type,SO> generate( size_t m, size_t n ) const;
    inline const CompressedMatrix<Type,SO> generate( size_t m, size_t n, size_t nonzeros ) const;
-   inline const CompressedMatrix<Type,SO> generate( size_t m, size_t n, Type min, Type max ) const;
-   inline const CompressedMatrix<Type,SO> generate( size_t m, size_t n, size_t nonzeros, Type min, Type max ) const;
 
+   template< typename Arg >
+   inline const CompressedMatrix<Type,SO> generate( size_t m, size_t n, const Arg& min, const Arg& max ) const;
+
+   template< typename Arg >
+   inline const CompressedMatrix<Type,SO> generate( size_t m, size_t n, size_t nonzeros,
+                                                    const Arg& min, const Arg& max ) const;
+   //@}
+   //**********************************************************************************************
+
+   //**Randomize functions*************************************************************************
+   /*!\name Randomize functions */
+   //@{
    inline void randomize( CompressedMatrix<Type,SO>& matrix ) const;
    inline void randomize( CompressedMatrix<Type,SO>& matrix, size_t nonzeros ) const;
-   inline void randomize( CompressedMatrix<Type,SO>& matrix, Type min, Type max ) const;
-   inline void randomize( CompressedMatrix<Type,SO>& matrix, size_t nonzeros, Type min, Type max ) const;
+
+   template< typename Arg >
+   inline void randomize( CompressedMatrix<Type,SO>& matrix, const Arg& min, const Arg& max ) const;
+
+   template< typename Arg >
+   inline void randomize( CompressedMatrix<Type,SO>& matrix, size_t nonzeros,
+                          const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -86,8 +101,6 @@ template< typename Type  // Data type of the matrix
 inline const CompressedMatrix<Type,SO>
    Rand< CompressedMatrix<Type,SO> >::generate( size_t m, size_t n ) const
 {
-   if( m == 0UL || n == 0UL ) return;
-
    CompressedMatrix<Type,SO> matrix( m, n );
    randomize( matrix );
 
@@ -115,8 +128,6 @@ inline const CompressedMatrix<Type,SO>
    if( nonzeros > m*n )
       throw std::invalid_argument( "Invalid number of non-zero elements" );
 
-   if( m == 0UL || n == 0UL ) return;
-
    CompressedMatrix<Type,SO> matrix( m, n );
    randomize( matrix, nonzeros );
 
@@ -136,13 +147,12 @@ inline const CompressedMatrix<Type,SO>
 // \return The generated random matrix.
 // \param max The largest possible value for a vector element.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
+template< typename Type   // Data type of the matrix
+        , bool SO >       // Storage order
+template< typename Arg >  // Min/max argument type
 inline const CompressedMatrix<Type,SO>
-   Rand< CompressedMatrix<Type,SO> >::generate( size_t m, size_t n, Type min, Type max ) const
+   Rand< CompressedMatrix<Type,SO> >::generate( size_t m, size_t n, const Arg& min, const Arg& max ) const
 {
-   if( m == 0UL || n == 0UL ) return;
-
    CompressedMatrix<Type,SO> matrix( m, n );
    randomize( matrix, min, max );
 
@@ -164,15 +174,15 @@ inline const CompressedMatrix<Type,SO>
 // \return The generated random matrix.
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
+template< typename Type   // Data type of the matrix
+        , bool SO >       // Storage order
+template< typename Arg >  // Min/max argument type
 inline const CompressedMatrix<Type,SO>
-   Rand< CompressedMatrix<Type,SO> >::generate( size_t m, size_t n, size_t nonzeros, Type min, Type max ) const
+   Rand< CompressedMatrix<Type,SO> >::generate( size_t m, size_t n, size_t nonzeros,
+                                                const Arg& min, const Arg& max ) const
 {
    if( nonzeros > m*n )
       throw std::invalid_argument( "Invalid number of non-zero elements" );
-
-   if( m == 0UL || n == 0UL ) return;
 
    CompressedMatrix<Type,SO> matrix( m, n );
    randomize( matrix, nonzeros, min, max );
@@ -253,9 +263,11 @@ inline void Rand< CompressedMatrix<Type,SO> >::randomize( CompressedMatrix<Type,
 // \param max The largest possible value for a vector element.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void Rand< CompressedMatrix<Type,SO> >::randomize( CompressedMatrix<Type,SO>& matrix, Type min, Type max ) const
+template< typename Type   // Data type of the matrix
+        , bool SO >       // Storage order
+template< typename Arg >  // Min/max argument type
+inline void Rand< CompressedMatrix<Type,SO> >::randomize( CompressedMatrix<Type,SO>& matrix,
+                                                          const Arg& min, const Arg& max ) const
 {
    const size_t m( matrix.rows()    );
    const size_t n( matrix.columns() );
@@ -286,9 +298,11 @@ inline void Rand< CompressedMatrix<Type,SO> >::randomize( CompressedMatrix<Type,
 // \return void
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void Rand< CompressedMatrix<Type,SO> >::randomize( CompressedMatrix<Type,SO>& matrix, size_t nonzeros, Type min, Type max ) const
+template< typename Type   // Data type of the matrix
+        , bool SO >       // Storage order
+template< typename Arg >  // Min/max argument type
+inline void Rand< CompressedMatrix<Type,SO> >::randomize( CompressedMatrix<Type,SO>& matrix,
+                                                          size_t nonzeros, const Arg& min, const Arg& max ) const
 {
    const size_t m( matrix.rows()    );
    const size_t n( matrix.columns() );

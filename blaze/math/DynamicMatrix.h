@@ -54,14 +54,23 @@ template< typename Type  // Data type of the matrix
 class Rand< DynamicMatrix<Type,SO> >
 {
  public:
-   //**Utility functions***************************************************************************
-   /*!\name Utility functions */
+   //**Generate functions**************************************************************************
+   /*!\name Generate functions */
    //@{
    inline const DynamicMatrix<Type,SO> generate( size_t m, size_t n ) const;
-   inline const DynamicMatrix<Type,SO> generate( size_t m, size_t n, Type min, Type max ) const;
 
+   template< typename Arg >
+   inline const DynamicMatrix<Type,SO> generate( size_t m, size_t n, const Arg& min, const Arg& max ) const;
+   //@}
+   //**********************************************************************************************
+
+   //**Randomize functions*************************************************************************
+   /*!\name Randomize functions */
+   //@{
    inline void randomize( DynamicMatrix<Type,SO>& matrix ) const;
-   inline void randomize( DynamicMatrix<Type,SO>& matrix, Type min, Type max ) const;
+
+   template< typename Arg >
+   inline void randomize( DynamicMatrix<Type,SO>& matrix, const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -100,10 +109,11 @@ inline const DynamicMatrix<Type,SO>
 // \param max The largest possible value for a matrix element.
 // \return The generated random matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
+template< typename Type   // Data type of the matrix
+        , bool SO >       // Storage order
+template< typename Arg >  // Min/max argument type
 inline const DynamicMatrix<Type,SO>
-   Rand< DynamicMatrix<Type,SO> >::generate( size_t m, size_t n, Type min, Type max ) const
+   Rand< DynamicMatrix<Type,SO> >::generate( size_t m, size_t n, const Arg& min, const Arg& max ) const
 {
    DynamicMatrix<Type,SO> matrix( m, n );
    randomize( matrix, min, max );
@@ -148,9 +158,11 @@ inline void Rand< DynamicMatrix<Type,SO> >::randomize( DynamicMatrix<Type,SO>& m
 // \param max The largest possible value for a matrix element.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void Rand< DynamicMatrix<Type,SO> >::randomize( DynamicMatrix<Type,SO>& matrix, Type min, Type max ) const
+template< typename Type   // Data type of the matrix
+        , bool SO >       // Storage order
+template< typename Arg >  // Min/max argument type
+inline void Rand< DynamicMatrix<Type,SO> >::randomize( DynamicMatrix<Type,SO>& matrix,
+                                                       const Arg& min, const Arg& max ) const
 {
    using blaze::randomize;
 

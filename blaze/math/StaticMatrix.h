@@ -56,14 +56,23 @@ template< typename Type  // Data type of the matrix
 class Rand< StaticMatrix<Type,M,N,SO> >
 {
  public:
-   //**Utility functions***************************************************************************
-   /*!\name Utility functions */
+   //**Generate functions**************************************************************************
+   /*!\name Generate functions */
    //@{
    inline const StaticMatrix<Type,M,N,SO> generate() const;
-   inline const StaticMatrix<Type,M,N,SO> generate( Type min, Type max ) const;
 
+   template< typename Arg >
+   inline const StaticMatrix<Type,M,N,SO> generate( const Arg& min, const Arg& max ) const;
+   //@}
+   //**********************************************************************************************
+
+   //**Randomize functions*************************************************************************
+   /*!\name Randomize functions */
+   //@{
    inline void randomize( StaticMatrix<Type,M,N,SO>& matrix ) const;
-   inline void randomize( StaticMatrix<Type,M,N,SO>& matrix, Type min, Type max ) const;
+
+   template< typename Arg >
+   inline void randomize( StaticMatrix<Type,M,N,SO>& matrix, const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -99,12 +108,13 @@ inline const StaticMatrix<Type,M,N,SO> Rand< StaticMatrix<Type,M,N,SO> >::genera
 // \param max The largest possible value for a matrix element.
 // \return The generated random matrix.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
+template< typename Type   // Data type of the matrix
+        , size_t M        // Number of rows
+        , size_t N        // Number of columns
+        , bool SO >       // Storage order
+template< typename Arg >  // Min/max argument type
 inline const StaticMatrix<Type,M,N,SO>
-   Rand< StaticMatrix<Type,M,N,SO> >::generate( Type min, Type max ) const
+   Rand< StaticMatrix<Type,M,N,SO> >::generate( const Arg& min, const Arg& max ) const
 {
    StaticMatrix<Type,M,N,SO> matrix;
    randomize( matrix, min, max );
@@ -148,11 +158,13 @@ inline void Rand< StaticMatrix<Type,M,N,SO> >::randomize( StaticMatrix<Type,M,N,
 // \param max The largest possible value for a matrix element.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline void Rand< StaticMatrix<Type,M,N,SO> >::randomize( StaticMatrix<Type,M,N,SO>& matrix, Type min, Type max ) const
+template< typename Type   // Data type of the matrix
+        , size_t M        // Number of rows
+        , size_t N        // Number of columns
+        , bool SO >       // Storage order
+template< typename Arg >  // Min/max argument type
+inline void Rand< StaticMatrix<Type,M,N,SO> >::randomize( StaticMatrix<Type,M,N,SO>& matrix,
+                                                          const Arg& min, const Arg& max ) const
 {
    using blaze::randomize;
 
