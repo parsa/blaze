@@ -5037,9 +5037,15 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline bool isDefault( const StaticMatrix<Type,M,N,SO>& m )
 {
-   for( size_t i=0UL; i<M*N; ++i ) {
-      if( !isDefault( m[i] ) )
-         return false;
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<M; ++i )
+         for( size_t j=0UL; j<N; ++j )
+            if( !isDefault( m(i,j) ) ) return false;
+   }
+   else {
+      for( size_t j=0UL; j<N; ++j )
+         for( size_t i=0UL; i<M; ++i )
+            if( !isDefault( m(i,j) ) ) return false;
    }
 
    return true;
