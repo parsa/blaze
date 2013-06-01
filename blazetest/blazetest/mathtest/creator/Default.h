@@ -33,7 +33,8 @@
 #include <blaze/util/constraints/Void.h>
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/Random.h>
-#include <blaze/util/typetraits/IsFloatingPoint.h>
+#include <blazetest/mathtest/RandomMaximum.h>
+#include <blazetest/mathtest/RandomMinimum.h>
 
 
 namespace blazetest {
@@ -109,10 +110,7 @@ class Creator
 template< typename T >  // Type to be created
 inline T Creator<T>::operator()() const
 {
-   if( blaze::IsFloatingPoint<T>::value )
-      return blaze::rand<T>();
-   else
-      return blaze::rand<T>( T(0), T(10) );
+   return blaze::rand<T>( T(randmin), T(randmax) );
 }
 //*************************************************************************************************
 

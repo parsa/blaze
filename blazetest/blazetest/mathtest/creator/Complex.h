@@ -33,8 +33,9 @@
 #include <blaze/util/constraints/Void.h>
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/Random.h>
-#include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blazetest/mathtest/creator/Default.h>
+#include <blazetest/mathtest/RandomMaximum.h>
+#include <blazetest/mathtest/RandomMinimum.h>
 #include <blazetest/system/Types.h>
 
 
@@ -105,10 +106,7 @@ class Creator< complex<T> >
 template< typename T >  // Element type of the complex type
 inline const complex<T> Creator< complex<T> >::operator()() const
 {
-   if( blaze::IsFloatingPoint<T>::value )
-      return complex<T>( blaze::rand<T>() );
-   else
-      return complex<T>( blaze::rand<T>( T(0), T(10) ) );
+   return complex<T>( blaze::rand<T>( T(randmin), T(randmax) ) );
 }
 //*************************************************************************************************
 
