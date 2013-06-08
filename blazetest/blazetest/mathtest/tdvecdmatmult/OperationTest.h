@@ -41,12 +41,16 @@
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/IsEqual.h>
+#include <blazetest/mathtest/RandomMaximum.h>
+#include <blazetest/mathtest/RandomMinimum.h>
+
 
 
 namespace blazetest {
@@ -133,6 +137,15 @@ class OperationTest
    //@}
    //**********************************************************************************************
 
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
+   void initResults();
+   void initTransposeResults();
+   template< typename RT > void convertException( const std::exception& ex );
+   //@}
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -148,7 +161,8 @@ class OperationTest
    TSRE  tsres_;    //!< The transpose sparse result vector.
    TDRRE trefres_;  //!< The transpose reference result.
 
-   std::string test_;  //!< Label of the currently performed test.
+   std::string test_;   //!< Label of the currently performed test.
+   std::string error_;  //!< Description of the current error type.
    //@}
    //**********************************************************************************************
 
@@ -226,6 +240,7 @@ OperationTest<VT,MT>::OperationTest( const Creator<VT>& creator1, const Creator<
    , tsres_()                      // The transpose sparse result vector.
    , trefres_()                    // The transpose reference result.
    , test_()                       // Label of the currently performed test
+   , error_()                      // Description of the current error type
 {
    testInitialStatus();
    testAssignment();
@@ -625,43 +640,29 @@ void OperationTest<VT,MT>::testBasicOperation()
 
       // Multiplication with the given vector/matrix
       {
-         test_ = "Multiplication with the given vector/matrix";
+         test_  = "Multiplication with the given vector/matrix";
+         error_ = "Failed multiplication operation";
 
          try {
+            initResults();
             dres_   = lhs_ * rhs_;
             sres_   = lhs_ * rhs_;
             refres_ = reflhs_ * refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
-            dres_ = lhs_ * orhs_;
-            sres_ = lhs_ * orhs_;
+            initResults();
+            dres_   = lhs_ * orhs_;
+            sres_   = lhs_ * orhs_;
+            refres_ = reflhs_ * refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -669,42 +670,29 @@ void OperationTest<VT,MT>::testBasicOperation()
 
       // Multiplication with evaluated vector/matrix
       {
-         test_ = "Multiplication with evaluated vector/matrix";
+         test_  = "Multiplication with evaluated vector/matrix";
+         error_ = "Failed multiplication operation";
 
          try {
-            dres_ = eval( lhs_ ) * eval( rhs_ );
-            sres_ = eval( lhs_ ) * eval( rhs_ );
+            initResults();
+            dres_   = eval( lhs_ ) * eval( rhs_ );
+            sres_   = eval( lhs_ ) * eval( rhs_ );
+            refres_ = eval( reflhs_ ) * eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
-            dres_ = eval( lhs_ ) * eval( orhs_ );
-            sres_ = eval( lhs_ ) * eval( orhs_ );
+            initResults();
+            dres_   = eval( lhs_ ) * eval( orhs_ );
+            sres_   = eval( lhs_ ) * eval( orhs_ );
+            refres_ = eval( reflhs_ ) * eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -717,44 +705,29 @@ void OperationTest<VT,MT>::testBasicOperation()
 
       // Multiplication with addition assignment with the given vector/matrix
       {
-         test_ = "Multiplication with addition assignment with the given vector/matrix";
+         test_  = "Multiplication with addition assignment with the given vector/matrix";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += lhs_ * rhs_;
             sres_   += lhs_ * rhs_;
             refres_ += reflhs_ * refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   += lhs_ * orhs_;
             sres_   += lhs_ * orhs_;
             refres_ += reflhs_ * refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -762,44 +735,29 @@ void OperationTest<VT,MT>::testBasicOperation()
 
       // Multiplication with addition assignment with evaluated vector/matrix
       {
-         test_ = "Multiplication with addition assignment with evaluated vector/matrix";
+         test_  = "Multiplication with addition assignment with evaluated vector/matrix";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += eval( lhs_ ) * eval( rhs_ );
             sres_   += eval( lhs_ ) * eval( rhs_ );
             refres_ += eval( reflhs_ ) * eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   += eval( lhs_ ) * eval( orhs_ );
             sres_   += eval( lhs_ ) * eval( orhs_ );
             refres_ += eval( reflhs_ ) * eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -812,44 +770,29 @@ void OperationTest<VT,MT>::testBasicOperation()
 
       // Multiplication with subtraction assignment with the given vector/matrix
       {
-         test_ = "Multiplication with subtraction assignment with the given vector/matrix";
+         test_  = "Multiplication with subtraction assignment with the given vector/matrix";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= lhs_ * rhs_;
             sres_   -= lhs_ * rhs_;
             refres_ -= reflhs_ * refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   -= lhs_ * orhs_;
             sres_   -= lhs_ * orhs_;
             refres_ -= reflhs_ * refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -857,44 +800,29 @@ void OperationTest<VT,MT>::testBasicOperation()
 
       // Multiplication with subtraction assignment with evaluated vector/matrix
       {
-         test_ = "Multiplication with subtraction assignment with evaluated vector/matrix";
+         test_  = "Multiplication with subtraction assignment with evaluated vector/matrix";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= eval( lhs_ ) * eval( rhs_ );
             sres_   -= eval( lhs_ ) * eval( rhs_ );
             refres_ -= eval( reflhs_ ) * eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   -= eval( lhs_ ) * eval( orhs_ );
             sres_   -= eval( lhs_ ) * eval( orhs_ );
             refres_ -= eval( reflhs_ ) * eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -907,44 +835,29 @@ void OperationTest<VT,MT>::testBasicOperation()
 
       // Multiplication with multiplication assignment with the given vector/matrix
       {
-         test_ = "Multiplication with multiplication assignment with the given vector/matrix";
+         test_  = "Multiplication with multiplication assignment with the given vector/matrix";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= lhs_ * rhs_;
             sres_   *= lhs_ * rhs_;
             refres_ *= reflhs_ * refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   *= lhs_ * orhs_;
             sres_   *= lhs_ * orhs_;
             refres_ *= reflhs_ * refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -952,44 +865,29 @@ void OperationTest<VT,MT>::testBasicOperation()
 
       // Multiplication with multiplication assignment with evaluated vector/matrix
       {
-         test_ = "Multiplication with multiplication assignment with evaluated vector/matrix";
+         test_  = "Multiplication with multiplication assignment with evaluated vector/matrix";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= eval( lhs_ ) * eval( rhs_ );
             sres_   *= eval( lhs_ ) * eval( rhs_ );
             refres_ *= eval( reflhs_ ) * eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   *= eval( lhs_ ) * eval( orhs_ );
             sres_   *= eval( lhs_ ) * eval( orhs_ );
             refres_ *= eval( reflhs_ ) * eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -1024,43 +922,29 @@ void OperationTest<VT,MT>::testNegatedOperation()
 
       // Negated multiplication with the given vector/matrix
       {
-         test_ = "Negated multiplication with the given vector/matrix";
+         test_  = "Negated multiplication with the given vector/matrix";
+         error_ = "Failed multiplication operation";
 
          try {
+            initResults();
             dres_   = -( lhs_ * rhs_ );
             sres_   = -( lhs_ * rhs_ );
             refres_ = -( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
-            dres_ = -( lhs_ * orhs_ );
-            sres_ = -( lhs_ * orhs_ );
+            initResults();
+            dres_   = -( lhs_ * orhs_ );
+            sres_   = -( lhs_ * orhs_ );
+            refres_ = -( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -1068,42 +952,29 @@ void OperationTest<VT,MT>::testNegatedOperation()
 
       // Negated multiplication with evaluated vector/matrix
       {
-         test_ = "Negated multiplication with evaluated vector/matrix";
+         test_  = "Negated multiplication with evaluated vector/matrix";
+         error_ = "Failed multiplication operation";
 
          try {
-            dres_ = -( eval( lhs_ ) * eval( rhs_ ) );
-            sres_ = -( eval( lhs_ ) * eval( rhs_ ) );
+            initResults();
+            dres_   = -( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   = -( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ = -( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
-            dres_ = -( eval( lhs_ ) * eval( orhs_ ) );
-            sres_ = -( eval( lhs_ ) * eval( orhs_ ) );
+            initResults();
+            dres_   = -( eval( lhs_ ) * eval( orhs_ ) );
+            sres_   = -( eval( lhs_ ) * eval( orhs_ ) );
+            refres_ = -( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -1116,44 +987,29 @@ void OperationTest<VT,MT>::testNegatedOperation()
 
       // Negated multiplication with addition assignment with the given vector/matrix
       {
-         test_ = "Negated multiplication with addition assignment with the given vector/matrix";
+         test_  = "Negated multiplication with addition assignment with the given vector/matrix";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += -( lhs_ * rhs_ );
             sres_   += -( lhs_ * rhs_ );
             refres_ += -( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   += -( lhs_ * orhs_ );
             sres_   += -( lhs_ * orhs_ );
             refres_ += -( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -1161,44 +1017,29 @@ void OperationTest<VT,MT>::testNegatedOperation()
 
       // Negated multiplication with addition assignment with the given vector/matrix
       {
-         test_ = "Negated multiplication with addition assignment with evaluated vector/matrix";
+         test_  = "Negated multiplication with addition assignment with evaluated vector/matrix";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += -( eval( lhs_ ) * eval( rhs_ ) );
             sres_   += -( eval( lhs_ ) * eval( rhs_ ) );
             refres_ += -( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   += -( eval( lhs_ ) * eval( orhs_ ) );
             sres_   += -( eval( lhs_ ) * eval( orhs_ ) );
             refres_ += -( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -1211,44 +1052,29 @@ void OperationTest<VT,MT>::testNegatedOperation()
 
       // Negated multiplication with subtraction assignment with the given vector/matrix
       {
-         test_ = "Negated multiplication with subtraction assignment with the given vector/matrix";
+         test_  = "Negated multiplication with subtraction assignment with the given vector/matrix";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= -( lhs_ * rhs_ );
             sres_   -= -( lhs_ * rhs_ );
             refres_ -= -( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   -= -( lhs_ * orhs_ );
             sres_   -= -( lhs_ * orhs_ );
             refres_ -= -( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -1256,44 +1082,29 @@ void OperationTest<VT,MT>::testNegatedOperation()
 
       // Negated multiplication with subtraction assignment with the given vector/matrix
       {
-         test_ = "Negated multiplication with subtraction assignment with evaluated vector/matrix";
+         test_  = "Negated multiplication with subtraction assignment with evaluated vector/matrix";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= -( eval( lhs_ ) * eval( rhs_ ) );
             sres_   -= -( eval( lhs_ ) * eval( rhs_ ) );
             refres_ -= -( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   -= -( eval( lhs_ ) * eval( orhs_ ) );
             sres_   -= -( eval( lhs_ ) * eval( orhs_ ) );
             refres_ -= -( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -1306,44 +1117,29 @@ void OperationTest<VT,MT>::testNegatedOperation()
 
       // Negated multiplication with multiplication assignment with the given vector/matrix
       {
-         test_ = "Negated multiplication with multiplication assignment with the given vector/matrix";
+         test_  = "Negated multiplication with multiplication assignment with the given vector/matrix";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= -( lhs_ * rhs_ );
             sres_   *= -( lhs_ * rhs_ );
             refres_ *= -( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   *= -( lhs_ * orhs_ );
             sres_   *= -( lhs_ * orhs_ );
             refres_ *= -( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -1351,44 +1147,29 @@ void OperationTest<VT,MT>::testNegatedOperation()
 
       // Negated multiplication with multiplication assignment with the given vector/matrix
       {
-         test_ = "Negated multiplication with multiplication assignment with evaluated vector/matrix";
+         test_  = "Negated multiplication with multiplication assignment with evaluated vector/matrix";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= -( eval( lhs_ ) * eval( rhs_ ) );
             sres_   *= -( eval( lhs_ ) * eval( rhs_ ) );
             refres_ *= -( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   *= -( eval( lhs_ ) * eval( orhs_ ) );
             sres_   *= -( eval( lhs_ ) * eval( orhs_ ) );
             refres_ *= -( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -1586,43 +1367,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with the given vector/matrix
       {
-         test_ = "Scaled multiplication with the given vector/matrix (s*OP)";
+         test_  = "Scaled multiplication with the given vector/matrix (s*OP)";
+         error_ = "Failed multiplication operation";
 
          try {
+            initResults();
             dres_   = scalar * ( lhs_ * rhs_ );
             sres_   = scalar * ( lhs_ * rhs_ );
             refres_ = scalar * ( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
-            dres_ = scalar * ( lhs_ * orhs_ );
-            sres_ = scalar * ( lhs_ * orhs_ );
+            initResults();
+            dres_   = scalar * ( lhs_ * orhs_ );
+            sres_   = scalar * ( lhs_ * orhs_ );
+            refres_ = scalar * ( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -1630,42 +1397,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with evaluated vector/matrix
       {
-         test_ = "Scaled multiplication with evaluated vector/matrix (s*OP)";
+         test_  = "Scaled multiplication with evaluated vector/matrix (s*OP)";
+         error_ = "Failed multiplication operation";
 
          try {
-            dres_ = scalar * ( eval( lhs_ ) * eval( rhs_ ) );
-            sres_ = scalar * ( eval( lhs_ ) * eval( rhs_ ) );
+            initResults();
+            dres_   = scalar * ( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   = scalar * ( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ = scalar * ( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
-            dres_ = scalar * ( eval( lhs_ ) * eval( orhs_ ) );
-            sres_ = scalar * ( eval( lhs_ ) * eval( orhs_ ) );
+            initResults();
+            dres_   = scalar * ( eval( lhs_ ) * eval( orhs_ ) );
+            sres_   = scalar * ( eval( lhs_ ) * eval( orhs_ ) );
+            refres_ = scalar * ( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -1678,43 +1432,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with the given vector/matrix
       {
-         test_ = "Scaled multiplication with the given vector/matrix (OP*s)";
+         test_  = "Scaled multiplication with the given vector/matrix (OP*s)";
+         error_ = "Failed multiplication operation";
 
          try {
+            initResults();
             dres_   = ( lhs_ * rhs_ ) * scalar;
             sres_   = ( lhs_ * rhs_ ) * scalar;
             refres_ = ( reflhs_ * refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
-            dres_ = ( lhs_ * orhs_ ) * scalar;
-            sres_ = ( lhs_ * orhs_ ) * scalar;
+            initResults();
+            dres_   = ( lhs_ * orhs_ ) * scalar;
+            sres_   = ( lhs_ * orhs_ ) * scalar;
+            refres_ = ( reflhs_ * refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -1722,42 +1462,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with evaluated vector/matrix
       {
-         test_ = "Scaled multiplication with evaluated vector/matrix (OP*s)";
+         test_  = "Scaled multiplication with evaluated vector/matrix (OP*s)";
+         error_ = "Failed multiplication operation";
 
          try {
-            dres_  = ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
-            sres_  = ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
+            initResults();
+            dres_   = ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
+            sres_   = ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
+            refres_ = ( eval( reflhs_ ) * eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
-            dres_ = ( eval( lhs_ ) * eval( orhs_ ) ) * scalar;
-            sres_ = ( eval( lhs_ ) * eval( orhs_ ) ) * scalar;
+            initResults();
+            dres_   = ( eval( lhs_ ) * eval( orhs_ ) ) * scalar;
+            sres_   = ( eval( lhs_ ) * eval( orhs_ ) ) * scalar;
+            refres_ = ( eval( reflhs_ ) * eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -1770,43 +1497,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with the given vector/matrix
       {
-         test_ = "Scaled multiplication with the given vector/matrix (OP/s)";
+         test_  = "Scaled multiplication with the given vector/matrix (OP/s)";
+         error_ = "Failed multiplication operation";
 
          try {
+            initResults();
             dres_   = ( lhs_ * rhs_ ) / scalar;
             sres_   = ( lhs_ * rhs_ ) / scalar;
             refres_ = ( reflhs_ * refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
-            dres_ = ( lhs_ * orhs_ ) / scalar;
-            sres_ = ( lhs_ * orhs_ ) / scalar;
+            initResults();
+            dres_   = ( lhs_ * orhs_ ) / scalar;
+            sres_   = ( lhs_ * orhs_ ) / scalar;
+            refres_ = ( reflhs_ * refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -1814,42 +1527,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with evaluated vector/matrix
       {
-         test_ = "Scaled multiplication with evaluated vector/matrix (OP/s)";
+         test_  = "Scaled multiplication with evaluated vector/matrix (OP/s)";
+         error_ = "Failed multiplication operation";
 
          try {
-            dres_  = ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
-            sres_  = ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
+            initResults();
+            dres_   = ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
+            sres_   = ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
+            refres_ = ( eval( reflhs_ ) * eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
-            dres_ = ( eval( lhs_ ) * eval( orhs_ ) ) / scalar;
-            sres_ = ( eval( lhs_ ) * eval( orhs_ ) ) / scalar;
+            initResults();
+            dres_   = ( eval( lhs_ ) * eval( orhs_ ) ) / scalar;
+            sres_   = ( eval( lhs_ ) * eval( orhs_ ) ) / scalar;
+            refres_ = ( eval( reflhs_ ) * eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -1862,44 +1562,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with addition assignment with the given vector/matrix
       {
-         test_ = "Scaled multiplication with addition assignment with the given vector/matrix (s*OP)";
+         test_  = "Scaled multiplication with addition assignment with the given vector/matrix (s*OP)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += scalar * ( lhs_ * rhs_ );
             sres_   += scalar * ( lhs_ * rhs_ );
             refres_ += scalar * ( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   += scalar * ( lhs_ * orhs_ );
             sres_   += scalar * ( lhs_ * orhs_ );
             refres_ += scalar * ( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -1907,44 +1592,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with addition assignment with evaluated vector/matrix
       {
-         test_ = "Scaled multiplication with addition assignment with evaluated vector/matrix (s*OP)";
+         test_  = "Scaled multiplication with addition assignment with evaluated vector/matrix (s*OP)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += scalar * ( eval( lhs_ ) * eval( rhs_ ) );
             sres_   += scalar * ( eval( lhs_ ) * eval( rhs_ ) );
             refres_ += scalar * ( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   += scalar * ( eval( lhs_ ) * eval( orhs_ ) );
             sres_   += scalar * ( eval( lhs_ ) * eval( orhs_ ) );
             refres_ += scalar * ( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -1957,44 +1627,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with addition assignment with the given vector/matrix
       {
-         test_ = "Scaled multiplication with addition assignment with the given vector/matrix (OP*s)";
+         test_  = "Scaled multiplication with addition assignment with the given vector/matrix (OP*s)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += ( lhs_ * rhs_ ) * scalar;
             sres_   += ( lhs_ * rhs_ ) * scalar;
             refres_ += ( reflhs_ * refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   += ( lhs_ * orhs_ ) * scalar;
             sres_   += ( lhs_ * orhs_ ) * scalar;
             refres_ += ( reflhs_ * refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -2002,44 +1657,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with addition assignment with evaluated vector/matrix
       {
-         test_ = "Scaled multiplication with addition assignment with evaluated vector/matrix (OP*s)";
+         test_  = "Scaled multiplication with addition assignment with evaluated vector/matrix (OP*s)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
             sres_   += ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
             refres_ += ( eval( reflhs_ ) * eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   += ( eval( lhs_ ) * eval( orhs_ ) ) * scalar;
             sres_   += ( eval( lhs_ ) * eval( orhs_ ) ) * scalar;
             refres_ += ( eval( reflhs_ ) * eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -2052,44 +1692,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with addition assignment with the given vector/matrix
       {
-         test_ = "Scaled multiplication with addition assignment with the given vector/matrix (OP/s)";
+         test_  = "Scaled multiplication with addition assignment with the given vector/matrix (OP/s)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += ( lhs_ * rhs_ ) / scalar;
             sres_   += ( lhs_ * rhs_ ) / scalar;
             refres_ += ( reflhs_ * refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   += ( lhs_ * orhs_ ) / scalar;
             sres_   += ( lhs_ * orhs_ ) / scalar;
             refres_ += ( reflhs_ * refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -2097,44 +1722,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with addition assignment with evaluated vector/matrix
       {
-         test_ = "Scaled multiplication with addition assignment with evaluated vector/matrix (OP/s)";
+         test_  = "Scaled multiplication with addition assignment with evaluated vector/matrix (OP/s)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
             sres_   += ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
             refres_ += ( eval( reflhs_ ) * eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   += ( eval( lhs_ ) * eval( orhs_ ) ) / scalar;
             sres_   += ( eval( lhs_ ) * eval( orhs_ ) ) / scalar;
             refres_ += ( eval( reflhs_ ) * eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -2147,44 +1757,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with subtraction assignment with the given vector/matrix
       {
-         test_ = "Scaled multiplication with subtraction assignment with the given vector/matrix (s*OP)";
+         test_  = "Scaled multiplication with subtraction assignment with the given vector/matrix (s*OP)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= scalar * ( lhs_ * rhs_ );
             sres_   -= scalar * ( lhs_ * rhs_ );
             refres_ -= scalar * ( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   -= scalar * ( lhs_ * orhs_ );
             sres_   -= scalar * ( lhs_ * orhs_ );
             refres_ -= scalar * ( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -2192,44 +1787,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with subtraction assignment with evaluated vector/matrix
       {
-         test_ = "Left-scaled multiplication with subtraction assignment with evaluated vector/matrix (s*OP)";
+         test_  = "Left-scaled multiplication with subtraction assignment with evaluated vector/matrix (s*OP)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= scalar * ( eval( lhs_ ) * eval( rhs_ ) );
             sres_   -= scalar * ( eval( lhs_ ) * eval( rhs_ ) );
             refres_ -= scalar * ( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   -= scalar * ( eval( lhs_ ) * eval( orhs_ ) );
             sres_   -= scalar * ( eval( lhs_ ) * eval( orhs_ ) );
             refres_ -= scalar * ( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -2242,44 +1822,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with subtraction assignment with the given vector/matrix
       {
-         test_ = "Scaled multiplication with subtraction assignment with the given vector/matrix (OP*s)";
+         test_  = "Scaled multiplication with subtraction assignment with the given vector/matrix (OP*s)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= ( lhs_ * rhs_ ) * scalar;
             sres_   -= ( lhs_ * rhs_ ) * scalar;
             refres_ -= ( reflhs_ * refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   -= ( lhs_ * orhs_ ) * scalar;
             sres_   -= ( lhs_ * orhs_ ) * scalar;
             refres_ -= ( reflhs_ * refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -2287,44 +1852,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with subtraction assignment with evaluated vector/matrix
       {
-         test_ = "Scaled multiplication with subtraction assignment with evaluated vector/matrix (OP*s)";
+         test_  = "Scaled multiplication with subtraction assignment with evaluated vector/matrix (OP*s)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
             sres_   -= ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
             refres_ -= ( eval( reflhs_ ) * eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   -= ( eval( lhs_ ) * eval( orhs_ ) ) * scalar;
             sres_   -= ( eval( lhs_ ) * eval( orhs_ ) ) * scalar;
             refres_ -= ( eval( reflhs_ ) * eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -2337,44 +1887,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with subtraction assignment with the given vector/matrix
       {
-         test_ = "Scaled multiplication with subtraction assignment with the given vector/matrix (OP/s)";
+         test_  = "Scaled multiplication with subtraction assignment with the given vector/matrix (OP/s)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= ( lhs_ * rhs_ ) / scalar;
             sres_   -= ( lhs_ * rhs_ ) / scalar;
             refres_ -= ( reflhs_ * refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   -= ( lhs_ * orhs_ ) / scalar;
             sres_   -= ( lhs_ * orhs_ ) / scalar;
             refres_ -= ( reflhs_ * refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -2382,44 +1917,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with subtraction assignment with evaluated vector/matrix
       {
-         test_ = "Scaled multiplication with subtraction assignment with evaluated vector/matrix (OP/s)";
+         test_  = "Scaled multiplication with subtraction assignment with evaluated vector/matrix (OP/s)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
             sres_   -= ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
             refres_ -= ( eval( reflhs_ ) * eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   -= ( eval( lhs_ ) * eval( orhs_ ) ) / scalar;
             sres_   -= ( eval( lhs_ ) * eval( orhs_ ) ) / scalar;
             refres_ -= ( eval( reflhs_ ) * eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -2432,44 +1952,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with multiplication assignment with the given vector/matrix
       {
-         test_ = "Scaled multiplication with multiplication assignment with the given vector/matrix (s*OP)";
+         test_  = "Scaled multiplication with multiplication assignment with the given vector/matrix (s*OP)";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= scalar * ( lhs_ * rhs_ );
             sres_   *= scalar * ( lhs_ * rhs_ );
             refres_ *= scalar * ( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   *= scalar * ( lhs_ * orhs_ );
             sres_   *= scalar * ( lhs_ * orhs_ );
             refres_ *= scalar * ( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -2477,44 +1982,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with multiplication assignment with evaluated vector/matrix
       {
-         test_ = "Scaled multiplication with multiplication assignment with evaluated vector/matrix (s*OP)";
+         test_  = "Scaled multiplication with multiplication assignment with evaluated vector/matrix (s*OP)";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= scalar * ( eval( lhs_ ) * eval( rhs_ ) );
             sres_   *= scalar * ( eval( lhs_ ) * eval( rhs_ ) );
             refres_ *= scalar * ( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   *= scalar * ( eval( lhs_ ) * eval( orhs_ ) );
             sres_   *= scalar * ( eval( lhs_ ) * eval( orhs_ ) );
             refres_ *= scalar * ( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -2527,44 +2017,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with multiplication assignment with the given vector/matrix
       {
-         test_ = "Scaled multiplication with multiplication assignment with the given vector/matrix (OP*s)";
+         test_  = "Scaled multiplication with multiplication assignment with the given vector/matrix (OP*s)";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= ( lhs_ * rhs_ ) * scalar;
             sres_   *= ( lhs_ * rhs_ ) * scalar;
             refres_ *= ( reflhs_ * refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   *= ( lhs_ * orhs_ ) * scalar;
             sres_   *= ( lhs_ * orhs_ ) * scalar;
             refres_ *= ( reflhs_ * refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -2572,44 +2047,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with multiplication assignment with evaluated vector/matrix
       {
-         test_ = "Scaled multiplication with multiplication assignment with evaluated vector/matrix (OP*s)";
+         test_  = "Scaled multiplication with multiplication assignment with evaluated vector/matrix (OP*s)";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
             sres_   *= ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
             refres_ *= ( eval( reflhs_ ) * eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   *= ( eval( lhs_ ) * eval( orhs_ ) ) * scalar;
             sres_   *= ( eval( lhs_ ) * eval( orhs_ ) ) * scalar;
             refres_ *= ( eval( reflhs_ ) * eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -2622,44 +2082,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with multiplication assignment with the given vector/matrix
       {
-         test_ = "Scaled multiplication with multiplication assignment with the given vector/matrix (OP/s)";
+         test_  = "Scaled multiplication with multiplication assignment with the given vector/matrix (OP/s)";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= ( lhs_ * rhs_ ) / scalar;
             sres_   *= ( lhs_ * rhs_ ) / scalar;
             refres_ *= ( reflhs_ * refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   *= ( lhs_ * orhs_ ) / scalar;
             sres_   *= ( lhs_ * orhs_ ) / scalar;
             refres_ *= ( reflhs_ * refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -2667,44 +2112,29 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
       // Scaled multiplication with multiplication assignment with evaluated vector/matrix
       {
-         test_ = "Scaled multiplication with multiplication assignment with evaluated vector/matrix (OP/s)";
+         test_  = "Scaled multiplication with multiplication assignment with evaluated vector/matrix (OP/s)";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
             sres_   *= ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
             refres_ *= ( eval( reflhs_ ) * eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   *= ( eval( lhs_ ) * eval( orhs_ ) ) / scalar;
             sres_   *= ( eval( lhs_ ) * eval( orhs_ ) ) / scalar;
             refres_ *= ( eval( reflhs_ ) * eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -2739,43 +2169,29 @@ void OperationTest<VT,MT>::testTransposeOperation()
 
       // Transpose multiplication with the given vector/matrix
       {
-         test_ = "Transpose multiplication with the given vector/matrix";
+         test_  = "Transpose multiplication with the given vector/matrix";
+         error_ = "Failed multiplication operation";
 
          try {
+            initTransposeResults();
             tdres_   = trans( lhs_ * rhs_ );
             tsres_   = trans( lhs_ * rhs_ );
             trefres_ = trans( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkTransposeResults<MT>();
 
          try {
-            tdres_  = trans( lhs_ * orhs_ );
-            tsres_  = trans( lhs_ * orhs_ );
+            initTransposeResults();
+            tdres_   = trans( lhs_ * orhs_ );
+            tsres_   = trans( lhs_ * orhs_ );
+            trefres_ = trans( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkTransposeResults<TMT>();
@@ -2783,42 +2199,29 @@ void OperationTest<VT,MT>::testTransposeOperation()
 
       // Transpose multiplication with evaluated vector/matrix
       {
-         test_ = "Transpose multiplication with evaluated vector/matrix";
+         test_  = "Transpose multiplication with evaluated vector/matrix";
+         error_ = "Failed multiplication operation";
 
          try {
-            tdres_ = trans( eval( lhs_ ) * eval( rhs_ ) );
-            tsres_ = trans( eval( lhs_ ) * eval( rhs_ ) );
+            initTransposeResults();
+            tdres_   = trans( eval( lhs_ ) * eval( rhs_ ) );
+            tsres_   = trans( eval( lhs_ ) * eval( rhs_ ) );
+            trefres_ = trans( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkTransposeResults<MT>();
 
          try {
-            tdres_ = trans( eval( lhs_ ) * eval( orhs_ ) );
-            tsres_ = trans( eval( lhs_ ) * eval( orhs_ ) );
+            initTransposeResults();
+            tdres_   = trans( eval( lhs_ ) * eval( orhs_ ) );
+            tsres_   = trans( eval( lhs_ ) * eval( orhs_ ) );
+            trefres_ = trans( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkTransposeResults<TMT>();
@@ -2831,44 +2234,29 @@ void OperationTest<VT,MT>::testTransposeOperation()
 
       // Transpose multiplication with addition assignment with the given vector/matrix
       {
-         test_ = "Transpose multiplication with addition assignment with the given vector/matrix";
+         test_  = "Transpose multiplication with addition assignment with the given vector/matrix";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initTransposeResults();
             tdres_   += trans( lhs_ * rhs_ );
             tsres_   += trans( lhs_ * rhs_ );
             trefres_ += trans( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkTransposeResults<MT>();
 
          try {
+            initTransposeResults();
             tdres_   += trans( lhs_ * orhs_ );
             tsres_   += trans( lhs_ * orhs_ );
             trefres_ += trans( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkTransposeResults<TMT>();
@@ -2876,44 +2264,29 @@ void OperationTest<VT,MT>::testTransposeOperation()
 
       // Transpose multiplication with addition assignment with evaluated vector/matrix
       {
-         test_ = "Transpose multiplication with addition assignment with evaluated vector/matrix";
+         test_  = "Transpose multiplication with addition assignment with evaluated vector/matrix";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initTransposeResults();
             tdres_   += trans( eval( lhs_ ) * eval( rhs_ ) );
             tsres_   += trans( eval( lhs_ ) * eval( rhs_ ) );
             trefres_ += trans( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkTransposeResults<MT>();
 
          try {
+            initTransposeResults();
             tdres_   += trans( eval( lhs_ ) * eval( orhs_ ) );
             tsres_   += trans( eval( lhs_ ) * eval( orhs_ ) );
             trefres_ += trans( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkTransposeResults<TMT>();
@@ -2926,44 +2299,29 @@ void OperationTest<VT,MT>::testTransposeOperation()
 
       // Transpose multiplication with subtraction assignment with the given vector/matrix
       {
-         test_ = "Transpose multiplication with subtraction assignment with the given vector/matrix";
+         test_  = "Transpose multiplication with subtraction assignment with the given vector/matrix";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initTransposeResults();
             tdres_   -= trans( lhs_ * rhs_ );
             tsres_   -= trans( lhs_ * rhs_ );
             trefres_ -= trans( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkTransposeResults<MT>();
 
          try {
+            initTransposeResults();
             tdres_   -= trans( lhs_ * orhs_ );
             tsres_   -= trans( lhs_ * orhs_ );
             trefres_ -= trans( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkTransposeResults<TMT>();
@@ -2971,44 +2329,29 @@ void OperationTest<VT,MT>::testTransposeOperation()
 
       // Transpose multiplication with subtraction assignment with evaluated vector/matrix
       {
-         test_ = "Transpose multiplication with subtraction assignment with evaluated vector/matrix";
+         test_  = "Transpose multiplication with subtraction assignment with evaluated vector/matrix";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initTransposeResults();
             tdres_   -= trans( eval( lhs_ ) * eval( rhs_ ) );
             tsres_   -= trans( eval( lhs_ ) * eval( rhs_ ) );
             trefres_ -= trans( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkTransposeResults<MT>();
 
          try {
+            initTransposeResults();
             tdres_   -= trans( eval( lhs_ ) * eval( orhs_ ) );
             tsres_   -= trans( eval( lhs_ ) * eval( orhs_ ) );
             trefres_ -= trans( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkTransposeResults<TMT>();
@@ -3021,44 +2364,29 @@ void OperationTest<VT,MT>::testTransposeOperation()
 
       // Transpose multiplication with multiplication assignment with the given vector/matrix
       {
-         test_ = "Transpose multiplication with multiplication assignment with the given vector/matrix";
+         test_  = "Transpose multiplication with multiplication assignment with the given vector/matrix";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initTransposeResults();
             tdres_   *= trans( lhs_ * rhs_ );
             tsres_   *= trans( lhs_ * rhs_ );
             trefres_ *= trans( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkTransposeResults<MT>();
 
          try {
+            initTransposeResults();
             tdres_   *= trans( lhs_ * orhs_ );
             tsres_   *= trans( lhs_ * orhs_ );
             trefres_ *= trans( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkTransposeResults<TMT>();
@@ -3066,44 +2394,29 @@ void OperationTest<VT,MT>::testTransposeOperation()
 
       // Transpose multiplication with multiplication assignment with evaluated vector/matrix
       {
-         test_ = "Transpose multiplication with multiplication assignment with evaluated vector/matrix";
+         test_  = "Transpose multiplication with multiplication assignment with evaluated vector/matrix";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initTransposeResults();
             tdres_   *= trans( eval( lhs_ ) * eval( rhs_ ) );
             tsres_   *= trans( eval( lhs_ ) * eval( rhs_ ) );
             trefres_ *= trans( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkTransposeResults<MT>();
 
          try {
+            initTransposeResults();
             tdres_   *= trans( eval( lhs_ ) * eval( orhs_ ) );
             tsres_   *= trans( eval( lhs_ ) * eval( orhs_ ) );
             trefres_ *= trans( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkTransposeResults<TMT>();
@@ -3138,43 +2451,29 @@ void OperationTest<VT,MT>::testAbsOperation()
 
       // Abs multiplication with the given vector/matrix
       {
-         test_ = "Abs multiplication with the given vector/matrix";
+         test_  = "Abs multiplication with the given vector/matrix";
+         error_ = "Failed multiplication operation";
 
          try {
+            initResults();
             dres_   = abs( lhs_ * rhs_ );
             sres_   = abs( lhs_ * rhs_ );
             refres_ = abs( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
-            dres_ = abs( lhs_ * orhs_ );
-            sres_ = abs( lhs_ * orhs_ );
+            initResults();
+            dres_   = abs( lhs_ * orhs_ );
+            sres_   = abs( lhs_ * orhs_ );
+            refres_ = abs( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -3182,42 +2481,29 @@ void OperationTest<VT,MT>::testAbsOperation()
 
       // Abs multiplication with evaluated vector/matrix
       {
-         test_ = "Abs multiplication with evaluated vector/matrix";
+         test_  = "Abs multiplication with evaluated vector/matrix";
+         error_ = "Failed multiplication operation";
 
          try {
-            dres_  = abs( eval( lhs_ ) * eval( rhs_ ) );
-            sres_  = abs( eval( lhs_ ) * eval( rhs_ ) );
+            initResults();
+            dres_   = abs( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   = abs( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ = abs( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
-            dres_ = abs( eval( lhs_ ) * eval( orhs_ ) );
-            sres_ = abs( eval( lhs_ ) * eval( orhs_ ) );
+            initResults();
+            dres_   = abs( eval( lhs_ ) * eval( orhs_ ) );
+            sres_   = abs( eval( lhs_ ) * eval( orhs_ ) );
+            refres_ = abs( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -3230,44 +2516,29 @@ void OperationTest<VT,MT>::testAbsOperation()
 
       // Abs multiplication with addition assignment with the given vector/matrix
       {
-         test_ = "Abs multiplication with addition assignment with the given vector/matrix";
+         test_  = "Abs multiplication with addition assignment with the given vector/matrix";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += abs( lhs_ * rhs_ );
             sres_   += abs( lhs_ * rhs_ );
             refres_ += abs( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   += abs( lhs_ * orhs_ );
             sres_   += abs( lhs_ * orhs_ );
             refres_ += abs( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -3275,44 +2546,29 @@ void OperationTest<VT,MT>::testAbsOperation()
 
       // Abs multiplication with addition assignment with evaluated vector/matrix
       {
-         test_ = "Abs multiplication with addition assignment with evaluated vector/matrix";
+         test_  = "Abs multiplication with addition assignment with evaluated vector/matrix";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += abs( eval( lhs_ ) * eval( rhs_ ) );
             sres_   += abs( eval( lhs_ ) * eval( rhs_ ) );
             refres_ += abs( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   += abs( eval( lhs_ ) * eval( orhs_ ) );
             sres_   += abs( eval( lhs_ ) * eval( orhs_ ) );
             refres_ += abs( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -3325,44 +2581,29 @@ void OperationTest<VT,MT>::testAbsOperation()
 
       // Abs multiplication with subtraction assignment with the given vector/matrix
       {
-         test_ = "Abs multiplication with subtraction assignment with the given vector/matrix";
+         test_  = "Abs multiplication with subtraction assignment with the given vector/matrix";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= abs( lhs_ * rhs_ );
             sres_   -= abs( lhs_ * rhs_ );
             refres_ -= abs( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   -= abs( lhs_ * orhs_ );
             sres_   -= abs( lhs_ * orhs_ );
             refres_ -= abs( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -3370,44 +2611,29 @@ void OperationTest<VT,MT>::testAbsOperation()
 
       // Abs multiplication with subtraction assignment with evaluated vector/matrix
       {
-         test_ = "Abs multiplication with subtraction assignment with evaluated vector/matrix";
+         test_  = "Abs multiplication with subtraction assignment with evaluated vector/matrix";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= abs( eval( lhs_ ) * eval( rhs_ ) );
             sres_   -= abs( eval( lhs_ ) * eval( rhs_ ) );
             refres_ -= abs( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   -= abs( eval( lhs_ ) * eval( orhs_ ) );
             sres_   -= abs( eval( lhs_ ) * eval( orhs_ ) );
             refres_ -= abs( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -3420,44 +2646,29 @@ void OperationTest<VT,MT>::testAbsOperation()
 
       // Abs multiplication with multiplication assignment with the given vector/matrix
       {
-         test_ = "Abs multiplication with multiplication assignment with the given vector/matrix";
+         test_  = "Abs multiplication with multiplication assignment with the given vector/matrix";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= abs( lhs_ * rhs_ );
             sres_   *= abs( lhs_ * rhs_ );
             refres_ *= abs( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   *= abs( lhs_ * orhs_ );
             sres_   *= abs( lhs_ * orhs_ );
             refres_ *= abs( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -3465,44 +2676,29 @@ void OperationTest<VT,MT>::testAbsOperation()
 
       // Abs multiplication with multiplication assignment with evaluated vector/matrix
       {
-         test_ = "Abs multiplication with multiplication assignment with evaluated vector/matrix";
+         test_  = "Abs multiplication with multiplication assignment with evaluated vector/matrix";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= abs( eval( lhs_ ) * eval( rhs_ ) );
             sres_   *= abs( eval( lhs_ ) * eval( rhs_ ) );
             refres_ *= abs( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side row-major dense matrix type:\n"
-                << "     " << typeid( MT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT>( ex );
          }
 
          checkResults<MT>();
 
          try {
+            initResults();
             dres_   *= abs( eval( lhs_ ) * eval( orhs_ ) );
             sres_   *= abs( eval( lhs_ ) * eval( orhs_ ) );
             refres_ *= abs( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side transpose dense vector type:\n"
-                << "     " << typeid( VT ).name() << "\n"
-                << "   Right-hand side column-major dense matrix type:\n"
-                << "     " << typeid( TMT ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TMT>( ex );
          }
 
          checkResults<TMT>();
@@ -3529,7 +2725,7 @@ void OperationTest<VT,MT>::testAbsOperation()
 // \exception std::runtime_error Incorrect sparse result detected.
 //
 // This function is called after each test case to check and compare the computed results.
-// The template argument \a LT indicates the types of the left-hand side operand used for
+// The template argument \a RT indicates the types of the left-hand side operand used for
 // the computations.
 */
 template< typename VT    // Type of the left-hand side dense vector
@@ -3580,7 +2776,7 @@ void OperationTest<VT,MT>::checkResults()
 // \exception std::runtime_error Incorrect sparse result detected.
 //
 // This function is called after each test case to check and compare the computed transpose
-// results. The template argument \a LT indicates the types of the left-hand side operand
+// results. The template argument \a RT indicates the types of the left-hand side operand
 // used for the computations.
 */
 template< typename VT    // Type of the left-hand side dense vector
@@ -3619,6 +2815,91 @@ void OperationTest<VT,MT>::checkTransposeResults()
           << "   Expected transpose result:\n" << trefres_ << "\n";
       throw std::runtime_error( oss.str() );
    }
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  UTILITY FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Initializing the non-transpose result vectors.
+//
+// \return void
+//
+// This function is called before each non-transpose test case to initialize the according result
+// vectors to random values.
+*/
+template< typename VT    // Type of the left-hand side dense vector
+        , typename MT >  // Type of the right-hand side dense matrix
+void OperationTest<VT,MT>::initResults()
+{
+   const typename blaze::BaseElementType<RE>::Type min( randmin );
+   const typename blaze::BaseElementType<RE>::Type max( randmax );
+
+   randomize( dres_, min, max );
+   sres_    = dres_;
+   refres_  = dres_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initializing the transpose result vectors.
+//
+// \return void
+//
+// This function is called before each transpose test case to initialize the according result
+// vectors to random values.
+*/
+template< typename VT    // Type of the left-hand side dense vector
+        , typename MT >  // Type of the right-hand side dense matrix
+void OperationTest<VT,MT>::initTransposeResults()
+{
+   const typename blaze::BaseElementType<RE>::Type min( randmin );
+   const typename blaze::BaseElementType<RE>::Type max( randmax );
+
+   randomize( tdres_, min, max );
+   tsres_   = tdres_;
+   trefres_ = tdres_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Convert the given exception into a \a std::runtime_error exception.
+//
+// \param ex The \a std::exception to be extended.
+// \return void
+// \exception std::runtime_error The converted exception.
+//
+// This function converts the given exception to a \a std::runtime_error exception. Additionally,
+// the function extends the given exception message by all available information for the failed
+// test. The template argument \a RT indicates the types of the left-hand side operand used for
+// the computations.
+*/
+template< typename VT    // Type of the left-hand side dense vector
+        , typename MT >  // Type of the right-hand side dense matrix
+template< typename RT >  // Type of the right-hand side operand
+void OperationTest<VT,MT>::convertException( const std::exception& ex )
+{
+   using blaze::IsRowMajorMatrix;
+
+   std::ostringstream oss;
+   oss << " Test : " << test_ << "\n"
+       << " Error: " << error_ << "\n"
+       << " Details:\n"
+       << "   Left-hand side transpose dense vector type:\n"
+       << "     " << typeid( VT ).name() << "\n"
+       << "   Right-hand side " << ( IsRowMajorMatrix<RT>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense matrix type:\n"
+       << "     " << typeid( RT ).name() << "\n"
+       << "   Error message: " << ex.what() << "\n";
+   throw std::runtime_error( oss.str() );
 }
 //*************************************************************************************************
 
