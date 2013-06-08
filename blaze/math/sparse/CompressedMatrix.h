@@ -1748,8 +1748,8 @@ template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
 void CompressedMatrix<Type,SO>::reserveElements( size_t nonzeros )
 {
-   Iterator* newBegin = new Iterator[2UL*m_+2UL];
-   Iterator* newEnd   = newBegin+m_+1UL;
+   Iterator* newBegin = new Iterator[2UL*capacity_+2UL];
+   Iterator* newEnd   = newBegin+capacity_+1UL;
 
    newBegin[0UL] = new Element[nonzeros];
 
@@ -3712,8 +3712,8 @@ inline size_t CompressedMatrix<Type,true>::extendCapacity() const
 template< typename Type >  // Data type of the sparse matrix
 void CompressedMatrix<Type,true>::reserveElements( size_t nonzeros )
 {
-   Iterator* newBegin = new Iterator[2UL*n_+2UL];
-   Iterator* newEnd   = newBegin+n_+1UL;
+   Iterator* newBegin = new Iterator[2UL*capacity_+2UL];
+   Iterator* newEnd   = newBegin+capacity_+1UL;
 
    newBegin[0UL] = new Element[nonzeros];
 
