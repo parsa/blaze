@@ -41,11 +41,14 @@
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/IsEqual.h>
+#include <blazetest/mathtest/RandomMaximum.h>
+#include <blazetest/mathtest/RandomMinimum.h>
 
 
 namespace blazetest {
@@ -141,6 +144,15 @@ class OperationTest
    //@}
    //**********************************************************************************************
 
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
+   void initResults();
+   void initTransposeResults();
+   void convertException( const std::exception& ex );
+   //@}
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -158,7 +170,8 @@ class OperationTest
    RT2   refrhs_;  //!< The reference right-hand side vector.
    DRRE  refres_;  //!< The reference result.
 
-   std::string test_;  //!< Label of the currently performed test.
+   std::string test_;   //!< Label of the currently performed test.
+   std::string error_;  //!< Description of the current error type.
    //@}
    //**********************************************************************************************
 
@@ -252,6 +265,7 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    , refrhs_( rhs_ )              // The reference right-hand side vector
    , refres_()                    // The reference result
    , test_()                      // Label of the currently performed test
+   , error_()                     // Description of the current error type
 {
    testInitialStatus();
    testAssignment();
@@ -493,9 +507,11 @@ void OperationTest<VT1,VT2>::testBasicOperation()
 
       // Multiplication with the given vectors
       {
-         test_ = "Multiplication with the given vectors";
+         test_  = "Multiplication with the given vectors";
+         error_ = "Failed outer product operation";
 
          try {
+            initResults();
             dres_   = lhs_ * rhs_;
             odres_  = lhs_ * rhs_;
             sres_   = lhs_ * rhs_;
@@ -503,16 +519,7 @@ void OperationTest<VT1,VT2>::testBasicOperation()
             refres_ = reflhs_ * refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed outer product operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -520,25 +527,19 @@ void OperationTest<VT1,VT2>::testBasicOperation()
 
       // Multiplication with evaluated vectors
       {
-         test_ = "Multiplication with evaluated vectors";
+         test_  = "Multiplication with evaluated vectors";
+         error_ = "Failed outer product operation";
 
          try {
-            dres_  = eval( lhs_ ) * eval( rhs_ );
-            odres_ = eval( lhs_ ) * eval( rhs_ );
-            sres_  = eval( lhs_ ) * eval( rhs_ );
-            osres_ = eval( lhs_ ) * eval( rhs_ );
+            initResults();
+            dres_   = eval( lhs_ ) * eval( rhs_ );
+            odres_  = eval( lhs_ ) * eval( rhs_ );
+            sres_   = eval( lhs_ ) * eval( rhs_ );
+            osres_  = eval( lhs_ ) * eval( rhs_ );
+            refres_ = eval( reflhs_ ) * eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed outer product operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -551,9 +552,11 @@ void OperationTest<VT1,VT2>::testBasicOperation()
 
       // Outer product with addition assignment with the given vectors
       {
-         test_ = "Outer product with addition assignment with the given vectors";
+         test_  = "Outer product with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += lhs_ * rhs_;
             odres_  += lhs_ * rhs_;
             sres_   += lhs_ * rhs_;
@@ -561,16 +564,7 @@ void OperationTest<VT1,VT2>::testBasicOperation()
             refres_ += reflhs_ * refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -578,9 +572,11 @@ void OperationTest<VT1,VT2>::testBasicOperation()
 
       // Outer product with addition assignment with evaluated vectors
       {
-         test_ = "Outer product with addition assignment with evaluated vectors";
+         test_  = "Outer product with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += eval( lhs_ ) * eval( rhs_ );
             odres_  += eval( lhs_ ) * eval( rhs_ );
             sres_   += eval( lhs_ ) * eval( rhs_ );
@@ -588,16 +584,7 @@ void OperationTest<VT1,VT2>::testBasicOperation()
             refres_ += eval( reflhs_ ) * eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -610,9 +597,11 @@ void OperationTest<VT1,VT2>::testBasicOperation()
 
       // Outer product with subtraction assignment with the given vectors
       {
-         test_ = "Outer product with subtraction assignment with the given vectors";
+         test_  = "Outer product with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= lhs_ * rhs_;
             odres_  -= lhs_ * rhs_;
             sres_   -= lhs_ * rhs_;
@@ -620,16 +609,7 @@ void OperationTest<VT1,VT2>::testBasicOperation()
             refres_ -= reflhs_ * refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -637,9 +617,11 @@ void OperationTest<VT1,VT2>::testBasicOperation()
 
       // Outer product with subtraction assignment with evaluated vectors
       {
-         test_ = "Outer product with subtraction assignment with evaluated vectors";
+         test_  = "Outer product with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= eval( lhs_ ) * eval( rhs_ );
             odres_  -= eval( lhs_ ) * eval( rhs_ );
             sres_   -= eval( lhs_ ) * eval( rhs_ );
@@ -647,16 +629,7 @@ void OperationTest<VT1,VT2>::testBasicOperation()
             refres_ -= eval( reflhs_ ) * eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -690,9 +663,11 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
 
       // Negated outer product with the given vectors
       {
-         test_ = "Negated outer product with the given vectors";
+         test_  = "Negated outer product with the given vectors";
+         error_ = "Failed outer product operation";
 
          try {
+            initResults();
             dres_   = -( lhs_ * rhs_ );
             odres_  = -( lhs_ * rhs_ );
             sres_   = -( lhs_ * rhs_ );
@@ -700,16 +675,7 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
             refres_ = -( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed outer product operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -717,25 +683,19 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
 
       // Negated outer product with evaluated vectors
       {
-         test_ = "Negated outer product with evaluated vectors";
+         test_  = "Negated outer product with evaluated vectors";
+         error_ = "Failed outer product operation";
 
          try {
-            dres_  = -( eval( lhs_ ) * eval( rhs_ ) );
-            odres_ = -( eval( lhs_ ) * eval( rhs_ ) );
-            sres_  = -( eval( lhs_ ) * eval( rhs_ ) );
-            osres_ = -( eval( lhs_ ) * eval( rhs_ ) );
+            initResults();
+            dres_   = -( eval( lhs_ ) * eval( rhs_ ) );
+            odres_  = -( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   = -( eval( lhs_ ) * eval( rhs_ ) );
+            osres_  = -( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ = -( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed outer product operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -748,9 +708,11 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
 
       // Negated multiplication with addition assignment with the given vectors
       {
-         test_ = "Negated multiplication with addition assignment with the given vectors";
+         test_  = "Negated multiplication with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += -( lhs_ * rhs_ );
             odres_  += -( lhs_ * rhs_ );
             sres_   += -( lhs_ * rhs_ );
@@ -758,16 +720,7 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
             refres_ += -( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -775,9 +728,11 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
 
       // Negated multiplication with addition assignment with evaluated vectors
       {
-         test_ = "Negated multiplication with addition assignment with evaluated vectors";
+         test_  = "Negated multiplication with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += -( eval( lhs_ ) * eval( rhs_ ) );
             odres_  += -( eval( lhs_ ) * eval( rhs_ ) );
             sres_   += -( eval( lhs_ ) * eval( rhs_ ) );
@@ -785,16 +740,7 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
             refres_ += -( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -807,9 +753,11 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
 
       // Negated multiplication with subtraction assignment with the given vectors
       {
-         test_ = "Negated multiplication with subtraction assignment with the given vectors";
+         test_  = "Negated multiplication with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= -( lhs_ * rhs_ );
             odres_  -= -( lhs_ * rhs_ );
             sres_   -= -( lhs_ * rhs_ );
@@ -817,16 +765,7 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
             refres_ -= -( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -834,9 +773,11 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
 
       // Negated multiplication with subtraction assignment with evaluated vectors
       {
-         test_ = "Negated multiplication with subtraction assignment with evaluated vectors";
+         test_  = "Negated multiplication with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= -( eval( lhs_ ) * eval( rhs_ ) );
             odres_  -= -( eval( lhs_ ) * eval( rhs_ ) );
             sres_   -= -( eval( lhs_ ) * eval( rhs_ ) );
@@ -844,16 +785,7 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
             refres_ -= -( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1070,9 +1002,11 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled outer product with the given vectors
       {
-         test_ = "Scaled outer product with the given vectors (s*OP)";
+         test_  = "Scaled outer product with the given vectors (s*OP)";
+         error_ = "Failed outer product operation";
 
          try {
+            initResults();
             dres_   = scalar * ( lhs_ * rhs_ );
             odres_  = scalar * ( lhs_ * rhs_ );
             sres_   = scalar * ( lhs_ * rhs_ );
@@ -1080,16 +1014,7 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
             refres_ = scalar * ( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed outer product operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1097,25 +1022,19 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled outer product with evaluated vectors
       {
-         test_ = "Scaled outer product with evaluated vectors (s*OP)";
+         test_  = "Scaled outer product with evaluated vectors (s*OP)";
+         error_ = "Failed outer product operation";
 
          try {
-            dres_  = scalar * ( eval( lhs_ ) * eval( rhs_ ) );
-            odres_ = scalar * ( eval( lhs_ ) * eval( rhs_ ) );
-            sres_  = scalar * ( eval( lhs_ ) * eval( rhs_ ) );
-            osres_ = scalar * ( eval( lhs_ ) * eval( rhs_ ) );
+            initResults();
+            dres_   = scalar * ( eval( lhs_ ) * eval( rhs_ ) );
+            odres_  = scalar * ( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   = scalar * ( eval( lhs_ ) * eval( rhs_ ) );
+            osres_  = scalar * ( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ = scalar * ( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed outer product operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1128,9 +1047,11 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled outer product with the given vectors
       {
-         test_ = "Scaled outer product with the given vectors (OP*s)";
+         test_  = "Scaled outer product with the given vectors (OP*s)";
+         error_ = "Failed outer product operation";
 
          try {
+            initResults();
             dres_   = ( lhs_ * rhs_ ) * scalar;
             odres_  = ( lhs_ * rhs_ ) * scalar;
             sres_   = ( lhs_ * rhs_ ) * scalar;
@@ -1138,16 +1059,7 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
             refres_ = ( reflhs_ * refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed outer product operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1155,25 +1067,19 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled outer product with evaluated vectors
       {
-         test_ = "Scaled outer product with evaluated vectors (OP*s)";
+         test_  = "Scaled outer product with evaluated vectors (OP*s)";
+         error_ = "Failed outer product operation";
 
          try {
-            dres_  = ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
-            odres_ = ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
-            sres_  = ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
-            osres_ = ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
+            initResults();
+            dres_   = ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
+            odres_  = ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
+            sres_   = ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
+            osres_  = ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
+            refres_ = ( eval( reflhs_ ) * eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed outer product operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1186,9 +1092,11 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled outer product with the given vectors
       {
-         test_ = "Scaled outer product with the given vectors (OP/s)";
+         test_  = "Scaled outer product with the given vectors (OP/s)";
+         error_ = "Failed outer product operation";
 
          try {
+            initResults();
             dres_   = ( lhs_ * rhs_ ) / scalar;
             odres_  = ( lhs_ * rhs_ ) / scalar;
             sres_   = ( lhs_ * rhs_ ) / scalar;
@@ -1196,16 +1104,7 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
             refres_ = ( reflhs_ * refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed outer product operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1213,25 +1112,19 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled outer product with evaluated vectors
       {
-         test_ = "Scaled outer product with evaluated vectors (OP/s)";
+         test_  = "Scaled outer product with evaluated vectors (OP/s)";
+         error_ = "Failed outer product operation";
 
          try {
-            dres_  = ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
-            odres_ = ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
-            sres_  = ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
-            osres_ = ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
+            initResults();
+            dres_   = ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
+            odres_  = ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
+            sres_   = ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
+            osres_  = ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
+            refres_ = ( eval( reflhs_ ) * eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed outer product operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1244,9 +1137,11 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled multiplication with addition assignment with the given vectors
       {
-         test_ = "Scaled multiplication with addition assignment with the given vectors (s*OP)";
+         test_  = "Scaled multiplication with addition assignment with the given vectors (s*OP)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += scalar * ( lhs_ * rhs_ );
             odres_  += scalar * ( lhs_ * rhs_ );
             sres_   += scalar * ( lhs_ * rhs_ );
@@ -1254,16 +1149,7 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
             refres_ += scalar * ( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1271,9 +1157,11 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled multiplication with addition assignment with evaluated vectors
       {
-         test_ = "Scaled multiplication with addition assignment with evaluated vectors (s*OP)";
+         test_  = "Scaled multiplication with addition assignment with evaluated vectors (s*OP)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += scalar * ( eval( lhs_ ) * eval( rhs_ ) );
             odres_  += scalar * ( eval( lhs_ ) * eval( rhs_ ) );
             sres_   += scalar * ( eval( lhs_ ) * eval( rhs_ ) );
@@ -1281,16 +1169,7 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
             refres_ += scalar * ( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1303,9 +1182,11 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled multiplication with addition assignment with the given vectors
       {
-         test_ = "Scaled multiplication with addition assignment with the given vectors (OP*s)";
+         test_  = "Scaled multiplication with addition assignment with the given vectors (OP*s)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += ( lhs_ * rhs_ ) * scalar;
             odres_  += ( lhs_ * rhs_ ) * scalar;
             sres_   += ( lhs_ * rhs_ ) * scalar;
@@ -1313,16 +1194,7 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
             refres_ += ( reflhs_ * refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1330,9 +1202,11 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled multiplication with addition assignment with evaluated vectors
       {
-         test_ = "Scaled multiplication with addition assignment with evaluated vectors (OP*s)";
+         test_  = "Scaled multiplication with addition assignment with evaluated vectors (OP*s)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
             odres_  += ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
             sres_   += ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
@@ -1340,16 +1214,7 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
             refres_ += ( eval( reflhs_ ) * eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1362,9 +1227,11 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled multiplication with addition assignment with the given vectors
       {
-         test_ = "Scaled multiplication with addition assignment with the given vectors (OP/s)";
+         test_  = "Scaled multiplication with addition assignment with the given vectors (OP/s)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += ( lhs_ * rhs_ ) / scalar;
             odres_  += ( lhs_ * rhs_ ) / scalar;
             sres_   += ( lhs_ * rhs_ ) / scalar;
@@ -1372,16 +1239,7 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
             refres_ += ( reflhs_ * refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1389,9 +1247,11 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled multiplication with addition assignment with evaluated vectors
       {
-         test_ = "Scaled multiplication with addition assignment with evaluated vectors (OP/s)";
+         test_  = "Scaled multiplication with addition assignment with evaluated vectors (OP/s)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
             odres_  += ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
             sres_   += ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
@@ -1399,16 +1259,7 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
             refres_ += ( eval( reflhs_ ) * eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1421,9 +1272,11 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled multiplication with subtraction assignment with the given vectors
       {
-         test_ = "Scaled multiplication with subtraction assignment with the given vectors (s*OP)";
+         test_  = "Scaled multiplication with subtraction assignment with the given vectors (s*OP)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= scalar * ( lhs_ * rhs_ );
             odres_  -= scalar * ( lhs_ * rhs_ );
             sres_   -= scalar * ( lhs_ * rhs_ );
@@ -1431,16 +1284,7 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
             refres_ -= scalar * ( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1448,9 +1292,11 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled multiplication with subtraction assignment with evaluated vectors
       {
-         test_ = "Scaled multiplication with subtraction assignment with evaluated vectors (s*OP)";
+         test_  = "Scaled multiplication with subtraction assignment with evaluated vectors (s*OP)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= scalar * ( eval( lhs_ ) * eval( rhs_ ) );
             odres_  -= scalar * ( eval( lhs_ ) * eval( rhs_ ) );
             sres_   -= scalar * ( eval( lhs_ ) * eval( rhs_ ) );
@@ -1458,16 +1304,7 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
             refres_ -= scalar * ( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1480,9 +1317,11 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled multiplication with subtraction assignment with the given vectors
       {
-         test_ = "Scaled multiplication with subtraction assignment with the given vectors (OP*s)";
+         test_  = "Scaled multiplication with subtraction assignment with the given vectors (OP*s)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= ( lhs_ * rhs_ ) * scalar;
             odres_  -= ( lhs_ * rhs_ ) * scalar;
             sres_   -= ( lhs_ * rhs_ ) * scalar;
@@ -1490,16 +1329,7 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
             refres_ -= ( reflhs_ * refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1507,9 +1337,11 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled multiplication with subtraction assignment with evaluated vectors
       {
-         test_ = "Scaled multiplication with subtraction assignment with evaluated vectors (OP*s)";
+         test_  = "Scaled multiplication with subtraction assignment with evaluated vectors (OP*s)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
             odres_  -= ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
             sres_   -= ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
@@ -1517,16 +1349,7 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
             refres_ -= ( eval( reflhs_ ) * eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1539,9 +1362,11 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled multiplication with subtraction assignment with the given vectors
       {
-         test_ = "Scaled multiplication with subtraction assignment with the given vectors (OP/s)";
+         test_  = "Scaled multiplication with subtraction assignment with the given vectors (OP/s)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= ( lhs_ * rhs_ ) / scalar;
             odres_  -= ( lhs_ * rhs_ ) / scalar;
             sres_   -= ( lhs_ * rhs_ ) / scalar;
@@ -1549,16 +1374,7 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
             refres_ -= ( reflhs_ * refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1566,9 +1382,11 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled multiplication with subtraction assignment with evaluated vectors
       {
-         test_ = "Scaled multiplication with subtraction assignment with evaluated vectors (OP/s)";
+         test_  = "Scaled multiplication with subtraction assignment with evaluated vectors (OP/s)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
             odres_  -= ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
             sres_   -= ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
@@ -1576,16 +1394,7 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
             refres_ -= ( eval( reflhs_ ) * eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1619,9 +1428,11 @@ void OperationTest<VT1,VT2>::testTransposeOperation()
 
       // Transpose outer product with the given vectors
       {
-         test_ = "Transpose outer product with the given vectors";
+         test_  = "Transpose outer product with the given vectors";
+         error_ = "Failed outer product operation";
 
          try {
+            initTransposeResults();
             tdres_  = trans( lhs_ * rhs_ );
             todres_ = trans( lhs_ * rhs_ );
             tsres_  = trans( lhs_ * rhs_ );
@@ -1629,16 +1440,7 @@ void OperationTest<VT1,VT2>::testTransposeOperation()
             refres_ = trans( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed outer product operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkTransposeResults();
@@ -1646,25 +1448,19 @@ void OperationTest<VT1,VT2>::testTransposeOperation()
 
       // Transpose outer product with evaluated vectors
       {
-         test_ = "Transpose outer product with evaluated vectors";
+         test_  = "Transpose outer product with evaluated vectors";
+         error_ = "Failed outer product operation";
 
          try {
+            initTransposeResults();
             tdres_  = trans( eval( lhs_ ) * eval( rhs_ ) );
             todres_ = trans( eval( lhs_ ) * eval( rhs_ ) );
             tsres_  = trans( eval( lhs_ ) * eval( rhs_ ) );
             tosres_ = trans( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ = trans( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed outer product operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkTransposeResults();
@@ -1698,9 +1494,11 @@ void OperationTest<VT1,VT2>::testAbsOperation()
 
       // Abs outer product with the given vectors
       {
-         test_ = "Abs outer product with the given vectors";
+         test_  = "Abs outer product with the given vectors";
+         error_ = "Failed outer product operation";
 
          try {
+            initResults();
             dres_   = abs( lhs_ * rhs_ );
             odres_  = abs( lhs_ * rhs_ );
             sres_   = abs( lhs_ * rhs_ );
@@ -1708,16 +1506,7 @@ void OperationTest<VT1,VT2>::testAbsOperation()
             refres_ = abs( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed outer product operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1725,25 +1514,19 @@ void OperationTest<VT1,VT2>::testAbsOperation()
 
       // Abs outer product with evaluated vectors
       {
-         test_ = "Abs outer product with evaluated vectors";
+         test_  = "Abs outer product with evaluated vectors";
+         error_ = "Failed outer product operation";
 
          try {
-            dres_  = abs( eval( lhs_ ) * eval( rhs_ ) );
-            odres_ = abs( eval( lhs_ ) * eval( rhs_ ) );
-            sres_  = abs( eval( lhs_ ) * eval( rhs_ ) );
-            osres_ = abs( eval( lhs_ ) * eval( rhs_ ) );
+            initResults();
+            dres_   = abs( eval( lhs_ ) * eval( rhs_ ) );
+            odres_  = abs( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   = abs( eval( lhs_ ) * eval( rhs_ ) );
+            osres_  = abs( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ = abs( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed outer product operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1756,9 +1539,11 @@ void OperationTest<VT1,VT2>::testAbsOperation()
 
       // Abs multiplication with addition assignment with the given vectors
       {
-         test_ = "Abs multiplication with addition assignment with the given vectors";
+         test_  = "Abs multiplication with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += abs( lhs_ * rhs_ );
             odres_  += abs( lhs_ * rhs_ );
             sres_   += abs( lhs_ * rhs_ );
@@ -1766,16 +1551,7 @@ void OperationTest<VT1,VT2>::testAbsOperation()
             refres_ += abs( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1783,9 +1559,11 @@ void OperationTest<VT1,VT2>::testAbsOperation()
 
       // Abs multiplication with addition assignment with evaluated vectors
       {
-         test_ = "Abs multiplication with addition assignment with evaluated vectors";
+         test_  = "Abs multiplication with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += abs( eval( lhs_ ) * eval( rhs_ ) );
             odres_  += abs( eval( lhs_ ) * eval( rhs_ ) );
             sres_   += abs( eval( lhs_ ) * eval( rhs_ ) );
@@ -1793,16 +1571,7 @@ void OperationTest<VT1,VT2>::testAbsOperation()
             refres_ += abs( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1815,9 +1584,11 @@ void OperationTest<VT1,VT2>::testAbsOperation()
 
       // Abs multiplication with subtraction assignment with the given vectors
       {
-         test_ = "Abs multiplication with subtraction assignment with the given vectors";
+         test_  = "Abs multiplication with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= abs( lhs_ * rhs_ );
             odres_  -= abs( lhs_ * rhs_ );
             sres_   -= abs( lhs_ * rhs_ );
@@ -1825,16 +1596,7 @@ void OperationTest<VT1,VT2>::testAbsOperation()
             refres_ -= abs( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1842,9 +1604,11 @@ void OperationTest<VT1,VT2>::testAbsOperation()
 
       // Abs multiplication with subtraction assignment with evaluated vectors
       {
-         test_ = "Abs multiplication with subtraction assignment with evaluated vectors";
+         test_  = "Abs multiplication with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= abs( eval( lhs_ ) * eval( rhs_ ) );
             odres_  -= abs( eval( lhs_ ) * eval( rhs_ ) );
             sres_   -= abs( eval( lhs_ ) * eval( rhs_ ) );
@@ -1852,16 +1616,7 @@ void OperationTest<VT1,VT2>::testAbsOperation()
             refres_ -= abs( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side dense vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side transpose dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException( ex );
          }
 
          checkResults();
@@ -1973,6 +1728,91 @@ void OperationTest<VT1,VT2>::checkTransposeResults()
           << "   Expected result:\n" << refres_ << "\n";
       throw std::runtime_error( oss.str() );
    }
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  UTILITY FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Initializing the non-transpose result matrices.
+//
+// \return void
+//
+// This function is called before each non-transpose test case to initialize the according result
+// matrices to random values.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::initResults()
+{
+   const typename blaze::BaseElementType<RE>::Type min( randmin );
+   const typename blaze::BaseElementType<RE>::Type max( randmax );
+
+   randomize( dres_, min, max );
+   odres_   = dres_;
+   sres_    = dres_;
+   osres_   = dres_;
+   refres_  = dres_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initializing the transpose result matrices.
+//
+// \return void
+//
+// This function is called before each transpose test case to initialize the according result
+// matrices to random values.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::initTransposeResults()
+{
+   const typename blaze::BaseElementType<RE>::Type min( randmin );
+   const typename blaze::BaseElementType<RE>::Type max( randmax );
+
+   randomize( tdres_, min, max );
+   todres_  = tdres_;
+   tsres_   = tdres_;
+   tosres_  = tdres_;
+   refres_  = tdres_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Convert the given exception into a \a std::runtime_error exception.
+//
+// \param ex The \a std::exception to be extended.
+// \return void
+// \exception std::runtime_error The converted exception.
+//
+// This function converts the given exception to a \a std::runtime_error exception. Additionally,
+// the function extends the given exception message by all available information for the failed
+// test.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::convertException( const std::exception& ex )
+{
+   std::ostringstream oss;
+   oss << " Test : " << test_ << "\n"
+       << " Error: " << error_ << "\n"
+       << " Details:\n"
+       << "   Left-hand side dense vector type:\n"
+       << "     " << typeid( VT1 ).name() << "\n"
+       << "   Right-hand side transpose dense vector type:\n"
+       << "     " << typeid( TVT2 ).name() << "\n"
+       << "   Error message: " << ex.what() << "\n";
+   throw std::runtime_error( oss.str() );
 }
 //*************************************************************************************************
 
