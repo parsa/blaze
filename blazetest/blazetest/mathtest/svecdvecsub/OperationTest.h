@@ -39,12 +39,15 @@
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/IsEqual.h>
+#include <blazetest/mathtest/RandomMaximum.h>
+#include <blazetest/mathtest/RandomMinimum.h>
 
 
 namespace blazetest {
@@ -62,9 +65,9 @@ namespace svecdvecsub {
 //*************************************************************************************************
 /*!\brief Auxiliary class template for the sparse vector/dense vector subtraction operation test.
 //
-// This class template represents one particular vector subtraction test between two vectors
-// of a particular type. The two template arguments \a VT1 and \a VT2 represent the types of
-// the left-hand side and right-hand side vector, respectively.
+// This class template represents one particular vector subtraction test between two vectors of
+// a particular type. The two template arguments \a VT1 and \a VT2 represent the types of the
+// left-hand side and right-hand side vector, respectively.
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -136,6 +139,15 @@ class OperationTest
    //@}
    //**********************************************************************************************
 
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
+   void initResults();
+   void initTransposeResults();
+   template< typename LT, typename RT > void convertException( const std::exception& ex );
+   //@}
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -154,7 +166,8 @@ class OperationTest
    TRT2  trefrhs_;  //!< The reference right-hand side transpose vector.
    TDRRE trefres_;  //!< The transpose reference result.
 
-   std::string test_;  //!< Label of the currently performed test.
+   std::string test_;   //!< Label of the currently performed test.
+   std::string error_;  //!< Description of the current error type.
    //@}
    //**********************************************************************************************
 
@@ -232,7 +245,8 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    , treflhs_( tlhs_ )     // The reference left-hand side transpose vector
    , trefrhs_( trhs_ )     // The reference right-hand side transpose vector
    , trefres_()            // The transpose reference result
-   , test_()               // Label of the currently performed test.
+   , test_()               // Label of the currently performed test
+   , error_()              // Description of the current error type
 {
    testInitialStatus();
    testAssignment();
@@ -627,7 +641,7 @@ void OperationTest<VT1,VT2>::testElementAccess()
 /*!\brief Testing the plain sparse vector/dense vector subtraction.
 //
 // \return void
-// \exception std::runtime_error Subtraction error detected.
+// \exception std::runtime_error Subtraction errordetected.
 //
 // This function tests the plain vector subtraction with plain assignment, addition assignment,
 // subtraction assignment, and multiplication assignment. In case any error resulting from the
@@ -642,49 +656,34 @@ void OperationTest<VT1,VT2>::testBasicOperation()
    if( BLAZETEST_MATHTEST_TEST_BASIC_OPERATION > 1 )
    {
       //=====================================================================================
-      // Subtraction with the given vectors
+      // Subtraction
       //=====================================================================================
 
       // Subtraction with the given vectors
       {
-         test_ = " Subtraction with the given vectors";
+         test_  = "Subtraction with the given vectors";
+         error_ = "Failed subtraction operation";
 
          try {
+            initResults();
             dres_   = lhs_ - rhs_;
             sres_   = lhs_ - rhs_;
             refres_ = reflhs_ - refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   = tlhs_ - trhs_;
             tsres_   = tlhs_ - trhs_;
             trefres_ = treflhs_ - trefrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -692,42 +691,29 @@ void OperationTest<VT1,VT2>::testBasicOperation()
 
       // Subtraction with evaluated vectors
       {
-         test_ = "Subtraction with evaluated vectors";
+         test_  = "Subtraction with evaluated vectors";
+         error_ = "Failed subtraction operation";
 
          try {
-            dres_ = eval( lhs_ ) - eval( rhs_ );
-            sres_ = eval( lhs_ ) - eval( rhs_ );
+            initResults();
+            dres_   = eval( lhs_ ) - eval( rhs_ );
+            sres_   = eval( lhs_ ) - eval( rhs_ );
+            refres_ = eval( reflhs_ ) - eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
-            tdres_ = eval( tlhs_ ) - eval( trhs_ );
-            tsres_ = eval( tlhs_ ) - eval( trhs_ );
+            initTransposeResults();
+            tdres_   = eval( tlhs_ ) - eval( trhs_ );
+            tsres_   = eval( tlhs_ ) - eval( trhs_ );
+            trefres_ = eval( treflhs_ ) - eval( trefrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -740,44 +726,29 @@ void OperationTest<VT1,VT2>::testBasicOperation()
 
       // Subtraction with addition assignment with the given vectors
       {
-         test_ = "Subtraction with addition assignment with the given vectors";
+         test_  = "Subtraction with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += lhs_ - rhs_;
             sres_   += lhs_ - rhs_;
             refres_ += reflhs_ - refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   += tlhs_ - trhs_;
             tsres_   += tlhs_ - trhs_;
             trefres_ += treflhs_ - trefrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -785,44 +756,29 @@ void OperationTest<VT1,VT2>::testBasicOperation()
 
       // Subtraction with addition assignment with the given vectors
       {
-         test_ = "Subtraction with addition assignment with evaluated vectors";
+         test_  = "Subtraction with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += eval( lhs_ ) - eval( rhs_ );
             sres_   += eval( lhs_ ) - eval( rhs_ );
             refres_ += eval( reflhs_ ) - eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   += eval( tlhs_ ) - eval( trhs_ );
             tsres_   += eval( tlhs_ ) - eval( trhs_ );
             trefres_ += eval( treflhs_ ) - eval( trefrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -835,44 +791,29 @@ void OperationTest<VT1,VT2>::testBasicOperation()
 
       // Subtraction with subtraction assignment with the given vectors
       {
-         test_ = "Subtraction with subtraction assignment with the given vectors";
+         test_  = "Subtraction with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= lhs_ - rhs_;
             sres_   -= lhs_ - rhs_;
             refres_ -= reflhs_ - refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   -= tlhs_ - trhs_;
             tsres_   -= tlhs_ - trhs_;
             trefres_ -= treflhs_ - trefrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -880,44 +821,29 @@ void OperationTest<VT1,VT2>::testBasicOperation()
 
       // Subtraction with subtraction assignment with evaluated vectors
       {
-         test_ = "Subtraction with subtraction assignment with evaluated vectors";
+         test_  = "Subtraction with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= eval( lhs_ ) - eval( rhs_ );
             sres_   -= eval( lhs_ ) - eval( rhs_ );
             refres_ -= eval( reflhs_ ) - eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   -= eval( tlhs_ ) - eval( trhs_ );
             tsres_   -= eval( tlhs_ ) - eval( trhs_ );
             trefres_ -= eval( treflhs_ ) - eval( trefrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -930,44 +856,29 @@ void OperationTest<VT1,VT2>::testBasicOperation()
 
       // Subtraction with multiplication assignment with the given vectors
       {
-         test_ = "Subtraction with multiplication assignment with the given vectors";
+         test_  = "Subtraction with multiplication assignment with the given vectors";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= lhs_ - rhs_;
             sres_   *= lhs_ - rhs_;
             refres_ *= reflhs_ - refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   *= tlhs_ - trhs_;
             tsres_   *= tlhs_ - trhs_;
             trefres_ *= treflhs_ - trefrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -975,44 +886,29 @@ void OperationTest<VT1,VT2>::testBasicOperation()
 
       // Subtraction with multiplication assignment with evaluated vectors
       {
-         test_ = "Subtraction with multiplication assignment with evaluated vectors";
+         test_  = "Subtraction with multiplication assignment with evaluated vectors";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= eval( lhs_ ) - eval( rhs_ );
             sres_   *= eval( lhs_ ) - eval( rhs_ );
             refres_ *= eval( reflhs_ ) - eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   *= eval( tlhs_ ) - eval( trhs_ );
             tsres_   *= eval( tlhs_ ) - eval( trhs_ );
             trefres_ *= eval( treflhs_ ) - eval( trefrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -1027,7 +923,7 @@ void OperationTest<VT1,VT2>::testBasicOperation()
 /*!\brief Testing the negated sparse vector/dense vector subtraction.
 //
 // \return void
-// \exception std::runtime_error Subtraction error detected.
+// \exception std::runtime_error Subtraction errordetected.
 //
 // This function tests the negated vector subtraction with plain assignment, addition assignment,
 // subtraction assignment, and multiplication assignment. In case any error resulting from the
@@ -1047,44 +943,29 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
 
       // Negated subtraction with the given vectors
       {
-         test_ = "Negated subtraction with the givven types";
+         test_  = "Negated subtraction with the givven types";
+         error_ = "Failed subtraction operation";
 
          try {
+            initResults();
             dres_   = -( lhs_ - rhs_ );
             sres_   = -( lhs_ - rhs_ );
             refres_ = -( reflhs_ - refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   = -( tlhs_ - trhs_ );
             tsres_   = -( tlhs_ - trhs_ );
             trefres_ = -( treflhs_ - trefrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -1092,42 +973,29 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
 
       // Negated subtraction with evaluated vectors
       {
-         test_ = "Negated subtraction with evaluated vectors";
+         test_  = "Negated subtraction with evaluated vectors";
+         error_ = "Failed subtraction operation";
 
          try {
-            dres_ = -( eval( lhs_ ) - eval( rhs_ ) );
-            sres_ = -( eval( lhs_ ) - eval( rhs_ ) );
+            initResults();
+            dres_   = -( eval( lhs_ ) - eval( rhs_ ) );
+            sres_   = -( eval( lhs_ ) - eval( rhs_ ) );
+            refres_ = -( eval( reflhs_ ) - eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
-            tdres_ = -( eval( tlhs_ ) - eval( trhs_ ) );
-            tsres_ = -( eval( tlhs_ ) - eval( trhs_ ) );
+            initTransposeResults();
+            tdres_   = -( eval( tlhs_ ) - eval( trhs_ ) );
+            tsres_   = -( eval( tlhs_ ) - eval( trhs_ ) );
+            trefres_ = -( eval( treflhs_ ) - eval( trefrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -1140,44 +1008,29 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
 
       // Negated subtraction with addition assignment with the given vectors
       {
-         test_ = "Negated subtraction with addition assignment with the given vectors";
+         test_  = "Negated subtraction with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += -( lhs_ - rhs_ );
             sres_   += -( lhs_ - rhs_ );
             refres_ += -( reflhs_ - refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   += -( tlhs_ - trhs_ );
             tsres_   += -( tlhs_ - trhs_ );
             trefres_ += -( treflhs_ - trefrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -1185,44 +1038,29 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
 
       // Negated subtraction with addition assignment with evaluated vectors
       {
-         test_ = "Negated subtraction with addition assignment with evaluated vectors";
+         test_  = "Negated subtraction with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += -( eval( lhs_ ) - eval( rhs_ ) );
             sres_   += -( eval( lhs_ ) - eval( rhs_ ) );
             refres_ += -( eval( reflhs_ ) - eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   += -( eval( tlhs_ ) - eval( trhs_ ) );
             tsres_   += -( eval( tlhs_ ) - eval( trhs_ ) );
             trefres_ += -( eval( treflhs_ ) - eval( trefrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -1235,43 +1073,28 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
 
       // Negated subtraction with subtraction assignment with the given vectors
       {
-         test_ = "Negated subtraction with subtraction assignment with the given vectors";
+         test_  = "Negated subtraction with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= -( lhs_ - rhs_ );
             sres_   -= -( lhs_ - rhs_ );
             refres_ -= -( reflhs_ - refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
          try {
+            initTransposeResults();
             tdres_   -= -( tlhs_ - trhs_ );
             tsres_   -= -( tlhs_ - trhs_ );
             trefres_ -= -( treflhs_ - trefrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -1279,44 +1102,29 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
 
       // Negated subtraction with subtraction assignment with evaluated vectors
       {
-         test_ = "Negated subtraction with subtraction assignment with evaluated vectors";
+         test_  = "Negated subtraction with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= -( eval( lhs_ ) - eval( rhs_ ) );
             sres_   -= -( eval( lhs_ ) - eval( rhs_ ) );
             refres_ -= -( eval( reflhs_ ) - eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   -= -( eval( tlhs_ ) - eval( trhs_ ) );
             tsres_   -= -( eval( tlhs_ ) - eval( trhs_ ) );
             trefres_ -= -( eval( treflhs_ ) - eval( trefrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -1329,44 +1137,29 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
 
       // Negated subtraction with multiplication assignment with the given vectors
       {
-         test_ = "Negated subtraction with multiplication assignment with the given vectors";
+         test_  = "Negated subtraction with multiplication assignment with the given vectors";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= -( lhs_ - rhs_ );
             sres_   *= -( lhs_ - rhs_ );
             refres_ *= -( reflhs_ - refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   *= -( tlhs_ - trhs_ );
             tsres_   *= -( tlhs_ - trhs_ );
             trefres_ *= -( treflhs_ - trefrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -1374,44 +1167,29 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
 
       // Negated subtraction with multiplication assignment with evaluated vectors
       {
-         test_ = "Negated subtraction with multiplication assignment with evaluated vectors";
+         test_  = "Negated subtraction with multiplication assignment with evaluated vectors";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= -( eval( lhs_ ) - eval( rhs_ ) );
             sres_   *= -( eval( lhs_ ) - eval( rhs_ ) );
             refres_ *= -( eval( reflhs_ ) - eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   *= -( eval( tlhs_ ) - eval( trhs_ ) );
             tsres_   *= -( eval( tlhs_ ) - eval( trhs_ ) );
             trefres_ *= -( eval( treflhs_ ) - eval( trefrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -1427,7 +1205,7 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
 //
 // \param scalar The scalar value.
 // \return void
-// \exception std::runtime_error Subtraction error detected.
+// \exception std::runtime_error Subtraction errordetected.
 //
 // This function tests the scaled vector subtraction with plain assignment, addition assignment,
 // subtraction assignment, and multiplication assignment. In case any error resulting from the
@@ -1609,44 +1387,29 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled subtraction with the given vectors
       {
-         test_ = "Scaled subtraction with the given vectors (s*OP)";
+         test_  = "Scaled subtraction with the given vectors (s*OP)";
+         error_ = "Failed subtraction operation";
 
          try {
+            initResults();
             dres_   = scalar * ( lhs_ - rhs_ );
             sres_   = scalar * ( lhs_ - rhs_ );
             refres_ = scalar * ( reflhs_ - refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+             convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   = scalar * ( tlhs_ - trhs_ );
             tsres_   = scalar * ( tlhs_ - trhs_ );
             trefres_ = scalar * ( treflhs_ - trefrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -1655,41 +1418,28 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
       // Scaled subtraction with evaluated vectors
       {
          test_ = "Scaled subtraction with evaluated vectors (s*OP)";
+         error_ = "Failed subtraction operation";
 
          try {
-            dres_ = scalar * ( eval( lhs_ ) - eval( rhs_ ) );
-            sres_ = scalar * ( eval( lhs_ ) - eval( rhs_ ) );
+            initResults();
+            dres_   = scalar * ( eval( lhs_ ) - eval( rhs_ ) );
+            sres_   = scalar * ( eval( lhs_ ) - eval( rhs_ ) );
+            refres_ = scalar * ( eval( reflhs_ ) - eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
-            tdres_ = scalar * ( eval( tlhs_ ) - eval( trhs_ ) );
-            tsres_ = scalar * ( eval( tlhs_ ) - eval( trhs_ ) );
+            initTransposeResults();
+            tdres_   = scalar * ( eval( tlhs_ ) - eval( trhs_ ) );
+            tsres_   = scalar * ( eval( tlhs_ ) - eval( trhs_ ) );
+            trefres_ = scalar * ( eval( treflhs_ ) - eval( trefrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -1702,44 +1452,29 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled subtraction with the given vectors
       {
-         test_ = "Scaled subtraction with the given vectors (OP*s)";
+         test_  = "Scaled subtraction with the given vectors (OP*s)";
+         error_ = "Failed subtraction operation";
 
          try {
+            initResults();
             dres_   = ( lhs_ - rhs_ ) * scalar;
             sres_   = ( lhs_ - rhs_ ) * scalar;
             refres_ = ( reflhs_ - refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   = ( tlhs_ - trhs_ ) * scalar;
             tsres_   = ( tlhs_ - trhs_ ) * scalar;
             trefres_ = ( treflhs_ - trefrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -1747,42 +1482,29 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled subtraction with evaluated vectors
       {
-         test_ = "Scaled subtraction with evaluated vectors (OP*s)";
+         test_  = "Scaled subtraction with evaluated vectors (OP*s)";
+         error_ = "Failed subtraction operation";
 
          try {
-            dres_ = ( eval( lhs_ ) - eval( rhs_ ) ) * scalar;
-            sres_ = ( eval( lhs_ ) - eval( rhs_ ) ) * scalar;
+            initResults();
+            dres_   = ( eval( lhs_ ) - eval( rhs_ ) ) * scalar;
+            sres_   = ( eval( lhs_ ) - eval( rhs_ ) ) * scalar;
+            refres_ = ( eval( reflhs_ ) - eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
-            tdres_ = ( eval( tlhs_ ) - eval( trhs_ ) ) * scalar;
-            tsres_ = ( eval( tlhs_ ) - eval( trhs_ ) ) * scalar;
+            initTransposeResults();
+            tdres_   = ( eval( tlhs_ ) - eval( trhs_ ) ) * scalar;
+            tsres_   = ( eval( tlhs_ ) - eval( trhs_ ) ) * scalar;
+            trefres_ = ( eval( treflhs_ ) - eval( trefrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -1795,44 +1517,29 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled subtraction with the given vectors
       {
-         test_ = "Scaled subtraction with the given vectors (OP/s)";
+         test_  = "Scaled subtraction with the given vectors (OP/s)";
+         error_ = "Failed subtraction operation";
 
          try {
+            initResults();
             dres_   = ( lhs_ - rhs_ ) / scalar;
             sres_   = ( lhs_ - rhs_ ) / scalar;
             refres_ = ( reflhs_ - refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   = ( tlhs_ - trhs_ ) / scalar;
             tsres_   = ( tlhs_ - trhs_ ) / scalar;
             trefres_ = ( treflhs_ - trefrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -1840,42 +1547,29 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled subtraction with evaluated vectors
       {
-         test_ = "Scaled subtraction with evaluated vectors (OP/s)";
+         test_  = "Scaled subtraction with evaluated vectors (OP/s)";
+         error_ = "Failed subtraction operation";
 
          try {
-            dres_ = ( eval( lhs_ ) - eval( rhs_ ) ) / scalar;
-            sres_ = ( eval( lhs_ ) - eval( rhs_ ) ) / scalar;
+            initResults();
+            dres_   = ( eval( lhs_ ) - eval( rhs_ ) ) / scalar;
+            sres_   = ( eval( lhs_ ) - eval( rhs_ ) ) / scalar;
+            refres_ = ( eval( reflhs_ ) - eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
-            tdres_ = ( eval( tlhs_ ) - eval( trhs_ ) ) / scalar;
-            tsres_ = ( eval( tlhs_ ) - eval( trhs_ ) ) / scalar;
+            initTransposeResults();
+            tdres_   = ( eval( tlhs_ ) - eval( trhs_ ) ) / scalar;
+            tsres_   = ( eval( tlhs_ ) - eval( trhs_ ) ) / scalar;
+            trefres_ = ( eval( treflhs_ ) - eval( trefrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -1888,44 +1582,29 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled subtraction with addition assignment with the given vectors
       {
-         test_ = "Scaled subtraction with addition assignment with the given vectors (s*OP)";
+         test_  = "Scaled subtraction with addition assignment with the given vectors (s*OP)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += scalar * ( lhs_ - rhs_ );
             sres_   += scalar * ( lhs_ - rhs_ );
             refres_ += scalar * ( reflhs_ - refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   += scalar * ( tlhs_ - trhs_ );
             tsres_   += scalar * ( tlhs_ - trhs_ );
             trefres_ += scalar * ( treflhs_ - trefrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -1933,44 +1612,29 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled subtraction with addition assignment with evaluated vectors
       {
-         test_ = "Scaled subtraction with addition assignment with evaluated vectors (s*OP)";
+         test_  = "Scaled subtraction with addition assignment with evaluated vectors (s*OP)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += scalar * ( eval( lhs_ ) - eval( rhs_ ) );
             sres_   += scalar * ( eval( lhs_ ) - eval( rhs_ ) );
             refres_ += scalar * ( eval( reflhs_ ) - eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   += scalar * ( eval( tlhs_ ) - eval( trhs_ ) );
             tsres_   += scalar * ( eval( tlhs_ ) - eval( trhs_ ) );
             trefres_ += scalar * ( eval( treflhs_ ) - eval( trefrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -1983,44 +1647,29 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled subtraction with addition assignment with the given vectors
       {
-         test_ = "Scaled subtraction with addition assignment with the given vectors (OP*s)";
+         test_  = "Scaled subtraction with addition assignment with the given vectors (OP*s)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += ( lhs_ - rhs_ ) * scalar;
             sres_   += ( lhs_ - rhs_ ) * scalar;
             refres_ += ( reflhs_ - refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   += ( tlhs_ - trhs_ ) * scalar;
             tsres_   += ( tlhs_ - trhs_ ) * scalar;
             trefres_ += ( treflhs_ - trefrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -2028,44 +1677,29 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled subtraction with addition assignment with evaluated vectors
       {
-         test_ = "Scaled subtraction with addition assignment with evaluated vectors (OP*s)";
+         test_  = "Scaled subtraction with addition assignment with evaluated vectors (OP*s)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += ( eval( lhs_ ) - eval( rhs_ ) ) * scalar;
             sres_   += ( eval( lhs_ ) - eval( rhs_ ) ) * scalar;
             refres_ += ( eval( reflhs_ ) - eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   += ( eval( tlhs_ ) - eval( trhs_ ) ) * scalar;
             tsres_   += ( eval( tlhs_ ) - eval( trhs_ ) ) * scalar;
             trefres_ += ( eval( treflhs_ ) - eval( trefrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -2078,44 +1712,29 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled subtraction with addition assignment with the given vectors
       {
-         test_ = "Scaled subtraction with addition assignment with the given vectors (OP/s)";
+         test_  = "Scaled subtraction with addition assignment with the given vectors (OP/s)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += ( lhs_ - rhs_ ) / scalar;
             sres_   += ( lhs_ - rhs_ ) / scalar;
             refres_ += ( reflhs_ - refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   += ( tlhs_ - trhs_ ) / scalar;
             tsres_   += ( tlhs_ - trhs_ ) / scalar;
             trefres_ += ( treflhs_ - trefrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -2123,44 +1742,29 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled subtraction with addition assignment with evaluated vectors
       {
-         test_ = "Scaled subtraction with addition assignment with evaluated vectors (OP/s)";
+         test_  = "Scaled subtraction with addition assignment with evaluated vectors (OP/s)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += ( eval( lhs_ ) - eval( rhs_ ) ) / scalar;
             sres_   += ( eval( lhs_ ) - eval( rhs_ ) ) / scalar;
             refres_ += ( eval( reflhs_ ) - eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   += ( eval( tlhs_ ) - eval( trhs_ ) ) / scalar;
             tsres_   += ( eval( tlhs_ ) - eval( trhs_ ) ) / scalar;
             trefres_ += ( eval( treflhs_ ) - eval( trefrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -2173,44 +1777,29 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled subtraction with subtraction assignment with the given vectors
       {
-         test_ = "Scaled subtraction with subtraction assignment with the given vectors (s*OP)";
+         test_  = "Scaled subtraction with subtraction assignment with the given vectors (s*OP)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= scalar * ( lhs_ - rhs_ );
             sres_   -= scalar * ( lhs_ - rhs_ );
             refres_ -= scalar * ( reflhs_ - refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   -= scalar * ( tlhs_ - trhs_ );
             tsres_   -= scalar * ( tlhs_ - trhs_ );
             trefres_ -= scalar * ( treflhs_ - trefrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -2218,44 +1807,29 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled subtraction with subtraction assignment with evaluated vectors
       {
-         test_ = "Scaled subtraction with subtraction assignment with evaluated vectors (s*OP)";
+         test_  = "Scaled subtraction with subtraction assignment with evaluated vectors (s*OP)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= scalar * ( eval( lhs_ ) - eval( rhs_ ) );
             sres_   -= scalar * ( eval( lhs_ ) - eval( rhs_ ) );
             refres_ -= scalar * ( eval( reflhs_ ) - eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   -= scalar * ( eval( tlhs_ ) - eval( trhs_ ) );
             tsres_   -= scalar * ( eval( tlhs_ ) - eval( trhs_ ) );
             trefres_ -= scalar * ( eval( treflhs_ ) - eval( trefrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -2268,44 +1842,29 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled subtraction with subtraction assignment with the given vectors
       {
-         test_ = "Scaled subtraction with subtraction assignment with the given vectors (OP*s)";
+         test_  = "Scaled subtraction with subtraction assignment with the given vectors (OP*s)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= ( lhs_ - rhs_ ) * scalar;
             sres_   -= ( lhs_ - rhs_ ) * scalar;
             refres_ -= ( reflhs_ - refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   -= ( tlhs_ - trhs_ ) * scalar;
             tsres_   -= ( tlhs_ - trhs_ ) * scalar;
             trefres_ -= ( treflhs_ - trefrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -2313,44 +1872,29 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled subtraction with subtraction assignment with evaluated vectors
       {
-         test_ = "Scaled subtraction with subtraction assignment with evaluated vectors (OP*s)";
+         test_  = "Scaled subtraction with subtraction assignment with evaluated vectors (OP*s)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= ( eval( lhs_ ) - eval( rhs_ ) ) * scalar;
             sres_   -= ( eval( lhs_ ) - eval( rhs_ ) ) * scalar;
             refres_ -= ( eval( reflhs_ ) - eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   -= ( eval( tlhs_ ) - eval( trhs_ ) ) * scalar;
             tsres_   -= ( eval( tlhs_ ) - eval( trhs_ ) ) * scalar;
             trefres_ -= ( eval( treflhs_ ) - eval( trefrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -2363,44 +1907,29 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled subtraction with subtraction assignment with the given vectors
       {
-         test_ = "Scaled subtraction with subtraction assignment with the given vectors (OP/s)";
+         test_  = "Scaled subtraction with subtraction assignment with the given vectors (OP/s)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= ( lhs_ - rhs_ ) / scalar;
             sres_   -= ( lhs_ - rhs_ ) / scalar;
             refres_ -= ( reflhs_ - refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   -= ( tlhs_ - trhs_ ) / scalar;
             tsres_   -= ( tlhs_ - trhs_ ) / scalar;
             trefres_ -= ( treflhs_ - trefrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -2408,44 +1937,29 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled subtraction with subtraction assignment with evaluated vectors
       {
-         test_ = "Scaled subtraction with subtraction assignment with evaluated vectors (OP/s)";
+         test_  = "Scaled subtraction with subtraction assignment with evaluated vectors (OP/s)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= ( eval( lhs_ ) - eval( rhs_ ) ) / scalar;
             sres_   -= ( eval( lhs_ ) - eval( rhs_ ) ) / scalar;
             refres_ -= ( eval( reflhs_ ) - eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   -= ( eval( tlhs_ ) - eval( trhs_ ) ) / scalar;
             tsres_   -= ( eval( tlhs_ ) - eval( trhs_ ) ) / scalar;
             trefres_ -= ( eval( treflhs_ ) - eval( trefrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -2458,44 +1972,29 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled subtraction with multiplication assignment with the given vectors
       {
-         test_ = "Scaled subtraction with multiplication assignment with the given vectors (s*OP)";
+         test_  = "Scaled subtraction with multiplication assignment with the given vectors (s*OP)";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= scalar * ( lhs_ - rhs_ );
             sres_   *= scalar * ( lhs_ - rhs_ );
             refres_ *= scalar * ( reflhs_ - refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   *= scalar * ( tlhs_ - trhs_ );
             tsres_   *= scalar * ( tlhs_ - trhs_ );
             trefres_ *= scalar * ( treflhs_ - trefrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -2503,44 +2002,29 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled subtraction with multiplication assignment with evaluated vectors
       {
-         test_ = "Scaled subtraction with multiplication assignment with evaluated vectors (s*OP)";
+         test_  = "Scaled subtraction with multiplication assignment with evaluated vectors (s*OP)";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= scalar * ( eval( lhs_ ) - eval( rhs_ ) );
             sres_   *= scalar * ( eval( lhs_ ) - eval( rhs_ ) );
             refres_ *= scalar * ( eval( reflhs_ ) - eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   *= scalar * ( eval( tlhs_ ) - eval( trhs_ ) );
             tsres_   *= scalar * ( eval( tlhs_ ) - eval( trhs_ ) );
             trefres_ *= scalar * ( eval( treflhs_ ) - eval( trefrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -2553,44 +2037,29 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled subtraction with multiplication assignment with the given vectors
       {
-         test_ = "Scaled subtraction with multiplication assignment with the given vectors (OP*s)";
+         test_  = "Scaled subtraction with multiplication assignment with the given vectors (OP*s)";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= ( lhs_ - rhs_ ) * scalar;
             sres_   *= ( lhs_ - rhs_ ) * scalar;
             refres_ *= ( reflhs_ - refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   *= ( tlhs_ - trhs_ ) * scalar;
             tsres_   *= ( tlhs_ - trhs_ ) * scalar;
             trefres_ *= ( treflhs_ - trefrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -2598,44 +2067,29 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled subtraction with multiplication assignment with evaluated vectors
       {
-         test_ = "Scaled subtraction with multiplication assignment with evaluated vectors (OP*s)";
+         test_  = "Scaled subtraction with multiplication assignment with evaluated vectors (OP*s)";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= ( eval( lhs_ ) - eval( rhs_ ) ) * scalar;
             sres_   *= ( eval( lhs_ ) - eval( rhs_ ) ) * scalar;
             refres_ *= ( eval( reflhs_ ) - eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   *= ( eval( tlhs_ ) - eval( trhs_ ) ) * scalar;
             tsres_   *= ( eval( tlhs_ ) - eval( trhs_ ) ) * scalar;
             trefres_ *= ( eval( treflhs_ ) - eval( trefrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -2648,44 +2102,29 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled subtraction with multiplication assignment with the given vectors
       {
-         test_ = "Scaled subtraction with multiplication assignment with the given vectors (OP/s)";
+         test_  = "Scaled subtraction with multiplication assignment with the given vectors (OP/s)";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= ( lhs_ - rhs_ ) / scalar;
             sres_   *= ( lhs_ - rhs_ ) / scalar;
             refres_ *= ( reflhs_ - refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   *= ( tlhs_ - trhs_ ) / scalar;
             tsres_   *= ( tlhs_ - trhs_ ) / scalar;
             trefres_ *= ( treflhs_ - trefrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -2693,44 +2132,29 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
       // Scaled subtraction with multiplication assignment with evaluated vectors
       {
-         test_ = "Scaled subtraction with multiplication assignment with evaluated vectors (OP/s)";
+         test_  = "Scaled subtraction with multiplication assignment with evaluated vectors (OP/s)";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= ( eval( lhs_ ) - eval( rhs_ ) ) / scalar;
             sres_   *= ( eval( lhs_ ) - eval( rhs_ ) ) / scalar;
             refres_ *= ( eval( reflhs_ ) - eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   *= ( eval( tlhs_ ) - eval( trhs_ ) ) / scalar;
             tsres_   *= ( eval( tlhs_ ) - eval( trhs_ ) ) / scalar;
             trefres_ *= ( eval( treflhs_ ) - eval( trefrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -2745,7 +2169,7 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 /*!\brief Testing the transpose sparse vector/dense vector subtraction.
 //
 // \return void
-// \exception std::runtime_error Subtraction error detected.
+// \exception std::runtime_error Subtraction errordetected.
 //
 // This function tests the transpose vector subtraction with plain assignment, addition assignment,
 // subtraction assignment, and multiplication assignment. In case any error resulting from the
@@ -2765,44 +2189,29 @@ void OperationTest<VT1,VT2>::testTransposeOperation()
 
       // Transpose subtraction with the given vectors
       {
-         test_ = "Transpose subtraction with the given vectors";
+         test_  = "Transpose subtraction with the given vectors";
+         error_ = "Failed subtraction operation";
 
          try {
+            initTransposeResults();
             tdres_   = trans( lhs_ - rhs_ );
             tsres_   = trans( lhs_ - rhs_ );
             trefres_ = trans( reflhs_ - refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkTransposeResults<VT1,VT2>();
 
          try {
+            initResults();
             dres_   = trans( tlhs_ - trhs_ );
             sres_   = trans( tlhs_ - trhs_ );
             refres_ = trans( treflhs_ - trefrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkResults<TVT1,TVT2>();
@@ -2810,42 +2219,29 @@ void OperationTest<VT1,VT2>::testTransposeOperation()
 
       // Transpose subtraction with evaluated vectors
       {
-         test_ = "Transpose subtraction with evaluated vectors";
+         test_  = "Transpose subtraction with evaluated vectors";
+         error_ = "Failed subtraction operation";
 
          try {
-            tdres_ = trans( eval( lhs_ ) - eval( rhs_ ) );
-            tsres_ = trans( eval( lhs_ ) - eval( rhs_ ) );
+            initTransposeResults();
+            tdres_   = trans( eval( lhs_ ) - eval( rhs_ ) );
+            tsres_   = trans( eval( lhs_ ) - eval( rhs_ ) );
+            trefres_ = trans( eval( reflhs_ ) - eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkTransposeResults<VT1,VT2>();
 
          try {
-            dres_ = trans( eval( tlhs_ ) - eval( trhs_ ) );
-            sres_ = trans( eval( tlhs_ ) - eval( trhs_ ) );
+            initResults();
+            dres_   = trans( eval( tlhs_ ) - eval( trhs_ ) );
+            sres_   = trans( eval( tlhs_ ) - eval( trhs_ ) );
+            refres_ = trans( eval( treflhs_ ) - eval( trefrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkResults<TVT1,TVT2>();
@@ -2858,44 +2254,29 @@ void OperationTest<VT1,VT2>::testTransposeOperation()
 
       // Transpose subtraction with addition assignment with the given vectors
       {
-         test_ = "Transpose subtraction with addition assignment with the given vectors";
+         test_  = "Transpose subtraction with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initTransposeResults();
             tdres_   += trans( lhs_ - rhs_ );
             tsres_   += trans( lhs_ - rhs_ );
             trefres_ += trans( reflhs_ - refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkTransposeResults<VT1,VT2>();
 
          try {
+            initResults();
             dres_   += trans( tlhs_ - trhs_ );
             sres_   += trans( tlhs_ - trhs_ );
             refres_ += trans( treflhs_ - trefrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkResults<TVT1,TVT2>();
@@ -2903,44 +2284,29 @@ void OperationTest<VT1,VT2>::testTransposeOperation()
 
       // Transpose subtraction with addition assignment with evaluated vectors
       {
-         test_ = "Transpose subtraction with addition assignment with evaluated vectors";
+         test_  = "Transpose subtraction with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initTransposeResults();
             tdres_   += trans( eval( lhs_ ) - eval( rhs_ ) );
             tsres_   += trans( eval( lhs_ ) - eval( rhs_ ) );
             trefres_ += trans( eval( reflhs_ ) - eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkTransposeResults<VT1,VT2>();
 
          try {
+            initResults();
             dres_   += trans( eval( tlhs_ ) - eval( trhs_ ) );
             sres_   += trans( eval( tlhs_ ) - eval( trhs_ ) );
             refres_ += trans( eval( treflhs_ ) - eval( trefrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkResults<TVT1,TVT2>();
@@ -2953,44 +2319,29 @@ void OperationTest<VT1,VT2>::testTransposeOperation()
 
       // Transpose subtraction with subtraction assignment with the given vectors
       {
-         test_ = "Transpose subtraction with subtraction assignment with the given vectors";
+         test_  = "Transpose subtraction with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initTransposeResults();
             tdres_   -= trans( lhs_ - rhs_ );
             tsres_   -= trans( lhs_ - rhs_ );
             trefres_ -= trans( reflhs_ - refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkTransposeResults<VT1,VT2>();
 
          try {
+            initResults();
             dres_   -= trans( tlhs_ - trhs_ );
             sres_   -= trans( tlhs_ - trhs_ );
             refres_ -= trans( treflhs_ - trefrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkResults<TVT1,TVT2>();
@@ -2998,44 +2349,29 @@ void OperationTest<VT1,VT2>::testTransposeOperation()
 
       // Transpose subtraction with subtraction assignment with evaluated vectors
       {
-         test_ = "Transpose subtraction with subtraction assignment with evaluated vectors";
+         test_  = "Transpose subtraction with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initTransposeResults();
             tdres_   -= trans( eval( lhs_ ) - eval( rhs_ ) );
             tsres_   -= trans( eval( lhs_ ) - eval( rhs_ ) );
             trefres_ -= trans( eval( reflhs_ ) - eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkTransposeResults<VT1,VT2>();
 
          try {
+            initResults();
             dres_   -= trans( eval( tlhs_ ) - eval( trhs_ ) );
             sres_   -= trans( eval( tlhs_ ) - eval( trhs_ ) );
             refres_ -= trans( eval( treflhs_ ) - eval( trefrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkResults<TVT1,TVT2>();
@@ -3048,44 +2384,29 @@ void OperationTest<VT1,VT2>::testTransposeOperation()
 
       // Transpose subtraction with multiplication assignment with the given vectors
       {
-         test_ = "Transpose subtraction with multiplication assignment with the given vectors";
+         test_  = "Transpose subtraction with multiplication assignment with the given vectors";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initTransposeResults();
             tdres_   *= trans( lhs_ - rhs_ );
             tsres_   *= trans( lhs_ - rhs_ );
             trefres_ *= trans( reflhs_ - refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkTransposeResults<VT1,VT2>();
 
          try {
+            initResults();
             dres_   *= trans( tlhs_ - trhs_ );
             sres_   *= trans( tlhs_ - trhs_ );
             refres_ *= trans( treflhs_ - trefrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkResults<TVT1,TVT2>();
@@ -3093,44 +2414,29 @@ void OperationTest<VT1,VT2>::testTransposeOperation()
 
       // Transpose subtraction with multiplication assignment with evaluated vectors
       {
-         test_ = "Transpose subtraction with multiplication assignment with evaluated vectors";
+         test_  = "Transpose subtraction with multiplication assignment with evaluated vectors";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initTransposeResults();
             tdres_   *= trans( eval( lhs_ ) - eval( rhs_ ) );
             tsres_   *= trans( eval( lhs_ ) - eval( rhs_ ) );
             trefres_ *= trans( eval( reflhs_ ) - eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkTransposeResults<VT1,VT2>();
 
          try {
+            initResults();
             dres_   *= trans( eval( tlhs_ ) - eval( trhs_ ) );
             sres_   *= trans( eval( tlhs_ ) - eval( trhs_ ) );
             refres_ *= trans( eval( treflhs_ ) - eval( trefrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkResults<TVT1,TVT2>();
@@ -3145,12 +2451,12 @@ void OperationTest<VT1,VT2>::testTransposeOperation()
 /*!\brief Testing the abs sparse vector/dense vector subtraction.
 //
 // \return void
-// \exception std::runtime_error Subtraction error detected.
+// \exception std::runtime_error Subtraction errordetected.
 //
 // This function tests the abs vector subtraction with plain assignment, addition assignment,
-// subtraction assignment, and multiplication assignment. In case any error resulting from
-// the subtraction or the subsequent assignment is detected, a \a std::runtime_error exception
-// is thrown.
+// subtraction assignment, and multiplication assignment. In case any error resulting from the
+// subtraction or the subsequent assignment is detected, a \a std::runtime_error exception is
+// thrown.
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -3165,44 +2471,29 @@ void OperationTest<VT1,VT2>::testAbsOperation()
 
       // Abs subtraction with the given vectors
       {
-         test_ = "Abs subtraction with the given vectors";
+         test_  = "Abs subtraction with the given vectors";
+         error_ = "Failed subtraction operation";
 
          try {
+            initResults();
             dres_   = abs( lhs_ - rhs_ );
             sres_   = abs( lhs_ - rhs_ );
             refres_ = abs( reflhs_ - refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   = abs( tlhs_ - trhs_ );
             tsres_   = abs( tlhs_ - trhs_ );
             trefres_ = abs( treflhs_ - trefrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -3210,42 +2501,29 @@ void OperationTest<VT1,VT2>::testAbsOperation()
 
       // Abs subtraction with evaluated vectors
       {
-         test_ = "Abs subtraction with evaluated vectors";
+         test_  = "Abs subtraction with evaluated vectors";
+         error_ = "Failed subtraction operation";
 
          try {
-            dres_ = abs( eval( lhs_ ) - eval( rhs_ ) );
-            sres_ = abs( eval( lhs_ ) - eval( rhs_ ) );
+            initResults();
+            dres_   = abs( eval( lhs_ ) - eval( rhs_ ) );
+            sres_   = abs( eval( lhs_ ) - eval( rhs_ ) );
+            refres_ = abs( eval( reflhs_ ) - eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
-            tdres_ = abs( eval( tlhs_ ) - eval( trhs_ ) );
-            tsres_ = abs( eval( tlhs_ ) - eval( trhs_ ) );
+            initTransposeResults();
+            tdres_   = abs( eval( tlhs_ ) - eval( trhs_ ) );
+            tsres_   = abs( eval( tlhs_ ) - eval( trhs_ ) );
+            trefres_ = abs( eval( treflhs_ ) - eval( trefrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -3258,44 +2536,29 @@ void OperationTest<VT1,VT2>::testAbsOperation()
 
       // Abs subtraction with addition assignment with the given vectors
       {
-         test_ = "Abs subtraction with addition assignment with the given vectors";
+         test_  = "Abs subtraction with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += abs( lhs_ - rhs_ );
             sres_   += abs( lhs_ - rhs_ );
             refres_ += abs( reflhs_ - refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   += abs( tlhs_ - trhs_ );
             tsres_   += abs( tlhs_ - trhs_ );
             trefres_ += abs( treflhs_ - trefrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -3303,44 +2566,29 @@ void OperationTest<VT1,VT2>::testAbsOperation()
 
       // Abs subtraction with addition assignment with evaluated vectors
       {
-         test_ = "Abs subtraction with addition assignment with evaluated vectors";
+         test_  = "Abs subtraction with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += abs( eval( lhs_ ) - eval( rhs_ ) );
             sres_   += abs( eval( lhs_ ) - eval( rhs_ ) );
             refres_ += abs( eval( reflhs_ ) - eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   += abs( eval( tlhs_ ) - eval( trhs_ ) );
             tsres_   += abs( eval( tlhs_ ) - eval( trhs_ ) );
             trefres_ += abs( eval( treflhs_ ) - eval( trefrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -3353,44 +2601,29 @@ void OperationTest<VT1,VT2>::testAbsOperation()
 
       // Abs subtraction with subtraction assignment with the given vectors
       {
-         test_ = "Abs subtraction with subtraction assignment with the given types";
+         test_  = "Abs subtraction with subtraction assignment with the given types";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= abs( lhs_ - rhs_ );
             sres_   -= abs( lhs_ - rhs_ );
             refres_ -= abs( reflhs_ - refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   -= abs( tlhs_ - trhs_ );
             tsres_   -= abs( tlhs_ - trhs_ );
             trefres_ -= abs( treflhs_ - trefrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -3398,44 +2631,29 @@ void OperationTest<VT1,VT2>::testAbsOperation()
 
       // Abs subtraction with subtraction assignment with evaluated vectors
       {
-         test_ = "Abs subtraction with subtraction assignment with evaluated vectors";
+         test_  = "Abs subtraction with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= abs( eval( lhs_ ) - eval( rhs_ ) );
             sres_   -= abs( eval( lhs_ ) - eval( rhs_ ) );
             refres_ -= abs( eval( reflhs_ ) - eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   -= abs( eval( tlhs_ ) - eval( trhs_ ) );
             tsres_   -= abs( eval( tlhs_ ) - eval( trhs_ ) );
             trefres_ -= abs( eval( treflhs_ ) - eval( trefrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -3448,44 +2666,29 @@ void OperationTest<VT1,VT2>::testAbsOperation()
 
       // Abs subtraction with multiplication assignment with the given vectors
       {
-         test_ = "Abs subtraction with multiplication assignment with the given vectors";
+         test_  = "Abs subtraction with multiplication assignment with the given vectors";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= abs( lhs_ - rhs_ );
             sres_   *= abs( lhs_ - rhs_ );
             refres_ *= abs( reflhs_ - refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   *= abs( tlhs_ - trhs_ );
             tsres_   *= abs( tlhs_ - trhs_ );
             trefres_ *= abs( treflhs_ - trefrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -3493,44 +2696,29 @@ void OperationTest<VT1,VT2>::testAbsOperation()
 
       // Abs subtraction with multiplication assignment with evaluated vectors
       {
-         test_ = "Abs subtraction with multiplication assignment with evaluated vectors";
+         test_  = "Abs subtraction with multiplication assignment with evaluated vectors";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             dres_   *= abs( eval( lhs_ ) - eval( rhs_ ) );
             sres_   *= abs( eval( lhs_ ) - eval( rhs_ ) );
             refres_ *= abs( eval( reflhs_ ) - eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side sparse vector type:\n"
-                << "     " << typeid( VT1 ).name() << "\n"
-                << "   Right-hand side dense vector type:\n"
-                << "     " << typeid( VT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<VT1,VT2>( ex );
          }
 
          checkResults<VT1,VT2>();
 
          try {
+            initTransposeResults();
             tdres_   *= abs( eval( tlhs_ ) - eval( trhs_ ) );
             tsres_   *= abs( eval( tlhs_ ) - eval( trhs_ ) );
             trefres_ *= abs( eval( treflhs_ ) - eval( trefrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Transpose left-hand side sparse vector type:\n"
-                << "     " << typeid( TVT1 ).name() << "\n"
-                << "   Transpose right-hand side dense vector type:\n"
-                << "     " << typeid( TVT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<TVT1,TVT2>( ex );
          }
 
          checkTransposeResults<TVT1,TVT2>();
@@ -3649,6 +2837,92 @@ void OperationTest<VT1,VT2>::checkTransposeResults()
           << "   Expected result:\n" << trefres_ << "\n";
       throw std::runtime_error( oss.str() );
    }
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  UTILITY FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Initializing the non-transpose result vectors.
+//
+// \return void
+//
+// This function is called before each non-transpose test case to initialize the according result
+// vectors to random values.
+*/
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::initResults()
+{
+   const typename blaze::BaseElementType<RE>::Type min( randmin );
+   const typename blaze::BaseElementType<RE>::Type max( randmax );
+
+   randomize( dres_, min, max );
+   sres_    = dres_;
+   refres_  = dres_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initializing the transpose result vectors.
+//
+// \return void
+//
+// This function is called before each transpose test case to initialize the according result
+// vectors to random values.
+*/
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::initTransposeResults()
+{
+   const typename blaze::BaseElementType<RE>::Type min( randmin );
+   const typename blaze::BaseElementType<RE>::Type max( randmax );
+
+   randomize( tdres_, min, max );
+   tsres_   = tdres_;
+   trefres_ = tdres_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Convert the given exception into a \a std::runtime_error exception.
+//
+// \param ex The \a std::exception to be extended.
+// \return void
+// \exception std::runtime_error The converted exception.
+//
+// This function converts the given exception to a \a std::runtime_error exception. Additionally,
+// the function extends the given exception message by all available information for the failed
+// test. The two template arguments \a LT and \a RT indicate the types of the left-hand side and
+// right-hand side operands used for the computations.
+*/
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+template< typename LT     // Type of the left-hand side operand
+        , typename RT >   // Type of the right-hand side operand
+void OperationTest<VT1,VT2>::convertException( const std::exception& ex )
+{
+   using blaze::IsTransposeVector;
+
+   std::ostringstream oss;
+   oss << " Test : " << test_ << "\n"
+       << " Error: " << error_ << "\n"
+       << " Details:\n"
+       << "   " << ( IsTransposeVector<LT>::value ? ( "Transpose l" ) : ( "L" ) ) << "eft-hand side sparse vector type:\n"
+       << "     " << typeid( LT ).name() << "\n"
+       << "   " << ( IsTransposeVector<RT>::value ? ( "Transpose r" ) : ( "R" ) ) << "ight-hand side dense vector type:\n"
+       << "     " << typeid( RT ).name() << "\n"
+       << "   Error message: " << ex.what() << "\n";
+   throw std::runtime_error( oss.str() );
 }
 //*************************************************************************************************
 
