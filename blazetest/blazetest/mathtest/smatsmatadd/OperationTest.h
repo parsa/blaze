@@ -39,6 +39,7 @@
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -46,6 +47,8 @@
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/IsEqual.h>
+#include <blazetest/mathtest/RandomMaximum.h>
+#include <blazetest/mathtest/RandomMinimum.h>
 
 
 namespace blazetest {
@@ -145,6 +148,15 @@ class OperationTest
    //@}
    //**********************************************************************************************
 
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
+   void initResults();
+   void initTransposeResults();
+   template< typename LT, typename RT > void convertException( const std::exception& ex );
+   //@}
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -164,7 +176,8 @@ class OperationTest
    RT2   refrhs_;  //!< The reference right-hand side matrix.
    DRRE  refres_;  //!< The reference result.
 
-   std::string test_;  //!< Label of the currently performed test.
+   std::string test_;   //!< Label of the currently performed test.
+   std::string error_;  //!< Description of the current error type.
    //@}
    //**********************************************************************************************
 
@@ -268,6 +281,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    , refrhs_( rhs_ )     // The reference right-hand side matrix
    , refres_()           // The reference result
    , test_()             // Label of the currently performed test
+   , error_()            // Description of the current error type
 {
    testInitialStatus();
    testAssignment();
@@ -557,7 +571,7 @@ void OperationTest<MT1,MT2>::testAssignment()
 
    if( !isEqual( olhs_, reflhs_ ) ) {
       std::ostringstream oss;
-      oss << " Test: Checking the assignment result of left-hand column-major side sparse operand\n"
+      oss << " Test: Checking the assignment result of left-hand side column-major sparse operand\n"
           << " Error: Invalid matrix initialization\n"
           << " Details:\n"
           << "   Column-major sparse matrix type:\n"
@@ -569,7 +583,7 @@ void OperationTest<MT1,MT2>::testAssignment()
 
    if( !isEqual( orhs_, refrhs_ ) ) {
       std::ostringstream oss;
-      oss << " Test: Checking the assignment result of right-hand column-major side sparse operand\n"
+      oss << " Test: Checking the assignment result of right-hand side column-major sparse operand\n"
           << " Error: Invalid matrix initialization\n"
           << " Details:\n"
           << "   Column-major sparse matrix type:\n"
@@ -847,9 +861,11 @@ void OperationTest<MT1,MT2>::testBasicOperation()
 
       // Addition with the given matrices
       {
-         test_ = "Addition with the given matrices";
+         test_  = "Addition with the given matrices";
+         error_ = "Failed addition operation";
 
          try {
+            initResults();
             dres_   = lhs_ + rhs_;
             odres_  = lhs_ + rhs_;
             sres_   = lhs_ + rhs_;
@@ -857,79 +873,49 @@ void OperationTest<MT1,MT2>::testBasicOperation()
             refres_ = reflhs_ + refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
-            dres_  = lhs_ + orhs_;
-            odres_ = lhs_ + orhs_;
-            sres_  = lhs_ + orhs_;
-            osres_ = lhs_ + orhs_;
+            initResults();
+            dres_   = lhs_ + orhs_;
+            odres_  = lhs_ + orhs_;
+            sres_   = lhs_ + orhs_;
+            osres_  = lhs_ + orhs_;
+            refres_ = reflhs_ + refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
-            dres_  = olhs_ + rhs_;
-            odres_ = olhs_ + rhs_;
-            sres_  = olhs_ + rhs_;
-            osres_ = olhs_ + rhs_;
+            initResults();
+            dres_   = olhs_ + rhs_;
+            odres_  = olhs_ + rhs_;
+            sres_   = olhs_ + rhs_;
+            osres_  = olhs_ + rhs_;
+            refres_ = reflhs_ + refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2  ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
-            dres_  = olhs_ + orhs_;
-            odres_ = olhs_ + orhs_;
-            sres_  = olhs_ + orhs_;
-            osres_ = olhs_ + orhs_;
+            initResults();
+            dres_   = olhs_ + orhs_;
+            odres_  = olhs_ + orhs_;
+            sres_   = olhs_ + orhs_;
+            osres_  = olhs_ + orhs_;
+            refres_ = reflhs_ + refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -937,88 +923,61 @@ void OperationTest<MT1,MT2>::testBasicOperation()
 
       // Addition with evaluated matrices
       {
-         test_ = "Addition with evaluated matrices";
+         test_  = "Addition with evaluated matrices";
+         error_ = "Failed addition operation";
 
          try {
-            dres_  = eval( lhs_ ) + eval( rhs_ );
-            odres_ = eval( lhs_ ) + eval( rhs_ );
-            sres_  = eval( lhs_ ) + eval( rhs_ );
-            osres_ = eval( lhs_ ) + eval( rhs_ );
+            initResults();
+            dres_   = eval( lhs_ ) + eval( rhs_ );
+            odres_  = eval( lhs_ ) + eval( rhs_ );
+            sres_   = eval( lhs_ ) + eval( rhs_ );
+            osres_  = eval( lhs_ ) + eval( rhs_ );
+            refres_ = eval( reflhs_ ) + eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
-            dres_  = eval( lhs_ ) + eval( orhs_ );
-            odres_ = eval( lhs_ ) + eval( orhs_ );
-            sres_  = eval( lhs_ ) + eval( orhs_ );
-            osres_ = eval( lhs_ ) + eval( orhs_ );
+            initResults();
+            dres_   = eval( lhs_ ) + eval( orhs_ );
+            odres_  = eval( lhs_ ) + eval( orhs_ );
+            sres_   = eval( lhs_ ) + eval( orhs_ );
+            osres_  = eval( lhs_ ) + eval( orhs_ );
+            refres_ = eval( reflhs_ ) + eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
-            dres_  = eval( olhs_ ) + eval( rhs_ );
-            odres_ = eval( olhs_ ) + eval( rhs_ );
-            sres_  = eval( olhs_ ) + eval( rhs_ );
-            osres_ = eval( olhs_ ) + eval( rhs_ );
+            initResults();
+            dres_   = eval( olhs_ ) + eval( rhs_ );
+            odres_  = eval( olhs_ ) + eval( rhs_ );
+            sres_   = eval( olhs_ ) + eval( rhs_ );
+            osres_  = eval( olhs_ ) + eval( rhs_ );
+            refres_ = eval( reflhs_ ) + eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2  ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
-            dres_  = eval( olhs_ ) + eval( orhs_ );
-            odres_ = eval( olhs_ ) + eval( orhs_ );
-            sres_  = eval( olhs_ ) + eval( orhs_ );
-            osres_ = eval( olhs_ ) + eval( orhs_ );
+            initResults();
+            dres_   = eval( olhs_ ) + eval( orhs_ );
+            odres_  = eval( olhs_ ) + eval( orhs_ );
+            sres_   = eval( olhs_ ) + eval( orhs_ );
+            osres_  = eval( olhs_ ) + eval( orhs_ );
+            refres_ = eval( reflhs_ ) + eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -1031,9 +990,11 @@ void OperationTest<MT1,MT2>::testBasicOperation()
 
       // Addition with addition assignment with the given matrices
       {
-         test_ = "Addition with addition assignment with the given matrices";
+         test_  = "Addition with addition assignment with the given matrices";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += lhs_ + rhs_;
             odres_  += lhs_ + rhs_;
             sres_   += lhs_ + rhs_;
@@ -1041,21 +1002,13 @@ void OperationTest<MT1,MT2>::testBasicOperation()
             refres_ += reflhs_ + refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   += lhs_ + orhs_;
             odres_  += lhs_ + orhs_;
             sres_   += lhs_ + orhs_;
@@ -1063,21 +1016,13 @@ void OperationTest<MT1,MT2>::testBasicOperation()
             refres_ += reflhs_ + refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   += olhs_ + rhs_;
             odres_  += olhs_ + rhs_;
             sres_   += olhs_ + rhs_;
@@ -1085,21 +1030,13 @@ void OperationTest<MT1,MT2>::testBasicOperation()
             refres_ += reflhs_ + refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   += olhs_ + orhs_;
             odres_  += olhs_ + orhs_;
             sres_   += olhs_ + orhs_;
@@ -1107,16 +1044,7 @@ void OperationTest<MT1,MT2>::testBasicOperation()
             refres_ += reflhs_ + refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -1124,9 +1052,11 @@ void OperationTest<MT1,MT2>::testBasicOperation()
 
       // Addition with addition assignment with evaluated matrices
       {
-         test_ = "Addition with addition assignment with evaluated matrices";
+         test_  = "Addition with addition assignment with evaluated matrices";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += eval( lhs_ ) + eval( rhs_ );
             odres_  += eval( lhs_ ) + eval( rhs_ );
             sres_   += eval( lhs_ ) + eval( rhs_ );
@@ -1134,21 +1064,13 @@ void OperationTest<MT1,MT2>::testBasicOperation()
             refres_ += eval( reflhs_ ) + eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   += eval( lhs_ ) + eval( orhs_ );
             odres_  += eval( lhs_ ) + eval( orhs_ );
             sres_   += eval( lhs_ ) + eval( orhs_ );
@@ -1156,21 +1078,13 @@ void OperationTest<MT1,MT2>::testBasicOperation()
             refres_ += eval( reflhs_ ) + eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   += eval( olhs_ ) + eval( rhs_ );
             odres_  += eval( olhs_ ) + eval( rhs_ );
             sres_   += eval( olhs_ ) + eval( rhs_ );
@@ -1178,21 +1092,13 @@ void OperationTest<MT1,MT2>::testBasicOperation()
             refres_ += eval( reflhs_ ) + eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   += eval( olhs_ ) + eval( orhs_ );
             odres_  += eval( olhs_ ) + eval( orhs_ );
             sres_   += eval( olhs_ ) + eval( orhs_ );
@@ -1200,16 +1106,7 @@ void OperationTest<MT1,MT2>::testBasicOperation()
             refres_ += eval( reflhs_ ) + eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -1222,9 +1119,11 @@ void OperationTest<MT1,MT2>::testBasicOperation()
 
       // Addition with subtraction assignment with the given matrices
       {
-         test_ = "Addition with subtraction assignment with the given matrices";
+         test_  = "Addition with subtraction assignment with the given matrices";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= lhs_ + rhs_;
             odres_  -= lhs_ + rhs_;
             sres_   -= lhs_ + rhs_;
@@ -1232,21 +1131,13 @@ void OperationTest<MT1,MT2>::testBasicOperation()
             refres_ -= reflhs_ + refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   -= lhs_ + orhs_;
             odres_  -= lhs_ + orhs_;
             sres_   -= lhs_ + orhs_;
@@ -1254,21 +1145,13 @@ void OperationTest<MT1,MT2>::testBasicOperation()
             refres_ -= reflhs_ + refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   -= olhs_ + rhs_;
             odres_  -= olhs_ + rhs_;
             sres_   -= olhs_ + rhs_;
@@ -1276,21 +1159,13 @@ void OperationTest<MT1,MT2>::testBasicOperation()
             refres_ -= reflhs_ + refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   -= olhs_ + orhs_;
             odres_  -= olhs_ + orhs_;
             sres_   -= olhs_ + orhs_;
@@ -1298,16 +1173,7 @@ void OperationTest<MT1,MT2>::testBasicOperation()
             refres_ -= reflhs_ + refrhs_;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -1315,9 +1181,11 @@ void OperationTest<MT1,MT2>::testBasicOperation()
 
       // Addition with subtraction assignment with evaluated matrices
       {
-         test_ = "Addition with subtraction assignment with evaluated matrices";
+         test_  = "Addition with subtraction assignment with evaluated matrices";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= eval( lhs_ ) + eval( rhs_ );
             odres_  -= eval( lhs_ ) + eval( rhs_ );
             sres_   -= eval( lhs_ ) + eval( rhs_ );
@@ -1325,21 +1193,13 @@ void OperationTest<MT1,MT2>::testBasicOperation()
             refres_ -= eval( reflhs_ ) + eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   -= eval( lhs_ ) + eval( orhs_ );
             odres_  -= eval( lhs_ ) + eval( orhs_ );
             sres_   -= eval( lhs_ ) + eval( orhs_ );
@@ -1347,21 +1207,13 @@ void OperationTest<MT1,MT2>::testBasicOperation()
             refres_ -= eval( reflhs_ ) + eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   -= eval( olhs_ ) + eval( rhs_ );
             odres_  -= eval( olhs_ ) + eval( rhs_ );
             sres_   -= eval( olhs_ ) + eval( rhs_ );
@@ -1369,21 +1221,13 @@ void OperationTest<MT1,MT2>::testBasicOperation()
             refres_ -= eval( reflhs_ ) + eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   -= eval( olhs_ ) + eval( orhs_ );
             odres_  -= eval( olhs_ ) + eval( orhs_ );
             sres_   -= eval( olhs_ ) + eval( orhs_ );
@@ -1391,16 +1235,7 @@ void OperationTest<MT1,MT2>::testBasicOperation()
             refres_ -= eval( reflhs_ ) + eval( refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -1434,9 +1269,11 @@ void OperationTest<MT1,MT2>::testNegatedOperation()
 
       // Negated addition with the given matrices
       {
-         test_ = "Negated addition with the given matrices";
+         test_  = "Negated addition with the given matrices";
+         error_ = "Failed addition operation";
 
          try {
+            initResults();
             dres_   = -( lhs_ + rhs_ );
             odres_  = -( lhs_ + rhs_ );
             sres_   = -( lhs_ + rhs_ );
@@ -1444,79 +1281,49 @@ void OperationTest<MT1,MT2>::testNegatedOperation()
             refres_ = -( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
-            dres_  = -( lhs_ + orhs_ );
-            odres_ = -( lhs_ + orhs_ );
-            sres_  = -( lhs_ + orhs_ );
-            osres_ = -( lhs_ + orhs_ );
+            initResults();
+            dres_   = -( lhs_ + orhs_ );
+            odres_  = -( lhs_ + orhs_ );
+            sres_   = -( lhs_ + orhs_ );
+            osres_  = -( lhs_ + orhs_ );
+            refres_ = -( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
-            dres_  = -( olhs_ + rhs_ );
-            odres_ = -( olhs_ + rhs_ );
-            sres_  = -( olhs_ + rhs_ );
-            osres_ = -( olhs_ + rhs_ );
+            initResults();
+            dres_   = -( olhs_ + rhs_ );
+            odres_  = -( olhs_ + rhs_ );
+            sres_   = -( olhs_ + rhs_ );
+            osres_  = -( olhs_ + rhs_ );
+            refres_ = -( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
-            dres_  = -( olhs_ + orhs_ );
-            odres_ = -( olhs_ + orhs_ );
-            sres_  = -( olhs_ + orhs_ );
-            osres_ = -( olhs_ + orhs_ );
+            initResults();
+            dres_   = -( olhs_ + orhs_ );
+            odres_  = -( olhs_ + orhs_ );
+            sres_   = -( olhs_ + orhs_ );
+            osres_  = -( olhs_ + orhs_ );
+            refres_ = -( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -1524,88 +1331,61 @@ void OperationTest<MT1,MT2>::testNegatedOperation()
 
       // Negated addition with evaluated matrices
       {
-         test_ = "Negated addition with evaluated matrices";
+         test_  = "Negated addition with evaluated matrices";
+         error_ = "Failed addition operation";
 
          try {
-            dres_  = -( eval( lhs_ ) + eval( rhs_ ) );
-            odres_ = -( eval( lhs_ ) + eval( rhs_ ) );
-            sres_  = -( eval( lhs_ ) + eval( rhs_ ) );
-            osres_ = -( eval( lhs_ ) + eval( rhs_ ) );
+            initResults();
+            dres_   = -( eval( lhs_ ) + eval( rhs_ ) );
+            odres_  = -( eval( lhs_ ) + eval( rhs_ ) );
+            sres_   = -( eval( lhs_ ) + eval( rhs_ ) );
+            osres_  = -( eval( lhs_ ) + eval( rhs_ ) );
+            refres_ = -( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
-            dres_  = -( eval( lhs_ ) + eval( orhs_ ) );
-            odres_ = -( eval( lhs_ ) + eval( orhs_ ) );
-            sres_  = -( eval( lhs_ ) + eval( orhs_ ) );
-            osres_ = -( eval( lhs_ ) + eval( orhs_ ) );
+            initResults();
+            dres_   = -( eval( lhs_ ) + eval( orhs_ ) );
+            odres_  = -( eval( lhs_ ) + eval( orhs_ ) );
+            sres_   = -( eval( lhs_ ) + eval( orhs_ ) );
+            osres_  = -( eval( lhs_ ) + eval( orhs_ ) );
+            refres_ = -( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
-            dres_  = -( eval( olhs_ ) + eval( rhs_ ) );
-            odres_ = -( eval( olhs_ ) + eval( rhs_ ) );
-            sres_  = -( eval( olhs_ ) + eval( rhs_ ) );
-            osres_ = -( eval( olhs_ ) + eval( rhs_ ) );
+            initResults();
+            dres_   = -( eval( olhs_ ) + eval( rhs_ ) );
+            odres_  = -( eval( olhs_ ) + eval( rhs_ ) );
+            sres_   = -( eval( olhs_ ) + eval( rhs_ ) );
+            osres_  = -( eval( olhs_ ) + eval( rhs_ ) );
+            refres_ = -( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
-            dres_  = -( eval( olhs_ ) + eval( orhs_ ) );
-            odres_ = -( eval( olhs_ ) + eval( orhs_ ) );
-            sres_  = -( eval( olhs_ ) + eval( orhs_ ) );
-            osres_ = -( eval( olhs_ ) + eval( orhs_ ) );
+            initResults();
+            dres_   = -( eval( olhs_ ) + eval( orhs_ ) );
+            odres_  = -( eval( olhs_ ) + eval( orhs_ ) );
+            sres_   = -( eval( olhs_ ) + eval( orhs_ ) );
+            osres_  = -( eval( olhs_ ) + eval( orhs_ ) );
+            refres_ = -( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -1618,9 +1398,11 @@ void OperationTest<MT1,MT2>::testNegatedOperation()
 
       // Negated addition with addition assignment with the given matrices
       {
-         test_ = "Negated addition with addition assignment with the given matrices";
+         test_  = "Negated addition with addition assignment with the given matrices";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += -( lhs_ + rhs_ );
             odres_  += -( lhs_ + rhs_ );
             sres_   += -( lhs_ + rhs_ );
@@ -1628,21 +1410,13 @@ void OperationTest<MT1,MT2>::testNegatedOperation()
             refres_ += -( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   += -( lhs_ + orhs_ );
             odres_  += -( lhs_ + orhs_ );
             sres_   += -( lhs_ + orhs_ );
@@ -1650,21 +1424,13 @@ void OperationTest<MT1,MT2>::testNegatedOperation()
             refres_ += -( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   += -( olhs_ + rhs_ );
             odres_  += -( olhs_ + rhs_ );
             sres_   += -( olhs_ + rhs_ );
@@ -1672,21 +1438,13 @@ void OperationTest<MT1,MT2>::testNegatedOperation()
             refres_ += -( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   += -( olhs_ + orhs_ );
             odres_  += -( olhs_ + orhs_ );
             sres_   += -( olhs_ + orhs_ );
@@ -1694,16 +1452,7 @@ void OperationTest<MT1,MT2>::testNegatedOperation()
             refres_ += -( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -1711,9 +1460,11 @@ void OperationTest<MT1,MT2>::testNegatedOperation()
 
       // Negated addition with addition assignment with the given matrices
       {
-         test_ = "Negated addition with addition assignment with evaluated matrices";
+         test_  = "Negated addition with addition assignment with evaluated matrices";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += -( eval( lhs_ ) + eval( rhs_ ) );
             odres_  += -( eval( lhs_ ) + eval( rhs_ ) );
             sres_   += -( eval( lhs_ ) + eval( rhs_ ) );
@@ -1721,21 +1472,13 @@ void OperationTest<MT1,MT2>::testNegatedOperation()
             refres_ += -( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   += -( eval( lhs_ ) + eval( orhs_ ) );
             odres_  += -( eval( lhs_ ) + eval( orhs_ ) );
             sres_   += -( eval( lhs_ ) + eval( orhs_ ) );
@@ -1743,21 +1486,13 @@ void OperationTest<MT1,MT2>::testNegatedOperation()
             refres_ += -( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   += -( eval( olhs_ ) + eval( rhs_ ) );
             odres_  += -( eval( olhs_ ) + eval( rhs_ ) );
             sres_   += -( eval( olhs_ ) + eval( rhs_ ) );
@@ -1765,21 +1500,13 @@ void OperationTest<MT1,MT2>::testNegatedOperation()
             refres_ += -( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   += -( eval( olhs_ ) + eval( orhs_ ) );
             odres_  += -( eval( olhs_ ) + eval( orhs_ ) );
             sres_   += -( eval( olhs_ ) + eval( orhs_ ) );
@@ -1787,16 +1514,7 @@ void OperationTest<MT1,MT2>::testNegatedOperation()
             refres_ += -( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -1809,9 +1527,11 @@ void OperationTest<MT1,MT2>::testNegatedOperation()
 
       // Negated addition with subtraction assignment with the given matrices
       {
-         test_ = "Negated addition with subtraction assignment with the given matrices";
+         test_  = "Negated addition with subtraction assignment with the given matrices";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= -( lhs_ + rhs_ );
             odres_  -= -( lhs_ + rhs_ );
             sres_   -= -( lhs_ + rhs_ );
@@ -1819,21 +1539,13 @@ void OperationTest<MT1,MT2>::testNegatedOperation()
             refres_ -= -( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   -= -( lhs_ + orhs_ );
             odres_  -= -( lhs_ + orhs_ );
             sres_   -= -( lhs_ + orhs_ );
@@ -1841,21 +1553,13 @@ void OperationTest<MT1,MT2>::testNegatedOperation()
             refres_ -= -( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   -= -( olhs_ + rhs_ );
             odres_  -= -( olhs_ + rhs_ );
             sres_   -= -( olhs_ + rhs_ );
@@ -1863,21 +1567,13 @@ void OperationTest<MT1,MT2>::testNegatedOperation()
             refres_ -= -( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   -= -( olhs_ + orhs_ );
             odres_  -= -( olhs_ + orhs_ );
             sres_   -= -( olhs_ + orhs_ );
@@ -1885,16 +1581,7 @@ void OperationTest<MT1,MT2>::testNegatedOperation()
             refres_ -= -( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -1902,9 +1589,11 @@ void OperationTest<MT1,MT2>::testNegatedOperation()
 
       // Negated addition with subtraction assignment with evaluated matrices
       {
-         test_ = "Negated addition with subtraction assignment with evaluated matrices";
+         test_  = "Negated addition with subtraction assignment with evaluated matrices";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= -( eval( lhs_ ) + eval( rhs_ ) );
             odres_  -= -( eval( lhs_ ) + eval( rhs_ ) );
             sres_   -= -( eval( lhs_ ) + eval( rhs_ ) );
@@ -1912,21 +1601,13 @@ void OperationTest<MT1,MT2>::testNegatedOperation()
             refres_ -= -( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   -= -( eval( lhs_ ) + eval( orhs_ ) );
             odres_  -= -( eval( lhs_ ) + eval( orhs_ ) );
             sres_   -= -( eval( lhs_ ) + eval( orhs_ ) );
@@ -1934,21 +1615,13 @@ void OperationTest<MT1,MT2>::testNegatedOperation()
             refres_ -= -( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition with subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   -= -( eval( olhs_ ) + eval( rhs_ ) );
             odres_  -= -( eval( olhs_ ) + eval( rhs_ ) );
             sres_   -= -( eval( olhs_ ) + eval( rhs_ ) );
@@ -1956,21 +1629,13 @@ void OperationTest<MT1,MT2>::testNegatedOperation()
             refres_ -= -( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   -= -( eval( olhs_ ) + eval( orhs_ ) );
             odres_  -= -( eval( olhs_ ) + eval( orhs_ ) );
             sres_   -= -( eval( olhs_ ) + eval( orhs_ ) );
@@ -1978,16 +1643,7 @@ void OperationTest<MT1,MT2>::testNegatedOperation()
             refres_ -= -( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -2204,9 +1860,11 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 
       // Scaled addition with the given matrices
       {
-         test_ = "Scaled addition with the given matrices (s*OP)";
+         test_  = "Scaled addition with the given matrices (s*OP)";
+         error_ = "Failed addition operation";
 
          try {
+            initResults();
             dres_   = scalar * ( lhs_ + rhs_ );
             odres_  = scalar * ( lhs_ + rhs_ );
             sres_   = scalar * ( lhs_ + rhs_ );
@@ -2214,79 +1872,49 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ = scalar * ( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
-            dres_  = scalar * ( lhs_ + orhs_ );
-            odres_ = scalar * ( lhs_ + orhs_ );
-            sres_  = scalar * ( lhs_ + orhs_ );
-            osres_ = scalar * ( lhs_ + orhs_ );
+            initResults();
+            dres_   = scalar * ( lhs_ + orhs_ );
+            odres_  = scalar * ( lhs_ + orhs_ );
+            sres_   = scalar * ( lhs_ + orhs_ );
+            osres_  = scalar * ( lhs_ + orhs_ );
+            refres_ = scalar * ( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
-            dres_  = scalar * ( olhs_ + rhs_ );
-            odres_ = scalar * ( olhs_ + rhs_ );
-            sres_  = scalar * ( olhs_ + rhs_ );
-            osres_ = scalar * ( olhs_ + rhs_ );
+            initResults();
+            dres_   = scalar * ( olhs_ + rhs_ );
+            odres_  = scalar * ( olhs_ + rhs_ );
+            sres_   = scalar * ( olhs_ + rhs_ );
+            osres_  = scalar * ( olhs_ + rhs_ );
+            refres_ = scalar * ( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
-            dres_  = scalar * ( olhs_ + orhs_ );
-            odres_ = scalar * ( olhs_ + orhs_ );
-            sres_  = scalar * ( olhs_ + orhs_ );
-            osres_ = scalar * ( olhs_ + orhs_ );
+            initResults();
+            dres_   = scalar * ( olhs_ + orhs_ );
+            odres_  = scalar * ( olhs_ + orhs_ );
+            sres_   = scalar * ( olhs_ + orhs_ );
+            osres_  = scalar * ( olhs_ + orhs_ );
+            refres_ = scalar * ( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -2294,88 +1922,61 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 
       // Scaled addition with evaluated matrices
       {
-         test_ = "Scaled addition with evaluated matrices (s*OP)";
+         test_  = "Scaled addition with evaluated matrices (s*OP)";
+         error_ = "Failed addition operation";
 
          try {
-            dres_  = scalar * ( eval( lhs_ ) + eval( rhs_ ) );
-            odres_ = scalar * ( eval( lhs_ ) + eval( rhs_ ) );
-            sres_  = scalar * ( eval( lhs_ ) + eval( rhs_ ) );
-            osres_ = scalar * ( eval( lhs_ ) + eval( rhs_ ) );
+            initResults();
+            dres_   = scalar * ( eval( lhs_ ) + eval( rhs_ ) );
+            odres_  = scalar * ( eval( lhs_ ) + eval( rhs_ ) );
+            sres_   = scalar * ( eval( lhs_ ) + eval( rhs_ ) );
+            osres_  = scalar * ( eval( lhs_ ) + eval( rhs_ ) );
+            refres_ = scalar * ( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
-            dres_  = scalar * ( eval( lhs_ ) + eval( orhs_ ) );
-            odres_ = scalar * ( eval( lhs_ ) + eval( orhs_ ) );
-            sres_  = scalar * ( eval( lhs_ ) + eval( orhs_ ) );
-            osres_ = scalar * ( eval( lhs_ ) + eval( orhs_ ) );
+            initResults();
+            dres_   = scalar * ( eval( lhs_ ) + eval( orhs_ ) );
+            odres_  = scalar * ( eval( lhs_ ) + eval( orhs_ ) );
+            sres_   = scalar * ( eval( lhs_ ) + eval( orhs_ ) );
+            osres_  = scalar * ( eval( lhs_ ) + eval( orhs_ ) );
+            refres_ = scalar * ( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
-            dres_  = scalar * ( eval( olhs_ ) + eval( rhs_ ) );
-            odres_ = scalar * ( eval( olhs_ ) + eval( rhs_ ) );
-            sres_  = scalar * ( eval( olhs_ ) + eval( rhs_ ) );
-            osres_ = scalar * ( eval( olhs_ ) + eval( rhs_ ) );
+            initResults();
+            dres_   = scalar * ( eval( olhs_ ) + eval( rhs_ ) );
+            odres_  = scalar * ( eval( olhs_ ) + eval( rhs_ ) );
+            sres_   = scalar * ( eval( olhs_ ) + eval( rhs_ ) );
+            osres_  = scalar * ( eval( olhs_ ) + eval( rhs_ ) );
+            refres_ = scalar * ( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
-            dres_  = scalar * ( eval( olhs_ ) + eval( orhs_ ) );
-            odres_ = scalar * ( eval( olhs_ ) + eval( orhs_ ) );
-            sres_  = scalar * ( eval( olhs_ ) + eval( orhs_ ) );
-            osres_ = scalar * ( eval( olhs_ ) + eval( orhs_ ) );
+            initResults();
+            dres_   = scalar * ( eval( olhs_ ) + eval( orhs_ ) );
+            odres_  = scalar * ( eval( olhs_ ) + eval( orhs_ ) );
+            sres_   = scalar * ( eval( olhs_ ) + eval( orhs_ ) );
+            osres_  = scalar * ( eval( olhs_ ) + eval( orhs_ ) );
+            refres_ = scalar * ( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -2388,9 +1989,11 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 
       // Scaled addition with the given matrices
       {
-         test_ = "Scaled addition with the given matrices (OP*s)";
+         test_  = "Scaled addition with the given matrices (OP*s)";
+         error_ = "Failed addition operation";
 
          try {
+            initResults();
             dres_   = ( lhs_ + rhs_ ) * scalar;
             odres_  = ( lhs_ + rhs_ ) * scalar;
             sres_   = ( lhs_ + rhs_ ) * scalar;
@@ -2398,79 +2001,49 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ = ( reflhs_ + refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
-            dres_  = ( lhs_ + orhs_ ) * scalar;
-            odres_ = ( lhs_ + orhs_ ) * scalar;
-            sres_  = ( lhs_ + orhs_ ) * scalar;
-            osres_ = ( lhs_ + orhs_ ) * scalar;
+            initResults();
+            dres_   = ( lhs_ + orhs_ ) * scalar;
+            odres_  = ( lhs_ + orhs_ ) * scalar;
+            sres_   = ( lhs_ + orhs_ ) * scalar;
+            osres_  = ( lhs_ + orhs_ ) * scalar;
+            refres_ = ( reflhs_ + refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
-            dres_  = ( olhs_ + rhs_ ) * scalar;
-            odres_ = ( olhs_ + rhs_ ) * scalar;
-            sres_  = ( olhs_ + rhs_ ) * scalar;
-            osres_ = ( olhs_ + rhs_ ) * scalar;
+            initResults();
+            dres_   = ( olhs_ + rhs_ ) * scalar;
+            odres_  = ( olhs_ + rhs_ ) * scalar;
+            sres_   = ( olhs_ + rhs_ ) * scalar;
+            osres_  = ( olhs_ + rhs_ ) * scalar;
+            refres_ = ( reflhs_ + refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
-            dres_  = ( olhs_ + orhs_ ) * scalar;
-            odres_ = ( olhs_ + orhs_ ) * scalar;
-            sres_  = ( olhs_ + orhs_ ) * scalar;
-            osres_ = ( olhs_ + orhs_ ) * scalar;
+            initResults();
+            dres_   = ( olhs_ + orhs_ ) * scalar;
+            odres_  = ( olhs_ + orhs_ ) * scalar;
+            sres_   = ( olhs_ + orhs_ ) * scalar;
+            osres_  = ( olhs_ + orhs_ ) * scalar;
+            refres_ = ( reflhs_ + refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -2478,88 +2051,61 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 
       // Scaled addition with evaluated matrices
       {
-         test_ = "Scaled addition with evaluated matrices (OP*s)";
+         test_  = "Scaled addition with evaluated matrices (OP*s)";
+         error_ = "Failed addition operation";
 
          try {
-            dres_  = ( eval( lhs_ ) + eval( rhs_ ) ) * scalar;
-            odres_ = ( eval( lhs_ ) + eval( rhs_ ) ) * scalar;
-            sres_  = ( eval( lhs_ ) + eval( rhs_ ) ) * scalar;
-            osres_ = ( eval( lhs_ ) + eval( rhs_ ) ) * scalar;
+            initResults();
+            dres_   = ( eval( lhs_ ) + eval( rhs_ ) ) * scalar;
+            odres_  = ( eval( lhs_ ) + eval( rhs_ ) ) * scalar;
+            sres_   = ( eval( lhs_ ) + eval( rhs_ ) ) * scalar;
+            osres_  = ( eval( lhs_ ) + eval( rhs_ ) ) * scalar;
+            refres_ = ( eval( reflhs_ ) + eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
-            dres_  = ( eval( lhs_ ) + eval( orhs_ ) ) * scalar;
-            odres_ = ( eval( lhs_ ) + eval( orhs_ ) ) * scalar;
-            sres_  = ( eval( lhs_ ) + eval( orhs_ ) ) * scalar;
-            osres_ = ( eval( lhs_ ) + eval( orhs_ ) ) * scalar;
+            initResults();
+            dres_   = ( eval( lhs_ ) + eval( orhs_ ) ) * scalar;
+            odres_  = ( eval( lhs_ ) + eval( orhs_ ) ) * scalar;
+            sres_   = ( eval( lhs_ ) + eval( orhs_ ) ) * scalar;
+            osres_  = ( eval( lhs_ ) + eval( orhs_ ) ) * scalar;
+            refres_ = ( eval( reflhs_ ) + eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
-            dres_  = ( eval( olhs_ ) + eval( rhs_ ) ) * scalar;
-            odres_ = ( eval( olhs_ ) + eval( rhs_ ) ) * scalar;
-            sres_  = ( eval( olhs_ ) + eval( rhs_ ) ) * scalar;
-            osres_ = ( eval( olhs_ ) + eval( rhs_ ) ) * scalar;
+            initResults();
+            dres_   = ( eval( olhs_ ) + eval( rhs_ ) ) * scalar;
+            odres_  = ( eval( olhs_ ) + eval( rhs_ ) ) * scalar;
+            sres_   = ( eval( olhs_ ) + eval( rhs_ ) ) * scalar;
+            osres_  = ( eval( olhs_ ) + eval( rhs_ ) ) * scalar;
+            refres_ = ( eval( reflhs_ ) + eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
-            dres_  = ( eval( olhs_ ) + eval( orhs_ ) ) * scalar;
-            odres_ = ( eval( olhs_ ) + eval( orhs_ ) ) * scalar;
-            sres_  = ( eval( olhs_ ) + eval( orhs_ ) ) * scalar;
-            osres_ = ( eval( olhs_ ) + eval( orhs_ ) ) * scalar;
+            initResults();
+            dres_   = ( eval( olhs_ ) + eval( orhs_ ) ) * scalar;
+            odres_  = ( eval( olhs_ ) + eval( orhs_ ) ) * scalar;
+            sres_   = ( eval( olhs_ ) + eval( orhs_ ) ) * scalar;
+            osres_  = ( eval( olhs_ ) + eval( orhs_ ) ) * scalar;
+            refres_ = ( eval( reflhs_ ) + eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -2572,9 +2118,11 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 
       // Scaled addition with the given matrices
       {
-         test_ = "Scaled addition with the given matrices (OP/s)";
+         test_  = "Scaled addition with the given matrices (OP/s)";
+         error_ = "Failed addition operation";
 
          try {
+            initResults();
             dres_   = ( lhs_ + rhs_ ) / scalar;
             odres_  = ( lhs_ + rhs_ ) / scalar;
             sres_   = ( lhs_ + rhs_ ) / scalar;
@@ -2582,79 +2130,49 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ = ( reflhs_ + refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
-            dres_  = ( lhs_ + orhs_ ) / scalar;
-            odres_ = ( lhs_ + orhs_ ) / scalar;
-            sres_  = ( lhs_ + orhs_ ) / scalar;
-            osres_ = ( lhs_ + orhs_ ) / scalar;
+            initResults();
+            dres_   = ( lhs_ + orhs_ ) / scalar;
+            odres_  = ( lhs_ + orhs_ ) / scalar;
+            sres_   = ( lhs_ + orhs_ ) / scalar;
+            osres_  = ( lhs_ + orhs_ ) / scalar;
+            refres_ = ( reflhs_ + refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
-            dres_  = ( olhs_ + rhs_ ) / scalar;
-            odres_ = ( olhs_ + rhs_ ) / scalar;
-            sres_  = ( olhs_ + rhs_ ) / scalar;
-            osres_ = ( olhs_ + rhs_ ) / scalar;
+            initResults();
+            dres_   = ( olhs_ + rhs_ ) / scalar;
+            odres_  = ( olhs_ + rhs_ ) / scalar;
+            sres_   = ( olhs_ + rhs_ ) / scalar;
+            osres_  = ( olhs_ + rhs_ ) / scalar;
+            refres_ = ( reflhs_ + refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
-            dres_  = ( olhs_ + orhs_ ) / scalar;
-            odres_ = ( olhs_ + orhs_ ) / scalar;
-            sres_  = ( olhs_ + orhs_ ) / scalar;
-            osres_ = ( olhs_ + orhs_ ) / scalar;
+            initResults();
+            dres_   = ( olhs_ + orhs_ ) / scalar;
+            odres_  = ( olhs_ + orhs_ ) / scalar;
+            sres_   = ( olhs_ + orhs_ ) / scalar;
+            osres_  = ( olhs_ + orhs_ ) / scalar;
+            refres_ = ( reflhs_ + refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -2662,88 +2180,61 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 
       // Scaled addition with evaluated matrices
       {
-         test_ = "Scaled addition with evaluated matrices (OP/s)";
+         test_  = "Scaled addition with evaluated matrices (OP/s)";
+         error_ = "Failed addition operation";
 
          try {
-            dres_  = ( eval( lhs_ ) + eval( rhs_ ) ) / scalar;
-            odres_ = ( eval( lhs_ ) + eval( rhs_ ) ) / scalar;
-            sres_  = ( eval( lhs_ ) + eval( rhs_ ) ) / scalar;
-            osres_ = ( eval( lhs_ ) + eval( rhs_ ) ) / scalar;
+            initResults();
+            dres_   = ( eval( lhs_ ) + eval( rhs_ ) ) / scalar;
+            odres_  = ( eval( lhs_ ) + eval( rhs_ ) ) / scalar;
+            sres_   = ( eval( lhs_ ) + eval( rhs_ ) ) / scalar;
+            osres_  = ( eval( lhs_ ) + eval( rhs_ ) ) / scalar;
+            refres_ = ( eval( reflhs_ ) + eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
-            dres_  = ( eval( lhs_ ) + eval( orhs_ ) ) / scalar;
-            odres_ = ( eval( lhs_ ) + eval( orhs_ ) ) / scalar;
-            sres_  = ( eval( lhs_ ) + eval( orhs_ ) ) / scalar;
-            osres_ = ( eval( lhs_ ) + eval( orhs_ ) ) / scalar;
+            initResults();
+            dres_   = ( eval( lhs_ ) + eval( orhs_ ) ) / scalar;
+            odres_  = ( eval( lhs_ ) + eval( orhs_ ) ) / scalar;
+            sres_   = ( eval( lhs_ ) + eval( orhs_ ) ) / scalar;
+            osres_  = ( eval( lhs_ ) + eval( orhs_ ) ) / scalar;
+            refres_ = ( eval( reflhs_ ) + eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
-            dres_  = ( eval( olhs_ ) + eval( rhs_ ) ) / scalar;
-            odres_ = ( eval( olhs_ ) + eval( rhs_ ) ) / scalar;
-            sres_  = ( eval( olhs_ ) + eval( rhs_ ) ) / scalar;
-            osres_ = ( eval( olhs_ ) + eval( rhs_ ) ) / scalar;
+            initResults();
+            dres_   = ( eval( olhs_ ) + eval( rhs_ ) ) / scalar;
+            odres_  = ( eval( olhs_ ) + eval( rhs_ ) ) / scalar;
+            sres_   = ( eval( olhs_ ) + eval( rhs_ ) ) / scalar;
+            osres_  = ( eval( olhs_ ) + eval( rhs_ ) ) / scalar;
+            refres_ = ( eval( reflhs_ ) + eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
-            dres_  = ( eval( olhs_ ) + eval( orhs_ ) ) / scalar;
-            odres_ = ( eval( olhs_ ) + eval( orhs_ ) ) / scalar;
-            sres_  = ( eval( olhs_ ) + eval( orhs_ ) ) / scalar;
-            osres_ = ( eval( olhs_ ) + eval( orhs_ ) ) / scalar;
+            initResults();
+            dres_   = ( eval( olhs_ ) + eval( orhs_ ) ) / scalar;
+            odres_  = ( eval( olhs_ ) + eval( orhs_ ) ) / scalar;
+            sres_   = ( eval( olhs_ ) + eval( orhs_ ) ) / scalar;
+            osres_  = ( eval( olhs_ ) + eval( orhs_ ) ) / scalar;
+            refres_ = ( eval( reflhs_ ) + eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -2756,9 +2247,11 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 
       // Scaled addition with addition assignment with the given matrices
       {
-         test_ = "Scaled addition with addition assignment with the given matrices (s*OP)";
+         test_  = "Scaled addition with addition assignment with the given matrices (s*OP)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += scalar * ( lhs_ + rhs_ );
             odres_  += scalar * ( lhs_ + rhs_ );
             sres_   += scalar * ( lhs_ + rhs_ );
@@ -2766,21 +2259,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += scalar * ( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   += scalar * ( lhs_ + orhs_ );
             odres_  += scalar * ( lhs_ + orhs_ );
             sres_   += scalar * ( lhs_ + orhs_ );
@@ -2788,21 +2273,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += scalar * ( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   += scalar * ( olhs_ + rhs_ );
             odres_  += scalar * ( olhs_ + rhs_ );
             sres_   += scalar * ( olhs_ + rhs_ );
@@ -2810,21 +2287,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += scalar * ( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   += scalar * ( olhs_ + orhs_ );
             odres_  += scalar * ( olhs_ + orhs_ );
             sres_   += scalar * ( olhs_ + orhs_ );
@@ -2832,16 +2301,7 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += scalar * ( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -2849,9 +2309,11 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 
       // Scaled addition with addition assignment with evaluated matrices
       {
-         test_ = "Scaled addition with addition assignment with evaluated matrices (s*OP)";
+         test_  = "Scaled addition with addition assignment with evaluated matrices (s*OP)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += scalar * ( eval( lhs_ ) + eval( rhs_ ) );
             odres_  += scalar * ( eval( lhs_ ) + eval( rhs_ ) );
             sres_   += scalar * ( eval( lhs_ ) + eval( rhs_ ) );
@@ -2859,21 +2321,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += scalar * ( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   += scalar * ( eval( lhs_ ) + eval( orhs_ ) );
             odres_  += scalar * ( eval( lhs_ ) + eval( orhs_ ) );
             sres_   += scalar * ( eval( lhs_ ) + eval( orhs_ ) );
@@ -2881,21 +2335,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += scalar * ( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   += scalar * ( eval( olhs_ ) + eval( rhs_ ) );
             odres_  += scalar * ( eval( olhs_ ) + eval( rhs_ ) );
             sres_   += scalar * ( eval( olhs_ ) + eval( rhs_ ) );
@@ -2903,21 +2349,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += scalar * ( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   += scalar * ( eval( olhs_ ) + eval( orhs_ ) );
             odres_  += scalar * ( eval( olhs_ ) + eval( orhs_ ) );
             sres_   += scalar * ( eval( olhs_ ) + eval( orhs_ ) );
@@ -2925,16 +2363,7 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += scalar * ( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -2947,9 +2376,11 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 
       // Scaled addition with addition assignment with the given matrices
       {
-         test_ = "Scaled addition with addition assignment with the given matrices (OP*s)";
+         test_  = "Scaled addition with addition assignment with the given matrices (OP*s)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += ( lhs_ + rhs_ ) * scalar;
             odres_  += ( lhs_ + rhs_ ) * scalar;
             sres_   += ( lhs_ + rhs_ ) * scalar;
@@ -2957,21 +2388,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += ( reflhs_ + refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   += ( lhs_ + orhs_ ) * scalar;
             odres_  += ( lhs_ + orhs_ ) * scalar;
             sres_   += ( lhs_ + orhs_ ) * scalar;
@@ -2979,21 +2402,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += ( reflhs_ + refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   += ( olhs_ + rhs_ ) * scalar;
             odres_  += ( olhs_ + rhs_ ) * scalar;
             sres_   += ( olhs_ + rhs_ ) * scalar;
@@ -3001,21 +2416,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += ( reflhs_ + refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   += ( olhs_ + orhs_ ) * scalar;
             odres_  += ( olhs_ + orhs_ ) * scalar;
             sres_   += ( olhs_ + orhs_ ) * scalar;
@@ -3023,16 +2430,7 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += ( reflhs_ + refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -3040,9 +2438,11 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 
       // Scaled addition with addition assignment with evaluated matrices
       {
-         test_ = "Scaled addition with addition assignment with evaluated matrices (OP*s)";
+         test_  = "Scaled addition with addition assignment with evaluated matrices (OP*s)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += ( eval( lhs_ ) + eval( rhs_ ) ) * scalar;
             odres_  += ( eval( lhs_ ) + eval( rhs_ ) ) * scalar;
             sres_   += ( eval( lhs_ ) + eval( rhs_ ) ) * scalar;
@@ -3050,21 +2450,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += ( eval( reflhs_ ) + eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   += ( eval( lhs_ ) + eval( orhs_ ) ) * scalar;
             odres_  += ( eval( lhs_ ) + eval( orhs_ ) ) * scalar;
             sres_   += ( eval( lhs_ ) + eval( orhs_ ) ) * scalar;
@@ -3072,21 +2464,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += ( eval( reflhs_ ) + eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   += ( eval( olhs_ ) + eval( rhs_ ) ) * scalar;
             odres_  += ( eval( olhs_ ) + eval( rhs_ ) ) * scalar;
             sres_   += ( eval( olhs_ ) + eval( rhs_ ) ) * scalar;
@@ -3094,21 +2478,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += ( eval( reflhs_ ) + eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   += ( eval( olhs_ ) + eval( orhs_ ) ) * scalar;
             odres_  += ( eval( olhs_ ) + eval( orhs_ ) ) * scalar;
             sres_   += ( eval( olhs_ ) + eval( orhs_ ) ) * scalar;
@@ -3116,16 +2492,7 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += ( eval( reflhs_ ) + eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -3138,9 +2505,11 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 
       // Scaled addition with addition assignment with the given matrices
       {
-         test_ = "Scaled addition with addition assignment with the given matrices (OP/s)";
+         test_  = "Scaled addition with addition assignment with the given matrices (OP/s)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += ( lhs_ + rhs_ ) / scalar;
             odres_  += ( lhs_ + rhs_ ) / scalar;
             sres_   += ( lhs_ + rhs_ ) / scalar;
@@ -3148,21 +2517,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += ( reflhs_ + refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   += ( lhs_ + orhs_ ) / scalar;
             odres_  += ( lhs_ + orhs_ ) / scalar;
             sres_   += ( lhs_ + orhs_ ) / scalar;
@@ -3170,21 +2531,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += ( reflhs_ + refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   += ( olhs_ + rhs_ ) / scalar;
             odres_  += ( olhs_ + rhs_ ) / scalar;
             sres_   += ( olhs_ + rhs_ ) / scalar;
@@ -3192,21 +2545,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += ( reflhs_ + refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   += ( olhs_ + orhs_ ) / scalar;
             odres_  += ( olhs_ + orhs_ ) / scalar;
             sres_   += ( olhs_ + orhs_ ) / scalar;
@@ -3214,16 +2559,7 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += ( reflhs_ + refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -3231,9 +2567,11 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 
       // Scaled addition with addition assignment with evaluated matrices
       {
-         test_ = "Scaled addition with addition assignment with evaluated matrices (OP/s)";
+         test_  = "Scaled addition with addition assignment with evaluated matrices (OP/s)";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += ( eval( lhs_ ) + eval( rhs_ ) ) / scalar;
             odres_  += ( eval( lhs_ ) + eval( rhs_ ) ) / scalar;
             sres_   += ( eval( lhs_ ) + eval( rhs_ ) ) / scalar;
@@ -3241,21 +2579,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += ( eval( reflhs_ ) + eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   += ( eval( lhs_ ) + eval( orhs_ ) ) / scalar;
             odres_  += ( eval( lhs_ ) + eval( orhs_ ) ) / scalar;
             sres_   += ( eval( lhs_ ) + eval( orhs_ ) ) / scalar;
@@ -3263,21 +2593,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += ( eval( reflhs_ ) + eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   += ( eval( olhs_ ) + eval( rhs_ ) ) / scalar;
             odres_  += ( eval( olhs_ ) + eval( rhs_ ) ) / scalar;
             sres_   += ( eval( olhs_ ) + eval( rhs_ ) ) / scalar;
@@ -3285,21 +2607,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += ( eval( reflhs_ ) + eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   += ( eval( olhs_ ) + eval( orhs_ ) ) / scalar;
             odres_  += ( eval( olhs_ ) + eval( orhs_ ) ) / scalar;
             sres_   += ( eval( olhs_ ) + eval( orhs_ ) ) / scalar;
@@ -3307,16 +2621,7 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ += ( eval( reflhs_ ) + eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -3329,9 +2634,11 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 
       // Scaled addition with subtraction assignment with the given matrices
       {
-         test_ = "Scaled addition with subtraction assignment with the given matrices (s*OP)";
+         test_  = "Scaled addition with subtraction assignment with the given matrices (s*OP)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= scalar * ( lhs_ + rhs_ );
             odres_  -= scalar * ( lhs_ + rhs_ );
             sres_   -= scalar * ( lhs_ + rhs_ );
@@ -3339,21 +2646,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= scalar * ( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   -= scalar * ( lhs_ + orhs_ );
             odres_  -= scalar * ( lhs_ + orhs_ );
             sres_   -= scalar * ( lhs_ + orhs_ );
@@ -3361,21 +2660,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= scalar * ( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   -= scalar * ( olhs_ + rhs_ );
             odres_  -= scalar * ( olhs_ + rhs_ );
             sres_   -= scalar * ( olhs_ + rhs_ );
@@ -3383,21 +2674,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= scalar * ( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   -= scalar * ( olhs_ + orhs_ );
             odres_  -= scalar * ( olhs_ + orhs_ );
             sres_   -= scalar * ( olhs_ + orhs_ );
@@ -3405,16 +2688,7 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= scalar * ( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -3422,9 +2696,11 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 
       // Scaled addition with subtraction assignment with evaluated matrices
       {
-         test_ = "Scaled addition with subtraction assignment with evaluated matrices (s*OP)";
+         test_  = "Scaled addition with subtraction assignment with evaluated matrices (s*OP)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= scalar * ( eval( lhs_ ) + eval( rhs_ ) );
             odres_  -= scalar * ( eval( lhs_ ) + eval( rhs_ ) );
             sres_   -= scalar * ( eval( lhs_ ) + eval( rhs_ ) );
@@ -3432,21 +2708,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= scalar * ( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   -= scalar * ( eval( lhs_ ) + eval( orhs_ ) );
             odres_  -= scalar * ( eval( lhs_ ) + eval( orhs_ ) );
             sres_   -= scalar * ( eval( lhs_ ) + eval( orhs_ ) );
@@ -3454,21 +2722,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= scalar * ( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   -= scalar * ( eval( olhs_ ) + eval( rhs_ ) );
             odres_  -= scalar * ( eval( olhs_ ) + eval( rhs_ ) );
             sres_   -= scalar * ( eval( olhs_ ) + eval( rhs_ ) );
@@ -3476,21 +2736,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= scalar * ( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   -= scalar * ( eval( olhs_ ) + eval( orhs_ ) );
             odres_  -= scalar * ( eval( olhs_ ) + eval( orhs_ ) );
             sres_   -= scalar * ( eval( olhs_ ) + eval( orhs_ ) );
@@ -3498,16 +2750,7 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= scalar * ( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -3520,9 +2763,11 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 
       // Scaled addition with subtraction assignment with the given matrices
       {
-         test_ = "Scaled addition with subtraction assignment with the given matrices (OP*s)";
+         test_  = "Scaled addition with subtraction assignment with the given matrices (OP*s)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= ( lhs_ + rhs_ ) * scalar;
             odres_  -= ( lhs_ + rhs_ ) * scalar;
             sres_   -= ( lhs_ + rhs_ ) * scalar;
@@ -3530,21 +2775,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= ( reflhs_ + refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   -= ( lhs_ + orhs_ ) * scalar;
             odres_  -= ( lhs_ + orhs_ ) * scalar;
             sres_   -= ( lhs_ + orhs_ ) * scalar;
@@ -3552,21 +2789,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= ( reflhs_ + refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   -= ( olhs_ + rhs_ ) * scalar;
             odres_  -= ( olhs_ + rhs_ ) * scalar;
             sres_   -= ( olhs_ + rhs_ ) * scalar;
@@ -3574,21 +2803,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= ( reflhs_ + refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   -= ( olhs_ + orhs_ ) * scalar;
             odres_  -= ( olhs_ + orhs_ ) * scalar;
             sres_   -= ( olhs_ + orhs_ ) * scalar;
@@ -3596,16 +2817,7 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= ( reflhs_ + refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -3613,9 +2825,11 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 
       // Scaled addition with subtraction assignment with evaluated matrices
       {
-         test_ = "Scaled addition with subtraction assignment with evaluated matrices (OP*s)";
+         test_  = "Scaled addition with subtraction assignment with evaluated matrices (OP*s)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= ( eval( lhs_ ) + eval( rhs_ ) ) * scalar;
             odres_  -= ( eval( lhs_ ) + eval( rhs_ ) ) * scalar;
             sres_   -= ( eval( lhs_ ) + eval( rhs_ ) ) * scalar;
@@ -3623,21 +2837,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= ( eval( reflhs_ ) + eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   -= ( eval( lhs_ ) + eval( orhs_ ) ) * scalar;
             odres_  -= ( eval( lhs_ ) + eval( orhs_ ) ) * scalar;
             sres_   -= ( eval( lhs_ ) + eval( orhs_ ) ) * scalar;
@@ -3645,21 +2851,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= ( eval( reflhs_ ) + eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   -= ( eval( olhs_ ) + eval( rhs_ ) ) * scalar;
             odres_  -= ( eval( olhs_ ) + eval( rhs_ ) ) * scalar;
             sres_   -= ( eval( olhs_ ) + eval( rhs_ ) ) * scalar;
@@ -3667,21 +2865,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= ( eval( reflhs_ ) + eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   -= ( eval( olhs_ ) + eval( orhs_ ) ) * scalar;
             odres_  -= ( eval( olhs_ ) + eval( orhs_ ) ) * scalar;
             sres_   -= ( eval( olhs_ ) + eval( orhs_ ) ) * scalar;
@@ -3689,16 +2879,7 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= ( eval( reflhs_ ) + eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -3711,9 +2892,11 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 
       // Scaled addition with subtraction assignment with the given matrices
       {
-         test_ = "Scaled addition with subtraction assignment with the given matrices (OP/s)";
+         test_  = "Scaled addition with subtraction assignment with the given matrices (OP/s)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= ( lhs_ + rhs_ ) / scalar;
             odres_  -= ( lhs_ + rhs_ ) / scalar;
             sres_   -= ( lhs_ + rhs_ ) / scalar;
@@ -3721,21 +2904,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= ( reflhs_ + refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   -= ( lhs_ + orhs_ ) / scalar;
             odres_  -= ( lhs_ + orhs_ ) / scalar;
             sres_   -= ( lhs_ + orhs_ ) / scalar;
@@ -3743,21 +2918,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= ( reflhs_ + refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   -= ( olhs_ + rhs_ ) / scalar;
             odres_  -= ( olhs_ + rhs_ ) / scalar;
             sres_   -= ( olhs_ + rhs_ ) / scalar;
@@ -3765,21 +2932,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= ( reflhs_ + refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   -= ( olhs_ + orhs_ ) / scalar;
             odres_  -= ( olhs_ + orhs_ ) / scalar;
             sres_   -= ( olhs_ + orhs_ ) / scalar;
@@ -3787,16 +2946,7 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= ( reflhs_ + refrhs_ ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -3804,9 +2954,11 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 
       // Scaled addition with subtraction assignment with evaluated matrices
       {
-         test_ = "Scaled addition with subtraction assignment with evaluated matrices (OP/s)";
+         test_  = "Scaled addition with subtraction assignment with evaluated matrices (OP/s)";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= ( eval( lhs_ ) + eval( rhs_ ) ) / scalar;
             odres_  -= ( eval( lhs_ ) + eval( rhs_ ) ) / scalar;
             sres_   -= ( eval( lhs_ ) + eval( rhs_ ) ) / scalar;
@@ -3814,21 +2966,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= ( eval( reflhs_ ) + eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   -= ( eval( lhs_ ) + eval( orhs_ ) ) / scalar;
             odres_  -= ( eval( lhs_ ) + eval( orhs_ ) ) / scalar;
             sres_   -= ( eval( lhs_ ) + eval( orhs_ ) ) / scalar;
@@ -3836,21 +2980,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= ( eval( reflhs_ ) + eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   -= ( eval( olhs_ ) + eval( rhs_ ) ) / scalar;
             odres_  -= ( eval( olhs_ ) + eval( rhs_ ) ) / scalar;
             sres_   -= ( eval( olhs_ ) + eval( rhs_ ) ) / scalar;
@@ -3858,21 +2994,13 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= ( eval( reflhs_ ) + eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   -= ( eval( olhs_ ) + eval( orhs_ ) ) / scalar;
             odres_  -= ( eval( olhs_ ) + eval( orhs_ ) ) / scalar;
             sres_   -= ( eval( olhs_ ) + eval( orhs_ ) ) / scalar;
@@ -3880,16 +3008,7 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
             refres_ -= ( eval( reflhs_ ) + eval( refrhs_ ) ) / scalar;
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -3906,9 +3025,9 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 // \return void
 // \exception std::runtime_error Addition error detected.
 //
-// This function tests the transpose matrix addition with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the addition or the subsequent
-// assignment is detected, a \a std::runtime_error exception is thrown.
+// This function tests the transpose matrix addition with plain assignment. In case any error
+// resulting from the addition or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
 */
 template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
@@ -3923,9 +3042,11 @@ void OperationTest<MT1,MT2>::testTransposeOperation()
 
       // Transpose addition with the given matrices
       {
-         test_ = "Transpose addition with the given matrices";
+         test_  = "Transpose addition with the given matrices";
+         error_ = "Failed addition operation";
 
          try {
+            initTransposeResults();
             tdres_  = trans( lhs_ + rhs_ );
             todres_ = trans( lhs_ + rhs_ );
             tsres_  = trans( lhs_ + rhs_ );
@@ -3933,79 +3054,49 @@ void OperationTest<MT1,MT2>::testTransposeOperation()
             refres_ = trans( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkTransposeResults<MT1,MT2>();
 
          try {
+            initTransposeResults();
             tdres_  = trans( lhs_ + orhs_ );
             todres_ = trans( lhs_ + orhs_ );
             tsres_  = trans( lhs_ + orhs_ );
             tosres_ = trans( lhs_ + orhs_ );
+            refres_ = trans( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkTransposeResults<MT1,OMT2>();
 
          try {
+            initTransposeResults();
             tdres_  = trans( olhs_ + rhs_ );
             todres_ = trans( olhs_ + rhs_ );
             tsres_  = trans( olhs_ + rhs_ );
             tosres_ = trans( olhs_ + rhs_ );
+            refres_ = trans( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkTransposeResults<OMT1,MT2>();
 
          try {
+            initTransposeResults();
             tdres_  = trans( olhs_ + orhs_ );
             todres_ = trans( olhs_ + orhs_ );
             tsres_  = trans( olhs_ + orhs_ );
             tosres_ = trans( olhs_ + orhs_ );
+            refres_ = trans( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkTransposeResults<OMT1,OMT2>();
@@ -4013,88 +3104,61 @@ void OperationTest<MT1,MT2>::testTransposeOperation()
 
       // Transpose addition with evaluated matrices
       {
-         test_ = "Transpose addition with evaluated matrices";
+         test_  = "Transpose addition with evaluated matrices";
+         error_ = "Failed addition operation";
 
          try {
+            initTransposeResults();
             tdres_  = trans( eval( lhs_ ) + eval( rhs_ ) );
             todres_ = trans( eval( lhs_ ) + eval( rhs_ ) );
             tsres_  = trans( eval( lhs_ ) + eval( rhs_ ) );
             tosres_ = trans( eval( lhs_ ) + eval( rhs_ ) );
+            refres_ = trans( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkTransposeResults<MT1,MT2>();
 
          try {
+            initTransposeResults();
             tdres_  = trans( eval( lhs_ ) + eval( orhs_ ) );
             todres_ = trans( eval( lhs_ ) + eval( orhs_ ) );
             tsres_  = trans( eval( lhs_ ) + eval( orhs_ ) );
             tosres_ = trans( eval( lhs_ ) + eval( orhs_ ) );
+            refres_ = trans( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkTransposeResults<MT1,OMT2>();
 
          try {
+            initTransposeResults();
             tdres_  = trans( eval( olhs_ ) + eval( rhs_ ) );
             todres_ = trans( eval( olhs_ ) + eval( rhs_ ) );
             tsres_  = trans( eval( olhs_ ) + eval( rhs_ ) );
             tosres_ = trans( eval( olhs_ ) + eval( rhs_ ) );
+            refres_ = trans( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkTransposeResults<OMT1,MT2>();
 
          try {
+            initTransposeResults();
             tdres_  = trans( eval( olhs_ ) + eval( orhs_ ) );
             todres_ = trans( eval( olhs_ ) + eval( orhs_ ) );
             tsres_  = trans( eval( olhs_ ) + eval( orhs_ ) );
             tosres_ = trans( eval( olhs_ ) + eval( orhs_ ) );
+            refres_ = trans( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkTransposeResults<OMT1,OMT2>();
@@ -4128,9 +3192,11 @@ void OperationTest<MT1,MT2>::testAbsOperation()
 
       // Abs addition with the given matrices
       {
-         test_ = "Abs addition with the given matrices";
+         test_  = "Abs addition with the given matrices";
+         error_ = "Failed addition operation";
 
          try {
+            initResults();
             dres_   = abs( lhs_ + rhs_ );
             odres_  = abs( lhs_ + rhs_ );
             sres_   = abs( lhs_ + rhs_ );
@@ -4138,79 +3204,49 @@ void OperationTest<MT1,MT2>::testAbsOperation()
             refres_ = abs( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
-            dres_  = abs( lhs_ + orhs_ );
-            odres_ = abs( lhs_ + orhs_ );
-            sres_  = abs( lhs_ + orhs_ );
-            osres_ = abs( lhs_ + orhs_ );
+            initResults();
+            dres_   = abs( lhs_ + orhs_ );
+            odres_  = abs( lhs_ + orhs_ );
+            sres_   = abs( lhs_ + orhs_ );
+            osres_  = abs( lhs_ + orhs_ );
+            refres_ = abs( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
-            dres_  = abs( olhs_ + rhs_ );
-            odres_ = abs( olhs_ + rhs_ );
-            sres_  = abs( olhs_ + rhs_ );
-            osres_ = abs( olhs_ + rhs_ );
+            initResults();
+            dres_   = abs( olhs_ + rhs_ );
+            odres_  = abs( olhs_ + rhs_ );
+            sres_   = abs( olhs_ + rhs_ );
+            osres_  = abs( olhs_ + rhs_ );
+            refres_ = abs( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
-            dres_  = abs( olhs_ + orhs_ );
-            odres_ = abs( olhs_ + orhs_ );
-            sres_  = abs( olhs_ + orhs_ );
-            osres_ = abs( olhs_ + orhs_ );
+            initResults();
+            dres_   = abs( olhs_ + orhs_ );
+            odres_  = abs( olhs_ + orhs_ );
+            sres_   = abs( olhs_ + orhs_ );
+            osres_  = abs( olhs_ + orhs_ );
+            refres_ = abs( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -4218,88 +3254,61 @@ void OperationTest<MT1,MT2>::testAbsOperation()
 
       // Abs addition with evaluated matrices
       {
-         test_ = "Abs addition with evaluated matrices";
+         test_  = "Abs addition with evaluated matrices";
+         error_ = "Failed addition operation";
 
          try {
-            dres_  = abs( eval( lhs_ ) + eval( rhs_ ) );
-            odres_ = abs( eval( lhs_ ) + eval( rhs_ ) );
-            sres_  = abs( eval( lhs_ ) + eval( rhs_ ) );
-            osres_ = abs( eval( lhs_ ) + eval( rhs_ ) );
+            initResults();
+            dres_   = abs( eval( lhs_ ) + eval( rhs_ ) );
+            odres_  = abs( eval( lhs_ ) + eval( rhs_ ) );
+            sres_   = abs( eval( lhs_ ) + eval( rhs_ ) );
+            osres_  = abs( eval( lhs_ ) + eval( rhs_ ) );
+            refres_ = abs( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
-            dres_  = abs( eval( lhs_ ) + eval( orhs_ ) );
-            odres_ = abs( eval( lhs_ ) + eval( orhs_ ) );
-            sres_  = abs( eval( lhs_ ) + eval( orhs_ ) );
-            osres_ = abs( eval( lhs_ ) + eval( orhs_ ) );
+            initResults();
+            dres_   = abs( eval( lhs_ ) + eval( orhs_ ) );
+            odres_  = abs( eval( lhs_ ) + eval( orhs_ ) );
+            sres_   = abs( eval( lhs_ ) + eval( orhs_ ) );
+            osres_  = abs( eval( lhs_ ) + eval( orhs_ ) );
+            refres_ = abs( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
-            dres_  = abs( eval( olhs_ ) + eval( rhs_ ) );
-            odres_ = abs( eval( olhs_ ) + eval( rhs_ ) );
-            sres_  = abs( eval( olhs_ ) + eval( rhs_ ) );
-            osres_ = abs( eval( olhs_ ) + eval( rhs_ ) );
+            initResults();
+            dres_   = abs( eval( olhs_ ) + eval( rhs_ ) );
+            odres_  = abs( eval( olhs_ ) + eval( rhs_ ) );
+            sres_   = abs( eval( olhs_ ) + eval( rhs_ ) );
+            osres_  = abs( eval( olhs_ ) + eval( rhs_ ) );
+            refres_ = abs( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
-            dres_  = abs( eval( olhs_ ) + eval( orhs_ ) );
-            odres_ = abs( eval( olhs_ ) + eval( orhs_ ) );
-            sres_  = abs( eval( olhs_ ) + eval( orhs_ ) );
-            osres_ = abs( eval( olhs_ ) + eval( orhs_ ) );
+            initResults();
+            dres_   = abs( eval( olhs_ ) + eval( orhs_ ) );
+            odres_  = abs( eval( olhs_ ) + eval( orhs_ ) );
+            sres_   = abs( eval( olhs_ ) + eval( orhs_ ) );
+            osres_  = abs( eval( olhs_ ) + eval( orhs_ ) );
+            refres_ = abs( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -4312,9 +3321,11 @@ void OperationTest<MT1,MT2>::testAbsOperation()
 
       // Abs addition with addition assignment with the given matrices
       {
-         test_ = "Abs addition with addition assignment with the given matrices";
+         test_  = "Abs addition with addition assignment with the given matrices";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += abs( lhs_ + rhs_ );
             odres_  += abs( lhs_ + rhs_ );
             sres_   += abs( lhs_ + rhs_ );
@@ -4322,21 +3333,13 @@ void OperationTest<MT1,MT2>::testAbsOperation()
             refres_ += abs( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
-         checkResults<OMT1,MT2>();
+         checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   += abs( lhs_ + orhs_ );
             odres_  += abs( lhs_ + orhs_ );
             sres_   += abs( lhs_ + orhs_ );
@@ -4344,21 +3347,13 @@ void OperationTest<MT1,MT2>::testAbsOperation()
             refres_ += abs( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   += abs( olhs_ + rhs_ );
             odres_  += abs( olhs_ + rhs_ );
             sres_   += abs( olhs_ + rhs_ );
@@ -4366,21 +3361,13 @@ void OperationTest<MT1,MT2>::testAbsOperation()
             refres_ += abs( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   += abs( olhs_ + orhs_ );
             odres_  += abs( olhs_ + orhs_ );
             sres_   += abs( olhs_ + orhs_ );
@@ -4388,16 +3375,7 @@ void OperationTest<MT1,MT2>::testAbsOperation()
             refres_ += abs( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -4405,9 +3383,11 @@ void OperationTest<MT1,MT2>::testAbsOperation()
 
       // Abs addition with addition assignment with evaluated matrices
       {
-         test_ = "Abs addition with addition assignment with evaluated matrices";
+         test_  = "Abs addition with addition assignment with evaluated matrices";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             dres_   += abs( eval( lhs_ ) + eval( rhs_ ) );
             odres_  += abs( eval( lhs_ ) + eval( rhs_ ) );
             sres_   += abs( eval( lhs_ ) + eval( rhs_ ) );
@@ -4415,21 +3395,13 @@ void OperationTest<MT1,MT2>::testAbsOperation()
             refres_ += abs( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   += abs( eval( lhs_ ) + eval( orhs_ ) );
             odres_  += abs( eval( lhs_ ) + eval( orhs_ ) );
             sres_   += abs( eval( lhs_ ) + eval( orhs_ ) );
@@ -4437,21 +3409,13 @@ void OperationTest<MT1,MT2>::testAbsOperation()
             refres_ += abs( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   += abs( eval( olhs_ ) + eval( rhs_ ) );
             odres_  += abs( eval( olhs_ ) + eval( rhs_ ) );
             sres_   += abs( eval( olhs_ ) + eval( rhs_ ) );
@@ -4459,21 +3423,13 @@ void OperationTest<MT1,MT2>::testAbsOperation()
             refres_ += abs( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
-         checkResults<MT1,OMT2>();
+         checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   += abs( eval( olhs_ ) + eval( orhs_ ) );
             odres_  += abs( eval( olhs_ ) + eval( orhs_ ) );
             sres_   += abs( eval( olhs_ ) + eval( orhs_ ) );
@@ -4481,16 +3437,7 @@ void OperationTest<MT1,MT2>::testAbsOperation()
             refres_ += abs( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -4503,9 +3450,11 @@ void OperationTest<MT1,MT2>::testAbsOperation()
 
       // Abs addition with subtraction assignment with the given matrices
       {
-         test_ = "Abs addition with subtraction assignment with the given matrices";
+         test_  = "Abs addition with subtraction assignment with the given matrices";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= abs( lhs_ + rhs_ );
             odres_  -= abs( lhs_ + rhs_ );
             sres_   -= abs( lhs_ + rhs_ );
@@ -4513,21 +3462,13 @@ void OperationTest<MT1,MT2>::testAbsOperation()
             refres_ -= abs( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   -= abs( lhs_ + orhs_ );
             odres_  -= abs( lhs_ + orhs_ );
             sres_   -= abs( lhs_ + orhs_ );
@@ -4535,21 +3476,13 @@ void OperationTest<MT1,MT2>::testAbsOperation()
             refres_ -= abs( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   -= abs( olhs_ + rhs_ );
             odres_  -= abs( olhs_ + rhs_ );
             sres_   -= abs( olhs_ + rhs_ );
@@ -4557,21 +3490,13 @@ void OperationTest<MT1,MT2>::testAbsOperation()
             refres_ -= abs( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   -= abs( olhs_ + orhs_ );
             odres_  -= abs( olhs_ + orhs_ );
             sres_   -= abs( olhs_ + orhs_ );
@@ -4579,16 +3504,7 @@ void OperationTest<MT1,MT2>::testAbsOperation()
             refres_ -= abs( reflhs_ + refrhs_ );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -4596,9 +3512,11 @@ void OperationTest<MT1,MT2>::testAbsOperation()
 
       // Abs addition with subtraction assignment with evaluated matrices
       {
-         test_ = "Abs addition with subtraction assignment with evaluated matrices";
+         test_  = "Abs addition with subtraction assignment with evaluated matrices";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             dres_   -= abs( eval( lhs_ ) + eval( rhs_ ) );
             odres_  -= abs( eval( lhs_ ) + eval( rhs_ ) );
             sres_   -= abs( eval( lhs_ ) + eval( rhs_ ) );
@@ -4606,21 +3524,13 @@ void OperationTest<MT1,MT2>::testAbsOperation()
             refres_ -= abs( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             dres_   -= abs( eval( lhs_ ) + eval( orhs_ ) );
             odres_  -= abs( eval( lhs_ ) + eval( orhs_ ) );
             sres_   -= abs( eval( lhs_ ) + eval( orhs_ ) );
@@ -4628,21 +3538,13 @@ void OperationTest<MT1,MT2>::testAbsOperation()
             refres_ -= abs( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             dres_   -= abs( eval( olhs_ ) + eval( rhs_ ) );
             odres_  -= abs( eval( olhs_ ) + eval( rhs_ ) );
             sres_   -= abs( eval( olhs_ ) + eval( rhs_ ) );
@@ -4650,21 +3552,13 @@ void OperationTest<MT1,MT2>::testAbsOperation()
             refres_ -= abs( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             dres_   -= abs( eval( olhs_ ) + eval( orhs_ ) );
             odres_  -= abs( eval( olhs_ ) + eval( orhs_ ) );
             sres_   -= abs( eval( olhs_ ) + eval( orhs_ ) );
@@ -4672,16 +3566,7 @@ void OperationTest<MT1,MT2>::testAbsOperation()
             refres_ -= abs( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -4719,9 +3604,11 @@ void OperationTest<MT1,MT2>::testRowOperation()
 
       // Row-wise addition with the given matrices
       {
-         test_ = "Row-wise addition with the given matrices";
+         test_  = "Row-wise addition with the given matrices";
+         error_ = "Failed addition operation";
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) = row( lhs_ + rhs_, i );
                row( odres_ , i ) = row( lhs_ + rhs_, i );
@@ -4731,85 +3618,55 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) = row( lhs_ + orhs_, i );
                row( odres_ , i ) = row( lhs_ + orhs_, i );
                row( sres_  , i ) = row( lhs_ + orhs_, i );
                row( osres_ , i ) = row( lhs_ + orhs_, i );
+               row( refres_, i ) = row( reflhs_ + refrhs_, i );
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) = row( olhs_ + rhs_, i );
                row( odres_ , i ) = row( olhs_ + rhs_, i );
                row( sres_  , i ) = row( olhs_ + rhs_, i );
                row( osres_ , i ) = row( olhs_ + rhs_, i );
+               row( refres_, i ) = row( reflhs_ + refrhs_, i );
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) = row( olhs_ + orhs_, i );
                row( odres_ , i ) = row( olhs_ + orhs_, i );
                row( sres_  , i ) = row( olhs_ + orhs_, i );
                row( osres_ , i ) = row( olhs_ + orhs_, i );
+               row( refres_, i ) = row( reflhs_ + refrhs_, i );
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -4817,9 +3674,11 @@ void OperationTest<MT1,MT2>::testRowOperation()
 
       // Row-wise addition with evaluated matrices
       {
-         test_ = "Row-wise addition with evaluated matrices";
+         test_  = "Row-wise addition with evaluated matrices";
+         error_ = "Failed addition operation";
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) = row( eval( lhs_ ) + eval( rhs_ ), i );
                row( odres_ , i ) = row( eval( lhs_ ) + eval( rhs_ ), i );
@@ -4829,85 +3688,55 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) = row( eval( lhs_ ) + eval( orhs_ ), i );
                row( odres_ , i ) = row( eval( lhs_ ) + eval( orhs_ ), i );
                row( sres_  , i ) = row( eval( lhs_ ) + eval( orhs_ ), i );
                row( osres_ , i ) = row( eval( lhs_ ) + eval( orhs_ ), i );
+               row( refres_, i ) = row( eval( reflhs_ ) + eval( refrhs_ ), i );
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) = row( eval( olhs_ ) + eval( rhs_ ), i );
                row( odres_ , i ) = row( eval( olhs_ ) + eval( rhs_ ), i );
                row( sres_  , i ) = row( eval( olhs_ ) + eval( rhs_ ), i );
                row( osres_ , i ) = row( eval( olhs_ ) + eval( rhs_ ), i );
+               row( refres_, i ) = row( eval( reflhs_ ) + eval( refrhs_ ), i );
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) = row( eval( olhs_ ) + eval( orhs_ ), i );
                row( odres_ , i ) = row( eval( olhs_ ) + eval( orhs_ ), i );
                row( sres_  , i ) = row( eval( olhs_ ) + eval( orhs_ ), i );
                row( osres_ , i ) = row( eval( olhs_ ) + eval( orhs_ ), i );
+               row( refres_, i ) = row( eval( reflhs_ ) + eval( refrhs_ ), i );
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -4920,9 +3749,11 @@ void OperationTest<MT1,MT2>::testRowOperation()
 
       // Row-wise addition with addition assignment with the given matrices
       {
-         test_ = "Row-wise addition with addition assignment with the given matrices";
+         test_  = "Row-wise addition with addition assignment with the given matrices";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) += row( lhs_ + rhs_, i );
                row( odres_ , i ) += row( lhs_ + rhs_, i );
@@ -4932,21 +3763,13 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) += row( lhs_ + orhs_, i );
                row( odres_ , i ) += row( lhs_ + orhs_, i );
@@ -4956,21 +3779,13 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) += row( olhs_ + rhs_, i );
                row( odres_ , i ) += row( olhs_ + rhs_, i );
@@ -4980,21 +3795,13 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) += row( olhs_ + orhs_, i );
                row( odres_ , i ) += row( olhs_ + orhs_, i );
@@ -5004,16 +3811,7 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -5021,9 +3819,11 @@ void OperationTest<MT1,MT2>::testRowOperation()
 
       // Row-wise addition with addition assignment with evaluated matrices
       {
-         test_ = "Row-wise addition with addition assignment with evaluated matrices";
+         test_  = "Row-wise addition with addition assignment with evaluated matrices";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) += row( eval( lhs_ ) + eval( rhs_ ), i );
                row( odres_ , i ) += row( eval( lhs_ ) + eval( rhs_ ), i );
@@ -5033,21 +3833,13 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) += row( eval( lhs_ ) + eval( orhs_ ), i );
                row( odres_ , i ) += row( eval( lhs_ ) + eval( orhs_ ), i );
@@ -5057,21 +3849,13 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) += row( eval( olhs_ ) + eval( rhs_ ), i );
                row( odres_ , i ) += row( eval( olhs_ ) + eval( rhs_ ), i );
@@ -5081,21 +3865,13 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) += row( eval( olhs_ ) + eval( orhs_ ), i );
                row( odres_ , i ) += row( eval( olhs_ ) + eval( orhs_ ), i );
@@ -5105,16 +3881,7 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -5127,9 +3894,11 @@ void OperationTest<MT1,MT2>::testRowOperation()
 
       // Row-wise addition with subtraction assignment with the given matrices
       {
-         test_ = "Row-wise addition with subtraction assignment with the given matrices";
+         test_  = "Row-wise addition with subtraction assignment with the given matrices";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) -= row( lhs_ + rhs_, i );
                row( odres_ , i ) -= row( lhs_ + rhs_, i );
@@ -5139,21 +3908,13 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) -= row( lhs_ + orhs_, i );
                row( odres_ , i ) -= row( lhs_ + orhs_, i );
@@ -5163,21 +3924,13 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) -= row( olhs_ + rhs_, i );
                row( odres_ , i ) -= row( olhs_ + rhs_, i );
@@ -5187,21 +3940,13 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) -= row( olhs_ + orhs_, i );
                row( odres_ , i ) -= row( olhs_ + orhs_, i );
@@ -5211,16 +3956,7 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -5228,9 +3964,11 @@ void OperationTest<MT1,MT2>::testRowOperation()
 
       // Row-wise addition with subtraction assignment with evaluated matrices
       {
-         test_ = "Row-wise addition with subtraction assignment with evaluated matrices";
+         test_  = "Row-wise addition with subtraction assignment with evaluated matrices";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) -= row( eval( lhs_ ) + eval( rhs_ ), i );
                row( odres_ , i ) -= row( eval( lhs_ ) + eval( rhs_ ), i );
@@ -5240,21 +3978,13 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) -= row( eval( lhs_ ) + eval( orhs_ ), i );
                row( odres_ , i ) -= row( eval( lhs_ ) + eval( orhs_ ), i );
@@ -5264,21 +3994,13 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) -= row( eval( olhs_ ) + eval( rhs_ ), i );
                row( odres_ , i ) -= row( eval( olhs_ ) + eval( rhs_ ), i );
@@ -5288,21 +4010,13 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) -= row( eval( olhs_ ) + eval( orhs_ ), i );
                row( odres_ , i ) -= row( eval( olhs_ ) + eval( orhs_ ), i );
@@ -5312,16 +4026,7 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -5334,9 +4039,11 @@ void OperationTest<MT1,MT2>::testRowOperation()
 
       // Row-wise addition with multiplication assignment with the given matrices
       {
-         test_ = "Row-wise addition with multiplication assignment with the given matrices";
+         test_  = "Row-wise addition with multiplication assignment with the given matrices";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) *= row( lhs_ + rhs_, i );
                row( odres_ , i ) *= row( lhs_ + rhs_, i );
@@ -5346,21 +4053,13 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) *= row( lhs_ + orhs_, i );
                row( odres_ , i ) *= row( lhs_ + orhs_, i );
@@ -5370,21 +4069,13 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) *= row( olhs_ + rhs_, i );
                row( odres_ , i ) *= row( olhs_ + rhs_, i );
@@ -5394,21 +4085,13 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) *= row( olhs_ + orhs_, i );
                row( odres_ , i ) *= row( olhs_ + orhs_, i );
@@ -5418,16 +4101,7 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -5435,9 +4109,11 @@ void OperationTest<MT1,MT2>::testRowOperation()
 
       // Row-wise addition with multiplication assignment with evaluated matrices
       {
-         test_ = "Row-wise addition with multiplication assignment with evaluated matrices";
+         test_  = "Row-wise addition with multiplication assignment with evaluated matrices";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) *= row( eval( lhs_ ) + eval( rhs_ ), i );
                row( odres_ , i ) *= row( eval( lhs_ ) + eval( rhs_ ), i );
@@ -5447,21 +4123,13 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) *= row( eval( lhs_ ) + eval( orhs_ ), i );
                row( odres_ , i ) *= row( eval( lhs_ ) + eval( orhs_ ), i );
@@ -5471,21 +4139,13 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) *= row( eval( olhs_ ) + eval( rhs_ ), i );
                row( odres_ , i ) *= row( eval( olhs_ ) + eval( rhs_ ), i );
@@ -5495,21 +4155,13 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
                row( dres_  , i ) *= row( eval( olhs_ ) + eval( orhs_ ), i );
                row( odres_ , i ) *= row( eval( olhs_ ) + eval( orhs_ ), i );
@@ -5519,16 +4171,7 @@ void OperationTest<MT1,MT2>::testRowOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -5566,9 +4209,11 @@ void OperationTest<MT1,MT2>::testColumnOperation()
 
       // Column-wise addition with the given matrices
       {
-         test_ = "Column-wise addition with the given matrices";
+         test_  = "Column-wise addition with the given matrices";
+         error_ = "Failed addition operation";
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) = column( lhs_ + rhs_, j );
                column( odres_ , j ) = column( lhs_ + rhs_, j );
@@ -5578,85 +4223,55 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) = column( lhs_ + orhs_, j );
                column( odres_ , j ) = column( lhs_ + orhs_, j );
                column( sres_  , j ) = column( lhs_ + orhs_, j );
                column( osres_ , j ) = column( lhs_ + orhs_, j );
+               column( refres_, j ) = column( reflhs_ + refrhs_, j );
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) = column( olhs_ + rhs_, j );
                column( odres_ , j ) = column( olhs_ + rhs_, j );
                column( sres_  , j ) = column( olhs_ + rhs_, j );
                column( osres_ , j ) = column( olhs_ + rhs_, j );
+               column( refres_, j ) = column( reflhs_ + refrhs_, j );
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) = column( olhs_ + orhs_, j );
                column( odres_ , j ) = column( olhs_ + orhs_, j );
                column( sres_  , j ) = column( olhs_ + orhs_, j );
                column( osres_ , j ) = column( olhs_ + orhs_, j );
+               column( refres_, j ) = column( reflhs_ + refrhs_, j );
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -5664,9 +4279,11 @@ void OperationTest<MT1,MT2>::testColumnOperation()
 
       // Column-wise addition with evaluated matrices
       {
-         test_ = "Column-wise addition with evaluated matrices";
+         test_  = "Column-wise addition with evaluated matrices";
+         error_ = "Failed addition operation";
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) = column( eval( lhs_ ) + eval( rhs_ ), j );
                column( odres_ , j ) = column( eval( lhs_ ) + eval( rhs_ ), j );
@@ -5676,85 +4293,55 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) = column( eval( lhs_ ) + eval( orhs_ ), j );
                column( odres_ , j ) = column( eval( lhs_ ) + eval( orhs_ ), j );
                column( sres_  , j ) = column( eval( lhs_ ) + eval( orhs_ ), j );
                column( osres_ , j ) = column( eval( lhs_ ) + eval( orhs_ ), j );
+               column( refres_, j ) = column( eval( reflhs_ ) + eval( refrhs_ ), j );
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) = column( eval( olhs_ ) + eval( rhs_ ), j );
                column( odres_ , j ) = column( eval( olhs_ ) + eval( rhs_ ), j );
                column( sres_  , j ) = column( eval( olhs_ ) + eval( rhs_ ), j );
                column( osres_ , j ) = column( eval( olhs_ ) + eval( rhs_ ), j );
+               column( refres_, j ) = column( eval( reflhs_ ) + eval( refrhs_ ), j );
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) = column( eval( olhs_ ) + eval( orhs_ ), j );
                column( odres_ , j ) = column( eval( olhs_ ) + eval( orhs_ ), j );
                column( sres_  , j ) = column( eval( olhs_ ) + eval( orhs_ ), j );
                column( osres_ , j ) = column( eval( olhs_ ) + eval( orhs_ ), j );
+               column( refres_, j ) = column( eval( reflhs_ ) + eval( refrhs_ ), j );
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -5767,9 +4354,11 @@ void OperationTest<MT1,MT2>::testColumnOperation()
 
       // Column-wise addition with addition assignment with the given matrices
       {
-         test_ = "Column-wise addition with addition assignment with the given matrices";
+         test_  = "Column-wise addition with addition assignment with the given matrices";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) += column( lhs_ + rhs_, j );
                column( odres_ , j ) += column( lhs_ + rhs_, j );
@@ -5779,21 +4368,13 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) += column( lhs_ + orhs_, j );
                column( odres_ , j ) += column( lhs_ + orhs_, j );
@@ -5803,21 +4384,13 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) += column( olhs_ + rhs_, j );
                column( odres_ , j ) += column( olhs_ + rhs_, j );
@@ -5827,21 +4400,13 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) += column( olhs_ + orhs_, j );
                column( odres_ , j ) += column( olhs_ + orhs_, j );
@@ -5851,26 +4416,19 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
       }
 
-      // Row-wise addition with addition assignment with evaluated matrices
+      // Column-wise addition with addition assignment with evaluated matrices
       {
-         test_ = "Row-wise addition with addition assignment with evaluated matrices";
+         test_  = "Column-wise addition with addition assignment with evaluated matrices";
+         error_ = "Failed addition assignment operation";
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) += column( eval( lhs_ ) + eval( rhs_ ), j );
                column( odres_ , j ) += column( eval( lhs_ ) + eval( rhs_ ), j );
@@ -5880,21 +4438,13 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) += column( eval( lhs_ ) + eval( orhs_ ), j );
                column( odres_ , j ) += column( eval( lhs_ ) + eval( orhs_ ), j );
@@ -5904,21 +4454,13 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) += column( eval( olhs_ ) + eval( rhs_ ), j );
                column( odres_ , j ) += column( eval( olhs_ ) + eval( rhs_ ), j );
@@ -5928,21 +4470,13 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) += column( eval( olhs_ ) + eval( orhs_ ), j );
                column( odres_ , j ) += column( eval( olhs_ ) + eval( orhs_ ), j );
@@ -5952,16 +4486,7 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed addition assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -5974,9 +4499,11 @@ void OperationTest<MT1,MT2>::testColumnOperation()
 
       // Column-wise addition with subtraction assignment with the given matrices
       {
-         test_ = "Column-wise addition with subtraction assignment with the given matrices";
+         test_  = "Column-wise addition with subtraction assignment with the given matrices";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) -= column( lhs_ + rhs_, j );
                column( odres_ , j ) -= column( lhs_ + rhs_, j );
@@ -5986,21 +4513,13 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) -= column( lhs_ + orhs_, j );
                column( odres_ , j ) -= column( lhs_ + orhs_, j );
@@ -6010,21 +4529,13 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) -= column( olhs_ + rhs_, j );
                column( odres_ , j ) -= column( olhs_ + rhs_, j );
@@ -6034,21 +4545,13 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) -= column( olhs_ + orhs_, j );
                column( odres_ , j ) -= column( olhs_ + orhs_, j );
@@ -6058,26 +4561,19 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
       }
 
-      // Row-wise addition with subtraction assignment with evaluated matrices
+      // Column-wise addition with subtraction assignment with evaluated matrices
       {
-         test_ = "Row-wise addition with subtraction assignment with evaluated matrices";
+         test_  = "Column-wise addition with subtraction assignment with evaluated matrices";
+         error_ = "Failed subtraction assignment operation";
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) -= column( eval( lhs_ ) + eval( rhs_ ), j );
                column( odres_ , j ) -= column( eval( lhs_ ) + eval( rhs_ ), j );
@@ -6087,21 +4583,13 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) -= column( eval( lhs_ ) + eval( orhs_ ), j );
                column( odres_ , j ) -= column( eval( lhs_ ) + eval( orhs_ ), j );
@@ -6111,21 +4599,13 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) -= column( eval( olhs_ ) + eval( rhs_ ), j );
                column( odres_ , j ) -= column( eval( olhs_ ) + eval( rhs_ ), j );
@@ -6135,21 +4615,13 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) -= column( eval( olhs_ ) + eval( orhs_ ), j );
                column( odres_ , j ) -= column( eval( olhs_ ) + eval( orhs_ ), j );
@@ -6159,16 +4631,7 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed subtraction assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -6181,9 +4644,11 @@ void OperationTest<MT1,MT2>::testColumnOperation()
 
       // Column-wise addition with multiplication assignment with the given matrices
       {
-         test_ = "Column-wise addition with multiplication assignment with the given matrices";
+         test_  = "Column-wise addition with multiplication assignment with the given matrices";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) *= column( lhs_ + rhs_, j );
                column( odres_ , j ) *= column( lhs_ + rhs_, j );
@@ -6193,21 +4658,13 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) *= column( lhs_ + orhs_, j );
                column( odres_ , j ) *= column( lhs_ + orhs_, j );
@@ -6217,21 +4674,13 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) *= column( olhs_ + rhs_, j );
                column( odres_ , j ) *= column( olhs_ + rhs_, j );
@@ -6241,21 +4690,13 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) *= column( olhs_ + orhs_, j );
                column( odres_ , j ) *= column( olhs_ + orhs_, j );
@@ -6265,26 +4706,19 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
       }
 
-      // Row-wise addition with multiplication assignment with evaluated matrices
+      // Column-wise addition with multiplication assignment with evaluated matrices
       {
-         test_ = "Row-wise addition with multiplication assignment with evaluated matrices";
+         test_  = "Column-wise addition with multiplication assignment with evaluated matrices";
+         error_ = "Failed multiplication assignment operation";
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) *= column( eval( lhs_ ) + eval( rhs_ ), j );
                column( odres_ , j ) *= column( eval( lhs_ ) + eval( rhs_ ), j );
@@ -6294,21 +4728,13 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,MT2>( ex );
          }
 
          checkResults<MT1,MT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) *= column( eval( lhs_ ) + eval( orhs_ ), j );
                column( odres_ , j ) *= column( eval( lhs_ ) + eval( orhs_ ), j );
@@ -6318,21 +4744,13 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT1  ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<MT1,OMT2>( ex );
          }
 
          checkResults<MT1,OMT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) *= column( eval( olhs_ ) + eval( rhs_ ), j );
                column( odres_ , j ) *= column( eval( olhs_ ) + eval( rhs_ ), j );
@@ -6342,21 +4760,13 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side row-major sparse matrix type:\n"
-                << "     " << typeid( MT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,MT2>( ex );
          }
 
          checkResults<OMT1,MT2>();
 
          try {
+            initResults();
             for( size_t j=0UL; j<lhs_.columns(); ++j ) {
                column( dres_  , j ) *= column( eval( olhs_ ) + eval( orhs_ ), j );
                column( odres_ , j ) *= column( eval( olhs_ ) + eval( orhs_ ), j );
@@ -6366,16 +4776,7 @@ void OperationTest<MT1,MT2>::testColumnOperation()
             }
          }
          catch( std::exception& ex ) {
-            std::ostringstream oss;
-            oss << " Test : " << test_ << "\n"
-                << " Error: Failed multiplication assignment operation\n"
-                << " Details:\n"
-                << "   Left-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT1 ).name() << "\n"
-                << "   Right-hand side column-major sparse matrix type:\n"
-                << "     " << typeid( OMT2 ).name() << "\n"
-                << "   Error message: " << ex.what() << "\n";
-            throw std::runtime_error( oss.str() );
+            convertException<OMT1,OMT2>( ex );
          }
 
          checkResults<OMT1,OMT2>();
@@ -6498,6 +4899,96 @@ void OperationTest<MT1,MT2>::checkTransposeResults()
           << "   Expected result:\n" << refres_ << "\n";
       throw std::runtime_error( oss.str() );
    }
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  UTILITY FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Initializing the non-transpose result matrices.
+//
+// \return void
+//
+// This function is called before each non-transpose test case to initialize the according result
+// matrices to random values.
+*/
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void OperationTest<MT1,MT2>::initResults()
+{
+   const typename blaze::BaseElementType<RE>::Type min( randmin );
+   const typename blaze::BaseElementType<RE>::Type max( randmax );
+
+   randomize( dres_, min, max );
+   odres_   = dres_;
+   sres_    = dres_;
+   osres_   = dres_;
+   refres_  = dres_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initializing the transpose result matrices.
+//
+// \return void
+//
+// This function is called before each transpose test case to initialize the according result
+// matrices to random values.
+*/
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void OperationTest<MT1,MT2>::initTransposeResults()
+{
+   const typename blaze::BaseElementType<RE>::Type min( randmin );
+   const typename blaze::BaseElementType<RE>::Type max( randmax );
+
+   randomize( tdres_, min, max );
+   todres_  = tdres_;
+   tsres_   = tdres_;
+   tosres_  = tdres_;
+   refres_  = tdres_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Convert the given exception into a \a std::runtime_error exception.
+//
+// \param ex The \a std::exception to be extended.
+// \return void
+// \exception std::runtime_error The converted exception.
+//
+// This function converts the given exception to a \a std::runtime_error exception. Additionally,
+// the function extends the given exception message by all available information for the failed
+// test. The two template arguments \a LT and \a RT indicate the types of the left-hand side and
+// right-hand side operands used for the computations.
+*/
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+template< typename LT     // Type of the left-hand side operand
+        , typename RT >   // Type of the right-hand side operand
+void OperationTest<MT1,MT2>::convertException( const std::exception& ex )
+{
+   using blaze::IsRowMajorMatrix;
+
+   std::ostringstream oss;
+   oss << " Test : " << test_ << "\n"
+       << " Error: " << error_ << "\n"
+       << " Details:\n"
+       << "   Left-hand side " << ( IsRowMajorMatrix<LT>::value ? ( "row-major" ) : ( "column-major" ) ) << " sparse matrix type:\n"
+       << "     " << typeid( LT ).name() << "\n"
+       << "   Right-hand side " << ( IsRowMajorMatrix<LT>::value ? ( "row-major" ) : ( "column-major" ) ) << " sparse matrix type:\n"
+       << "     " << typeid( RT ).name() << "\n"
+       << "   Error message: " << ex.what() << "\n";
+   throw std::runtime_error( oss.str() );
 }
 //*************************************************************************************************
 
