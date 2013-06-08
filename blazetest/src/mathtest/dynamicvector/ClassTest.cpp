@@ -30,7 +30,10 @@
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/Random.h>
 #include <blazetest/mathtest/dynamicvector/ClassTest.h>
+#include <blazetest/mathtest/RandomMaximum.h>
+#include <blazetest/mathtest/RandomMinimum.h>
 
 
 namespace blazetest {
@@ -258,7 +261,10 @@ void ClassTest::testConstructors()
 */
 void ClassTest::testAssignment()
 {
+   //=====================================================================================
    // Homogeneous assignment
+   //=====================================================================================
+
    {
       test_ = "DynamicVector homogeneous assignment";
 
@@ -280,7 +286,11 @@ void ClassTest::testAssignment()
       }
    }
 
+
+   //=====================================================================================
    // Array assignment
+   //=====================================================================================
+
    {
       test_ = "DynamicVector array assignment";
 
@@ -303,7 +313,11 @@ void ClassTest::testAssignment()
       }
    }
 
+
+   //=====================================================================================
    // Copy assignment
+   //=====================================================================================
+
    {
       test_ = "DynamicVector copy assignment";
 
@@ -331,7 +345,39 @@ void ClassTest::testAssignment()
       }
    }
 
+   {
+      test_ = "DynamicVector copy assignment stress test";
+
+      typedef blaze::DynamicVector<int,blaze::rowVector>  RandomVectorType;
+
+      blaze::DynamicVector<int,blaze::rowVector> vec1;
+      const int min( randmin );
+      const int max( randmax );
+
+      for( size_t i=0UL; i<100UL; ++i )
+      {
+         const size_t size( blaze::rand<size_t>( 0UL, 20UL ) );
+         const RandomVectorType vec2( blaze::rand<RandomVectorType>( size, min, max ) );
+
+         vec1 = vec2;
+
+         if( vec1 != vec2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << vec1 << "\n"
+                << "   Expected result:\n" << vec2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Dense vector assignment
+   //=====================================================================================
+
    {
       test_ = "DynamicVector dense vector assignment";
 
@@ -359,7 +405,39 @@ void ClassTest::testAssignment()
       }
    }
 
+   {
+      test_ = "DynamicVector dense vector assignment stress test";
+
+      typedef blaze::DynamicVector<unsigned int,blaze::rowVector>  RandomVectorType;
+
+      blaze::DynamicVector<int,blaze::rowVector> vec1;
+      const unsigned int min( randmin );
+      const unsigned int max( randmax );
+
+      for( size_t i=0UL; i<100UL; ++i )
+      {
+         const size_t size( blaze::rand<size_t>( 0UL, 20UL ) );
+         const RandomVectorType vec2( blaze::rand<RandomVectorType>( size, min, max ) );
+
+         vec1 = vec2;
+
+         if( vec1 != vec2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << vec1 << "\n"
+                << "   Expected result:\n" << vec2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Sparse vector assignment
+   //=====================================================================================
+
    {
       test_ = "DynamicVector sparse vector assignment";
 
@@ -382,6 +460,34 @@ void ClassTest::testAssignment()
              << "   Result:\n" << vec2 << "\n"
              << "   Expected result:\n( 1 0 2 3 0 )\n";
          throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "DynamicVector sparse vector assignment stress test";
+
+      typedef blaze::CompressedVector<int,blaze::rowVector>  RandomVectorType;
+
+      blaze::DynamicVector<int,blaze::rowVector> vec1;
+      const int min( randmin );
+      const int max( randmax );
+
+      for( size_t i=0UL; i<100UL; ++i )
+      {
+         const size_t size( blaze::rand<size_t>( 0UL, 20UL ) );
+         const RandomVectorType vec2( blaze::rand<RandomVectorType>( size, min, max ) );
+
+         vec1 = vec2;
+
+         if( vec1 != vec2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << vec1 << "\n"
+                << "   Expected result:\n" << vec2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 }

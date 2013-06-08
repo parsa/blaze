@@ -29,7 +29,10 @@
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/Random.h>
 #include <blazetest/mathtest/dynamicmatrix/ClassTest.h>
+#include <blazetest/mathtest/RandomMaximum.h>
+#include <blazetest/mathtest/RandomMinimum.h>
 
 
 namespace blazetest {
@@ -664,6 +667,35 @@ void ClassTest::testAssignment()
       }
    }
 
+   {
+      test_ = "Row-major DynamicMatrix copy assignment stress test";
+
+      typedef blaze::DynamicMatrix<int,blaze::rowMajor>  RandomMatrixType;
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1;
+      const int min( randmin );
+      const int max( randmax );
+
+      for( size_t i=0UL; i<100UL; ++i )
+      {
+         const size_t rows   ( blaze::rand<size_t>( 0UL, 10UL ) );
+         const size_t columns( blaze::rand<size_t>( 0UL, 10UL ) );
+         const RandomMatrixType mat2( blaze::rand<RandomMatrixType>( rows, columns, min, max ) );
+
+         mat1 = mat2;
+
+         if( mat1 != mat2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat1 << "\n"
+                << "   Expected result:\n" << mat2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
 
    //=====================================================================================
    // Row-major dense matrix assignment
@@ -703,6 +735,35 @@ void ClassTest::testAssignment()
    }
 
    {
+      test_ = "Row-major/row-major DynamicMatrix dense matrix assignment stress test";
+
+      typedef blaze::DynamicMatrix<unsigned int,blaze::rowMajor>  RandomMatrixType;
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1;
+      const unsigned int min( randmin );
+      const unsigned int max( randmax );
+
+      for( size_t i=0UL; i<100UL; ++i )
+      {
+         const size_t rows   ( blaze::rand<size_t>( 0UL, 10UL ) );
+         const size_t columns( blaze::rand<size_t>( 0UL, 10UL ) );
+         const RandomMatrixType mat2( blaze::rand<RandomMatrixType>( rows, columns, min, max ) );
+
+         mat1 = mat2;
+
+         if( mat1 != mat2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat1 << "\n"
+                << "   Expected result:\n" << mat2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   {
       test_ = "Row-major/column-major DynamicMatrix dense matrix assignment";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL );
@@ -732,6 +793,35 @@ void ClassTest::testAssignment()
              << "   Result:\n" << mat2 << "\n"
              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
          throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix dense matrix assignment stress test";
+
+      typedef blaze::DynamicMatrix<unsigned int,blaze::columnMajor>  RandomMatrixType;
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1;
+      const unsigned int min( randmin );
+      const unsigned int max( randmax );
+
+      for( size_t i=0UL; i<100UL; ++i )
+      {
+         const size_t rows   ( blaze::rand<size_t>( 0UL, 10UL ) );
+         const size_t columns( blaze::rand<size_t>( 0UL, 10UL ) );
+         const RandomMatrixType mat2( blaze::rand<RandomMatrixType>( rows, columns, min, max ) );
+
+         mat1 = mat2;
+
+         if( mat1 != mat2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat1 << "\n"
+                << "   Expected result:\n" << mat2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 
@@ -772,6 +862,35 @@ void ClassTest::testAssignment()
    }
 
    {
+      test_ = "Row-major/row-major DynamicMatrix sparse matrix assignment stress test";
+
+      typedef blaze::CompressedMatrix<int,blaze::rowMajor>  RandomMatrixType;
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1;
+      const int min( randmin );
+      const int max( randmax );
+
+      for( size_t i=0UL; i<100UL; ++i )
+      {
+         const size_t rows   ( blaze::rand<size_t>( 0UL, 10UL ) );
+         const size_t columns( blaze::rand<size_t>( 0UL, 10UL ) );
+         const RandomMatrixType mat2( blaze::rand<RandomMatrixType>( rows, columns, min, max ) );
+
+         mat1 = mat2;
+
+         if( mat1 != mat2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat1 << "\n"
+                << "   Expected result:\n" << mat2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   {
       test_ = "Row-major/column-major DynamicMatrix sparse matrix assignment";
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL );
@@ -799,6 +918,35 @@ void ClassTest::testAssignment()
              << "   Result:\n" << mat2 << "\n"
              << "   Expected result:\n( 1 2 0 )\n( 3 0 4 )\n";
          throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix sparse matrix assignment stress test";
+
+      typedef blaze::CompressedMatrix<int,blaze::columnMajor>  RandomMatrixType;
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1;
+      const int min( randmin );
+      const int max( randmax );
+
+      for( size_t i=0UL; i<100UL; ++i )
+      {
+         const size_t rows   ( blaze::rand<size_t>( 0UL, 10UL ) );
+         const size_t columns( blaze::rand<size_t>( 0UL, 10UL ) );
+         const RandomMatrixType mat2( blaze::rand<RandomMatrixType>( rows, columns, min, max ) );
+
+         mat1 = mat2;
+
+         if( mat1 != mat2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat1 << "\n"
+                << "   Expected result:\n" << mat2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 
@@ -906,6 +1054,35 @@ void ClassTest::testAssignment()
       }
    }
 
+   {
+      test_ = "Row-major DynamicMatrix copy assignment stress test";
+
+      typedef blaze::DynamicMatrix<int,blaze::columnMajor>  RandomMatrixType;
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1;
+      const int min( randmin );
+      const int max( randmax );
+
+      for( size_t i=0UL; i<100UL; ++i )
+      {
+         const size_t rows   ( blaze::rand<size_t>( 0UL, 10UL ) );
+         const size_t columns( blaze::rand<size_t>( 0UL, 10UL ) );
+         const RandomMatrixType mat2( blaze::rand<RandomMatrixType>( rows, columns, min, max ) );
+
+         mat1 = mat2;
+
+         if( mat1 != mat2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat1 << "\n"
+                << "   Expected result:\n" << mat2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
 
    //=====================================================================================
    // Column-major dense matrix assignment
@@ -946,6 +1123,35 @@ void ClassTest::testAssignment()
    }
 
    {
+      test_ = "Column-major/row-major DynamicMatrix dense matrix assignment stress test";
+
+      typedef blaze::DynamicMatrix<unsigned int,blaze::rowMajor>  RandomMatrixType;
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1;
+      const unsigned int min( randmin );
+      const unsigned int max( randmax );
+
+      for( size_t i=0UL; i<100UL; ++i )
+      {
+         const size_t rows   ( blaze::rand<size_t>( 0UL, 10UL ) );
+         const size_t columns( blaze::rand<size_t>( 0UL, 10UL ) );
+         const RandomMatrixType mat2( blaze::rand<RandomMatrixType>( rows, columns, min, max ) );
+
+         mat1 = mat2;
+
+         if( mat1 != mat2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat1 << "\n"
+                << "   Expected result:\n" << mat2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   {
       test_ = "Column-major/column-major DynamicMatrix dense matrix assignment";
 
       blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat1;
@@ -976,6 +1182,35 @@ void ClassTest::testAssignment()
              << "   Result:\n" << mat2 << "\n"
              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
          throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix dense matrix assignment stress test";
+
+      typedef blaze::DynamicMatrix<unsigned int,blaze::columnMajor>  RandomMatrixType;
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1;
+      const unsigned int min( randmin );
+      const unsigned int max( randmax );
+
+      for( size_t i=0UL; i<100UL; ++i )
+      {
+         const size_t rows   ( blaze::rand<size_t>( 0UL, 10UL ) );
+         const size_t columns( blaze::rand<size_t>( 0UL, 10UL ) );
+         const RandomMatrixType mat2( blaze::rand<RandomMatrixType>( rows, columns, min, max ) );
+
+         mat1 = mat2;
+
+         if( mat1 != mat2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat1 << "\n"
+                << "   Expected result:\n" << mat2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 
@@ -1017,6 +1252,35 @@ void ClassTest::testAssignment()
    }
 
    {
+      test_ = "Column-major/row-major DynamicMatrix sparse matrix assignment stress test";
+
+      typedef blaze::CompressedMatrix<int,blaze::rowMajor>  RandomMatrixType;
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1;
+      const int min( randmin );
+      const int max( randmax );
+
+      for( size_t i=0UL; i<100UL; ++i )
+      {
+         const size_t rows   ( blaze::rand<size_t>( 0UL, 10UL ) );
+         const size_t columns( blaze::rand<size_t>( 0UL, 10UL ) );
+         const RandomMatrixType mat2( blaze::rand<RandomMatrixType>( rows, columns, min, max ) );
+
+         mat1 = mat2;
+
+         if( mat1 != mat2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat1 << "\n"
+                << "   Expected result:\n" << mat2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   {
       test_ = "Column-major/column-major DynamicMatrix sparse matrix assignment";
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL );
@@ -1045,6 +1309,35 @@ void ClassTest::testAssignment()
              << "   Result:\n" << mat2 << "\n"
              << "   Expected result:\n( 1 2 0 )\n( 3 0 4 )\n";
          throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix sparse matrix assignment stress test";
+
+      typedef blaze::CompressedMatrix<int,blaze::columnMajor>  RandomMatrixType;
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1;
+      const int min( randmin );
+      const int max( randmax );
+
+      for( size_t i=0UL; i<100UL; ++i )
+      {
+         const size_t rows   ( blaze::rand<size_t>( 0UL, 10UL ) );
+         const size_t columns( blaze::rand<size_t>( 0UL, 10UL ) );
+         const RandomMatrixType mat2( blaze::rand<RandomMatrixType>( rows, columns, min, max ) );
+
+         mat1 = mat2;
+
+         if( mat1 != mat2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat1 << "\n"
+                << "   Expected result:\n" << mat2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 }
