@@ -38,6 +38,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -53,6 +54,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -80,18 +82,72 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    //**Type definitions****************************************************************************
    typedef typename VT::ResultType     VRT;  //!< Result type of the left-hand side sparse vector expression.
    typedef typename MT::ResultType     MRT;  //!< Result type of the right-hand side dense matrix expression.
+   typedef typename VRT::ElementType   VET;  //!< Element type of the left-hand side sparse vector expression.
+   typedef typename MRT::ElementType   MET;  //!< Element type of the right-hand side dense matrix expression.
    typedef typename VT::CompositeType  VCT;  //!< Composite type of the left-hand side sparse vector expression.
    typedef typename MT::CompositeType  MCT;  //!< Composite type of the right-hand side dense matrix expression.
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   //! Compilation switch for the composite type of the right-hand side dense matrix expression.
+   enum { evaluate = IsComputation<MT>::value && !MT::vectorizable &&
+                     IsSame<VET,MET>::value && IsBlasCompatible<VET>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! In case the matrix type and the two involved vector types are suited for a vectorized
+       computation of the vector/matrix multiplication, the nested \value will be set to 1,
+       otherwise it will be 0. */
+   template< typename T1, typename T2, typename T3 >
+   struct UseVectorizedKernel {
+      enum { value = T1::vectorizable && T3::vectorizable &&
+                     IsSame<typename T1::ElementType,typename T2::ElementType>::value &&
+                     IsSame<typename T1::ElementType,typename T3::ElementType>::value &&
+                     IntrinsicTrait<typename T1::ElementType>::addition &&
+                     IntrinsicTrait<typename T1::ElementType>::multiplication };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! In case a vectorized computation of the vector/matrix multiplication is not possible, but
+       a loop-unrolled computation is feasible, the nested \value will be set to 1, otherwise it
+       will be 0. */
+   template< typename T1, typename T2, typename T3 >
+   struct UseOptimizedKernel {
+      enum { value = !UseVectorizedKernel<T1,T2,T3>::value &&
+                     !IsResizable<typename T1::ElementType>::value &&
+                     !IsResizable<VET>::value };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! In case neither a vectorized nor optimized computation is possible, the nested \value will
+       be set to 1, otherwise it will be 0. */
+   template< typename T1, typename T2, typename T3 >
+   struct UseDefaultKernel {
+      enum { value = !UseVectorizedKernel<T1,T2,T3>::value &&
+                     !UseOptimizedKernel<T1,T2,T3>::value };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
-   typedef TSVecDMatMultExpr<VT,MT>            This;           //!< Type of this TSVecDMatMultExpr instance.
-   typedef typename MultTrait<VRT,MRT>::Type   ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
-   typedef const ElementType                   ReturnType;     //!< Return type for expression template evaluations.
-   typedef const ResultType                    CompositeType;  //!< Data type for composite expression templates.
+   typedef TSVecDMatMultExpr<VT,MT>                    This;           //!< Type of this TSVecDMatMultExpr instance.
+   typedef typename MultTrait<VRT,MRT>::Type           ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
+   typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
+   typedef const ElementType                           ReturnType;     //!< Return type for expression template evaluations.
+   typedef const ResultType                            CompositeType;  //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side sparse vector expression.
    typedef typename SelectType< IsExpression<VT>::value, const VT, const VT& >::Type  LeftOperand;
@@ -103,7 +159,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    typedef typename SelectType< IsComputation<VT>::value, const VRT, VCT >::Type  LT;
 
    //! Type for the assignment of the right-hand side dense matrix operand.
-   typedef MCT  RT;
+   typedef typename SelectType< evaluate, const MRT, MCT >::Type  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -218,29 +274,24 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    RightOperand mat_;  //!< Right-hand side dense matrix of the multiplication expression.
    //**********************************************************************************************
 
-   //**Default assignment to dense vectors*********************************************************
+   //**Assignment to dense vectors*****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Default assignment of a transpose sparse vector-dense matrix multiplication to a
-   //        dense vector.
-   // \ingroup dense_vector
+   /*!\brief Assignment of a transpose sparse vector-dense matrix multiplication to a dense vector.
+   // \ingroup sparse_vector
    //
    // \param lhs The target left-hand side dense vector.
    // \param rhs The right-hand side multiplication expression to be assigned.
    // \return void
    //
-   // This function implements the default assignment of a transpose sparse vector-dense matrix
-   // multiplication expression to a dense vector. This assign function is used in case the
-   // element type of the target vector is resizable.
+   // This function implements the performance optimized assignment of a transpose sparse vector-
+   // dense matrix multiplication expression to a dense vector.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< IsResizable<typename VT2::ElementType> >::Type
-      assign( DenseVector<VT2,true>& lhs, const TSVecDMatMultExpr& rhs )
+   friend inline void assign( DenseVector<VT2,true>& lhs, const TSVecDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      typedef typename boost::remove_reference<LT>::type::ConstIterator  ConstIterator;
 
       // Evaluation of the left-hand side sparse vector operand
       LT x( rhs.vec_ );
@@ -259,16 +310,49 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
       BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()     , "Invalid vector size"       );
 
       // Performing the sparse vector-dense matrix multiplication
+      TSVecDMatMultExpr::selectAssignKernel( ~lhs, x, A );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Default assignment to dense vectors*********************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default assignment of a transpose sparse vector-dense matrix multiplication
+   //        (\f$ \vec{y}^T=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side sparse vector operand.
+   // \param A The right-hand side dense matrix operand.
+   // \return void
+   //
+   // This function implements the default assignment kernel for the transpose sparse vector-
+   // dense matrix multiplication.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseDefaultKernel<VT1,VT2,MT1> >::Type
+      selectAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      typedef typename boost::remove_reference<LT>::type::ConstIterator  ConstIterator;
+
+      BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
+
+      const size_t N( A.columns() );
+
+      ConstIterator element( x.begin() );
       const ConstIterator end( x.end() );
 
-      for( size_t i=0UL; i<(~lhs).size(); ++i )
-      {
-         ConstIterator element( x.begin() );
+      for( size_t j=0UL; j<N; ++j ) {
+         y[j] = element->value() * A(element->index(),j);
+      }
 
-         (~lhs)[i] = element->value() * A(element->index(),i);
-         ++element;
-         for( ; element!=end; ++element ) {
-            (~lhs)[i] += element->value() * A(element->index(),i);
+      ++element;
+
+      for( ; element!=end; ++element ) {
+         for( size_t j=0UL; j<N; ++j ) {
+            y[j] += element->value() * A(element->index(),j);
          }
       }
    }
@@ -277,51 +361,187 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
 
    //**Optimized assignment to dense vectors*******************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Optimized assignment of a transpose sparse vector-dense matrix multiplication to a
-   //        dense vector.
-   // \ingroup sparse_vector
+   /*!\brief Optimized assignment of a transpose sparse vector-dense matrix multiplication
+   //        (\f$ \vec{y}^T=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
    //
-   // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side multiplication expression to be assigned.
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side sparse vector operand.
+   // \param A The right-hand side dense matrix operand.
    // \return void
    //
-   // This function implements the performance optimized assignment of a transpose sparse vector-
-   // dense matrix multiplication expression to a dense vector. This assign function is used in
-   // case the element type of the target vector is not resizable.
+   // This function implements the optimized assignment kernel for the transpose sparse vector-
+   // dense matrix multiplication.
    */
-   template< typename VT2 >  // Type of the target dense vector
-   friend inline typename DisableIf< IsResizable<typename VT2::ElementType> >::Type
-      assign( DenseVector<VT2,true>& lhs, const TSVecDMatMultExpr& rhs )
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseOptimizedKernel<VT1,VT2,MT1> >::Type
+      selectAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
       typedef typename boost::remove_reference<LT>::type::ConstIterator  ConstIterator;
 
-      // Resetting the left-hand side target dense vector
-      reset( ~lhs );
+      BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
-      // Evaluation of the left-hand side sparse vector operand
-      LT x( rhs.vec_ );
-      if( x.nonZeros() == 0UL ) return;
+      const size_t N( A.columns() );
 
-      // Evaluation of the right-hand side dense matrix operand
-      RT A( rhs.mat_ );
-
-      // Checking the evaluated operands
-      BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == rhs.mat_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()     , "Invalid vector size"       );
-
-      // Performing the sparse vector-dense matrix multiplication
-      const ConstIterator end( x.end() );
       ConstIterator element( x.begin() );
+      const ConstIterator end( x.end() );
 
-      for( ; element!=end; ++element ) {
-         for( size_t i=0UL; i<A.columns(); ++i ) {
-            (~lhs)[i] += element->value() * A(element->index(),i);
+      const size_t iend( x.nonZeros() & size_t(-4) );
+      BLAZE_INTERNAL_ASSERT( ( x.nonZeros() - ( x.nonZeros() % 4UL ) ) == iend, "Invalid end calculation" );
+
+      if( iend > 3UL )
+      {
+         const size_t i1( element->index() );
+         const VET    v1( element->value() );
+         ++element;
+         const size_t i2( element->index() );
+         const VET    v2( element->value() );
+         ++element;
+         const size_t i3( element->index() );
+         const VET    v3( element->value() );
+         ++element;
+         const size_t i4( element->index() );
+         const VET    v4( element->value() );
+         ++element;
+
+         for( size_t j=0UL; j<N; ++j ) {
+            y[j] = v1 * A(i1,j) + v2 * A(i2,j) + v3 * A(i3,j) + v4 * A(i4,j);
+         }
+      }
+      else
+      {
+         const size_t i1( element->index() );
+         const VET    v1( element->value() );
+         ++element;
+
+         for( size_t j=0UL; j<N; ++j ) {
+            y[j] = v1 * A(i1,j);
+         }
+      }
+
+      for( size_t i=(iend>3UL)?(4UL):(1UL); (i+4UL)<=iend; i+=4UL )
+      {
+         const size_t i1( element->index() );
+         const VET    v1( element->value() );
+         ++element;
+         const size_t i2( element->index() );
+         const VET    v2( element->value() );
+         ++element;
+         const size_t i3( element->index() );
+         const VET    v3( element->value() );
+         ++element;
+         const size_t i4( element->index() );
+         const VET    v4( element->value() );
+         ++element;
+
+         for( size_t j=0UL; j<N; ++j ) {
+            y[j] += v1 * A(i1,j) + v2 * A(i2,j) + v3 * A(i3,j) + v4 * A(i4,j);
+         }
+      }
+      for( ; element!=end; ++element )
+      {
+         const size_t i1( element->index() );
+         const VET    v1( element->value() );
+
+         for( size_t j=0UL; j<N; ++j ) {
+            y[j] += v1 * A(i1,j);
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized assignment to dense vectors******************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized assignment of a transpose sparse vector-dense matrix multiplication
+   //        (\f$ \vec{y}^T=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side sparse vector operand.
+   // \param A The right-hand side dense matrix operand.
+   // \return void
+   //
+   // This function implements the vectorized assignment kernel for the transpose sparse vector-
+   // dense matrix multiplication.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseVectorizedKernel<VT1,VT2,MT1> >::Type
+      selectAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+      typedef typename boost::remove_reference<LT>::type::ConstIterator  ConstIterator;
+
+      BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
+
+      const size_t N( A.spacing() );
+
+      ConstIterator element( x.begin() );
+      const ConstIterator end( x.end() );
+
+      const size_t iend( x.nonZeros() & size_t(-4) );
+      BLAZE_INTERNAL_ASSERT( ( x.nonZeros() - ( x.nonZeros() % 4UL ) ) == iend, "Invalid end calculation" );
+
+      if( iend > 3UL )
+      {
+         const size_t        i1( element->index() );
+         const IntrinsicType v1( set( element->value() ) );
+         ++element;
+         const size_t        i2( element->index() );
+         const IntrinsicType v2( set( element->value() ) );
+         ++element;
+         const size_t        i3( element->index() );
+         const IntrinsicType v3( set( element->value() ) );
+         ++element;
+         const size_t        i4( element->index() );
+         const IntrinsicType v4( set( element->value() ) );
+         ++element;
+
+         for( size_t j=0UL; (j+IT::size) <= N; j+=IT::size ) {
+            store( &y[j], v1 * A.get(i1,j) + v2 * A.get(i2,j) + v3 * A.get(i3,j) + v4 * A.get(i4,j) );
+         }
+      }
+      else
+      {
+         const size_t        i1( element->index() );
+         const IntrinsicType v1( set( element->value() ) );
+         ++element;
+
+         for( size_t j=0UL; (j+IT::size) <= N; j+=IT::size ) {
+            store( &y[j], v1 * A.get(i1,j) );
+         }
+      }
+
+      for( size_t i=(iend>3UL)?(4UL):(1UL); (i+4UL)<=iend; i+=4UL )
+      {
+         const size_t        i1( element->index() );
+         const IntrinsicType v1( set( element->value() ) );
+         ++element;
+         const size_t        i2( element->index() );
+         const IntrinsicType v2( set( element->value() ) );
+         ++element;
+         const size_t        i3( element->index() );
+         const IntrinsicType v3( set( element->value() ) );
+         ++element;
+         const size_t        i4( element->index() );
+         const IntrinsicType v4( set( element->value() ) );
+         ++element;
+
+         for( size_t j=0UL; j<N; j+=IT::size ) {
+            store( &y[j], load( &y[j] ) + v1 * A.get(i1,j) + v2 * A.get(i2,j) + v3 * A.get(i3,j) + v4 * A.get(i4,j) );
+         }
+      }
+      for( ; element!=end; ++element )
+      {
+         const size_t        i1( element->index() );
+         const IntrinsicType v1( set( element->value() ) );
+
+         for( size_t j=0UL; j<N; j+=IT::size ) {
+            store( &y[j], load( &y[j] ) + v1 * A.get(i1,j) );
          }
       }
    }
@@ -375,8 +595,6 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename boost::remove_reference<LT>::type::ConstIterator  ConstIterator;
-
       // Evaluation of the left-hand side sparse vector operand
       LT x( rhs.vec_ );
       if( x.nonZeros() == 0UL ) return;
@@ -391,15 +609,175 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
       BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()     , "Invalid vector size"       );
 
       // Performing the sparse vector-dense matrix multiplication
-      const ConstIterator end( x.end() );
+      TSVecDMatMultExpr::selectAddAssignKernel( ~lhs, x, A );
+   }
+   //**********************************************************************************************
+
+   //**Default addition assignment to dense vectors************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default addition assignment of a transpose sparse vector-dense matrix multiplication
+   //        (\f$ \vec{y}^T+=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side sparse vector operand.
+   // \param A The right-hand side dense matrix operand.
+   // \return void
+   //
+   // This function implements the default addition assignment kernel for the transpose sparse
+   // vector-dense matrix multiplication.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseDefaultKernel<VT1,VT2,MT1> >::Type
+      selectAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      typedef typename boost::remove_reference<LT>::type::ConstIterator  ConstIterator;
+
+      BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
+
+      const size_t N( A.columns() );
+
       ConstIterator element( x.begin() );
+      const ConstIterator end( x.end() );
 
       for( ; element!=end; ++element ) {
-         for( size_t i=0UL; i<A.columns(); ++i ) {
-            (~lhs)[i] += element->value() * A(element->index(),i);
+         for( size_t j=0UL; j<N; ++j ) {
+            y[j] += element->value() * A(element->index(),j);
          }
       }
    }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Optimized addition assignment to dense vectors**********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Optimized addition assignment of a transpose sparse vector-dense matrix multiplication
+   //        (\f$ \vec{y}^T+=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side sparse vector operand.
+   // \param A The right-hand side dense matrix operand.
+   // \return void
+   //
+   // This function implements the optimized addition assignment kernel for the transpose sparse
+   // vector-dense matrix multiplication.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseOptimizedKernel<VT1,VT2,MT1> >::Type
+      selectAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      typedef typename boost::remove_reference<LT>::type::ConstIterator  ConstIterator;
+
+      BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
+
+      const size_t N( A.columns() );
+
+      ConstIterator element( x.begin() );
+      const ConstIterator end( x.end() );
+
+      const size_t iend( x.nonZeros() & size_t(-4) );
+      BLAZE_INTERNAL_ASSERT( ( x.nonZeros() - ( x.nonZeros() % 4UL ) ) == iend, "Invalid end calculation" );
+
+      for( size_t i=0UL; (i+4UL)<=iend; i+=4UL )
+      {
+         const size_t i1( element->index() );
+         const VET    v1( element->value() );
+         ++element;
+         const size_t i2( element->index() );
+         const VET    v2( element->value() );
+         ++element;
+         const size_t i3( element->index() );
+         const VET    v3( element->value() );
+         ++element;
+         const size_t i4( element->index() );
+         const VET    v4( element->value() );
+         ++element;
+
+         for( size_t j=0UL; j<N; ++j ) {
+            y[j] += v1 * A(i1,j) + v2 * A(i2,j) + v3 * A(i3,j) + v4 * A(i4,j);
+         }
+      }
+      for( ; element!=end; ++element )
+      {
+         const size_t i1( element->index() );
+         const VET    v1( element->value() );
+
+         for( size_t j=0UL; j<N; ++j ) {
+            y[j] += v1 * A(i1,j);
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized addition assignment to dense vectors*********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized addition assignment of a transpose sparse vector-dense matrix multiplication
+   //        (\f$ \vec{y}^T+=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side sparse vector operand.
+   // \param A The right-hand side dense matrix operand.
+   // \return void
+   //
+   // This function implements the vectorized addition assignment kernel for the transpose sparse
+   // vector-dense matrix multiplication.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseVectorizedKernel<VT1,VT2,MT1> >::Type
+      selectAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+      typedef typename boost::remove_reference<LT>::type::ConstIterator  ConstIterator;
+
+      BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
+
+      const size_t N( A.spacing() );
+
+      ConstIterator element( x.begin() );
+      const ConstIterator end( x.end() );
+
+      const size_t iend( x.nonZeros() & size_t(-4) );
+      BLAZE_INTERNAL_ASSERT( ( x.nonZeros() - ( x.nonZeros() % 4UL ) ) == iend, "Invalid end calculation" );
+
+      for( size_t i=0UL; (i+4UL)<=iend; i+=4UL )
+      {
+         const size_t        i1( element->index() );
+         const IntrinsicType v1( set( element->value() ) );
+         ++element;
+         const size_t        i2( element->index() );
+         const IntrinsicType v2( set( element->value() ) );
+         ++element;
+         const size_t        i3( element->index() );
+         const IntrinsicType v3( set( element->value() ) );
+         ++element;
+         const size_t        i4( element->index() );
+         const IntrinsicType v4( set( element->value() ) );
+         ++element;
+
+         for( size_t j=0UL; j<N; j+=IT::size ) {
+            store( &y[j], load( &y[j] ) + v1 * A.get(i1,j) + v2 * A.get(i2,j) + v3 * A.get(i3,j) + v4 * A.get(i4,j) );
+         }
+      }
+      for( ; element!=end; ++element )
+      {
+         const size_t        i1( element->index() );
+         const IntrinsicType v1( set( element->value() ) );
+
+         for( size_t j=0UL; j<N; j+=IT::size ) {
+            store( &y[j], load( &y[j] ) + v1 * A.get(i1,j) );
+         }
+      }
+   }
+   /*! \endcond */
    //**********************************************************************************************
 
    //**Addition assignment to sparse vectors*******************************************************
@@ -440,15 +818,175 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
       BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()     , "Invalid vector size"       );
 
       // Performing the sparse vector-dense matrix multiplication
-      const ConstIterator end( x.end() );
+      TSVecDMatMultExpr::selectSubAssignKernel( ~lhs, x, A );
+   }
+   //**********************************************************************************************
+
+   //**Default subtraction assignment to dense vectors*********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default subtraction assignment of a transpose sparse vector-dense matrix
+   //        multiplication (\f$ \vec{y}^T-=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side sparse vector operand.
+   // \param A The right-hand side dense matrix operand.
+   // \return void
+   //
+   // This function implements the default subtraction assignment kernel for the transpose
+   // sparse vector-dense matrix multiplication.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseDefaultKernel<VT1,VT2,MT1> >::Type
+      selectSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      typedef typename boost::remove_reference<LT>::type::ConstIterator  ConstIterator;
+
+      BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
+
+      const size_t N( A.columns() );
+
       ConstIterator element( x.begin() );
+      const ConstIterator end( x.end() );
 
       for( ; element!=end; ++element ) {
-         for( size_t i=0UL; i<A.columns(); ++i ) {
-            (~lhs)[i] -= element->value() * A(element->index(),i);
+         for( size_t j=0UL; j<N; ++j ) {
+            y[j] -= element->value() * A(element->index(),j);
          }
       }
    }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Optimized subtraction assignment to dense vectors*******************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Optimized subtraction assignment of a transpose sparse vector-dense matrix
+   //        multiplication (\f$ \vec{y}^T-=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side sparse vector operand.
+   // \param A The right-hand side dense matrix operand.
+   // \return void
+   //
+   // This function implements the optimized subtraction assignment kernel for the transpose
+   // sparse vector-dense matrix multiplication.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseOptimizedKernel<VT1,VT2,MT1> >::Type
+      selectSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      typedef typename boost::remove_reference<LT>::type::ConstIterator  ConstIterator;
+
+      BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
+
+      const size_t N( A.columns() );
+
+      ConstIterator element( x.begin() );
+      const ConstIterator end( x.end() );
+
+      const size_t iend( x.nonZeros() & size_t(-4) );
+      BLAZE_INTERNAL_ASSERT( ( x.nonZeros() - ( x.nonZeros() % 4UL ) ) == iend, "Invalid end calculation" );
+
+      for( size_t i=0UL; (i+4UL)<=iend; i+=4UL )
+      {
+         const size_t i1( element->index() );
+         const VET    v1( element->value() );
+         ++element;
+         const size_t i2( element->index() );
+         const VET    v2( element->value() );
+         ++element;
+         const size_t i3( element->index() );
+         const VET    v3( element->value() );
+         ++element;
+         const size_t i4( element->index() );
+         const VET    v4( element->value() );
+         ++element;
+
+         for( size_t j=0UL; j<N; ++j ) {
+            y[j] -= v1 * A(i1,j) + v2 * A(i2,j) + v3 * A(i3,j) + v4 * A(i4,j);
+         }
+      }
+      for( ; element!=end; ++element )
+      {
+         const size_t i1( element->index() );
+         const VET    v1( element->value() );
+
+         for( size_t j=0UL; j<N; ++j ) {
+            y[j] -= v1 * A(i1,j);
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized subtraction assignment to dense vectors******************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized subtraction assignment of a transpose sparse vector-dense matrix
+   //        multiplication (\f$ \vec{y}^T-=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side sparse vector operand.
+   // \param A The right-hand side dense matrix operand.
+   // \return void
+   //
+   // This function implements the vectorized subtraction assignment kernel for the transpose
+   // sparse vector-dense matrix multiplication.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseVectorizedKernel<VT1,VT2,MT1> >::Type
+      selectSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+      typedef typename boost::remove_reference<LT>::type::ConstIterator  ConstIterator;
+
+      BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
+
+      const size_t N( A.spacing() );
+
+      ConstIterator element( x.begin() );
+      const ConstIterator end( x.end() );
+
+      const size_t iend( x.nonZeros() & size_t(-4) );
+      BLAZE_INTERNAL_ASSERT( ( x.nonZeros() - ( x.nonZeros() % 4UL ) ) == iend, "Invalid end calculation" );
+
+      for( size_t i=0UL; (i+4UL)<=iend; i+=4UL )
+      {
+         const size_t        i1( element->index() );
+         const IntrinsicType v1( set( element->value() ) );
+         ++element;
+         const size_t        i2( element->index() );
+         const IntrinsicType v2( set( element->value() ) );
+         ++element;
+         const size_t        i3( element->index() );
+         const IntrinsicType v3( set( element->value() ) );
+         ++element;
+         const size_t        i4( element->index() );
+         const IntrinsicType v4( set( element->value() ) );
+         ++element;
+
+         for( size_t j=0UL; j<N; j+=IT::size ) {
+            store( &y[j], load( &y[j] ) - v1 * A.get(i1,j) - v2 * A.get(i2,j) - v3 * A.get(i3,j) - v4 * A.get(i4,j) );
+         }
+      }
+      for( ; element!=x.end(); ++element )
+      {
+         const size_t        i1( element->index() );
+         const IntrinsicType v1( set( element->value() ) );
+
+         for( size_t j=0UL; j<N; j+=IT::size ) {
+            store( &y[j], load( &y[j] ) - v1 * A.get(i1,j) );
+         }
+      }
+   }
+   /*! \endcond */
    //**********************************************************************************************
 
    //**Subtraction assignment to sparse vectors****************************************************
