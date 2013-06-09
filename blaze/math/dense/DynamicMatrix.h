@@ -1299,9 +1299,10 @@ inline void DynamicMatrix<Type,SO>::clear()
 //
 // This function resizes the matrix using the given size to \f$ m \times n \f$. During this
 // operation, new dynamic memory may be allocated in case the capacity of the matrix is too
-// small. Therefore this function potentially changes all matrix elements. In order to preserve
-// the old matrix values, the \a preserve flag can be set to \a true. However, new matrix
-// elements are not initialized!\n
+// small. Therefore this function invalidates all existing views (rows, columns, ...) on
+// the matrix. Additionally, the resize operation potentially changes all matrix elements.
+// In order to preserve the old matrix values, the \a preserve flag can be set to \a true.
+// However, new matrix elements are not initialized!\n
 // The following example illustrates the resize operation of a \f$ 2 \times 4 \f$ matrix to a
 // \f$ 4 \times 2 \f$ matrix. The new, uninitialized elements are marked with \a x:
 
@@ -3315,9 +3316,10 @@ inline void DynamicMatrix<Type,true>::clear()
 //
 // This function resizes the matrix using the given size to \f$ m \times n \f$. During this
 // operation, new dynamic memory may be allocated in case the capacity of the matrix is too
-// small. Therefore this function potentially changes all matrix elements. In order to preserve
-// the old matrix values, the \a preserve flag can be set to \a true. However, new matrix
-// elements are not initialized!\n
+// small. Therefore this function invalidates all existing views (rows, columns, ...) on
+// the matrix. Additionally, the resize operation potentially changes all matrix elements.
+// In order to preserve the old matrix values, the \a preserve flag can be set to \a true.
+// However, new matrix elements are not initialized!\n
 // The following example illustrates the resize operation of a \f$ 2 \times 4 \f$ matrix to a
 // \f$ 4 \times 2 \f$ matrix. The new, uninitialized elements are marked with \a x:
 

@@ -1392,6 +1392,16 @@ namespace blaze {}
    M1.reserve( 1, 4 );  // Reserving enough space for four non-zero elements in row 4
    \endcode
 
+// Note that resizing a matrix invalidates all existing views (see \ref view_types) on the matrix:
+
+   \code
+   typedef blaze::DynamicMatrix<int,rowMajor>  MatrixType;
+
+   MatrixType M1( 10UL, 20UL );                 // Creating a 10x20 matrix
+   DenseRow<MatrixType> row8 = row( M1, 8UL );  // Creating a view on the 8th row of the matrix
+   M1.resize( 6UL, 20UL );                      // Resizing the matrix invalidates the view
+   \endcode
+
 // \n \section matrix_operations_element_access Element Access
 // <hr>
 //
