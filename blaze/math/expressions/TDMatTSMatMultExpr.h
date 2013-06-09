@@ -36,6 +36,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
@@ -100,15 +101,62 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    typedef typename MT2::CompositeType  CT2;  //!< Composite type of the right-hand side sparse matrix expression.
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! In case all three involved data types are suited for a vectorized computation of the
+       matrix multiplication, the nested \value will be set to 1, otherwise it will be 0. */
+   template< typename T1, typename T2, typename T3 >
+   struct UseVectorizedKernel {
+      enum { value = T1::vectorizable && T2::vectorizable &&
+                     IsColumnMajorMatrix<T1>::value &&
+                     IsSame<typename T1::ElementType,typename T2::ElementType>::value &&
+                     IsSame<typename T1::ElementType,typename T3::ElementType>::value &&
+                     IntrinsicTrait<typename T1::ElementType>::addition &&
+                     IntrinsicTrait<typename T1::ElementType>::subtraction &&
+                     IntrinsicTrait<typename T1::ElementType>::multiplication };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! In case a vectorized computation of the matrix multiplication is not possible, but a
+       loop-unrolled computation is feasible, the nested \value will be set to 1, otherwise
+       it will be 0. */
+   template< typename T1, typename T2, typename T3 >
+   struct UseOptimizedKernel {
+      enum { value = !UseVectorizedKernel<T1,T2,T3>::value &&
+                     !IsResizable<typename T1::ElementType>::value &&
+                     !IsResizable<ET1>::value };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! In case neither a vectorized nor optimized computation is possible, the nested \value will
+       be set to 1, otherwise it will be 0. */
+   template< typename T1, typename T2, typename T3 >
+   struct UseDefaultKernel {
+      enum { value = !UseVectorizedKernel<T1,T2,T3>::value &&
+                     !UseOptimizedKernel<T1,T2,T3>::value };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
-   typedef TDMatTSMatMultExpr<MT1,MT2>         This;           //!< Type of this TDMatTSMatMultExpr instance.
-   typedef typename MultTrait<RT1,RT2>::Type   ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
-   typedef const ElementType                   ReturnType;     //!< Return type for expression template evaluations.
-   typedef const ResultType                    CompositeType;  //!< Data type for composite expression templates.
+   typedef TDMatTSMatMultExpr<MT1,MT2>                 This;           //!< Type of this TDMatTSMatMultExpr instance.
+   typedef typename MultTrait<RT1,RT2>::Type           ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::OppositeType           OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
+   typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
+   typedef const ElementType                           ReturnType;     //!< Return type for expression template evaluations.
+   typedef const ResultType                            CompositeType;  //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense matrix expression.
    typedef typename SelectType< IsExpression<MT1>::value, const MT1, const MT1& >::Type  LeftOperand;
@@ -262,120 +310,10 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    RightOperand rhs_;  //!< Right-hand side sparse matrix of the multiplication expression.
    //**********************************************************************************************
 
-   //**Default assignment to row-major dense matrices**********************************************
+   //**Assignment to dense matrices****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Default assignment of a transpose dense matrix-transpose sparse matrix multiplication
-   //        to a row-major dense matrix.
-   // \ingroup dense_matrix
-   //
-   // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side multiplication expression to be assigned.
-   // \return void
-   //
-   // This function implements the default assignment of a dense matrix-sparse matrix
-   // multiplication expression to a row-major dense matrix. This assign function is
-   // used in case the element type of the target matrix is resizable.
-   */
-   template< typename MT >  // Type of the target dense matrix
-   friend inline typename EnableIf< IsResizable<typename MT::ElementType> >::Type
-      assign( DenseMatrix<MT,false>& lhs, const TDMatTSMatMultExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
-
-      LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
-      RT B( rhs.rhs_ );  // Evaluation of the right-hand side sparse matrix operand
-
-      BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
-
-      for( size_t i=0UL; i<A.rows(); ++i ) {
-         for( size_t j=0UL; j<B.columns(); ++j )
-         {
-            ConstIterator element( B.begin(j) );
-            const ConstIterator end( B.end(j) );
-
-            if( element == end ) {
-               reset( (~lhs)(i,j) );
-               continue;
-            }
-
-            (~lhs)(i,j) = A(i,element->index()) * element->value();
-            ++element;
-            for( ; element!=end; ++element )
-               (~lhs)(i,j) += A(i,element->index()) * element->value();
-         }
-      }
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Default assignment to column-major dense matrices*******************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Default assignment of a transpose dense matrix-transpose sparse matrix multiplication
-   //        to a column-major dense matrix.
-   // \ingroup dense_matrix
-   //
-   // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side multiplication expression to be assigned.
-   // \return void
-   //
-   // This function implements the default assignment of a dense matrix-sparse matrix
-   // multiplication expression to a column-major dense matrix. This assign function
-   // is used in case the element type of the target matrix is resizable.
-   */
-   template< typename MT >  // Type of the target dense matrix
-   friend inline typename EnableIf< IsResizable<typename MT::ElementType> >::Type
-      assign( DenseMatrix<MT,true>& lhs, const TDMatTSMatMultExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
-
-      LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
-      RT B( rhs.rhs_ );  // Evaluation of the right-hand side sparse matrix operand
-
-      BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
-
-      for( size_t j=0UL; j<B.columns(); ++j ) {
-         for( size_t i=0UL; i<(~lhs).rows(); ++i ) {
-            reset( (~lhs)(i,j) );
-         }
-         ConstIterator element( B.begin(j) );
-         const ConstIterator end( B.end(j) );
-         for( ; element!=end; ++element ) {
-            for( size_t i=0UL; i<A.rows(); ++i ) {
-               if( isDefault( (~lhs)(element->index(),j) ) )
-                  (~lhs)(i,j) = A(i,element->index()) * element->value();
-               else
-                  (~lhs)(i,j) += A(i,element->index()) * element->value();
-            }
-         }
-      }
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Optimized assignment to row-major dense matrices********************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Optimized assignment of a transpose dense matrix-sparse matrix multiplication to a
-   //        row-major dense matrix.
+   /*!\brief Assignment of a transpose dense matrix-transpose sparse matrix multiplication to a
+   //        dense matrix.
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.
@@ -383,19 +321,16 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    // \return void
    //
    // This function implements the performance optimized assignment of a transpose dense matrix-
-   // sparse matrix multiplication expression to a row-major dense matrix. This assign function
-   // is used in case the element type of the target matrix is not resizable.
+   // transpose sparse matrix multiplication expression to a dense matrix.
    */
-   template< typename MT >  // Type of the target dense matrix
-   friend inline typename DisableIf< IsResizable<typename MT::ElementType> >::Type
-      assign( DenseMatrix<MT,false>& lhs, const TDMatTSMatMultExpr& rhs )
+   template< typename MT  // Type of the target dense matrix
+           , bool SO >    // Storage order of the target dense matrix
+   friend inline void assign( DenseMatrix<MT,SO>& lhs, const TDMatTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side sparse matrix operand
@@ -407,8 +342,35 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
-      BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == ( A.rows() & size_t(-4) ), "Invalid end calculation" );
+      TDMatTSMatMultExpr::selectAssignKernel( ~lhs, A, B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Default assignment to row-major dense matrices**********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default assignment of a transpose dense matrix-transpose sparse matrix multiplication
+   //        to row-major matrices (\f$ A=B*C \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side dense matrix operand.
+   // \param B The right-hand side sparse matrix operand.
+   // \return void
+   //
+   // This function implements the default row-major assignment kernel for the transpose dense
+   // matrix-transpose sparse matrix multiplication.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline void
+      selectAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+   {
+      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+
       const size_t iend( A.rows() & size_t(-4) );
+      BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
 
       for( size_t i=0UL; i<iend; i+=4UL ) {
          for( size_t j=0UL; j<B.columns(); ++j )
@@ -417,23 +379,23 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
             const ConstIterator end( B.end(j) );
 
             if( element == end ) {
-               reset( (~lhs)(i    ,j) );
-               reset( (~lhs)(i+1UL,j) );
-               reset( (~lhs)(i+2UL,j) );
-               reset( (~lhs)(i+3UL,j) );
+               reset( (~C)(i    ,j) );
+               reset( (~C)(i+1UL,j) );
+               reset( (~C)(i+2UL,j) );
+               reset( (~C)(i+3UL,j) );
                continue;
             }
 
-            (~lhs)(i    ,j) = A(i    ,element->index()) * element->value();
-            (~lhs)(i+1UL,j) = A(i+1UL,element->index()) * element->value();
-            (~lhs)(i+2UL,j) = A(i+2UL,element->index()) * element->value();
-            (~lhs)(i+3UL,j) = A(i+3UL,element->index()) * element->value();
+            (~C)(i    ,j) = A(i    ,element->index()) * element->value();
+            (~C)(i+1UL,j) = A(i+1UL,element->index()) * element->value();
+            (~C)(i+2UL,j) = A(i+2UL,element->index()) * element->value();
+            (~C)(i+3UL,j) = A(i+3UL,element->index()) * element->value();
             ++element;
             for( ; element!=end; ++element ) {
-               (~lhs)(i    ,j) += A(i    ,element->index()) * element->value();
-               (~lhs)(i+1UL,j) += A(i+1UL,element->index()) * element->value();
-               (~lhs)(i+2UL,j) += A(i+2UL,element->index()) * element->value();
-               (~lhs)(i+3UL,j) += A(i+3UL,element->index()) * element->value();
+               (~C)(i    ,j) += A(i    ,element->index()) * element->value();
+               (~C)(i+1UL,j) += A(i+1UL,element->index()) * element->value();
+               (~C)(i+2UL,j) += A(i+2UL,element->index()) * element->value();
+               (~C)(i+3UL,j) += A(i+3UL,element->index()) * element->value();
             }
          }
       }
@@ -445,14 +407,55 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
             const ConstIterator end( B.end(j) );
 
             if( element == end ) {
-               reset( (~lhs)(i,j) );
+               reset( (~C)(i,j) );
                continue;
             }
 
-            (~lhs)(i,j) = A(i,element->index()) * element->value();
+            (~C)(i,j) = A(i,element->index()) * element->value();
             ++element;
             for( ; element!=end; ++element )
-               (~lhs)(i,j) += A(i,element->index()) * element->value();
+               (~C)(i,j) += A(i,element->index()) * element->value();
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Default assignment to column-major dense matrices*******************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default assignment of a transpose dense matrix-transpose sparse matrix multiplication
+   //        to column-major matrices (\f$ A=B*C \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side dense matrix operand.
+   // \param B The right-hand side sparse matrix operand.
+   // \return void
+   //
+   // This function implements the default column-major assignment kernel for the transpose dense
+   // matrix-transpose sparse matrix multiplication.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5> >::Type
+      selectAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   {
+      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+
+      for( size_t j=0UL; j<B.columns(); ++j ) {
+         for( size_t i=0UL; i<(~C).rows(); ++i ) {
+            reset( (~C)(i,j) );
+         }
+         ConstIterator element( B.begin(j) );
+         const ConstIterator end( B.end(j) );
+         for( ; element!=end; ++element ) {
+            for( size_t i=0UL; i<A.rows(); ++i ) {
+               if( isDefault( (~C)(i,j) ) )
+                  (~C)(i,j) = A(i,element->index()) * element->value();
+               else
+                  (~C)(i,j) += A(i,element->index()) * element->value();
+            }
          }
       }
    }
@@ -461,120 +464,141 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
 
    //**Optimized assignment to column-major dense matrices*****************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Optimized assignment of a transpose dense matrix-sparse matrix multiplication to a
-   //        column-major dense matrix.
+   /*!\brief Optimized assignment of a transpose dense matrix-transpose sparse matrix multiplication
+   //        to column-major matrices (\f$ A=B*C \f$).
    // \ingroup dense_matrix
    //
-   // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side multiplication expression to be assigned.
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side dense matrix operand.
+   // \param B The right-hand side sparse matrix operand.
    // \return void
    //
-   // This function implements the performance optimized assignment of a transpose dense matrix-
-   // sparse matrix multiplication expression to a column-major dense matrix. This assign function
-   // is used in case the element type of the target matrix is not resizable.
+   // This function implements the optimized column-major assignment kernel for the transpose dense
+   // matrix-transpose sparse matrix multiplication.
    */
-   template< typename MT >  // Type of the target dense matrix
-   friend inline typename DisableIf< IsResizable<typename MT::ElementType> >::Type
-      assign( DenseMatrix<MT,true>& lhs, const TDMatTSMatMultExpr& rhs )
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseOptimizedKernel<MT3,MT4,MT5> >::Type
+      selectAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-
       typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
 
-      LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
-      RT B( rhs.rhs_ );  // Evaluation of the right-hand side sparse matrix operand
-
-      BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
-
-      BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == ( A.rows() & size_t(-4) ), "Invalid end calculation" );
       const size_t iend( A.rows() & size_t(-4) );
+      BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
 
-      for( size_t j=0UL; j<B.columns(); ++j ) {
-         for( size_t i=0UL; i<iend; i+=4UL ) {
-            reset( (~lhs)(i    ,j) );
-            reset( (~lhs)(i+1UL,j) );
-            reset( (~lhs)(i+2UL,j) );
-            reset( (~lhs)(i+3UL,j) );
-         }
-         for( size_t i=iend; i<(~lhs).rows(); ++i ) {
-            reset( (~lhs)(i,j) );
-         }
-         ConstIterator element( B.begin(j) );
+      reset( ~C );
+
+      for( size_t j=0UL; j<B.columns(); ++j )
+      {
          const ConstIterator end( B.end(j) );
+         ConstIterator element( B.begin(j) );
 
-         while( element!=end )
-         {
+         const size_t kend( B.nonZeros(j) & size_t(-4) );
+
+         for( size_t k=0UL; k<kend; k+=4UL ) {
+            const size_t j1( element->index() );
             const ET2    v1( element->value() );
-            const size_t i1( element->index() );
+            ++element;
+            const size_t j2( element->index() );
+            const ET2    v2( element->value() );
+            ++element;
+            const size_t j3( element->index() );
+            const ET2    v3( element->value() );
+            ++element;
+            const size_t j4( element->index() );
+            const ET2    v4( element->value() );
             ++element;
 
-            if( element != end ) {
-               const ET2    v2( element->value() );
-               const size_t i2( element->index() );
-               ++element;
-
-               if( element != end ) {
-                  const ET2    v3( element->value() );
-                  const size_t i3( element->index() );
-                  ++element;
-
-                  if( element != end ) {
-                     const ET2    v4( element->value() );
-                     const size_t i4( element->index() );
-                     ++element;
-
-                     for( size_t i=0UL; i<iend; i+=4UL ) {
-                        (~lhs)(i    ,j) += A(i    ,i1) * v1 + A(i    ,i2) * v2 + A(i    ,i3) * v3 + A(i    ,i4) * v4;
-                        (~lhs)(i+1UL,j) += A(i+1UL,i1) * v1 + A(i+1UL,i2) * v2 + A(i+1UL,i3) * v3 + A(i+1UL,i4) * v4;
-                        (~lhs)(i+2UL,j) += A(i+2UL,i1) * v1 + A(i+2UL,i2) * v2 + A(i+2UL,i3) * v3 + A(i+2UL,i4) * v4;
-                        (~lhs)(i+3UL,j) += A(i+3UL,i1) * v1 + A(i+3UL,i2) * v2 + A(i+3UL,i3) * v3 + A(i+3UL,i4) * v4;
-                     }
-                     for( size_t i=iend; i<A.rows(); ++i ) {
-                        (~lhs)(i,j) += A(i,i1) * v1 + A(i,i2) * v2 + A(i,i3) * v3 + A(i,i4) * v4;
-                     }
-                  }
-                  else {
-                     for( size_t i=0UL; i<iend; i+=4UL ) {
-                        (~lhs)(i    ,j) += A(i    ,i1) * v1 + A(i    ,i2) * v2 + A(i    ,i3) * v3;
-                        (~lhs)(i+1UL,j) += A(i+1UL,i1) * v1 + A(i+1UL,i2) * v2 + A(i+1UL,i3) * v3;
-                        (~lhs)(i+2UL,j) += A(i+2UL,i1) * v1 + A(i+2UL,i2) * v2 + A(i+2UL,i3) * v3;
-                        (~lhs)(i+3UL,j) += A(i+3UL,i1) * v1 + A(i+3UL,i2) * v2 + A(i+3UL,i3) * v3;
-                     }
-                     for( size_t i=iend; i<A.rows(); ++i ) {
-                        (~lhs)(i,j) += A(i,i1) * v1 + A(i,i2) * v2 + A(i,i3) * v3;
-                     }
-                  }
-               }
-               else {
-                  for( size_t i=0UL; i<iend; i+=4UL ) {
-                     (~lhs)(i    ,j) += A(i    ,i1) * v1 + A(i    ,i2) * v2;
-                     (~lhs)(i+1UL,j) += A(i+1UL,i1) * v1 + A(i+1UL,i2) * v2;
-                     (~lhs)(i+2UL,j) += A(i+2UL,i1) * v1 + A(i+2UL,i2) * v2;
-                     (~lhs)(i+3UL,j) += A(i+3UL,i1) * v1 + A(i+3UL,i2) * v2;
-                  }
-                  for( size_t i=iend; i<A.rows(); ++i ) {
-                     (~lhs)(i,j) += A(i,i1) * v1 + A(i,i2) * v2;
-                  }
-               }
+            for( size_t i=0UL; i<iend; i+=4UL ) {
+               (~C)(i    ,j) += A(i    ,j1) * v1 + A(i    ,j2) * v2 + A(i    ,j3) * v3 + A(i    ,j4) * v4;
+               (~C)(i+1UL,j) += A(i+1UL,j1) * v1 + A(i+1UL,j2) * v2 + A(i+1UL,j3) * v3 + A(i+1UL,j4) * v4;
+               (~C)(i+2UL,j) += A(i+2UL,j1) * v1 + A(i+2UL,j2) * v2 + A(i+2UL,j3) * v3 + A(i+2UL,j4) * v4;
+               (~C)(i+3UL,j) += A(i+3UL,j1) * v1 + A(i+3UL,j2) * v2 + A(i+3UL,j3) * v3 + A(i+3UL,j4) * v4;
             }
-            else {
-               for( size_t i=0UL; i<iend; i+=4UL ) {
-                  (~lhs)(i    ,j) += A(i    ,i1) * v1;
-                  (~lhs)(i+1UL,j) += A(i+1UL,i1) * v1;
-                  (~lhs)(i+2UL,j) += A(i+2UL,i1) * v1;
-                  (~lhs)(i+3UL,j) += A(i+3UL,i1) * v1;
-               }
-               for( size_t i=iend; i<A.rows(); ++i ) {
-                  (~lhs)(i,j) += A(i,i1) * v1;
-               }
+            for( size_t i=iend; i<A.rows(); ++i ) {
+               (~C)(i,j) += A(i,j1) * v1 + A(i,j2) * v2 + A(i,j3) * v3 + A(i,j4) * v4;
+            }
+         }
+
+         for( ; element!=end; ++element ) {
+            for( size_t i=0UL; i<iend; i+=4UL ) {
+               (~C)(i    ,j) += A(i    ,element->index()) * element->value();
+               (~C)(i+1UL,j) += A(i+1UL,element->index()) * element->value();
+               (~C)(i+2UL,j) += A(i+2UL,element->index()) * element->value();
+               (~C)(i+3UL,j) += A(i+3UL,element->index()) * element->value();
+            }
+            for( size_t i=iend; i<A.rows(); ++i ) {
+               (~C)(i,j) += A(i,element->index()) * element->value();
+            }
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized assignment to column-major dense matrices****************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized assignment of a transpose dense matrix-transpose sparse matrix
+   //        multiplication to column-major matrices (\f$ A=B*C \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side dense matrix operand.
+   // \param B The right-hand side sparse matrix operand.
+   // \return void
+   //
+   // This function implements the vectorized column-major assignment kernel for the transpose dense
+   // matrix-transpose sparse matrix multiplication.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseVectorizedKernel<MT3,MT4,MT5> >::Type
+      selectAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+
+      const size_t M( A.rows() );
+
+      const size_t iend( M & size_t(-4) );
+      BLAZE_INTERNAL_ASSERT( ( M - ( M % 4UL ) ) == iend, "Invalid end calculation" );
+
+      reset( ~C );
+
+      for( size_t j=0UL; j<B.columns(); ++j )
+      {
+         const ConstIterator end( B.end(j) );
+         ConstIterator element( B.begin(j) );
+
+         const size_t kend( B.nonZeros(j) & size_t(-4) );
+
+         for( size_t k=0UL; k<kend; k+=4UL ) {
+            const size_t        j1( element->index() );
+            const IntrinsicType v1( set( element->value() ) );
+            ++element;
+            const size_t        j2( element->index() );
+            const IntrinsicType v2( set( element->value() ) );
+            ++element;
+            const size_t        j3( element->index() );
+            const IntrinsicType v3( set( element->value() ) );
+            ++element;
+            const size_t        j4( element->index() );
+            const IntrinsicType v4( set( element->value() ) );
+            ++element;
+
+            for( size_t i=0UL; i<M; i+=IT::size ) {
+               store( &(~C)(i,j), load( &(~C)(i,j) ) + A.get(i,j1) * v1 + A.get(i,j2) * v2 + A.get(i,j3) * v3 + A.get(i,j4) * v4 );
+            }
+         }
+
+         for( ; element!=end; ++element ) {
+            const size_t        j1( element->index() );
+            const IntrinsicType v1( set( element->value() ) );
+
+            for( size_t i=0UL; i<M; i+=IT::size ) {
+               store( &(~C)(i,j), load( &(~C)(i,j) ) + A.get(i,j1) * v1 );
             }
          }
       }
@@ -618,10 +642,10 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Addition assignment to row-major dense matrices*********************************************
+   //**Addition assignment to dense matrices*******************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Addition assignment of a transpose dense matrix-sparse matrix multiplication to
-   //        a row-major dense matrix.
+   /*!\brief Addition assignment of a transpose dense matrix-transpose sparse matrix multiplication
+   //        to a dense matrix.
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.
@@ -629,17 +653,16 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    // \return void
    //
    // This function implements the performance optimized addition assignment of a transpose dense
-   // matrix-sparse matrix multiplication expression to a row-major dense matrix.
+   // matrix-transpose sparse matrix multiplication expression to a dense matrix.
    */
-   template< typename MT >  // Type of the target dense matrix
-   friend inline void addAssign( DenseMatrix<MT,false>& lhs, const TDMatTSMatMultExpr& rhs )
+   template< typename MT  // Type of the target dense matrix
+           , bool SO >    // Storage order of the target dense matrix
+   friend inline void addAssign( DenseMatrix<MT,SO>& lhs, const TDMatTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side sparse matrix operand
@@ -651,8 +674,35 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
-      BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == ( A.rows() & size_t(-4) ), "Invalid end calculation" );
+      TDMatTSMatMultExpr::selectAddAssignKernel( ~lhs, A, B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Default addition assignment to row-major dense matrices*************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default addition assignment of a transpose dense matrix-transpose sparse matrix
+   //        multiplication to row-major matrices (\f$ A+=B*C \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side dense matrix operand.
+   // \param B The right-hand side sparse matrix operand.
+   // \return void
+   //
+   // This function implements the default addition assignment kernel for the transpose dense
+   // matrix-transpose sparse matrix multiplication to a row-major dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline void
+      selectAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+   {
+      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+
       const size_t iend( A.rows() & size_t(-4) );
+      BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
 
       for( size_t i=0UL; i<iend; i+=4UL ) {
          for( size_t j=0UL; j<B.columns(); ++j )
@@ -661,10 +711,10 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
             const ConstIterator end( B.end(j) );
 
             for( ; element!=end; ++element ) {
-               (~lhs)(i    ,j) += A(i    ,element->index()) * element->value();
-               (~lhs)(i+1UL,j) += A(i+1UL,element->index()) * element->value();
-               (~lhs)(i+2UL,j) += A(i+2UL,element->index()) * element->value();
-               (~lhs)(i+3UL,j) += A(i+3UL,element->index()) * element->value();
+               (~C)(i    ,j) += A(i    ,element->index()) * element->value();
+               (~C)(i+1UL,j) += A(i+1UL,element->index()) * element->value();
+               (~C)(i+2UL,j) += A(i+2UL,element->index()) * element->value();
+               (~C)(i+3UL,j) += A(i+3UL,element->index()) * element->value();
             }
          }
       }
@@ -676,119 +726,184 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
             const ConstIterator end( B.end(j) );
 
             for( ; element!=end; ++element )
-               (~lhs)(i,j) += A(i,element->index()) * element->value();
+               (~C)(i,j) += A(i,element->index()) * element->value();
          }
       }
    }
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Addition assignment to column-major dense matrices******************************************
+   //**Default addition assignment to column-major dense matrices**********************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Addition assignment of a transpose dense matrix-sparse matrix multiplication to
-   //        a column-major dense matrix.
+   /*!\brief Default addition assignment of a transpose dense matrix-transpose sparse matrix
+   //        multiplication to column-major matrices (\f$ A+=B*C \f$).
    // \ingroup dense_matrix
    //
-   // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side multiplication expression to be added.
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side dense matrix operand.
+   // \param B The right-hand side sparse matrix operand.
    // \return void
    //
-   // This function implements the performance optimized addition assignment of a transpose dense
-   // matrix-sparse matrix multiplication expression to a column-major dense matrix.
+   // This function implements the default addition assignment kernel for the transpose dense
+   // matrix-transpose sparse matrix multiplication to a column-major dense matrix.
    */
-   template< typename MT >  // Type of the target dense matrix
-   friend inline void addAssign( DenseMatrix<MT,true>& lhs, const TDMatTSMatMultExpr& rhs )
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5> >::Type
+      selectAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-
       typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
 
-      LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
-      RT B( rhs.rhs_ );  // Evaluation of the right-hand side sparse matrix operand
+      for( size_t j=0UL; j<B.columns(); ++j ) {
+         ConstIterator element( B.begin(j) );
+         const ConstIterator end( B.end(j) );
+         for( ; element!=end; ++element ) {
+            for( size_t i=0UL; i<A.rows(); ++i ) {
+               if( isDefault( (~C)(i,j) ) )
+                  (~C)(i,j) = A(i,element->index()) * element->value();
+               else
+                  (~C)(i,j) += A(i,element->index()) * element->value();
+            }
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
 
-      BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+   //**Optimized addition assignment to column-major dense matrices********************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Optimized addition assignment of a transpose dense matrix-transpose sparse matrix
+   //        multiplication to column-major matrices (\f$ A+=B*C \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side dense matrix operand.
+   // \param B The right-hand side sparse matrix operand.
+   // \return void
+   //
+   // This function implements the optimized addition assignment kernel for the transpose dense
+   // matrix-transpose sparse matrix multiplication to a column-major dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseOptimizedKernel<MT3,MT4,MT5> >::Type
+      selectAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   {
+      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
 
-      BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == ( A.rows() & size_t(-4) ), "Invalid end calculation" );
       const size_t iend( A.rows() & size_t(-4) );
+      BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
 
       for( size_t j=0UL; j<B.columns(); ++j )
       {
-         ConstIterator element( B.begin(j) );
          const ConstIterator end( B.end(j) );
+         ConstIterator element( B.begin(j) );
 
-         while( element!=end )
-         {
+         const size_t kend( B.nonZeros(j) & size_t(-4) );
+
+         for( size_t k=0UL; k<kend; k+=4UL ) {
+            const size_t j1( element->index() );
             const ET2    v1( element->value() );
-            const size_t i1( element->index() );
+            ++element;
+            const size_t j2( element->index() );
+            const ET2    v2( element->value() );
+            ++element;
+            const size_t j3( element->index() );
+            const ET2    v3( element->value() );
+            ++element;
+            const size_t j4( element->index() );
+            const ET2    v4( element->value() );
             ++element;
 
-            if( element != end ) {
-               const ET2    v2( element->value() );
-               const size_t i2( element->index() );
-               ++element;
-
-               if( element != end ) {
-                  const ET2    v3( element->value() );
-                  const size_t i3( element->index() );
-                  ++element;
-
-                  if( element != end ) {
-                     const ET2    v4( element->value() );
-                     const size_t i4( element->index() );
-                     ++element;
-
-                     for( size_t i=0UL; i<iend; i+=4UL ) {
-                        (~lhs)(i    ,j) += A(i    ,i1) * v1 + A(i    ,i2) * v2 + A(i    ,i3) * v3 + A(i    ,i4) * v4;
-                        (~lhs)(i+1UL,j) += A(i+1UL,i1) * v1 + A(i+1UL,i2) * v2 + A(i+1UL,i3) * v3 + A(i+1UL,i4) * v4;
-                        (~lhs)(i+2UL,j) += A(i+2UL,i1) * v1 + A(i+2UL,i2) * v2 + A(i+2UL,i3) * v3 + A(i+2UL,i4) * v4;
-                        (~lhs)(i+3UL,j) += A(i+3UL,i1) * v1 + A(i+3UL,i2) * v2 + A(i+3UL,i3) * v3 + A(i+3UL,i4) * v4;
-                     }
-                     for( size_t i=iend; i<A.rows(); ++i ) {
-                        (~lhs)(i,j) += A(i,i1) * v1 + A(i,i2) * v2 + A(i,i3) * v3 + A(i,i4) * v4;
-                     }
-                  }
-                  else {
-                     for( size_t i=0UL; i<iend; i+=4UL ) {
-                        (~lhs)(i    ,j) += A(i    ,i1) * v1 + A(i    ,i2) * v2 + A(i    ,i3) * v3;
-                        (~lhs)(i+1UL,j) += A(i+1UL,i1) * v1 + A(i+1UL,i2) * v2 + A(i+1UL,i3) * v3;
-                        (~lhs)(i+2UL,j) += A(i+2UL,i1) * v1 + A(i+2UL,i2) * v2 + A(i+2UL,i3) * v3;
-                        (~lhs)(i+3UL,j) += A(i+3UL,i1) * v1 + A(i+3UL,i2) * v2 + A(i+3UL,i3) * v3;
-                     }
-                     for( size_t i=iend; i<A.rows(); ++i ) {
-                        (~lhs)(i,j) += A(i,i1) * v1 + A(i,i2) * v2 + A(i,i3) * v3;
-                     }
-                  }
-               }
-               else {
-                  for( size_t i=0UL; i<iend; i+=4UL ) {
-                     (~lhs)(i    ,j) += A(i    ,i1) * v1 + A(i    ,i2) * v2;
-                     (~lhs)(i+1UL,j) += A(i+1UL,i1) * v1 + A(i+1UL,i2) * v2;
-                     (~lhs)(i+2UL,j) += A(i+2UL,i1) * v1 + A(i+2UL,i2) * v2;
-                     (~lhs)(i+3UL,j) += A(i+3UL,i1) * v1 + A(i+3UL,i2) * v2;
-                  }
-                  for( size_t i=iend; i<A.rows(); ++i ) {
-                     (~lhs)(i,j) += A(i,i1) * v1 + A(i,i2) * v2;
-                  }
-               }
+            for( size_t i=0UL; i<iend; i+=4UL ) {
+               (~C)(i    ,j) += A(i    ,j1) * v1 + A(i    ,j2) * v2 + A(i    ,j3) * v3 + A(i    ,j4) * v4;
+               (~C)(i+1UL,j) += A(i+1UL,j1) * v1 + A(i+1UL,j2) * v2 + A(i+1UL,j3) * v3 + A(i+1UL,j4) * v4;
+               (~C)(i+2UL,j) += A(i+2UL,j1) * v1 + A(i+2UL,j2) * v2 + A(i+2UL,j3) * v3 + A(i+2UL,j4) * v4;
+               (~C)(i+3UL,j) += A(i+3UL,j1) * v1 + A(i+3UL,j2) * v2 + A(i+3UL,j3) * v3 + A(i+3UL,j4) * v4;
             }
-            else {
-               for( size_t i=0UL; i<iend; i+=4UL ) {
-                  (~lhs)(i    ,j) += A(i    ,i1) * v1;
-                  (~lhs)(i+1UL,j) += A(i+1UL,i1) * v1;
-                  (~lhs)(i+2UL,j) += A(i+2UL,i1) * v1;
-                  (~lhs)(i+3UL,j) += A(i+3UL,i1) * v1;
-               }
-               for( size_t i=iend; i<A.rows(); ++i ) {
-                  (~lhs)(i,j) += A(i,i1) * v1;
-               }
+            for( size_t i=iend; i<A.rows(); ++i ) {
+               (~C)(i,j) += A(i,j1) * v1 + A(i,j2) * v2 + A(i,j3) * v3 + A(i,j4) * v4;
+            }
+         }
+
+         for( ; element!=end; ++element ) {
+            for( size_t i=0UL; i<iend; i+=4UL ) {
+               (~C)(i    ,j) += A(i    ,element->index()) * element->value();
+               (~C)(i+1UL,j) += A(i+1UL,element->index()) * element->value();
+               (~C)(i+2UL,j) += A(i+2UL,element->index()) * element->value();
+               (~C)(i+3UL,j) += A(i+3UL,element->index()) * element->value();
+            }
+            for( size_t i=iend; i<A.rows(); ++i ) {
+               (~C)(i,j) += A(i,element->index()) * element->value();
+            }
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized addition assignment to column-major dense matrices*******************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized addition assignment of a transpose dense matrix-transpose sparse matrix
+   //        multiplication to column-major matrices (\f$ A+=B*C \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side dense matrix operand.
+   // \param B The right-hand side sparse matrix operand.
+   // \return void
+   //
+   // This function implements the vectorized addition assignment kernel for the transpose dense
+   // matrix-transpose sparse matrix multiplication to a column-major dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseVectorizedKernel<MT3,MT4,MT5> >::Type
+      selectAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+
+      const size_t M( A.rows() );
+
+      const size_t iend( M & size_t(-4) );
+      BLAZE_INTERNAL_ASSERT( ( M - ( M % 4UL ) ) == iend, "Invalid end calculation" );
+
+      for( size_t j=0UL; j<B.columns(); ++j )
+      {
+         const ConstIterator end( B.end(j) );
+         ConstIterator element( B.begin(j) );
+
+         const size_t kend( B.nonZeros(j) & size_t(-4) );
+
+         for( size_t k=0UL; k<kend; k+=4UL ) {
+            const size_t        j1( element->index() );
+            const IntrinsicType v1( set( element->value() ) );
+            ++element;
+            const size_t        j2( element->index() );
+            const IntrinsicType v2( set( element->value() ) );
+            ++element;
+            const size_t        j3( element->index() );
+            const IntrinsicType v3( set( element->value() ) );
+            ++element;
+            const size_t        j4( element->index() );
+            const IntrinsicType v4( set( element->value() ) );
+            ++element;
+
+            for( size_t i=0UL; i<M; i+=IT::size ) {
+               store( &(~C)(i,j), load( &(~C)(i,j) ) + A.get(i,j1) * v1 + A.get(i,j2) * v2 + A.get(i,j3) * v3 + A.get(i,j4) * v4 );
+            }
+         }
+
+         for( ; element!=end; ++element ) {
+            const size_t        j1( element->index() );
+            const IntrinsicType v1( set( element->value() ) );
+
+            for( size_t i=0UL; i<M; i+=IT::size ) {
+               store( &(~C)(i,j), load( &(~C)(i,j) ) + A.get(i,j1) * v1 );
             }
          }
       }
@@ -800,28 +915,27 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    // No special implementation for the addition assignment to sparse matrices.
    //**********************************************************************************************
 
-   //**Subtraction assignment to row-major dense matrices******************************************
+   //**Subtraction assignment to dense matrices****************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Subtraction assignment of a dense matrix-sparse matrix multiplication to a
-   //        row-major dense matrix.
+   /*!\brief Subtraction assignment of a transpose dense matrix-transpose sparse matrix
+   //        multiplication to a dense matrix.
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.
    // \param rhs The right-hand side multiplication expression to be subtracted.
    // \return void
    //
-   // This function implements the performance optimized subtraction assignment of a dense matrix-
-   // sparse matrix multiplication expression to a row-major dense matrix.
+   // This function implements the performance optimized subtraction assignment of a transpose
+   // dense matrix-transpose sparse matrix multiplication expression to a dense matrix.
    */
-   template< typename MT >  // Type of the target dense matrix
-   friend inline void subAssign( DenseMatrix<MT,false>& lhs, const TDMatTSMatMultExpr& rhs )
+   template< typename MT  // Type of the target dense matrix
+           , bool SO >    // Storage order of the target dense matrix
+   friend inline void subAssign( DenseMatrix<MT,SO>& lhs, const TDMatTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side sparse matrix operand
@@ -833,20 +947,47 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
-      BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == ( A.rows() & size_t(-4) ), "Invalid end calculation" );
-      const size_t iend( A.rows() & size_t(-4) );
+      TDMatTSMatMultExpr::selectSubAssignKernel( ~lhs, A, B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
 
-      for( size_t i=0UL; i<iend; i+=4 ) {
+   //**Default subtraction assignment to row-major dense matrices**********************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default subtraction assignment of a transpose dense matrix-transpose sparse matrix
+   //        multiplication to row-major matrices (\f$ A-=B*C \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side dense matrix operand.
+   // \param B The right-hand side sparse matrix operand.
+   // \return void
+   //
+   // This function implements the default subtraction assignment kernel for the transpose dense
+   // matrix-transpose sparse matrix multiplication to a row-major dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline void
+      selectSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+   {
+      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+
+      const size_t iend( A.rows() & size_t(-4) );
+      BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
+
+      for( size_t i=0UL; i<iend; i+=4UL ) {
          for( size_t j=0UL; j<B.columns(); ++j )
          {
             ConstIterator element( B.begin(j) );
             const ConstIterator end( B.end(j) );
 
             for( ; element!=end; ++element ) {
-               (~lhs)(i    ,j) -= A(i    ,element->index()) * element->value();
-               (~lhs)(i+1UL,j) -= A(i+1UL,element->index()) * element->value();
-               (~lhs)(i+2UL,j) -= A(i+2UL,element->index()) * element->value();
-               (~lhs)(i+3UL,j) -= A(i+3UL,element->index()) * element->value();
+               (~C)(i    ,j) -= A(i    ,element->index()) * element->value();
+               (~C)(i+1UL,j) -= A(i+1UL,element->index()) * element->value();
+               (~C)(i+2UL,j) -= A(i+2UL,element->index()) * element->value();
+               (~C)(i+3UL,j) -= A(i+3UL,element->index()) * element->value();
             }
          }
       }
@@ -858,119 +999,184 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
             const ConstIterator end( B.end(j) );
 
             for( ; element!=end; ++element )
-               (~lhs)(i,j) -= A(i,element->index()) * element->value();
+               (~C)(i,j) -= A(i,element->index()) * element->value();
          }
       }
    }
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Subtraction assignment to column-major dense matrices***************************************
+   //**Default subtraction assignment to column-major dense matrices*******************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Subtraction assignment of a dense matrix-sparse matrix multiplication to a
-   //        column-major dense matrix.
+   /*!\brief Default subtraction assignment of a transpose dense matrix-transpose sparse matrix
+   //        multiplication to column-major matrices (\f$ A-=B*C \f$).
    // \ingroup dense_matrix
    //
-   // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side multiplication expression to be subtracted.
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side dense matrix operand.
+   // \param B The right-hand side sparse matrix operand.
    // \return void
    //
-   // This function implements the performance optimized subtraction assignment of a dense matrix-
-   // sparse matrix multiplication expression to a column-major dense matrix.
+   // This function implements the default subtraction assignment kernel for the transpose dense
+   // matrix-transpose sparse matrix multiplication to a column-major dense matrix.
    */
-   template< typename MT >  // Type of the target dense matrix
-   friend inline void subAssign( DenseMatrix<MT,true>& lhs, const TDMatTSMatMultExpr& rhs )
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5> >::Type
+      selectSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-
       typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
 
-      LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
-      RT B( rhs.rhs_ );  // Evaluation of the right-hand side sparse matrix operand
+      for( size_t j=0UL; j<B.columns(); ++j ) {
+         ConstIterator element( B.begin(j) );
+         const ConstIterator end( B.end(j) );
+         for( ; element!=end; ++element ) {
+            for( size_t i=0UL; i<A.rows(); ++i ) {
+               if( isDefault( (~C)(i,j) ) )
+                  (~C)(i,j) = -A(i,element->index()) * element->value();
+               else
+                  (~C)(i,j) -= A(i,element->index()) * element->value();
+            }
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
 
-      BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+   //**Optimized subtraction assignment to column-major dense matrices*****************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Optimized subtraction assignment of a transpose dense matrix-transpose sparse matrix
+   //        multiplication to column-major matrices (\f$ A-=B*C \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side dense matrix operand.
+   // \param B The right-hand side sparse matrix operand.
+   // \return void
+   //
+   // This function implements the optimized subtraction assignment kernel for the transpose dense
+   // matrix-transpose sparse matrix multiplication to a column-major dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseOptimizedKernel<MT3,MT4,MT5> >::Type
+      selectSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   {
+      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
 
-      BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == ( A.rows() & size_t(-4) ), "Invalid end calculation" );
       const size_t iend( A.rows() & size_t(-4) );
+      BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
 
       for( size_t j=0UL; j<B.columns(); ++j )
       {
-         ConstIterator element( B.begin(j) );
          const ConstIterator end( B.end(j) );
+         ConstIterator element( B.begin(j) );
 
-         while( element!=end )
-         {
+         const size_t kend( B.nonZeros(j) & size_t(-4) );
+
+         for( size_t k=0UL; k<kend; k+=4UL ) {
+            const size_t j1( element->index() );
             const ET2    v1( element->value() );
-            const size_t i1( element->index() );
+            ++element;
+            const size_t j2( element->index() );
+            const ET2    v2( element->value() );
+            ++element;
+            const size_t j3( element->index() );
+            const ET2    v3( element->value() );
+            ++element;
+            const size_t j4( element->index() );
+            const ET2    v4( element->value() );
             ++element;
 
-            if( element != end ) {
-               const ET2    v2( element->value() );
-               const size_t i2( element->index() );
-               ++element;
-
-               if( element != end ) {
-                  const ET2    v3( element->value() );
-                  const size_t i3( element->index() );
-                  ++element;
-
-                  if( element != end ) {
-                     const ET2    v4( element->value() );
-                     const size_t i4( element->index() );
-                     ++element;
-
-                     for( size_t i=0UL; i<iend; i+=4UL ) {
-                        (~lhs)(i    ,j) -= A(i    ,i1) * v1 + A(i    ,i2) * v2 + A(i    ,i3) * v3 + A(i    ,i4) * v4;
-                        (~lhs)(i+1UL,j) -= A(i+1UL,i1) * v1 + A(i+1UL,i2) * v2 + A(i+1UL,i3) * v3 + A(i+1UL,i4) * v4;
-                        (~lhs)(i+2UL,j) -= A(i+2UL,i1) * v1 + A(i+2UL,i2) * v2 + A(i+2UL,i3) * v3 + A(i+2UL,i4) * v4;
-                        (~lhs)(i+3UL,j) -= A(i+3UL,i1) * v1 + A(i+3UL,i2) * v2 + A(i+3UL,i3) * v3 + A(i+3UL,i4) * v4;
-                     }
-                     for( size_t i=iend; i<A.rows(); ++i ) {
-                        (~lhs)(i,j) -= A(i,i1) * v1 + A(i,i2) * v2 + A(i,i3) * v3 + A(i,i4) * v4;
-                     }
-                  }
-                  else {
-                     for( size_t i=0UL; i<iend; i+=4UL ) {
-                        (~lhs)(i    ,j) -= A(i    ,i1) * v1 + A(i    ,i2) * v2 + A(i    ,i3) * v3;
-                        (~lhs)(i+1UL,j) -= A(i+1UL,i1) * v1 + A(i+1UL,i2) * v2 + A(i+1UL,i3) * v3;
-                        (~lhs)(i+2UL,j) -= A(i+2UL,i1) * v1 + A(i+2UL,i2) * v2 + A(i+2UL,i3) * v3;
-                        (~lhs)(i+3UL,j) -= A(i+3UL,i1) * v1 + A(i+3UL,i2) * v2 + A(i+3UL,i3) * v3;
-                     }
-                     for( size_t i=iend; i<A.rows(); ++i ) {
-                        (~lhs)(i,j) -= A(i,i1) * v1 + A(i,i2) * v2 + A(i,i3) * v3;
-                     }
-                  }
-               }
-               else {
-                  for( size_t i=0UL; i<iend; i+=4UL ) {
-                     (~lhs)(i    ,j) -= A(i    ,i1) * v1 + A(i    ,i2) * v2;
-                     (~lhs)(i+1UL,j) -= A(i+1UL,i1) * v1 + A(i+1UL,i2) * v2;
-                     (~lhs)(i+2UL,j) -= A(i+2UL,i1) * v1 + A(i+2UL,i2) * v2;
-                     (~lhs)(i+3UL,j) -= A(i+3UL,i1) * v1 + A(i+3UL,i2) * v2;
-                  }
-                  for( size_t i=iend; i<A.rows(); ++i ) {
-                     (~lhs)(i,j) -= A(i,i1) * v1 + A(i,i2) * v2;
-                  }
-               }
+            for( size_t i=0UL; i<iend; i+=4UL ) {
+               (~C)(i    ,j) -= A(i    ,j1) * v1 + A(i    ,j2) * v2 + A(i    ,j3) * v3 + A(i    ,j4) * v4;
+               (~C)(i+1UL,j) -= A(i+1UL,j1) * v1 + A(i+1UL,j2) * v2 + A(i+1UL,j3) * v3 + A(i+1UL,j4) * v4;
+               (~C)(i+2UL,j) -= A(i+2UL,j1) * v1 + A(i+2UL,j2) * v2 + A(i+2UL,j3) * v3 + A(i+2UL,j4) * v4;
+               (~C)(i+3UL,j) -= A(i+3UL,j1) * v1 + A(i+3UL,j2) * v2 + A(i+3UL,j3) * v3 + A(i+3UL,j4) * v4;
             }
-            else {
-               for( size_t i=0UL; i<iend; i+=4UL ) {
-                  (~lhs)(i    ,j) -= A(i    ,i1) * v1;
-                  (~lhs)(i+1UL,j) -= A(i+1UL,i1) * v1;
-                  (~lhs)(i+2UL,j) -= A(i+2UL,i1) * v1;
-                  (~lhs)(i+3UL,j) -= A(i+3UL,i1) * v1;
-               }
-               for( size_t i=iend; i<A.rows(); ++i ) {
-                  (~lhs)(i,j) -= A(i,i1) * v1;
-               }
+            for( size_t i=iend; i<A.rows(); ++i ) {
+               (~C)(i,j) -= A(i,j1) * v1 + A(i,j2) * v2 + A(i,j3) * v3 + A(i,j4) * v4;
+            }
+         }
+
+         for( ; element!=end; ++element ) {
+            for( size_t i=0UL; i<iend; i+=4UL ) {
+               (~C)(i    ,j) -= A(i    ,element->index()) * element->value();
+               (~C)(i+1UL,j) -= A(i+1UL,element->index()) * element->value();
+               (~C)(i+2UL,j) -= A(i+2UL,element->index()) * element->value();
+               (~C)(i+3UL,j) -= A(i+3UL,element->index()) * element->value();
+            }
+            for( size_t i=iend; i<A.rows(); ++i ) {
+               (~C)(i,j) -= A(i,element->index()) * element->value();
+            }
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized subtraction assignment to column-major dense matrices****************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized subtraction assignment of a transpose dense matrix-transpose sparse matrix
+   //        multiplication to column-major matrices (\f$ A-=B*C \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side dense matrix operand.
+   // \param B The right-hand side sparse matrix operand.
+   // \return void
+   //
+   // This function implements the vectorized subtraction assignment kernel for the transpose dense
+   // matrix-transpose sparse matrix multiplication to a column-major dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseVectorizedKernel<MT3,MT4,MT5> >::Type
+      selectSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+
+      const size_t M( A.rows() );
+
+      const size_t iend( M & size_t(-4) );
+      BLAZE_INTERNAL_ASSERT( ( M - ( M % 4UL ) ) == iend, "Invalid end calculation" );
+
+      for( size_t j=0UL; j<B.columns(); ++j )
+      {
+         const ConstIterator end( B.end(j) );
+         ConstIterator element( B.begin(j) );
+
+         const size_t kend( B.nonZeros(j) & size_t(-4) );
+
+         for( size_t k=0UL; k<kend; k+=4UL ) {
+            const size_t        j1( element->index() );
+            const IntrinsicType v1( set( element->value() ) );
+            ++element;
+            const size_t        j2( element->index() );
+            const IntrinsicType v2( set( element->value() ) );
+            ++element;
+            const size_t        j3( element->index() );
+            const IntrinsicType v3( set( element->value() ) );
+            ++element;
+            const size_t        j4( element->index() );
+            const IntrinsicType v4( set( element->value() ) );
+            ++element;
+
+            for( size_t i=0UL; i<M; i+=IT::size ) {
+               store( &(~C)(i,j), load( &(~C)(i,j) ) - A.get(i,j1) * v1 - A.get(i,j2) * v2 - A.get(i,j3) * v3 - A.get(i,j4) * v4 );
+            }
+         }
+
+         for( ; element!=end; ++element ) {
+            const size_t        j1( element->index() );
+            const IntrinsicType v1( set( element->value() ) );
+
+            for( size_t i=0UL; i<M; i+=IT::size ) {
+               store( &(~C)(i,j), load( &(~C)(i,j) ) - A.get(i,j1) * v1 );
             }
          }
       }
