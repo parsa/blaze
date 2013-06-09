@@ -178,11 +178,17 @@ template< typename T >  // Type of the random number
 class Rand
 {
  public:
-   //**Utility functions***************************************************************************
-   /*!\name Utility functions */
+   //**Generate functions**************************************************************************
+   /*!\name Generate functions */
    //@{
-   inline T    generate () const;
-   inline T    generate ( T min, T max ) const;
+   inline T generate() const;
+   inline T generate( T min, T max ) const;
+   //@}
+   //**********************************************************************************************
+
+   //**Randomize functions*************************************************************************
+   /*!\name Randomize functions */
+   //@{
    inline void randomize( T& value ) const;
    inline void randomize( T& value, T min, T max ) const;
    //@}
@@ -288,13 +294,19 @@ template<>
 class Rand<float>
 {
  public:
-   //**Utility functions***************************************************************************
-   /*!\name Conversion operators */
+   //**Generate functions**************************************************************************
+   /*!\name Generate functions */
    //@{
-   inline float generate () const;
-   inline float generate ( float min, float max ) const;
-   inline void  randomize( float& value ) const;
-   inline void  randomize( float& value, float min, float max ) const;
+   inline float generate() const;
+   inline float generate( float min, float max ) const;
+   //@}
+   //**********************************************************************************************
+
+   //**Randomize functions*************************************************************************
+   /*!\name Randomize functions */
+   //@{
+   inline void randomize( float& value ) const;
+   inline void randomize( float& value, float min, float max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -401,13 +413,19 @@ template<>
 class Rand<double>
 {
  public:
-   //**Utility functions***************************************************************************
-   /*!\name Conversion operators */
+   //**Generate functions**************************************************************************
+   /*!\name Generate functions */
    //@{
-   inline double generate () const;
-   inline double generate ( double min, double max ) const;
-   inline void   randomize( double& value ) const;
-   inline void   randomize( double& value, double min, double max ) const;
+   inline double generate() const;
+   inline double generate( double min, double max ) const;
+   //@}
+   //**********************************************************************************************
+
+   //**Randomize functions*************************************************************************
+   /*!\name Randomize functions */
+   //@{
+   inline void randomize( double& value ) const;
+   inline void randomize( double& value, double min, double max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -514,13 +532,19 @@ template<>
 class Rand<long double>
 {
  public:
-   //**Utility functions***************************************************************************
-   /*!\name Conversion operators */
+   //**Generate functions**************************************************************************
+   /*!\name Generate functions */
    //@{
-   inline long double generate () const;
-   inline long double generate ( long double min, long double max ) const;
-   inline void        randomize( long double& value ) const;
-   inline void        randomize( long double& value, long double min, long double max ) const;
+   inline long double generate() const;
+   inline long double generate( long double min, long double max ) const;
+   //@}
+   //**********************************************************************************************
+
+   //**Randomize functions*************************************************************************
+   /*!\name Randomize functions */
+   //@{
+   inline void randomize( long double& value ) const;
+   inline void randomize( long double& value, long double min, long double max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -626,17 +650,23 @@ template< typename T >  // Type of the values
 class Rand< complex<T> >
 {
  public:
-   //**Utility functions***************************************************************************
-   /*!\name Utility functions */
+   //**Generate functions**************************************************************************
+   /*!\name Generate functions */
    //@{
-   inline const complex<T> generate () const;
-   inline const complex<T> generate ( const T& min, const T& max ) const;
-   inline const complex<T> generate ( const T& realmin, const T& realmax,
-                                      const T& imagmin, const T& imagmax ) const;
-   inline void             randomize( complex<T>& value ) const;
-   inline void             randomize( complex<T>& value, const T& min, const T& max ) const;
-   inline void             randomize( complex<T>& value, const T& realmin, const T& realmax,
-                                                         const T& imagmin, const T& imagmax ) const;
+   inline const complex<T> generate() const;
+   inline const complex<T> generate( const T& min, const T& max ) const;
+   inline const complex<T> generate( const T& realmin, const T& realmax,
+                                     const T& imagmin, const T& imagmax ) const;
+   //@}
+   //**********************************************************************************************
+
+   //**Randomize functions*************************************************************************
+   /*!\name Randomize functions */
+   //@{
+   inline void randomize( complex<T>& value ) const;
+   inline void randomize( complex<T>& value, const T& min, const T& max ) const;
+   inline void randomize( complex<T>& value, const T& realmin, const T& realmax,
+                                             const T& imagmin, const T& imagmax ) const;
    //@}
    //**********************************************************************************************
 };
