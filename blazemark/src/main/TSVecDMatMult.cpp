@@ -200,7 +200,7 @@ void tsvecdmatmult( std::vector<Run>& runs, Benchmarks benchmarks )
             const size_t F    ( run->getNonZeros() );
             const size_t steps( run->getSteps()    );
             run->setBlazeResult( blazemark::blaze::tsvecdmatmult( N, F, steps ) );
-            const double mflops( run->getSteps() * steps / run->getBlazeResult() / 1E6 );
+            const double mflops( run->getFlops() * steps / run->getBlazeResult() / 1E6 );
             std::cout << "     " << std::setw(12) << N << mflops << std::endl;
          }
       }
@@ -217,7 +217,7 @@ void tsvecdmatmult( std::vector<Run>& runs, Benchmarks benchmarks )
             const size_t F    ( run->getNonZeros() );
             const size_t steps( run->getSteps()    );
             run->setBoostResult( blazemark::boost::tsvecdmatmult( N, F, steps ) );
-            const double mflops( run->getSteps() * steps / run->getBoostResult() / 1E6 );
+            const double mflops( run->getFlops() * steps / run->getBoostResult() / 1E6 );
             std::cout << "     " << std::setw(12) << N << mflops << std::endl;
          }
       }
