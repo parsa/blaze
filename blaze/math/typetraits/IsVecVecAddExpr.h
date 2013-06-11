@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/typetraits/IsVecVecAddExpr.h
-//  \brief Header file for the IsVecVecAddExpr type trait
+//  \brief Header file for the IsVecVecAddExpr type trait class
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -27,13 +27,24 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/remove_cv.hpp>
-#include <blaze/math/expressions/Forward.h>
+#include <boost/type_traits/is_base_of.hpp>
 #include <blaze/util/FalseType.h>
+#include <blaze/util/SelectType.h>
 #include <blaze/util/TrueType.h>
 
 
 namespace blaze {
+
+//=================================================================================================
+//
+//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//
+//=================================================================================================
+
+struct VecVecAddExpr;
+
+
+
 
 //=================================================================================================
 //
@@ -50,8 +61,8 @@ template< typename T >
 struct IsVecVecAddExprHelper
 {
    //**********************************************************************************************
-   enum { value = 0 };
-   typedef FalseType  Type;
+   enum { value = boost::is_base_of<VecVecAddExpr,T>::value && !boost::is_base_of<T,VecVecAddExpr>::value };
+   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -59,71 +70,25 @@ struct IsVecVecAddExprHelper
 
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsVecVecAddExprHelper type trait for DVecDVecAddExpr.
-template< typename VT1, typename VT2, bool TF >
-struct IsVecVecAddExprHelper< DVecDVecAddExpr<VT1,VT2,TF> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsVecVecAddExprHelper type trait for DVecSVecAddExpr.
-template< typename VT1, typename VT2, bool TF >
-struct IsVecVecAddExprHelper< DVecSVecAddExpr<VT1,VT2,TF> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsVecVecAddExprHelper type trait for SVecSVecAddExpr.
-template< typename VT1, typename VT2, bool TF >
-struct IsVecVecAddExprHelper< SVecSVecAddExpr<VT1,VT2,TF> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Compile time check for expression types.
+/*!\brief Compile time check whether the given type is a vector/vector addition expression template.
 // \ingroup math_type_traits
 //
-// This type trait tests whether or not the given template parameter is a type representing a
-// vector-vector addition. In case the type is a vector-vector addition expression, the \a value
-// member enumeration is set to 1, the nested type definition \a Type is \a TrueType, and the
-// class derives from \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and
-// the class derives from \a FalseType.
+// This type trait class tests whether or not the given type \a Type is a vector/vector addition
+// expression template. In order to qualify as a valid vector addition expression template, the
+// given type has to derive (publicly or privately) from the VecVecAddExpr base class. In case
+// the given type is a valid vector addition expression template, the \a value member enumeration
+// is set to 1, the nested type definition \a Type is \a TrueType, and the class derives from
+// \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives
+// from \a FalseType.
 */
 template< typename T >
-struct IsVecVecAddExpr : public IsVecVecAddExprHelper< typename boost::remove_cv<T>::type >::Type
+struct IsVecVecAddExpr : public IsVecVecAddExprHelper<T>::Type
 {
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { value = IsVecVecAddExprHelper< typename boost::remove_cv<T>::type >::value };
-   typedef typename IsVecVecAddExprHelper< typename boost::remove_cv<T>::type >::Type  Type;
+   enum { value = IsVecVecAddExprHelper<T>::value };
+   typedef typename IsVecVecAddExprHelper<T>::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };
