@@ -29,6 +29,7 @@
 
 #include <blaze/math/constraints/Addition.h>
 #include <blaze/math/constraints/Computation.h>
+#include <blaze/math/constraints/CrossProduct.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/Matrix.h>
