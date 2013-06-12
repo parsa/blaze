@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/typetraits/IsMatMatAddExpr.h
-//  \brief Header file for the IsMatMatAddExpr type trait
+//  \brief Header file for the IsMatMatAddExpr type trait class
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -27,13 +27,24 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/remove_cv.hpp>
-#include <blaze/math/expressions/Forward.h>
+#include <boost/type_traits/is_base_of.hpp>
 #include <blaze/util/FalseType.h>
+#include <blaze/util/SelectType.h>
 #include <blaze/util/TrueType.h>
 
 
 namespace blaze {
+
+//=================================================================================================
+//
+//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//
+//=================================================================================================
+
+struct MatMatAddExpr;
+
+
+
 
 //=================================================================================================
 //
@@ -50,8 +61,8 @@ template< typename T >
 struct IsMatMatAddExprHelper
 {
    //**********************************************************************************************
-   enum { value = 0 };
-   typedef FalseType  Type;
+   enum { value = boost::is_base_of<MatMatAddExpr,T>::value && !boost::is_base_of<T,MatMatAddExpr>::value };
+   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -59,151 +70,25 @@ struct IsMatMatAddExprHelper
 
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsMatMatAddExprHelper type trait for DMatDMatAddExpr.
-template< typename MT1, typename MT2, bool SO >
-struct IsMatMatAddExprHelper< DMatDMatAddExpr<MT1,MT2,SO> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsMatMatAddExprHelper type trait for DMatSMatAddExpr.
-template< typename MT1, typename MT2, bool SO >
-struct IsMatMatAddExprHelper< DMatSMatAddExpr<MT1,MT2,SO> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsMatMatAddExprHelper type trait for DMatTDMatAddExpr.
-template< typename MT1, typename MT2 >
-struct IsMatMatAddExprHelper< DMatTDMatAddExpr<MT1,MT2> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsMatMatAddExprHelper type trait for DMatTSMatAddExpr.
-template< typename MT1, typename MT2 >
-struct IsMatMatAddExprHelper< DMatTSMatAddExpr<MT1,MT2> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsMatMatAddExprHelper type trait for SMatSMatAddExpr.
-template< typename MT1, typename MT2 >
-struct IsMatMatAddExprHelper< SMatSMatAddExpr<MT1,MT2> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsMatMatAddExprHelper type trait for SMatTSMatAddExpr.
-template< typename MT1, typename MT2 >
-struct IsMatMatAddExprHelper< SMatTSMatAddExpr<MT1,MT2> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsMatMatAddExprHelper type trait for TDMatSMatAddExpr.
-template< typename MT1, typename MT2 >
-struct IsMatMatAddExprHelper< TDMatSMatAddExpr<MT1,MT2> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsMatMatAddExprHelper type trait for TSMatTSMatAddExpr.
-template< typename MT1, typename MT2 >
-struct IsMatMatAddExprHelper< TSMatTSMatAddExpr<MT1,MT2> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Compile time check for expression types.
+/*!\brief Compile time check whether the given type is a matrix/matrix addition expression template.
 // \ingroup math_type_traits
 //
-// This type trait tests whether or not the given template parameter is a type representing a
-// matrix-matrix addition. In case the type is a matrix-matrix addition expression, the \a value
-// member enumeration is set to 1, the nested type definition \a Type is \a TrueType, and the
-// class derives from \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and
-// the class derives from \a FalseType.
+// This type trait class tests whether or not the given type \a Type is a matrix/matrix addition
+// expression template. In order to qualify as a valid matrix addition expression template, the
+// given type has to derive (publicly or privately) from the MatMatAddExpr base class. In case
+// the given type is a valid matrix addition expression template, the \a value member enumeration
+// is set to 1, the nested type definition \a Type is \a TrueType, and the class derives from
+// \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives
+// from \a FalseType.
 */
 template< typename T >
-struct IsMatMatAddExpr : public IsMatMatAddExprHelper< typename boost::remove_cv<T>::type >::Type
+struct IsMatMatAddExpr : public IsMatMatAddExprHelper<T>::Type
 {
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { value = IsMatMatAddExprHelper< typename boost::remove_cv<T>::type >::value };
-   typedef typename IsMatMatAddExprHelper< typename boost::remove_cv<T>::type >::Type  Type;
+   enum { value = IsMatMatAddExprHelper<T>::value };
+   typedef typename IsMatMatAddExprHelper<T>::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };
