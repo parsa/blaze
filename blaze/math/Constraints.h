@@ -37,6 +37,7 @@
 #include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/MatMatSubExpr.h>
 #include <blaze/math/constraints/Matrix.h>
+#include <blaze/math/constraints/MatScalarMultExpr.h>
 #include <blaze/math/constraints/MatVecMultExpr.h>
 #include <blaze/math/constraints/Multiplication.h>
 #include <blaze/math/constraints/OuterProduct.h>

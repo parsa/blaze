@@ -40,6 +40,7 @@
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsMatMatSubExpr.h>
 #include <blaze/math/typetraits/IsMatrix.h>
+#include <blaze/math/typetraits/IsMatScalarMultExpr.h>
 #include <blaze/math/typetraits/IsMatVecMultExpr.h>
 #include <blaze/math/typetraits/IsMultiplication.h>
 #include <blaze/math/typetraits/IsOuterProduct.h>
