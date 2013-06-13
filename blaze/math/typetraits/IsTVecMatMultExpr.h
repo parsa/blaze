@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/typetraits/IsTVecMatMultExpr.h
-//  \brief Header file for the IsTVecMatMultExpr type trait
+//  \brief Header file for the IsTVecMatMultExpr type trait class
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -27,13 +27,24 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/remove_cv.hpp>
-#include <blaze/math/expressions/Forward.h>
+#include <boost/type_traits/is_base_of.hpp>
 #include <blaze/util/FalseType.h>
+#include <blaze/util/SelectType.h>
 #include <blaze/util/TrueType.h>
 
 
 namespace blaze {
+
+//=================================================================================================
+//
+//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//
+//=================================================================================================
+
+struct TVecMatMultExpr;
+
+
+
 
 //=================================================================================================
 //
@@ -50,8 +61,8 @@ template< typename T >
 struct IsTVecMatMultExprHelper
 {
    //**********************************************************************************************
-   enum { value = 0 };
-   typedef FalseType  Type;
+   enum { value = boost::is_base_of<TVecMatMultExpr,T>::value && !boost::is_base_of<T,TVecMatMultExpr>::value };
+   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -59,151 +70,27 @@ struct IsTVecMatMultExprHelper
 
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsTVecMatMultExprHelper type trait for TDVecDMatMultExpr.
-template< typename VT, typename MT >
-struct IsTVecMatMultExprHelper< TDVecDMatMultExpr<VT,MT> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsTVecMatMultExprHelper type trait for TDVecTDMatMultExpr.
-template< typename VT, typename MT >
-struct IsTVecMatMultExprHelper< TDVecTDMatMultExpr<VT,MT> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsTVecMatMultExprHelper type trait for TSVecDMatMultExpr.
-template< typename VT, typename MT >
-struct IsTVecMatMultExprHelper< TSVecDMatMultExpr<VT,MT> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsTVecMatMultExprHelper type trait for TSVecTDMatMultExpr.
-template< typename VT, typename MT >
-struct IsTVecMatMultExprHelper< TSVecTDMatMultExpr<VT,MT> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsTVecMatMultExprHelper type trait for TDVecSMatMultExpr.
-template< typename VT, typename MT >
-struct IsTVecMatMultExprHelper< TDVecSMatMultExpr<VT,MT> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsTVecMatMultExprHelper type trait for TDVecTSMatMultExpr.
-template< typename VT, typename MT >
-struct IsTVecMatMultExprHelper< TDVecTSMatMultExpr<VT,MT> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsTVecMatMultExprHelper type trait for TSVecSMatMultExpr.
-template< typename VT, typename MT >
-struct IsTVecMatMultExprHelper< TSVecSMatMultExpr<VT,MT> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsTVecMatMultExprHelper type trait for TSVecTSMatMultExpr.
-template< typename VT, typename MT >
-struct IsTVecMatMultExprHelper< TSVecTSMatMultExpr<VT,MT> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Compile time check for expression types.
+/*!\brief Compile time check whether the given type is a vector/matrix multiplication expression
+//        template.
 // \ingroup math_type_traits
 //
-// This type trait tests whether or not the given template parameter is a type representing a
-// vector-matrix multiplication. In case the type is a vector-matrix multiplication expression,
-// the \a value member enumeration is set to 1, the nested type definition \a Type is \a TrueType,
-// and the class derives from \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType,
-// and the class derives from \a FalseType.
+// This type trait class tests whether or not the given type \a Type is a vector/matrix
+// multiplication expression template. In order to qualify as a valid vector/matrix
+// multiplication expression template, the given type has to derive (publicly or
+// privately) from the TVecMatMultExpr base class. In case the given type is a valid
+// vector/matrix multiplication expression template, the \a value member enumeration is
+// set to 1, the nested type definition \a Type is \a TrueType, and the class derives
+// from \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and the
+// class derives from \a FalseType.
 */
 template< typename T >
-struct IsTVecMatMultExpr : public IsTVecMatMultExprHelper< typename boost::remove_cv<T>::type >::Type
+struct IsTVecMatMultExpr : public IsTVecMatMultExprHelper<T>::Type
 {
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { value = IsTVecMatMultExprHelper< typename boost::remove_cv<T>::type >::value };
-   typedef typename IsTVecMatMultExprHelper< typename boost::remove_cv<T>::type >::Type  Type;
+   enum { value = IsTVecMatMultExprHelper<T>::value };
+   typedef typename IsTVecMatMultExprHelper<T>::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };
