@@ -28,6 +28,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/typetraits/BaseElementType.h>
+#include <blaze/math/typetraits/IsAbsOperation.h>
 #include <blaze/math/typetraits/IsAddition.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>

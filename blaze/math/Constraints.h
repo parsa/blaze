@@ -27,6 +27,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/constraints/AbsOperation.h>
 #include <blaze/math/constraints/Addition.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/CrossProduct.h>
