@@ -48,6 +48,7 @@
 #include <blaze/math/constraints/Subtraction.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/TVecMatMultExpr.h>
+#include <blaze/math/constraints/VecScalarDivExpr.h>
 #include <blaze/math/constraints/VecScalarMultExpr.h>
 #include <blaze/math/constraints/Vector.h>
 #include <blaze/math/constraints/VecVecAddExpr.h>
