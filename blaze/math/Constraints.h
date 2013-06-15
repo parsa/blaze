@@ -30,7 +30,7 @@
 #include <blaze/math/constraints/AbsExpr.h>
 #include <blaze/math/constraints/AddExpr.h>
 #include <blaze/math/constraints/Computation.h>
-#include <blaze/math/constraints/CrossProduct.h>
+#include <blaze/math/constraints/CrossExpr.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/DivExpr.h>

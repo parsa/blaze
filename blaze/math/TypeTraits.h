@@ -32,7 +32,7 @@
 #include <blaze/math/typetraits/IsAddExpr.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
-#include <blaze/math/typetraits/IsCrossProduct.h>
+#include <blaze/math/typetraits/IsCrossExpr.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsDivExpr.h>

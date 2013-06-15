@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/constraints/CrossProduct.h
+//  \file blaze/math/constraints/CrossExpr.h
 //  \brief Constraint on the data type
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
@@ -19,15 +19,15 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_CONSTRAINTS_CROSSPRODUCT_H_
-#define _BLAZE_MATH_CONSTRAINTS_CROSSPRODUCT_H_
+#ifndef _BLAZE_MATH_CONSTRAINTS_CROSSEXPR_H_
+#define _BLAZE_MATH_CONSTRAINTS_CROSSEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/IsCrossProduct.h>
+#include <blaze/math/typetraits/IsCrossExpr.h>
 #include <blaze/util/constraints/ConstraintTest.h>
 #include <blaze/util/Suffix.h>
 
@@ -36,7 +36,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  MUST_BE_CROSSPRODUCT_TYPE CONSTRAINT
+//  MUST_BE_CROSSEXPR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -50,8 +50,8 @@ namespace blaze {
 // or the specialization is selected. If the undefined basic template is selected, a compilation
 // error is created.
 */
-template< bool > struct CONSTRAINT_MUST_BE_CROSSPRODUCT_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_BE_CROSSPRODUCT_TYPE_FAILED<true> { enum { value = 1 }; };
+template< bool > struct CONSTRAINT_MUST_BE_CROSSEXPR_TYPE_FAILED;
+template<> struct CONSTRAINT_MUST_BE_CROSSEXPR_TYPE_FAILED<true> { enum { value = 1 }; };
 /*! \endcond */
 //*************************************************************************************************
 
@@ -61,13 +61,13 @@ template<> struct CONSTRAINT_MUST_BE_CROSSPRODUCT_TYPE_FAILED<true> { enum { val
 // \ingroup math_constraints
 //
 // In case the given data type \a T is not a cross product expression (i.e. a type derived from
-// the CrossProduct base class), a compilation error is created.
+// the CrossExpr base class), a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_BE_CROSSPRODUCT_TYPE(T) \
+#define BLAZE_CONSTRAINT_MUST_BE_CROSSEXPR_TYPE(T) \
    typedef \
       blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_BE_CROSSPRODUCT_TYPE_FAILED< blaze::IsCrossProduct<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_BE_CROSSPRODUCT_TYPE_TYPEDEF, __LINE__ )
+         blaze::CONSTRAINT_MUST_BE_CROSSEXPR_TYPE_FAILED< blaze::IsCrossExpr<T>::value >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_BE_CROSSEXPR_TYPE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 
@@ -75,7 +75,7 @@ template<> struct CONSTRAINT_MUST_BE_CROSSPRODUCT_TYPE_FAILED<true> { enum { val
 
 //=================================================================================================
 //
-//  MUST_NOT_BE_CROSSPRODUCT_TYPE CONSTRAINT
+//  MUST_NOT_BE_CROSSEXPR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -89,8 +89,8 @@ template<> struct CONSTRAINT_MUST_BE_CROSSPRODUCT_TYPE_FAILED<true> { enum { val
 // or the specialization is selected. If the undefined basic template is selected, a compilation
 // error is created.
 */
-template< bool > struct CONSTRAINT_MUST_NOT_BE_CROSSPRODUCT_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_NOT_BE_CROSSPRODUCT_TYPE_FAILED<true> { enum { value = 1 }; };
+template< bool > struct CONSTRAINT_MUST_NOT_BE_CROSSEXPR_TYPE_FAILED;
+template<> struct CONSTRAINT_MUST_NOT_BE_CROSSEXPR_TYPE_FAILED<true> { enum { value = 1 }; };
 /*! \endcond */
 //*************************************************************************************************
 
@@ -100,13 +100,13 @@ template<> struct CONSTRAINT_MUST_NOT_BE_CROSSPRODUCT_TYPE_FAILED<true> { enum {
 // \ingroup math_constraints
 //
 // In case the given data type \a T is a cross product expression (i.e. a type derived from the
-// CrossProduct base class), a compilation error is created.
+// CrossExpr base class), a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_NOT_BE_CROSSPRODUCT_TYPE(T) \
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_CROSSEXPR_TYPE(T) \
    typedef \
       blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_NOT_BE_CROSSPRODUCT_TYPE_FAILED< !blaze::IsCrossProduct<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_CROSSPRODUCT_TYPE_TYPEDEF, __LINE__ )
+         blaze::CONSTRAINT_MUST_NOT_BE_CROSSEXPR_TYPE_FAILED< !blaze::IsCrossExpr<T>::value >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_CROSSEXPR_TYPE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 } // namespace blaze

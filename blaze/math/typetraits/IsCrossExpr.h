@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/typetraits/IsCrossProduct.h
-//  \brief Header file for the IsCrossProduct type trait class
+//  \file blaze/math/typetraits/IsCrossExpr.h
+//  \brief Header file for the IsCrossExpr type trait class
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TYPETRAITS_ISCROSSPRODUCT_H_
-#define _BLAZE_MATH_TYPETRAITS_ISCROSSPRODUCT_H_
+#ifndef _BLAZE_MATH_TYPETRAITS_ISCROSSEXPR_H_
+#define _BLAZE_MATH_TYPETRAITS_ISCROSSEXPR_H_
 
 
 //*************************************************************************************************
@@ -41,7 +41,7 @@ namespace blaze {
 //
 //=================================================================================================
 
-struct CrossProduct;
+struct CrossExpr;
 
 
 
@@ -54,14 +54,14 @@ struct CrossProduct;
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsCrossProduct type trait.
+/*!\brief Auxiliary helper struct for the IsCrossExpr type trait.
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsCrossProductHelper
+struct IsCrossExprHelper
 {
    //**********************************************************************************************
-   enum { value = boost::is_base_of<CrossProduct,T>::value && !boost::is_base_of<T,CrossProduct>::value };
+   enum { value = boost::is_base_of<CrossExpr,T>::value && !boost::is_base_of<T,CrossExpr>::value };
    typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
    //**********************************************************************************************
 };
@@ -75,20 +75,20 @@ struct IsCrossProductHelper
 //
 // This type trait class tests whether or not the given type \a Type is a cross product
 // expression template. In order to qualify as a valid cross product expression template,
-// the given type has to derive (publicly or privately) from the CrossProduct base class.
-// In case the given type is a valid cross product expression template, the \a value member
+// the given type has to derive (publicly or privately) from the CrossExpr base class. In
+// case the given type is a valid cross product expression template, the \a value member
 // enumeration is set to 1, the nested type definition \a Type is \a TrueType, and the class
 // derives from \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and
 // the class derives from \a FalseType.
 */
 template< typename T >
-struct IsCrossProduct : public IsCrossProductHelper<T>::Type
+struct IsCrossExpr : public IsCrossExprHelper<T>::Type
 {
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { value = IsCrossProductHelper<T>::value };
-   typedef typename IsCrossProductHelper<T>::Type  Type;
+   enum { value = IsCrossExprHelper<T>::value };
+   typedef typename IsCrossExprHelper<T>::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

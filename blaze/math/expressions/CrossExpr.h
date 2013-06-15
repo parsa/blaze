@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/expressions/CrossProduct.h
-//  \brief Header file for the CrossProduct base class
+//  \file blaze/math/expressions/CrossExpr.h
+//  \brief Header file for the CrossExpr base class
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_EXPRESSIONS_CROSSPRODUCT_H_
-#define _BLAZE_MATH_EXPRESSIONS_CROSSPRODUCT_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_CROSSEXPR_H_
+#define _BLAZE_MATH_EXPRESSIONS_CROSSEXPR_H_
 
 
 //*************************************************************************************************
@@ -42,14 +42,14 @@ namespace blaze {
 /*!\brief Base class for all cross product expression templates.
 // \ingroup math
 //
-// The CrossProduct class serves as a tag for all expression templates that implement mathematical
+// The CrossExpr class serves as a tag for all expression templates that implement mathematical
 // cross products. All classes, that represent a mathematical cross product and that are used
 // within the expression template environment of the Blaze library have to derive from this class
 // in order to qualify as cross product expression template. Only in case a class is derived from
-// the CrossProduct base class, the IsCrossProduct type trait recognizes the class as valid cross
+// the CrossExpr base class, the IsCrossExpr type trait recognizes the class as valid cross
 // product expression template.
 */
-struct CrossProduct : private Computation
+struct CrossExpr : private Computation
 {};
 //*************************************************************************************************
 
