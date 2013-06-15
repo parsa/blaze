@@ -34,6 +34,7 @@
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/Division.h>
+#include <blaze/math/constraints/EvalExpr.h>
 #include <blaze/math/constraints/MatAbsExpr.h>
 #include <blaze/math/constraints/MatMatAddExpr.h>
 #include <blaze/math/constraints/MatMatMultExpr.h>
