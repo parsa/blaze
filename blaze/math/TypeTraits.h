@@ -48,7 +48,6 @@
 #include <blaze/math/typetraits/IsMatScalarMultExpr.h>
 #include <blaze/math/typetraits/IsMatVecMultExpr.h>
 #include <blaze/math/typetraits/IsMultExpr.h>
-#include <blaze/math/typetraits/IsOuterProduct.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
@@ -62,6 +61,7 @@
 #include <blaze/math/typetraits/IsVecScalarDivExpr.h>
 #include <blaze/math/typetraits/IsVecScalarMultExpr.h>
 #include <blaze/math/typetraits/IsVector.h>
+#include <blaze/math/typetraits/IsVecTVecMultExpr.h>
 #include <blaze/math/typetraits/IsVecVecAddExpr.h>
 #include <blaze/math/typetraits/IsVecVecMultExpr.h>
 #include <blaze/math/typetraits/IsVecVecSubExpr.h>

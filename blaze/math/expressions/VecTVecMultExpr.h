@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/expressions/OuterProduct.h
-//  \brief Header file for the OuterProduct base class
+//  \file blaze/math/expressions/VecTVecMultExpr.h
+//  \brief Header file for the VecTVecMultExpr base class
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_EXPRESSIONS_OUTERPRODUCT_H_
-#define _BLAZE_MATH_EXPRESSIONS_OUTERPRODUCT_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_VECTVECMULTEXPR_H_
+#define _BLAZE_MATH_EXPRESSIONS_VECTVECMULTEXPR_H_
 
 
 //*************************************************************************************************
@@ -42,14 +42,15 @@ namespace blaze {
 /*!\brief Base class for all outer product expression templates.
 // \ingroup math
 //
-// The OuterProduct class serves as a tag for all expression templates that implement mathematical
-// outer products (i.e. multiplications between a column vector and a row vector). All classes,
-// that represent a mathematical outer product and that are used within the expression template
-// environment of the Blaze library have to derive from this class in order to qualify as outer
-// product expression template. Only in case a class is derived from the OuterProduct base class,
-// the IsOuterProduct type trait recognizes the class as valid outer product expression template.
+// The VecTVecMultExpr class serves as a tag for all expression templates that implement
+// mathematical outer products (i.e. multiplications between a column vector and a row vector).
+// All classes, that represent a mathematical outer product and that are used within the
+// expression template environment of the Blaze library have to derive from this class in order
+// to qualify as outer product expression template. Only in case a class is derived from the
+// VecTVecMultExpr base class, the IsVecTVecMultExpr type trait recognizes the class as valid
+// outer product expression template.
 */
-struct OuterProduct : private MultExpr
+struct VecTVecMultExpr : private MultExpr
 {};
 //*************************************************************************************************
 

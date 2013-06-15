@@ -46,7 +46,6 @@
 #include <blaze/math/constraints/MatScalarMultExpr.h>
 #include <blaze/math/constraints/MatVecMultExpr.h>
 #include <blaze/math/constraints/MultExpr.h>
-#include <blaze/math/constraints/OuterProduct.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
@@ -59,6 +58,7 @@
 #include <blaze/math/constraints/VecScalarDivExpr.h>
 #include <blaze/math/constraints/VecScalarMultExpr.h>
 #include <blaze/math/constraints/Vector.h>
+#include <blaze/math/constraints/VecTVecMultExpr.h>
 #include <blaze/math/constraints/VecVecAddExpr.h>
 #include <blaze/math/constraints/VecVecMultExpr.h>
 #include <blaze/math/constraints/VecVecSubExpr.h>
