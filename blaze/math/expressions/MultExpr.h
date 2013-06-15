@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/expressions/Multiplication.h
-//  \brief Header file for the Multiplication base class
+//  \file blaze/math/expressions/MultExpr.h
+//  \brief Header file for the MultExpr base class
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_EXPRESSIONS_MULTIPLICATION_H_
-#define _BLAZE_MATH_EXPRESSIONS_MULTIPLICATION_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_MULTEXPR_H_
+#define _BLAZE_MATH_EXPRESSIONS_MULTEXPR_H_
 
 
 //*************************************************************************************************
@@ -42,16 +42,15 @@ namespace blaze {
 /*!\brief Base class for all multiplication expression templates.
 // \ingroup math
 //
-// The Multiplication class serves as a tag for all expression templates that implement
-// mathematical multiplications. All classes, that represent a mathematical multiplication
-// (element-wise vector multiplications, matrix/vector multiplications, and matrix/matrix
-// multiplications) and that are used within the expression template environment of the
-// Blaze library have to derive from this class in order to qualify as multiplication
-// expression template. Only in case a class is derived from the Multiplication base class,
-// the IsMultiplication type trait recognizes the class as valid multiplication expression
-// template.
+// The MultExpr class serves as a tag for all expression templates that implement mathematical
+// multiplications. All classes, that represent a mathematical multiplication (element-wise
+// vector multiplications, matrix/vector multiplications, vector/matrix multiplications and
+// matrix/matrix multiplications) and that are used within the expression template environment
+// of the Blaze library have to derive from this class in order to qualify as multiplication
+// expression template. Only in case a class is derived from the MultExpr base class, the
+// IsMultExpr type trait recognizes the class as valid multiplication expression template.
 */
-struct Multiplication : private Computation
+struct MultExpr : private Computation
 {};
 //*************************************************************************************************
 

@@ -27,7 +27,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/Multiplication.h>
+#include <blaze/math/expressions/MultExpr.h>
 
 
 namespace blaze {
@@ -49,7 +49,7 @@ namespace blaze {
 // Only in case a class is derived from the MatMatMultExpr base class, the IsMatMatMultExpr
 // type trait recognizes the class as valid matrix multiplication expression template.
 */
-struct MatMatMultExpr : private Multiplication
+struct MatMatMultExpr : private MultExpr
 {};
 //*************************************************************************************************
 

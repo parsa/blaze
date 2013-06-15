@@ -27,7 +27,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/Computation.h>
+#include <blaze/math/expressions/MultExpr.h>
 
 
 namespace blaze {
@@ -43,13 +43,13 @@ namespace blaze {
 // \ingroup math
 //
 // The OuterProduct class serves as a tag for all expression templates that implement mathematical
-// outer products (i.e. multiplications between a column vector and a row vector. All classes,
+// outer products (i.e. multiplications between a column vector and a row vector). All classes,
 // that represent a mathematical outer product and that are used within the expression template
 // environment of the Blaze library have to derive from this class in order to qualify as outer
 // product expression template. Only in case a class is derived from the OuterProduct base class,
 // the IsOuterProduct type trait recognizes the class as valid outer product expression template.
 */
-struct OuterProduct : private Computation
+struct OuterProduct : private MultExpr
 {};
 //*************************************************************************************************
 

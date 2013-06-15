@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/constraints/Multiplication.h
+//  \file blaze/math/constraints/MultExpr.h
 //  \brief Constraint on the data type
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
@@ -19,15 +19,15 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_CONSTRAINTS_MULTIPLICATION_H_
-#define _BLAZE_MATH_CONSTRAINTS_MULTIPLICATION_H_
+#ifndef _BLAZE_MATH_CONSTRAINTS_MULTEXPR_H_
+#define _BLAZE_MATH_CONSTRAINTS_MULTEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/IsMultiplication.h>
+#include <blaze/math/typetraits/IsMultExpr.h>
 #include <blaze/util/constraints/ConstraintTest.h>
 #include <blaze/util/Suffix.h>
 
@@ -36,7 +36,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  MUST_BE_MULTIPLICATION_TYPE CONSTRAINT
+//  MUST_BE_MULTEXPR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -50,8 +50,8 @@ namespace blaze {
 // or the specialization is selected. If the undefined basic template is selected, a compilation
 // error is created.
 */
-template< bool > struct CONSTRAINT_MUST_BE_MULTIPLICATION_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_BE_MULTIPLICATION_TYPE_FAILED<true> { enum { value = 1 }; };
+template< bool > struct CONSTRAINT_MUST_BE_MULTEXPR_TYPE_FAILED;
+template<> struct CONSTRAINT_MUST_BE_MULTEXPR_TYPE_FAILED<true> { enum { value = 1 }; };
 /*! \endcond */
 //*************************************************************************************************
 
@@ -61,13 +61,13 @@ template<> struct CONSTRAINT_MUST_BE_MULTIPLICATION_TYPE_FAILED<true> { enum { v
 // \ingroup math_constraints
 //
 // In case the given data type \a T is not a multiplication expression (i.e. a type derived from
-// the Multiplication base class), a compilation error is created.
+// the MultExpr base class), a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_BE_MULTIPLICATION_TYPE(T) \
+#define BLAZE_CONSTRAINT_MUST_BE_MULTEXPR_TYPE(T) \
    typedef \
       blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_BE_MULTIPLICATION_TYPE_FAILED< blaze::IsMultiplication<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_BE_MULTIPLICATION_TYPE_TYPEDEF, __LINE__ )
+         blaze::CONSTRAINT_MUST_BE_MULTEXPR_TYPE_FAILED< blaze::IsMultExpr<T>::value >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_BE_MULTEXPR_TYPE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 
@@ -75,7 +75,7 @@ template<> struct CONSTRAINT_MUST_BE_MULTIPLICATION_TYPE_FAILED<true> { enum { v
 
 //=================================================================================================
 //
-//  MUST_NOT_BE_MULTIPLICATION_TYPE CONSTRAINT
+//  MUST_NOT_BE_MULTEXPR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -89,8 +89,8 @@ template<> struct CONSTRAINT_MUST_BE_MULTIPLICATION_TYPE_FAILED<true> { enum { v
 // or the specialization is selected. If the undefined basic template is selected, a compilation
 // error is created.
 */
-template< bool > struct CONSTRAINT_MUST_NOT_BE_MULTIPLICATION_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_NOT_BE_MULTIPLICATION_TYPE_FAILED<true> { enum { value = 1 }; };
+template< bool > struct CONSTRAINT_MUST_NOT_BE_MULTEXPR_TYPE_FAILED;
+template<> struct CONSTRAINT_MUST_NOT_BE_MULTEXPR_TYPE_FAILED<true> { enum { value = 1 }; };
 /*! \endcond */
 //*************************************************************************************************
 
@@ -99,14 +99,14 @@ template<> struct CONSTRAINT_MUST_NOT_BE_MULTIPLICATION_TYPE_FAILED<true> { enum
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
-// In case the given data type \a T is an multiplication expression (i.e. a type derived from the
-// Multiplication base class), a compilation error is created.
+// In case the given data type \a T is a multiplication expression (i.e. a type derived from the
+// MultExpr base class), a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_NOT_BE_MULTIPLICATION_TYPE(T) \
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_MULTEXPR_TYPE(T) \
    typedef \
       blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_NOT_BE_MULTIPLICATION_TYPE_FAILED< !blaze::IsMultiplication<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_MULTIPLICATION_TYPE_TYPEDEF, __LINE__ )
+         blaze::CONSTRAINT_MUST_NOT_BE_MULTEXPR_TYPE_FAILED< !blaze::IsMultExpr<T>::value >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_MULTEXPR_TYPE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 } // namespace blaze

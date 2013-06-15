@@ -45,7 +45,7 @@
 #include <blaze/math/constraints/MatScalarDivExpr.h>
 #include <blaze/math/constraints/MatScalarMultExpr.h>
 #include <blaze/math/constraints/MatVecMultExpr.h>
-#include <blaze/math/constraints/Multiplication.h>
+#include <blaze/math/constraints/MultExpr.h>
 #include <blaze/math/constraints/OuterProduct.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseMatrix.h>
