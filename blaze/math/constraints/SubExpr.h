@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/constraints/Subtraction.h
+//  \file blaze/math/constraints/SubExpr.h
 //  \brief Constraint on the data type
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
@@ -19,15 +19,15 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_CONSTRAINTS_SUBTRACTION_H_
-#define _BLAZE_MATH_CONSTRAINTS_SUBTRACTION_H_
+#ifndef _BLAZE_MATH_CONSTRAINTS_SUBEXPR_H_
+#define _BLAZE_MATH_CONSTRAINTS_SUBEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/IsSubtraction.h>
+#include <blaze/math/typetraits/IsSubExpr.h>
 #include <blaze/util/constraints/ConstraintTest.h>
 #include <blaze/util/Suffix.h>
 
@@ -36,7 +36,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  MUST_BE_SUBTRACTION_TYPE CONSTRAINT
+//  MUST_BE_SUBEXPR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -50,8 +50,8 @@ namespace blaze {
 // or the specialization is selected. If the undefined basic template is selected, a compilation
 // error is created.
 */
-template< bool > struct CONSTRAINT_MUST_BE_SUBTRACTION_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_BE_SUBTRACTION_TYPE_FAILED<true> { enum { value = 1 }; };
+template< bool > struct CONSTRAINT_MUST_BE_SUBEXPR_TYPE_FAILED;
+template<> struct CONSTRAINT_MUST_BE_SUBEXPR_TYPE_FAILED<true> { enum { value = 1 }; };
 /*! \endcond */
 //*************************************************************************************************
 
@@ -61,13 +61,13 @@ template<> struct CONSTRAINT_MUST_BE_SUBTRACTION_TYPE_FAILED<true> { enum { valu
 // \ingroup math_constraints
 //
 // In case the given data type \a T is not a subtraction expression (i.e. a type derived from the
-// Subtraction base class), a compilation error is created.
+// SubExpr base class), a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_BE_SUBTRACTION_TYPE(T) \
+#define BLAZE_CONSTRAINT_MUST_BE_SUBEXPR_TYPE(T) \
    typedef \
       blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_BE_SUBTRACTION_TYPE_FAILED< blaze::IsSubtraction<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_BE_SUBTRACTION_TYPE_TYPEDEF, __LINE__ )
+         blaze::CONSTRAINT_MUST_BE_SUBEXPR_TYPE_FAILED< blaze::IsSubExpr<T>::value >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_BE_SUBEXPR_TYPE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 
@@ -75,7 +75,7 @@ template<> struct CONSTRAINT_MUST_BE_SUBTRACTION_TYPE_FAILED<true> { enum { valu
 
 //=================================================================================================
 //
-//  MUST_NOT_BE_SUBTRACTION_TYPE CONSTRAINT
+//  MUST_NOT_BE_SUBEXPR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -89,8 +89,8 @@ template<> struct CONSTRAINT_MUST_BE_SUBTRACTION_TYPE_FAILED<true> { enum { valu
 // or the specialization is selected. If the undefined basic template is selected, a compilation
 // error is created.
 */
-template< bool > struct CONSTRAINT_MUST_NOT_BE_SUBTRACTION_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_NOT_BE_SUBTRACTION_TYPE_FAILED<true> { enum { value = 1 }; };
+template< bool > struct CONSTRAINT_MUST_NOT_BE_SUBEXPR_TYPE_FAILED;
+template<> struct CONSTRAINT_MUST_NOT_BE_SUBEXPR_TYPE_FAILED<true> { enum { value = 1 }; };
 /*! \endcond */
 //*************************************************************************************************
 
@@ -100,13 +100,13 @@ template<> struct CONSTRAINT_MUST_NOT_BE_SUBTRACTION_TYPE_FAILED<true> { enum { 
 // \ingroup math_constraints
 //
 // In case the given data type \a T is a subtraction expression (i.e. a type derived from the
-// Subtraction base class), a compilation error is created.
+// SubExpr base class), a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_NOT_BE_SUBTRACTION_TYPE(T) \
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_SUBEXPR_TYPE(T) \
    typedef \
       blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_NOT_BE_SUBTRACTION_TYPE_FAILED< !blaze::IsSubtraction<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_SUBTRACTION_TYPE_TYPEDEF, __LINE__ )
+         blaze::CONSTRAINT_MUST_NOT_BE_SUBEXPR_TYPE_FAILED< !blaze::IsSubExpr<T>::value >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_SUBEXPR_TYPE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 } // namespace blaze

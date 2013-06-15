@@ -27,7 +27,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/Subtraction.h>
+#include <blaze/math/expressions/SubExpr.h>
 
 
 namespace blaze {
@@ -49,7 +49,7 @@ namespace blaze {
 // class is derived from the VecVecSubExpr base class, the IsVecVecSubExpr type trait
 // recognizes the class as valid vector subtraction expression template.
 */
-struct VecVecSubExpr : private Subtraction
+struct VecVecSubExpr : private SubExpr
 {};
 //*************************************************************************************************
 

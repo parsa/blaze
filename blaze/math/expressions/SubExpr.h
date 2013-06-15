@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/expressions/Subtraction.h
-//  \brief Header file for the Subtraction base class
+//  \file blaze/math/expressions/SubExpr.h
+//  \brief Header file for the SubExpr base class
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_EXPRESSIONS_SUBTRACTION_H_
-#define _BLAZE_MATH_EXPRESSIONS_SUBTRACTION_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_SUBEXPR_H_
+#define _BLAZE_MATH_EXPRESSIONS_SUBEXPR_H_
 
 
 //*************************************************************************************************
@@ -42,14 +42,14 @@ namespace blaze {
 /*!\brief Base class for all subtraction expression templates.
 // \ingroup math
 //
-// The Subtraction class serves as a tag for all expression templates that implement mathematical
-// subtractions. All classes, that represent a mathematical subtraction (vector subtractions and
-// matrix subtractions) and that are used within the expression template environment of the Blaze
-// library have to derive from this class in order to qualify as subtraction expression template.
-// Only in case a class is derived from the Subtraction base class, the IsSubtraction type trait
-// recognizes the class as valid subtraction expression template.
+// The SubExpr class serves as a tag for all expression templates that implement mathematical
+// subtractions. All classes, that represent a mathematical subtraction (vector subtractions
+// and matrix subtractions) and that are used within the expression template environment of the
+// Blaze library have to derive from this class in order to qualify as subtraction expression
+// template. Only in case a class is derived from the SubExpr base class, the IsSubExpr type
+// trait recognizes the class as valid subtraction expression template.
 */
-struct Subtraction : private Computation
+struct SubExpr : private Computation
 {};
 //*************************************************************************************************
 

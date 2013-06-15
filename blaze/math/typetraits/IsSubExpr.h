@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/typetraits/IsSubtraction.h
-//  \brief Header file for the IsSubtraction type trait class
+//  \file blaze/math/typetraits/IsSubExpr.h
+//  \brief Header file for the IsSubExpr type trait class
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TYPETRAITS_ISSUBTRACTION_H_
-#define _BLAZE_MATH_TYPETRAITS_ISSUBTRACTION_H_
+#ifndef _BLAZE_MATH_TYPETRAITS_ISSUBEXPR_H_
+#define _BLAZE_MATH_TYPETRAITS_ISSUBEXPR_H_
 
 
 //*************************************************************************************************
@@ -41,7 +41,7 @@ namespace blaze {
 //
 //=================================================================================================
 
-struct Subtraction;
+struct SubExpr;
 
 
 
@@ -54,14 +54,14 @@ struct Subtraction;
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsSubtraction type trait.
+/*!\brief Auxiliary helper struct for the IsSubExpr type trait.
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsSubtractionHelper
+struct IsSubExprHelper
 {
    //**********************************************************************************************
-   enum { value = boost::is_base_of<Subtraction,T>::value && !boost::is_base_of<T,Subtraction>::value };
+   enum { value = boost::is_base_of<SubExpr,T>::value && !boost::is_base_of<T,SubExpr>::value };
    typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
    //**********************************************************************************************
 };
@@ -70,25 +70,25 @@ struct IsSubtractionHelper
 
 
 //*************************************************************************************************
-/*!\brief Compile time check whether the given type is an subtraction expression template.
+/*!\brief Compile time check whether the given type is a subtraction expression template.
 // \ingroup math_type_traits
 //
 // This type trait class tests whether or not the given type \a Type is a subtraction expression
 // template (i.e. an expression representing a vector subtraction or a matrix subtraction). In
 // order to qualify as a valid subtraction expression template, the given type has to derive
-// (publicly or privately) from the Subtraction base class. In case the given type is a valid
+// (publicly or privately) from the SubExpr base class. In case the given type is a valid
 // subtraction expression template, the \a value member enumeration is set to 1, the nested type
 // definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value
 // is set to 0, \a Type is \a FalseType, and the class derives from \a FalseType.
 */
 template< typename T >
-struct IsSubtraction : public IsSubtractionHelper<T>::Type
+struct IsSubExpr : public IsSubExprHelper<T>::Type
 {
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { value = IsSubtractionHelper<T>::value };
-   typedef typename IsSubtractionHelper<T>::Type  Type;
+   enum { value = IsSubExprHelper<T>::value };
+   typedef typename IsSubExprHelper<T>::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

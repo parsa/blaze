@@ -27,7 +27,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/Subtraction.h>
+#include <blaze/math/expressions/SubExpr.h>
 
 
 namespace blaze {
@@ -49,7 +49,7 @@ namespace blaze {
 // class is derived from the MatMatSubExpr base class, the IsMatMatSubExpr type trait
 // recognizes the class as valid matrix subtraction expression template.
 */
-struct MatMatSubExpr : private Subtraction
+struct MatMatSubExpr : private SubExpr
 {};
 //*************************************************************************************************
 
