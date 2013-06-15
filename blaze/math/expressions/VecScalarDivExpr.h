@@ -27,7 +27,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/Division.h>
+#include <blaze/math/expressions/DivExpr.h>
 
 
 namespace blaze {
@@ -49,7 +49,7 @@ namespace blaze {
 // a class is derived from the VecScalarDivExpr base class, the IsVecScalarDivExpr type trait
 // recognizes the class as valid vector/scalar division expression template.
 */
-struct VecScalarDivExpr : private Division
+struct VecScalarDivExpr : private DivExpr
 {};
 //*************************************************************************************************
 

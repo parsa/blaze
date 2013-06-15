@@ -35,7 +35,7 @@
 #include <blaze/math/typetraits/IsCrossProduct.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
-#include <blaze/math/typetraits/IsDivision.h>
+#include <blaze/math/typetraits/IsDivExpr.h>
 #include <blaze/math/typetraits/IsEvalExpr.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatAbsExpr.h>

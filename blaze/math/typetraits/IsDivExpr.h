@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/typetraits/IsDivision.h
-//  \brief Header file for the IsDivision type trait class
+//  \file blaze/math/typetraits/IsDivExpr.h
+//  \brief Header file for the IsDivExpr type trait class
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TYPETRAITS_ISDIVISION_H_
-#define _BLAZE_MATH_TYPETRAITS_ISDIVISION_H_
+#ifndef _BLAZE_MATH_TYPETRAITS_ISDIVEXPR_H_
+#define _BLAZE_MATH_TYPETRAITS_ISDIVEXPR_H_
 
 
 //*************************************************************************************************
@@ -41,7 +41,7 @@ namespace blaze {
 //
 //=================================================================================================
 
-struct Division;
+struct DivExpr;
 
 
 
@@ -54,14 +54,14 @@ struct Division;
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsDivision type trait.
+/*!\brief Auxiliary helper struct for the IsDivExpr type trait.
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsDivisionHelper
+struct IsDivExprHelper
 {
    //**********************************************************************************************
-   enum { value = boost::is_base_of<Division,T>::value && !boost::is_base_of<T,Division>::value };
+   enum { value = boost::is_base_of<DivExpr,T>::value && !boost::is_base_of<T,DivExpr>::value };
    typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
    //**********************************************************************************************
 };
@@ -76,19 +76,19 @@ struct IsDivisionHelper
 // This type trait class tests whether or not the given type \a Type is a division expression
 // template (i.e. an expression representing a vector/scalar division or a matrix/scalar
 // division). In order to qualify as a valid division expression template, the given type has
-// to derive (publicly or privately) from the Division base class. In case the given type is a
+// to derive (publicly or privately) from the DivExpr base class. In case the given type is a
 // valid division expression template, the \a value member enumeration is set to 1, the nested
 // type definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise
 // \a value is set to 0, \a Type is \a FalseType, and the class derives from \a FalseType.
 */
 template< typename T >
-struct IsDivision : public IsDivisionHelper<T>::Type
+struct IsDivExpr : public IsDivExprHelper<T>::Type
 {
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { value = IsDivisionHelper<T>::value };
-   typedef typename IsDivisionHelper<T>::Type  Type;
+   enum { value = IsDivExprHelper<T>::value };
+   typedef typename IsDivExprHelper<T>::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };
