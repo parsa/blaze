@@ -54,6 +54,7 @@
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/math/typetraits/IsTVecMatMultExpr.h>
+#include <blaze/math/typetraits/IsVecAbsExpr.h>
 #include <blaze/math/typetraits/IsVecScalarDivExpr.h>
 #include <blaze/math/typetraits/IsVecScalarMultExpr.h>
 #include <blaze/math/typetraits/IsVector.h>
