@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/typetraits/IsAbsOperation.h
-//  \brief Header file for the IsAbsOperation type trait class
+//  \file blaze/math/typetraits/IsAbsExpr.h
+//  \brief Header file for the IsAbsExpr type trait class
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TYPETRAITS_ISABSOPERATION_H_
-#define _BLAZE_MATH_TYPETRAITS_ISABSOPERATION_H_
+#ifndef _BLAZE_MATH_TYPETRAITS_ISABSEXPR_H_
+#define _BLAZE_MATH_TYPETRAITS_ISABSEXPR_H_
 
 
 //*************************************************************************************************
@@ -41,7 +41,7 @@ namespace blaze {
 //
 //=================================================================================================
 
-struct AbsOperation;
+struct AbsExpr;
 
 
 
@@ -54,14 +54,14 @@ struct AbsOperation;
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsAbsOperation type trait.
+/*!\brief Auxiliary helper struct for the IsAbsExpr type trait.
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsAbsOperationHelper
+struct IsAbsExprHelper
 {
    //**********************************************************************************************
-   enum { value = boost::is_base_of<AbsOperation,T>::value && !boost::is_base_of<T,AbsOperation>::value };
+   enum { value = boost::is_base_of<AbsExpr,T>::value && !boost::is_base_of<T,AbsExpr>::value };
    typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
    //**********************************************************************************************
 };
@@ -75,20 +75,20 @@ struct IsAbsOperationHelper
 //
 // This type trait class tests whether or not the given type \a Type is an absolute value
 // expression template. In order to qualify as a valid absolute value expression template,
-// the given type has to derive (publicly or privately) from the AbsOperation base class.
-// In case the given type is a valid absolute value expression template, the \a value member
+// the given type has to derive (publicly or privately) from the AbsExpr base class. In
+// case the given type is a valid absolute value expression template, the \a value member
 // enumeration is set to 1, the nested type definition \a Type is \a TrueType, and the class
 // derives from \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and
 // the class derives from \a FalseType.
 */
 template< typename T >
-struct IsAbsOperation : public IsAbsOperationHelper<T>::Type
+struct IsAbsExpr : public IsAbsExprHelper<T>::Type
 {
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { value = IsAbsOperationHelper<T>::value };
-   typedef typename IsAbsOperationHelper<T>::Type  Type;
+   enum { value = IsAbsExprHelper<T>::value };
+   typedef typename IsAbsExprHelper<T>::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

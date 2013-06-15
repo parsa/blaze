@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/constraints/AbsOperation.h
+//  \file blaze/math/constraints/AbsExpr.h
 //  \brief Constraint on the data type
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
@@ -19,15 +19,15 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_CONSTRAINTS_ABSOPERATION_H_
-#define _BLAZE_MATH_CONSTRAINTS_ABSOPERATION_H_
+#ifndef _BLAZE_MATH_CONSTRAINTS_ABSEXPR_H_
+#define _BLAZE_MATH_CONSTRAINTS_ABSEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/IsAbsOperation.h>
+#include <blaze/math/typetraits/IsAbsExpr.h>
 #include <blaze/util/constraints/ConstraintTest.h>
 #include <blaze/util/Suffix.h>
 
@@ -36,7 +36,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  MUST_BE_ABSOPERATION_TYPE CONSTRAINT
+//  MUST_BE_ABSEXPR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -50,8 +50,8 @@ namespace blaze {
 // or the specialization is selected. If the undefined basic template is selected, a compilation
 // error is created.
 */
-template< bool > struct CONSTRAINT_MUST_BE_ABSOPERATION_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_BE_ABSOPERATION_TYPE_FAILED<true> { enum { value = 1 }; };
+template< bool > struct CONSTRAINT_MUST_BE_ABSEXPR_TYPE_FAILED;
+template<> struct CONSTRAINT_MUST_BE_ABSEXPR_TYPE_FAILED<true> { enum { value = 1 }; };
 /*! \endcond */
 //*************************************************************************************************
 
@@ -60,14 +60,14 @@ template<> struct CONSTRAINT_MUST_BE_ABSOPERATION_TYPE_FAILED<true> { enum { val
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
-// In case the given data type \a T is not an absolute value operation expression (i.e. a type
-// derived from the AbsOperation base class), a compilation error is created.
+// In case the given data type \a T is not an absolute value expression (i.e. a type derived
+// from the AbsExpr base class), a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_BE_ABSOPERATION_TYPE(T) \
+#define BLAZE_CONSTRAINT_MUST_BE_ABSEXPR_TYPE(T) \
    typedef \
       blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_BE_ABSOPERATION_TYPE_FAILED< blaze::IsAbsOperation<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_BE_ABSOPERATION_TYPE_TYPEDEF, __LINE__ )
+         blaze::CONSTRAINT_MUST_BE_ABSEXPR_TYPE_FAILED< blaze::IsAbsExpr<T>::value >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_BE_ABSEXPR_TYPE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 
@@ -75,7 +75,7 @@ template<> struct CONSTRAINT_MUST_BE_ABSOPERATION_TYPE_FAILED<true> { enum { val
 
 //=================================================================================================
 //
-//  MUST_NOT_BE_ABSOPERATION_TYPE CONSTRAINT
+//  MUST_NOT_BE_ABSEXPR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -89,8 +89,8 @@ template<> struct CONSTRAINT_MUST_BE_ABSOPERATION_TYPE_FAILED<true> { enum { val
 // or the specialization is selected. If the undefined basic template is selected, a compilation
 // error is created.
 */
-template< bool > struct CONSTRAINT_MUST_NOT_BE_ABSOPERATION_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_NOT_BE_ABSOPERATION_TYPE_FAILED<true> { enum { value = 1 }; };
+template< bool > struct CONSTRAINT_MUST_NOT_BE_ABSEXPR_TYPE_FAILED;
+template<> struct CONSTRAINT_MUST_NOT_BE_ABSEXPR_TYPE_FAILED<true> { enum { value = 1 }; };
 /*! \endcond */
 //*************************************************************************************************
 
@@ -99,14 +99,14 @@ template<> struct CONSTRAINT_MUST_NOT_BE_ABSOPERATION_TYPE_FAILED<true> { enum {
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
-// In case the given data type \a T is an absolute value operation expression (i.e. a type derived
-// from the AbsOperation base class), a compilation error is created.
+// In case the given data type \a T is an absolute value expression (i.e. a type derived from
+// the AbsExpr base class), a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_NOT_BE_ABSOPERATION_TYPE(T) \
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_ABSEXPR_TYPE(T) \
    typedef \
       blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_NOT_BE_ABSOPERATION_TYPE_FAILED< !blaze::IsAbsOperation<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_ABSOPERATION_TYPE_TYPEDEF, __LINE__ )
+         blaze::CONSTRAINT_MUST_NOT_BE_ABSEXPR_TYPE_FAILED< !blaze::IsAbsExpr<T>::value >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_ABSEXPR_TYPE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 } // namespace blaze
