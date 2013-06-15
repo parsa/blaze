@@ -37,6 +37,7 @@
 #include <blaze/math/constraints/EvalExpr.h>
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/MatAbsExpr.h>
+#include <blaze/math/constraints/MatEvalExpr.h>
 #include <blaze/math/constraints/MatMatAddExpr.h>
 #include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/MatMatSubExpr.h>
