@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/constraints/Addition.h
+//  \file blaze/math/constraints/AddExpr.h
 //  \brief Constraint on the data type
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
@@ -19,15 +19,15 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_CONSTRAINTS_ADDITION_H_
-#define _BLAZE_MATH_CONSTRAINTS_ADDITION_H_
+#ifndef _BLAZE_MATH_CONSTRAINTS_ADDEXPR_H_
+#define _BLAZE_MATH_CONSTRAINTS_ADDEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/IsAddition.h>
+#include <blaze/math/typetraits/IsAddExpr.h>
 #include <blaze/util/constraints/ConstraintTest.h>
 #include <blaze/util/Suffix.h>
 
@@ -36,7 +36,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  MUST_BE_ADDITION_TYPE CONSTRAINT
+//  MUST_BE_ADDEXPR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -50,8 +50,8 @@ namespace blaze {
 // or the specialization is selected. If the undefined basic template is selected, a compilation
 // error is created.
 */
-template< bool > struct CONSTRAINT_MUST_BE_ADDITION_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_BE_ADDITION_TYPE_FAILED<true> { enum { value = 1 }; };
+template< bool > struct CONSTRAINT_MUST_BE_ADDEXPR_TYPE_FAILED;
+template<> struct CONSTRAINT_MUST_BE_ADDEXPR_TYPE_FAILED<true> { enum { value = 1 }; };
 /*! \endcond */
 //*************************************************************************************************
 
@@ -61,13 +61,13 @@ template<> struct CONSTRAINT_MUST_BE_ADDITION_TYPE_FAILED<true> { enum { value =
 // \ingroup math_constraints
 //
 // In case the given data type \a T is not an addition expression (i.e. a type derived from the
-// Addition base class), a compilation error is created.
+// AddExpr base class), a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_BE_ADDITION_TYPE(T) \
+#define BLAZE_CONSTRAINT_MUST_BE_ADDEXPR_TYPE(T) \
    typedef \
       blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_BE_ADDITION_TYPE_FAILED< blaze::IsAddition<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_BE_ADDITION_TYPE_TYPEDEF, __LINE__ )
+         blaze::CONSTRAINT_MUST_BE_ADDEXPR_TYPE_FAILED< blaze::IsAddExpr<T>::value >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_BE_ADDEXPR_TYPE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 
@@ -75,7 +75,7 @@ template<> struct CONSTRAINT_MUST_BE_ADDITION_TYPE_FAILED<true> { enum { value =
 
 //=================================================================================================
 //
-//  MUST_NOT_BE_ADDITION_TYPE CONSTRAINT
+//  MUST_NOT_BE_ADDEXPR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -89,8 +89,8 @@ template<> struct CONSTRAINT_MUST_BE_ADDITION_TYPE_FAILED<true> { enum { value =
 // or the specialization is selected. If the undefined basic template is selected, a compilation
 // error is created.
 */
-template< bool > struct CONSTRAINT_MUST_NOT_BE_ADDITION_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_NOT_BE_ADDITION_TYPE_FAILED<true> { enum { value = 1 }; };
+template< bool > struct CONSTRAINT_MUST_NOT_BE_ADDEXPR_TYPE_FAILED;
+template<> struct CONSTRAINT_MUST_NOT_BE_ADDEXPR_TYPE_FAILED<true> { enum { value = 1 }; };
 /*! \endcond */
 //*************************************************************************************************
 
@@ -100,13 +100,13 @@ template<> struct CONSTRAINT_MUST_NOT_BE_ADDITION_TYPE_FAILED<true> { enum { val
 // \ingroup math_constraints
 //
 // In case the given data type \a T is an addition expression (i.e. a type derived from the
-// Addition base class), a compilation error is created.
+// AddExpr base class), a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_NOT_BE_ADDITION_TYPE(T) \
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_ADDEXPR_TYPE(T) \
    typedef \
       blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_NOT_BE_ADDITION_TYPE_FAILED< !blaze::IsAddition<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_ADDITION_TYPE_TYPEDEF, __LINE__ )
+         blaze::CONSTRAINT_MUST_NOT_BE_ADDEXPR_TYPE_FAILED< !blaze::IsAddExpr<T>::value >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_ADDEXPR_TYPE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 } // namespace blaze

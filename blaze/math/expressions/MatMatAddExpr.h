@@ -27,7 +27,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/Addition.h>
+#include <blaze/math/expressions/AddExpr.h>
 
 
 namespace blaze {
@@ -49,7 +49,7 @@ namespace blaze {
 // derived from the MatMatAddExpr base class, the IsMatMatAddExpr type trait recognizes the
 // class as valid matrix addition expression template.
 */
-struct MatMatAddExpr : private Addition
+struct MatMatAddExpr : private AddExpr
 {};
 //*************************************************************************************************
 

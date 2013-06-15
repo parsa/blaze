@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/typetraits/IsAddition.h
-//  \brief Header file for the IsAddition type trait class
+//  \file blaze/math/typetraits/IsAddExpr.h
+//  \brief Header file for the IsAddExpr type trait class
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TYPETRAITS_ISADDITION_H_
-#define _BLAZE_MATH_TYPETRAITS_ISADDITION_H_
+#ifndef _BLAZE_MATH_TYPETRAITS_ISADDEXPR_H_
+#define _BLAZE_MATH_TYPETRAITS_ISADDEXPR_H_
 
 
 //*************************************************************************************************
@@ -41,7 +41,7 @@ namespace blaze {
 //
 //=================================================================================================
 
-struct Addition;
+struct AddExpr;
 
 
 
@@ -54,14 +54,14 @@ struct Addition;
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsAddition type trait.
+/*!\brief Auxiliary helper struct for the IsAddExpr type trait.
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsAdditionHelper
+struct IsAddExprHelper
 {
    //**********************************************************************************************
-   enum { value = boost::is_base_of<Addition,T>::value && !boost::is_base_of<T,Addition>::value };
+   enum { value = boost::is_base_of<AddExpr,T>::value && !boost::is_base_of<T,AddExpr>::value };
    typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
    //**********************************************************************************************
 };
@@ -76,19 +76,19 @@ struct IsAdditionHelper
 // This type trait class tests whether or not the given type \a Type is an addition expression
 // template (i.e. an expression representing a vector addition or a matrix addition). In order
 // to qualify as a valid addition expression template, the given type has to derive (publicly
-// or privately) from the Addition base class. In case the given type is a valid addition
+// or privately) from the AddExpr base class. In case the given type is a valid addition
 // expression template, the \a value member enumeration is set to 1, the nested type definition
 // \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to
 // 0, \a Type is \a FalseType, and the class derives from \a FalseType.
 */
 template< typename T >
-struct IsAddition : public IsAdditionHelper<T>::Type
+struct IsAddExpr : public IsAddExprHelper<T>::Type
 {
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { value = IsAdditionHelper<T>::value };
-   typedef typename IsAdditionHelper<T>::Type  Type;
+   enum { value = IsAddExprHelper<T>::value };
+   typedef typename IsAddExprHelper<T>::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

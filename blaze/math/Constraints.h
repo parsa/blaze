@@ -28,7 +28,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/constraints/AbsExpr.h>
-#include <blaze/math/constraints/Addition.h>
+#include <blaze/math/constraints/AddExpr.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/CrossProduct.h>
 #include <blaze/math/constraints/DenseMatrix.h>

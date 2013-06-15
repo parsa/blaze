@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/expressions/Addition.h
-//  \brief Header file for the Addition base class
+//  \file blaze/math/expressions/AddExpr.h
+//  \brief Header file for the AddExpr base class
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_EXPRESSIONS_ADDITION_H_
-#define _BLAZE_MATH_EXPRESSIONS_ADDITION_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_ADDEXPR_H_
+#define _BLAZE_MATH_EXPRESSIONS_ADDEXPR_H_
 
 
 //*************************************************************************************************
@@ -42,14 +42,14 @@ namespace blaze {
 /*!\brief Base class for all addition expression templates.
 // \ingroup math
 //
-// The Addition class serves as a tag for all expression templates that implement mathematical
+// The AddExpr class serves as a tag for all expression templates that implement mathematical
 // additions. All classes, that represent a mathematical addition (vector additions and matrix
 // additions) and that are used within the expression template environment of the Blaze library
 // have to derive from this class in order to qualify as addition expression template. Only in
-// case a class is derived from the Addition base class, the IsAddition type trait recognizes
-// the class as valid addition expression template.
+// case a class is derived from the AddExpr base class, the IsAddExpr type trait recognizes the
+// class as valid addition expression template.
 */
-struct Addition : private Computation
+struct AddExpr : private Computation
 {};
 //*************************************************************************************************
 
