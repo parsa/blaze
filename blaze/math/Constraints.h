@@ -54,6 +54,7 @@
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/TVecMatMultExpr.h>
 #include <blaze/math/constraints/VecAbsExpr.h>
+#include <blaze/math/constraints/VecEvalExpr.h>
 #include <blaze/math/constraints/VecScalarDivExpr.h>
 #include <blaze/math/constraints/VecScalarMultExpr.h>
 #include <blaze/math/constraints/Vector.h>
