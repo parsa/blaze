@@ -40,7 +40,6 @@
 #include <blaze/util/typetraits/IsVolatile.h>
 #include <blaze/util/typetraits/RemoveCV.h>
 #include <blaze/util/typetraits/RemoveReference.h>
-#include <blaze/util/typetraits/RemoveVolatile.h>
 
 
 namespace blaze {
@@ -86,8 +85,7 @@ struct RowExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename RemoveReference< typename RemoveCV<MT>::Type >::Type        Type1;
-   typedef typename RemoveReference< typename RemoveVolatile<MT>::Type >::Type  Type2;
+   typedef typename RemoveReference< typename RemoveCV<MT>::Type >::Type  Tmp;
    /*! \endcond */
    //**********************************************************************************************
 
@@ -95,7 +93,7 @@ struct RowExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    typedef typename If< IsExpression<MT>
-                      , RowExprTrait<Type1>
+                      , RowExprTrait<Tmp>
                       , typename If< IsDenseMatrix<MT>
                                    , DenseResult<MT>
                                    , typename If< IsSparseMatrix<MT>

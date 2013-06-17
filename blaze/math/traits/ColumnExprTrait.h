@@ -86,8 +86,7 @@ struct ColumnExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename RemoveReference< typename RemoveCV<MT>::Type >::Type        Type1;
-   typedef typename RemoveReference< typename RemoveVolatile<MT>::Type >::Type  Type2;
+   typedef typename RemoveReference< typename RemoveCV<MT>::Type >::Type  Tmp;
    /*! \endcond */
    //**********************************************************************************************
 
@@ -95,7 +94,7 @@ struct ColumnExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    typedef typename If< IsExpression<MT>
-                      , ColumnExprTrait<Type1>
+                      , ColumnExprTrait<Tmp>
                       , typename If< IsDenseMatrix<MT>
                                    , DenseResult<MT>
                                    , typename If< IsSparseMatrix<MT>
