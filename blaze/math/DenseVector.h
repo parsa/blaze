@@ -27,6 +27,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <cmath>
 #include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/DVecAbsExpr.h>
@@ -49,9 +50,12 @@
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/Square.h>
+#include <blaze/math/traits/CMathTrait.h>
 #include <blaze/math/TransposeFlag.h>
 #include <blaze/math/Vector.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -371,11 +375,94 @@ inline typename EnableIf< IsNumeric<T1>, bool >::Type
 /*!\name DenseVector functions */
 //@{
 template< typename VT, bool TF >
+inline typename CMathTrait<typename VT::ElementType>::Type length( const DenseVector<VT,TF>& dv );
+
+template< typename VT, bool TF >
+inline const typename VT::ElementType sqrLength( const DenseVector<VT,TF>& dv );
+
+template< typename VT, bool TF >
 inline const typename VT::ElementType min( const DenseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
 inline const typename VT::ElementType max( const DenseVector<VT,TF>& dv );
 //@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculation of the dense vector length \f$|\vec{a}|\f$.
+//
+// \param dv The given dense vector.
+// \return The length of the dense vector.
+//
+// This function calculates the actual length of the dense vector. The return type of the length()
+// function depends on the actual element type of the vector instance:
+//
+// <table border="0" cellspacing="0" cellpadding="1">
+//    <tr>
+//       <td width="250px"> \b ElementType </td>
+//       <td width="100px"> \b LengthType </td>
+//    </tr>
+//    <tr>
+//       <td>float</td>
+//       <td>float</td>
+//    </tr>
+//    <tr>
+//       <td>integral data types and double</td>
+//       <td>double</td>
+//    </tr>
+//    <tr>
+//       <td>long double</td>
+//       <td>long double</td>
+//    </tr>
+// </table>
+//
+// \b Note: This operation is only defined for numeric data types. In case the element type is
+// not a numeric data type (i.e. a user defined data type or boolean) the attempt to use the
+// length() function results in a compile time error!
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline typename CMathTrait<typename VT::ElementType>::Type length( const DenseVector<VT,TF>& dv )
+{
+   typedef typename VT::ElementType                ElementType;
+   typedef typename CMathTrait<ElementType>::Type  LengthType;
+
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ElementType );
+
+   LengthType sum( 0 );
+   for( size_t i=0UL; i<(~dv).size(); ++i )
+      sum += sq( (~dv)[i] );
+   return std::sqrt( sum );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculation of the dense vector square length \f$|\vec{a}|^2\f$.
+//
+// \param dv The given dense vector.
+// \return The square length of the dense vector.
+//
+// This function calculates the actual square length of the dense vector.
+//
+// \b Note: This operation is only defined for numeric data types. In case the element type is
+// not a numeric data type (i.e. a user defined data type or boolean) the attempt to use the
+// sqrLength() function results in a compile time error!
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const typename VT::ElementType sqrLength( const DenseVector<VT,TF>& dv )
+{
+   typedef typename VT::ElementType  ElementType;
+
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ElementType );
+
+   ElementType sum( 0 );
+   for( size_t i=0UL; i<(~dv).size(); ++i )
+      sum += sq( (~dv)[i] );
+   return sum;
+}
 //*************************************************************************************************
 
 

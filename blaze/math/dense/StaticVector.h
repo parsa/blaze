@@ -28,7 +28,6 @@
 //*************************************************************************************************
 
 #include <algorithm>
-#include <cmath>
 #include <stdexcept>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/Forward.h>
@@ -38,7 +37,6 @@
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/AddTrait.h>
-#include <blaze/math/traits/CMathTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MathTrait.h>
@@ -48,7 +46,6 @@
 #include <blaze/system/TransposeFlag.h>
 #include <blaze/util/AlignedStorage.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/constraints/Builtin.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/FloatingPoint.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -172,10 +169,6 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    typedef const Type&               ConstReference;  //!< Reference to a constant vector value.
    typedef Type*                     Iterator;        //!< Iterator over non-constant elements.
    typedef const Type*               ConstIterator;   //!< Iterator over constant elements.
-
-   //! Vector length return type.
-   /*! Return type of the StaticVector<Type,N,TF>::length function. */
-   typedef typename CMathTrait<Type>::Type  LengthType;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -256,8 +249,6 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
                               inline size_t             capacity() const;
                               inline size_t             nonZeros() const;
                               inline void               reset();
-                              inline LengthType         length() const;
-                              inline Type               sqrLength() const;
                               inline StaticVector&      normalize();
                               inline const StaticVector getNormalized() const;
    template< typename Other > inline StaticVector&      scale( Other scalar );
@@ -1265,80 +1256,6 @@ inline void StaticVector<Type,N,TF>::reset()
 
 
 //*************************************************************************************************
-/*!\brief Calculation of the vector length \f$|\vec{a}|\f$.
-//
-// \return The length of the vector.
-//
-// This function calculates the actual length of the vector. The return type of the length()
-// function depends on the actual type of the vector instance:
-//
-// <table border="0" cellspacing="0" cellpadding="1">
-//    <tr>
-//       <td width="250px"> \b Type </td>
-//       <td width="100px"> \b LengthType </td>
-//    </tr>
-//    <tr>
-//       <td>float</td>
-//       <td>float</td>
-//    </tr>
-//    <tr>
-//       <td>integral data types and double</td>
-//       <td>double</td>
-//    </tr>
-//    <tr>
-//       <td>long double</td>
-//       <td>long double</td>
-//    </tr>
-// </table>
-//
-// \b Note: This operation is only defined for built-in data types. In case \a Type is a user
-// defined data type the attempt to use the length() function results in a compile time error!
-*/
-template< typename Type  // Data type of the vector
-        , size_t N       // Number of elements
-        , bool TF >      // Transpose flag
-#ifndef WIN32
-inline typename StaticVector<Type,N,TF>::LengthType StaticVector<Type,N,TF>::length() const
-#else
-inline typename CMathTrait<Type>::Type StaticVector<Type,N,TF>::length() const
-#endif
-{
-   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( Type );
-
-   LengthType sum( 0 );
-   for( size_t i=0UL; i<N; ++i )
-      sum += v_[i] * v_[i];
-   return std::sqrt( sum );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Calculation of the vector square length \f$|\vec{a}|^2\f$.
-//
-// \return The square length of the vector.
-//
-// This function calculates the actual square length of the vector.
-//
-// \b Note: This operation is only defined for built-in data types. In case \a Type is a user
-// defined data type the attempt to use the length() function results in a compile time error!
-*/
-template< typename Type  // Data type of the vector
-        , size_t N       // Number of elements
-        , bool TF >      // Transpose flag
-inline Type StaticVector<Type,N,TF>::sqrLength() const
-{
-   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( Type );
-
-   Type sum( 0 );
-   for( size_t i=0UL; i<N; ++i )
-      sum += v_[i] * v_[i];
-   return sum;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Normalization of the vector (\f$|\vec{a}|=1\f$).
 //
 // \return Reference to the vector.
@@ -1354,7 +1271,7 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::normalize()
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( Type );
 
-   const Type len( length() );
+   const Type len( length( *this ) );
 
    if( len == Type(0) )
       return *this;
@@ -1385,7 +1302,7 @@ inline const StaticVector<Type,N,TF> StaticVector<Type,N,TF>::getNormalized() co
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( Type );
 
-   const Type len( length() );
+   const Type len( length( *this ) );
 
    if( len == Type(0) )
       return *this;

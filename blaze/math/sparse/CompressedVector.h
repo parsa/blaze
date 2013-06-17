@@ -28,7 +28,6 @@
 //*************************************************************************************************
 
 #include <algorithm>
-#include <cmath>
 #include <functional>
 #include <stdexcept>
 #include <blaze/math/constraints/DenseVector.h>
@@ -41,7 +40,6 @@
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/sparse/VectorAccessProxy.h>
 #include <blaze/math/traits/AddTrait.h>
-#include <blaze/math/traits/CMathTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MathTrait.h>
@@ -52,7 +50,6 @@
 #include <blaze/system/Precision.h>
 #include <blaze/system/TransposeFlag.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/constraints/Builtin.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/FloatingPoint.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -217,10 +214,6 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    typedef const Type&                 ConstReference;  //!< Reference to a constant vector value.
    typedef Element*                    Iterator;        //!< Iterator over non-constant elements.
    typedef const Element*              ConstIterator;   //!< Iterator over constant elements.
-
-   //! Compressed vector length return type.
-   /*! Return type of the CompressedVector<Type,TF>::length function. */
-   typedef typename CMathTrait<Type>::Type  LengthType;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -291,8 +284,6 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
                               inline ConstIterator          find  ( size_t index ) const;
                               inline void                   resize( size_t n, bool preserve=true );
                                      void                   reserve( size_t n );
-                              inline LengthType             length() const;
-                              inline const Type             sqrLength() const;
                                      CompressedVector&      normalize();
                                      const CompressedVector getNormalized() const;
    template< typename Other > inline CompressedVector&      scale( Other scalar );
@@ -1177,78 +1168,6 @@ void CompressedVector<Type,TF>::reserve( size_t n )
 
 
 //*************************************************************************************************
-/*!\brief Calculation of the compressed vector length \f$|\vec{a}|\f$.
-//
-// \return The length of the compressed vector.
-//
-// This function calculates the actual length of the vector. The return type of the length()
-// function depends on the actual type of the vector instance:
-//
-// <table border="0" cellspacing="0" cellpadding="1">
-//    <tr>
-//       <td width="250px"> \b Type </td>
-//       <td width="100px"> \b LengthType </td>
-//    </tr>
-//    <tr>
-//       <td>float</td>
-//       <td>float</td>
-//    </tr>
-//    <tr>
-//       <td>integral data types and double</td>
-//       <td>double</td>
-//    </tr>
-//    <tr>
-//       <td>long double</td>
-//       <td>long double</td>
-//    </tr>
-// </table>
-//
-// \b Note: This operation is only defined for built-in data types. In case \a Type is a user
-// defined data type the attempt to use the length() function results in a compile time error!
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-#ifndef WIN32
-inline typename CompressedVector<Type,TF>::LengthType CompressedVector<Type,TF>::length() const
-#else
-inline typename CMathTrait<Type>::Type CompressedVector<Type,TF>::length() const
-#endif
-{
-   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( Type );
-
-   LengthType sum( 0 );
-   for( Iterator element=begin_; element!=end_; ++element )
-      sum += element->value_ * element->value_;
-   return std::sqrt( sum );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Calculation of the vector square length \f$|\vec{a}|^2\f$.
-//
-// \return The square length of the vector.
-//
-// This function calculates the actual square length of the vector.
-//
-// \b Note: This operation is only defined for built-in data types. In case \a Type is a user
-// defined data type the attempt to use the length() function results in a compile time error!
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline const Type CompressedVector<Type,TF>::sqrLength() const
-{
-   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( Type );
-
-   Type sum( 0 );
-   for( Iterator element=begin_; element!=end_; ++element )
-      sum += element->value_ * element->value_;
-   return sum;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Normalization of the compressed vector (\f$|\vec{a}|=1\f$).
 //
 // \return Reference to the compressed vector.
@@ -1263,7 +1182,7 @@ CompressedVector<Type,TF>& CompressedVector<Type,TF>::normalize()
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( Type );
 
-   const Type len( length() );
+   const Type len( length( *this ) );
 
    if( len == Type(0) )
       return *this;
@@ -1293,7 +1212,7 @@ const CompressedVector<Type,TF> CompressedVector<Type,TF>::getNormalized() const
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( Type );
 
-   const Type len( length() );
+   const Type len( length( *this ) );
 
    if( len == Type(0) )
       return *this;
