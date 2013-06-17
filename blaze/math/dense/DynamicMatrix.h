@@ -257,25 +257,25 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t              rows() const;
-                              inline size_t              columns() const;
-                              inline size_t              spacing() const;
-                              inline size_t              capacity() const;
-                              inline size_t              capacity( size_t i ) const;
-                              inline size_t              nonZeros() const;
-                              inline size_t              nonZeros( size_t i ) const;
-                              inline void                reset();
-                              inline void                reset( size_t i );
-                              inline void                clear();
-                                     void                resize ( size_t m, size_t n, bool preserve=true );
-                              inline void                extend ( size_t m, size_t n, bool preserve=true );
-                              inline void                reserve( size_t elements );
-                              inline DynamicMatrix&      transpose();
-                              inline DynamicMatrix&      invert();
-                              inline bool                isDiagonal() const;
-                              inline bool                isSymmetric() const;
-   template< typename Other > inline DynamicMatrix&      scale( Other scalar );
-                              inline void                swap( DynamicMatrix& m ) /* throw() */;
+                              inline size_t         rows() const;
+                              inline size_t         columns() const;
+                              inline size_t         spacing() const;
+                              inline size_t         capacity() const;
+                              inline size_t         capacity( size_t i ) const;
+                              inline size_t         nonZeros() const;
+                              inline size_t         nonZeros( size_t i ) const;
+                              inline void           reset();
+                              inline void           reset( size_t i );
+                              inline void           clear();
+                                     void           resize ( size_t m, size_t n, bool preserve=true );
+                              inline void           extend ( size_t m, size_t n, bool preserve=true );
+                              inline void           reserve( size_t elements );
+                              inline DynamicMatrix& transpose();
+                              inline DynamicMatrix& invert();
+                              inline bool           isDiagonal() const;
+                              inline bool           isSymmetric() const;
+   template< typename Other > inline DynamicMatrix& scale( Other scalar );
+                              inline void           swap( DynamicMatrix& m ) /* throw() */;
    //@}
    //**********************************************************************************************
 
@@ -2277,25 +2277,25 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t              rows() const;
-                              inline size_t              columns() const;
-                              inline size_t              spacing() const;
-                              inline size_t              capacity() const;
-                              inline size_t              capacity( size_t j ) const;
-                              inline size_t              nonZeros() const;
-                              inline size_t              nonZeros( size_t j ) const;
-                              inline void                reset();
-                              inline void                reset( size_t j );
-                              inline void                clear();
-                                     void                resize ( size_t m, size_t n, bool preserve=true );
-                              inline void                extend ( size_t m, size_t n, bool preserve=true );
-                              inline void                reserve( size_t elements );
-                              inline DynamicMatrix&      transpose();
-                              inline DynamicMatrix&      invert();
-                              inline bool                isDiagonal() const;
-                              inline bool                isSymmetric() const;
-   template< typename Other > inline DynamicMatrix&      scale( Other scalar );
-                              inline void                swap( DynamicMatrix& m ) /* throw() */;
+                              inline size_t         rows() const;
+                              inline size_t         columns() const;
+                              inline size_t         spacing() const;
+                              inline size_t         capacity() const;
+                              inline size_t         capacity( size_t j ) const;
+                              inline size_t         nonZeros() const;
+                              inline size_t         nonZeros( size_t j ) const;
+                              inline void           reset();
+                              inline void           reset( size_t j );
+                              inline void           clear();
+                                     void           resize ( size_t m, size_t n, bool preserve=true );
+                              inline void           extend ( size_t m, size_t n, bool preserve=true );
+                              inline void           reserve( size_t elements );
+                              inline DynamicMatrix& transpose();
+                              inline DynamicMatrix& invert();
+                              inline bool           isDiagonal() const;
+                              inline bool           isSymmetric() const;
+   template< typename Other > inline DynamicMatrix& scale( Other scalar );
+                              inline void           swap( DynamicMatrix& m ) /* throw() */;
    //@}
    //**********************************************************************************************
 
