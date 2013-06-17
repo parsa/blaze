@@ -28,23 +28,13 @@
 //*************************************************************************************************
 
 #include <boost/type_traits/is_base_of.hpp>
+#include <blaze/math/expressions/MatScalarDivExpr.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/TrueType.h>
 
 
 namespace blaze {
-
-//=================================================================================================
-//
-//  ::blaze NAMESPACE FORWARD DECLARATIONS
-//
-//=================================================================================================
-
-struct MatScalarDivExpr;
-
-
-
 
 //=================================================================================================
 //

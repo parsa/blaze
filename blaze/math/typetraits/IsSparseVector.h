@@ -29,23 +29,13 @@
 
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/type_traits/remove_cv.hpp>
+#include <blaze/math/expressions/SparseVector.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/TrueType.h>
 
 
 namespace blaze {
-
-//=================================================================================================
-//
-//  ::blaze NAMESPACE FORWARD DECLARATIONS
-//
-//=================================================================================================
-
-template< typename, bool > struct SparseVector;
-
-
-
 
 //=================================================================================================
 //

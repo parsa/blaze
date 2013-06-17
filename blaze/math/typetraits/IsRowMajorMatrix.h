@@ -29,24 +29,14 @@
 
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/type_traits/remove_cv.hpp>
+#include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/TrueType.h>
 
 
 namespace blaze {
-
-//=================================================================================================
-//
-//  ::blaze NAMESPACE FORWARD DECLARATIONS
-//
-//=================================================================================================
-
-template< typename, bool > struct DenseMatrix;
-template< typename, bool > struct SparseMatrix;
-
-
-
 
 //=================================================================================================
 //
