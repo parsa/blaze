@@ -53,6 +53,7 @@
 #include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/constraints/FloatingPoint.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/SameType.h>
@@ -684,6 +685,49 @@ inline const typename EnableIf< IsNumeric<T1>, typename MultExprTrait<T1,T2>::Ty
 
    typedef typename MultExprTrait<T1,T2>::Type  Type;
    return Type( ~vec, scalar );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Normalization of the sparse vector (\f$|\vec{a}|=1\f$).
+//
+// \param vec The given sparse vector.
+// \return The normalized result vector.
+//
+// This function represents the normalization of a sparse vector:
+
+   \code
+   blaze::CompressedVector<double> a;
+   // ... Resizing and initialization
+   a = normalize( a );
+   \endcode
+
+// The function returns an expression representing the normalized sparse vector. Note that
+// this function only works for floating point vectors. The attempt to use this function for
+// an integral vector results in a compile time error.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecScalarMultExpr<VT,typename VT::ElementType,TF>
+   normalize( const SparseVector<VT,TF>& vec )
+{
+   typedef typename VT::ElementType  ElementType;
+
+   BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( ElementType );
+
+   const ElementType len ( length( ~vec ) );
+   const ElementType ilen( ( len != ElementType(0) )?( ElementType(1) / len ):( 0 ) );
+
+   return SVecScalarMultExpr<VT,ElementType,TF>( ~vec, ilen );
 }
 //*************************************************************************************************
 

@@ -47,7 +47,6 @@
 #include <blaze/util/AlignedStorage.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
-#include <blaze/util/constraints/FloatingPoint.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
@@ -245,14 +244,12 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t             size() const;
-                              inline size_t             capacity() const;
-                              inline size_t             nonZeros() const;
-                              inline void               reset();
-                              inline StaticVector&      normalize();
-                              inline const StaticVector getNormalized() const;
-   template< typename Other > inline StaticVector&      scale( Other scalar );
-                              inline void               swap( StaticVector& v ) /* throw() */;
+                              inline size_t        size() const;
+                              inline size_t        capacity() const;
+                              inline size_t        nonZeros() const;
+                              inline void          reset();
+   template< typename Other > inline StaticVector& scale( Other scalar );
+                              inline void          swap( StaticVector& v ) /* throw() */;
    //@}
    //**********************************************************************************************
 
@@ -1251,69 +1248,6 @@ inline void StaticVector<Type,N,TF>::reset()
    using blaze::reset;
    for( size_t i=0UL; i<N; ++i )
       reset( v_[i] );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Normalization of the vector (\f$|\vec{a}|=1\f$).
-//
-// \return Reference to the vector.
-//
-// Normalization of the vector to a length of 1. This operation is only defined for floating
-// point vectors. The attempt to use this function for an integral vector results in a compile
-// time error.
-*/
-template< typename Type  // Data type of the vector
-        , size_t N       // Number of elements
-        , bool TF >      // Transpose flag
-inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::normalize()
-{
-   BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( Type );
-
-   const Type len( length( *this ) );
-
-   if( len == Type(0) )
-      return *this;
-
-   const Type ilen( Type(1) / len );
-
-   for( size_t i=0UL; i<N; ++i )
-      v_[i] *= ilen;
-
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Calculation of the normalized vector (\f$|\vec{a}|=1\f$).
-//
-// \return The normalized vector.
-//
-// The function returns the normalized vector. This operation is only defined for floating
-// point vectors. The attempt to use this function for an integral vector results in a compile
-// time error.
-*/
-template< typename Type  // Data type of the vector
-        , size_t N       // Number of elements
-        , bool TF >      // Transpose flag
-inline const StaticVector<Type,N,TF> StaticVector<Type,N,TF>::getNormalized() const
-{
-   BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( Type );
-
-   const Type len( length( *this ) );
-
-   if( len == Type(0) )
-      return *this;
-
-   const Type ilen( Type(1) / len );
-   StaticVector tmp;
-
-   for( size_t i=0UL; i<N; ++i )
-      tmp[i] = v_[i] * ilen;
-
-   return tmp;
 }
 //*************************************************************************************************
 

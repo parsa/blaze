@@ -51,7 +51,6 @@
 #include <blaze/system/TransposeFlag.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
-#include <blaze/util/constraints/FloatingPoint.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
@@ -272,22 +271,20 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t                 size() const;
-                              inline size_t                 capacity() const;
-                              inline size_t                 nonZeros() const;
-                              inline void                   reset();
-                              inline void                   clear();
-                                     Iterator               insert( size_t index, const Type& value );
-                              inline void                   erase ( size_t index );
-                              inline Iterator               erase ( Iterator pos );
-                              inline Iterator               find  ( size_t index );
-                              inline ConstIterator          find  ( size_t index ) const;
-                              inline void                   resize( size_t n, bool preserve=true );
-                                     void                   reserve( size_t n );
-                                     CompressedVector&      normalize();
-                                     const CompressedVector getNormalized() const;
-   template< typename Other > inline CompressedVector&      scale( Other scalar );
-                              inline void                   swap( CompressedVector& sv ) /* throw() */;
+                              inline size_t            size() const;
+                              inline size_t            capacity() const;
+                              inline size_t            nonZeros() const;
+                              inline void              reset();
+                              inline void              clear();
+                                     Iterator          insert( size_t index, const Type& value );
+                              inline void              erase ( size_t index );
+                              inline Iterator          erase ( Iterator pos );
+                              inline Iterator          find  ( size_t index );
+                              inline ConstIterator     find  ( size_t index ) const;
+                              inline void              resize( size_t n, bool preserve=true );
+                                     void              reserve( size_t n );
+   template< typename Other > inline CompressedVector& scale( Other scalar );
+                              inline void              swap( CompressedVector& sv ) /* throw() */;
    //@}
    //**********************************************************************************************
 
@@ -1163,68 +1160,6 @@ void CompressedVector<Type,TF>::reserve( size_t n )
       capacity_ = newCapacity;
       delete [] newBegin;
    }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Normalization of the compressed vector (\f$|\vec{a}|=1\f$).
-//
-// \return Reference to the compressed vector.
-//
-// Normalization of the compressed vector to a length of 1. This operation is only defined for
-// floating point vectors. The attempt to use this function for an integral vector results
-// in a compile time error.
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-CompressedVector<Type,TF>& CompressedVector<Type,TF>::normalize()
-{
-   BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( Type );
-
-   const Type len( length( *this ) );
-
-   if( len == Type(0) )
-      return *this;
-
-   const Type ilen( Type(1) / len );
-
-   for( Iterator element=begin_; element!=end_; ++element )
-      element->value_ *= ilen;
-
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Calculation of the normalized compressed vector (\f$|\vec{a}|=1\f$).
-//
-// \return The normalized compressed vector.
-//
-// The function returns the normalized compressed vector. This operation is only defined for
-// floating point vectors. The attempt to use this function for an integral vector results
-// in a compile time error.
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-const CompressedVector<Type,TF> CompressedVector<Type,TF>::getNormalized() const
-{
-   BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( Type );
-
-   const Type len( length( *this ) );
-
-   if( len == Type(0) )
-      return *this;
-
-   const Type ilen( Type(1) / len );
-   CompressedVector tmp( *this );
-
-   for( Iterator element=tmp.begin_; element!=tmp.end_; ++element ) {
-      element->value_ *= ilen;
-   }
-
-   return tmp;
 }
 //*************************************************************************************************
 

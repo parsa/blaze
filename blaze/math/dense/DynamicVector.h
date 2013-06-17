@@ -51,7 +51,6 @@
 #include <blaze/system/TransposeFlag.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
-#include <blaze/util/constraints/FloatingPoint.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
@@ -239,18 +238,16 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t              size() const;
-                              inline size_t              capacity() const;
-                              inline size_t              nonZeros() const;
-                              inline void                reset();
-                              inline void                clear();
-                              inline void                resize( size_t n, bool preserve=true );
-                              inline void                extend( size_t n, bool preserve=true );
-                              inline void                reserve( size_t n );
-                              inline DynamicVector&      normalize();
-                              inline const DynamicVector getNormalized() const;
-   template< typename Other > inline DynamicVector&      scale( Other scalar );
-                              inline void                swap( DynamicVector& v ) /* throw() */;
+                              inline size_t         size() const;
+                              inline size_t         capacity() const;
+                              inline size_t         nonZeros() const;
+                              inline void           reset();
+                              inline void           clear();
+                              inline void           resize( size_t n, bool preserve=true );
+                              inline void           extend( size_t n, bool preserve=true );
+                              inline void           reserve( size_t n );
+   template< typename Other > inline DynamicVector& scale( Other scalar );
+                              inline void           swap( DynamicVector& v ) /* throw() */;
    //@}
    //**********************************************************************************************
 
@@ -1181,67 +1178,6 @@ inline void DynamicVector<Type,TF>::reserve( size_t n )
       deallocate( tmp );
       capacity_ = newCapacity;
    }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Normalization of the vector (\f$|\vec{a}|=1\f$).
-//
-// \return Reference to the vector.
-//
-// Normalization of the vector to a length of 1. This operation is only defined for floating
-// point vectors. The attempt to use this function for an integral vector results in a compile
-// time error.
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::normalize()
-{
-   BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( Type );
-
-   const Type len( length( *this ) );
-
-   if( len == Type(0) )
-      return *this;
-
-   const Type ilen( Type(1) / len );
-
-   for( size_t i=0; i<size_; ++i )
-      v_[i] *= ilen;
-
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Calculation of the normalized vector (\f$|\vec{a}|=1\f$).
-//
-// \return The normalized vector.
-//
-// The function returns the normalized vector. This operation is only defined for floating
-// point vectors. The attempt to use this function for an integral vector results in a compile
-// time error.
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline const DynamicVector<Type,TF> DynamicVector<Type,TF>::getNormalized() const
-{
-   BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( Type );
-
-   const Type len( length( *this ) );
-
-   if( len == Type(0) )
-      return *this;
-
-   const Type ilen( Type(1) / len );
-   DynamicVector tmp( size_ );
-
-   for( size_t i=0UL; i<size_; ++i )
-      tmp[i] = v_[i] * ilen;
-
-   return tmp;
 }
 //*************************************************************************************************
 
