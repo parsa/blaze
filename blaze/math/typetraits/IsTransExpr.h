@@ -28,7 +28,7 @@
 //*************************************************************************************************
 
 #include <boost/type_traits/is_base_of.hpp>
-#include <boost/math/expressions/TransExpr.h>
+#include <blaze/math/expressions/TransExpr.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/TrueType.h>

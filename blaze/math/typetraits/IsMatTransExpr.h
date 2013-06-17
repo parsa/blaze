@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/typetraits/IsVecTransExpr.h
-//  \brief Header file for the IsVecTransExpr type trait class
+//  \file blaze/math/typetraits/IsMatTransExpr.h
+//  \brief Header file for the IsMatTransExpr type trait class
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TYPETRAITS_ISVECTRANSEXPR_H_
-#define _BLAZE_MATH_TYPETRAITS_ISVECTRANSEXPR_H_
+#ifndef _BLAZE_MATH_TYPETRAITS_ISMATTRANSEXPR_H_
+#define _BLAZE_MATH_TYPETRAITS_ISMATTRANSEXPR_H_
 
 
 //*************************************************************************************************
@@ -28,7 +28,7 @@
 //*************************************************************************************************
 
 #include <boost/type_traits/is_base_of.hpp>
-#include <blaze/math/expressions/VecTransExpr.h>
+#include <blaze/math/expressions/MatTransExpr.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/TrueType.h>
@@ -44,14 +44,14 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsVecTransExpr type trait.
+/*!\brief Auxiliary helper struct for the IsMatTransExpr type trait.
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsVecTransExprHelper
+struct IsMatTransExprHelper
 {
    //**********************************************************************************************
-   enum { value = boost::is_base_of<VecTransExpr,T>::value && !boost::is_base_of<T,VecTransExpr>::value };
+   enum { value = boost::is_base_of<MatTransExpr,T>::value && !boost::is_base_of<T,MatTransExpr>::value };
    typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
    //**********************************************************************************************
 };
@@ -60,25 +60,25 @@ struct IsVecTransExprHelper
 
 
 //*************************************************************************************************
-/*!\brief Compile time check whether the given type is a vector transposition expression template.
+/*!\brief Compile time check whether the given type is a matrix transposition expression template.
 // \ingroup math_type_traits
 //
-// This type trait class tests whether or not the given type \a Type is a vector transposition
-// expression template. In order to qualify as a valid vector transposition expression template,
-// the given type has to derive (publicly or privately) from the VecTransExpr base class. In
-// case the given type is a valid vector transposition expression template, the \a value member
+// This type trait class tests whether or not the given type \a Type is a matrix transposition
+// expression template. In order to qualify as a valid matrix transposition expression template,
+// the given type has to derive (publicly or privately) from the MatTransExpr base class. In
+// case the given type is a valid matrix transposition expression template, the \a value member
 // enumeration is set to 1, the nested type definition \a Type is \a TrueType, and the class
 // derives from \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and the
 // class derives from \a FalseType.
 */
 template< typename T >
-struct IsVecTransExpr : public IsVecTransExprHelper<T>::Type
+struct IsMatTransExpr : public IsMatTransExprHelper<T>::Type
 {
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { value = IsVecTransExprHelper<T>::value };
-   typedef typename IsVecTransExprHelper<T>::Type  Type;
+   enum { value = IsMatTransExprHelper<T>::value };
+   typedef typename IsMatTransExprHelper<T>::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };
