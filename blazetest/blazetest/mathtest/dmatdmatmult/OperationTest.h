@@ -32,12 +32,15 @@
 #include <string>
 #include <typeinfo>
 #include <blaze/math/CompressedMatrix.h>
+#include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseMatrix.h>
+#include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/StaticMatrix.h>
+#include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
@@ -108,6 +111,18 @@ class OperationTest
    typedef TSRRE                               TSRE;    //!< Transpose sparse result type
    typedef TORE                                TODRE;   //!< Transpose dense result type with opposite storage order
    typedef TOSRRE                              TOSRE;   //!< Transpose sparse result type with opposite storage order
+
+   //! Type of the matrix/matrix multiplication expression
+   typedef typename blaze::MultExprTrait<MT1,MT2>::Type  MatMatMultExprType;
+
+   //! Type of the matrix/transpose matrix multiplication expression
+   typedef typename blaze::MultExprTrait<MT1,OMT2>::Type  MatTMatMultExprType;
+
+   //! Type of the transpose matrix/matrix multiplication expression
+   typedef typename blaze::MultExprTrait<OMT1,MT2>::Type  TMatMatMultExprType;
+
+   //! Type of the transpose matrix/transpose matrix multiplication expression
+   typedef typename blaze::MultExprTrait<OMT1,OMT2>::Type  TMatTMatMultExprType;
    //**********************************************************************************************
 
  public:
@@ -241,6 +256,14 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT2, typename TMT2::TransposeType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RE , typename ORE::OppositeType   );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RE , typename TRE::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_MATMATMULTEXPR_TYPE( MatMatMultExprType   );
+   BLAZE_CONSTRAINT_MUST_BE_MATMATMULTEXPR_TYPE( MatTMatMultExprType  );
+   BLAZE_CONSTRAINT_MUST_BE_MATMATMULTEXPR_TYPE( TMatMatMultExprType  );
+   BLAZE_CONSTRAINT_MUST_BE_MATMATMULTEXPR_TYPE( TMatTMatMultExprType );
+   BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE( MatMatMultExprType   );
+   BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE( MatTMatMultExprType  );
+   BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE( TMatMatMultExprType  );
+   BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE( TMatTMatMultExprType );
    /*! \endcond */
    //**********************************************************************************************
 };

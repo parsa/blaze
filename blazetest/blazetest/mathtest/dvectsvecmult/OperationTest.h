@@ -32,14 +32,17 @@
 #include <string>
 #include <typeinfo>
 #include <blaze/math/CompressedVector.h>
+#include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/constraints/VecTVecMultExpr.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -106,6 +109,9 @@ class OperationTest
    typedef TRE                                 TSRE;    //!< Transpose sparse result type
    typedef TODRRE                              TODRE;   //!< Transpose dense result type with opposite storage order
    typedef TORE                                TOSRE;   //!< Transpose sparse result type with opposite storage order
+
+   //! Type of the outer product expression
+   typedef typename blaze::MultExprTrait<VT1,TVT2>::Type  VecTVecMultExprType;
    //**********************************************************************************************
 
  public:
@@ -227,6 +233,8 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT2, typename TVT2::TransposeType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RE , typename ORE::OppositeType   );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RE , typename TRE::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_VECTVECMULTEXPR_TYPE( VecTVecMultExprType );
+   BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE    ( VecTVecMultExprType );
    /*! \endcond */
    //**********************************************************************************************
 };

@@ -32,12 +32,15 @@
 #include <string>
 #include <typeinfo>
 #include <blaze/math/CompressedVector.h>
+#include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/constraints/CrossExpr.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/math/traits/CrossExprTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsTransposeVector.h>
@@ -93,6 +96,9 @@ class OperationTest
    typedef SRRE                                SRE;    //!< Sparse result type
    typedef TRE                                 TDRE;   //!< Transpose dense result type
    typedef TSRRE                               TSRE;   //!< Transpose sparse result type
+
+   //! Type of the cross product expression
+   typedef typename blaze::CrossExprTrait<VT1,VT2>::Type  CrossExprType;
    //**********************************************************************************************
 
  public:
@@ -185,6 +191,8 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE   ( TSRE  );
    BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE   ( TDRRE );
    BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE   ( TSRRE );
+   BLAZE_CONSTRAINT_MUST_BE_CROSSEXPR_TYPE  ( CrossExprType );
+   BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE( CrossExprType );
    /*! \endcond */
    //**********************************************************************************************
 };

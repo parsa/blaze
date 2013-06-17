@@ -32,14 +32,17 @@
 #include <string>
 #include <typeinfo>
 #include <blaze/math/CompressedMatrix.h>
+#include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/constraints/TVecMatMultExpr.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/StaticMatrix.h>
+#include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
@@ -99,6 +102,12 @@ class OperationTest
    typedef SRRE                               SRE;    //!< Sparse result type
    typedef TRE                                TDRE;   //!< Transpose dense result type
    typedef TSRRE                              TSRE;   //!< Transpose sparse result type
+
+   //! Type of the transpose vector/matrix multiplication expression
+   typedef typename blaze::MultExprTrait<TVT,MT>::Type  TVecMatMultExprType;
+
+   //! Type of the transpose vector/transpose matrix multiplication expression
+   typedef typename blaze::MultExprTrait<TVT,OMT>::Type  TVecTMatMultExprType;
    //**********************************************************************************************
 
  public:
@@ -204,6 +213,10 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT , typename TMT::TransposeType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT , typename TVT::TransposeType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RE , typename TRE::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_TVECMATMULTEXPR_TYPE( TVecMatMultExprType  );
+   BLAZE_CONSTRAINT_MUST_BE_TVECMATMULTEXPR_TYPE( TVecTMatMultExprType );
+   BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE( TVecMatMultExprType  );
+   BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE( TVecTMatMultExprType );
    /*! \endcond */
    //**********************************************************************************************
 };

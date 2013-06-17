@@ -32,12 +32,15 @@
 #include <string>
 #include <typeinfo>
 #include <blaze/math/CompressedVector.h>
+#include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/constraints/VecVecSubExpr.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsTransposeVector.h>
@@ -101,6 +104,12 @@ class OperationTest
    typedef RE                               SRE;    //!< Sparse result type
    typedef TDRRE                            TDRE;   //!< Transpose dense result type
    typedef TRE                              TSRE;   //!< Transpose sparse result type
+
+   //! Type of the vector/vector subtraction expression
+   typedef typename blaze::SubExprTrait<VT1,VT2>::Type  VecVecSubExprType;
+
+   //! Type of the transpose vector/transpose vector subtraction expression
+   typedef typename blaze::SubExprTrait<TVT1,TVT2>::Type  TVecTVecSubExprType;
    //**********************************************************************************************
 
  public:
@@ -207,6 +216,10 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET2, typename TVT2::ElementType   );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT1, typename TVT1::TransposeType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT2, typename TVT2::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_VECVECSUBEXPR_TYPE( VecVecSubExprType   );
+   BLAZE_CONSTRAINT_MUST_BE_VECVECSUBEXPR_TYPE( TVecTVecSubExprType );
+   BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE( VecVecSubExprType   );
+   BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE( TVecTVecSubExprType );
    /*! \endcond */
    //**********************************************************************************************
 };
