@@ -27,7 +27,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/Computation.h>
+#include <blaze/math/expressions/Expression.h>
 
 
 namespace blaze {
@@ -49,7 +49,7 @@ namespace blaze {
 // template. Only in case a class is derived from the SubExpr base class, the IsSubExpr type
 // trait recognizes the class as valid subtraction expression template.
 */
-struct SubExpr : private Computation
+struct SubExpr : private Expression
 {};
 //*************************************************************************************************
 

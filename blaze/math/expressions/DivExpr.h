@@ -27,7 +27,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/Computation.h>
+#include <blaze/math/expressions/Expression.h>
 
 
 namespace blaze {
@@ -49,7 +49,7 @@ namespace blaze {
 // template. Only in case a class is derived from the DivExpr base class, the IsDivExpr type
 // trait recognizes the class as valid division expression template.
 */
-struct DivExpr : private Computation
+struct DivExpr : private Expression
 {};
 //*************************************************************************************************
 

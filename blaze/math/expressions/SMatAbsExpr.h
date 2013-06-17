@@ -33,8 +33,8 @@
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/Computation.h>
-#include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/expressions/MatAbsExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AbsExprTrait.h>
@@ -70,7 +70,7 @@ namespace blaze {
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
-                  , private Expression
+                  , private MatAbsExpr
                   , private Computation
 {
  private:

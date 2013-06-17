@@ -27,7 +27,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/Computation.h>
+#include <blaze/math/expressions/Expression.h>
 
 
 namespace blaze {
@@ -49,7 +49,7 @@ namespace blaze {
 // the CrossExpr base class, the IsCrossExpr type trait recognizes the class as valid cross
 // product expression template.
 */
-struct CrossExpr : private Computation
+struct CrossExpr : private Expression
 {};
 //*************************************************************************************************
 

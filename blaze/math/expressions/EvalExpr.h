@@ -27,7 +27,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/Computation.h>
+#include <blaze/math/expressions/Expression.h>
 
 
 namespace blaze {
@@ -49,7 +49,7 @@ namespace blaze {
 // base class, the IsEvalExpr type trait recognizes the class as valid evaluation expression
 // template.
 */
-struct EvalExpr : private Computation
+struct EvalExpr : private Expression
 {};
 //*************************************************************************************************
 

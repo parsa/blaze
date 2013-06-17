@@ -32,8 +32,8 @@
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/dense/StaticVector.h>
 #include <blaze/math/expressions/Computation.h>
+#include <blaze/math/expressions/CrossExpr.h>
 #include <blaze/math/expressions/DenseVector.h>
-#include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
@@ -66,7 +66,7 @@ namespace blaze {
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
 class DVecDVecCrossExpr : public DenseVector< DVecDVecCrossExpr<VT1,VT2>, false >
-                        , private Expression
+                        , private CrossExpr
                         , private Computation
 {
  private:

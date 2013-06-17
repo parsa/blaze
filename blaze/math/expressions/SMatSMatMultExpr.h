@@ -35,8 +35,8 @@
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/dense/DynamicVector.h>
 #include <blaze/math/expressions/Computation.h>
-#include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/expressions/MatMatMultExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Infinity.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -86,7 +86,7 @@ namespace blaze {
 template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
 class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
-                       , private Expression
+                       , private MatMatMultExpr
                        , private Computation
 {
  private:

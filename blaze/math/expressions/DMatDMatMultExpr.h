@@ -34,8 +34,9 @@
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
-#include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/expressions/MatMatMultExpr.h>
+#include <blaze/math/expressions/MatScalarMultExpr.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Reset.h>
@@ -95,7 +96,7 @@ namespace blaze {
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
 class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
-                       , private Expression
+                       , private MatMatMultExpr
                        , private Computation
 {
  private:
@@ -1924,7 +1925,7 @@ template< typename MT1   // Type of the left-hand side dense matrix
         , typename ST >  // Type of the right-hand side scalar value
 class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    : public DenseMatrix< DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >, false >
-   , private Expression
+   , private MatScalarMultExpr
    , private Computation
 {
  private:

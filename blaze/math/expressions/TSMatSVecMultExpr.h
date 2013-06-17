@@ -35,8 +35,8 @@
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/expressions/Computation.h>
-#include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/expressions/MatVecMultExpr.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
@@ -73,7 +73,7 @@ namespace blaze {
 template< typename MT    // Type of the left-hand side sparse matrix
         , typename VT >  // Type of the right-hand side sparse vector
 class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
-                        , private Expression
+                        , private MatVecMultExpr
                         , private Computation
 {
  private:

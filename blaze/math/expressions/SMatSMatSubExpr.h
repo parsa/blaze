@@ -32,9 +32,9 @@
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/Computation.h>
-#include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/expressions/MatMatSubExpr.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
@@ -69,7 +69,7 @@ namespace blaze {
 template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
 class SMatSMatSubExpr : public SparseMatrix< SMatSMatSubExpr<MT1,MT2>, false >
-                      , private Expression
+                      , private MatMatSubExpr
                       , private Computation
 {
  private:

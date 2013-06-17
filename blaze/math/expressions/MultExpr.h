@@ -27,7 +27,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/Computation.h>
+#include <blaze/math/expressions/Expression.h>
 
 
 namespace blaze {
@@ -50,7 +50,7 @@ namespace blaze {
 // expression template. Only in case a class is derived from the MultExpr base class, the
 // IsMultExpr type trait recognizes the class as valid multiplication expression template.
 */
-struct MultExpr : private Computation
+struct MultExpr : private Expression
 {};
 //*************************************************************************************************
 

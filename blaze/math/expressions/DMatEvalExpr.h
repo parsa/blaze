@@ -32,8 +32,8 @@
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseMatrix.h>
-#include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/expressions/MatEvalExpr.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/EvalExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
@@ -64,7 +64,7 @@ namespace blaze {
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 class DMatEvalExpr : public DenseMatrix< DMatEvalExpr<MT,SO>, SO >
-                   , private Expression
+                   , private MatEvalExpr
                    , private Computation
 {
  public:

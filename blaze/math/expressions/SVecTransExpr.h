@@ -32,10 +32,10 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DVecTransposer.h>
-#include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/SVecTransposer.h>
+#include <blaze/math/expressions/VecTransExpr.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
@@ -64,7 +64,7 @@ namespace blaze {
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
-                    , private Expression
+                    , private VecTransExpr
                     , private SelectType< IsComputation<VT>::value, Computation, EmptyType >::Type
 {
  private:

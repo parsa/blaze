@@ -32,8 +32,8 @@
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/Computation.h>
-#include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/expressions/MatScalarDivExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
@@ -134,7 +134,7 @@ template< typename MT  // Type of the left-hand side sparse matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO >    // Storage order
 class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
-                        , private Expression
+                        , private MatScalarDivExpr
                         , private Computation
 {
  private:

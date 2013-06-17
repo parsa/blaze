@@ -27,7 +27,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/Computation.h>
+#include <blaze/math/expressions/Expression.h>
 
 
 namespace blaze {
@@ -49,7 +49,7 @@ namespace blaze {
 // case a class is derived from the AddExpr base class, the IsAddExpr type trait recognizes the
 // class as valid addition expression template.
 */
-struct AddExpr : private Computation
+struct AddExpr : private Expression
 {};
 //*************************************************************************************************
 

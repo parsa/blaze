@@ -33,8 +33,8 @@
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseMatrix.h>
-#include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/expressions/MatMatSubExpr.h>
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
@@ -71,7 +71,7 @@ namespace blaze {
 template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
 class SMatTDMatSubExpr : public DenseMatrix< SMatTDMatSubExpr<MT1,MT2>, false >
-                       , private Expression
+                       , private MatMatSubExpr
                        , private Computation
 {
  private:

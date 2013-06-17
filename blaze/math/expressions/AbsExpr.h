@@ -27,7 +27,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/Computation.h>
+#include <blaze/math/expressions/Expression.h>
 
 
 namespace blaze {
@@ -49,7 +49,7 @@ namespace blaze {
 // derived from the AbsExpr base class, the IsAbsExpr type trait recognizes the class as
 // valid absolute value expression template.
 */
-struct AbsExpr : private Computation
+struct AbsExpr : private Expression
 {};
 //*************************************************************************************************
 
