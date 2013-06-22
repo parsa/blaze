@@ -45,7 +45,14 @@ namespace blaze {
 // \ingroup intrinsics
 */
 /*! \cond BLAZE_INTERNAL */
-#if BLAZE_SSE2_MODE
+#if BLAZE_AVX2_MODE
+union sse_int8_t {
+   inline sse_int8_t() : value( _mm256_setzero_si256() ) {}
+   inline sse_int8_t( __m256i v ) : value( v ) {}
+   __m256i value;
+   int8_t values[32];
+};
+#elif BLAZE_SSE2_MODE
 union sse_int8_t {
    inline sse_int8_t() : value( _mm_setzero_si128() ) {}
    inline sse_int8_t( __m128i v ) : value( v ) {}
@@ -70,7 +77,14 @@ union sse_int8_t {
 // \ingroup intrinsics
 */
 /*! \cond BLAZE_INTERNAL */
-#if BLAZE_SSE2_MODE
+#if BLAZE_AVX2_MODE
+union sse_int16_t {
+   inline sse_int16_t() : value( _mm256_setzero_si256() ) {}
+   inline sse_int16_t( __m256i v ) : value( v ) {}
+   __m256i value;
+   int16_t values[16];
+};
+#elif BLAZE_SSE2_MODE
 union sse_int16_t {
    inline sse_int16_t() : value( _mm_setzero_si128() ) {}
    inline sse_int16_t( __m128i v ) : value( v ) {}
@@ -101,6 +115,13 @@ union sse_int32_t {
    inline sse_int32_t( __m512i v ) : value( v ) {}
    __m512i value;
    int32_t values[16];
+};
+#elif BLAZE_AVX2_MODE
+union sse_int32_t {
+   inline sse_int32_t() : value( _mm256_setzero_si256() ) {}
+   inline sse_int32_t( __m256i v ) : value( v ) {}
+   __m256i value;
+   int32_t values[8];
 };
 #elif BLAZE_SSE2_MODE
 union sse_int32_t {
@@ -133,6 +154,13 @@ union sse_int64_t {
    inline sse_int64_t( __m512i v ) : value( v ) {}
    __m512i value;
    int64_t values[8];
+};
+#elif BLAZE_AVX2_MODE
+union sse_int64_t {
+   inline sse_int64_t() : value( _mm256_setzero_si256() ) {}
+   inline sse_int64_t( __m256i v ) : value( v ) {}
+   __m256i value;
+   int64_t values[4];
 };
 #elif BLAZE_SSE2_MODE
 union sse_int64_t {

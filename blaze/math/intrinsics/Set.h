@@ -82,7 +82,9 @@ struct Set<T,2UL>
    //**Set function********************************************************************************
    static inline Type set( T value )
    {
-#if BLAZE_SSE2_MODE
+#if BLAZE_AVX2_MODE
+      return _mm256_set1_epi16( value );
+#elif BLAZE_SSE2_MODE
       return _mm_set1_epi16( value );
 #else
       return value;
@@ -117,6 +119,8 @@ struct Set<T,4UL>
    {
 #if BLAZE_MIC_MODE
       return _mm512_set1_epi32( value );
+#elif BLAZE_AVX2_MODE
+      return _mm256_set1_epi32( value );
 #elif BLAZE_SSE2_MODE
       return _mm_set1_epi32( value );
 #else
@@ -152,6 +156,8 @@ struct Set<T,8UL>
    {
 #if BLAZE_MIC_MODE
       return _mm512_set1_epi64( value );
+#elif BLAZE_AVX2_MODE
+      return _mm256_set1_epi64x( value );
 #elif BLAZE_SSE2_MODE
       return _mm_set1_epi64( value );
 #else

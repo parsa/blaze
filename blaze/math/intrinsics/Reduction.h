@@ -48,7 +48,13 @@ namespace blaze {
 */
 inline int16_t sum( const sse_int16_t& a )
 {
-#if BLAZE_SSSE3_MODE
+#if BLAZE_AVX2_MODE
+   const sse_int16_t b( _mm256_hadd_epi16( a.value, a.value ) );
+   const sse_int16_t c( _mm256_hadd_epi16( b.value, b.value ) );
+   const sse_int16_t d( _mm256_hadd_epi16( c.value, c.value ) );
+   const sse_int16_t e( _mm256_hadd_epi16( d.value, d.value ) );
+   return e.values[0];
+#elif BLAZE_SSSE3_MODE
    const sse_int16_t b( _mm_hadd_epi16( a.value, a.value ) );
    const sse_int16_t c( _mm_hadd_epi16( b.value, b.value ) );
    const sse_int16_t d( _mm_hadd_epi16( c.value, c.value ) );
@@ -74,6 +80,11 @@ inline int32_t sum( const sse_int32_t& a )
 {
 #if BLAZE_MIC_MODE
    return _mm512_reduce_add_epi32( a.value );
+#elif BLAZE_AVX2_MODE
+   const sse_int32_t b( _mm256_hadd_epi32( a.value, a.value ) );
+   const sse_int32_t c( _mm256_hadd_epi32( b.value, b.value ) );
+   const sse_int32_t d( _mm256_hadd_epi32( c.value, c.value ) );
+   return d.values[0];
 #elif BLAZE_SSSE3_MODE
    const sse_int32_t b( _mm_hadd_epi32( a.value, a.value ) );
    const sse_int32_t c( _mm_hadd_epi32( b.value, b.value ) );

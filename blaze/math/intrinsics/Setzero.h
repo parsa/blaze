@@ -48,7 +48,9 @@ namespace blaze {
 */
 inline void setzero( sse_int8_t& value )
 {
-#if BLAZE_SSE2_MODE
+#if BLAZE_AVX2_MODE
+   value.value = _mm256_setzero_si256();
+#elif BLAZE_SSE2_MODE
    value.value = _mm_setzero_si128();
 #else
    value = 0;
@@ -66,7 +68,9 @@ inline void setzero( sse_int8_t& value )
 */
 inline void setzero( sse_int16_t& value )
 {
-#if BLAZE_SSE2_MODE
+#if BLAZE_AVX2_MODE
+   value.value = _mm256_setzero_si256();
+#elif BLAZE_SSE2_MODE
    value.value = _mm_setzero_si128();
 #else
    value = 0;
@@ -86,6 +90,8 @@ inline void setzero( sse_int32_t& value )
 {
 #if BLAZE_MIC_MODE
    value.value = _mm512_setzero_epi32();
+#elif BLAZE_AVX2_MODE
+   value.value = _mm256_setzero_si256();
 #elif BLAZE_SSE2_MODE
    value.value = _mm_setzero_si128();
 #else
@@ -106,6 +112,8 @@ inline void setzero( sse_int64_t& value )
 {
 #if BLAZE_MIC_MODE
    value.value = _mm512_setzero_epi32();
+#elif BLAZE_AVX2_MODE
+   value.value = _mm256_setzero_si256();
 #elif BLAZE_SSE2_MODE
    value.value = _mm_setzero_si128();
 #else

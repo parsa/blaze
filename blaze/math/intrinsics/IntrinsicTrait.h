@@ -31,8 +31,6 @@
 #include <blaze/math/intrinsics/BasicTypes.h>
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/AlignmentTrait.h>
-#include <blaze/util/constraints/Const.h>
-#include <blaze/util/constraints/Volatile.h>
 
 
 namespace blaze {
@@ -62,6 +60,17 @@ struct IntrinsicTraitHelper;
 /*!\brief Specialization of the IntrinsicTraitHelper class template for 1-byte integral data types.
 // \ingroup intrinsics
 */
+#if BLAZE_AVX2_MODE
+template<>
+struct IntrinsicTraitHelper<1UL>
+{
+   typedef sse_int8_t  Type;
+   enum { size           = 32,
+          addition       = 1,
+          subtraction    = 1,
+          multiplication = 0 };
+};
+#else
 template<>
 struct IntrinsicTraitHelper<1UL>
 {
@@ -71,6 +80,7 @@ struct IntrinsicTraitHelper<1UL>
           subtraction    = BLAZE_SSE2_MODE,
           multiplication = 0 };
 };
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -80,6 +90,17 @@ struct IntrinsicTraitHelper<1UL>
 /*!\brief Specialization of the IntrinsicTraitHelper class template for 2-byte integral data types.
 // \ingroup intrinsics
 */
+#if BLAZE_AVX2_MODE
+template<>
+struct IntrinsicTraitHelper<2UL>
+{
+   typedef sse_int16_t  Type;
+   enum { size           = 16,
+          addition       = 1,
+          subtraction    = 1,
+          multiplication = 1 };
+};
+#else
 template<>
 struct IntrinsicTraitHelper<2UL>
 {
@@ -89,6 +110,7 @@ struct IntrinsicTraitHelper<2UL>
           subtraction    = BLAZE_SSE2_MODE,
           multiplication = BLAZE_SSE2_MODE };
 };
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -99,10 +121,21 @@ struct IntrinsicTraitHelper<2UL>
 // \ingroup intrinsics
 */
 #if BLAZE_MIC_MODE
+template<>
 struct IntrinsicTraitHelper<4UL>
 {
    typedef sse_int32_t  Type;
    enum { size           = 16,
+          addition       = 1,
+          subtraction    = 1,
+          multiplication = 1 };
+};
+#elif BLAZE_AVX2_MODE
+template<>
+struct IntrinsicTraitHelper<4UL>
+{
+   typedef sse_int32_t  Type;
+   enum { size           = 8,
           addition       = 1,
           subtraction    = 1,
           multiplication = 1 };
@@ -135,6 +168,16 @@ struct IntrinsicTraitHelper<8UL>
    enum { size           = 8,
           addition       = 1,
           subtraction    = 0,
+          multiplication = 0 };
+};
+#elif BLAZE_AVX2_MODE
+template<>
+struct IntrinsicTraitHelper<8UL>
+{
+   typedef sse_int64_t  Type;
+   enum { size           = 4,
+          addition       = 1,
+          subtraction    = 1,
           multiplication = 0 };
 };
 #else
@@ -432,14 +475,7 @@ struct IntrinsicTraitBase<double>
 */
 template< typename T >
 class IntrinsicTrait : public IntrinsicTraitBase< typename boost::remove_cv<T>::type >
-{
-   //**Compile time checks*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST   ( T );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE( T );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+{};
 //*************************************************************************************************
 
 } // namespace blaze

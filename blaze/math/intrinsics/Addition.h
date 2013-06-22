@@ -48,7 +48,12 @@ namespace blaze {
 // \param b The right-hand side operand.
 // \return The result of the addition.
 */
-#if BLAZE_SSE2_MODE
+#if BLAZE_AVX2_MODE
+inline sse_int8_t operator+( const sse_int8_t& a, const sse_int8_t& b )
+{
+   return _mm256_add_epi8( a.value, b.value );
+}
+#elif BLAZE_SSE2_MODE
 inline sse_int8_t operator+( const sse_int8_t& a, const sse_int8_t& b )
 {
    return _mm_add_epi8( a.value, b.value );
@@ -66,7 +71,12 @@ inline sse_int8_t operator+( const sse_int8_t& a, const sse_int8_t& b )
 // \param b The right-hand side operand.
 // \return The result of the addition.
 */
-#if BLAZE_SSE2_MODE
+#if BLAZE_AVX2_MODE
+inline sse_int16_t operator+( const sse_int16_t& a, const sse_int16_t& b )
+{
+   return _mm256_add_epi16( a.value, b.value );
+}
+#elif BLAZE_SSE2_MODE
 inline sse_int16_t operator+( const sse_int16_t& a, const sse_int16_t& b )
 {
    return _mm_add_epi16( a.value, b.value );
@@ -88,6 +98,11 @@ inline sse_int16_t operator+( const sse_int16_t& a, const sse_int16_t& b )
 inline sse_int32_t operator+( const sse_int32_t& a, const sse_int32_t& b )
 {
    return _mm512_add_epi32( a.value, b.value );
+}
+#elif BLAZE_AVX2_MODE
+inline sse_int32_t operator+( const sse_int32_t& a, const sse_int32_t& b )
+{
+   return _mm256_add_epi32( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
 inline sse_int32_t operator+( const sse_int32_t& a, const sse_int32_t& b )
@@ -111,6 +126,11 @@ inline sse_int32_t operator+( const sse_int32_t& a, const sse_int32_t& b )
 inline sse_int64_t operator+( const sse_int64_t& a, const sse_int64_t& b )
 {
    return _mm512_add_epi64( a.value, b.value );
+}
+#elif BLAZE_AVX2_MODE
+inline sse_int64_t operator+( const sse_int64_t& a, const sse_int64_t& b )
+{
+   return _mm256_add_epi64( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
 inline sse_int64_t operator+( const sse_int64_t& a, const sse_int64_t& b )

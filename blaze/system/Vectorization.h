@@ -140,6 +140,23 @@
 
 
 //*************************************************************************************************
+/*!\brief Compilation switch for the AVX2 mode.
+// \ingroup system
+//
+// This compilation switch enables/disables the AVX2 mode. In case the AVX2 mode is enabled
+// (i.e. in case AVX2 functionality is available) the Blaze library attempts to vectorize
+// the linear algebra operations by AVX2 intrinsics. In case the AVX2 mode is disabled,
+// the Blaze library chooses default, non-vectorized functionality for the operations.
+*/
+#if BLAZE_USE_VECTORIZATION && defined(__AVX2__)
+#  define BLAZE_AVX2_MODE 1
+#else
+#  define BLAZE_AVX2_MODE 0
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Compilation switch for the MIC mode.
 // \ingroup system
 //
@@ -164,7 +181,7 @@
 //
 //=================================================================================================
 
-#if BLAZE_MIC_MODE || BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE || BLAZE_AVX_MODE || BLAZE_AVX2_MODE
 #  include <immintrin.h>
 #elif BLAZE_SSE4_MODE
 #  include <smmintrin.h>

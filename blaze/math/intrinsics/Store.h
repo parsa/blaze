@@ -82,7 +82,10 @@ struct Store<T,2UL>
    //**Set function********************************************************************************
    static inline void store( T* address, const Type& value )
    {
-#if BLAZE_SSE2_MODE
+#if BLAZE_AVX2_MODE
+      BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
+      _mm256_store_si256( reinterpret_cast<__m256i*>( address ), value.value );
+#elif BLAZE_SSE2_MODE
       BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 16UL ), "Invalid alignment detected" );
       _mm_store_si128( reinterpret_cast<__m128i*>( address ), value.value );
 #else
@@ -119,6 +122,9 @@ struct Store<T,4UL>
 #if BLAZE_MIC_MODE
       BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 64UL ), "Invalid alignment detected" );
       _mm512_store_epi32( address, value.value );
+#elif BLAZE_AVX2_MODE
+      BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
+      _mm256_store_si256( reinterpret_cast<__m256i*>( address ), value.value );
 #elif BLAZE_SSE2_MODE
       BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 16UL ), "Invalid alignment detected" );
       _mm_store_si128( reinterpret_cast<__m128i*>( address ), value.value );
@@ -156,6 +162,9 @@ struct Store<T,8UL>
 #if BLAZE_MIC_MODE
       BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 64UL ), "Invalid alignment detected" );
       _mm512_store_epi64( address, value.value );
+#elif BLAZE_AVX2_MODE
+      BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
+      _mm256_store_si256( reinterpret_cast<__m256i*>( address ), value.value );
 #elif BLAZE_SSE2_MODE
       BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 16UL ), "Invalid alignment detected" );
       _mm_store_si128( reinterpret_cast<__m128i*>( address ), value.value );

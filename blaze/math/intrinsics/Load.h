@@ -82,7 +82,10 @@ struct Load<T,2UL>
    //**Set function********************************************************************************
    static inline Type load( const T* address )
    {
-#if BLAZE_SSE2_MODE
+#if BLAZE_AVX2_MODE
+      BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
+      return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
+#elif BLAZE_SSE2_MODE
       BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 16UL ), "Invalid alignment detected" );
       return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
 #else
@@ -119,6 +122,9 @@ struct Load<T,4UL>
 #if BLAZE_MIC_MODE
       BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 64UL ), "Invalid alignment detected" );
       return _mm512_load_epi32( address );
+#elif BLAZE_AVX2_MODE
+      BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
+      return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
 #elif BLAZE_SSE2_MODE
       BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 16UL ), "Invalid alignment detected" );
       return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
@@ -156,6 +162,9 @@ struct Load<T,8UL>
 #if BLAZE_MIC_MODE
       BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 64UL ), "Invalid alignment detected" );
       return _mm512_load_epi64( address );
+#elif BLAZE_AVX2_MODE
+      BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
+      return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
 #elif BLAZE_SSE2_MODE
       BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 16UL ), "Invalid alignment detected" );
       return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
