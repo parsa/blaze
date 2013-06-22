@@ -89,10 +89,10 @@ class ClassTest
    void testFind        ();
    void testResize      ();
    void testReserve     ();
-   void testLength      ();
-   void testNormalize   ();
    void testScale       ();
    void testSwap        ();
+   void testLength      ();
+   void testNormalize   ();
    void testMinimum     ();
    void testMaximum     ();
 

@@ -86,9 +86,10 @@ class ClassTest
    void testSubscript   ();
    void testNonZeros    ();
    void testReset       ();
-   void testNormalize   ();
    void testScale       ();
    void testSwap        ();
+   void testLength      ();
+   void testNormalize   ();
    void testMinimum     ();
    void testMaximum     ();
 

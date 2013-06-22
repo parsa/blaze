@@ -69,10 +69,10 @@ ClassTest::ClassTest()
    testFind();
    testResize();
    testReserve();
-   testLength();
-   testNormalize();
    testScale();
    testSwap();
+   testLength();
+   testNormalize();
    testMinimum();
    testMaximum();
 }
@@ -1577,132 +1577,6 @@ void ClassTest::testReserve()
 
 
 //*************************************************************************************************
-/*!\brief Test of the length and sqrLength member functions of CompressedVector.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the length and sqrLength member functions of
-// CompressedVector. In case an error is detected, a \a std::runtime_error exception
-// is thrown.
-*/
-void ClassTest::testLength()
-{
-   test_ = "CompressedVector::length()";
-
-   // Initialization check
-   blaze::CompressedVector<double,blaze::rowVector> vec( 5UL, 2UL );
-   vec[1] = 3.0;
-   vec[4] = 4.0;
-
-   checkSize    ( vec, 5UL );
-   checkCapacity( vec, 2UL );
-   checkNonZeros( vec, 2UL );
-
-   if( vec[1] != 3.0 || vec[4] != 4.0 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Initialization failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 3 4 )\n";
-      throw std::runtime_error( oss.str() );
-   }
-
-   // Computing the vector length
-   const double length( vec.length() );
-
-   if( !blaze::equal( length, 5.0 ) ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Length computation failed\n"
-          << " Details:\n"
-          << "   Result: " << length << "\n"
-          << "   Expected result: 5\n";
-      throw std::runtime_error( oss.str() );
-   }
-
-   // Computing the vector square length
-   const double sqrLength( vec.sqrLength() );
-
-   if( !blaze::equal( vec.sqrLength(), 25.0 ) ) {
-      std::ostringstream oss;
-      oss << " Test: CompressedVector::sqrLength()\n"
-          << " Error: Square length computation failed\n"
-          << " Details:\n"
-          << "   Result: " << sqrLength << "\n"
-          << "   Expected result: 25\n";
-      throw std::runtime_error( oss.str() );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the normalize and getNormalized member functions of the CompressedVector class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the normalize and getNormalized member functions of
-// the CompressedVector class template. In case an error is detected, a \a std::runtime_error
-// exception is thrown.
-*/
-void ClassTest::testNormalize()
-{
-   test_ = "CompressedVector::normalize()";
-
-   // Initialization check
-   blaze::CompressedVector<double,blaze::rowVector> vec( 10UL, 4UL );
-   vec[0] = 1.0;
-   vec[1] = 2.0;
-   vec[2] = 3.0;
-   vec[3] = 4.0;
-
-   checkSize    ( vec, 10UL );
-   checkCapacity( vec,  4UL );
-   checkNonZeros( vec,  4UL );
-
-   if( vec[0] != 1.0 || vec[1] != 2.0 || vec[2] != 3.0 || vec[3] != 4.0 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Initialization failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 1 2 3 4 0 0 0 0 0 0 )\n";
-      throw std::runtime_error( oss.str() );
-   }
-
-   // Acquiring normalized vector
-   const blaze::CompressedVector<double,blaze::rowVector> normalized( vec.getNormalized() );
-
-   if( !blaze::equal( normalized.length(), 1.0 ) ) {
-      std::ostringstream oss;
-      oss << " Test: CompressedVector::getNormalized()\n"
-          << " Error: Normalization failed\n"
-          << " Details:\n"
-          << "   Result: " << normalized.length() << "\n"
-          << "   Expected result: 1\n";
-      throw std::runtime_error( oss.str() );
-   }
-
-   // Normalizing the vector
-   vec.normalize();
-
-   if( !blaze::equal( vec.length(), 1.0 ) ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Normalization failed\n"
-          << " Details:\n"
-          << "   Result: " << vec.length() << "\n"
-          << "   Expected result: 1\n";
-      throw std::runtime_error( oss.str() );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Test of the scale member function of CompressedVector.
 //
 // \return void
@@ -1857,13 +1731,187 @@ void ClassTest::testSwap()
 
 
 //*************************************************************************************************
+/*!\brief Test of the length and sqrLength functions with the CompressedVector class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the length and sqrLength functions with the CompressedVector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testLength()
+{
+   test_ = "length() and sqrLength() functions";
+
+   {
+      // Initialization check
+      blaze::CompressedVector<double,blaze::rowVector> vec;
+
+      // Computing the vector length
+      const double len( length( vec ) );
+
+      if( !blaze::equal( len, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Length computation failed\n"
+             << " Details:\n"
+             << "   Result: " << len << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Computing the vector square length
+      const double sqrlen( sqrLength( vec ) );
+
+      if( !blaze::equal( sqrLength( vec ), 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Square length computation failed\n"
+             << " Details:\n"
+             << "   Result: " << sqrlen << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      // Initialization check
+      blaze::CompressedVector<double,blaze::rowVector> vec( 5UL );
+
+      // Computing the vector length
+      const double len( length( vec ) );
+
+      if( !blaze::equal( len, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Length computation failed\n"
+             << " Details:\n"
+             << "   Result: " << len << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Computing the vector square length
+      const double sqrlen( sqrLength( vec ) );
+
+      if( !blaze::equal( sqrLength( vec ), 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Square length computation failed\n"
+             << " Details:\n"
+             << "   Result: " << sqrlen << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      // Initialization check
+      blaze::CompressedVector<double,blaze::rowVector> vec( 5UL, 2UL );
+      vec[1] = 3.0;
+      vec[4] = 4.0;
+
+      // Computing the vector length
+      const double len( length( vec ) );
+
+      if( !blaze::equal( len, 5.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Length computation failed\n"
+             << " Details:\n"
+             << "   Result: " << len << "\n"
+             << "   Expected result: 5\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Computing the vector square length
+      const double sqrlen( sqrLength( vec ) );
+
+      if( !blaze::equal( sqrLength( vec ), 25.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Square length computation failed\n"
+             << " Details:\n"
+             << "   Result: " << sqrlen << "\n"
+             << "   Expected result: 25\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the normalize function with the CompressedVector class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the normalize function with the CompressedVector class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testNormalize()
+{
+   test_ = "normalize() function";
+
+   // Initialization check
+   blaze::CompressedVector<double,blaze::rowVector> vec( 10UL, 4UL );
+   vec[0] = 1.0;
+   vec[1] = 2.0;
+   vec[2] = 3.0;
+   vec[3] = 4.0;
+
+   checkSize    ( vec, 10UL );
+   checkCapacity( vec,  4UL );
+   checkNonZeros( vec,  4UL );
+
+   if( vec[0] != 1.0 || vec[1] != 2.0 || vec[2] != 3.0 || vec[3] != 4.0 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Initialization failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 1 2 3 4 0 0 0 0 0 0 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Acquiring normalized vector
+   const blaze::CompressedVector<double,blaze::rowVector> normalized( normalize( vec ) );
+
+   if( !blaze::equal( length( normalized ), 1.0 ) ) {
+      std::ostringstream oss;
+      oss << " Test: CompressedVector::getNormalized()\n"
+          << " Error: Normalization failed\n"
+          << " Details:\n"
+          << "   Result: " << length( normalized ) << "\n"
+          << "   Expected result: 1\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Normalizing the vector
+   vec = normalize( vec );
+
+   if( !blaze::equal( length( vec ), 1.0 ) ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Normalization failed\n"
+          << " Details:\n"
+          << "   Result: " << length( vec ) << "\n"
+          << "   Expected result: 1\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the min function with the CompressedVector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the min function used with the CompressedVector class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the min function with the CompressedVector class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testMinimum()
 {
@@ -1935,8 +1983,8 @@ void ClassTest::testMinimum()
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the max function used with the CompressedVector class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the max function with the CompressedVector class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testMaximum()
 {

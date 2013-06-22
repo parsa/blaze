@@ -77,9 +77,10 @@ ClassTest::ClassTest()
    testSubscript();
    testNonZeros();
    testReset();
-   testNormalize();
    testScale();
    testSwap();
+   testLength();
+   testNormalize();
    testMinimum();
    testMaximum();
 }
@@ -979,66 +980,6 @@ void ClassTest::testReset()
 
 
 //*************************************************************************************************
-/*!\brief Test of the normalize functionality of the StaticVector class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the normalize and getNormalized functions of the
-// StaticVector class template. In case an error is detected, a \a std::runtime_error
-// exception is thrown.
-*/
-void ClassTest::testNormalize()
-{
-   test_ = "StaticVector::normalize()";
-
-   // Initialization check
-   blaze::StaticVector<double,4UL,blaze::rowVector> vec( 1.0, 2.0, 3.0, 4.0 );
-
-   checkSize    ( vec, 4UL );
-   checkCapacity( vec, 4UL );
-   checkNonZeros( vec, 4UL );
-
-   if( vec[0] != 1.0 || vec[1] != 2.0 || vec[2] != 3.0 || vec[3] != 4.0 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Initialization failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 1 2 3 4 )\n";
-      throw std::runtime_error( oss.str() );
-   }
-
-   // Acquiring normalized vector
-   const blaze::StaticVector<double,4UL,blaze::rowVector> normalized( vec.getNormalized() );
-
-   if( !blaze::equal( normalized.length(), 1.0 ) ) {
-      std::ostringstream oss;
-      oss << " Test: StaticVector::getNormalized()\n"
-          << " Error: Normalization failed\n"
-          << " Details:\n"
-          << "   Result: " << normalized.length() << "\n"
-          << "   Expected result: 1\n";
-      throw std::runtime_error( oss.str() );
-   }
-
-   // Normalizing the vector
-   vec.normalize();
-
-   if( !blaze::equal( vec.length(), 1.0 ) ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Normalization failed\n"
-          << " Details:\n"
-          << "   Result: " << vec.length() << "\n"
-          << "   Expected result: 1\n";
-      throw std::runtime_error( oss.str() );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Test of the scale member function of StaticVector.
 //
 // \return void
@@ -1180,13 +1121,148 @@ void ClassTest::testSwap()
 
 
 //*************************************************************************************************
+/*!\brief Test of the length and sqrLength functions with the StaticVector class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the length and sqrLength functions with the StaticVector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testLength()
+{
+   test_ = "length() and sqrLength() functions";
+
+   {
+      blaze::StaticVector<double,2UL,blaze::rowVector> vec;
+
+      // Computing the vector length
+      const double len( length( vec ) );
+
+      if( !blaze::equal( len, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Length computation failed\n"
+             << " Details:\n"
+             << "   Result: " << len << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Computing the vector square length
+      const double sqrlen( sqrLength( vec ) );
+
+      if( !blaze::equal( sqrlen, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Square length computation failed\n"
+             << " Details:\n"
+             << "   Result: " << sqrlen << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::StaticVector<double,2UL,blaze::rowVector> vec( 3.0, 4.0 );
+
+      // Computing the vector length
+      const double len( length( vec ) );
+
+      if( !blaze::equal( len, 5.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Length computation failed\n"
+             << " Details:\n"
+             << "   Result: " << len << "\n"
+             << "   Expected result: 5\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Computing the vector square length
+      const double sqrlen( sqrLength( vec ) );
+
+      if( !blaze::equal( sqrlen, 25.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Square length computation failed\n"
+             << " Details:\n"
+             << "   Result: " << sqrlen << "\n"
+             << "   Expected result: 25\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the normalize function with the StaticVector class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the normalize function with the StaticVector class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testNormalize()
+{
+   test_ = "normalize() function";
+
+   // Initialization check
+   blaze::StaticVector<double,4UL,blaze::rowVector> vec( 1.0, 2.0, 3.0, 4.0 );
+
+   checkSize    ( vec, 4UL );
+   checkCapacity( vec, 4UL );
+   checkNonZeros( vec, 4UL );
+
+   if( vec[0] != 1.0 || vec[1] != 2.0 || vec[2] != 3.0 || vec[3] != 4.0 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Initialization failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 1 2 3 4 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Acquiring normalized vector
+   const blaze::StaticVector<double,4UL,blaze::rowVector> normalized( normalize( vec ) );
+
+   if( !blaze::equal( length( normalized ), 1.0 ) ) {
+      std::ostringstream oss;
+      oss << " Test: StaticVector::getNormalized()\n"
+          << " Error: Normalization failed\n"
+          << " Details:\n"
+          << "   Result: " << length( normalized ) << "\n"
+          << "   Expected result: 1\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Normalizing the vector
+   vec = normalize( vec );
+
+   if( !blaze::equal( length( vec ), 1.0 ) ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Normalization failed\n"
+          << " Details:\n"
+          << "   Result: " << length( vec ) << "\n"
+          << "   Expected result: 1\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the min function with the StaticVector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the min function used with the StaticVector class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the min function with the StaticVector class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testMinimum()
 {
@@ -1265,8 +1341,8 @@ void ClassTest::testMinimum()
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the max function used with the StaticVector class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the max function with the StaticVector class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testMaximum()
 {
