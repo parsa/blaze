@@ -462,56 +462,6 @@ inline const DMatAbsExpr<MT,SO> abs( const DenseMatrix<MT,SO>& dm )
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given dense matrix abs operation.
-// \ingroup views
-//
-// \param dm The constant dense matrix abs operation.
-// \param index The index of the row.
-// \return View on the specified row of the abs operation.
-//
-// This function returns an expression representing the specified row of the given dense
-// matrix abs operation.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline typename RowExprTrait< DMatAbsExpr<MT,SO> >::Type
-   row( const DMatAbsExpr<MT,SO>& dm, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return abs( row( dm.operand(), index ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given dense matrix abs operation.
-// \ingroup views
-//
-// \param dm The constant dense matrix abs operation.
-// \param index The index of the column.
-// \return View on the specified column of the abs operation.
-//
-// This function returns an expression representing the specified column of the given dense
-// matrix abs operation.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline typename ColumnExprTrait< DMatAbsExpr<MT,SO> >::Type
-   column( const DMatAbsExpr<MT,SO>& dm, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return abs( column( dm.operand(), index ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
 
 
 //=================================================================================================

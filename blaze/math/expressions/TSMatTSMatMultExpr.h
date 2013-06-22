@@ -713,66 +713,6 @@ inline const TSMatTSMatMultExpr<T1,T2>
 
 //=================================================================================================
 //
-//  GLOBAL OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given transpose sparse matrix/transpose
-//        sparse matrix multiplication.
-// \ingroup views
-//
-// \param sm The constant transpose sparse matrix/transpose sparse matrix multiplication.
-// \param index The index of the row.
-// \return View on the specified row of the multiplication.
-//
-// This function returns an expression representing the specified row of the given transpose
-// sparse matrix/transpose sparse matrix multiplication.
-*/
-template< typename T1    // Type of the left-hand side sparse matrix
-        , typename T2 >  // Type of the right-hand side sparse matrix
-inline typename RowExprTrait< TSMatTSMatMultExpr<T1,T2> >::Type
-   row( const TSMatTSMatMultExpr<T1,T2>& sm, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return row( sm.leftOperand(), index ) * sm.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given transpose sparse matrix/transpose
-//        sparse matrix multiplication.
-// \ingroup views
-//
-// \param sm The constant transpose sparse matrix/transpose sparse matrix multiplication.
-// \param index The index of the column.
-// \return View on the specified column of the multiplication.
-//
-// This function returns an expression representing the specified column of the given transpose
-// sparse matrix/transpose sparse matrix multiplication.
-*/
-template< typename T1    // Type of the left-hand side sparse matrix
-        , typename T2 >  // Type of the right-hand side sparse matrix
-inline typename ColumnExprTrait< TSMatTSMatMultExpr<T1,T2> >::Type
-   column( const TSMatTSMatMultExpr<T1,T2>& sm, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return sm.leftOperand() * column( sm.rightOperand(), index );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================

@@ -1214,66 +1214,6 @@ inline const typename MultExprTrait< SMatScalarMultExpr<MT1,ST1,SO1>, SMatScalar
 
 //=================================================================================================
 //
-//  GLOBAL OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given sparse matrix/scalar multiplication.
-// \ingroup views
-//
-// \param sm The constant sparse matrix/scalar multiplication.
-// \param index The index of the row.
-// \return View on the specified row of the multiplication.
-//
-// This function returns an expression representing the specified row of the given sparse
-// matrix/scalar multiplication.
-*/
-template< typename MT  // Type of the left-hand side sparse matrix
-        , typename ST  // Type of the right-hand side scalar value
-        , bool SO >    // Storage order
-inline typename RowExprTrait< SMatScalarMultExpr<MT,ST,SO> >::Type
-   row( const SMatScalarMultExpr<MT,ST,SO>& sm, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return row( sm.leftOperand(), index ) * sm.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given sparse matrix/scalar multiplication.
-// \ingroup views
-//
-// \param sm The constant sparse matrix/scalar multiplication.
-// \param index The index of the column.
-// \return View on the specified column of the multiplication.
-//
-// This function returns an expression representing the specified column of the given sparse
-// matrix/scalar multiplication.
-*/
-template< typename MT  // Type of the left-hand side sparse matrix
-        , typename ST  // Type of the right-hand side scalar value
-        , bool SO >    // Storage order
-inline typename ColumnExprTrait< SMatScalarMultExpr<MT,ST,SO> >::Type
-   column( const SMatScalarMultExpr<MT,ST,SO>& sm, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return column( sm.leftOperand(), index ) * sm.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  SMATSCALARMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================

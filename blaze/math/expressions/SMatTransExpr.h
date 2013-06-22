@@ -561,56 +561,6 @@ inline const SMatTransExpr<MT,!SO> trans( const SparseMatrix<MT,SO>& sm )
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given sparse matrix transpose operation.
-// \ingroup views
-//
-// \param sm The constant sparse matrix trans operation.
-// \param index The index of the row.
-// \return View on the specified row of the transpose operation.
-//
-// This function returns an expression representing the specified row of the given sparse
-// matrix transpose operation.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline typename RowExprTrait< SMatTransExpr<MT,SO> >::Type
-   row( const SMatTransExpr<MT,SO>& sm, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return trans( column( sm.operand(), index ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given sparse matrix transpose operation.
-// \ingroup views
-//
-// \param sm The constant sparse matrix trans operation.
-// \param index The index of the column.
-// \return View on the specified column of the transpose operation.
-//
-// This function returns an expression representing the specified column of the given sparse
-// matrix transpose operation.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline typename ColumnExprTrait< SMatTransExpr<MT,SO> >::Type
-   column( const SMatTransExpr<MT,SO>& sm, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return trans( row( sm.operand(), index ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
 
 
 //=================================================================================================

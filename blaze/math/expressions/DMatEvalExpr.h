@@ -381,56 +381,6 @@ inline const DMatEvalExpr<MT,SO> eval( const DenseMatrix<MT,SO>& dm )
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given dense matrix evaluation operation.
-// \ingroup views
-//
-// \param dm The constant dense matrix evaluation operation.
-// \param index The index of the row.
-// \return View on the specified row of the evaluation operation.
-//
-// This function returns an expression representing the specified row of the given dense
-// matrix evaluation operation.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline typename RowExprTrait< DMatEvalExpr<MT,SO> >::Type
-   row( const DMatEvalExpr<MT,SO>& dm, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return eval( row( dm.operand(), index ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given dense matrix evaluation operation.
-// \ingroup views
-//
-// \param dm The constant dense matrix evaluation operation.
-// \param index The index of the column.
-// \return View on the specified column of the evaluation operation.
-//
-// This function returns an expression representing the specified column of the given dense
-// matrix evaluation operation.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline typename ColumnExprTrait< DMatEvalExpr<MT,SO> >::Type
-   column( const DMatEvalExpr<MT,SO>& dm, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return eval( column( dm.operand(), index ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
 
 
 //=================================================================================================

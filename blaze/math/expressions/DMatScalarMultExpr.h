@@ -1220,66 +1220,6 @@ inline const typename MultExprTrait< SMatScalarMultExpr<MT1,ST1,SO1>, DMatScalar
 
 //=================================================================================================
 //
-//  GLOBAL OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given dense matrix/scalar multiplication.
-// \ingroup views
-//
-// \param dm The constant dense matrix/scalar multiplication.
-// \param index The index of the row.
-// \return View on the specified row of the multiplication.
-//
-// This function returns an expression representing the specified row of the given dense
-// matrix/scalar multiplication.
-*/
-template< typename MT  // Type of the left-hand side dense matrix
-        , typename ST  // Type of the right-hand side scalar value
-        , bool SO >    // Storage order
-inline typename RowExprTrait< DMatScalarMultExpr<MT,ST,SO> >::Type
-   row( const DMatScalarMultExpr<MT,ST,SO>& dm, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return row( dm.leftOperand(), index ) * dm.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given dense matrix/scalar multiplication.
-// \ingroup views
-//
-// \param dm The constant dense matrix/scalar multiplication.
-// \param index The index of the column.
-// \return View on the specified column of the multiplication.
-//
-// This function returns an expression representing the specified column of the given dense
-// matrix/scalar multiplication.
-*/
-template< typename MT  // Type of the left-hand side dense matrix
-        , typename ST  // Type of the right-hand side scalar value
-        , bool SO >    // Storage order
-inline typename ColumnExprTrait< DMatScalarMultExpr<MT,ST,SO> >::Type
-   column( const DMatScalarMultExpr<MT,ST,SO>& dm, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return column( dm.leftOperand(), index ) * dm.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  DMATSCALARMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================

@@ -783,66 +783,6 @@ inline const typename EnableIf< IsNumeric<ST2>
 
 //=================================================================================================
 //
-//  GLOBAL OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given sparse matrix/scalar division.
-// \ingroup views
-//
-// \param dm The constant sparse matrix/scalar division.
-// \param index The index of the row.
-// \return View on the specified row of the division.
-//
-// This function returns an expression representing the specified row of the given sparse
-// matrix/scalar division.
-*/
-template< typename MT  // Type of the left-hand side sparse matrix
-        , typename ST  // Type of the right-hand side scalar value
-        , bool SO >    // Storage order
-inline typename RowExprTrait< SMatScalarDivExpr<MT,ST,SO> >::Type
-   row( const SMatScalarDivExpr<MT,ST,SO>& dm, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return row( dm.leftOperand(), index ) / dm.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given sparse matrix/scalar division.
-// \ingroup views
-//
-// \param dm The constant sparse matrix/scalar division.
-// \param index The index of the column.
-// \return View on the specified column of the division.
-//
-// This function returns an expression representing the specified column of the given sparse
-// matrix/scalar division.
-*/
-template< typename MT  // Type of the left-hand side sparse matrix
-        , typename ST  // Type of the right-hand side scalar value
-        , bool SO >    // Storage order
-inline typename ColumnExprTrait< SMatScalarDivExpr<MT,ST,SO> >::Type
-   column( const SMatScalarDivExpr<MT,ST,SO>& dm, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return column( dm.leftOperand(), index ) / dm.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  SMATSCALARMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================

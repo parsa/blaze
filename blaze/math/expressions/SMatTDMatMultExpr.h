@@ -601,66 +601,6 @@ inline const SMatTDMatMultExpr<T1,T2>
 
 //=================================================================================================
 //
-//  GLOBAL OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given sparse matrix/transpose dense matrix
-//        multiplication.
-// \ingroup views
-//
-// \param dm The constant sparse matrix/transpose dense matrix multiplication.
-// \param index The index of the row.
-// \return View on the specified row of the multiplication.
-//
-// This function returns an expression representing the specified row of the given sparse
-// matrix/transpose dense matrix multiplication.
-*/
-template< typename MT1    // Type of the left-hand side sparse matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
-inline typename RowExprTrait< SMatTDMatMultExpr<MT1,MT2> >::Type
-   row( const SMatTDMatMultExpr<MT1,MT2>& dm, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return row( dm.leftOperand(), index ) * dm.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given sparse matrix/transpose dense matrix
-//        multiplication.
-// \ingroup views
-//
-// \param dm The constant sparse matrix/transpose dense matrix multiplication.
-// \param index The index of the column.
-// \return View on the specified column of the multiplication.
-//
-// This function returns an expression representing the specified column of the given sparse
-// matrix/transpose dense matrix multiplication.
-*/
-template< typename MT1    // Type of the left-hand side sparse matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
-inline typename ColumnExprTrait< SMatTDMatMultExpr<MT1,MT2> >::Type
-   column( const SMatTDMatMultExpr<MT1,MT2>& dm, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return dm.leftOperand() * column( dm.rightOperand(), index );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================

@@ -494,66 +494,6 @@ inline const typename SubExprTrait< DMatSMatSubExpr<T1,T2,SO1>, T3 >::Type
 
 //=================================================================================================
 //
-//  GLOBAL OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given dense matrix/sparse matrix subtraction.
-// \ingroup views
-//
-// \param dm The constant dense matrix/sparse matrix subtraction.
-// \param index The index of the row.
-// \return View on the specified row of the subtraction.
-//
-// This function returns an expression representing the specified row of the given dense
-// matrix/sparse matrix subtraction.
-*/
-template< typename MT1  // Type of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side sparse matrix
-        , bool SO >     // Storage order
-inline typename RowExprTrait< DMatSMatSubExpr<MT1,MT2,SO> >::Type
-   row( const DMatSMatSubExpr<MT1,MT2,SO>& dm, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return row( dm.leftOperand(), index ) - row( dm.rightOperand(), index );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given dense matrix/sparse matrix subtraction.
-// \ingroup views
-//
-// \param dm The constant dense matrix/sparse matrix subtraction.
-// \param index The index of the column.
-// \return View on the specified column of the subtraction.
-//
-// This function returns an expression representing the specified column of the given dense
-// matrix/sparse matrix subtraction.
-*/
-template< typename MT1  // Type of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side sparse matrix
-        , bool SO >     // Storage order
-inline typename ColumnExprTrait< DMatSMatSubExpr<MT1,MT2,SO> >::Type
-   column( const DMatSMatSubExpr<MT1,MT2,SO>& dm, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return column( dm.leftOperand(), index ) - column( dm.rightOperand(), index );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================

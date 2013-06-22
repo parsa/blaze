@@ -687,66 +687,6 @@ inline const typename EnableIf< IsNumeric<ST2>
 
 //=================================================================================================
 //
-//  GLOBAL OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given dense matrix/scalar division.
-// \ingroup views
-//
-// \param dm The constant dense matrix/scalar division.
-// \param index The index of the row.
-// \return View on the specified row of the division.
-//
-// This function returns an expression representing the specified row of the given dense
-// matrix/scalar division.
-*/
-template< typename MT  // Type of the left-hand side dense matrix
-        , typename ST  // Type of the right-hand side scalar value
-        , bool SO >    // Storage order
-inline typename RowExprTrait< DMatScalarDivExpr<MT,ST,SO> >::Type
-   row( const DMatScalarDivExpr<MT,ST,SO>& dm, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return row( dm.leftOperand(), index ) / dm.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given dense matrix/scalar division.
-// \ingroup views
-//
-// \param dm The constant dense matrix/scalar division.
-// \param index The index of the column.
-// \return View on the specified column of the division.
-//
-// This function returns an expression representing the specified column of the given dense
-// matrix/scalar division.
-*/
-template< typename MT  // Type of the left-hand side dense matrix
-        , typename ST  // Type of the right-hand side scalar value
-        , bool SO >    // Storage order
-inline typename ColumnExprTrait< DMatScalarDivExpr<MT,ST,SO> >::Type
-   column( const DMatScalarDivExpr<MT,ST,SO>& dm, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return column( dm.leftOperand(), index ) / dm.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  DMATSCALARMULTEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
