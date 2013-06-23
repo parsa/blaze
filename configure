@@ -77,12 +77,6 @@ if test $LIBRARY != "static" && test $LIBRARY != "shared" && test $LIBRARY != "b
    exit 1
 fi
 
-# Checking the compiler settings
-if test $COMPILER != "gcc" && test $COMPILER != "intel"; then
-   echo "Unknown compiler selected. Choose either 'gcc' or 'intel'."
-   exit 1
-fi
-
 # Checking the settings for the BLAS module
 if test $BLAS != "yes" && test $BLAS != "no"; then
    echo "Invalid setting for the BLAS module."
@@ -114,14 +108,6 @@ DOCDIR="\$(INSTALL_PATH)/doc"
 ############################
 # Generating the Makefile
 
-if test $COMPILER = "gcc"; then
-   CXX="g++"
-   CXXFLAGS="-Werror -Wall -Wextra -Wshadow -Woverloaded-virtual -Wno-unused-local-typedefs -ansi --param inline-unit-growth=150 --param max-inline-insns-single=500 --param large-function-growth=600 -O3 $COMPILER_FLAGS"
-fi
-if test $COMPILER = "intel"; then
-   CXX="icpc"
-   CXXFLAGS="-Werror -Wshadow -w1 -ansi $COMPILER_FLAGS"
-fi
 if test $VERSION = "debug"; then
    CXXFLAGS="$CXXFLAGS -g"
 else
@@ -150,6 +136,29 @@ fi
 if test $LIBRARY = "both"; then
    LIBS="static shared"
 fi
+
+LIBRARIES=$LIBRARY_DIRECTIVES
+
+BOOST_LIBRARY_PATH=${BOOST_LIBRARY_PATH%"/"}
+if [ -n "$BOOST_LIBRARY_PATH" ] && [[ ! "$LIBRARIES" =~ "$BOOST_LIBRARY_PATH " ]]; then
+   LIBRARIES="${LIBRARIES%" "} -L$BOOST_LIBRARY_PATH "
+fi
+
+BOOST_SYSTEM_LIBRARY=${BOOST_SYSTEM_LIBRARY#"lib"}
+if [ -n "$BOOST_SYSTEM_LIBRARY" ]; then
+   LIBRARIES="${LIBRARIES%" "} -l$BOOST_SYSTEM_LIBRARY"
+else
+   LIBRARIES="${LIBRARIES%" "} -lboost_system"
+fi
+
+BOOST_THREAD_LIBRARY=${BOOST_THREAD_LIBRARY#"lib"}
+if [ -n "$BOOST_THREAD_LIBRARY" ]; then
+   LIBRARIES="${LIBRARIES%" "} -l$BOOST_THREAD_LIBRARY"
+else
+   LIBRARIES="${LIBRARIES%" "} -lboost_thread"
+fi
+
+LIBRARIES=${LIBRARIES%" "}
 
 MODULES="util math"
 
@@ -208,20 +217,19 @@ cat >> Makefile <<EOF
 
 # Build rules
 default: $LIBS
+	@echo
 
 static: $MODULES
 	@echo
 	@echo "Creating static library"
 	@$AR $LIBDIR/$STATIC_LIB \$(OBJECT_PATH)/*.o
 	@echo "... finished!"
-	@echo
 
 shared: $MODULES
 	@echo
 	@echo "Creating shared library"
-	@g++ -shared -o $LIBDIR/$SHARED_LIB \$(OBJECT_PATH)/*.o
+	@g++ -shared -o $LIBDIR/$SHARED_LIB \$(OBJECT_PATH)/*.o $LIBRARIES
 	@echo "... finished!"
-	@echo
 
 util:
 	@echo

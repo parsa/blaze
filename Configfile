@@ -23,26 +23,41 @@
 #   release: Release version (default)
 VERSION="release"
 
-# Library configuration:
-# This selection configures which libraries are created during the compilation process. Note
-# that in case both the static and shared library are built the static library also consists
-# of position-independent code. Note also that any change of this setting may require a clean
-# up via 'make clean'.
+# Compiler selection
+# This switch specifies the compiler that is used to compile the Blaze library. The default
+# compiler is the GNU C++ compiler (g++). Other possible options are for instance the Intel
+# C++ compiler (icpc), or the Clang compiler (clang).
+CXX="g++"
+
+# Compiler flags
+# This setting specifies the compilation flags used to build the Blaze library. Depending
+# on the selected compiler it is recommended to use at least the following selection of
+# compilation flags:
+#   g++/clang: -Werror -Wall -Wextra -Wshadow -Woverloaded-virtual -ansi -O3
+#   icpc     : -Werror -Wshadow -w1 -ansi
+# In addition to these general flags, it is possible to specify additional architecture
+# specific flags. In order to achieve maximum performance, it is recommended to specify
+# the available architecture specific instruction set (for instance, -mavx for the GNU
+# C++ compiler to active the AVX instruction set).
+CXXFLAGS="-Werror -Wall -Wextra -Wshadow -Woverloaded-virtual -ansi -O3"
+
+# Library configuration
+# This selection configures which libraries are created during the compilation process.
+# Note that in case both the static and shared library are built the static library also
+# consists of position-independent code. Note also that any change of this setting may
+# require a clean up via 'make clean'.
 #   static: Only create the static Blaze library (default)
 #   shared: Only create the shared Blaze library
 #   both  : Create both static and shared library
 LIBRARY="static"
 
-# Compiler selection:
-#   gcc  : GCC compiler (default)
-#   intel: Intel compiler
-COMPILER="gcc"
+# Library settings (optional)
+# In case the shared Blaze library is built, on some systems it can be necessary to
+# specify additional library paths and add additional libraries. This can be done via
+# this setting.
+LIBRARY_DIRECTIVES=
 
-# Special compiler flags:
-# This setting offers the option to pass additional, specific flags to the compiler.
-COMPILER_FLAGS=
-
-# Specification of the cache size:
+# Specification of the cache size
 # Via this setting it is possible to specify the size of the outermost cache level. It
 # influences the choice of the evaluation strategy of mathematical expression to achieve
 # the highest possible performance. The value must be given in Bytes. For instance, a
@@ -55,8 +70,17 @@ CACHE_SIZE=
 # is not possible to compile the library without boost. Blaze requires you to have at
 # least the boost version 1.39.0 or higher installed on your system. In case the boost
 # include directory is not set, it is assumed that the boost headers are installed in
-# standard paths (as for instance '/usr/include/boost').
+# standard paths (as for instance '/usr/include/boost'). Additionally, in case a shared
+# Blaze library is built it is necessary to specify the boost library path and the name
+# of the boost system and thread libraries (as for instance 'boost_thread-mt'). In case
+# the library path is not specified, it is assumed that the libraries are installed in
+# standard paths (for example '/usr/lib/' or '/usr/lib64/'). If the name of a library is
+# not specified, it is assumed that the library has a default name ('libboost_system.*'
+# and 'libboost_thread.*', respectively).
 BOOST_INCLUDE_PATH=
+BOOST_LIBRARY_PATH=
+BOOST_SYSTEM_LIBRARY=
+BOOST_THREAD_LIBRARY=
 
 # Configuration of the BLAS library (optional)
 # The Blaze library offers the possibilty to use a BLAS library for certain basic linear
