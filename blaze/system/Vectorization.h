@@ -27,6 +27,7 @@
 //*************************************************************************************************
 
 #include <blaze/config/Vectorization.h>
+#include <blaze/util/StaticAssert.h>
 
 
 
@@ -170,6 +171,30 @@
 #else
 #  define BLAZE_MIC_MODE 0
 #endif
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  COMPILE TIME CONSTRAINTS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+namespace {
+
+BLAZE_STATIC_ASSERT( !BLAZE_SSE2_MODE  || BLAZE_SSE_MODE   );
+BLAZE_STATIC_ASSERT( !BLAZE_SSE3_MODE  || BLAZE_SSE2_MODE  );
+BLAZE_STATIC_ASSERT( !BLAZE_SSSE3_MODE || BLAZE_SSE3_MODE  );
+BLAZE_STATIC_ASSERT( !BLAZE_SSE4_MODE  || BLAZE_SSSE3_MODE );
+BLAZE_STATIC_ASSERT( !BLAZE_AVX_MODE   || BLAZE_SSE4_MODE  );
+BLAZE_STATIC_ASSERT( !BLAZE_AVX2_MODE  || BLAZE_AVX_MODE   );
+
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
