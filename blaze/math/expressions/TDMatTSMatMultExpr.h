@@ -562,9 +562,6 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
 
       const size_t M( A.rows() );
 
-      const size_t iend( M & size_t(-4) );
-      BLAZE_INTERNAL_ASSERT( ( M - ( M % 4UL ) ) == iend, "Invalid end calculation" );
-
       reset( ~C );
 
       for( size_t j=0UL; j<B.columns(); ++j )
@@ -869,9 +866,6 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
 
       const size_t M( A.rows() );
 
-      const size_t iend( M & size_t(-4) );
-      BLAZE_INTERNAL_ASSERT( ( M - ( M % 4UL ) ) == iend, "Invalid end calculation" );
-
       for( size_t j=0UL; j<B.columns(); ++j )
       {
          const ConstIterator end( B.end(j) );
@@ -1141,9 +1135,6 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
       typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
 
       const size_t M( A.rows() );
-
-      const size_t iend( M & size_t(-4) );
-      BLAZE_INTERNAL_ASSERT( ( M - ( M % 4UL ) ) == iend, "Invalid end calculation" );
 
       for( size_t j=0UL; j<B.columns(); ++j )
       {

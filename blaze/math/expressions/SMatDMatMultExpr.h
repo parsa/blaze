@@ -490,9 +490,6 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
 
       const size_t N( B.columns() );
 
-      const size_t jend( N & size_t(-4) );
-      BLAZE_INTERNAL_ASSERT( ( N - ( N % 4UL ) ) == jend, "Invalid end calculation" );
-
       reset( ~C );
 
       for( size_t i=0UL; i<A.rows(); ++i )
@@ -817,9 +814,6 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
 
       const size_t N( B.columns() );
 
-      const size_t jend( N & size_t(-4) );
-      BLAZE_INTERNAL_ASSERT( ( N - ( N % 4UL ) ) == jend, "Invalid end calculation" );
-
       for( size_t i=0UL; i<A.rows(); ++i )
       {
          const ConstIterator end( A.end(i) );
@@ -1089,9 +1083,6 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
       typedef typename boost::remove_reference<LT>::type::ConstIterator  ConstIterator;
 
       const size_t N( B.columns() );
-
-      const size_t jend( N & size_t(-4) );
-      BLAZE_INTERNAL_ASSERT( ( N - ( N % 4UL ) ) == jend, "Invalid end calculation" );
 
       for( size_t i=0UL; i<A.rows(); ++i )
       {
