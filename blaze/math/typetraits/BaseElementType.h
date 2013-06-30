@@ -28,7 +28,8 @@
 //*************************************************************************************************
 
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsComplex.h>
 
 
 namespace blaze {
@@ -48,6 +49,7 @@ namespace blaze {
 
    \code
    blaze::BaseElementType< double >::Type                              // corresponds to double
+   blaze::BaseElementType< complex<float> >::Type                      // corresponds to float
    blaze::BaseElementType< StaticVector<int,3UL> >::Type               // corresponds to int
    blaze::BaseElementType< CompressedVector< DynamicVector<float> > >  // corresponds to float
    \endcode
@@ -60,10 +62,17 @@ template< typename T >
 struct BaseElementType
 {
  private:
-   //**struct Numeric******************************************************************************
+   //**struct Builtin******************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T2 >
-   struct Numeric { typedef T2  Type; };
+   struct Builtin { typedef T2  Type; };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**struct Complex******************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   template< typename T2 >
+   struct Complex { typedef typename BaseElementType<typename T2::value_type>::Type  Type; };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -77,7 +86,13 @@ struct BaseElementType
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< IsNumeric<T>, Numeric<T>, Other<T> >::Type::Type  Type;
+   typedef typename If< IsBuiltin<T>
+                     , Builtin<T>
+                     , typename If< IsComplex<T>
+                                  , Complex<T>
+                                  , Other<T>
+                                  >::Type
+                     >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };
