@@ -953,7 +953,43 @@ namespace blaze {}
    v1 += trans( v2 );  // OK: Addition assignment of two column vectors
    \endcode
 
+// \n \section vector_operations_length Vector Length
+// <hr>
+//
+// In order to calculate the length of a vector, both the \c length() and \c sqrLength() function
+// can be used:
+
+   \code
+   blaze::StaticVector<float,3UL,rowVector> v( -1.2F, 2.7F, -2.3F );
+
+   const float len    = length   ( v );  // Computes the current length of the vector
+   const float sqrlen = sqrLength( v );  // Computes the square length of the vector
+   \endcode
+
+// Note that both functions can only be used for vectors with built-in or complex element type!
+//
+// \n \section vector_operations_normalize Normalize
+// <hr>
+//
+// The \c normalize() function can be used to scale any non-zero vector to a length of 1. In
+// case the vector does not contain a single non-zero element (i.e. is a zero vector), the
+// \c normalize() function returns a zero vector.
+
+   \code
+   blaze::DynamicVector<float,columnVector>     v1( 10UL );
+   blaze::CompressedVector<double,columnVector> v2( 12UL );
+
+   v1 = normalize( v1 );  // Normalizing the dense vector v1
+   length( v1 );          // Returns 1 (or 0 in case of a zero vector)
+   v1 = normalize( v2 );  // Assigning v1 the normalized vector v2
+   length( v1 );          // Returns 1 (or 0 in case of a zero vector)
+   \endcode
+
+// Note that the \c normalize() function only works for floating point vectors. The attempt to
+// use it for an integral vector results in a compile time error.
+//
 // \n \section vector_operations_swap Swap
+// <hr>
 //
 // Via the \c swap() function it is possible to completely swap the contents of two vectors of
 // the same type:
