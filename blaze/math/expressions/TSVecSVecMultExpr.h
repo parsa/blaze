@@ -82,8 +82,8 @@ inline const typename MultTrait<typename T1::ElementType,typename T2::ElementTyp
 
    typedef typename T1::CompositeType           Lhs;            // Composite type of the left-hand side sparse vector expression
    typedef typename T2::CompositeType           Rhs;            // Composite type of the right-hand side sparse vector expression
-   typedef typename RemoveReference<Lhs>::type  X1;             // Auxiliary type for the left-hand side composite type
-   typedef typename RemoveReference<Rhs>::type  X2;             // Auxiliary type for the right-hand side composite type
+   typedef typename RemoveReference<Lhs>::Type  X1;             // Auxiliary type for the left-hand side composite type
+   typedef typename RemoveReference<Rhs>::Type  X2;             // Auxiliary type for the right-hand side composite type
    typedef typename X1::ElementType             E1;             // Element type of the left-hand side sparse vector expression
    typedef typename X2::ElementType             E2;             // Element type of the right-hand side sparse vector expression
    typedef typename MultTrait<E1,E2>::Type      MultType;       // Multiplication result type
