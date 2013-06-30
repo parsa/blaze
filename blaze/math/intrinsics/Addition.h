@@ -196,6 +196,52 @@ inline sse_double_t operator+( const sse_double_t& a, const sse_double_t& b )
 #endif
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\fn sse_cfloat_t operator+( sse_cfloat_t, sse_cfloat_t )
+// \brief Addition of two vectors of single precision complex values.
+// \ingroup intrinsics
+//
+// \param a The left-hand side operand.
+// \param b The right-hand side operand.
+// \return The result of the addition.
+*/
+#if BLAZE_AVX_MODE
+inline sse_cfloat_t operator+( const sse_cfloat_t& a, const sse_cfloat_t& b )
+{
+   return _mm256_add_ps( a.value, b.value );
+}
+#elif BLAZE_SSE_MODE
+inline sse_cfloat_t operator+( const sse_cfloat_t& a, const sse_cfloat_t& b )
+{
+   return _mm_add_ps( a.value, b.value );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\fn sse_cdouble_t operator+( sse_cdouble_t, sse_cdouble_t )
+// \brief Addition of two vectors of double precision complex values.
+// \ingroup intrinsics
+//
+// \param a The left-hand side operand.
+// \param b The right-hand side operand.
+// \return The result of the addition.
+*/
+#if BLAZE_AVX_MODE
+inline sse_cdouble_t operator+( const sse_cdouble_t& a, const sse_cdouble_t& b )
+{
+   return _mm256_add_pd( a.value, b.value );
+}
+#elif BLAZE_SSE2_MODE
+inline sse_cdouble_t operator+( const sse_cdouble_t& a, const sse_cdouble_t& b )
+{
+   return _mm_add_pd( a.value, b.value );
+}
+#endif
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

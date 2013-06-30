@@ -32,6 +32,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Integral.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/StaticAssert.h>
 
 
 namespace blaze {
@@ -239,6 +240,49 @@ inline sse_double_t set( double value )
 #else
    return value;
 #endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Sets all values in the vector to the given 'complex<float>' value.
+// \ingroup intrinsics
+//
+// \param value The given 'complex<float>' value.
+// \return The set vector of 'complex<float>' values.
+*/
+inline sse_cfloat_t set( const complex<float>& value )
+{
+#if BLAZE_AVX_MODE
+   return _mm256_set_ps( value.imag(), value.real(), value.imag(), value.real(),
+                         value.imag(), value.real(), value.imag(), value.real() );
+#elif BLAZE_SSE_MODE
+   return _mm_set_ps( value.imag(), value.real(), value.imag(), value.real() );
+#else
+   return value;
+#endif
+   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Sets all values in the vector to the given 'complex<double>' value.
+// \ingroup intrinsics
+//
+// \param value The given 'complex<double>' value.
+// \return The set vector of 'complex<double>' values.
+*/
+inline sse_cdouble_t set( const complex<double>& value )
+{
+#if BLAZE_AVX_MODE
+   return _mm256_set_pd( value.imag(), value.real(), value.imag(), value.real() );
+#elif BLAZE_SSE2_MODE
+   return _mm_set_pd( value.imag(), value.real() );
+#else
+   return value;
+#endif
+   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 }
 //*************************************************************************************************
 

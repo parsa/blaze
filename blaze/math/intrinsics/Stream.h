@@ -32,6 +32,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Integral.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/StaticAssert.h>
 
 
 namespace blaze {
@@ -256,6 +257,54 @@ inline void stream( double* address, const sse_double_t& value )
 #else
    *address = value.value;
 #endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Aligned, non-temporal store of a vector of 'complex<float>' values.
+// \ingroup intrinsics
+//
+// \param address The target address.
+// \param value The 'complex<float>' vector to be streamed.
+// \return void
+*/
+inline void stream( complex<float>* address, const sse_cfloat_t& value )
+{
+#if BLAZE_AVX_MODE
+   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
+   _mm256_stream_ps( reinterpret_cast<float*>( address ), value.value );
+#elif BLAZE_SSE_MODE
+   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 16UL ), "Invalid alignment detected" );
+   _mm_stream_ps( reinterpret_cast<float*>( address ), value.value );
+#else
+   *address = value.value;
+#endif
+   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Aligned, non-temporal store of a vector of 'complex<double>' values.
+// \ingroup intrinsics
+//
+// \param address The target address.
+// \param value The 'complex<double>' vector to be streamed.
+// \return void
+*/
+inline void stream( complex<double>* address, const sse_cdouble_t& value )
+{
+#if BLAZE_AVX_MODE
+   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
+   _mm256_stream_pd( reinterpret_cast<double*>( address ), value.value );
+#elif BLAZE_SSE2_MODE
+   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 16UL ), "Invalid alignment detected" );
+   _mm_stream_pd( reinterpret_cast<double*>( address ), value.value );
+#else
+   *address = value.value;
+#endif
+   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 }
 //*************************************************************************************************
 

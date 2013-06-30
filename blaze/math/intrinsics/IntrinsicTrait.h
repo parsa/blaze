@@ -31,6 +31,8 @@
 #include <blaze/math/intrinsics/BasicTypes.h>
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/AlignmentTrait.h>
+#include <blaze/util/Complex.h>
+#include <blaze/util/StaticAssert.h>
 
 
 namespace blaze {
@@ -436,9 +438,81 @@ struct IntrinsicTraitBase<double>
    typedef sse_double_t  Type;
    enum { size           = ( BLAZE_SSE_MODE )?( 16UL / sizeof(double) ):( 1 ),
           alignment      = AlignmentTrait<double>::value,
+          addition       = BLAZE_SSE2_MODE,
+          subtraction    = BLAZE_SSE2_MODE,
+          multiplication = BLAZE_SSE2_MODE };
+};
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<float>'.
+// \ingroup intrinsics
+*/
+#if BLAZE_AVX_MODE
+template<>
+struct IntrinsicTraitBase< complex<float> >
+{
+   typedef sse_cfloat_t  Type;
+   enum { size           = ( 32UL / sizeof(complex<float>) ),
+          alignment      = AlignmentTrait< complex<float> >::value,
+          addition       = 1,
+          subtraction    = 1,
+          multiplication = 1 };
+
+   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+};
+#else
+template<>
+struct IntrinsicTraitBase< complex<float> >
+{
+   typedef sse_cfloat_t  Type;
+   enum { size           = ( BLAZE_SSE_MODE )?( 16UL / sizeof(complex<float>) ):( 1 ),
+          alignment      = AlignmentTrait< complex<float> >::value,
           addition       = BLAZE_SSE_MODE,
           subtraction    = BLAZE_SSE_MODE,
-          multiplication = BLAZE_SSE_MODE };
+          multiplication = BLAZE_SSE3_MODE };
+
+   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+};
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<double>'.
+// \ingroup intrinsics
+*/
+#if BLAZE_AVX_MODE
+template<>
+struct IntrinsicTraitBase< complex<double> >
+{
+   typedef sse_cdouble_t  Type;
+   enum { size           = ( 32UL / sizeof(complex<double>) ),
+          alignment      = AlignmentTrait< complex<double> >::value,
+          addition       = 1,
+          subtraction    = 1,
+          multiplication = 1 };
+
+   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+};
+#else
+template<>
+struct IntrinsicTraitBase< complex<double> >
+{
+   typedef sse_cdouble_t  Type;
+   enum { size           = ( BLAZE_SSE_MODE )?( 16UL / sizeof(complex<double>) ):( 1 ),
+          alignment      = AlignmentTrait< complex<double> >::value,
+          addition       = BLAZE_SSE2_MODE,
+          subtraction    = BLAZE_SSE2_MODE,
+          multiplication = BLAZE_SSE3_MODE };
+
+   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 };
 #endif
 /*! \endcond */

@@ -53,7 +53,7 @@ inline void setzero( sse_int8_t& value )
 #elif BLAZE_SSE2_MODE
    value.value = _mm_setzero_si128();
 #else
-   value = 0;
+   value.value = 0;
 #endif
 }
 //*************************************************************************************************
@@ -73,7 +73,7 @@ inline void setzero( sse_int16_t& value )
 #elif BLAZE_SSE2_MODE
    value.value = _mm_setzero_si128();
 #else
-   value = 0;
+   value.value = 0;
 #endif
 }
 //*************************************************************************************************
@@ -95,7 +95,7 @@ inline void setzero( sse_int32_t& value )
 #elif BLAZE_SSE2_MODE
    value.value = _mm_setzero_si128();
 #else
-   value = 0;
+   value.value = 0;
 #endif
 }
 //*************************************************************************************************
@@ -117,7 +117,7 @@ inline void setzero( sse_int64_t& value )
 #elif BLAZE_SSE2_MODE
    value.value = _mm_setzero_si128();
 #else
-   value = 0;
+   value.value = 0;
 #endif
 }
 //*************************************************************************************************
@@ -139,7 +139,7 @@ inline void setzero( sse_float_t& value )
 #elif BLAZE_SSE_MODE
    value.value = _mm_setzero_ps();
 #else
-   value = 0.0F;
+   value.value = 0.0F;
 #endif
 }
 //*************************************************************************************************
@@ -161,7 +161,47 @@ inline void setzero( sse_double_t& value )
 #elif BLAZE_SSE2_MODE
    value.value = _mm_setzero_pd();
 #else
-   value = 0.0;
+   value.value = 0.0;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Setting a floating point intrinsic type with 4 32-bit single precision complex values to zero.
+// \ingroup intrinsics
+//
+// \param value The value to be set to zero.
+// \return void
+*/
+inline void setzero( sse_cfloat_t& value )
+{
+#if BLAZE_AVX_MODE
+   value.value = _mm256_setzero_ps();
+#elif BLAZE_SSE_MODE
+   value.value = _mm_setzero_ps();
+#else
+   value.value = 0.0F;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Setting a floating point intrinsic type with 4 32-bit double precision complex values to zero.
+// \ingroup intrinsics
+//
+// \param value The value to be set to zero.
+// \return void
+*/
+inline void setzero( sse_cdouble_t& value )
+{
+#if BLAZE_AVX_MODE
+   value.value = _mm256_setzero_pd();
+#elif BLAZE_SSE2_MODE
+   value.value = _mm_setzero_pd();
+#else
+   value.value = 0.0;
 #endif
 }
 //*************************************************************************************************
