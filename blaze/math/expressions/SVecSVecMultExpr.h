@@ -28,7 +28,6 @@
 //*************************************************************************************************
 
 #include <stdexcept>
-#include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/Computation.h>
@@ -46,6 +45,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -227,8 +227,8 @@ class SVecSVecMultExpr : public SparseVector< SVecSVecMultExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename boost::remove_reference<CT1>::type::ConstIterator  LeftIterator;
-      typedef typename boost::remove_reference<CT2>::type::ConstIterator  RightIterator;
+      typedef typename RemoveReference<CT1>::Type::ConstIterator  LeftIterator;
+      typedef typename RemoveReference<CT2>::Type::ConstIterator  RightIterator;
 
       CT1 x( rhs.lhs_ );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
@@ -274,8 +274,8 @@ class SVecSVecMultExpr : public SparseVector< SVecSVecMultExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename boost::remove_reference<CT1>::type::ConstIterator  LeftIterator;
-      typedef typename boost::remove_reference<CT2>::type::ConstIterator  RightIterator;
+      typedef typename RemoveReference<CT1>::Type::ConstIterator  LeftIterator;
+      typedef typename RemoveReference<CT2>::Type::ConstIterator  RightIterator;
 
       CT1 x( rhs.lhs_ );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
@@ -321,8 +321,8 @@ class SVecSVecMultExpr : public SparseVector< SVecSVecMultExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename boost::remove_reference<CT1>::type::ConstIterator  LeftIterator;
-      typedef typename boost::remove_reference<CT2>::type::ConstIterator  RightIterator;
+      typedef typename RemoveReference<CT1>::Type::ConstIterator  LeftIterator;
+      typedef typename RemoveReference<CT2>::Type::ConstIterator  RightIterator;
 
       CT1 x( rhs.lhs_ );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
@@ -372,8 +372,8 @@ class SVecSVecMultExpr : public SparseVector< SVecSVecMultExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename boost::remove_reference<CT1>::type::ConstIterator  LeftIterator;
-      typedef typename boost::remove_reference<CT2>::type::ConstIterator  RightIterator;
+      typedef typename RemoveReference<CT1>::Type::ConstIterator  LeftIterator;
+      typedef typename RemoveReference<CT2>::Type::ConstIterator  RightIterator;
 
       CT1 x( rhs.lhs_ );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
@@ -423,8 +423,8 @@ class SVecSVecMultExpr : public SparseVector< SVecSVecMultExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename boost::remove_reference<CT1>::type::ConstIterator  LeftIterator;
-      typedef typename boost::remove_reference<CT2>::type::ConstIterator  RightIterator;
+      typedef typename RemoveReference<CT1>::Type::ConstIterator  LeftIterator;
+      typedef typename RemoveReference<CT2>::Type::ConstIterator  RightIterator;
 
       CT1 x( rhs.lhs_ );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
@@ -479,8 +479,8 @@ class SVecSVecMultExpr : public SparseVector< SVecSVecMultExpr<VT1,VT2,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       typedef typename VT::ConstIterator                                  Iterator1;
-      typedef typename boost::remove_reference<CT1>::type::ConstIterator  Iterator2;
-      typedef typename boost::remove_reference<CT2>::type::ConstIterator  Iterator3;
+      typedef typename RemoveReference<CT1>::Type::ConstIterator  Iterator2;
+      typedef typename RemoveReference<CT2>::Type::ConstIterator  Iterator3;
 
       CT1 x( rhs.lhs_ );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand

@@ -28,7 +28,6 @@
 //*************************************************************************************************
 
 #include <stdexcept>
-#include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/SparseVector.h>
@@ -53,6 +52,7 @@
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsSame.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -188,7 +188,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.rows(), "Invalid vector access index" );
 
-      typedef typename boost::remove_reference<VCT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<VCT>::Type::ConstIterator  ConstIterator;
 
       VCT x( vec_ );  // Evaluation of the right-hand side sparse vector operand
 
@@ -333,7 +333,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
    static inline typename EnableIf< UseDefaultKernel<VT1,MT1,VT2> >::Type
       selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -377,7 +377,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
    static inline typename EnableIf< UseOptimizedKernel<VT1,MT1,VT2> >::Type
       selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -472,7 +472,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
       selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       typedef IntrinsicTrait<ElementType>  IT;
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -595,7 +595,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       // Evaluation of the right-hand side sparse vector operand
       RT x( rhs.vec_ );
@@ -636,7 +636,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
    static inline typename EnableIf< UseDefaultKernel<VT1,MT1,VT2> >::Type
       selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -674,7 +674,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
    static inline typename EnableIf< UseOptimizedKernel<VT1,MT1,VT2> >::Type
       selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -739,7 +739,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
       selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       typedef IntrinsicTrait<ElementType>  IT;
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -807,7 +807,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       // Evaluation of the right-hand side sparse vector operand
       RT x( rhs.vec_ );
@@ -848,7 +848,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
    static inline typename EnableIf< UseDefaultKernel<VT1,MT1,VT2> >::Type
       selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -886,7 +886,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
    static inline typename EnableIf< UseOptimizedKernel<VT1,MT1,VT2> >::Type
       selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -951,7 +951,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
       selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       typedef IntrinsicTrait<ElementType>  IT;
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 

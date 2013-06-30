@@ -28,7 +28,6 @@
 //*************************************************************************************************
 
 #include <iterator>
-#include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/Computation.h>
@@ -63,6 +62,7 @@
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -158,7 +158,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
       typedef SparseElement<ElementType>  Element;
 
       //! Iterator type of the sparse matrix expression.
-      typedef typename boost::remove_reference<LeftOperand>::type::ConstIterator  IteratorType;
+      typedef typename RemoveReference<LeftOperand>::Type::ConstIterator  IteratorType;
 
       typedef std::forward_iterator_tag  IteratorCategory;  //!< The iterator category.
       typedef Element                    ValueType;         //!< Type of the underlying pointers.

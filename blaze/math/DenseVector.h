@@ -28,7 +28,6 @@
 //*************************************************************************************************
 
 #include <cmath>
-#include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/DVecAbsExpr.h>
 #include <blaze/math/expressions/DVecDVecAddExpr.h>
@@ -59,6 +58,7 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -158,7 +158,7 @@ inline bool operator==( const DenseVector<T1,TF1>& lhs, const SparseVector<T2,TF
 {
    typedef typename T1::CompositeType  CT1;
    typedef typename T2::CompositeType  CT2;
-   typedef typename boost::remove_reference<CT2>::type::ConstIterator  ConstIterator;
+   typedef typename RemoveReference<CT2>::Type::ConstIterator  ConstIterator;
 
    // Early exit in case the vector sizes don't match
    if( (~lhs).size() != (~rhs).size() ) return false;

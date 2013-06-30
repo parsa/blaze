@@ -28,7 +28,6 @@
 //*************************************************************************************************
 
 #include <iterator>
-#include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DVecTransposer.h>
@@ -44,6 +43,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -116,7 +116,7 @@ class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
     public:
       //**Type definitions*************************************************************************
       //! Iterator type of the sparse vector expression.
-      typedef typename boost::remove_reference<Operand>::type::ConstIterator  IteratorType;
+      typedef typename RemoveReference<Operand>::Type::ConstIterator  IteratorType;
 
       typedef std::forward_iterator_tag                                     IteratorCategory;  //!< The iterator category.
       typedef typename std::iterator_traits<IteratorType>::value_type       ValueType;         //!< Type of the underlying pointers.

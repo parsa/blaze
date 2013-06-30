@@ -28,7 +28,6 @@
 //*************************************************************************************************
 
 #include <cmath>
-#include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/DVecSVecMultExpr.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -53,6 +52,7 @@
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -91,8 +91,8 @@ inline bool operator==( const SparseVector<T1,TF1>& lhs, const SparseVector<T2,T
 {
    typedef typename T1::CompositeType  CT1;
    typedef typename T2::CompositeType  CT2;
-   typedef typename boost::remove_reference<CT1>::type::ConstIterator  LhsConstIterator;
-   typedef typename boost::remove_reference<CT2>::type::ConstIterator  RhsConstIterator;
+   typedef typename RemoveReference<CT1>::Type::ConstIterator  LhsConstIterator;
+   typedef typename RemoveReference<CT2>::Type::ConstIterator  RhsConstIterator;
 
    // Early exit in case the vector sizes don't match
    if( (~lhs).size() != (~rhs).size() ) return false;
@@ -288,12 +288,11 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline const typename VT::ElementType min( const SparseVector<VT,TF>& sv )
 {
-   using boost::remove_reference;
    using blaze::min;
 
    typedef typename VT::ElementType    ET;
    typedef typename VT::CompositeType  SV;
-   typedef typename remove_reference<SV>::type::ConstIterator  ConstIterator;
+   typedef typename RemoveReference<SV>::Type::ConstIterator  ConstIterator;
 
    SV a( ~sv );  // Evaluation of the sparse vector operand
 
@@ -344,12 +343,11 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline const typename VT::ElementType max( const SparseVector<VT,TF>& sv )
 {
-   using boost::remove_reference;
    using blaze::max;
 
    typedef typename VT::ElementType    ET;
    typedef typename VT::CompositeType  SV;
-   typedef typename remove_reference<SV>::type::ConstIterator  ConstIterator;
+   typedef typename RemoveReference<SV>::Type::ConstIterator  ConstIterator;
 
    SV a( ~sv );  // Evaluation of the sparse vector operand
 

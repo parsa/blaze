@@ -28,7 +28,6 @@
 //*************************************************************************************************
 
 #include <stdexcept>
-#include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
@@ -68,6 +67,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -201,7 +201,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < rhs_.columns(), "Invalid column access index" );
 
-      typedef typename boost::remove_reference<CT2>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<CT2>::Type::ConstIterator  ConstIterator;
 
       ElementType tmp = ElementType();
 
@@ -367,7 +367,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    static inline void
       selectAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       const size_t iend( A.rows() & size_t(-4) );
       BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
@@ -441,7 +441,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5> >::Type
       selectAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       for( size_t j=0UL; j<B.columns(); ++j ) {
          for( size_t i=0UL; i<(~C).rows(); ++i ) {
@@ -482,7 +482,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    static inline typename EnableIf< UseOptimizedKernel<MT3,MT4,MT5> >::Type
       selectAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       const size_t iend( A.rows() & size_t(-4) );
       BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
@@ -558,7 +558,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
       selectAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
       typedef IntrinsicTrait<ElementType>  IT;
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       const size_t M( A.rows() );
 
@@ -696,7 +696,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    static inline void
       selectAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       const size_t iend( A.rows() & size_t(-4) );
       BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
@@ -750,7 +750,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5> >::Type
       selectAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       for( size_t j=0UL; j<B.columns(); ++j ) {
          ConstIterator element( B.begin(j) );
@@ -788,7 +788,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    static inline typename EnableIf< UseOptimizedKernel<MT3,MT4,MT5> >::Type
       selectAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       const size_t iend( A.rows() & size_t(-4) );
       BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
@@ -862,7 +862,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
       selectAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
       typedef IntrinsicTrait<ElementType>  IT;
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       const size_t M( A.rows() );
 
@@ -966,7 +966,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    static inline void
       selectSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       const size_t iend( A.rows() & size_t(-4) );
       BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
@@ -1020,7 +1020,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5> >::Type
       selectSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       for( size_t j=0UL; j<B.columns(); ++j ) {
          ConstIterator element( B.begin(j) );
@@ -1058,7 +1058,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    static inline typename EnableIf< UseOptimizedKernel<MT3,MT4,MT5> >::Type
       selectSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       const size_t iend( A.rows() & size_t(-4) );
       BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
@@ -1132,7 +1132,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
       selectSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
       typedef IntrinsicTrait<ElementType>  IT;
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       const size_t M( A.rows() );
 

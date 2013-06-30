@@ -28,7 +28,6 @@
 //*************************************************************************************************
 
 #include <stdexcept>
-#include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/SparseVector.h>
@@ -52,6 +51,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -156,7 +156,7 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.rows(), "Invalid vector access index" );
 
-      typedef typename boost::remove_reference<VCT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<VCT>::Type::ConstIterator  ConstIterator;
 
       VCT x( vec_ );  // Evaluation of the right-hand side sparse vector operand
 
@@ -262,7 +262,7 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       // Evaluation of the right-hand side sparse vector operand
       RT x( rhs.vec_ );
@@ -352,7 +352,7 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       // Evaluation of the right-hand side sparse vector operand
       RT x( rhs.vec_ );
@@ -409,7 +409,7 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       // Evaluation of the right-hand side sparse vector operand
       RT x( rhs.vec_ );

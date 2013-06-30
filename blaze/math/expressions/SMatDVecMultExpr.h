@@ -28,7 +28,6 @@
 //*************************************************************************************************
 
 #include <stdexcept>
-#include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
@@ -51,6 +50,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -155,7 +155,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.rows(), "Invalid vector access index" );
 
-      typedef typename boost::remove_reference<MCT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<MCT>::Type::ConstIterator  ConstIterator;
 
       ElementType tmp = ElementType();
 
@@ -304,7 +304,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename boost::remove_reference<LT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
 
       if( rhs.mat_.columns() == 0UL ) {
          reset( ~lhs );
@@ -380,7 +380,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename boost::remove_reference<LT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
 
       if( rhs.mat_.columns() == 0UL ) {
          return;
@@ -426,7 +426,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename boost::remove_reference<LT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
 
       if( rhs.mat_.columns() == 0UL ) {
          return;

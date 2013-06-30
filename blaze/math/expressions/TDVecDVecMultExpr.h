@@ -28,7 +28,6 @@
 //*************************************************************************************************
 
 #include <stdexcept>
-#include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -37,6 +36,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsSame.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -58,10 +58,10 @@ struct TDVecDVecMultExprHelper
 {
    //**Type definitions****************************************************************************
    //! Composite type of the left-hand side dense vector expression.
-   typedef typename boost::remove_reference< typename T1::CompositeType >::type  CT1;
+   typedef typename RemoveReference< typename T1::CompositeType >::Type  CT1;
 
    //! Composite type of the right-hand side dense vector expression.
-   typedef typename boost::remove_reference< typename T2::CompositeType >::type  CT2;
+   typedef typename RemoveReference< typename T2::CompositeType >::Type  CT2;
    //**********************************************************************************************
 
    //**********************************************************************************************

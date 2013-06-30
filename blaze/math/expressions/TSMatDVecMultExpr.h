@@ -28,7 +28,6 @@
 //*************************************************************************************************
 
 #include <stdexcept>
-#include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
@@ -52,6 +51,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -230,7 +230,7 @@ class TSMatDVecMultExpr : public DenseVector< TSMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename boost::remove_reference<LT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
 
       reset( ~lhs );
 
@@ -282,7 +282,7 @@ class TSMatDVecMultExpr : public DenseVector< TSMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename boost::remove_reference<LT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
 
       reset( ~lhs );
 
@@ -360,7 +360,7 @@ class TSMatDVecMultExpr : public DenseVector< TSMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename boost::remove_reference<LT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
 
       if( rhs.mat_.columns() == 0UL ) return;
 
@@ -411,7 +411,7 @@ class TSMatDVecMultExpr : public DenseVector< TSMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename boost::remove_reference<LT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
 
       if( rhs.mat_.columns() == 0UL ) return;
 

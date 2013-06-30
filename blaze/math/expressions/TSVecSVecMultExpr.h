@@ -28,13 +28,13 @@
 //*************************************************************************************************
 
 #include <stdexcept>
-#include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -80,17 +80,15 @@ inline const typename MultTrait<typename T1::ElementType,typename T2::ElementTyp
 {
    BLAZE_FUNCTION_TRACE;
 
-   using boost::remove_reference;
-
-   typedef typename T1::CompositeType            Lhs;            // Composite type of the left-hand side sparse vector expression
-   typedef typename T2::CompositeType            Rhs;            // Composite type of the right-hand side sparse vector expression
-   typedef typename remove_reference<Lhs>::type  X1;             // Auxiliary type for the left-hand side composite type
-   typedef typename remove_reference<Rhs>::type  X2;             // Auxiliary type for the right-hand side composite type
-   typedef typename X1::ElementType              E1;             // Element type of the left-hand side sparse vector expression
-   typedef typename X2::ElementType              E2;             // Element type of the right-hand side sparse vector expression
-   typedef typename MultTrait<E1,E2>::Type       MultType;       // Multiplication result type
-   typedef typename X1::ConstIterator            LeftIterator;   // Iterator type of the left-hand sparse vector expression
-   typedef typename X2::ConstIterator            RightIterator;  // Iterator type of the right-hand sparse vector expression
+   typedef typename T1::CompositeType           Lhs;            // Composite type of the left-hand side sparse vector expression
+   typedef typename T2::CompositeType           Rhs;            // Composite type of the right-hand side sparse vector expression
+   typedef typename RemoveReference<Lhs>::type  X1;             // Auxiliary type for the left-hand side composite type
+   typedef typename RemoveReference<Rhs>::type  X2;             // Auxiliary type for the right-hand side composite type
+   typedef typename X1::ElementType             E1;             // Element type of the left-hand side sparse vector expression
+   typedef typename X2::ElementType             E2;             // Element type of the right-hand side sparse vector expression
+   typedef typename MultTrait<E1,E2>::Type      MultType;       // Multiplication result type
+   typedef typename X1::ConstIterator           LeftIterator;   // Iterator type of the left-hand sparse vector expression
+   typedef typename X2::ConstIterator           RightIterator;  // Iterator type of the right-hand sparse vector expression
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( T1 );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( T2 );

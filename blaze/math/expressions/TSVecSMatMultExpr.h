@@ -28,7 +28,6 @@
 //*************************************************************************************************
 
 #include <stdexcept>
-#include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/StorageOrder.h>
@@ -52,6 +51,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -129,7 +129,7 @@ class TSVecSMatMultExpr : public SparseVector< TSVecSMatMultExpr<VT,MT>, true >
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.columns(), "Invalid vector access index" );
 
-      typedef typename boost::remove_reference<VCT>::type::ConstIterator  VectorIterator;
+      typedef typename RemoveReference<VCT>::Type::ConstIterator  VectorIterator;
 
       VCT x( vec_ );  // Evaluation of the left-hand side sparse vector operand
       MCT A( mat_ );  // Evaluation of the right-hand side sparse matrix operand
@@ -249,8 +249,8 @@ class TSVecSMatMultExpr : public SparseVector< TSVecSMatMultExpr<VT,MT>, true >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename boost::remove_reference<LT>::type::ConstIterator  VectorIterator;
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  MatrixIterator;
+      typedef typename RemoveReference<LT>::Type::ConstIterator  VectorIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  MatrixIterator;
 
       // Evaluation of the left-hand side sparse vector operand
       LT x( rhs.vec_ );
@@ -307,8 +307,8 @@ class TSVecSMatMultExpr : public SparseVector< TSVecSMatMultExpr<VT,MT>, true >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename boost::remove_reference<LT>::type::ConstIterator  VectorIterator;
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  MatrixIterator;
+      typedef typename RemoveReference<LT>::Type::ConstIterator  VectorIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  MatrixIterator;
 
       // Resetting the left-hand side target dense vector
       reset( ~lhs );
@@ -362,8 +362,8 @@ class TSVecSMatMultExpr : public SparseVector< TSVecSMatMultExpr<VT,MT>, true >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename boost::remove_reference<LT>::type::ConstIterator  VectorIterator;
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  MatrixIterator;
+      typedef typename RemoveReference<LT>::Type::ConstIterator  VectorIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  MatrixIterator;
 
       // Evaluation of the left-hand side sparse vector operand
       LT x( rhs.vec_ );
@@ -420,8 +420,8 @@ class TSVecSMatMultExpr : public SparseVector< TSVecSMatMultExpr<VT,MT>, true >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename boost::remove_reference<LT>::type::ConstIterator  VectorIterator;
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  MatrixIterator;
+      typedef typename RemoveReference<LT>::Type::ConstIterator  VectorIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  MatrixIterator;
 
       // Evaluation of the left-hand side sparse vector operand
       LT x( rhs.vec_ );
@@ -477,8 +477,8 @@ class TSVecSMatMultExpr : public SparseVector< TSVecSMatMultExpr<VT,MT>, true >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename boost::remove_reference<LT>::type::ConstIterator  VectorIterator;
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  MatrixIterator;
+      typedef typename RemoveReference<LT>::Type::ConstIterator  VectorIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  MatrixIterator;
 
       // Evaluation of the left-hand side sparse vector operand
       LT x( rhs.vec_ );

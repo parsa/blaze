@@ -28,7 +28,6 @@
 //*************************************************************************************************
 
 #include <stdexcept>
-#include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/Computation.h>
@@ -49,6 +48,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -257,7 +257,7 @@ class SMatTSMatSubExpr : public SparseMatrix< SMatTSMatSubExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<CT2>::type::ConstIterator  RightIterator;
+      typedef typename RemoveReference<CT2>::Type::ConstIterator  RightIterator;
 
       assign( ~lhs, rhs.lhs_ );
 
@@ -307,8 +307,8 @@ class SMatTSMatSubExpr : public SparseMatrix< SMatTSMatSubExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<CT1>::type::ConstIterator  LeftIterator;
-      typedef typename RT2::OppositeType::ConstIterator                   RightIterator;
+      typedef typename RemoveReference<CT1>::Type::ConstIterator  LeftIterator;
+      typedef typename RT2::OppositeType::ConstIterator           RightIterator;
 
       // Evaluation of the left-hand side sparse matrix operand
       CT1 A( rhs.lhs_ );
@@ -398,8 +398,8 @@ class SMatTSMatSubExpr : public SparseMatrix< SMatTSMatSubExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename RT1::OppositeType::ConstIterator                   LeftIterator;
-      typedef typename boost::remove_reference<CT2>::type::ConstIterator  RightIterator;
+      typedef typename RT1::OppositeType::ConstIterator           LeftIterator;
+      typedef typename RemoveReference<CT2>::Type::ConstIterator  RightIterator;
 
       // Evaluation of the left-hand side sparse matrix operand
       const typename RT1::OppositeType A( rhs.lhs_ );

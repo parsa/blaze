@@ -27,7 +27,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
@@ -48,6 +47,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -259,8 +259,8 @@ class SVecTSVecMultExpr : public SparseMatrix< SVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<LT>::type::ConstIterator  LeftIterator;
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  RightIterator;
+      typedef typename RemoveReference<LT>::Type::ConstIterator  LeftIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  RightIterator;
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side sparse vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
@@ -305,8 +305,8 @@ class SVecTSVecMultExpr : public SparseMatrix< SVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<LT>::type::ConstIterator  LeftIterator;
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  RightIterator;
+      typedef typename RemoveReference<LT>::Type::ConstIterator  LeftIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  RightIterator;
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side sparse vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
@@ -350,8 +350,8 @@ class SVecTSVecMultExpr : public SparseMatrix< SVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<LT>::type::ConstIterator  LeftIterator;
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  RightIterator;
+      typedef typename RemoveReference<LT>::Type::ConstIterator  LeftIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  RightIterator;
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side sparse vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
@@ -397,8 +397,8 @@ class SVecTSVecMultExpr : public SparseMatrix< SVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<LT>::type::ConstIterator  LeftIterator;
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  RightIterator;
+      typedef typename RemoveReference<LT>::Type::ConstIterator  LeftIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  RightIterator;
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side sparse vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
@@ -444,8 +444,8 @@ class SVecTSVecMultExpr : public SparseMatrix< SVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<LT>::type::ConstIterator  LeftIterator;
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  RightIterator;
+      typedef typename RemoveReference<LT>::Type::ConstIterator  LeftIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  RightIterator;
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side sparse vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
@@ -490,8 +490,8 @@ class SVecTSVecMultExpr : public SparseMatrix< SVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<LT>::type::ConstIterator  LeftIterator;
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  RightIterator;
+      typedef typename RemoveReference<LT>::Type::ConstIterator  LeftIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  RightIterator;
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side sparse vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
@@ -540,8 +540,8 @@ class SVecTSVecMultExpr : public SparseMatrix< SVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<LT>::type::ConstIterator  LeftIterator;
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  RightIterator;
+      typedef typename RemoveReference<LT>::Type::ConstIterator  LeftIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  RightIterator;
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side sparse vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
@@ -586,8 +586,8 @@ class SVecTSVecMultExpr : public SparseMatrix< SVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<LT>::type::ConstIterator  LeftIterator;
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  RightIterator;
+      typedef typename RemoveReference<LT>::Type::ConstIterator  LeftIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  RightIterator;
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side sparse vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand

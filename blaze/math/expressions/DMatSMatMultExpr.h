@@ -28,7 +28,6 @@
 //*************************************************************************************************
 
 #include <stdexcept>
-#include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
@@ -66,6 +65,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -259,7 +259,7 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side sparse matrix operand
@@ -313,7 +313,7 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side sparse matrix operand
@@ -369,7 +369,7 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side sparse matrix operand
@@ -442,7 +442,7 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side sparse matrix operand
@@ -529,7 +529,7 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side sparse matrix operand
@@ -590,7 +590,7 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side sparse matrix operand
@@ -643,7 +643,7 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side sparse matrix operand
@@ -704,7 +704,7 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side sparse matrix operand

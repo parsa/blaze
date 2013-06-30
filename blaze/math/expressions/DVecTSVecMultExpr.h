@@ -28,7 +28,6 @@
 //*************************************************************************************************
 
 #include <iterator>
-#include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
@@ -53,6 +52,7 @@
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
 
 
@@ -164,7 +164,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
       typedef ET1  LeftElement;
 
       //! Iterator type of the sparse vector expression.
-      typedef typename boost::remove_reference<RightOperand>::type::ConstIterator  IteratorType;
+      typedef typename RemoveReference<RightOperand>::Type::ConstIterator  IteratorType;
 
       typedef std::forward_iterator_tag  IteratorCategory;  //!< The iterator category.
       typedef Element                    ValueType;         //!< Type of the underlying pointers.
@@ -446,7 +446,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
@@ -489,7 +489,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
@@ -535,7 +535,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
@@ -581,7 +581,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
@@ -631,7 +631,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
@@ -674,7 +674,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
@@ -725,7 +725,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
@@ -768,7 +768,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename boost::remove_reference<RT>::type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand

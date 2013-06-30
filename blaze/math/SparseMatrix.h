@@ -27,7 +27,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/remove_reference.hpp>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DVecTSVecMultExpr.h>
 #include <blaze/math/expressions/SMatAbsExpr.h>
@@ -63,6 +62,7 @@
 #include <blaze/math/StorageOrder.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -105,8 +105,8 @@ inline bool operator==( const SparseMatrix<T1,false>& lhs, const SparseMatrix<T2
 {
    typedef typename T1::CompositeType  CT1;
    typedef typename T2::CompositeType  CT2;
-   typedef typename boost::remove_reference<CT1>::type::ConstIterator  LhsConstIterator;
-   typedef typename boost::remove_reference<CT2>::type::ConstIterator  RhsConstIterator;
+   typedef typename RemoveReference<CT1>::Type::ConstIterator  LhsConstIterator;
+   typedef typename RemoveReference<CT2>::Type::ConstIterator  RhsConstIterator;
 
    // Early exit in case the matrix sizes don't match
    if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
@@ -165,8 +165,8 @@ inline bool operator==( const SparseMatrix<T1,true>& lhs, const SparseMatrix<T2,
 {
    typedef typename T1::CompositeType  CT1;
    typedef typename T2::CompositeType  CT2;
-   typedef typename boost::remove_reference<CT1>::type::ConstIterator  LhsConstIterator;
-   typedef typename boost::remove_reference<CT2>::type::ConstIterator  RhsConstIterator;
+   typedef typename RemoveReference<CT1>::Type::ConstIterator  LhsConstIterator;
+   typedef typename RemoveReference<CT2>::Type::ConstIterator  RhsConstIterator;
 
    // Early exit in case the matrix sizes don't match
    if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
