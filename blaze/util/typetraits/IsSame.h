@@ -27,10 +27,10 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/remove_cv.hpp>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/TrueType.h>
+#include <blaze/util/TypeTraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -108,8 +108,8 @@ struct IsSameHelper
 {
  private:
    //**********************************************************************************************
-   typedef typename boost::remove_cv<A>::type  T1;
-   typedef typename boost::remove_cv<B>::type  T2;
+   typedef typename RemoveCV<A>::Type  T1;
+   typedef typename RemoveCV<B>::Type  T2;
    //**********************************************************************************************
 
  public:

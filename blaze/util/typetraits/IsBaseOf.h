@@ -28,10 +28,10 @@
 //*************************************************************************************************
 
 #include <boost/type_traits/is_base_of.hpp>
-#include <boost/type_traits/remove_cv.hpp>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/TrueType.h>
+#include <blaze/util/TypeTraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -51,8 +51,8 @@ template< typename Base, typename Derived >
 struct IsBaseOfHelper
 {
    //**********************************************************************************************
-   enum { value = boost::is_base_of<typename boost::remove_cv<Base>::type,
-                                    typename boost::remove_cv<Derived>::type>::value };
+   enum { value = boost::is_base_of<typename RemoveCV<Base>::Type,
+                                    typename RemoveCV<Derived>::Type>::value };
    typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
    //**********************************************************************************************
 };

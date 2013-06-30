@@ -28,11 +28,11 @@
 //*************************************************************************************************
 
 #include <boost/type_traits/is_base_of.hpp>
-#include <boost/type_traits/remove_cv.hpp>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/TrueType.h>
+#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -53,7 +53,7 @@ struct IsDenseMatrixHelper
 {
  private:
    //**********************************************************************************************
-   typedef typename boost::remove_cv<T>::type  T2;
+   typedef typename RemoveCV<T>::Type  T2;
    //**********************************************************************************************
 
  public:

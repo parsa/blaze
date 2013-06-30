@@ -27,12 +27,12 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/remove_cv.hpp>
 #include <blaze/math/intrinsics/BasicTypes.h>
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/TypeTraits.h>
 
 
 namespace blaze {
@@ -548,7 +548,7 @@ struct IntrinsicTraitBase< complex<double> >
 //    1. If it cannot be used in multiplications, it is set to 0.
 */
 template< typename T >
-class IntrinsicTrait : public IntrinsicTraitBase< typename boost::remove_cv<T>::type >
+class IntrinsicTrait : public IntrinsicTraitBase< typename RemoveCV<T>::Type >
 {};
 //*************************************************************************************************
 
