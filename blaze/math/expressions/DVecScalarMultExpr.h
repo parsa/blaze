@@ -147,7 +147,7 @@ class DVecScalarMultExpr : public DenseVector< DVecScalarMultExpr<VT,ST,TF>, TF 
    typedef typename SelectType< IsExpression<VT>::value, const VT, const VT& >::Type  LeftOperand;
 
    //! Composite type of the right-hand side scalar value.
-   typedef typename MultTrait< typename BaseElementType<VT>::Type, ST >::Type  RightOperand;
+   typedef ST  RightOperand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

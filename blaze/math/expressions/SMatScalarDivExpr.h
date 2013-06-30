@@ -46,6 +46,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsMultExpr.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsTemporary.h>
@@ -65,57 +66,6 @@
 
 
 namespace blaze {
-
-//=================================================================================================
-//
-//  CLASS SMATSCALARDIVEXPRHELPER
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Helper class for divisions of a sparse matrix by a scalar.
-// \ingroup sparse_matrix_expression
-//
-// The SMatScalarDivExprHelper class is an auxiliary class to define the return type of the
-// division between a sparse matrix and a scalar value.
-*/
-template< typename MT  // Type of the left-hand side sparse matrix
-        , typename ST  // Type of the right-hand side scalar value
-        , bool SO >    // Storage order
-struct SMatScalarDivExprHelper
-{
- public:
-   //**Type definitions****************************************************************************
-   //! Scalar type for the instantiation of the resulting expression object.
-   typedef typename DivTrait< typename BaseElementType<MT>::Type, ST >::Type  ScalarType;
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   //! Compilation switch for the evaluation of the sparse matrix/scalar division return type.
-   enum { value = IsFloatingPoint<ScalarType>::value };
-   //**********************************************************************************************
-
-   //**Type definitions****************************************************************************
-   //! Resulting type of the division between the given sparse matrix and scalar value.
-   typedef typename SelectType< value,
-                                SMatScalarMultExpr<MT,ScalarType,SO>,
-                                SMatScalarDivExpr<MT,ScalarType,SO> >::Type  Type;
-   //**********************************************************************************************
-
- private:
-   //**Compile time checks*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( MT, SO );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ST );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ScalarType );
-   /*! \endcond */
-   //**********************************************************************************************
-};
-//*************************************************************************************************
-
-
-
 
 //=================================================================================================
 //
@@ -194,7 +144,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
    typedef typename SelectType< IsExpression<MT>::value, const MT, const MT& >::Type  LeftOperand;
 
    //! Composite type of the right-hand side scalar value.
-   typedef typename DivTrait< typename BaseElementType<MT>::Type, ST >::Type  RightOperand;
+   typedef ST  RightOperand;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -653,22 +603,21 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
 template< typename T1    // Type of the left-hand side sparse matrix
         , bool SO        // Storage order of the left-hand side sparse matrix
         , typename T2 >  // Type of the right-hand side scalar
-inline const typename EnableIf< IsNumeric<T2>,
-                                typename SMatScalarDivExprHelper<T1,T2,SO>::Type >::Type
+inline const typename EnableIf< IsNumeric<T2>, typename DivExprTrait<T1,T2>::Type >::Type
    operator/( const SparseMatrix<T1,SO>& mat, T2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_USER_ASSERT( scalar != T2(0), "Division by zero detected" );
 
-   typedef SMatScalarDivExprHelper<T1,T2,SO>  Helper;
-   typedef typename Helper::ScalarType        ScalarType;
+   typedef typename DivExprTrait<T1,T2>::Type  ReturnType;
+   typedef typename ReturnType::RightOperand   ScalarType;
 
-   if( Helper::value ) {
-      return typename Helper::Type( ~mat, ScalarType(1)/ScalarType(scalar) );
+   if( IsMultExpr<ReturnType>::value ) {
+      return ReturnType( ~mat, ScalarType(1)/ScalarType(scalar) );
    }
    else {
-      return typename Helper::Type( ~mat, scalar );
+      return ReturnType( ~mat, scalar );
    }
 }
 //*************************************************************************************************
@@ -758,21 +707,22 @@ template< typename MT     // Type of the sparse matrix of the left-hand side exp
         , bool SO         // Storage order of the sparse matrix
         , typename ST2 >  // Type of the right-hand side scalar
 inline const typename EnableIf< IsNumeric<ST2>
-                              , typename SMatScalarDivExprHelper<MT,typename MultTrait<ST1,ST2>::Type,SO>::Type >::Type
+                              , typename DivExprTrait<MT,typename MultTrait<ST1,ST2>::Type>::Type >::Type
    operator/( const SMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_USER_ASSERT( scalar != ST2(0), "Division by zero detected" );
 
-   typedef typename MultTrait<ST1,ST2>::Type        MultType;
-   typedef SMatScalarDivExprHelper<MT,MultType,SO>  Helper;
+   typedef typename MultTrait<ST1,ST2>::Type         MultType;
+   typedef typename DivExprTrait<MT,MultType>::Type  ReturnType;
+   typedef typename ReturnType::RightOperand         ScalarType;
 
-   if( Helper::value ) {
-      return typename Helper::Type( mat.leftOperand(), MultType(1)/( mat.rightOperand() * scalar ) );
+   if( IsMultExpr<ReturnType>::value ) {
+      return ReturnType( mat.leftOperand(), ScalarType(1)/( mat.rightOperand() * scalar ) );
    }
    else {
-      return typename Helper::Type( mat.leftOperand(), mat.rightOperand() * scalar );
+      return ReturnType( mat.leftOperand(), mat.rightOperand() * scalar );
    }
 }
 /*! \endcond */

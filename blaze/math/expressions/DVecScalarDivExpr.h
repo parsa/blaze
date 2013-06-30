@@ -40,6 +40,7 @@
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsMultExpr.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -58,57 +59,6 @@
 
 
 namespace blaze {
-
-//=================================================================================================
-//
-//  CLASS DVECSCALARDIVEXPRHELPER
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Helper class for divisions of a dense vector by a scalar.
-// \ingroup dense_vector_expression
-//
-// The DVecScalarDivExprHelper class is an auxiliary class to define the return type of the
-// division between a dense vector and a scalar value.
-*/
-template< typename VT  // Type of the left-hand side dense vector
-        , typename ST  // Type of the right-hand side scalar value
-        , bool TF >    // Transpose flag
-struct DVecScalarDivExprHelper
-{
- public:
-   //**Type definitions****************************************************************************
-   //! Scalar type for the instantiation of the resulting expression object.
-   typedef typename DivTrait< typename BaseElementType<VT>::Type, ST >::Type  ScalarType;
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   //! Compilation switch for the evaluation of the dense vector/scalar division return type.
-   enum { value = IsFloatingPoint<ScalarType>::value };
-   //**********************************************************************************************
-
-   //**Type definitions****************************************************************************
-   //! Resulting type of the division between the given dense vector and scalar value.
-   typedef typename SelectType< value,
-                                DVecScalarMultExpr<VT,ScalarType,TF>,
-                                DVecScalarDivExpr<VT,ScalarType,TF> >::Type  Type;
-   //**********************************************************************************************
-
- private:
-   //**Compile time checks*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( VT );
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ST );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ScalarType );
-   /*! \endcond */
-   //**********************************************************************************************
-};
-//*************************************************************************************************
-
-
-
 
 //=================================================================================================
 //
@@ -187,7 +137,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    typedef typename SelectType< IsExpression<VT>::value, const VT, const VT& >::Type  LeftOperand;
 
    //! Composite type of the right-hand side scalar value.
-   typedef typename DivTrait< typename BaseElementType<VT>::Type, ST >::Type  RightOperand;
+   typedef ST  RightOperand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -496,22 +446,21 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
 template< typename T1  // Type of the left-hand side dense vector
         , typename T2  // Type of the right-hand side scalar
         , bool TF >    // Transpose flag
-inline const typename EnableIf< IsNumeric<T2>,
-                                typename DVecScalarDivExprHelper<T1,T2,TF>::Type >::Type
+inline const typename EnableIf< IsNumeric<T2>, typename DivExprTrait<T1,T2>::Type >::Type
    operator/( const DenseVector<T1,TF>& vec, T2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_USER_ASSERT( scalar != T2(0), "Division by zero detected" );
 
-   typedef DVecScalarDivExprHelper<T1,T2,TF>  Helper;
-   typedef typename Helper::ScalarType        ScalarType;
+   typedef typename DivExprTrait<T1,T2>::Type  ReturnType;
+   typedef typename ReturnType::RightOperand   ScalarType;
 
-   if( Helper::value ) {
-      return typename Helper::Type( ~vec, ScalarType(1)/ScalarType(scalar) );
+   if( IsMultExpr<ReturnType>::value ) {
+      return ReturnType( ~vec, ScalarType(1)/ScalarType(scalar) );
    }
    else {
-      return typename Helper::Type( ~vec, scalar );
+      return ReturnType( ~vec, scalar );
    }
 }
 //*************************************************************************************************
@@ -601,21 +550,22 @@ template< typename VT     // Type of the dense vector of the left-hand side expr
         , bool TF         // Transpose flag of the dense vector
         , typename ST2 >  // Type of the right-hand side scalar
 inline const typename EnableIf< IsNumeric<ST2>
-                              , typename DVecScalarDivExprHelper<VT,typename MultTrait<ST1,ST2>::Type,TF>::Type >::Type
+                              , typename DivExprTrait<VT,typename MultTrait<ST1,ST2>::Type>::Type >::Type
    operator/( const DVecScalarDivExpr<VT,ST1,TF>& vec, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_USER_ASSERT( scalar != ST2(0), "Division by zero detected" );
 
-   typedef typename MultTrait<ST1,ST2>::Type        MultType;
-   typedef DVecScalarDivExprHelper<VT,MultType,TF>  Helper;
+   typedef typename MultTrait<ST1,ST2>::Type         MultType;
+   typedef typename DivExprTrait<VT,MultType>::Type  ReturnType;
+   typedef typename ReturnType::RightOperand         ScalarType;
 
-   if( Helper::value ) {
-      return typename Helper::Type( vec.leftOperand(), MultType(1)/( vec.rightOperand() * scalar ) );
+   if( IsMultExpr<ReturnType>::value ) {
+      return ReturnType( vec.leftOperand(), ScalarType(1)/( vec.rightOperand() * scalar ) );
    }
    else {
-      return typename Helper::Type( vec.leftOperand(), vec.rightOperand() * scalar );
+      return ReturnType( vec.leftOperand(), vec.rightOperand() * scalar );
    }
 }
 /*! \endcond */

@@ -32,7 +32,11 @@
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/NumericElementType.h>
 #include <blaze/util/InvalidType.h>
+#include <blaze/util/SelectType.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -61,7 +65,11 @@ struct DMatScalarMultExprTraitHelper
 {
  private:
    //**********************************************************************************************
-   typedef typename MultTrait<typename BaseElementType<MT>::Type,ST>::Type  ElementType;
+   typedef typename NumericElementType<MT>::Type  NET;
+   typedef typename SelectType< IsComplex<NET>::value && IsBuiltin<ST>::value
+                              , typename BaseElementType<MT>::Type
+                              , typename MultTrait<NET,ST>::Type
+                              >::Type  ElementType;
    //**********************************************************************************************
 
  public:

@@ -55,6 +55,7 @@
 #include <blaze/util/constraints/Double.h>
 #include <blaze/util/constraints/Float.h>
 #include <blaze/util/constraints/Reference.h>
+#include <blaze/util/constraints/SameType.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>
@@ -1482,7 +1483,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 */
 template< typename MT    // Type of the left-hand side dense matrix
         , typename VT    // Type of the right-hand side dense vector
-        , typename ST >  // Type of the side scalar value
+        , typename ST >  // Type of the scalar value
 class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
    : public DenseVector< DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >, false >
    , private VecScalarMultExpr
@@ -1605,16 +1606,16 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
    typedef const ElementType                           ReturnType;     //!< Return type for expression template evaluations.
    typedef const ResultType                            CompositeType;  //!< Data type for composite expression templates.
 
-   //! Composite type of the left-hand side dense matrix expression.
+   //! Composite type of the left-hand side dense vector expression.
    typedef const DMatDVecMultExpr<MT,VT>  LeftOperand;
 
-   //! Composite type of the right-hand side dense vector expression.
-   typedef typename SelectType< IsNumeric<ElementType>::value, ElementType, ST >::Type  RightOperand;
+   //! Composite type of the right-hand side scalar value.
+   typedef ST  RightOperand;
 
-   //! Type for the assignment of the left-hand side dense matrix operand.
+   //! Type for the assignment of the dense matrix operand of the left-hand side expression.
    typedef typename SelectType< evaluate, const MRT, MCT >::Type  LT;
 
-   //! Type for the assignment of the right-hand side dense vector operand.
+   //! Type for the assignment of the dense vector operand of the left-hand side expression.
    typedef typename SelectType< IsComputation<VT>::value, const VRT, VCT >::Type  RT;
    //**********************************************************************************************
 
@@ -2002,7 +2003,6 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
       BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
       BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ST2 );
       BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT1::ElementType::value_type );
       BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT1::ElementType::value_type );
       BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT2::ElementType::value_type );
@@ -2046,7 +2046,6 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
       BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
       BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ST2 );
       BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT1::ElementType::value_type );
       BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT1::ElementType::value_type );
       BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT2::ElementType::value_type );
@@ -2381,7 +2380,6 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
       BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
       BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ST2 );
       BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT1::ElementType::value_type );
       BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT1::ElementType::value_type );
       BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT2::ElementType::value_type );
@@ -2425,7 +2423,6 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
       BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
       BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ST2 );
       BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT1::ElementType::value_type );
       BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT1::ElementType::value_type );
       BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT2::ElementType::value_type );
@@ -2737,7 +2734,6 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
       BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
       BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ST2 );
       BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT1::ElementType::value_type );
       BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT1::ElementType::value_type );
       BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT2::ElementType::value_type );
@@ -2781,7 +2777,6 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
       BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
       BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ST2 );
       BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT1::ElementType::value_type );
       BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT1::ElementType::value_type );
       BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT2::ElementType::value_type );
@@ -2842,6 +2837,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ST );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST, RightOperand );
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -32,8 +32,11 @@
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
+#include <blaze/math/typetraits/NumericElementType.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/SelectType.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -63,7 +66,11 @@ struct TSMatScalarDivExprTraitHelper
 {
  private:
    //**********************************************************************************************
-   typedef typename DivTrait<typename BaseElementType<MT>::Type,ST>::Type  ElementType;
+   typedef typename NumericElementType<MT>::Type  NET;
+   typedef typename SelectType< IsComplex<NET>::value && IsBuiltin<ST>::value
+                              , typename BaseElementType<MT>::Type
+                              , typename DivTrait<NET,ST>::Type
+                              >::Type  ElementType;
    //**********************************************************************************************
 
  public:
