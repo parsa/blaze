@@ -68,6 +68,7 @@
 #include <blaze/math/typetraits/IsVecVecAddExpr.h>
 #include <blaze/math/typetraits/IsVecVecMultExpr.h>
 #include <blaze/math/typetraits/IsVecVecSubExpr.h>
+#include <blaze/math/typetraits/NumericElementType.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 
 #endif
