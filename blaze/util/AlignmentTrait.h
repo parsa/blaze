@@ -29,6 +29,7 @@
 
 #include <boost/type_traits/alignment_of.hpp>
 #include <blaze/system/Vectorization.h>
+#include <blaze/util/Complex.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
@@ -130,6 +131,56 @@ struct AlignmentTrait<double>
    enum { value = 16UL };
 #else
    enum { value = boost::alignment_of<double>::value };
+#endif
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of AlignmentTrait for 'complex<float>'.
+// \ingroup util
+*/
+template<>
+struct AlignmentTrait< complex<float> >
+{
+ public:
+   //**Member enumerations*************************************************************************
+#if BLAZE_MIC_MODE
+   enum { value = 64UL };
+#elif BLAZE_AVX_MODE
+   enum { value = 32UL };
+#elif BLAZE_SSE_MODE
+   enum { value = 16UL };
+#else
+   enum { value = boost::alignment_of< complex<float> >::value };
+#endif
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of AlignmentTrait for 'complex<double>'.
+// \ingroup util
+*/
+template<>
+struct AlignmentTrait< complex<double> >
+{
+ public:
+   //**Member enumerations*************************************************************************
+#if BLAZE_MIC_MODE
+   enum { value = 64UL };
+#elif BLAZE_AVX_MODE
+   enum { value = 32UL };
+#elif BLAZE_SSE_MODE
+   enum { value = 16UL };
+#else
+   enum { value = boost::alignment_of< complex<double> >::value };
 #endif
    //**********************************************************************************************
 };
