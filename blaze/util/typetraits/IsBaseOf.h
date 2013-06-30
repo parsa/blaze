@@ -31,7 +31,7 @@
 #include <blaze/util/FalseType.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/TrueType.h>
-#include <blaze/util/TypeTraits/RemoveCV.h>
+#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
