@@ -1228,7 +1228,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline size_t DynamicVector<Type,TF>::adjustCapacity( size_t minCapacity ) const
 {
-   if( IsBuiltin<Type>::value )
+   if( IsNumeric<Type>::value )
       return minCapacity + ( IT::size - ( minCapacity % IT::size ) ) % IT::size;
    else return minCapacity;
 }

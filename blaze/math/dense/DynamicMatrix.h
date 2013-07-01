@@ -1574,7 +1574,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline size_t DynamicMatrix<Type,SO>::adjustColumns( size_t minColumns ) const
 {
-   if( IsBuiltin<Type>::value )
+   if( IsNumeric<Type>::value )
       return minColumns + ( IT::size - ( minColumns % IT::size ) ) % IT::size;
    else return minColumns;
 }
@@ -3599,7 +3599,7 @@ inline void DynamicMatrix<Type,true>::swap( DynamicMatrix& m ) /* throw() */
 template< typename Type >  // Data type of the matrix
 inline size_t DynamicMatrix<Type,true>::adjustRows( size_t minRows ) const
 {
-   if( IsBuiltin<Type>::value )
+   if( IsNumeric<Type>::value )
       return minRows + ( IT::size - ( minRows % IT::size ) ) % IT::size;
    else return minRows;
 }
