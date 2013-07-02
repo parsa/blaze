@@ -144,7 +144,8 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    template< typename T1, typename T2, typename T3 >
    struct UseSinglePrecisionComplexKernel {
       typedef complex<float>  Type;
-      enum { value = IsSame<typename T1::ElementType,Type>::value &&
+      enum { value = T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                     IsSame<typename T1::ElementType,Type>::value &&
                      IsSame<typename T2::ElementType,Type>::value &&
                      IsSame<typename T3::ElementType,Type>::value };
    };
