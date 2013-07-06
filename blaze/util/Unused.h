@@ -69,7 +69,7 @@ namespace blaze {
 */
 template< typename T1 >
 inline void UNUSED_PARAMETER( const T1& )
-{};
+{}
 //*************************************************************************************************
 
 
@@ -82,7 +82,7 @@ inline void UNUSED_PARAMETER( const T1& )
 */
 template< typename T1, typename T2 >
 inline void UNUSED_PARAMETER( const T1&, const T2& )
-{};
+{}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -96,7 +96,7 @@ inline void UNUSED_PARAMETER( const T1&, const T2& )
 */
 template< typename T1, typename T2, typename T3 >
 inline void UNUSED_PARAMETER( const T1&, const T2&, const T3& )
-{};
+{}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -110,7 +110,7 @@ inline void UNUSED_PARAMETER( const T1&, const T2&, const T3& )
 */
 template< typename T1, typename T2, typename T3, typename T4 >
 inline void UNUSED_PARAMETER( const T1&, const T2&, const T3&, const T4& )
-{};
+{}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -124,7 +124,7 @@ inline void UNUSED_PARAMETER( const T1&, const T2&, const T3&, const T4& )
 */
 template< typename T1, typename T2, typename T3, typename T4, typename T5 >
 inline void UNUSED_PARAMETER( const T1&, const T2&, const T3&, const T4&, const T5& )
-{};
+{}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -138,7 +138,7 @@ inline void UNUSED_PARAMETER( const T1&, const T2&, const T3&, const T4&, const 
 */
 template< typename T1, typename T2, typename T3, typename T4, typename T5, typename T6 >
 inline void UNUSED_PARAMETER( const T1&, const T2&, const T3&, const T4&, const T5&, const T6& )
-{};
+{}
 /*! \endcond */
 //*************************************************************************************************
 
