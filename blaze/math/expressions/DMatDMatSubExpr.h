@@ -186,8 +186,8 @@ class DMatDMatSubExpr : public DenseMatrix< DMatDMatSubExpr<MT1,MT2,SO>, SO >
       typedef IntrinsicTrait<ElementType>  IT;
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < lhs_.columns(), "Invalid column access index" );
+      BLAZE_INTERNAL_ASSERT( !SO || ( i % IT::size == 0UL ), "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( SO  || ( j % IT::size == 0UL ), "Invalid column access index" );
-      BLAZE_INTERNAL_ASSERT( !SO || ( i % IT::size == 0UL ), "Invalid column access index" );
       const IntrinsicType xmm1( lhs_.get(i,j) );
       const IntrinsicType xmm2( rhs_.get(i,j) );
       return xmm1 - xmm2;
