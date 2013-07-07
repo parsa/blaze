@@ -966,7 +966,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
 
       for( ConstIterator element=begin; element!=end; ++element ) {
          for( size_t i=0UL; i<(~A).rows(); ++i ) {
-            (~A)(i,element->index()) += x[i] * element->value();
+            (~A)(i,element->index()) -= x[i] * element->value();
          }
       }
    }
