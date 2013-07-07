@@ -35,6 +35,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
+#include <blaze/math/Intrinsics.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -80,6 +81,8 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    typedef typename VT2::ReturnType     RN2;  //!< Return type of the right-hand side dense vector expression.
    typedef typename VT1::CompositeType  CT1;  //!< Composite type of the left-hand side dense vector expression.
    typedef typename VT2::CompositeType  CT2;  //!< Composite type of the right-hand side dense vector expression.
+   typedef typename VT1::ElementType    ET1;  //!< Element type of the left-hand side dense vector expression.
+   typedef typename VT2::ElementType    ET2;  //!< Element type of the right-hand side dense vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -114,13 +117,41 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    /*! \endcond */
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! In case all three involved data types are suited for a vectorized computation of the
+       outer product, the nested \value will be set to 1, otherwise it will be 0. */
+   template< typename T1, typename T2, typename T3 >
+   struct UseVectorizedKernel {
+      enum { value = T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                     IsSame<typename T1::ElementType,typename T2::ElementType>::value &&
+                     IsSame<typename T1::ElementType,typename T3::ElementType>::value &&
+                     IntrinsicTrait<typename T1::ElementType>::multiplication };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! In case no vectorized computation is possible, the nested \value will be set to 1,
+       otherwise it will be 0. */
+   template< typename T1, typename T2, typename T3 >
+   struct UseDefaultKernel {
+      enum { value = !UseVectorizedKernel<T1,T2,T3>::value };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
-   typedef DVecTDVecMultExpr<VT1,VT2>          This;           //!< Type of this DVecTDVecMultExpr instance.
-   typedef typename MultTrait<RT1,RT2>::Type   ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
+   typedef DVecTDVecMultExpr<VT1,VT2>                  This;           //!< Type of this DVecTDVecMultExpr instance.
+   typedef typename MultTrait<RT1,RT2>::Type           ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::OppositeType           OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
+   typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
 
    //! Return type for expression template evaluations.
    typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
@@ -143,7 +174,9 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = 0 };
+   enum { vectorizable = VT1::vectorizable && VT2::vectorizable &&
+                         IsSame<ET1,ET2>::value &&
+                         IntrinsicTrait<ET1>::multiplication };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -170,6 +203,24 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       BLAZE_INTERNAL_ASSERT( j < rhs_.size(), "Invalid column access index" );
 
       return lhs_[i] * rhs_[j];
+   }
+   //**********************************************************************************************
+
+   //**Get function********************************************************************************
+   /*!\brief Access to the intrinsic elements of the matrix.
+   //
+   // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+   // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+   // \return Reference to the accessed values.
+   */
+   inline IntrinsicType get( size_t i, size_t j ) const {
+      typedef IntrinsicTrait<ElementType>  IT;
+      BLAZE_INTERNAL_ASSERT( i < lhs_.size()    , "Invalid row access index"    );
+      BLAZE_INTERNAL_ASSERT( j < rhs_.size()    , "Invalid column access index" );
+      BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
+      const IntrinsicType xmm1( set( lhs_[i] ) );
+      const IntrinsicType xmm2( rhs_.get( j ) );
+      return xmm1 * xmm2;
    }
    //**********************************************************************************************
 
@@ -274,19 +325,81 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      const size_t m( (~lhs).rows() );
-      const size_t n( (~lhs).columns() );
+      DVecTDVecMultExpr::selectAssignKernel( ~lhs, x, y );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
 
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ( n & size_t(-2) ), "Invalid end calculation" );
+   //**Default assignment to row-major dense matrices**********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default assignment of a dense vector-dense vector outer product to a row-major dense
+   //        matrix (\f$ A=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_vector
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side dense vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the default assignment kernel for the dense vector-dense vector
+   // outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseDefaultKernel<MT,VT3,VT4> >::Type
+      selectAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
+   {
+      const size_t m( (~A).rows() );
+      const size_t n( (~A).columns() );
+
       const size_t jend( n & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == jend, "Invalid end calculation" );
 
       for( size_t i=0UL; i<m; ++i ) {
          for( size_t j=0UL; j<jend; j+=2UL ) {
-            (~lhs)(i,j    ) = x[i] * y[j  ];
-            (~lhs)(i,j+1UL) = x[i] * y[j+1];
+            (~A)(i,j    ) = x[i] * y[j  ];
+            (~A)(i,j+1UL) = x[i] * y[j+1];
          }
          if( jend < n ) {
-            (~lhs)(i,jend) = x[i] * y[jend];
+            (~A)(i,jend) = x[i] * y[jend];
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized assignment to row-major dense matrices*******************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized assignment of a dense vector-dense vector outer product to a row-major
+   //        dense matrix (\f$ A=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_vector
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side dense vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the vectorized assignment kernel for the dense vector-dense vector
+   // outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
+      selectAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t m( (~A).rows() );
+      const size_t n( (~A).columns() );
+
+      for( size_t i=0UL; i<m; ++i )
+      {
+         const IntrinsicType x1( set( x[i] ) );
+
+         for( size_t j=0UL; j<n; j+=IT::size ) {
+            store( &(~A)(i,j), x1 * y.get(j) );
          }
       }
    }
@@ -321,19 +434,81 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      const size_t m( (~lhs).rows() );
-      const size_t n( (~lhs).columns() );
+      DVecTDVecMultExpr::selectAssignKernel( ~lhs, x, y );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
 
-      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == ( m & size_t(-2) ), "Invalid end calculation" );
+   //**Default assignment to column-major dense matrices*******************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default assignment of a dense vector-dense vector outer product to a column-major
+   //        dense matrix (\f$ A=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_vector
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side dense vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the default assignment kernel for the dense vector-dense vector
+   // outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseDefaultKernel<MT,VT3,VT4> >::Type
+      selectAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
+   {
+      const size_t m( (~A).rows() );
+      const size_t n( (~A).columns() );
+
       const size_t iend( m & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == iend, "Invalid end calculation" );
 
       for( size_t j=0UL; j<n; ++j ) {
          for( size_t i=0UL; i<iend; i+=2UL ) {
-            (~lhs)(i    ,j) = x[i  ] * y[j];
-            (~lhs)(i+1UL,j) = x[i+1] * y[j];
+            (~A)(i    ,j) = x[i  ] * y[j];
+            (~A)(i+1UL,j) = x[i+1] * y[j];
          }
          if( iend < m ) {
-            (~lhs)(iend,j) = x[iend] * y[j];
+            (~A)(iend,j) = x[iend] * y[j];
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized assignment to column-major dense matrices****************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized assignment of a dense vector-dense vector outer product to a column-major
+   //        dense matrix (\f$ A=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_vector
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side dense vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the vectorized assignment kernel for the dense vector-dense vector
+   // outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
+      selectAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t m( (~A).rows() );
+      const size_t n( (~A).columns() );
+
+      for( size_t j=0UL; j<n; ++j )
+      {
+         const IntrinsicType y1( set( y[j] ) );
+
+         for( size_t i=0UL; i<m; i+=IT::size ) {
+            store( &(~A)(i,j), x.get(i) * y1 );
          }
       }
    }
@@ -408,19 +583,81 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      const size_t m( (~lhs).rows() );
-      const size_t n( (~lhs).columns() );
+      DVecTDVecMultExpr::selectAddAssignKernel( ~lhs, x, y );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
 
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ( n & size_t(-2) ), "Invalid end calculation" );
+   //**Default addition assignment to row-major dense matrices*************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default addition assignment of a dense vector-dense vector outer product to a
+   //        row-major dense matrix (\f$ A+=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_vector
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side dense vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the default addition assignment kernel for the dense vector-dense
+   // vector outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseDefaultKernel<MT,VT3,VT4> >::Type
+      selectAddAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
+   {
+      const size_t m( (~A).rows() );
+      const size_t n( (~A).columns() );
+
       const size_t jend( n & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == jend, "Invalid end calculation" );
 
       for( size_t i=0UL; i<m; ++i ) {
          for( size_t j=0UL; j<jend; j+=2UL ) {
-            (~lhs)(i,j    ) += x[i] * y[j    ];
-            (~lhs)(i,j+1UL) += x[i] * y[j+1UL];
+            (~A)(i,j    ) += x[i] * y[j    ];
+            (~A)(i,j+1UL) += x[i] * y[j+1UL];
          }
          if( jend < n ) {
-            (~lhs)(i,jend) += x[i] * y[jend];
+            (~A)(i,jend) += x[i] * y[jend];
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized addition assignment to row-major dense matrices**********************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized addition assignment of a dense vector-dense vector outer product to a
+   //        row-major dense matrix (\f$ A+=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_vector
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side dense vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the vectorized addition assignment kernel for the dense vector-dense
+   // vector outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
+      selectAddAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t m( (~A).rows() );
+      const size_t n( (~A).columns() );
+
+      for( size_t i=0UL; i<m; ++i )
+      {
+         const IntrinsicType x1( set( x[i] ) );
+
+         for( size_t j=0UL; j<n; j+=IT::size ) {
+            store( &(~A)(i,j), load( &(~A)(i,j) ) + x1 * y.get(j) );
          }
       }
    }
@@ -456,19 +693,81 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      const size_t m( (~lhs).rows() );
-      const size_t n( (~lhs).columns() );
+      DVecTDVecMultExpr::selectAddAssignKernel( ~lhs, x, y );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
 
-      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == ( m & size_t(-2) ), "Invalid end calculation" );
+   //**Default addition assignment to column dense matrices****************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default addition assignment of a dense vector-dense vector outer product to a
+   //        column-major dense matrix (\f$ A+=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_vector
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side dense vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the default addition assignment kernel for the dense vector-dense
+   // vector outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseDefaultKernel<MT,VT3,VT4> >::Type
+      selectAddAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
+   {
+      const size_t m( (~A).rows() );
+      const size_t n( (~A).columns() );
+
       const size_t iend( m & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == iend, "Invalid end calculation" );
 
       for( size_t j=0UL; j<n; ++j ) {
          for( size_t i=0UL; i<iend; i+=2UL ) {
-            (~lhs)(i    ,j) += x[i    ] * y[j];
-            (~lhs)(i+1UL,j) += x[i+1UL] * y[j];
+            (~A)(i    ,j) += x[i    ] * y[j];
+            (~A)(i+1UL,j) += x[i+1UL] * y[j];
          }
          if( iend < m ) {
-            (~lhs)(iend,j) += x[iend] * y[j];
+            (~A)(iend,j) += x[iend] * y[j];
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized addition assignment to column-major dense matrices*******************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized addition assignment of a dense vector-dense vector outer product to a
+   //        column-major dense matrix (\f$ A+=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_vector
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side dense vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the vectorized addition assignment kernel for the dense vector-
+   // dense vector outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
+      selectAddAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t m( (~A).rows() );
+      const size_t n( (~A).columns() );
+
+      for( size_t j=0UL; j<n; ++j )
+      {
+         const IntrinsicType y1( set( y[j] ) );
+
+         for( size_t i=0UL; i<m; i+=IT::size ) {
+            store( &(~A)(i,j), load( &(~A)(i,j) ) + x.get(i) * y1 );
          }
       }
    }
@@ -511,19 +810,81 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      const size_t m( (~lhs).rows() );
-      const size_t n( (~lhs).columns() );
+      DVecTDVecMultExpr::selectSubAssignKernel( ~lhs, x, y );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
 
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ( n & size_t(-2) ), "Invalid end calculation" );
+   //**Default subtraction assignment to row-major dense matrices**********************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default subtraction assignment of a dense vector-dense vector outer product to a
+   //        row-major dense matrix (\f$ A-=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_vector
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side dense vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the default subtraction assignment kernel for the dense vector-
+   // dense vector outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseDefaultKernel<MT,VT3,VT4> >::Type
+      selectSubAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
+   {
+      const size_t m( (~A).rows() );
+      const size_t n( (~A).columns() );
+
       const size_t jend( n & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == jend, "Invalid end calculation" );
 
       for( size_t i=0UL; i<m; ++i ) {
          for( size_t j=0UL; j<jend; j+=2UL ) {
-            (~lhs)(i,j    ) -= x[i] * y[j    ];
-            (~lhs)(i,j+1UL) -= x[i] * y[j+1UL];
+            (~A)(i,j    ) -= x[i] * y[j    ];
+            (~A)(i,j+1UL) -= x[i] * y[j+1UL];
          }
          if( jend < n ) {
-            (~lhs)(i,jend) -= x[i] * y[jend];
+            (~A)(i,jend) -= x[i] * y[jend];
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized subtraction assignment to row-major dense matrices*******************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized subtraction assignment of a dense vector-dense vector outer product to a
+   //        row-major dense matrix (\f$ A-=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_vector
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side dense vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the vectorized subtraction assignment kernel for the dense vector-dense
+   // vector outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
+      selectSubAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t m( (~A).rows() );
+      const size_t n( (~A).columns() );
+
+      for( size_t i=0UL; i<m; ++i )
+      {
+         const IntrinsicType x1( set( x[i] ) );
+
+         for( size_t j=0UL; j<n; j+=IT::size ) {
+            store( &(~A)(i,j), load( &(~A)(i,j) ) - x1 * y.get(j) );
          }
       }
    }
@@ -559,19 +920,81 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      const size_t m( (~lhs).rows() );
-      const size_t n( (~lhs).columns() );
+      DVecTDVecMultExpr::selectSubAssignKernel( ~lhs, x, y );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
 
-      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == ( m & size_t(-2) ), "Invalid end calculation" );
+   //**Default subtraction assignment to column dense matrices*************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default subtraction assignment of a dense vector-dense vector outer product to a
+   //        column-major dense matrix (\f$ A-=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_vector
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side dense vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the default subtraction assignment kernel for the dense vector-dense
+   // vector outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseDefaultKernel<MT,VT3,VT4> >::Type
+      selectSubAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
+   {
+      const size_t m( (~A).rows() );
+      const size_t n( (~A).columns() );
+
       const size_t iend( m & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == iend, "Invalid end calculation" );
 
       for( size_t j=0UL; j<n; ++j ) {
          for( size_t i=0UL; i<iend; i+=2UL ) {
-            (~lhs)(i    ,j) -= x[i    ] * y[j];
-            (~lhs)(i+1UL,j) -= x[i+1UL] * y[j];
+            (~A)(i    ,j) -= x[i    ] * y[j];
+            (~A)(i+1UL,j) -= x[i+1UL] * y[j];
          }
          if( iend < m ) {
-            (~lhs)(iend,j) -= x[iend] * y[j];
+            (~A)(iend,j) -= x[iend] * y[j];
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized subtraction assignment to column-major dense matrices****************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized subtraction assignment of a dense vector-dense vector outer product to a
+   //        column-major dense matrix (\f$ A-=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_vector
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side dense vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the vectorized subtraction assignment kernel for the dense vector-
+   // dense vector outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
+      selectSubAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t m( (~A).rows() );
+      const size_t n( (~A).columns() );
+
+      for( size_t j=0UL; j<n; ++j )
+      {
+         const IntrinsicType y1( set( y[j] ) );
+
+         for( size_t i=0UL; i<m; i+=IT::size ) {
+            store( &(~A)(i,j), load( &(~A)(i,j) ) - x.get(i) * y1 );
          }
       }
    }
