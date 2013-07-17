@@ -529,10 +529,10 @@ inline typename EnableIf< IsNumeric<Type>, Archive<Stream>& >::Type
 template< typename Stream >  // Type of the bound stream
 template< typename Type >    // Type of the array elements
 inline typename EnableIf< IsNumeric<Type>, Archive<Stream>& >::Type
-   Archive<Stream>::read( Type* s, size_t count )
+   Archive<Stream>::read( Type* array, size_t count )
 {
    typedef typename Stream::char_type  CharType;
-   stream_.read( reinterpret_cast<CharType*>( s ), count*sizeof(Type) );
+   stream_.read( reinterpret_cast<CharType*>( array ), count*sizeof(Type) );
    return *this;
 }
 //*************************************************************************************************
