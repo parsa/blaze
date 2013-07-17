@@ -57,6 +57,7 @@
 #include <blaze/util/PtrVector.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/SelectType.h>
+#include <blaze/util/Serialization.h>
 #include <blaze/util/Singleton.h>
 #include <blaze/util/SizeTrait.h>
 #include <blaze/util/StaticAssert.h>

@@ -39,6 +39,7 @@
 #include <blaze/math/Infinity.h>
 #include <blaze/math/Quaternion.h>
 #include <blaze/math/RotationMatrix.h>
+#include <blaze/math/Serialization.h>
 #include <blaze/math/Shims.h>
 #include <blaze/math/Solvers.h>
 #include <blaze/math/StaticMatrix.h>
