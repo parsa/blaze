@@ -1039,6 +1039,7 @@ inline void randomize( T& value )
 /*!\brief Randomization of a given variable.
 // \ingroup random
 //
+// \param value The value to be randomized.
 // \param a1 First argument for the random number generation.
 // \return void
 //
@@ -1058,6 +1059,7 @@ inline void randomize( T& value, const A1& a1 )
 /*!\brief Randomization of a given variable.
 // \ingroup random
 //
+// \param value The value to be randomized.
 // \param a1 First argument for the random number generation.
 // \param a2 Second argument for the random number generation.
 // \return void
@@ -1080,6 +1082,7 @@ inline void randomize( T& value, const A1& a1, const A2& a2 )
 /*!\brief Randomization of a given variable.
 // \ingroup random
 //
+// \param value The value to be randomized.
 // \param a1 First argument for the random number generation.
 // \param a2 Second argument for the random number generation.
 // \param a3 Third argument for the random number generation.
@@ -1104,6 +1107,7 @@ inline void randomize( T& value, const A1& a1, const A2& a2, const A3& a3 )
 /*!\brief Randomization of a given variable.
 // \ingroup random
 //
+// \param value The value to be randomized.
 // \param a1 First argument for the random number generation.
 // \param a2 Second argument for the random number generation.
 // \param a3 Third argument for the random number generation.
@@ -1130,6 +1134,7 @@ inline void randomize( T& value, const A1& a1, const A2& a2, const A3& a3, const
 /*!\brief Randomization of a given variable.
 // \ingroup random
 //
+// \param value The value to be randomized.
 // \param a1 First argument for the random number generation.
 // \param a2 Second argument for the random number generation.
 // \param a3 Third argument for the random number generation.
