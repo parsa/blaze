@@ -2968,6 +2968,7 @@ inline typename EnableIf< IsMatMatAddExpr<MT>, typename ColumnExprTrait<MT>::Typ
 
    return column( (~dm).leftOperand(), index ) + column( (~dm).rightOperand(), index );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -2992,6 +2993,7 @@ inline typename EnableIf< IsMatMatSubExpr<MT>, typename ColumnExprTrait<MT>::Typ
 
    return column( (~dm).leftOperand(), index ) - column( (~dm).rightOperand(), index );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -3016,6 +3018,7 @@ inline typename EnableIf< IsMatMatMultExpr<MT>, typename ColumnExprTrait<MT>::Ty
 
    return (~dm).leftOperand() * column( (~dm).rightOperand(), index );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -3040,6 +3043,7 @@ inline typename EnableIf< IsVecTVecMultExpr<MT>, typename ColumnExprTrait<MT>::T
 
    return (~dm).leftOperand() * (~dm).rightOperand()[index];
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -3064,6 +3068,7 @@ inline typename EnableIf< IsMatScalarMultExpr<MT>, typename ColumnExprTrait<MT>:
 
    return column( (~dm).leftOperand(), index ) * (~dm).rightOperand();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -3088,6 +3093,7 @@ inline typename EnableIf< IsMatScalarDivExpr<MT>, typename ColumnExprTrait<MT>::
 
    return column( (~dm).leftOperand(), index ) / (~dm).rightOperand();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -3112,6 +3118,7 @@ inline typename EnableIf< IsMatAbsExpr<MT>, typename ColumnExprTrait<MT>::Type >
 
    return abs( column( (~dm).operand(), index ) );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -3136,6 +3143,7 @@ inline typename EnableIf< IsMatEvalExpr<MT>, typename ColumnExprTrait<MT>::Type 
 
    return eval( column( (~dm).operand(), index ) );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -3160,6 +3168,7 @@ inline typename EnableIf< IsMatTransExpr<MT>, typename ColumnExprTrait<MT>::Type
 
    return trans( row( (~dm).operand(), index ) );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
