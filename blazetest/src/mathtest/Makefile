@@ -305,6 +305,16 @@ smatsmatmult:
 	@echo "Building the sparse matrix/sparse matrix multiplication tests..."
 	@$(MAKE) --no-print-directory -C ./smatsmatmult/
 
+vectorserializer:
+	@echo
+	@echo "Building the VectorSerializer class tests..."
+	@$(MAKE) --no-print-directory -C ./vectorserializer/
+
+matrixserializer:
+	@echo
+	@echo "Building the MatrixSerializer class tests..."
+	@$(MAKE) --no-print-directory -C ./matrixserializer/
+
 clean:
 	@$(MAKE) --no-print-directory -C ./staticvector clean
 	@$(MAKE) --no-print-directory -C ./dynamicvector clean
@@ -360,6 +370,8 @@ clean:
 	@$(MAKE) --no-print-directory -C ./dmatsmatmult clean
 	@$(MAKE) --no-print-directory -C ./smatdmatmult clean
 	@$(MAKE) --no-print-directory -C ./smatsmatmult clean
+	@$(MAKE) --no-print-directory -C ./vectorserializer clean
+	@$(MAKE) --no-print-directory -C ./matrixserializer clean
 	@$(RM) $(OBJ) $(DEP)
 
 
@@ -378,4 +390,5 @@ clean:
         tdvecdmatmult tsvecdmatmult tdvecsmatmult tsvecsmatmult \
         dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
         dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
-        dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult
+        dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
+        vectorserializer matrixserializer
