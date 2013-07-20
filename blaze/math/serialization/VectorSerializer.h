@@ -81,8 +81,6 @@ namespace blaze {
       blaze::DynamicVector<double,rowVector> d1;
       blaze::DynamicVector<int,rowVector> d2;
 
-      // ... Resizing and initialization
-
       // Creating an archive that reads from the file "vectors.blaze"
       blaze::Archive<std::ofstream> archive( "vectors.blaze" );
 
@@ -99,7 +97,35 @@ namespace blaze {
    }
    \endcode
 
-// As the example demonstrates, the vector serialization offers an enormous flexibility. However,
+// Note that it is even possible to (de-)serialize vectors with vector or matrix elements:
+
+   \code
+   // Serialization
+   {
+      blaze::CompressedVector< blaze::DynamicVector< blaze::complex<double> > > vec;
+
+      // ... Resizing and initialization
+
+      // Creating an archive that writes into a the file "vector.blaze"
+      blaze::Archive<std::ofstream> archive( "vector.blaze" );
+
+      // Serialization of the vector into the archive
+      archive << vec;
+   }
+
+   // Deserialization
+   {
+      blaze::CompressedVector< blaze::DynamicVector< blaze::complex<double> > > vec;
+
+      // Creating an archive that reads from the file "vector.blaze"
+      blaze::Archive<std::ofstream> archive( "vector.blaze" );
+
+      // Reconstitution of the vector from the archive
+      archive >> vec;
+   }
+   \endcode
+
+// As the examples demonstrates, the vector serialization offers an enormous flexibility. However,
 // several actions result in errors:
 //
 //  - vectors cannot be reconstituted as matrices (and vice versa)

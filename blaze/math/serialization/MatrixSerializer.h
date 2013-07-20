@@ -84,8 +84,6 @@ namespace blaze {
       blaze::DynamicMatrix<double,rowMajor> D1;
       blaze::DynamicMatrix<int,rowMajor> D2;
 
-      // ... Resizing and initialization
-
       // Creating an archive that reads from the file "matrices.blaze"
       blaze::Archive<std::ofstream> archive( "matrices.blaze" );
 
@@ -102,7 +100,35 @@ namespace blaze {
    }
    \endcode
 
-// As the example demonstrates, the matrix serialization offers an enormous flexibility. However,
+// Note that it is even possible to (de-)serialize matrices with vector or matrix elements:
+
+   \code
+   // Serialization
+   {
+      blaze::CompressedMatrix< blaze::DynamicMatrix< blaze::complex<double> > > mat;
+
+      // ... Resizing and initialization
+
+      // Creating an archive that writes into a the file "matrix.blaze"
+      blaze::Archive<std::ofstream> archive( "matrix.blaze" );
+
+      // Serialization of the matrix into the archive
+      archive << mat;
+   }
+
+   // Deserialization
+   {
+      blaze::CompressedMatrix< blaze::DynamicMatrix< blaze::complex<double> > > mat;
+
+      // Creating an archive that reads from the file "matrix.blaze"
+      blaze::Archive<std::ofstream> archive( "matrix.blaze" );
+
+      // Reconstitution of the matrix from the archive
+      archive >> mat;
+   }
+   \endcode
+
+// As the examples demonstrates, the matrix serialization offers an enormous flexibility. However,
 // several actions result in errors:
 //
 //  - matrices cannot be reconstituted as vectors (and vice versa)
