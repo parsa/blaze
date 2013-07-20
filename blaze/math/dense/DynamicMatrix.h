@@ -4168,9 +4168,6 @@ inline void clear( DynamicMatrix<Type,SO>& m );
 template< typename Type, bool SO >
 inline bool isDefault( const DynamicMatrix<Type,SO>& m );
 
-//template< typename Type, bool SO >
-//inline const DynamicMatrix<Type,SO> inv( const DynamicMatrix<Type,SO>& m );
-
 template< typename Type, bool SO >
 inline void swap( DynamicMatrix<Type,SO>& a, DynamicMatrix<Type,SO>& b ) /* throw() */;
 //@}
@@ -4264,38 +4261,6 @@ inline bool isDefault( const DynamicMatrix<Type,SO>& m )
 
    return true;
 }
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Inverting the given dense matrix.
-// \ingroup dynamic_matrix
-//
-// \param m The dense matrix to be inverted.
-// \return The inverse of the matrix.
-//
-// This function returns the inverse of the given dense matrix.
-
-   \code
-   blaze::DynamicMatrix<double> R1, R2;
-   // ... Resizing and initialization
-   R1 = inv( R2 );
-   \endcode
-
-// \b Note: This function is only defined for matrices of floating point type. The attempt to
-// use this function with matrices of integral data types will result in a compile time error.
-*/
-/*
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline const DynamicMatrix<Type,SO> inv( const DynamicMatrix<Type,SO>& m )
-{
-   BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( Type );
-   UNUSED_PARAMETER( m );
-
-   return DynamicMatrix<Type,SO>();
-}
-*/
 //*************************************************************************************************
 
 

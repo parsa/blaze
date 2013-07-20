@@ -4133,9 +4133,6 @@ inline void clear( CompressedMatrix<Type,SO>& m );
 template< typename Type, bool SO >
 inline bool isDefault( const CompressedMatrix<Type,SO>& m );
 
-//template< typename Type, bool SO >
-//inline const CompressedMatrix<Type,SO> inv( const CompressedMatrix<Type,SO>& m );
-
 template< typename Type, bool SO >
 inline void swap( CompressedMatrix<Type,SO>& a, CompressedMatrix<Type,SO>& b ) /* throw() */;
 //@}
@@ -4235,26 +4232,6 @@ inline bool isDefault( const CompressedMatrix<Type,SO>& m )
 
    return true;
 }
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Inverting the given sparse matrix.
-// \ingroup compressed_matrix
-//
-// \param m The sparse matrix to be inverted.
-// \return The inverse of the matrix.
-//
-// This function returns the inverse of the given sparse matrix.
-*/
-/*
-template< typename Type  // Data type of the sparse matrix
-        , bool SO >      // Storage order
-inline const CompressedMatrix<Type,SO> inv( const CompressedMatrix<Type,SO>& m )
-{
-   return CompressedMatrix<Type,SO>();
-}
-*/
 //*************************************************************************************************
 
 
