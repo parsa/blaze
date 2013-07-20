@@ -548,7 +548,6 @@ template<> struct CYCLIC_LIFETIME_DEPENDENCY_DETECTED<false> { enum { value = 1 
 
    \code
    // Definition of the World class
-   // The world is implemented in terms of the singleton pattern by
    class World : private Singleton<World,Logger>
    {
     private:
@@ -560,7 +559,27 @@ template<> struct CYCLIC_LIFETIME_DEPENDENCY_DETECTED<false> { enum { value = 1 
    };
    \endcode
 
-// TODO: Finalize the documentation
+// In order to make a specific class a singleton, two modifications have to be applied to this
+// class:
+//  -# The class has to derive (publicly or non-publicly) from the Singleton class. In case the
+//     class derives publicly the instance() member function, which the class inherits from the
+//     Singleton class, is publicly accessible and provides a point of access to the singleton
+//     instance. In case the class derives non-publicly, the instance() function is not publicly
+//     accessible and therefore the class has to provide another point of access to the singleton
+//     instance.\n
+//     The first template parameter has to be the class itself. The following template parameters
+//     define lifetime dependencies of this class, i.e., specify on which singleton instances the
+//     class depends. It is possible to specify up to 8 lifetime dependencies. The example below
+//     demonstrates this for the World class, which is solely depending on the Logger class,
+//     which represents the core of the Blaze logging functionality.
+//  -# The class needs to befriend the Singleton via the blaze::BLAZE_BEFRIEND_SINGLETON macro.
+//     This macro provides a convenient way to express this friendship relation and works both in
+//     case the class derives publicly or non-publicly from the Singleton class. This friendship
+//     is necessary since in order to guarantee the uniqueness of the singleton instance the
+//     constructor of the deriving class must be declared in a non-public section of the class
+//     definition. However, in order for the Singleton class to provide the instance() function,
+//     the constructor must be accessible. This is achieved by the blaze::BLAZE_BEFRIEND_SINGLETON
+//     macro.
 */
 template< typename T                // Type of the singleton (CRTP pattern)
         , typename D1 = NullType    // Type of the first lifetime dependency
