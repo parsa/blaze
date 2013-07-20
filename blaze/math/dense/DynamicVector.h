@@ -1119,6 +1119,11 @@ inline void DynamicVector<Type,TF>::resize( size_t n, bool preserve )
       deallocate( tmp );
       capacity_ = newCapacity;
    }
+   else if( IsBuiltin<Type>::value && n < size_ )
+   {
+      for( size_t i=n; i<size_; ++i )
+         v_[i] = Type();
+   }
 
    size_ = n;
 }
