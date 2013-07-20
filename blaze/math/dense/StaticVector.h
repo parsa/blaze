@@ -58,7 +58,6 @@
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -398,7 +397,7 @@ inline StaticVector<Type,N,TF>::StaticVector()
 {
    BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<NN; ++i )
          v_[i] = Type();
    }
@@ -421,7 +420,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& init )
    for( size_t i=0UL; i<N; ++i )
       v_[i] = init;
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=N; i<NN; ++i )
          v_[i] = Type();
    }
@@ -465,7 +464,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const StaticVector<Other,N,TF>& v 
    for( size_t i=0UL; i<N; ++i )
       v_[i] = v[i];
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=N; i<NN; ++i )
          v_[i] = Type();
    }
@@ -496,7 +495,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Vector<VT,TF>& v )
    if( (~v).size() != N )
       throw std::invalid_argument( "Invalid setup of static vector" );
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=( IsSparseVector<VT>::value )?( 0UL ):( N ); i<NN; ++i )
          v_[i] = Type();
    }
@@ -531,7 +530,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Other (&rhs)[N] )
    for( size_t i=0UL; i<N; ++i )
       v_[i] = rhs[i];
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=N; i<NN; ++i )
          v_[i] = Type();
    }
@@ -562,7 +561,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2 )
    v_[0] = v1;
    v_[1] = v2;
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=N; i<NN; ++i )
          v_[i] = Type();
    }
@@ -595,7 +594,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, co
    v_[1] = v2;
    v_[2] = v3;
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=N; i<NN; ++i )
          v_[i] = Type();
    }
@@ -631,7 +630,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2,
    v_[2] = v3;
    v_[3] = v4;
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=N; i<NN; ++i )
          v_[i] = Type();
    }
@@ -669,7 +668,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, co
    v_[3] = v4;
    v_[4] = v5;
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=N; i<NN; ++i )
          v_[i] = Type();
    }
@@ -709,7 +708,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, co
    v_[4] = v5;
    v_[5] = v6;
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=N; i<NN; ++i )
          v_[i] = Type();
    }

@@ -63,7 +63,6 @@
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -425,7 +424,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix()
 {
    BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<M*NN; ++i )
          v_[i] = Type();
    }
@@ -450,7 +449,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& init )
       for( size_t j=0UL; j<N; ++j )
          v_[i*NN+j] = init;
 
-      if( IsBuiltin<Type>::value ) {
+      if( IsNumeric<Type>::value ) {
          for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
       }
@@ -499,7 +498,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const StaticMatrix<Other,M,N,SO2
       for( size_t j=0UL; j<N; ++j )
          v_[i*NN+j] = m(i,j);
 
-      if( IsBuiltin<Type>::value ) {
+      if( IsNumeric<Type>::value ) {
          for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
       }
@@ -533,7 +532,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Matrix<MT,SO2>& m )
    if( (~m).rows() != M || (~m).columns() != N )
       throw std::invalid_argument( "Invalid setup of static matrix" );
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=( IsSparseMatrix<MT>::value )?( 0UL ):( N ); j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -583,7 +582,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2 )
       v_[ NN] = v2;
    }
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -634,7 +633,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
       v_[2UL*NN] = v3;
    }
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -699,7 +698,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2,
       v_[3UL*NN] = v4;
    }
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -757,7 +756,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
       v_[4UL*NN] = v5;
    }
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -841,7 +840,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
       v_[5UL*NN] = v6;
    }
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -906,7 +905,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
       v_[6UL*NN] = v7;
    }
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -1000,7 +999,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
       v_[7UL*NN] = v8;
    }
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -1087,7 +1086,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
       v_[8UL*NN] = v9;
    }
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -1193,7 +1192,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
       v_[9UL*NN] = v10;
    }
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -2770,7 +2769,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix()
 {
    BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<MM*N; ++i )
          v_[i] = Type();
    }
@@ -2796,7 +2795,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& init )
       for( size_t i=0UL; i<M; ++i )
          v_[i+j*MM] = init;
 
-      if( IsBuiltin<Type>::value ) {
+      if( IsNumeric<Type>::value ) {
          for( size_t i=M; i<MM; ++i )
             v_[i+j*MM] = Type();
       }
@@ -2847,7 +2846,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const StaticMatrix<Other,M,N,S
       for( size_t i=0UL; i<M; ++i )
          v_[i+j*MM] = m(i,j);
 
-      if( IsBuiltin<Type>::value ) {
+      if( IsNumeric<Type>::value ) {
          for( size_t i=M; i<MM; ++i )
             v_[i+j*MM] = Type();
       }
@@ -2882,7 +2881,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Matrix<MT,SO>& m )
    if( (~m).rows() != M || (~m).columns() != N )
       throw std::invalid_argument( "Invalid setup of static matrix" );
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t j=0UL; j<N; ++j )
          for( size_t i=( IsSparseMatrix<MT>::value )?( 0UL ):( M ); i<MM; ++i ) {
             v_[i+j*MM] = Type();
@@ -2933,7 +2932,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[ MM] = v2;
    }
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t j=0UL; j<N; ++j )
          for( size_t i=M; i<MM; ++i ) {
             v_[i+j*MM] = Type();
@@ -2985,7 +2984,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[2UL*MM] = v3;
    }
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t j=0UL; j<N; ++j )
          for( size_t i=M; i<MM; ++i ) {
             v_[i+j*MM] = Type();
@@ -3051,7 +3050,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[3UL*MM] = v4;
    }
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t j=0UL; j<N; ++j )
          for( size_t i=M; i<MM; ++i ) {
             v_[i+j*MM] = Type();
@@ -3110,7 +3109,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[4UL*MM] = v5;
    }
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t j=0UL; j<N; ++j )
          for( size_t i=M; i<MM; ++i ) {
             v_[i+j*MM] = Type();
@@ -3195,7 +3194,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[5UL*MM] = v6;
    }
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t j=0UL; j<N; ++j )
          for( size_t i=M; i<MM; ++i ) {
             v_[i+j*MM] = Type();
@@ -3261,7 +3260,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[6UL*MM] = v7;
    }
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t j=0UL; j<N; ++j )
          for( size_t i=M; i<MM; ++i ) {
             v_[i+j*MM] = Type();
@@ -3357,7 +3356,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[7UL*MM] = v8;
    }
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t j=0UL; j<N; ++j )
          for( size_t i=M; i<MM; ++i ) {
             v_[i+j*MM] = Type();
@@ -3445,7 +3444,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[8UL*MM] = v9;
    }
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t j=0UL; j<N; ++j )
          for( size_t i=M; i<MM; ++i ) {
             v_[i+j*MM] = Type();
@@ -3552,7 +3551,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[9UL*MM] = v10;
    }
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t j=0UL; j<N; ++j )
          for( size_t i=M; i<MM; ++i ) {
             v_[i+j*MM] = Type();

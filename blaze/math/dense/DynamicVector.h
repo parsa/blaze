@@ -63,7 +63,6 @@
 #include <blaze/util/Null.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -427,7 +426,7 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n )
    , capacity_( adjustCapacity( n ) )          // The maximum capacity of the vector
    , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
 {
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=size_; i<capacity_; ++i )
          v_[i] = Type();
    }
@@ -453,7 +452,7 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n, Type init )
    for( size_t i=0UL; i<size_; ++i )
       v_[i] = init;
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=size_; i<capacity_; ++i )
          v_[i] = Type();
    }
@@ -499,7 +498,7 @@ inline DynamicVector<Type,TF>::DynamicVector( const Vector<VT,TF>& v )
 {
    using blaze::assign;
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       if( IsSparseVector<VT>::value )
          reset();
       for( size_t i=size_; i<capacity_; ++i )
@@ -538,7 +537,7 @@ inline DynamicVector<Type,TF>::DynamicVector( const Other (&rhs)[N] )
    for( size_t i=0UL; i<N; ++i )
       v_[i] = rhs[i];
 
-   if( IsBuiltin<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=size_; i<capacity_; ++i )
          v_[i] = Type();
    }
@@ -1109,7 +1108,7 @@ inline void DynamicVector<Type,TF>::resize( size_t n, bool preserve )
          std::copy( v_, v_+size_, tmp );
       }
 
-      if( IsBuiltin<Type>::value ) {
+      if( IsNumeric<Type>::value ) {
          for( size_t i=size_; i<newCapacity; ++i )
             tmp[i] = Type();
       }
@@ -1119,7 +1118,7 @@ inline void DynamicVector<Type,TF>::resize( size_t n, bool preserve )
       deallocate( tmp );
       capacity_ = newCapacity;
    }
-   else if( IsBuiltin<Type>::value && n < size_ )
+   else if( IsNumeric<Type>::value && n < size_ )
    {
       for( size_t i=n; i<size_; ++i )
          v_[i] = Type();
@@ -1173,7 +1172,7 @@ inline void DynamicVector<Type,TF>::reserve( size_t n )
       // Initializing the new array
       std::copy( v_, v_+size_, tmp );
 
-      if( IsBuiltin<Type>::value ) {
+      if( IsNumeric<Type>::value ) {
          for( size_t i=size_; i<newCapacity; ++i )
             tmp[i] = Type();
       }
