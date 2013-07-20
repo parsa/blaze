@@ -270,7 +270,6 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
                               inline void           extend ( size_t m, size_t n, bool preserve=true );
                               inline void           reserve( size_t elements );
                               inline DynamicMatrix& transpose();
-                              inline DynamicMatrix& invert();
                               inline bool           isDiagonal() const;
                               inline bool           isSymmetric() const;
    template< typename Other > inline DynamicMatrix& scale( Other scalar );
@@ -1447,25 +1446,6 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::transpose()
 
 
 //*************************************************************************************************
-/*!\brief Inverting the matrix.
-//
-// \return Reference to the inverted matrix.
-//
-// \b Note: This function is only defined for matrices of floating point type. The attempt to
-// use this function with matrices of integral data types will result in a compile time error.
-*/
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::invert()
-{
-   BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( Type );
-
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Checks if the matrix is diagonal.
 //
 // \return \a true if the matrix is diagonal, \a false if not.
@@ -2290,7 +2270,6 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
                               inline void           extend ( size_t m, size_t n, bool preserve=true );
                               inline void           reserve( size_t elements );
                               inline DynamicMatrix& transpose();
-                              inline DynamicMatrix& invert();
                               inline bool           isDiagonal() const;
                               inline bool           isSymmetric() const;
    template< typename Other > inline DynamicMatrix& scale( Other scalar );
@@ -3460,26 +3439,6 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::transpose()
 {
    DynamicMatrix tmp( trans(*this) );
    swap( tmp );
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Inverting the matrix.
-//
-// \return Reference to the inverted matrix.
-//
-// \b Note: This function is only defined for matrices of floating point type. The attempt to
-// use this function with matrices of integral data types will result in a compile time error.
-*/
-template< typename Type >  // Data type of the matrix
-inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::invert()
-{
-   BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( Type );
-
    return *this;
 }
 /*! \endcond */
