@@ -63,7 +63,6 @@
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -4134,8 +4133,8 @@ inline void clear( CompressedMatrix<Type,SO>& m );
 template< typename Type, bool SO >
 inline bool isDefault( const CompressedMatrix<Type,SO>& m );
 
-template< typename Type, bool SO >
-inline const CompressedMatrix<Type,SO> inv( const CompressedMatrix<Type,SO>& m );
+//template< typename Type, bool SO >
+//inline const CompressedMatrix<Type,SO> inv( const CompressedMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
 inline void swap( CompressedMatrix<Type,SO>& a, CompressedMatrix<Type,SO>& b ) /* throw() */;
@@ -4248,13 +4247,14 @@ inline bool isDefault( const CompressedMatrix<Type,SO>& m )
 //
 // This function returns the inverse of the given sparse matrix.
 */
+/*
 template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
 inline const CompressedMatrix<Type,SO> inv( const CompressedMatrix<Type,SO>& m )
 {
-   UNUSED_PARAMETER( m );
    return CompressedMatrix<Type,SO>();
 }
+*/
 //*************************************************************************************************
 
 

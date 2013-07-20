@@ -4168,8 +4168,8 @@ inline void clear( DynamicMatrix<Type,SO>& m );
 template< typename Type, bool SO >
 inline bool isDefault( const DynamicMatrix<Type,SO>& m );
 
-template< typename Type, bool SO >
-inline const DynamicMatrix<Type,SO> inv( const DynamicMatrix<Type,SO>& m );
+//template< typename Type, bool SO >
+//inline const DynamicMatrix<Type,SO> inv( const DynamicMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
 inline void swap( DynamicMatrix<Type,SO>& a, DynamicMatrix<Type,SO>& b ) /* throw() */;
@@ -4285,6 +4285,7 @@ inline bool isDefault( const DynamicMatrix<Type,SO>& m )
 // \b Note: This function is only defined for matrices of floating point type. The attempt to
 // use this function with matrices of integral data types will result in a compile time error.
 */
+/*
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline const DynamicMatrix<Type,SO> inv( const DynamicMatrix<Type,SO>& m )
@@ -4294,6 +4295,7 @@ inline const DynamicMatrix<Type,SO> inv( const DynamicMatrix<Type,SO>& m )
 
    return DynamicMatrix<Type,SO>();
 }
+*/
 //*************************************************************************************************
 
 
