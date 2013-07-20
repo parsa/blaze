@@ -441,12 +441,12 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
-      const size_t M( A.spacing() );
+      const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
       size_t i( 0UL );
 
-      for( ; (i+IT::size*8UL) <= M; i+=IT::size*8UL ) {
+      for( ; (i+IT::size*7UL) < M; i+=IT::size*8UL ) {
          IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
          for( size_t j=0UL; j<N; ++j ) {
             const IntrinsicType x1( set( x[j] ) );
@@ -468,7 +468,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
          store( &y[i+IT::size*6UL], xmm7 );
          store( &y[i+IT::size*7UL], xmm8 );
       }
-      for( ; (i+IT::size*4UL) <= M; i+=IT::size*4UL ) {
+      for( ; (i+IT::size*3UL) < M; i+=IT::size*4UL ) {
          IntrinsicType xmm1, xmm2, xmm3, xmm4;
          for( size_t j=0UL; j<N; ++j ) {
             const IntrinsicType x1( set( x[j] ) );
@@ -482,7 +482,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
          store( &y[i+IT::size*2UL], xmm3 );
          store( &y[i+IT::size*3UL], xmm4 );
       }
-      for( ; (i+IT::size*3UL) <= M; i+=IT::size*3UL ) {
+      for( ; (i+IT::size*2UL) < M; i+=IT::size*3UL ) {
          IntrinsicType xmm1, xmm2, xmm3;
          for( size_t j=0UL; j<N; ++j ) {
             const IntrinsicType x1( set( x[j] ) );
@@ -494,7 +494,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
          store( &y[i+IT::size    ], xmm2 );
          store( &y[i+IT::size*2UL], xmm3 );
       }
-      for( ; (i+IT::size*2UL) <= M; i+=IT::size*2UL ) {
+      for( ; (i+IT::size) < M; i+=IT::size*2UL ) {
          IntrinsicType xmm1, xmm2;
          for( size_t j=0UL; j<N; ++j ) {
             const IntrinsicType x1( set( x[j] ) );
@@ -833,12 +833,12 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
-      const size_t M( A.spacing() );
+      const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
       size_t i( 0UL );
 
-      for( ; (i+IT::size*8UL) <= M; i+=IT::size*8UL ) {
+      for( ; (i+IT::size*7UL) < M; i+=IT::size*8UL ) {
          IntrinsicType xmm1( load( &y[i             ] ) );
          IntrinsicType xmm2( load( &y[i+IT::size    ] ) );
          IntrinsicType xmm3( load( &y[i+IT::size*2UL] ) );
@@ -867,7 +867,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
          store( &y[i+IT::size*6UL], xmm7 );
          store( &y[i+IT::size*7UL], xmm8 );
       }
-      for( ; (i+IT::size*4UL) <= M; i+=IT::size*4UL ) {
+      for( ; (i+IT::size*3UL) < M; i+=IT::size*4UL ) {
          IntrinsicType xmm1( load( &y[i             ] ) );
          IntrinsicType xmm2( load( &y[i+IT::size    ] ) );
          IntrinsicType xmm3( load( &y[i+IT::size*2UL] ) );
@@ -884,7 +884,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
          store( &y[i+IT::size*2UL], xmm3 );
          store( &y[i+IT::size*3UL], xmm4 );
       }
-      for( ; (i+IT::size*3UL) <= M; i+=IT::size*3UL ) {
+      for( ; (i+IT::size*2UL) < M; i+=IT::size*3UL ) {
          IntrinsicType xmm1( load( &y[i             ] ) );
          IntrinsicType xmm2( load( &y[i+IT::size    ] ) );
          IntrinsicType xmm3( load( &y[i+IT::size*2UL] ) );
@@ -898,7 +898,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
          store( &y[i+IT::size    ], xmm2 );
          store( &y[i+IT::size*2UL], xmm3 );
       }
-      for( ; (i+IT::size*2UL) <= M; i+=IT::size*2UL ) {
+      for( ; (i+IT::size) < M; i+=IT::size*2UL ) {
          IntrinsicType xmm1( load( &y[i         ] ) );
          IntrinsicType xmm2( load( &y[i+IT::size] ) );
          for( size_t j=0UL; j<N; ++j ) {
@@ -1213,12 +1213,12 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
-      const size_t M( A.spacing() );
+      const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
       size_t i( 0UL );
 
-      for( ; (i+IT::size*8UL) <= M; i+=IT::size*8UL ) {
+      for( ; (i+IT::size*7UL) < M; i+=IT::size*8UL ) {
          IntrinsicType xmm1( load( &y[i             ] ) );
          IntrinsicType xmm2( load( &y[i+IT::size    ] ) );
          IntrinsicType xmm3( load( &y[i+IT::size*2UL] ) );
@@ -1247,7 +1247,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
          store( &y[i+IT::size*6UL], xmm7 );
          store( &y[i+IT::size*7UL], xmm8 );
       }
-      for( ; (i+IT::size*4UL) <= M; i+=IT::size*4UL ) {
+      for( ; (i+IT::size*3UL) < M; i+=IT::size*4UL ) {
          IntrinsicType xmm1( load( &y[i             ] ) );
          IntrinsicType xmm2( load( &y[i+IT::size    ] ) );
          IntrinsicType xmm3( load( &y[i+IT::size*2UL] ) );
@@ -1264,7 +1264,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
          store( &y[i+IT::size*2UL], xmm3 );
          store( &y[i+IT::size*3UL], xmm4 );
       }
-      for( ; (i+IT::size*3UL) <= M; i+=IT::size*3UL ) {
+      for( ; (i+IT::size*2UL) < M; i+=IT::size*3UL ) {
          IntrinsicType xmm1( load( &y[i             ] ) );
          IntrinsicType xmm2( load( &y[i+IT::size    ] ) );
          IntrinsicType xmm3( load( &y[i+IT::size*2UL] ) );
@@ -1278,7 +1278,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
          store( &y[i+IT::size    ], xmm2 );
          store( &y[i+IT::size*2UL], xmm3 );
       }
-      for( ; (i+IT::size*2UL) <= M; i+=IT::size*2UL ) {
+      for( ; (i+IT::size) < M; i+=IT::size*2UL ) {
          IntrinsicType xmm1( load( &y[i         ] ) );
          IntrinsicType xmm2( load( &y[i+IT::size] ) );
          for( size_t j=0UL; j<N; ++j ) {
@@ -1895,14 +1895,14 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
-      const size_t M( A.spacing() );
+      const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
       const IntrinsicType factor( set( scalar ) );
 
       size_t i( 0UL );
 
-      for( ; (i+IT::size*8UL) <= M; i+=IT::size*8UL ) {
+      for( ; (i+IT::size*7UL) < M; i+=IT::size*8UL ) {
          IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
          for( size_t j=0UL; j<N; ++j ) {
             const IntrinsicType x1( set( x[j] ) );
@@ -1924,7 +1924,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
          store( &y[i+IT::size*6UL], xmm7*factor );
          store( &y[i+IT::size*7UL], xmm8*factor );
       }
-      for( ; (i+IT::size*4UL) <= M; i+=IT::size*4UL ) {
+      for( ; (i+IT::size*3UL) < M; i+=IT::size*4UL ) {
          IntrinsicType xmm1, xmm2, xmm3, xmm4;
          for( size_t j=0UL; j<N; ++j ) {
             const IntrinsicType x1( set( x[j] ) );
@@ -1938,7 +1938,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
          store( &y[i+IT::size*2UL], xmm3*factor );
          store( &y[i+IT::size*3UL], xmm4*factor );
       }
-      for( ; (i+IT::size*3UL) <= M; i+=IT::size*3UL ) {
+      for( ; (i+IT::size*2UL) < M; i+=IT::size*3UL ) {
          IntrinsicType xmm1, xmm2, xmm3;
          for( size_t j=0UL; j<N; ++j ) {
             const IntrinsicType x1( set( x[j] ) );
@@ -1950,7 +1950,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
          store( &y[i+IT::size    ], xmm2*factor );
          store( &y[i+IT::size*2UL], xmm3*factor );
       }
-      for( ; (i+IT::size*2UL) <= M; i+=IT::size*2UL ) {
+      for( ; (i+IT::size) < M; i+=IT::size*2UL ) {
          IntrinsicType xmm1, xmm2;
          for( size_t j=0UL; j<N; ++j ) {
             const IntrinsicType x1( set( x[j] ) );
@@ -2276,14 +2276,14 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
-      const size_t M( A.spacing() );
+      const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
       const IntrinsicType factor( set( scalar ) );
 
       size_t i( 0UL );
 
-      for( ; (i+IT::size*8UL) <= M; i+=IT::size*8UL ) {
+      for( ; (i+IT::size*7UL) < M; i+=IT::size*8UL ) {
          IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
          for( size_t j=0UL; j<N; ++j ) {
             const IntrinsicType x1( set( x[j] ) );
@@ -2305,7 +2305,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
          store( &y[i+IT::size*6UL], load( &y[i+IT::size*6UL] ) + xmm7*factor );
          store( &y[i+IT::size*7UL], load( &y[i+IT::size*7UL] ) + xmm8*factor );
       }
-      for( ; (i+IT::size*4UL) <= M; i+=IT::size*4UL ) {
+      for( ; (i+IT::size*3UL) < M; i+=IT::size*4UL ) {
          IntrinsicType xmm1, xmm2, xmm3, xmm4;
          for( size_t j=0UL; j<N; ++j ) {
             const IntrinsicType x1( set( x[j] ) );
@@ -2319,7 +2319,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
          store( &y[i+IT::size*2UL], load( &y[i+IT::size*2UL] ) + xmm3*factor );
          store( &y[i+IT::size*3UL], load( &y[i+IT::size*3UL] ) + xmm4*factor );
       }
-      for( ; (i+IT::size*3UL) <= M; i+=IT::size*3UL ) {
+      for( ; (i+IT::size*2UL) < M; i+=IT::size*3UL ) {
          IntrinsicType xmm1, xmm2, xmm3;
          for( size_t j=0UL; j<N; ++j ) {
             const IntrinsicType x1( set( x[j] ) );
@@ -2331,7 +2331,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
          store( &y[i+IT::size    ], load( &y[i+IT::size    ] ) + xmm2*factor );
          store( &y[i+IT::size*2UL], load( &y[i+IT::size*2UL] ) + xmm3*factor );
       }
-      for( ; (i+IT::size*2UL) <= M; i+=IT::size*2UL ) {
+      for( ; (i+IT::size) < M; i+=IT::size*2UL ) {
          IntrinsicType xmm1, xmm2;
          for( size_t j=0UL; j<N; ++j ) {
             const IntrinsicType x1( set( x[j] ) );
@@ -2632,14 +2632,14 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
-      const size_t M( A.spacing() );
+      const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
       const IntrinsicType factor( set( scalar ) );
 
       size_t i( 0UL );
 
-      for( ; (i+IT::size*8UL) <= M; i+=IT::size*8UL ) {
+      for( ; (i+IT::size*7UL) < M; i+=IT::size*8UL ) {
          IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
          for( size_t j=0UL; j<N; ++j ) {
             const IntrinsicType x1( set( x[j] ) );
@@ -2661,7 +2661,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
          store( &y[i+IT::size*6UL], load( &y[i+IT::size*6UL] ) - xmm7*factor );
          store( &y[i+IT::size*7UL], load( &y[i+IT::size*7UL] ) - xmm8*factor );
       }
-      for( ; (i+IT::size*4UL) <= M; i+=IT::size*4UL ) {
+      for( ; (i+IT::size*3UL) < M; i+=IT::size*4UL ) {
          IntrinsicType xmm1, xmm2, xmm3, xmm4;
          for( size_t j=0UL; j<N; ++j ) {
             const IntrinsicType x1( set( x[j] ) );
@@ -2675,7 +2675,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
          store( &y[i+IT::size*2UL], load( &y[i+IT::size*2UL] ) - xmm3*factor );
          store( &y[i+IT::size*3UL], load( &y[i+IT::size*3UL] ) - xmm4*factor );
       }
-      for( ; (i+IT::size*3UL) <= M; i+=IT::size*3UL ) {
+      for( ; (i+IT::size*2UL) < M; i+=IT::size*3UL ) {
          IntrinsicType xmm1, xmm2, xmm3;
          for( size_t j=0UL; j<N; ++j ) {
             const IntrinsicType x1( set( x[j] ) );
@@ -2687,7 +2687,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
          store( &y[i+IT::size    ], load( &y[i+IT::size    ] ) - xmm2*factor );
          store( &y[i+IT::size*2UL], load( &y[i+IT::size*2UL] ) - xmm3*factor );
       }
-      for( ; (i+IT::size*2UL) <= M; i+=IT::size*2UL ) {
+      for( ; (i+IT::size) < M; i+=IT::size*2UL ) {
          IntrinsicType xmm1, xmm2;
          for( size_t j=0UL; j<N; ++j ) {
             const IntrinsicType x1( set( x[j] ) );

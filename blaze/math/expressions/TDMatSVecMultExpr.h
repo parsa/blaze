@@ -476,7 +476,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
-      const size_t M( A.spacing() );
+      const size_t M( A.rows() );
 
       ConstIterator element( x.begin() );
       const ConstIterator end( x.end() );
@@ -499,7 +499,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          const IntrinsicType v4( set( element->value() ) );
          ++element;
 
-         for( size_t i=0UL; (i+IT::size) <= M; i+=IT::size ) {
+         for( size_t i=0UL; i<M; i+=IT::size ) {
             store( &y[i], A.get(i,j1) * v1 + A.get(i,j2) * v2 + A.get(i,j3) * v3 + A.get(i,j4) * v4 );
          }
       }
@@ -509,7 +509,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          const IntrinsicType v1( set( element->value() ) );
          ++element;
 
-         for( size_t i=0UL; (i+IT::size) <= M; i+=IT::size ) {
+         for( size_t i=0UL; i<M; i+=IT::size ) {
             store( &y[i], A.get(i,j1) * v1 );
          }
       }
@@ -743,7 +743,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
-      const size_t M( A.spacing() );
+      const size_t M( A.rows() );
 
       ConstIterator element( x.begin() );
       const ConstIterator end( x.end() );
@@ -955,7 +955,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
-      const size_t M( A.spacing() );
+      const size_t M( A.rows() );
 
       ConstIterator element( x.begin() );
       const ConstIterator end( x.end() );
