@@ -53,9 +53,9 @@ namespace blaze {}
 // This is the API for the \b Blaze high performance C++ math library. It gives a complete
 // overview of the individual features and sublibraries of \b Blaze. To get a first impression
 // on \b Blaze, the short \ref getting_started tutorial is a good place to start. Afterwards,
-// the following long tutorial covers all aspects of the \b Blaze math library. The tabs at
-// the top of the page allow a direct access to the individual modules, namespaces, classes,
-// and files of the \b Blaze library.\n\n
+// the following long tutorial covers the most important aspects of the \b Blaze math library.
+// The tabs at the top of the page allow a direct access to the individual modules, namespaces,
+// classes, and files of the \b Blaze library.\n\n
 //
 // \section table_of_content Table of Contents
 //
@@ -97,6 +97,12 @@ namespace blaze {}
 //                </li>
 //                <li> \ref matrix_vector_multiplication </li>
 //                <li> \ref matrix_matrix_multiplication </li>
+//             </ul>
+//          </li>
+//          <li> Serialization
+//             <ul>
+//                <li> \ref vector_serialization </li>
+//                <li> \ref matrix_serialization </li>
 //             </ul>
 //          </li>
 //       </ul>
@@ -2279,7 +2285,7 @@ namespace blaze {}
 //**Matrix/Matrix Multiplication*******************************************************************
 /*!\page matrix_matrix_multiplication Matrix/Matrix Multiplication
 //
-// <center> Previous: \ref matrix_matrix_multiplication </center> \n
+// <center> Previous: \ref matrix_vector_multiplication &nbsp; &nbsp; Next: \ref vector_serialization </center> \n
 //
 // The matrix/matrix multiplication can be formulated exactly as in mathematical textbooks:
 
@@ -2299,7 +2305,199 @@ namespace blaze {}
 // are possible. Note however that the highest performance for a multiplication between two dense
 // matrices can be expected for two matrices with the same scalar element type.
 //
-// \n <center> Previous: \ref matrix_vector_multiplication </center>
+// <center> Previous: \ref matrix_vector_multiplication &nbsp; &nbsp; Next: \ref vector_serialization </center>
+*/
+//*************************************************************************************************
+
+
+//**Vector serialization***************************************************************************
+/*!\page vector_serialization Vector Serialization
+//
+// <center> Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref matrix_serialization </center> \n
+//
+// Sometimes it is necessary to store vector and/or matrices on disk, for instance for storing
+// results or for sharing specific setups with other people. The \b Blaze math serialization
+// module provides the according functionality to create platform independent, portable, binary
+// representations of vectors and matrices that can be used to store the \a Blaze data structures
+// without loss of precision and to reliably transfer them from one machine to another.
+//
+// The following example demonstrates the (de-)serialization of dense and sparse vectors:
+
+   \code
+   using blaze::columnVector;
+   using blaze::rowVector;
+
+   // Serialization of both vectors
+   {
+      blaze::StaticVector<double,5UL,rowVector> d;
+      blaze::CompressedVector<int,columnVector> s;
+
+      // ... Resizing and initialization
+
+      // Creating an archive that writes into a the file "vectors.blaze"
+      blaze::Archive<std::ofstream> archive( "vectors.blaze" );
+
+      // Serialization of both vectors into the same archive. Note that d lies before s!
+      archive << d << s;
+   }
+
+   // Reconstitution of both vectors
+   {
+      blaze::DynamicVector<double,rowVector> d1;
+      blaze::DynamicVector<int,rowVector> d2;
+
+      // Creating an archive that reads from the file "vectors.blaze"
+      blaze::Archive<std::ofstream> archive( "vectors.blaze" );
+
+      // Reconstituting the former d vector into d1. Note that it is possible to reconstitute
+      // the vector into a differrent kind of vector (StaticVector -> DynamicVector), but that
+      // the type of elements has to be the same.
+      archive >> d1;
+
+      // Reconstituting the former s vector into d2. Note that is is even possible to reconstitute
+      // a sparse vector as a dense vector (also the reverse is possible) and that a column vector
+      // can be reconstituted as row vector (and vice versa). Note however that also in this case
+      // the type of elements is the same!
+      archive >> d2
+   }
+   \endcode
+
+// The (de-)serialization of vectors is not restricted to vectors of built-in data type, but can
+// also be used for vectors with vector or matrix element type:
+
+   \code
+   // Serialization
+   {
+      blaze::CompressedVector< blaze::DynamicVector< blaze::complex<double> > > vec;
+
+      // ... Resizing and initialization
+
+      // Creating an archive that writes into a the file "vector.blaze"
+      blaze::Archive<std::ofstream> archive( "vector.blaze" );
+
+      // Serialization of the vector into the archive
+      archive << vec;
+   }
+
+   // Deserialization
+   {
+      blaze::CompressedVector< blaze::DynamicVector< blaze::complex<double> > > vec;
+
+      // Creating an archive that reads from the file "vector.blaze"
+      blaze::Archive<std::ofstream> archive( "vector.blaze" );
+
+      // Reconstitution of the vector from the archive
+      archive >> vec;
+   }
+   \endcode
+
+// As the examples demonstrates, the vector serialization offers an enormous flexibility. However,
+// several actions result in errors:
+//
+//  - vectors cannot be reconstituted as matrices (and vice versa)
+//  - the element type of the serialized and reconstituted vector must match, which means
+//    that on the source and destination platform the general type (signed/unsigned integral
+//    or floating point) and the size of the type must be exactly the same
+//  - when reconstituting a StaticVector, its size must match the size of the serialized vector
+//
+// In case an error is encountered during (de-)serialization, a \a std::runtime_exception is
+// thrown.
+//
+// <center> Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref matrix_serialization </center>
+*/
+//*************************************************************************************************
+
+
+//**Matrix serialization***************************************************************************
+/*!\page matrix_serialization Matrix Serialization
+//
+// <center> Previous: \ref vector_serialization </center> \n
+//
+// The serialization of matrices works in the same manner as the serialization of vectors. The
+// following example demonstrates the (de-)serialization of dense and sparse matrices:
+
+   \code
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   // Serialization of both matrices
+   {
+      blaze::StaticMatrix<double,3UL,5UL,rowMajor> D;
+      blaze::CompressedMatrix<int,columnMajor> S;
+
+      // ... Resizing and initialization
+
+      // Creating an archive that writes into a the file "matrices.blaze"
+      blaze::Archive<std::ofstream> archive( "matrices.blaze" );
+
+      // Serialization of both matrices into the same archive. Note that D lies before S!
+      archive << D << S;
+   }
+
+   // Reconstitution of both matrices
+   {
+      blaze::DynamicMatrix<double,rowMajor> D1;
+      blaze::DynamicMatrix<int,rowMajor> D2;
+
+      // Creating an archive that reads from the file "matrices.blaze"
+      blaze::Archive<std::ofstream> archive( "matrices.blaze" );
+
+      // Reconstituting the former D matrix into D1. Note that it is possible to reconstitute
+      // the matrix into a differrent kind of matrix (StaticMatrix -> DynamicMatrix), but that
+      // the type of elements has to be the same.
+      archive >> D1;
+
+      // Reconstituting the former S matrix into D2. Note that is is even possible to reconstitute
+      // a sparse matrix as a dense matrix (also the reverse is possible) and that a column-major
+      // matrix can be reconstituted as row-major matrix (and vice versa). Note however that also
+      // in this case the type of elements is the same!
+      archive >> D2
+   }
+   \endcode
+
+// Note that also in case of matrices it is possible to (de-)serialize matrices with vector or
+// matrix elements:
+
+   \code
+   // Serialization
+   {
+      blaze::CompressedMatrix< blaze::DynamicMatrix< blaze::complex<double> > > mat;
+
+      // ... Resizing and initialization
+
+      // Creating an archive that writes into a the file "matrix.blaze"
+      blaze::Archive<std::ofstream> archive( "matrix.blaze" );
+
+      // Serialization of the matrix into the archive
+      archive << mat;
+   }
+
+   // Deserialization
+   {
+      blaze::CompressedMatrix< blaze::DynamicMatrix< blaze::complex<double> > > mat;
+
+      // Creating an archive that reads from the file "matrix.blaze"
+      blaze::Archive<std::ofstream> archive( "matrix.blaze" );
+
+      // Reconstitution of the matrix from the archive
+      archive >> mat;
+   }
+   \endcode
+
+// Note that just as the vector serialization, the matrix serialization is restricted by a
+// few important rules:
+//
+//  - matrices cannot be reconstituted as vectors (and vice versa)
+//  - the element type of the serialized and reconstituted matrix must match, which means
+//    that on the source and destination platform the general type (signed/unsigned integral
+//    or floating point) and the size of the type must be exactly the same
+//  - when reconstituting a StaticMatrix, the number of rows and columns must match those of
+//    the serialized matrix
+//
+// In case an error is encountered during (de-)serialization, a \a std::runtime_exception is
+// thrown.
+//
+// <center> Previous: \ref vector_serialization </center>
 */
 //*************************************************************************************************
 
