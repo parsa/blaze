@@ -198,8 +198,7 @@ class SVecDVecCrossExpr : public DenseVector< SVecDVecCrossExpr<VT1,VT2>, false 
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const {
-      return ( lhs_.canAlias( alias ) ) ||
-             ( !IsComputation<VT2>::value && rhs_.canAlias( alias ) );
+      return ( lhs_.canAlias( alias ) || rhs_.canAlias( alias ) );
    }
    //**********************************************************************************************
 
