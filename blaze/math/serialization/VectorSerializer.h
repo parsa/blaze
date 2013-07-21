@@ -183,20 +183,25 @@ class VectorSerializer
    // No explicitly declared copy assignment operator.
    //**********************************************************************************************
 
-   //**Utility functions***************************************************************************
-   /*!\name Utility functions */
+   //**Serialization functions*********************************************************************
+   /*!\name Serialization functions */
    //@{
    template< typename Archive, typename VT, bool TF >
    void serialize( Archive& archive, const Vector<VT,TF>& vec );
+   //@}
+   //**********************************************************************************************
 
+   //**Deserialization functions*********************************************************************
+   /*!\name Deserialization functions */
+   //@{
    template< typename Archive, typename VT, bool TF >
    void deserialize( Archive& archive, Vector<VT,TF>& vec );
    //@}
    //**********************************************************************************************
 
  private:
-   //**Utility functions***************************************************************************
-   /*!\name Utility functions */
+   //**Serialization functions*********************************************************************
+   /*!\name Serialization functions */
    //@{
    template< typename Archive, typename VT >
    void serializeHeader( Archive& archive, const VT& vec );
@@ -206,7 +211,12 @@ class VectorSerializer
 
    template< typename Archive, typename VT, bool TF >
    void serializeVector( Archive& archive, const SparseVector<VT,TF>& vec );
+   //@}
+   //**********************************************************************************************
 
+   //**Deserialization functions*******************************************************************
+   /*!\name Deserialization functions */
+   //@{
    template< typename Archive, typename VT >
    void deserializeHeader( Archive& archive, const VT& vec );
 
@@ -279,7 +289,7 @@ VectorSerializer::VectorSerializer()
 
 //=================================================================================================
 //
-//  UTILITY FUNCTIONS
+//  SERIALIZATION FUNCTIONS
 //
 //=================================================================================================
 
@@ -289,44 +299,22 @@ VectorSerializer::VectorSerializer()
 // \param archive The archive to be written.
 // \param vec The vector to be serialized.
 // \return void
-// \exception std::runtime_error Vector could not be serialized.
+// \exception std::runtime_error Error during serialization.
+//
+// This function serializes the given vector and writes it to the given archive. In case any
+// error is detected during the serialization, a \a std::runtime_error is thrown.
 */
 template< typename Archive  // Type of the archive
         , typename VT       // Type of the vector
         , bool TF >         // Transpose flag
 void VectorSerializer::serialize( Archive& archive, const Vector<VT,TF>& vec )
 {
+   if( !archive ) {
+      throw std::runtime_error( "Faulty archive detected" );
+   }
+
    serializeHeader( archive, ~vec );
    serializeVector( archive, ~vec );
-
-   if( !archive ) {
-      throw std::runtime_error( "Vector could not be serialized" );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Deserializes a vector from the given archive.
-//
-// \param archive The archive to be read from.
-// \param vec The vector to be deserialized.
-// \return void
-// \exception std::runtime_error Corrupt archive detected.
-// \exception std::runtime_error Vector could not be deserialized.
-*/
-template< typename Archive  // Type of the archive
-        , typename VT       // Type of the vector
-        , bool TF >         // Transpose flag
-void VectorSerializer::deserialize( Archive& archive, Vector<VT,TF>& vec )
-{
-   deserializeHeader( archive, ~vec );
-   prepareVector( ~vec );
-   deserializeVector( archive, ~vec );
-
-   if( !archive ) {
-      throw std::invalid_argument( "Vector could not be deserialized" );
-   }
 }
 //*************************************************************************************************
 
@@ -337,6 +325,7 @@ void VectorSerializer::deserialize( Archive& archive, Vector<VT,TF>& vec )
 // \param archive The archive to be written.
 // \param vec The vector to be serialized.
 // \return void
+// \exception std::runtime_error File header could not be serialized.
 */
 template< typename Archive  // Type of the archive
         , typename VT >     // Type of the vector
@@ -350,6 +339,10 @@ void VectorSerializer::serializeHeader( Archive& archive, const VT& vec )
    archive << uint8_t ( sizeof( ET ) );
    archive << uint64_t( vec.size() );
    archive << uint64_t( IsDenseVector<VT>::value ? vec.size() : vec.nonZeros() );
+
+   if( !archive ) {
+      throw std::runtime_error( "File header could not be serialized" );
+   }
 }
 //*************************************************************************************************
 
@@ -360,6 +353,7 @@ void VectorSerializer::serializeHeader( Archive& archive, const VT& vec )
 // \param archive The archive to be written.
 // \param vec The vector to be serialized.
 // \return void
+// \exception std::runtime_error Dense vector could not be serialized.
 */
 template< typename Archive  // Type of the archive
         , typename VT       // Type of the vector
@@ -369,6 +363,10 @@ void VectorSerializer::serializeVector( Archive& archive, const DenseVector<VT,T
    size_t i( 0UL );
    while( ( i < (~vec).size() ) && ( archive << (~vec)[i] ) ) {
       ++i;
+   }
+
+   if( !archive ) {
+      throw std::runtime_error( "Dense vector could not be serialized" );
    }
 }
 //*************************************************************************************************
@@ -380,6 +378,7 @@ void VectorSerializer::serializeVector( Archive& archive, const DenseVector<VT,T
 // \param archive The archive to be written.
 // \param vec The vector to be serialized.
 // \return void
+// \exception std::runtime_error Sparse vector could not be serialized.
 */
 template< typename Archive  // Type of the archive
         , typename VT       // Type of the vector
@@ -393,6 +392,42 @@ void VectorSerializer::serializeVector( Archive& archive, const SparseVector<VT,
           ( archive << element->index() << element->value() ) ) {
       ++element;
    }
+
+   if( !archive ) {
+      throw std::runtime_error( "Sparse vector could not be serialized" );
+   }
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DESERIALIZATION FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Deserializes a vector from the given archive.
+//
+// \param archive The archive to be read from.
+// \param vec The vector to be deserialized.
+// \return void
+// \exception std::runtime_error Error during deserialization.
+*/
+template< typename Archive  // Type of the archive
+        , typename VT       // Type of the vector
+        , bool TF >         // Transpose flag
+void VectorSerializer::deserialize( Archive& archive, Vector<VT,TF>& vec )
+{
+   if( !archive ) {
+      throw std::invalid_argument( "Faulty archive detected" );
+   }
+
+   deserializeHeader( archive, ~vec );
+   prepareVector( ~vec );
+   deserializeVector( archive, ~vec );
 }
 //*************************************************************************************************
 
@@ -403,7 +438,12 @@ void VectorSerializer::serializeVector( Archive& archive, const SparseVector<VT,
 // \param archive The archive to be read from.
 // \param vec The vector to be deserialized.
 // \return void
-// \exception std::runtime_error Corrupt archive detected.
+// \exception std::runtime_error Error during deserialization.
+//
+// This function deserializes all meta information about the given vector contained in the
+// header of the given archive. In case any error is detected during the deserialization
+// process (for instance an invalid type of vector, element type, element size, or vector
+// size) a \a std::runtime_error is thrown.
 */
 template< typename Archive  // Type of the archive
         , typename VT >     // Type of the vector
@@ -411,14 +451,26 @@ void VectorSerializer::deserializeHeader( Archive& archive, const VT& vec )
 {
    typedef typename VT::ElementType  ET;
 
-   if( !( archive >> version_ >> type_ >> elementType_ >> elementSize_ >> size_ >> number_ ) ||
-       ( version_ != 1UL ) ||
-       ( type_ != 0U && type_ != 1U ) ||
-       ( elementType_ != TypeValueMapping<ET>::value ) ||
-       ( elementSize_ != sizeof( ET ) ) ||
-       ( !IsResizable<VT>::value && size_ != vec.size() ) ||
-       ( number_ > size_ ) ) {
+   if( !( archive >> version_ >> type_ >> elementType_ >> elementSize_ >> size_ >> number_ ) ) {
       throw std::runtime_error( "Corrupt archive detected" );
+   }
+   else if( version_ != 1UL ) {
+      throw std::runtime_error( "Invalid version detected" );
+   }
+   else if( type_ != 0U && type_ != 1U ) {
+      throw std::runtime_error( "Invalid vector type detected" );
+   }
+   else if( elementType_ != TypeValueMapping<ET>::value ) {
+      throw std::runtime_error( "Invalid element type detected" );
+   }
+   else if( elementSize_ != sizeof( ET ) ) {
+      throw std::runtime_error( "Invalid element size detected" );
+   }
+   else if( !IsResizable<VT>::value && size_ != vec.size() ) {
+      throw std::runtime_error( "Invalid vector size detected" );
+   }
+   else if( number_ > size_ ) {
+      throw std::runtime_error( "Invalid number of elements detected" );
    }
 }
 //*************************************************************************************************
@@ -460,6 +512,7 @@ typename EnableIf< IsResizable<VT> >::Type VectorSerializer::prepareVector( VT& 
 // \param archive The archive to be read from.
 // \param vec The vector to be reconstituted.
 // \return void
+// \exception std::runtime_error Error during deserialization.
 //
 // This function deserializes the contents of the vector from the archive and reconstitutes the
 // given vector.
@@ -487,9 +540,11 @@ void VectorSerializer::deserializeVector( Archive& archive, VT& vec )
 // \param archive The archive to be read from.
 // \param vec The dense vector to be reconstituted.
 // \return void
+// \exception std::runtime_error Dense vector could not be deserialized.
 //
 // This function deserializes a dense vector from the archive and reconstitutes the given
-// dense vector.
+// dense vector. In case any error is detected during the deserialization process, a
+// \a std::runtime_error is thrown.
 */
 template< typename Archive  // Type of the archive
         , typename VT       // Type of the vector
@@ -506,6 +561,10 @@ typename DisableIfTrue< IsNumeric< typename VT::ElementType >::value && VT::vect
       (~vec)[i] = value;
       ++i;
    }
+
+   if( !archive ) {
+      throw std::runtime_error( "Dense vector could not be deserialized" );
+   }
 }
 //*************************************************************************************************
 
@@ -516,9 +575,11 @@ typename DisableIfTrue< IsNumeric< typename VT::ElementType >::value && VT::vect
 // \param archive The archive to be read from.
 // \param vec The dense vector to be reconstituted.
 // \return void
+// \exception std::runtime_error Dense vector could not be deserialized.
 //
 // This function deserializes a dense vector from the archive and reconstitutes the given
-// dense vector.
+// dense vector. In case any error is detected during the deserialization process, a
+// \a std::runtime_error is thrown.
 */
 template< typename Archive  // Type of the archive
         , typename VT       // Type of the vector
@@ -528,6 +589,10 @@ typename EnableIfTrue< IsNumeric< typename VT::ElementType >::value && VT::vecto
 {
    if( size_ == 0UL ) return;
    archive.read( &(~vec)[0], size_ );
+
+   if( !archive ) {
+      throw std::runtime_error( "Dense vector could not be deserialized" );
+   }
 }
 //*************************************************************************************************
 
@@ -538,9 +603,11 @@ typename EnableIfTrue< IsNumeric< typename VT::ElementType >::value && VT::vecto
 // \param archive The archive to be read from.
 // \param vec The sparse vector to be reconstituted.
 // \return void
+// \exception std::runtime_error Sparse vector could not be deserialized.
 //
 // This function deserializes a dense vector from the archive and reconstitutes the given
-// sparse vector.
+// sparse vector. In case any error is detected during the deserialization process, a
+// \a std::runtime_error is thrown.
 */
 template< typename Archive  // Type of the archive
         , typename VT       // Type of the vector
@@ -556,6 +623,10 @@ void VectorSerializer::deserializeDenseVector( Archive& archive, SparseVector<VT
       (~vec)[i] = value;
       ++i;
    }
+
+   if( !archive ) {
+      throw std::runtime_error( "Sparse vector could not be deserialized" );
+   }
 }
 //*************************************************************************************************
 
@@ -566,9 +637,11 @@ void VectorSerializer::deserializeDenseVector( Archive& archive, SparseVector<VT
 // \param archive The archive to be read from.
 // \param vec The dense vector to be reconstituted.
 // \return void
+// \exception std::runtime_error Dense vector could not be deserialized.
 //
 // This function deserializes a sparse vector from the archive and reconstitutes the given
-// dense vector.
+// dense vector. In case any error is detected during the deserialization process, a
+// \a std::runtime_error is thrown.
 */
 template< typename Archive  // Type of the archive
         , typename VT       // Type of the vector
@@ -585,6 +658,10 @@ void VectorSerializer::deserializeSparseVector( Archive& archive, DenseVector<VT
       (~vec)[index] = value;
       ++i;
    }
+
+   if( !archive ) {
+      throw std::runtime_error( "Dense vector could not be deserialized" );
+   }
 }
 //*************************************************************************************************
 
@@ -595,9 +672,11 @@ void VectorSerializer::deserializeSparseVector( Archive& archive, DenseVector<VT
 // \param archive The archive to be read from.
 // \param vec The sparse vector to be reconstituted.
 // \return void
+// \exception std::runtime_error Sparse vector could not be deserialized.
 //
 // This function deserializes a sparse vector from the archive and reconstitutes the given
-// sparse vector.
+// sparse vector. In case any error is detected during the deserialization process, a
+// \a std::runtime_error is thrown.
 */
 template< typename Archive  // Type of the archive
         , typename VT       // Type of the vector
@@ -613,6 +692,10 @@ void VectorSerializer::deserializeSparseVector( Archive& archive, SparseVector<V
    while( ( i != number_ ) && ( archive >> index >> value ) ) {
       (~vec).append( index, value, false );
       ++i;
+   }
+
+   if( !archive ) {
+      throw std::runtime_error( "Sparse vector could not be deserialized" );
    }
 }
 //*************************************************************************************************
@@ -666,7 +749,7 @@ struct VectorSerializer::VectorValueMappingHelper<false>
 // \param archive The archive to be written.
 // \param vec The vector to be serialized.
 // \return void
-// \exception std::runtime_error Vector could not be serialized.
+// \exception std::runtime_error Error during serialization.
 //
 // The serialize() function converts the given vector into a portable, binary representation.
 // The following example demonstrates the (de-)serialization process of vectors:

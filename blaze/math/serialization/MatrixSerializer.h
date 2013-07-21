@@ -187,20 +187,25 @@ class MatrixSerializer
    // No explicitly declared copy assignment operator.
    //**********************************************************************************************
 
-   //**Utility functions***************************************************************************
-   /*!\name Utility functions */
+   //**Serialization functions*********************************************************************
+   /*!\name Serialization functions */
    //@{
    template< typename Archive, typename MT, bool SO >
    void serialize( Archive& archive, const Matrix<MT,SO>& mat );
+   //@}
+   //**********************************************************************************************
 
+   //**Deserialization functions*******************************************************************
+   /*!\name Deserialization functions */
+   //@{
    template< typename Archive, typename MT, bool SO >
    void deserialize( Archive& archive, Matrix<MT,SO>& mat );
    //@}
    //**********************************************************************************************
 
  private:
-   //**Utility functions***************************************************************************
-   /*!\name Utility functions */
+   //**Serialization functions*********************************************************************
+   /*!\name Serialization functions */
    //@{
    template< typename Archive, typename MT >
    void serializeHeader( Archive& archive, const MT& mat );
@@ -210,7 +215,12 @@ class MatrixSerializer
 
    template< typename Archive, typename MT, bool SO >
    void serializeMatrix( Archive& archive, const SparseMatrix<MT,SO>& mat );
+   //@}
+   //**********************************************************************************************
 
+   //**Deserialization functions*******************************************************************
+   /*!\name Deserialization functions */
+   //@{
    template< typename Archive, typename MT >
    void deserializeHeader( Archive& archive, const MT& mat );
 
@@ -316,7 +326,7 @@ MatrixSerializer::MatrixSerializer()
 
 //=================================================================================================
 //
-//  UTILITY FUNCTIONS
+//  SERIALIZATION FUNCTIONS
 //
 //=================================================================================================
 
@@ -326,44 +336,19 @@ MatrixSerializer::MatrixSerializer()
 // \param archive The archive to be written.
 // \param mat The matrix to be serialized.
 // \return void
-// \exception std::runtime_error Matrix could not be serialized.
+// \exception std::runtime_error Error during serialization.
 */
 template< typename Archive  // Type of the archive
         , typename MT       // Type of the matrix
         , bool SO >         // Storage order
 void MatrixSerializer::serialize( Archive& archive, const Matrix<MT,SO>& mat )
 {
+   if( !archive ) {
+      throw std::runtime_error( "Faulty archive detected" );
+   }
+
    serializeHeader( archive, ~mat );
    serializeMatrix( archive, ~mat );
-
-   if( !archive ) {
-      throw std::runtime_error( "Matrix could not be serialized" );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Deserializes a matrix from the given archive.
-//
-// \param archive The archive to be read from.
-// \param mat The matrix to be deserialized.
-// \return void
-// \exception std::runtime_error Corrupt archive detected.
-// \exception std::runtime_error Matrix could not be deserialized.
-*/
-template< typename Archive  // Type of the archive
-        , typename MT       // Type of the matrix
-        , bool SO >         // Storage order
-void MatrixSerializer::deserialize( Archive& archive, Matrix<MT,SO>& mat )
-{
-   deserializeHeader( archive, ~mat );
-   prepareMatrix( ~mat );
-   deserializeMatrix( archive, ~mat );
-
-   if( !archive ) {
-      throw std::invalid_argument( "Matrix could not be deserialized" );
-   }
 }
 //*************************************************************************************************
 
@@ -374,6 +359,7 @@ void MatrixSerializer::deserialize( Archive& archive, Matrix<MT,SO>& mat )
 // \param archive The archive to be written.
 // \param mat The matrix to be serialized.
 // \return void
+// \exception std::runtime_error File header could not be serialized.
 */
 template< typename Archive  // Type of the archive
         , typename MT >     // Type of the matrix
@@ -388,6 +374,10 @@ void MatrixSerializer::serializeHeader( Archive& archive, const MT& mat )
    archive << uint64_t( mat.rows() );
    archive << uint64_t( mat.columns() );
    archive << uint64_t( ( IsDenseMatrix<MT>::value ) ? ( mat.rows()*mat.columns() ) : ( mat.nonZeros() ) );
+
+   if( !archive ) {
+      throw std::runtime_error( "File header could not be serialized" );
+   }
 }
 //*************************************************************************************************
 
@@ -398,6 +388,7 @@ void MatrixSerializer::serializeHeader( Archive& archive, const MT& mat )
 // \param archive The archive to be written.
 // \param mat The matrix to be serialized.
 // \return void
+// \exception std::runtime_error Dense matrix could not be serialized.
 */
 template< typename Archive  // Type of the archive
         , typename MT       // Type of the matrix
@@ -418,6 +409,10 @@ void MatrixSerializer::serializeMatrix( Archive& archive, const DenseMatrix<MT,S
          }
       }
    }
+
+   if( !archive ) {
+      throw std::runtime_error( "Dense matrix could not be serialized" );
+   }
 }
 //*************************************************************************************************
 
@@ -428,6 +423,7 @@ void MatrixSerializer::serializeMatrix( Archive& archive, const DenseMatrix<MT,S
 // \param archive The archive to be written.
 // \param mat The matrix to be serialized.
 // \return void
+// \exception std::runtime_error Sparse matrix could not be serialized.
 */
 template< typename Archive  // Type of the archive
         , typename MT       // Type of the matrix
@@ -452,6 +448,42 @@ void MatrixSerializer::serializeMatrix( Archive& archive, const SparseMatrix<MT,
          }
       }
    }
+
+   if( !archive ) {
+      throw std::runtime_error( "Sparse matrix could not be serialized" );
+   }
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DESERIALIZATION FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Deserializes a matrix from the given archive.
+//
+// \param archive The archive to be read from.
+// \param mat The matrix to be deserialized.
+// \return void
+// \exception std::runtime_error Error during deserialization.
+*/
+template< typename Archive  // Type of the archive
+        , typename MT       // Type of the matrix
+        , bool SO >         // Storage order
+void MatrixSerializer::deserialize( Archive& archive, Matrix<MT,SO>& mat )
+{
+   if( !archive ) {
+      throw std::invalid_argument( "Faulty archive detected" );
+   }
+
+   deserializeHeader( archive, ~mat );
+   prepareMatrix( ~mat );
+   deserializeMatrix( archive, ~mat );
 }
 //*************************************************************************************************
 
@@ -462,7 +494,7 @@ void MatrixSerializer::serializeMatrix( Archive& archive, const SparseMatrix<MT,
 // \param archive The archive to be read from.
 // \param mat The matrix to be deserialized.
 // \return void
-// \exception std::runtime_error Corrupt archive detected.
+// \exception std::runtime_error Error during deserialization.
 */
 template< typename Archive  // Type of the archive
         , typename MT >     // Type of the matrix
@@ -470,14 +502,26 @@ void MatrixSerializer::deserializeHeader( Archive& archive, const MT& mat )
 {
    typedef typename MT::ElementType  ET;
 
-   if( !( archive >> version_ >> type_ >> elementType_ >> elementSize_ >> rows_ >> columns_ >> number_ ) ||
-       ( version_ != 1UL ) ||
-       ( type_ < 2U || type_ > 5U ) ||
-       ( elementType_ != TypeValueMapping<ET>::value ) ||
-       ( elementSize_ != sizeof( ET ) ) ||
-       ( !IsResizable<MT>::value && ( rows_ != mat.rows() || columns_ != mat.columns() ) ) ||
-       ( number_ > rows_*columns_ ) ) {
+   if( !( archive >> version_ >> type_ >> elementType_ >> elementSize_ >> rows_ >> columns_ >> number_ ) ) {
       throw std::runtime_error( "Corrupt archive detected" );
+   }
+   else if( version_ != 1UL ) {
+      throw std::runtime_error( "Invalid version detected" );
+   }
+   else if( type_ < 2U || type_ > 5U ) {
+      throw std::runtime_error( "Invalid matrix type detected" );
+   }
+   else if( elementType_ != TypeValueMapping<ET>::value ) {
+      throw std::runtime_error( "Invalid element type detected" );
+   }
+   else if( elementSize_ != sizeof( ET ) ) {
+      throw std::runtime_error( "Invalid element size detected" );
+   }
+   else if( !IsResizable<MT>::value && ( rows_ != mat.rows() || columns_ != mat.columns() ) ) {
+      throw std::runtime_error( "Invalid matrix size detected" );
+   }
+   else if( number_ > rows_*columns_ ) {
+      throw std::runtime_error( "Invalid number of elements detected" );
    }
 }
 //*************************************************************************************************
@@ -519,6 +563,7 @@ typename EnableIf< IsResizable<MT> >::Type MatrixSerializer::prepareMatrix( MT& 
 // \param archive The archive to be read from.
 // \param mat The matrix to be reconstituted.
 // \return void
+// \exception std::runtime_error Error during deserialization.
 //
 // This function deserializes the contents of the matrix from the archive and reconstitutes the
 // given matrix.
@@ -552,9 +597,11 @@ void MatrixSerializer::deserializeMatrix( Archive& archive, MT& mat )
 // \param archive The archive to be read from.
 // \param mat The dense matrix to be reconstituted.
 // \return void
+// \exception std::runtime_error Dense matrix could not be deserialized.
 //
 // This function deserializes a row-major dense matrix from the archive and reconstitutes
-// the given row-major dense matrix.
+// the given row-major dense matrix. In case any error is detected during the deserialization
+// process, a \a std::runtime_error is thrown.
 */
 template< typename Archive  // Type of the archive
         , typename MT >     // Type of the matrix
@@ -566,6 +613,10 @@ typename EnableIfTrue< IsNumeric< typename MT::ElementType >::value && MT::vecto
    for( size_t i=0UL; i<rows_; ++i ) {
       archive.read( &(~mat)(i,0), columns_ );
    }
+
+   if( !archive ) {
+      throw std::runtime_error( "Dense matrix could not be deserialized" );
+   }
 }
 //*************************************************************************************************
 
@@ -576,9 +627,11 @@ typename EnableIfTrue< IsNumeric< typename MT::ElementType >::value && MT::vecto
 // \param archive The archive to be read from.
 // \param mat The dense matrix to be reconstituted.
 // \return void
+// \exception std::runtime_error Dense matrix could not be deserialized.
 //
 // This function deserializes a row-major dense matrix from the archive and reconstitutes
-// the given dense matrix.
+// the given dense matrix. In case any error is detected during the deserialization process,
+// a \a std::runtime_error is thrown.
 */
 template< typename Archive  // Type of the archive
         , typename MT       // Type of the matrix
@@ -596,6 +649,10 @@ void MatrixSerializer::deserializeDenseRowMatrix( Archive& archive, DenseMatrix<
          ++j;
       }
    }
+
+   if( !archive ) {
+      throw std::runtime_error( "Dense matrix could not be deserialized" );
+   }
 }
 //*************************************************************************************************
 
@@ -606,9 +663,11 @@ void MatrixSerializer::deserializeDenseRowMatrix( Archive& archive, DenseMatrix<
 // \param archive The archive to be read from.
 // \param mat The dense matrix to be reconstituted.
 // \return void
+// \exception std::runtime_error Sparse matrix could not be deserialized.
 //
 // This function deserializes a row-major dense matrix from the archive and reconstitutes
-// the given sparse matrix.
+// the given sparse matrix. In case any error is detected during the deserialization
+// process, a \a std::runtime_error is thrown.
 */
 template< typename Archive  // Type of the archive
         , typename MT       // Type of the matrix
@@ -619,6 +678,10 @@ typename EnableIf< IsNumeric< typename MT::ElementType > >::Type
    DynamicMatrix<typename MT::ElementType,rowMajor> tmp( rows_, columns_ );
    deserializeDenseRowMatrix( archive, tmp );
    (~mat) = tmp;
+
+   if( !archive ) {
+      throw std::runtime_error( "Sparse matrix could not be deserialized" );
+   }
 }
 //*************************************************************************************************
 
@@ -629,9 +692,11 @@ typename EnableIf< IsNumeric< typename MT::ElementType > >::Type
 // \param archive The archive to be read from.
 // \param mat The dense matrix to be reconstituted.
 // \return void
+// \exception std::runtime_error Sparse matrix could not be deserialized.
 //
 // This function deserializes a row-major dense matrix from the archive and reconstitutes
-// the given sparse matrix.
+// the given sparse matrix. In case any error is detected during the deserialization
+// process, a \a std::runtime_error is thrown.
 */
 template< typename Archive  // Type of the archive
         , typename MT       // Type of the matrix
@@ -657,29 +722,9 @@ typename DisableIf< IsNumeric< typename MT::ElementType > >::Type
          ++j;
       }
    }
-}
-//*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Deserializes a column-major dense matrix from the archive.
-//
-// \param archive The archive to be read from.
-// \param mat The dense matrix to be reconstituted.
-// \return void
-//
-// This function deserializes a column-major dense matrix from the archive and reconstitutes
-// the given column-major dense matrix.
-*/
-template< typename Archive  // Type of the archive
-        , typename MT >     // Type of the matrix
-typename EnableIfTrue< IsNumeric< typename MT::ElementType >::value && MT::vectorizable >::Type
-   MatrixSerializer::deserializeDenseColumnMatrix( Archive& archive, DenseMatrix<MT,columnMajor>& mat )
-{
-   if( rows_ == 0UL ) return;
-
-   for( size_t j=0UL; j<columns_; ++j ) {
-      archive.read( &(~mat)(0,j), rows_ );
+   if( !archive ) {
+      throw std::runtime_error( "Sparse matrix could not be deserialized" );
    }
 }
 //*************************************************************************************************
@@ -691,9 +736,41 @@ typename EnableIfTrue< IsNumeric< typename MT::ElementType >::value && MT::vecto
 // \param archive The archive to be read from.
 // \param mat The dense matrix to be reconstituted.
 // \return void
+// \exception std::runtime_error Dense matrix could not be deserialized.
 //
 // This function deserializes a column-major dense matrix from the archive and reconstitutes
-// the given dense matrix.
+// the given column-major dense matrix. In case any error is detected during the deserialization
+// process, a \a std::runtime_error is thrown.
+*/
+template< typename Archive  // Type of the archive
+        , typename MT >     // Type of the matrix
+typename EnableIfTrue< IsNumeric< typename MT::ElementType >::value && MT::vectorizable >::Type
+   MatrixSerializer::deserializeDenseColumnMatrix( Archive& archive, DenseMatrix<MT,columnMajor>& mat )
+{
+   if( rows_ == 0UL ) return;
+
+   for( size_t j=0UL; j<columns_; ++j ) {
+      archive.read( &(~mat)(0,j), rows_ );
+   }
+
+   if( !archive ) {
+      throw std::runtime_error( "Dense matrix could not be deserialized" );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Deserializes a column-major dense matrix from the archive.
+//
+// \param archive The archive to be read from.
+// \param mat The dense matrix to be reconstituted.
+// \return void
+// \exception std::runtime_error Dense matrix could not be deserialized.
+//
+// This function deserializes a column-major dense matrix from the archive and reconstitutes
+// the given dense matrix. In case any error is detected during the deserialization process,
+// a \a std::runtime_error is thrown.
 */
 template< typename Archive  // Type of the archive
         , typename MT       // Type of the matrix
@@ -711,6 +788,10 @@ void MatrixSerializer::deserializeDenseColumnMatrix( Archive& archive, DenseMatr
          ++i;
       }
    }
+
+   if( !archive ) {
+      throw std::runtime_error( "Dense matrix could not be deserialized" );
+   }
 }
 //*************************************************************************************************
 
@@ -721,9 +802,11 @@ void MatrixSerializer::deserializeDenseColumnMatrix( Archive& archive, DenseMatr
 // \param archive The archive to be read from.
 // \param mat The sparse matrix to be reconstituted.
 // \return void
+// \exception std::runtime_error Sparse matrix could not be deserialized.
 //
 // This function deserializes a column-major dense matrix from the archive and reconstitutes
-// the given sparse matrix.
+// the given sparse matrix. In case any error is detected during the deserialization process,
+// a \a std::runtime_error is thrown.
 */
 template< typename Archive  // Type of the archive
         , typename MT       // Type of the matrix
@@ -734,6 +817,10 @@ typename EnableIf< IsNumeric< typename MT::ElementType > >::Type
    DynamicMatrix<typename MT::ElementType,columnMajor> tmp( rows_, columns_ );
    deserializeDenseColumnMatrix( archive, tmp );
    (~mat) = tmp;
+
+   if( !archive ) {
+      throw std::runtime_error( "Sparse matrix could not be deserialized" );
+   }
 }
 //*************************************************************************************************
 
@@ -744,9 +831,11 @@ typename EnableIf< IsNumeric< typename MT::ElementType > >::Type
 // \param archive The archive to be read from.
 // \param mat The sparse matrix to be reconstituted.
 // \return void
+// \exception std::runtime_error Sparse matrix could not be deserialized.
 //
 // This function deserializes a column-major dense matrix from the archive and reconstitutes
-// the given sparse matrix.
+// the given sparse matrix. In case any error is detected during the deserialization process,
+// a \a std::runtime_error is thrown.
 */
 template< typename Archive  // Type of the archive
         , typename MT       // Type of the matrix
@@ -772,6 +861,10 @@ typename DisableIf< IsNumeric< typename MT::ElementType > >::Type
          ++i;
       }
    }
+
+   if( !archive ) {
+      throw std::runtime_error( "Sparse matrix could not be deserialized" );
+   }
 }
 //*************************************************************************************************
 
@@ -782,9 +875,11 @@ typename DisableIf< IsNumeric< typename MT::ElementType > >::Type
 // \param archive The archive to be read from.
 // \param mat The matrix to be reconstituted.
 // \return void
+// \exception std::runtime_error Dense matrix could not be deserialized.
 //
 // This function deserializes a row-major sparse matrix from the archive and reconstitutes
-// the given dense matrix.
+// the given dense matrix. In case any error is detected during the deserialization process,
+// a \a std::runtime_error is thrown.
 */
 template< typename Archive  // Type of the archive
         , typename MT       // Type of the matrix
@@ -805,6 +900,10 @@ void MatrixSerializer::deserializeSparseRowMatrix( Archive& archive, DenseMatrix
          ++j;
       }
    }
+
+   if( !archive ) {
+      throw std::runtime_error( "Dense matrix could not be deserialized" );
+   }
 }
 //*************************************************************************************************
 
@@ -815,9 +914,11 @@ void MatrixSerializer::deserializeSparseRowMatrix( Archive& archive, DenseMatrix
 // \param archive The archive to be read from.
 // \param mat The matrix to be reconstituted.
 // \return void
+// \exception std::runtime_error Sparse matrix could not be deserialized.
 //
 // This function deserializes a row-major sparse matrix from the archive and reconstitutes
-// the given row-major sparse matrix.
+// the given row-major sparse matrix. In case any error is detected during the deserialization
+// process, a \a std::runtime_error is thrown.
 */
 template< typename Archive  // Type of the archive
         , typename MT >     // Type of the matrix
@@ -840,6 +941,10 @@ void MatrixSerializer::deserializeSparseRowMatrix( Archive& archive, SparseMatri
          ++j;
       }
    }
+
+   if( !archive ) {
+      throw std::runtime_error( "Sparse matrix could not be deserialized" );
+   }
 }
 //*************************************************************************************************
 
@@ -850,9 +955,11 @@ void MatrixSerializer::deserializeSparseRowMatrix( Archive& archive, SparseMatri
 // \param archive The archive to be read from.
 // \param mat The matrix to be reconstituted.
 // \return void
+// \exception std::runtime_error Sparse matrix could not be deserialized.
 //
 // This function deserializes a row-major sparse matrix from the archive and reconstitutes
-// the given column-major sparse matrix.
+// the given column-major sparse matrix. In case any error is detected during the deserialization
+// process, a \a std::runtime_error is thrown.
 */
 template< typename Archive  // Type of the archive
         , typename MT >     // Type of the matrix
@@ -861,6 +968,10 @@ void MatrixSerializer::deserializeSparseRowMatrix( Archive& archive, SparseMatri
    CompressedMatrix<typename MT::ElementType,rowMajor> tmp( rows_, columns_, number_ );
    deserializeSparseRowMatrix( archive, tmp );
    (~mat) = tmp;
+
+   if( !archive ) {
+      throw std::runtime_error( "Sparse matrix could not be deserialized" );
+   }
 }
 //*************************************************************************************************
 
@@ -871,9 +982,11 @@ void MatrixSerializer::deserializeSparseRowMatrix( Archive& archive, SparseMatri
 // \param archive The archive to be read from.
 // \param mat The matrix to be reconstituted.
 // \return void
+// \exception std::runtime_error Dense matrix could not be deserialized.
 //
 // This function deserializes a column-major sparse matrix from the archive and reconstitutes
-// the given dense matrix.
+// the given dense matrix. In case any error is detected during the deserialization process,
+// a \a std::runtime_error is thrown.
 */
 template< typename Archive  // Type of the archive
         , typename MT       // Type of the matrix
@@ -894,6 +1007,10 @@ void MatrixSerializer::deserializeSparseColumnMatrix( Archive& archive, DenseMat
          ++i;
       }
    }
+
+   if( !archive ) {
+      throw std::runtime_error( "Dense matrix could not be deserialized" );
+   }
 }
 //*************************************************************************************************
 
@@ -904,9 +1021,11 @@ void MatrixSerializer::deserializeSparseColumnMatrix( Archive& archive, DenseMat
 // \param archive The archive to be read from.
 // \param mat The matrix to be reconstituted.
 // \return void
+// \exception std::runtime_error Sparse matrix could not be deserialized.
 //
 // This function deserializes a column-major sparse matrix from the archive and reconstitutes
-// the given row-major sparse matrix.
+// the given row-major sparse matrix. In case any error is detected during the deserialization
+// process, a \a std::runtime_error is thrown.
 */
 template< typename Archive  // Type of the archive
         , typename MT >     // Type of the matrix
@@ -915,6 +1034,10 @@ void MatrixSerializer::deserializeSparseColumnMatrix( Archive& archive, SparseMa
    CompressedMatrix<typename MT::ElementType,columnMajor> tmp( rows_, columns_, number_ );
    deserializeSparseColumnMatrix( archive, tmp );
    (~mat) = tmp;
+
+   if( !archive ) {
+      throw std::runtime_error( "Sparse matrix could not be deserialized" );
+   }
 }
 //*************************************************************************************************
 
@@ -925,9 +1048,11 @@ void MatrixSerializer::deserializeSparseColumnMatrix( Archive& archive, SparseMa
 // \param archive The archive to be read from.
 // \param mat The matrix to be reconstituted.
 // \return void
+// \exception std::runtime_error Sparse matrix could not be deserialized.
 //
 // This function deserializes a column-major sparse matrix from the archive and reconstitutes
-// the given column-major sparse matrix.
+// the given column-major sparse matrix. In case any error is detected during the deserialization
+// process, a \a std::runtime_error is thrown.
 */
 template< typename Archive  // Type of the archive
         , typename MT >     // Type of the matrix
@@ -949,6 +1074,10 @@ void MatrixSerializer::deserializeSparseColumnMatrix( Archive& archive, SparseMa
          (~mat).append( index, j, value, false );
          ++i;
       }
+   }
+
+   if( !archive ) {
+      throw std::runtime_error( "Sparse matrix could not be deserialized" );
    }
 }
 //*************************************************************************************************
