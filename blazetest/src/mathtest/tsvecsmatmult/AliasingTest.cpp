@@ -567,89 +567,42 @@ void AliasingTest::testTSVecTSMatMult()
 void AliasingTest::initialize()
 {
    //=====================================================================================
-   // Initialization of the dense matrices
+   // Initialization of the sparse matrices
    //=====================================================================================
 
-   // Initializing the first row-major dense matrix
+   // Initializing the first row-major sparse matrix
    sA4x3_(0,0) = -1;
-   sA4x3_(0,1) =  0;
    sA4x3_(0,2) = -2;
-   sA4x3_(1,0) =  0;
    sA4x3_(1,1) =  2;
    sA4x3_(1,2) = -3;
-   sA4x3_(2,0) =  0;
    sA4x3_(2,1) =  1;
    sA4x3_(2,2) =  2;
    sA4x3_(3,0) =  1;
-   sA4x3_(3,1) =  0;
    sA4x3_(3,2) = -2;
 
-   // Initializing the second row-major dense matrix
-   sB3x3_(0,0) =  0;
+   // Initializing the second row-major sparse matrix
    sB3x3_(0,0) = -1;
-   sB3x3_(0,2) =  0;
-   sB3x3_(1,1) =  1;
+   sB3x3_(1,0) =  1;
    sB3x3_(1,1) = -2;
-   sB3x3_(1,1) =  2;
-   sB3x3_(2,0) =  0;
-   sB3x3_(2,0) =  0;
+   sB3x3_(1,2) =  2;
    sB3x3_(2,2) = -3;
 
-   // Initializing the first column-major dense matrix
+   // Initializing the first column-major sparse matrix
    tsA4x3_(0,0) = -1;
-   tsA4x3_(0,1) =  0;
    tsA4x3_(0,2) = -2;
-   tsA4x3_(1,0) =  0;
    tsA4x3_(1,1) =  2;
    tsA4x3_(1,2) = -3;
-   tsA4x3_(2,0) =  0;
    tsA4x3_(2,1) =  1;
    tsA4x3_(2,2) =  2;
    tsA4x3_(3,0) =  1;
-   tsA4x3_(3,1) =  0;
    tsA4x3_(3,2) = -2;
 
-   // Initializing the second column-major dense matrix
-   tsB3x3_(0,0) =  0;
+   // Initializing the second column-major sparse matrix
    tsB3x3_(0,0) = -1;
-   tsB3x3_(0,2) =  0;
-   tsB3x3_(1,1) =  1;
+   tsB3x3_(1,0) =  1;
    tsB3x3_(1,1) = -2;
-   tsB3x3_(1,1) =  2;
-   tsB3x3_(2,0) =  0;
-   tsB3x3_(2,0) =  0;
+   tsB3x3_(1,2) =  2;
    tsB3x3_(2,2) = -3;
-
-
-   //=====================================================================================
-   // Initialization of the dense vectors
-   //=====================================================================================
-
-   // Initializing the first dense row vector
-   tsa4_.resize( 4UL, false );
-   tsa4_[0] = -1;
-   tsa4_[1] =  0;
-   tsa4_[2] = -3;
-   tsa4_[3] =  2;
-
-   // Initializing the second dense row vector
-   tsb4_.resize( 4UL, false );
-   tsb4_[0] =  0;
-   tsb4_[1] =  1;
-   tsb4_[2] =  2;
-   tsb4_[3] = -1;
-
-   // Initializing the third dense row vector
-   tsc3_.resize( 3UL, false );
-   tsc3_[0] = 1;
-   tsc3_[1] = 2;
-   tsc3_[2] = 3;
-
-   // Initializing the fourth dense row vector
-   tsd3_.resize( 3UL, false );
-   tsd3_[0] = 0;
-   tsd3_[1] = 2;
-   tsd3_[2] = 1;
 
 
    //=====================================================================================
@@ -657,15 +610,47 @@ void AliasingTest::initialize()
    //=====================================================================================
 
    // Initializing the first sparse row vector
-   tda4_.resize( 4UL, false );
-   tda4_.reset();
-   tda4_[0] = -1;
-   tda4_[2] = -3;
-   tda4_[2] =  2;
+   tsa4_.resize( 4UL, false );
+   tsa4_.reset();
+   tsa4_[0] = -1;
+   tsa4_[2] = -3;
+   tsa4_[3] =  2;
 
    // Initializing the second sparse row vector
+   tsb4_.resize( 4UL, false );
+   tsb4_.reset();
+   tsb4_[1] =  1;
+   tsb4_[2] =  2;
+   tsb4_[3] = -1;
+
+   // Initializing the third sparse row vector
+   tsc3_.resize( 3UL, false );
+   tsc3_.reset();
+   tsc3_[0] = 1;
+   tsc3_[1] = 2;
+   tsc3_[2] = 3;
+
+   // Initializing the fourth sparse row vector
+   tsd3_.resize( 3UL, false );
+   tsd3_.reset();
+   tsd3_[1] = 2;
+   tsd3_[2] = 1;
+
+
+   //=====================================================================================
+   // Initialization of the dense vectors
+   //=====================================================================================
+
+   // Initializing the first dense row vector
+   tda4_.resize( 4UL, false );
+   tda4_[0] = -1;
+   tda4_[1] =  0;
+   tda4_[2] = -3;
+   tda4_[3] =  2;
+
+   // Initializing the second dense row vector
    tdb3_.resize( 3UL, false );
-   tdb3_.reset();
+   tdb3_[0] = 0;
    tdb3_[1] = 2;
    tdb3_[2] = 1;
 }

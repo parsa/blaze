@@ -227,7 +227,6 @@ void AliasingTest::initialize()
 
    // Initializing the first sparse column vector
    sa4_[0] = -1;
-   sa4_[1] =  0;
    sa4_[2] = -3;
    sa4_[3] =  2;
 
@@ -237,7 +236,6 @@ void AliasingTest::initialize()
    sb3_[2] = 3;
 
    // Initializing the third sparse column vector
-   sc3_[0] = 0;
    sc3_[1] = 2;
    sc3_[2] = 1;
 
@@ -262,9 +260,9 @@ void AliasingTest::initialize()
    sB3x3_.resize( 3UL, 3UL, false );
    sB3x3_.reset();
    sB3x3_(0,0) = -1;
-   sB3x3_(1,1) =  1;
+   sB3x3_(1,0) =  1;
    sB3x3_(1,1) = -2;
-   sB3x3_(1,1) =  2;
+   sB3x3_(1,2) =  2;
    sB3x3_(2,2) = -3;
 }
 //*************************************************************************************************

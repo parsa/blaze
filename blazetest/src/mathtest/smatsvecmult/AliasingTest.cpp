@@ -572,7 +572,7 @@ void AliasingTest::initialize()
    // Initialization of the sparse matrices
    //=====================================================================================
 
-   // Initializing the first row-major dense matrix
+   // Initializing the first row-major sparse matrix
    sA3x4_(0,0) = -1;
    sA3x4_(0,2) = -2;
    sA3x4_(1,1) =  2;
@@ -582,14 +582,14 @@ void AliasingTest::initialize()
    sA3x4_(2,2) =  2;
    sA3x4_(2,3) =  2;
 
-   // Initializing the second row-major dense matrix
+   // Initializing the second row-major sparse matrix
    sB3x3_(0,0) = -1;
-   sB3x3_(1,1) =  1;
+   sB3x3_(1,0) =  1;
    sB3x3_(1,1) = -2;
-   sB3x3_(1,1) =  2;
+   sB3x3_(1,2) =  2;
    sB3x3_(2,2) = -3;
 
-   // Initializing the first column-major dense matrix
+   // Initializing the first column-major sparse matrix
    tsA3x4_(0,0) = -1;
    tsA3x4_(0,2) = -2;
    tsA3x4_(1,1) =  2;
@@ -599,11 +599,11 @@ void AliasingTest::initialize()
    tsA3x4_(2,2) =  2;
    tsA3x4_(2,3) =  2;
 
-   // Initializing the second column-major dense matrix
+   // Initializing the second column-major sparse matrix
    tsB3x3_(0,0) = -1;
-   tsB3x3_(1,1) =  1;
+   tsB3x3_(1,0) =  1;
    tsB3x3_(1,1) = -2;
-   tsB3x3_(1,1) =  2;
+   tsB3x3_(1,2) =  2;
    tsB3x3_(2,2) = -3;
 
 
@@ -616,7 +616,7 @@ void AliasingTest::initialize()
    sa4_.reset();
    sa4_[0] = -1;
    sa4_[2] = -3;
-   sa4_[2] =  2;
+   sa4_[3] =  2;
 
    // Initializing the second sparse column vector
    sb4_.resize( 4UL, false );

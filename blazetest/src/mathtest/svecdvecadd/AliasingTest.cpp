@@ -379,9 +379,9 @@ void AliasingTest::initialize()
 
    // Initializing the second row-major sparse matrix
    sB3x3_(0,0) = -1;
-   sB3x3_(1,1) =  1;
+   sB3x3_(1,0) =  1;
    sB3x3_(1,1) = -2;
-   sB3x3_(1,1) =  2;
+   sB3x3_(1,2) =  2;
    sB3x3_(2,2) = -3;
 
 
@@ -405,13 +405,13 @@ void AliasingTest::initialize()
 
    // Initializing the second row-major dense matrix
    dB3x3_(0,0) =  0;
-   dB3x3_(0,0) = -1;
+   dB3x3_(0,1) = -1;
    dB3x3_(0,2) =  0;
-   dB3x3_(1,1) =  1;
+   dB3x3_(1,0) =  1;
    dB3x3_(1,1) = -2;
-   dB3x3_(1,1) =  2;
+   dB3x3_(1,2) =  2;
    dB3x3_(2,0) =  0;
-   dB3x3_(2,0) =  0;
+   dB3x3_(2,1) =  0;
    dB3x3_(2,2) = -3;
 }
 //*************************************************************************************************

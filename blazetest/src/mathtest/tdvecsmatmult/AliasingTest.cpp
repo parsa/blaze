@@ -567,57 +567,41 @@ void AliasingTest::testTDVecTSMatMult()
 void AliasingTest::initialize()
 {
    //=====================================================================================
-   // Initialization of the dense matrices
+   // Initialization of the sparse matrices
    //=====================================================================================
 
-   // Initializing the first row-major dense matrix
+   // Initializing the first row-major sparse matrix
    sA4x3_(0,0) = -1;
-   sA4x3_(0,1) =  0;
    sA4x3_(0,2) = -2;
-   sA4x3_(1,0) =  0;
    sA4x3_(1,1) =  2;
    sA4x3_(1,2) = -3;
-   sA4x3_(2,0) =  0;
    sA4x3_(2,1) =  1;
    sA4x3_(2,2) =  2;
    sA4x3_(3,0) =  1;
-   sA4x3_(3,1) =  0;
    sA4x3_(3,2) = -2;
 
-   // Initializing the second row-major dense matrix
-   sB3x3_(0,0) =  0;
-   sB3x3_(0,0) = -1;
-   sB3x3_(0,2) =  0;
-   sB3x3_(1,1) =  1;
+   // Initializing the second row-major sparse matrix
+   sB3x3_(0,1) = -1;
+   sB3x3_(1,0) =  1;
    sB3x3_(1,1) = -2;
-   sB3x3_(1,1) =  2;
-   sB3x3_(2,0) =  0;
-   sB3x3_(2,0) =  0;
+   sB3x3_(1,2) =  2;
    sB3x3_(2,2) = -3;
 
-   // Initializing the first column-major dense matrix
+   // Initializing the first column-major sparse matrix
    tsA4x3_(0,0) = -1;
-   tsA4x3_(0,1) =  0;
    tsA4x3_(0,2) = -2;
-   tsA4x3_(1,0) =  0;
    tsA4x3_(1,1) =  2;
    tsA4x3_(1,2) = -3;
-   tsA4x3_(2,0) =  0;
    tsA4x3_(2,1) =  1;
    tsA4x3_(2,2) =  2;
    tsA4x3_(3,0) =  1;
-   tsA4x3_(3,1) =  0;
    tsA4x3_(3,2) = -2;
 
-   // Initializing the second column-major dense matrix
-   tsB3x3_(0,0) =  0;
-   tsB3x3_(0,0) = -1;
-   tsB3x3_(0,2) =  0;
-   tsB3x3_(1,1) =  1;
+   // Initializing the second column-major sparse matrix
+   tsB3x3_(0,1) = -1;
+   tsB3x3_(1,0) =  1;
    tsB3x3_(1,1) = -2;
-   tsB3x3_(1,1) =  2;
-   tsB3x3_(2,0) =  0;
-   tsB3x3_(2,0) =  0;
+   tsB3x3_(1,2) =  2;
    tsB3x3_(2,2) = -3;
 
 
@@ -661,7 +645,7 @@ void AliasingTest::initialize()
    tsa4_.reset();
    tsa4_[0] = -1;
    tsa4_[2] = -3;
-   tsa4_[2] =  2;
+   tsa4_[3] =  2;
 
    // Initializing the second sparse row vector
    tsb3_.resize( 3UL, false );
