@@ -33,7 +33,8 @@ default: staticvector dynamicvector compressedvector \
          tdvecdmatmult tsvecdmatmult tdvecsmatmult tsvecsmatmult \
          dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
          dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
-         dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult
+         dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
+         vectorserializer matrixserializer
 
 staticvector:
 	@echo
