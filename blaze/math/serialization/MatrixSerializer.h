@@ -28,6 +28,7 @@
 //*************************************************************************************************
 
 #include <stdexcept>
+#include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Matrix.h>
 #include <blaze/math/dense/DynamicMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
@@ -234,7 +235,7 @@ class MatrixSerializer
    void deserializeMatrix( Archive& archive, MT& mat );
 
    template< typename Archive, typename MT >
-   typename EnableIfTrue< IsNumeric< typename MT::ElementType >::value && MT::vectorizable >::Type
+   typename EnableIfTrue< MT::vectorizable >::Type
       deserializeDenseRowMatrix( Archive& archive, DenseMatrix<MT,rowMajor>& mat );
 
    template< typename Archive, typename MT, bool SO >
@@ -249,7 +250,7 @@ class MatrixSerializer
       deserializeDenseRowMatrix( Archive& archive, SparseMatrix<MT,SO>& mat );
 
    template< typename Archive, typename MT >
-   typename EnableIfTrue< IsNumeric< typename MT::ElementType >::value && MT::vectorizable >::Type
+   typename EnableIfTrue< MT::vectorizable >::Type
       deserializeDenseColumnMatrix( Archive& archive, DenseMatrix<MT,columnMajor>& mat );
 
    template< typename Archive, typename MT, bool SO >
@@ -477,6 +478,8 @@ template< typename Archive  // Type of the archive
         , bool SO >         // Storage order
 void MatrixSerializer::deserialize( Archive& archive, Matrix<MT,SO>& mat )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE( MT );
+
    if( !archive ) {
       throw std::invalid_argument( "Faulty archive detected" );
    }
@@ -605,7 +608,7 @@ void MatrixSerializer::deserializeMatrix( Archive& archive, MT& mat )
 */
 template< typename Archive  // Type of the archive
         , typename MT >     // Type of the matrix
-typename EnableIfTrue< IsNumeric< typename MT::ElementType >::value && MT::vectorizable >::Type
+typename EnableIfTrue< MT::vectorizable >::Type
    MatrixSerializer::deserializeDenseRowMatrix( Archive& archive, DenseMatrix<MT,rowMajor>& mat )
 {
    if( columns_ == 0UL ) return;
@@ -744,7 +747,7 @@ typename DisableIf< IsNumeric< typename MT::ElementType > >::Type
 */
 template< typename Archive  // Type of the archive
         , typename MT >     // Type of the matrix
-typename EnableIfTrue< IsNumeric< typename MT::ElementType >::value && MT::vectorizable >::Type
+typename EnableIfTrue< MT::vectorizable >::Type
    MatrixSerializer::deserializeDenseColumnMatrix( Archive& archive, DenseMatrix<MT,columnMajor>& mat )
 {
    if( rows_ == 0UL ) return;

@@ -28,6 +28,7 @@
 //*************************************************************************************************
 
 #include <stdexcept>
+#include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Vector.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -230,11 +231,11 @@ class VectorSerializer
    void deserializeVector( Archive& archive, VT& vec );
 
    template< typename Archive, typename VT, bool TF >
-   typename DisableIfTrue< IsNumeric< typename VT::ElementType >::value && VT::vectorizable >::Type
+   typename DisableIfTrue< VT::vectorizable >::Type
       deserializeDenseVector( Archive& archive, DenseVector<VT,TF>& vec );
 
    template< typename Archive, typename VT, bool TF >
-   typename EnableIfTrue< IsNumeric< typename VT::ElementType >::value && VT::vectorizable >::Type
+   typename EnableIfTrue< VT::vectorizable >::Type
       deserializeDenseVector( Archive& archive, DenseVector<VT,TF>& vec );
 
    template< typename Archive, typename VT, bool TF >
@@ -421,6 +422,8 @@ template< typename Archive  // Type of the archive
         , bool TF >         // Transpose flag
 void VectorSerializer::deserialize( Archive& archive, Vector<VT,TF>& vec )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE( VT );
+
    if( !archive ) {
       throw std::invalid_argument( "Faulty archive detected" );
    }
@@ -549,7 +552,7 @@ void VectorSerializer::deserializeVector( Archive& archive, VT& vec )
 template< typename Archive  // Type of the archive
         , typename VT       // Type of the vector
         , bool TF >         // Transpose flag
-typename DisableIfTrue< IsNumeric< typename VT::ElementType >::value && VT::vectorizable >::Type
+typename DisableIfTrue< VT::vectorizable >::Type
    VectorSerializer::deserializeDenseVector( Archive& archive, DenseVector<VT,TF>& vec )
 {
    typedef typename VT::ElementType  ET;
@@ -584,7 +587,7 @@ typename DisableIfTrue< IsNumeric< typename VT::ElementType >::value && VT::vect
 template< typename Archive  // Type of the archive
         , typename VT       // Type of the vector
         , bool TF >         // Transpose flag
-typename EnableIfTrue< IsNumeric< typename VT::ElementType >::value && VT::vectorizable >::Type
+typename EnableIfTrue< VT::vectorizable >::Type
    VectorSerializer::deserializeDenseVector( Archive& archive, DenseVector<VT,TF>& vec )
 {
    if( size_ == 0UL ) return;
