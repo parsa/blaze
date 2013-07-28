@@ -271,7 +271,7 @@ namespace blaze {}
 //
 // This short tutorial serves the purpose to give a quick overview of the way mathematical
 // expressions have to be formulated in \b Blaze. Starting with \ref vector_types, the following
-// long tutorial covers all aspects of the \b Blaze math library.
+// long tutorial covers the most important aspects of the \b Blaze math library.
 //
 //
 // \n \section getting_started_vector_example A First Example
@@ -312,7 +312,22 @@ namespace blaze {}
 // utility module, can be included via the \c blaze/Blaze.h header file. Also note that all
 // classes and functions of Blaze are contained in the blaze namespace.\n\n
 //
-// The output of the last line of this small program is
+// Assuming that this program resides in a source file called \c FirstExample.cpp, it can be
+// compiled for instance via the GNU C++ compiler:
+
+   \code
+   g++ -ansi -O3 -DNDEBUG -mavx -o FirstExample FirstExample.cpp
+   \endcode
+
+// Note the definition of the \c NDEBUG preprocessor symbol. In order to achieve maximum
+// performance, it is necessary to compile the program in release mode, which deactivates
+// all debugging functionality inside \b Blaze. It is also strongly recommended to specify
+// the available architecture specific instruction set (as for instance the AVX instruction
+// set, which if available can be activated via the \c -mavx flag). This allows \b Blaze
+// to optimize computations via vectorization.\n\n
+//
+// When running the resulting executable \c FirstExample, the output of the last line of
+// this small program is
 
    \code
    c =
