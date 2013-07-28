@@ -144,6 +144,16 @@ class VectorSerializer
    //**Private class VectorValueMappingHelper******************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Auxiliary helper class for the VectorValueMapping class template.
+   //
+   // The VectorValueMapping class template is an auxiliary class for the VectorSerializer. It
+   // maps a vector type into an integral representation. For the mapping, the following bit
+   // mapping is used:
+
+      \code
+      0x01 - Vector/Matrix flag
+      0x02 - Dense/Sparse flag
+      0x04 - Row-/Column-major flag
+      \endcode
    */
    template< bool IsDenseVector >
    struct VectorValueMappingHelper;
@@ -460,7 +470,7 @@ void VectorSerializer::deserializeHeader( Archive& archive, const VT& vec )
    else if( version_ != 1UL ) {
       throw std::runtime_error( "Invalid version detected" );
    }
-   else if( type_ != 0U && type_ != 1U ) {
+   else if( ( type_ & 1U ) != 0U || type_ & (~3U) != 0U ) {
       throw std::runtime_error( "Invalid vector type detected" );
    }
    else if( elementType_ != TypeValueMapping<ET>::value ) {
@@ -527,7 +537,7 @@ void VectorSerializer::deserializeVector( Archive& archive, VT& vec )
    if( type_ == 0U ) {
       deserializeDenseVector( archive, vec );
    }
-   else if( type_ == 1U ) {
+   else if( type_ == 2U ) {
       deserializeSparseVector( archive, vec );
    }
    else {
@@ -732,7 +742,7 @@ struct VectorSerializer::VectorValueMappingHelper<true>
 template<>
 struct VectorSerializer::VectorValueMappingHelper<false>
 {
-   enum { value = 1 };
+   enum { value = 2 };
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -148,6 +148,16 @@ class MatrixSerializer
    //**Private class MatrixValueMappingHelper******************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Auxiliary helper class for the MatrixValueMapping class template.
+   //
+   // The MatrixValueMapping class template is an auxiliary class for the MatrixSerializer. It
+   // maps a matrix type into an integral representation. For the mapping, the following bit
+   // mapping is used:
+
+      \code
+      0x01 - Vector/Matrix flag
+      0x02 - Dense/Sparse flag
+      0x04 - Row-/Column-major flag
+      \endcode
    */
    template< bool IsDenseMatrix, bool IsRowMajorMatrix >
    struct MatrixValueMappingHelper;
@@ -511,7 +521,7 @@ void MatrixSerializer::deserializeHeader( Archive& archive, const MT& mat )
    else if( version_ != 1UL ) {
       throw std::runtime_error( "Invalid version detected" );
    }
-   else if( type_ < 2U || type_ > 5U ) {
+   else if( ( type_ & 1U ) != 1U || ( type_ & (~7U) ) != 0U ) {
       throw std::runtime_error( "Invalid matrix type detected" );
    }
    else if( elementType_ != TypeValueMapping<ET>::value ) {
@@ -575,16 +585,16 @@ template< typename Archive  // Type of the archive
         , typename MT >     // Type of the matrix
 void MatrixSerializer::deserializeMatrix( Archive& archive, MT& mat )
 {
-   if( type_ == 2U ) {
+   if( type_ == 1U ) {
       deserializeDenseRowMatrix( archive, ~mat );
    }
-   else if( type_ == 3UL ) {
+   else if( type_ == 5UL ) {
       deserializeDenseColumnMatrix( archive, ~mat );
    }
-   else if( type_ == 4UL ) {
+   else if( type_ == 3UL ) {
       deserializeSparseRowMatrix( archive, ~mat );
    }
-   else if( type_ == 5UL ) {
+   else if( type_ == 7UL ) {
       deserializeSparseColumnMatrix( archive, ~mat );
    }
    else {
@@ -1101,7 +1111,7 @@ void MatrixSerializer::deserializeSparseColumnMatrix( Archive& archive, SparseMa
 template<>
 struct MatrixSerializer::MatrixValueMappingHelper<true,true>
 {
-   enum { value = 2 };
+   enum { value = 1 };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1114,7 +1124,7 @@ struct MatrixSerializer::MatrixValueMappingHelper<true,true>
 template<>
 struct MatrixSerializer::MatrixValueMappingHelper<true,false>
 {
-   enum { value = 3 };
+   enum { value = 5 };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1127,7 +1137,7 @@ struct MatrixSerializer::MatrixValueMappingHelper<true,false>
 template<>
 struct MatrixSerializer::MatrixValueMappingHelper<false,true>
 {
-   enum { value = 4 };
+   enum { value = 3 };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1140,7 +1150,7 @@ struct MatrixSerializer::MatrixValueMappingHelper<false,true>
 template<>
 struct MatrixSerializer::MatrixValueMappingHelper<false,false>
 {
-   enum { value = 5 };
+   enum { value = 7 };
 };
 /*! \endcond */
 //*************************************************************************************************
