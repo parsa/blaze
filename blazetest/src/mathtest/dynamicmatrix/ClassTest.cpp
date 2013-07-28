@@ -3418,7 +3418,7 @@ void ClassTest::testIsDiagonal()
       // Diagonal matrix
       {
          // Initialization check
-         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL );
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
          mat(0,0) = 1;
          mat(1,1) = 2;
          mat(2,2) = 3;
@@ -3444,7 +3444,7 @@ void ClassTest::testIsDiagonal()
       // Non-diagonal matrix
       {
          // Initialization check
-         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL );
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
          mat(0,0) = 1;
          mat(0,2) = 4;
          mat(1,1) = 2;
@@ -3698,7 +3698,7 @@ void ClassTest::testIsSymmetric()
       // Non-symmetric matrix
       {
          // Initialization check
-         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL );
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
          mat(0,0) = 1;
          mat(0,2) = 4;
          mat(1,1) = 2;
