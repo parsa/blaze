@@ -164,8 +164,8 @@ class Archive : private NonCopyable
    //@}
    //**********************************************************************************************
 
-   //**Stream operators****************************************************************************
-   /*!\name Stream operators */
+   //**Serialization functions*********************************************************************
+   /*!\name Serialization functions */
    //@{
    template< typename T >
    typename EnableIf< IsNumeric<T>, Archive& >::Type
@@ -182,12 +182,7 @@ class Archive : private NonCopyable
    template< typename T >
    typename DisableIf< IsNumeric<T>, Archive& >::Type
       operator>>( T& value );
-   //@}
-   //**********************************************************************************************
 
-   //**Utility functions***************************************************************************
-   /*!\name Utility functions */
-   //@{
    template< typename Type >
    inline typename EnableIf< IsNumeric<Type>, Archive& >::Type
       write( const Type* array, size_t count );
@@ -195,7 +190,12 @@ class Archive : private NonCopyable
    template< typename Type >
    inline typename EnableIf< IsNumeric<Type>, Archive& >::Type
       read ( Type* array, size_t count );
+   //@}
+   //**********************************************************************************************
 
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
    inline bool good() const;
    inline bool eof () const;
    inline bool fail() const;
@@ -412,7 +412,7 @@ inline bool Archive<Stream>::operator!() const
 
 //=================================================================================================
 //
-//  STREAM OPERATORS
+//  SERIALIZATION FUNCTIONS
 //
 //=================================================================================================
 
@@ -486,14 +486,6 @@ typename DisableIf< IsNumeric<T>, Archive<Stream>& >::Type
 //*************************************************************************************************
 
 
-
-
-//=================================================================================================
-//
-//  UTILITY FUNCTIONS
-//
-//=================================================================================================
-
 //*************************************************************************************************
 /*!\brief Writing an array of values to the stream.
 //
@@ -537,6 +529,14 @@ inline typename EnableIf< IsNumeric<Type>, Archive<Stream>& >::Type
 }
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  UTILITY FUNCTIONS
+//
+//=================================================================================================
 
 //*************************************************************************************************
 /*!\brief Checks if no error has occurred, i.e. I/O operations are available.
