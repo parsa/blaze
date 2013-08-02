@@ -29,6 +29,7 @@
 
 #include <blaze/math/intrinsics/BasicTypes.h>
 #include <blaze/system/Vectorization.h>
+#include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Integral.h>
 #include <blaze/util/EnableIf.h>
@@ -83,11 +84,11 @@ struct Stream<T,2UL>
    //**Set function********************************************************************************
    static inline void stream( T* address, const Type& value )
    {
+      BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
 #if BLAZE_AVX2_MODE
-      BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
       _mm256_stream_si256( reinterpret_cast<__m256i*>( address ), value.value );
 #elif BLAZE_SSE2_MODE
-      BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 16UL ), "Invalid alignment detected" );
       _mm_stream_si128( reinterpret_cast<__m128i*>( address ), value.value );
 #else
       *address = value.value;
@@ -120,14 +121,13 @@ struct Stream<T,4UL>
    //**Set function********************************************************************************
    static inline void stream( T* address, const Type& value )
    {
+      BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
 #if BLAZE_MIC_MODE
-      BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 64UL ), "Invalid alignment detected" );
       _mm512_store_epi32( address, value.value );
 #elif BLAZE_AVX2_MODE
-      BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
       _mm256_stream_si256( reinterpret_cast<__m256i*>( address ), value.value );
 #elif BLAZE_SSE2_MODE
-      BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 16UL ), "Invalid alignment detected" );
       _mm_stream_si128( reinterpret_cast<__m128i*>( address ), value.value );
 #else
       *address = value.value;
@@ -160,14 +160,13 @@ struct Stream<T,8UL>
    //**Set function********************************************************************************
    static inline void stream( T* address, const Type& value )
    {
+      BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
 #if BLAZE_MIC_MODE
-      BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 64UL ), "Invalid alignment detected" );
       _mm512_store_epi64( address, value.value );
 #elif BLAZE_AVX2_MODE
-      BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
       _mm256_stream_si256( reinterpret_cast<__m256i*>( address ), value.value );
 #elif BLAZE_SSE2_MODE
-      BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 16UL ), "Invalid alignment detected" );
       _mm_stream_si128( reinterpret_cast<__m128i*>( address ), value.value );
 #else
       *address = value.value;
@@ -219,14 +218,13 @@ inline typename EnableIf< IsIntegral<T> >::Type
 */
 inline void stream( float* address, const sse_float_t& value )
 {
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
 #if BLAZE_MIC_MODE
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 64UL ), "Invalid alignment detected" );
    _mm512_storenr_ps( address, value.value );
 #elif BLAZE_AVX_MODE
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
    _mm256_stream_ps( address, value.value );
 #elif BLAZE_SSE_MODE
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 16UL ), "Invalid alignment detected" );
    _mm_stream_ps( address, value.value );
 #else
    *address = value.value;
@@ -245,14 +243,13 @@ inline void stream( float* address, const sse_float_t& value )
 */
 inline void stream( double* address, const sse_double_t& value )
 {
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
 #if BLAZE_MIC_MODE
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 64UL ), "Invalid alignment detected" );
    _mm512_storenr_pd( address, value.value );
 #elif BLAZE_AVX_MODE
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
    _mm256_stream_pd( address, value.value );
 #elif BLAZE_SSE2_MODE
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 16UL ), "Invalid alignment detected" );
    _mm_stream_pd( address, value.value );
 #else
    *address = value.value;
@@ -271,16 +268,16 @@ inline void stream( double* address, const sse_double_t& value )
 */
 inline void stream( complex<float>* address, const sse_cfloat_t& value )
 {
+   BLAZE_STATIC_ASSERT  ( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
 #if BLAZE_AVX_MODE
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
    _mm256_stream_ps( reinterpret_cast<float*>( address ), value.value );
 #elif BLAZE_SSE_MODE
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 16UL ), "Invalid alignment detected" );
    _mm_stream_ps( reinterpret_cast<float*>( address ), value.value );
 #else
    *address = value.value;
 #endif
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 }
 //*************************************************************************************************
 
@@ -295,16 +292,16 @@ inline void stream( complex<float>* address, const sse_cfloat_t& value )
 */
 inline void stream( complex<double>* address, const sse_cdouble_t& value )
 {
+   BLAZE_STATIC_ASSERT  ( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
 #if BLAZE_AVX_MODE
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
    _mm256_stream_pd( reinterpret_cast<double*>( address ), value.value );
 #elif BLAZE_SSE2_MODE
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 16UL ), "Invalid alignment detected" );
    _mm_stream_pd( reinterpret_cast<double*>( address ), value.value );
 #else
    *address = value.value;
 #endif
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 }
 //*************************************************************************************************
 

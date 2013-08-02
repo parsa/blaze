@@ -29,6 +29,7 @@
 
 #include <blaze/math/intrinsics/BasicTypes.h>
 #include <blaze/system/Vectorization.h>
+#include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/constraints/Integral.h>
@@ -84,11 +85,11 @@ struct Load<T,2UL>
    //**Set function********************************************************************************
    static inline Type load( const T* address )
    {
+      BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
 #if BLAZE_AVX2_MODE
-      BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
       return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
 #elif BLAZE_SSE2_MODE
-      BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 16UL ), "Invalid alignment detected" );
       return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
 #else
       return *address;
@@ -121,14 +122,13 @@ struct Load<T,4UL>
    //**Set function********************************************************************************
    static inline Type load( const T* address )
    {
+      BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
 #if BLAZE_MIC_MODE
-      BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 64UL ), "Invalid alignment detected" );
       return _mm512_load_epi32( address );
 #elif BLAZE_AVX2_MODE
-      BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
       return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
 #elif BLAZE_SSE2_MODE
-      BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 16UL ), "Invalid alignment detected" );
       return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
 #else
       return *address;
@@ -161,14 +161,13 @@ struct Load<T,8UL>
    //**Set function********************************************************************************
    static inline Type load( const T* address )
    {
+      BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
 #if BLAZE_MIC_MODE
-      BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 64UL ), "Invalid alignment detected" );
       return _mm512_load_epi64( address );
 #elif BLAZE_AVX2_MODE
-      BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
       return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
 #elif BLAZE_SSE2_MODE
-      BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 16UL ), "Invalid alignment detected" );
       return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
 #else
       return *address;
@@ -218,14 +217,13 @@ inline typename EnableIf< IsIntegral<T>, Load<T,sizeof(T)> >::Type::Type
 */
 inline sse_float_t load( const float* address )
 {
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
 #if BLAZE_MIC_MODE
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 64UL ), "Invalid alignment detected" );
    return _mm512_load_ps( address );
 #elif BLAZE_AVX_MODE
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
    return _mm256_load_ps( address );
 #elif BLAZE_SSE_MODE
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 16UL ), "Invalid alignment detected" );
    return _mm_load_ps( address );
 #else
    return *address;
@@ -243,14 +241,13 @@ inline sse_float_t load( const float* address )
 */
 inline sse_double_t load( const double* address )
 {
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
 #if BLAZE_MIC_MODE
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 64UL ), "Invalid alignment detected" );
    return _mm512_load_pd( address );
 #elif BLAZE_AVX_MODE
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
    return _mm256_load_pd( address );
 #elif BLAZE_SSE2_MODE
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 16UL ), "Invalid alignment detected" );
    return _mm_load_pd( address );
 #else
    return *address;
@@ -268,16 +265,16 @@ inline sse_double_t load( const double* address )
 */
 inline sse_cfloat_t load( const complex<float>* address )
 {
+   BLAZE_STATIC_ASSERT  ( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
 #if BLAZE_AVX_MODE
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
    return _mm256_load_ps( reinterpret_cast<const float*>( address ) );
 #elif BLAZE_SSE_MODE
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 16UL ), "Invalid alignment detected" );
    return _mm_load_ps( reinterpret_cast<const float*>( address ) );
 #else
    return *address;
 #endif
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 }
 //*************************************************************************************************
 
@@ -291,16 +288,16 @@ inline sse_cfloat_t load( const complex<float>* address )
 */
 inline sse_cdouble_t load( const complex<double>* address )
 {
+   BLAZE_STATIC_ASSERT  ( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
 #if BLAZE_AVX_MODE
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 32UL ), "Invalid alignment detected" );
    return _mm256_load_pd( reinterpret_cast<const double*>( address ) );
 #elif BLAZE_SSE2_MODE
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( address ) % 16UL ), "Invalid alignment detected" );
    return _mm_load_pd( reinterpret_cast<const double*>( address ) );
 #else
    return *address;
 #endif
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 }
 //*************************************************************************************************
 
