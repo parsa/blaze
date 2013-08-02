@@ -2889,6 +2889,8 @@ inline bool isDefault( const SparseColumn<MT,SO>& column )
 // This function returns an expression representing the specified column of the given sparse matrix.
 
    \code
+   using blaze::columnMajor;
+
    typedef blaze::CompressedMatrix<double,columnMajor>  Matrix;
 
    Matrix A;
@@ -2920,6 +2922,8 @@ inline typename DisableIf< IsExpression<MT>, SparseColumn<MT> >::Type
 // This function returns an expression representing the specified column of the given sparse matrix.
 
    \code
+   using blaze::columnMajor;
+
    typedef blaze::CompressedMatrix<double,columnMajor>  Matrix;
 
    const Matrix A;

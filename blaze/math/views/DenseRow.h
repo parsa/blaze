@@ -2742,6 +2742,8 @@ inline bool isDefault( const DenseRow<MT,SO>& row )
 // This function returns an expression representing the specified row of the given dense matrix.
 
    \code
+   using blaze::rowMajor;
+
    typedef blaze::DynamicMatrix<double,rowMajor>  Matrix;
 
    Matrix A;
@@ -2773,6 +2775,8 @@ inline typename DisableIf< IsExpression<MT>, DenseRow<MT> >::Type
 // This function returns an expression representing the specified row of the given dense matrix.
 
    \code
+   using blaze::rowMajor;
+
    typedef blaze::DynamicMatrix<double,rowMajor>  Matrix;
 
    const Matrix A;

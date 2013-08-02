@@ -2887,6 +2887,8 @@ inline bool isDefault( const SparseRow<MT,SO>& row )
 // This function returns an expression representing the specified row of the given sparse matrix.
 
    \code
+   using blaze::rowMajor;
+
    typedef blaze::CompressedMatrix<double,rowMajor>  Matrix;
 
    Matrix A;
@@ -2918,6 +2920,8 @@ inline typename DisableIf< IsExpression<MT>, SparseRow<MT> >::Type
 // This function returns an expression representing the specified row of the given sparse matrix.
 
    \code
+   using blaze::rowMajor;
+
    typedef blaze::CompressedMatrix<double,rowMajor>  Matrix;
 
    const Matrix A;

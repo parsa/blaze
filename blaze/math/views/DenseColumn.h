@@ -2742,6 +2742,8 @@ inline bool isDefault( const DenseColumn<MT,SO>& column )
 // This function returns an expression representing the specified column of the given dense matrix.
 
    \code
+   using blaze::columnMajor;
+
    typedef blaze::DynamicMatrix<double,columnMajor>  Matrix;
 
    Matrix A;
@@ -2773,6 +2775,8 @@ inline typename DisableIf< IsExpression<MT>, DenseColumn<MT> >::Type
 // This function returns an expression representing the specified column of the given dense matrix.
 
    \code
+   using blaze::columnMajor;
+
    typedef blaze::DynamicMatrix<double,columnMajor>  Matrix;
 
    const Matrix A;
