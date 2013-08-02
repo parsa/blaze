@@ -54,8 +54,9 @@ namespace blaze {
 // via the nested \a value member.
 
    \code
-   AlignmentTrait<unsigned int>::value  // Evaluates to 16 if SSE is available, a multiple of
-                                        // the alignment chosen by the compiler otherwise.
+   AlignmentTrait<unsigned int>::value  // Evaluates to 32 if AVX2 is available, to 16 if only
+                                        // SSE2 is available, and a multiple of the alignment
+                                        // chosen by the compiler otherwise.
    AlignmentTrait<double>::value        // Evaluates to 32 if AVX is available, to 16 if only
                                         // SSE is available, and a multiple of the alignment
                                         // chosen by the compiler otherwise.
@@ -69,6 +70,8 @@ struct AlignmentTrait
    /*! \cond BLAZE_INTERNAL */
 #if BLAZE_MIC_MODE
    enum { value = ( IsVectorizable<T>::value )?( 64UL ):( boost::alignment_of<T>::value ) };
+#elif BLAZE_AVX2_MODE
+   enum { value = ( IsVectorizable<T>::value )?( 32UL ):( boost::alignment_of<T>::value ) };
 #elif BLAZE_SSE2_MODE
    enum { value = ( IsVectorizable<T>::value )?( 16UL ):( boost::alignment_of<T>::value ) };
 #else
