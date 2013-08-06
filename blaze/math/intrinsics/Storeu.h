@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/intrinsics/Store.h
-//  \brief Header file for the intrinsic aligned store functionality
+//  \file blaze/math/intrinsics/Storeu.h
+//  \brief Header file for the intrinsic unaligned store functionality
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_INTRINSICS_STORE_H_
-#define _BLAZE_MATH_INTRINSICS_STORE_H_
+#ifndef _BLAZE_MATH_INTRINSICS_STOREU_H_
+#define _BLAZE_MATH_INTRINSICS_STOREU_H_
 
 
 //*************************************************************************************************
@@ -29,8 +29,6 @@
 
 #include <blaze/math/intrinsics/BasicTypes.h>
 #include <blaze/system/Vectorization.h>
-#include <blaze/util/AlignmentCheck.h>
-#include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/constraints/Integral.h>
 #include <blaze/util/EnableIf.h>
@@ -52,12 +50,12 @@ namespace blaze {
 //
 // This helper structure provides the mapping between the size of an integral data type and the
 // according intrinsic aligned store function. Note that the type \a T must be an integral data
-// type. Instantiating the Store class with a non-integral data type results in a compilation
+// type. Instantiating the Storeu class with a non-integral data type results in a compilation
 // error.
 */
 template< typename T  // Type of the integral
         , size_t N >  // Size of the integral
-struct Store;
+struct Storeu;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -66,17 +64,17 @@ struct Store;
 
 //=================================================================================================
 //
-//  SPECIALIZATIONS OF THE STORE CLASS TEMPLATE
+//  SPECIALIZATIONS OF THE STOREU CLASS TEMPLATE
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Store class template for 2-byte integral data types.
+/*!\brief Specialization of the Storeu class template for 2-byte integral data types.
 // \ingroup intrinsics
 */
 template< typename T >  // Type of the integral
-struct Store<T,2UL>
+struct Storeu<T,2UL>
 {
  public:
    //**Type definitions****************************************************************************
@@ -84,14 +82,12 @@ struct Store<T,2UL>
    //**********************************************************************************************
 
    //**Set function********************************************************************************
-   static inline void store( T* address, const Type& value )
+   static inline void storeu( T* address, const Type& value )
    {
-      BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
-
 #if BLAZE_AVX2_MODE
-      _mm256_store_si256( reinterpret_cast<__m256i*>( address ), value.value );
+      _mm256_storeu_si256( reinterpret_cast<__m256i*>( address ), value.value );
 #elif BLAZE_SSE2_MODE
-      _mm_store_si128( reinterpret_cast<__m128i*>( address ), value.value );
+      _mm_storeu_si128( reinterpret_cast<__m128i*>( address ), value.value );
 #else
       *address = value.value;
 #endif
@@ -109,11 +105,11 @@ struct Store<T,2UL>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Store class template for 4-byte integral data types.
+/*!\brief Specialization of the Storeu class template for 4-byte integral data types.
 // \ingroup intrinsics
 */
 template< typename T >  // Type of the integral
-struct Store<T,4UL>
+struct Storeu<T,4UL>
 {
  public:
    //**Type definitions****************************************************************************
@@ -121,16 +117,15 @@ struct Store<T,4UL>
    //**********************************************************************************************
 
    //**Set function********************************************************************************
-   static inline void store( T* address, const Type& value )
+   static inline void storeu( T* address, const Type& value )
    {
-      BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
-
 #if BLAZE_MIC_MODE
-      _mm512_store_epi32( address, value.value );
+      _mm512_packstorelo_epi32( address, value.value );
+      _mm512_packstorehi_epi32( address+16UL, value.value );
 #elif BLAZE_AVX2_MODE
-      _mm256_store_si256( reinterpret_cast<__m256i*>( address ), value.value );
+      _mm256_storeu_si256( reinterpret_cast<__m256i*>( address ), value.value );
 #elif BLAZE_SSE2_MODE
-      _mm_store_si128( reinterpret_cast<__m128i*>( address ), value.value );
+      _mm_storeu_si128( reinterpret_cast<__m128i*>( address ), value.value );
 #else
       *address = value.value;
 #endif
@@ -148,11 +143,11 @@ struct Store<T,4UL>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Store class template for 8-byte integral data types.
+/*!\brief Specialization of the Storeu class template for 8-byte integral data types.
 // \ingroup intrinsics
 */
 template< typename T >  // Type of the integral
-struct Store<T,8UL>
+struct Storeu<T,8UL>
 {
  public:
    //**Type definitions****************************************************************************
@@ -160,16 +155,15 @@ struct Store<T,8UL>
    //**********************************************************************************************
 
    //**Set function********************************************************************************
-   static inline void store( T* address, const Type& value )
+   static inline void storeu( T* address, const Type& value )
    {
-      BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
-
 #if BLAZE_MIC_MODE
-      _mm512_store_epi64( address, value.value );
+      _mm512_packstorelo_epi64( address, value.value );
+      _mm512_packstorehi_epi64( address+8UL, value.value );
 #elif BLAZE_AVX2_MODE
-      _mm256_store_si256( reinterpret_cast<__m256i*>( address ), value.value );
+      _mm256_storeu_si256( reinterpret_cast<__m256i*>( address ), value.value );
 #elif BLAZE_SSE2_MODE
-      _mm_store_si128( reinterpret_cast<__m128i*>( address ), value.value );
+      _mm_storeu_si128( reinterpret_cast<__m128i*>( address ), value.value );
 #else
       *address = value.value;
 #endif
@@ -189,53 +183,50 @@ struct Store<T,8UL>
 
 //=================================================================================================
 //
-//  INTRINSIC STORE FUNCTIONS
+//  INTRINSIC STOREU FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Aligned store of a vector of integral values.
+/*!\brief Unaligned store of a vector of integral values.
 // \ingroup intrinsics
 //
 // \param address The target address.
 // \param value The integral vector to be stored.
 // \return void
 //
-// This function stores a vector of integral values. The given address must be aligned according
-// to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment in case
-// of AVX, and 64-byte alignment in case of MIC.
+// This function stores a vector of integral values. In contrast to the according store function,
+// the given address is not required to be properly aligned.
 */
 template< typename T >  // Type of the integral value
 inline typename EnableIf< IsIntegral<T> >::Type
-   store( T* address, const typename Store<T,sizeof(T)>::Type& value )
+   storeu( T* address, const typename Storeu<T,sizeof(T)>::Type& value )
 {
-   Store<T,sizeof(T)>::store( address, value );
+   Storeu<T,sizeof(T)>::storeu( address, value );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Aligned store of a vector of 'float' values.
+/*!\brief Unaligned store of a vector of 'float' values.
 // \ingroup intrinsics
 //
 // \param address The target address.
 // \param value The 'float' vector to be stored.
 // \return void
 //
-// This function stores a vector of 'float' values. The given address must be aligned according
-// to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment in case of
-// AVX, and 64-byte alignment in case of MIC.
+// This function stores a vector of 'float' values. In contrast to the according store function,
+// the given address is not required to be properly aligned.
 */
-inline void store( float* address, const sse_float_t& value )
+inline void storeu( float* address, const sse_float_t& value )
 {
-   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
-
 #if BLAZE_MIC_MODE
-   _mm512_store_ps( address, value.value );
+   _mm512_packstorelo_ps( address, value.value );
+   _mm512_packstorehi_ps( address+16UL, value.value );
 #elif BLAZE_AVX_MODE
-   _mm256_store_ps( address, value.value );
+   _mm256_storeu_ps( address, value.value );
 #elif BLAZE_SSE_MODE
-   _mm_store_ps( address, value.value );
+   _mm_storeu_ps( address, value.value );
 #else
    *address = value.value;
 #endif
@@ -244,27 +235,25 @@ inline void store( float* address, const sse_float_t& value )
 
 
 //*************************************************************************************************
-/*!\brief Aligned store of a vector of 'double' values.
+/*!\brief Unaligned store of a vector of 'double' values.
 // \ingroup intrinsics
 //
 // \param address The target address.
 // \param value The 'double' vector to be stored.
 // \return void
 //
-// This function stores a vector of 'double' values. The given address must be aligned according
-// to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment in case of
-// AVX, and 64-byte alignment in case of MIC.
+// This function stores a vector of 'double' values. In contrast to the according store function,
+// the given address is not required to be properly aligned.
 */
-inline void store( double* address, const sse_double_t& value )
+inline void storeu( double* address, const sse_double_t& value )
 {
-   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
-
 #if BLAZE_MIC_MODE
-   _mm512_store_pd( address, value.value );
+   _mm512_packstorelo_pd( address, value.value );
+   _mm512_packstorehi_pd( address+8UL, value.value );
 #elif BLAZE_AVX_MODE
-   _mm256_store_pd( address, value.value );
+   _mm256_storeu_pd( address, value.value );
 #elif BLAZE_SSE2_MODE
-   _mm_store_pd( address, value.value );
+   _mm_storeu_pd( address, value.value );
 #else
    *address = value.value;
 #endif
@@ -273,26 +262,24 @@ inline void store( double* address, const sse_double_t& value )
 
 
 //*************************************************************************************************
-/*!\brief Aligned store of a vector of 'complex<float>' values.
+/*!\brief Unaligned store of a vector of 'complex<float>' values.
 // \ingroup intrinsics
 //
 // \param address The target address.
 // \param value The 'complex<float>' vector to be stored.
 // \return void
 //
-// This function stores a vector of 'complex<float>' values. The given address must be aligned
-// according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
-// in case of AVX, and 64-byte alignment in case of MIC.
+// This function stores a vector of 'complex<float>' values. In contrast to the according store
+// function, the given address is not required to be properly aligned.
 */
-inline void store( complex<float>* address, const sse_cfloat_t& value )
+inline void storeu( complex<float>* address, const sse_cfloat_t& value )
 {
-   BLAZE_STATIC_ASSERT  ( sizeof( complex<float> ) == 2UL*sizeof( float ) );
-   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
 #if BLAZE_AVX_MODE
-   _mm256_store_ps( reinterpret_cast<float*>( address ), value.value );
+   _mm256_storeu_ps( reinterpret_cast<float*>( address ), value.value );
 #elif BLAZE_SSE_MODE
-   _mm_store_ps( reinterpret_cast<float*>( address ), value.value );
+   _mm_storeu_ps( reinterpret_cast<float*>( address ), value.value );
 #else
    *address = value.value;
 #endif
@@ -301,26 +288,24 @@ inline void store( complex<float>* address, const sse_cfloat_t& value )
 
 
 //*************************************************************************************************
-/*!\brief Aligned store of a vector of 'complex<double>' values.
+/*!\brief Unaligned store of a vector of 'complex<double>' values.
 // \ingroup intrinsics
 //
 // \param address The target address.
 // \param value The 'complex<double>' vector to be stored.
 // \return void
 //
-// This function stores a vector of 'complex<double>' values. The given address must be aligned
-// according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
-// in case of AVX, and 64-byte alignment in case of MIC.
+// This function stores a vector of 'complex<double>' values. In contrast to the according store
+// function, the given address is not required to be properly aligned.
 */
-inline void store( complex<double>* address, const sse_cdouble_t& value )
+inline void storeu( complex<double>* address, const sse_cdouble_t& value )
 {
-   BLAZE_STATIC_ASSERT  ( sizeof( complex<double> ) == 2UL*sizeof( double ) );
-   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
 #if BLAZE_AVX_MODE
-   _mm256_store_pd( reinterpret_cast<double*>( address ), value.value );
+   _mm256_storeu_pd( reinterpret_cast<double*>( address ), value.value );
 #elif BLAZE_SSE2_MODE
-   _mm_store_pd( reinterpret_cast<double*>( address ), value.value );
+   _mm_storeu_pd( reinterpret_cast<double*>( address ), value.value );
 #else
    *address = value.value;
 #endif

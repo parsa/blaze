@@ -36,6 +36,7 @@
 #include <blaze/math/intrinsics/Set.h>
 #include <blaze/math/intrinsics/Setzero.h>
 #include <blaze/math/intrinsics/Store.h>
+#include <blaze/math/intrinsics/Storeu.h>
 #include <blaze/math/intrinsics/Stream.h>
 #include <blaze/math/intrinsics/Subtraction.h>
 
