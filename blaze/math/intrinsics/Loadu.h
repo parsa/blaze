@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/intrinsics/Load.h
-//  \brief Header file for the intrinsic aligned load functionality
+//  \file blaze/math/intrinsics/Loadu.h
+//  \brief Header file for the intrinsic unaligned load functionality
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_INTRINSICS_LOAD_H_
-#define _BLAZE_MATH_INTRINSICS_LOAD_H_
+#ifndef _BLAZE_MATH_INTRINSICS_LOADU_H_
+#define _BLAZE_MATH_INTRINSICS_LOADU_H_
 
 
 //*************************************************************************************************
@@ -29,8 +29,6 @@
 
 #include <blaze/math/intrinsics/BasicTypes.h>
 #include <blaze/system/Vectorization.h>
-#include <blaze/util/AlignmentCheck.h>
-#include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/constraints/Integral.h>
 #include <blaze/util/EnableIf.h>
@@ -47,17 +45,17 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for intrinsic aligned load operations.
+/*!\brief Auxiliary helper struct for intrinsic unaligned load operations.
 // \ingroup intrinsics
 //
 // This helper structure provides the mapping between the size of an integral data type and the
-// according intrinsic aligned load function. Note that the type \a T must be an integral data
-// type. Instantiating the Load class with a non-integral data type results in a compilation
+// according intrinsic unaligned load function. Note that the type \a T must be an integral data
+// type. Instantiating the Loadu class with a non-integral data type results in a compilation
 // error.
 */
 template< typename T  // Type of the integral
         , size_t N >  // Size of the integral
-struct Load;
+struct Loadu;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -66,17 +64,17 @@ struct Load;
 
 //=================================================================================================
 //
-//  SPECIALIZATIONS OF THE LOAD CLASS TEMPLATE
+//  SPECIALIZATIONS OF THE LOADU CLASS TEMPLATE
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Load class template for 2-byte integral data types.
+/*!\brief Specialization of the Loadu class template for 2-byte integral data types.
 // \ingroup intrinsics
 */
 template< typename T >  // Type of the integral
-struct Load<T,2UL>
+struct Loadu<T,2UL>
 {
  public:
    //**Type definitions****************************************************************************
@@ -84,14 +82,12 @@ struct Load<T,2UL>
    //**********************************************************************************************
 
    //**Set function********************************************************************************
-   static inline Type load( const T* address )
+   static inline Type loadu( const T* address )
    {
-      BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
-
 #if BLAZE_AVX2_MODE
-      return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
+      return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( address ) );
 #elif BLAZE_SSE2_MODE
-      return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
+      return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
 #else
       return *address;
 #endif
@@ -109,11 +105,11 @@ struct Load<T,2UL>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Load class template for 4-byte integral data types.
+/*!\brief Specialization of the Loadu class template for 4-byte integral data types.
 // \ingroup intrinsics
 */
 template< typename T >  // Type of the integral
-struct Load<T,4UL>
+struct Loadu<T,4UL>
 {
  public:
    //**Type definitions****************************************************************************
@@ -121,16 +117,17 @@ struct Load<T,4UL>
    //**********************************************************************************************
 
    //**Set function********************************************************************************
-   static inline Type load( const T* address )
+   static inline Type loadu( const T* address )
    {
-      BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
-
 #if BLAZE_MIC_MODE
-      return _mm512_load_epi32( address );
+      __m512i v1;
+      v1 = _mm512_loadunpacklo_epi32( v1, address );
+      v1 = _mm512_loadunpackhi_epi32( v1, address+16UL );
+      return v1;
 #elif BLAZE_AVX2_MODE
-      return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
+      return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( address ) );
 #elif BLAZE_SSE2_MODE
-      return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
+      return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
 #else
       return *address;
 #endif
@@ -148,11 +145,11 @@ struct Load<T,4UL>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Load class template for 8-byte integral data types.
+/*!\brief Specialization of the Loadu class template for 8-byte integral data types.
 // \ingroup intrinsics
 */
 template< typename T >  // Type of the integral
-struct Load<T,8UL>
+struct Loadu<T,8UL>
 {
  public:
    //**Type definitions****************************************************************************
@@ -160,16 +157,17 @@ struct Load<T,8UL>
    //**********************************************************************************************
 
    //**Set function********************************************************************************
-   static inline Type load( const T* address )
+   static inline Type loadu( const T* address )
    {
-      BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
-
 #if BLAZE_MIC_MODE
-      return _mm512_load_epi64( address );
+      __m512i v1;
+      v1 = _mm512_loadunpacklo_epi64( v1, address );
+      v1 = _mm512_loadunpackhi_epi64( v1, address+8UL );
+      return v1;
 #elif BLAZE_AVX2_MODE
-      return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
+      return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( address ) );
 #elif BLAZE_SSE2_MODE
-      return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
+      return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
 #else
       return *address;
 #endif
@@ -189,7 +187,7 @@ struct Load<T,8UL>
 
 //=================================================================================================
 //
-//  INTRINSIC LOAD FUNCTIONS
+//  INTRINSIC LOADU FUNCTIONS
 //
 //=================================================================================================
 
@@ -200,15 +198,14 @@ struct Load<T,8UL>
 // \param address The first integral value to be loaded.
 // \return The loaded vector of integral values.
 //
-// This function loads a vector of integral values. The given address must be aligned according
-// to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment in case
-// of AVX, and 64-byte alignment in case of MIC.
+// This function loads a vector of integral values. In contrast to the according load function,
+// the given address is not required to be properly aligned.
 */
 template< typename T >  // Type of the integral value
-inline typename EnableIf< IsIntegral<T>, Load<T,sizeof(T)> >::Type::Type
-   load( const T* address )
+inline typename EnableIf< IsIntegral<T>, Loadu<T,sizeof(T)> >::Type::Type
+   loadu( const T* address )
 {
-   return Load<T,sizeof(T)>::load( address );
+   return Loadu<T,sizeof(T)>::loadu( address );
 }
 //*************************************************************************************************
 
@@ -220,20 +217,20 @@ inline typename EnableIf< IsIntegral<T>, Load<T,sizeof(T)> >::Type::Type
 // \param address The first 'float' value to be loaded.
 // \return The loaded vector of 'float' values.
 //
-// This function loads a vector of 'float' values. The given address must be aligned according
-// to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment in case
-// of AVX, and 64-byte alignment in case of MIC.
+// This function loads a vector of 'float' values. In contrast to the according load function,
+// the given address is not required to be properly aligned.
 */
-inline sse_float_t load( const float* address )
+inline sse_float_t loadu( const float* address )
 {
-   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
-
 #if BLAZE_MIC_MODE
-   return _mm512_load_ps( address );
+   __m512 v1;
+   v1 = _mm512_loadunpacklo_ps( v1, address );
+   v1 = _mm512_loadunpackhi_ps( v1, address+16UL );
+   return v1;
 #elif BLAZE_AVX_MODE
-   return _mm256_load_ps( address );
+   return _mm256_loadu_ps( address );
 #elif BLAZE_SSE_MODE
-   return _mm_load_ps( address );
+   return _mm_loadu_ps( address );
 #else
    return *address;
 #endif
@@ -248,20 +245,20 @@ inline sse_float_t load( const float* address )
 // \param address The first 'double' value to be loaded.
 // \return The loaded vector of 'double' values.
 //
-// This function loads a vector of 'double' values. The given address must be aligned according
-// to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment in case
-// of AVX, and 64-byte alignment in case of MIC.
+// This function loads a vector of 'double' values. In contrast to the according load function,
+// the given address is not required to be properly aligned.
 */
-inline sse_double_t load( const double* address )
+inline sse_double_t loadu( const double* address )
 {
-   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
-
 #if BLAZE_MIC_MODE
-   return _mm512_load_pd( address );
+   __m512d v1;
+   v1 = _mm512_loadunpacklo_pd( v1, address );
+   v1 = _mm512_loadunpackhi_pd( v1, address+8UL );
+   return v1;
 #elif BLAZE_AVX_MODE
-   return _mm256_load_pd( address );
+   return _mm256_loadu_pd( address );
 #elif BLAZE_SSE2_MODE
-   return _mm_load_pd( address );
+   return _mm_loadu_pd( address );
 #else
    return *address;
 #endif
@@ -276,19 +273,17 @@ inline sse_double_t load( const double* address )
 // \param address The first 'complex<float>' value to be loaded.
 // \return The loaded vector of 'complex<float>' values.
 //
-// This function loads a vector of 'complex<float>' values. The given address must be aligned
-// according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
-// in case of AVX, and 64-byte alignment in case of MIC.
+// This function loads a vector of 'complex<float>' values. In contrast to the according load
+// function, the given address is not required to be properly aligned.
 */
-inline sse_cfloat_t load( const complex<float>* address )
+inline sse_cfloat_t loadu( const complex<float>* address )
 {
-   BLAZE_STATIC_ASSERT  ( sizeof( complex<float> ) == 2UL*sizeof( float ) );
-   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
 #if BLAZE_AVX_MODE
-   return _mm256_load_ps( reinterpret_cast<const float*>( address ) );
+   return _mm256_loadu_ps( reinterpret_cast<const float*>( address ) );
 #elif BLAZE_SSE_MODE
-   return _mm_load_ps( reinterpret_cast<const float*>( address ) );
+   return _mm_loadu_ps( reinterpret_cast<const float*>( address ) );
 #else
    return *address;
 #endif
@@ -303,19 +298,17 @@ inline sse_cfloat_t load( const complex<float>* address )
 // \param address The first 'complex<double>' value to be loaded.
 // \return The loaded vector of 'complex<double>' values.
 //
-// This function loads a vector of 'complex<double>' values. The given address must be aligned
-// according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
-// in case of AVX, and 64-byte alignment in case of MIC.
+// This function loads a vector of 'complex<double>' values. In contrast to the according load
+// function, the given address is not required to be properly aligned.
 */
-inline sse_cdouble_t load( const complex<double>* address )
+inline sse_cdouble_t loadu( const complex<double>* address )
 {
-   BLAZE_STATIC_ASSERT  ( sizeof( complex<double> ) == 2UL*sizeof( double ) );
-   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
 #if BLAZE_AVX_MODE
-   return _mm256_load_pd( reinterpret_cast<const double*>( address ) );
+   return _mm256_loadu_pd( reinterpret_cast<const double*>( address ) );
 #elif BLAZE_SSE2_MODE
-   return _mm_load_pd( reinterpret_cast<const double*>( address ) );
+   return _mm_loadu_pd( reinterpret_cast<const double*>( address ) );
 #else
    return *address;
 #endif
