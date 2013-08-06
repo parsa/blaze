@@ -31,6 +31,7 @@
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/Complex.h>
 #include <blaze/util/constraints/Integral.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/StaticAssert.h>
