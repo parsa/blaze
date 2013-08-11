@@ -3572,6 +3572,190 @@ void ClassTest::testErase()
 
 
    //=====================================================================================
+   // Row-major iterator-range-based erase function
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CompressedMatrix::erase( Iterator, Iterator )";
+
+      typedef blaze::CompressedMatrix<int,blaze::rowMajor>  MatrixType;
+      typedef MatrixType::Iterator  Iterator;
+
+      // Initialization check
+      MatrixType mat( 3UL, 5UL );
+      mat(0,0) = 1;
+      mat(0,2) = 2;
+      mat(1,1) = 3;
+      mat(1,2) = 4;
+      mat(1,4) = 5;
+      mat(2,1) = 6;
+      mat(2,4) = 7;
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 5UL );
+      checkCapacity( mat, 7UL );
+      checkNonZeros( mat, 7UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 3UL );
+      checkNonZeros( mat, 2UL, 2UL );
+
+      if( mat(0,0) != 1 || mat(0,2) != 2 ||
+          mat(1,1) != 3 || mat(1,2) != 4 || mat(1,4) != 5 ||
+          mat(2,1) != 6 || mat(2,4) != 7 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 0 2 0 0 )\n( 0 3 4 0 5 )\n( 0 6 0 0 7 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing the elements from (0,0) to (0,2)
+      {
+         Iterator pos = mat.erase( 0UL, mat.find( 0UL, 0UL ), mat.find( 0UL, 2UL ) );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 5UL );
+         checkCapacity( mat, 6UL );
+         checkNonZeros( mat, 6UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 3UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( mat(0,2) != 2 ||
+             mat(1,1) != 3 || mat(1,2) != 4 || mat(1,4) != 5 ||
+             mat(2,1) != 6 || mat(2,4) != 7 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 0 2 0 0 )\n( 0 3 4 0 5 )\n( 0 6 0 0 7 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos->value() != 2 || pos->index() != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 2\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Erasing the elements from (1,2) to (1,4)
+      {
+         Iterator pos = mat.erase( 1UL, mat.find( 1UL, 2UL ), mat.find( 1UL, 4UL ) );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 5UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( mat(0,2) != 2 ||
+             mat(1,1) != 3 || mat(1,4) != 5 ||
+             mat(2,1) != 6 || mat(2,4) != 7 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 0 2 0 0 )\n( 0 3 0 0 5 )\n( 0 6 0 0 7 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos->value() != 5 || pos->index() != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 5\n"
+                << "   Expected index: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Erasing the elements from (2,4) to the row end
+      {
+         Iterator pos = mat.erase( 2UL, mat.find( 2UL, 4UL ), mat.end( 2UL ) );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 5UL );
+         checkCapacity( mat, 4UL );
+         checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( mat(0,2) != 2 ||
+             mat(1,1) != 3 || mat(1,4) != 5 ||
+             mat(2,1) != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 0 2 0 0 )\n( 0 3 0 0 5 )\n( 0 6 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos != mat.end( 2UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to erase an empty range
+      {
+         Iterator pos = mat.erase( 0UL, mat.find( 0UL, 2UL ), mat.find( 0UL, 2UL ) );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 5UL );
+         checkCapacity( mat, 4UL );
+         checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( mat(0,2) != 2 ||
+             mat(1,1) != 3 || mat(1,4) != 5 ||
+             mat(2,1) != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 0 2 0 0 )\n( 0 3 0 0 5 )\n( 0 6 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos != mat.find( 0UL, 2UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major index-based erase function
    //=====================================================================================
 
@@ -3875,6 +4059,190 @@ void ClassTest::testErase()
          }
 
          if( pos != mat.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major iterator-range-based erase function
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CompressedMatrix::erase( Iterator, Iterator )";
+
+      typedef blaze::CompressedMatrix<int,blaze::columnMajor>  MatrixType;
+      typedef MatrixType::Iterator  Iterator;
+
+      // Initialization check
+      MatrixType mat( 5UL, 3UL );
+      mat(0,0) = 1;
+      mat(2,0) = 2;
+      mat(1,1) = 3;
+      mat(2,1) = 4;
+      mat(4,1) = 5;
+      mat(1,2) = 6;
+      mat(4,2) = 7;
+
+      checkRows    ( mat, 5UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 7UL );
+      checkNonZeros( mat, 7UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 3UL );
+      checkNonZeros( mat, 2UL, 2UL );
+
+      if( mat(0,0) != 1 || mat(2,0) != 2 ||
+          mat(1,1) != 3 || mat(2,1) != 4 || mat(4,1) != 5 ||
+          mat(1,2) != 6 || mat(4,2) != 7 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 3 6 )\n( 2 4 0 )\n( 0 0 0 )\n( 0 5 7 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing the elements from (0,0) to (2,0)
+      {
+         Iterator pos = mat.erase( 0UL, mat.find( 0UL, 0UL ), mat.find( 2UL, 0UL ) );
+
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 6UL );
+         checkNonZeros( mat, 6UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 3UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( mat(2,0) != 2 ||
+             mat(1,1) != 3 || mat(2,1) != 4 || mat(4,1) != 5 ||
+             mat(1,2) != 6 || mat(4,2) != 7 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 0 0 )\n( 0 3 6 )\n( 2 4 0 )\n( 0 0 0 )\n( 0 5 7 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos->value() != 2 || pos->index() != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 2\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Erasing the elements from (2,1) to (4,1)
+      {
+         Iterator pos = mat.erase( 1UL, mat.find( 2UL, 1UL ), mat.find( 4UL, 1UL ) );
+
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( mat(2,0) != 2 ||
+             mat(1,1) != 3 || mat(4,1) != 5 ||
+             mat(1,2) != 6 || mat(4,2) != 7 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 0 0 )\n( 0 3 6 )\n( 2 0 0 )\n( 0 0 0 )\n( 0 5 7 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos->value() != 5 || pos->index() != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 5\n"
+                << "   Expected index: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Erasing the elements from (4,2) to the column end
+      {
+         Iterator pos = mat.erase( 2UL, mat.find( 4UL, 2UL ), mat.end( 2UL ) );
+
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 4UL );
+         checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( mat(2,0) != 2 ||
+             mat(1,1) != 3 || mat(4,1) != 5 ||
+             mat(1,2) != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 0 0 )\n( 0 3 6 )\n( 2 0 0 )\n( 0 0 0 )\n( 0 5 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos != mat.end( 2UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to erase an empty range
+      {
+         Iterator pos = mat.erase( 0UL, mat.find( 2UL, 0UL ), mat.find( 2UL, 0UL ) );
+
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 4UL );
+         checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( mat(2,0) != 2 ||
+             mat(1,1) != 3 || mat(4,1) != 5 ||
+             mat(1,2) != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 0 0 )\n( 0 3 6 )\n( 2 0 0 )\n( 0 0 0 )\n( 0 5 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos != mat.find( 2UL, 0UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
