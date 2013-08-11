@@ -66,11 +66,13 @@ ClassTest::ClassTest()
    testAppend();
    testInsert();
    testErase();
-   testFind();
    testResize();
    testReserve();
    testScale();
    testSwap();
+   testFind();
+   testLowerBound();
+   testUpperBound();
    testLength();
    testNormalize();
    testMinimum();
@@ -1484,133 +1486,6 @@ void ClassTest::testErase()
 
 
 //*************************************************************************************************
-/*!\brief Test of the find member function of CompressedVector.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the find member function of CompressedVector. In case
-// an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testFind()
-{
-   test_ = "CompressedVector::find()";
-
-   typedef blaze::CompressedVector<int,blaze::rowVector>::ConstIterator  ConstIterator;
-
-   // Initialization check
-   blaze::CompressedVector<int,blaze::rowVector> vec( 8UL, 3UL );
-   vec[0] = 1;
-   vec[2] = 2;
-   vec[7] = 3;
-
-   checkSize    ( vec, 8UL );
-   checkCapacity( vec, 3UL );
-   checkNonZeros( vec, 3UL );
-
-   // Searching for the first element
-   {
-      ConstIterator pos( vec.find( 0UL ) );
-
-      if( pos == vec.end() ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Element could not be found\n"
-             << " Details:\n"
-             << "   Required index = 0\n"
-             << "   Current vector:\n" << vec << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      else if( pos->index() != 0 || pos->value() != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Wrong element found\n"
-             << " Details:\n"
-             << "   Required index = 0\n"
-             << "   Found index    = " << pos->index() << "\n"
-             << "   Expected value = 1\n"
-             << "   Value at index = " << pos->value() << "\n"
-             << "   Current vector:\n" << vec << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Searching for the second element
-   {
-      ConstIterator pos( vec.find( 2UL ) );
-
-      if( pos == vec.end() ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Element could not be found\n"
-             << " Details:\n"
-             << "   Required index = 2\n"
-             << "   Current vector:\n" << vec << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      else if( pos->index() != 2 || pos->value() != 2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Wrong element found\n"
-             << " Details:\n"
-             << "   Required index = 2\n"
-             << "   Found index    = " << pos->index() << "\n"
-             << "   Expected value = 2\n"
-             << "   Value at index = " << pos->value() << "\n"
-             << "   Current vector:\n" << vec << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Searching for the third element
-   {
-      ConstIterator pos( vec.find( 7UL ) );
-
-      if( pos == vec.end() ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Element could not be found\n"
-             << " Details:\n"
-             << "   Required index = 7\n"
-             << "   Current vector:\n" << vec << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      else if( pos->index() != 7 || pos->value() != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Wrong element found\n"
-             << " Details:\n"
-             << "   Required index = 7\n"
-             << "   Found index    = " << pos->index() << "\n"
-             << "   Expected value = 3\n"
-             << "   Value at index = " << pos->value() << "\n"
-             << "   Current vector:\n" << vec << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Searching for a non-existing non-zero element
-   {
-      ConstIterator pos( vec.find( 5UL ) );
-
-      if( pos != vec.end() ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Non-existing element could be found\n"
-             << " Details:\n"
-             << "   Required index = 5\n"
-             << "   Found index    = " << pos->index() << "\n"
-             << "   Expected value = 0\n"
-             << "   Value at index = " << pos->value() << "\n"
-             << "   Current vector:\n" << vec << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Test of the resize member function of CompressedVector.
 //
 // \return void
@@ -1877,6 +1752,447 @@ void ClassTest::testSwap()
           << "   Result:\n" << vec1 << "\n"
           << "   Expected result:\n( 0 1 0 0 2 0 0 3 0 0 4 0 )\n";
       throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the find member function of CompressedVector.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the find member function of CompressedVector. In case
+// an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testFind()
+{
+   test_ = "CompressedVector::find()";
+
+   typedef blaze::CompressedVector<int,blaze::rowVector>::ConstIterator  ConstIterator;
+
+   // Initialization check
+   blaze::CompressedVector<int,blaze::rowVector> vec( 8UL, 3UL );
+   vec[0] = 1;
+   vec[2] = 2;
+   vec[7] = 3;
+
+   checkSize    ( vec, 8UL );
+   checkCapacity( vec, 3UL );
+   checkNonZeros( vec, 3UL );
+
+   // Searching for the first element
+   {
+      ConstIterator pos( vec.find( 0UL ) );
+
+      if( pos == vec.end() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Element could not be found\n"
+             << " Details:\n"
+             << "   Required index = 0\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 0 || pos->value() != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 0\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 1\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Searching for the second element
+   {
+      ConstIterator pos( vec.find( 2UL ) );
+
+      if( pos == vec.end() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Element could not be found\n"
+             << " Details:\n"
+             << "   Required index = 2\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 2 || pos->value() != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 2\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 2\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Searching for the third element
+   {
+      ConstIterator pos( vec.find( 7UL ) );
+
+      if( pos == vec.end() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Element could not be found\n"
+             << " Details:\n"
+             << "   Required index = 7\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 7 || pos->value() != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 7\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 3\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Searching for a non-existing non-zero element
+   {
+      ConstIterator pos( vec.find( 5UL ) );
+
+      if( pos != vec.end() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Non-existing element could be found\n"
+             << " Details:\n"
+             << "   Required index = 5\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 0\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the lowerBound member function of CompressedVector.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the lowerBound member function of CompressedVector. In case
+// an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testLowerBound()
+{
+   test_ = "CompressedVector::lowerBound()";
+
+   typedef blaze::CompressedVector<int,blaze::rowVector>::ConstIterator  ConstIterator;
+
+   // Initialization check
+   blaze::CompressedVector<int,blaze::rowVector> vec( 8UL, 3UL );
+   vec[0] = 1;
+   vec[2] = 2;
+   vec[7] = 3;
+
+   checkSize    ( vec, 8UL );
+   checkCapacity( vec, 3UL );
+   checkNonZeros( vec, 3UL );
+
+   // Determining the lower bound for index 0
+   {
+      ConstIterator pos( vec.lowerBound( 0UL ) );
+
+      if( pos == vec.end() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Lower bound could not be determined\n"
+             << " Details:\n"
+             << "   Required index = 0\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 0 || pos->value() != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 0\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 1\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Determining the lower bound for index 1
+   {
+      ConstIterator pos( vec.lowerBound( 1UL ) );
+
+      if( pos == vec.end() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Lower bound could not be determined\n"
+             << " Details:\n"
+             << "   Required index = 1\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 2 || pos->value() != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 2\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 2\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Determining the lower bound for index 2
+   {
+      ConstIterator pos( vec.lowerBound( 2UL ) );
+
+      if( pos == vec.end() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Lower bound could not be determined\n"
+             << " Details:\n"
+             << "   Required index = 2\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 2 || pos->value() != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 2\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 2\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Determining the lower bound for index 3
+   {
+      ConstIterator pos( vec.lowerBound( 3UL ) );
+
+      if( pos == vec.end() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Lower bound could not be determined\n"
+             << " Details:\n"
+             << "   Required index = 3\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 7 || pos->value() != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 7\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 3\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Determining the lower bound for index 7
+   {
+      ConstIterator pos( vec.lowerBound( 7UL ) );
+
+      if( pos == vec.end() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Lower bound could not be determined\n"
+             << " Details:\n"
+             << "   Required index = 7\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 7 || pos->value() != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 7\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 3\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the upperBound member function of CompressedVector.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the upperBound member function of CompressedVector. In case
+// an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testUpperBound()
+{
+   test_ = "CompressedVector::upperBound()";
+
+   typedef blaze::CompressedVector<int,blaze::rowVector>::ConstIterator  ConstIterator;
+
+   // Initialization check
+   blaze::CompressedVector<int,blaze::rowVector> vec( 8UL, 3UL );
+   vec[0] = 1;
+   vec[2] = 2;
+   vec[7] = 3;
+
+   checkSize    ( vec, 8UL );
+   checkCapacity( vec, 3UL );
+   checkNonZeros( vec, 3UL );
+
+   // Determining the upper bound for index 0
+   {
+      ConstIterator pos( vec.upperBound( 0UL ) );
+
+      if( pos == vec.end() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Upper bound could not be determined\n"
+             << " Details:\n"
+             << "   Required index = 0\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 2 || pos->value() != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 2\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 2\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Determining the upper bound for index 1
+   {
+      ConstIterator pos( vec.upperBound( 1UL ) );
+
+      if( pos == vec.end() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Upper bound could not be determined\n"
+             << " Details:\n"
+             << "   Required index = 1\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 2 || pos->value() != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 2\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 2\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Determining the upper bound for index 2
+   {
+      ConstIterator pos( vec.upperBound( 2UL ) );
+
+      if( pos == vec.end() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Upper bound could not be determined\n"
+             << " Details:\n"
+             << "   Required index = 2\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 7 || pos->value() != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 7\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 3\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Determining the upper bound for index 3
+   {
+      ConstIterator pos( vec.upperBound( 3UL ) );
+
+      if( pos == vec.end() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Upper bound could not be determined\n"
+             << " Details:\n"
+             << "   Required index = 3\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 7 || pos->value() != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 7\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 3\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Determining the upper bound for index 7
+   {
+      ConstIterator pos( vec.upperBound( 7UL ) );
+
+      if( pos != vec.end() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Upper bound could not be determined\n"
+             << " Details:\n"
+             << "   Required index = 7\n"
+             << "   Current vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 }
 //*************************************************************************************************
