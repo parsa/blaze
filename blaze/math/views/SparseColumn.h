@@ -42,6 +42,7 @@
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -834,7 +835,7 @@ inline SparseColumn<MT,SO>& SparseColumn<MT,SO>::operator*=( const Vector<VT,fal
    if( (~rhs).size() != size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   typedef typename MultTrait<This,typename VT::ResultType>::Type  MultType;
+   typedef typename MultTrait<ResultType,typename VT::ResultType>::Type  MultType;
 
    BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION     ( MultType );
@@ -1302,7 +1303,7 @@ template< typename MT    // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side dense vector
 inline void SparseColumn<MT,SO>::addAssign( const DenseVector<VT,false>& rhs )
 {
-   typedef typename AddTrait<This,typename VT::ResultType>::Type  AddType;
+   typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE       ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( AddType );
@@ -1333,7 +1334,7 @@ template< typename MT    // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side sparse vector
 inline void SparseColumn<MT,SO>::addAssign( const SparseVector<VT,false>& rhs )
 {
-   typedef typename AddTrait<This,typename VT::ResultType>::Type  AddType;
+   typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE      ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( AddType );
@@ -1365,7 +1366,7 @@ template< typename MT    // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side dense vector
 inline void SparseColumn<MT,SO>::subAssign( const DenseVector<VT,false>& rhs )
 {
-   typedef typename SubTrait<This,typename VT::ResultType>::Type  SubType;
+   typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE       ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( SubType );
@@ -1396,7 +1397,7 @@ template< typename MT    // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side sparse vector
 inline void SparseColumn<MT,SO>::subAssign( const SparseVector<VT,false>& rhs )
 {
-   typedef typename SubTrait<This,typename VT::ResultType>::Type  SubType;
+   typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE      ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( SubType );
@@ -2221,7 +2222,7 @@ inline SparseColumn<MT,false>& SparseColumn<MT,false>::operator*=( const Vector<
    if( (~rhs).size() != size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   typedef typename MultTrait<This,typename VT::ResultType>::Type  MultType;
+   typedef typename MultTrait<ResultType,typename VT::ResultType>::Type  MultType;
 
    BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION     ( MultType );
@@ -2700,7 +2701,7 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side vector
 inline void SparseColumn<MT,false>::addAssign( const Vector<VT,false>& rhs )
 {
-   typedef typename AddTrait<This,typename VT::ResultType>::Type  AddType;
+   typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION     ( AddType );
@@ -2730,7 +2731,7 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side vector
 inline void SparseColumn<MT,false>::subAssign( const Vector<VT,false>& rhs )
 {
-   typedef typename SubTrait<This,typename VT::ResultType>::Type  SubType;
+   typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION     ( SubType );
@@ -3172,289 +3173,6 @@ inline typename EnableIf< IsMatTransExpr<MT>, typename ColumnExprTrait<MT>::Type
 
    return trans( row( (~dm).operand(), index ) );
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ADDTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO, typename T2, size_t N >
-struct AddTrait< SparseColumn<T1,SO>, StaticVector<T2,N,false> >
-{
-   typedef typename AddTrait< typename SparseColumn<T1,SO>::ResultType,
-                              StaticVector<T2,N,false> >::Type  Type;
-};
-
-template< typename T1, size_t N, typename T2, bool SO >
-struct AddTrait< StaticVector<T1,N,false>, SparseColumn<T2,SO> >
-{
-   typedef typename AddTrait< StaticVector<T1,N,false>,
-                              typename SparseColumn<T2,SO>::ResultType >::Type  Type;
-};
-
-template< typename T1, bool SO, typename T2 >
-struct AddTrait< SparseColumn<T1,SO>, DynamicVector<T2,false> >
-{
-   typedef typename AddTrait< typename SparseColumn<T1,SO>::ResultType,
-                              DynamicVector<T2,false> >::Type  Type;
-};
-
-template< typename T1, typename T2, bool SO >
-struct AddTrait< DynamicVector<T1,false>, SparseColumn<T2,SO> >
-{
-   typedef typename AddTrait< DynamicVector<T1,false>,
-                              typename SparseColumn<T2,SO>::ResultType >::Type  Type;
-};
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-struct AddTrait< SparseColumn<T1,SO1>, DenseColumn<T2,SO2> >
-{
-   typedef typename AddTrait< typename SparseColumn<T1,SO1>::ResultType,
-                              typename DenseColumn <T2,SO2>::ResultType >::Type  Type;
-};
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-struct AddTrait< DenseColumn<T1,SO1>, SparseColumn<T2,SO2> >
-{
-   typedef typename AddTrait< typename DenseColumn <T1,SO1>::ResultType,
-                              typename SparseColumn<T2,SO2>::ResultType >::Type  Type;
-};
-
-template< typename T1, bool SO, typename T2 >
-struct AddTrait< SparseColumn<T1,SO>, CompressedVector<T2,false> >
-{
-   typedef typename AddTrait< typename SparseColumn<T1,SO>::ResultType,
-                              CompressedVector<T2,false> >::Type  Type;
-};
-
-template< typename T1, typename T2, bool SO >
-struct AddTrait< CompressedVector<T1,false>, SparseColumn<T2,SO> >
-{
-   typedef typename AddTrait< CompressedVector<T1,false>,
-                              typename SparseColumn<T2,SO>::ResultType >::Type  Type;
-};
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-struct AddTrait< SparseColumn<T1,SO1>, SparseColumn<T2,SO2> >
-{
-   typedef typename AddTrait< typename SparseColumn<T1,SO1>::ResultType,
-                              typename SparseColumn<T2,SO2>::ResultType >::Type  Type;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO, typename T2, size_t N >
-struct SubTrait< SparseColumn<T1,SO>, StaticVector<T2,N,false> >
-{
-   typedef typename SubTrait< typename SparseColumn<T1,SO>::ResultType,
-                              StaticVector<T2,N,false> >::Type  Type;
-};
-
-template< typename T1, size_t N, typename T2, bool SO >
-struct SubTrait< StaticVector<T1,N,false>, SparseColumn<T2,SO> >
-{
-   typedef typename SubTrait< StaticVector<T1,N,false>,
-                              typename SparseColumn<T2,SO>::ResultType >::Type  Type;
-};
-
-template< typename T1, bool SO, typename T2 >
-struct SubTrait< SparseColumn<T1,SO>, DynamicVector<T2,false> >
-{
-   typedef typename SubTrait< typename SparseColumn<T1,SO>::ResultType,
-                              DynamicVector<T2,false> >::Type  Type;
-};
-
-template< typename T1, typename T2, bool SO >
-struct SubTrait< DynamicVector<T1,false>, SparseColumn<T2,SO> >
-{
-   typedef typename SubTrait< DynamicVector<T1,false>,
-                              typename SparseColumn<T2,SO>::ResultType >::Type  Type;
-};
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-struct SubTrait< SparseColumn<T1,SO1>, DenseColumn<T2,SO2> >
-{
-   typedef typename SubTrait< typename SparseColumn<T1,SO1>::ResultType,
-                              typename DenseColumn <T2,SO2>::ResultType >::Type  Type;
-};
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-struct SubTrait< DenseColumn<T1,SO1>, SparseColumn<T2,SO2> >
-{
-   typedef typename SubTrait< typename DenseColumn <T1,SO1>::ResultType,
-                              typename SparseColumn<T2,SO2>::ResultType >::Type  Type;
-};
-
-template< typename T1, bool SO, typename T2 >
-struct SubTrait< SparseColumn<T1,SO>, CompressedVector<T2,false> >
-{
-   typedef typename SubTrait< typename SparseColumn<T1,SO>::ResultType,
-                              CompressedVector<T2,false> >::Type  Type;
-};
-
-template< typename T1, typename T2, bool SO >
-struct SubTrait< CompressedVector<T1,false>, SparseColumn<T2,SO> >
-{
-   typedef typename SubTrait< CompressedVector<T1,false>,
-                              typename SparseColumn<T2,SO>::ResultType >::Type  Type;
-};
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-struct SubTrait< SparseColumn<T1,SO1>, SparseColumn<T2,SO2> >
-{
-   typedef typename SubTrait< typename SparseColumn<T1,SO1>::ResultType,
-                              typename SparseColumn<T2,SO2>::ResultType >::Type  Type;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  MULTTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO, typename T2 >
-struct MultTrait< SparseColumn<T1,SO>, T2 >
-{
-   typedef typename MultTrait< typename SparseColumn<T1,SO>::ResultType, T2 >::Type  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
-};
-
-template< typename T1, typename T2, bool SO >
-struct MultTrait< T1, SparseColumn<T2,SO> >
-{
-   typedef typename MultTrait< T1, typename SparseColumn<T2,SO>::ResultType >::Type  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T1 );
-};
-
-template< typename T1, bool SO, typename T2, size_t N, bool TF >
-struct MultTrait< SparseColumn<T1,SO>, StaticVector<T2,N,TF> >
-{
-   typedef typename MultTrait< typename SparseColumn<T1,SO>::ResultType,
-                               StaticVector<T2,N,TF> >::Type  Type;
-};
-
-template< typename T1, size_t N, bool TF, typename T2, bool SO >
-struct MultTrait< StaticVector<T1,N,TF>, SparseColumn<T2,SO> >
-{
-   typedef typename MultTrait< StaticVector<T1,N,TF>,
-                               typename SparseColumn<T2,SO>::ResultType >::Type  Type;
-};
-
-template< typename T1, bool SO, typename T2, bool TF >
-struct MultTrait< SparseColumn<T1,SO>, DynamicVector<T2,TF> >
-{
-   typedef typename MultTrait< typename SparseColumn<T1,SO>::ResultType,
-                               DynamicVector<T2,TF> >::Type  Type;
-};
-
-template< typename T1, bool TF, typename T2, bool SO >
-struct MultTrait< DynamicVector<T1,TF>, SparseColumn<T2,SO> >
-{
-   typedef typename MultTrait< DynamicVector<T1,TF>,
-                               typename SparseColumn<T2,SO>::ResultType >::Type  Type;
-};
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-struct MultTrait< SparseColumn<T1,SO1>, DenseColumn<T2,SO2> >
-{
-   typedef typename MultTrait< typename SparseColumn<T1,SO1>::ResultType,
-                               typename DenseColumn <T2,SO2>::ResultType >::Type  Type;
-};
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-struct MultTrait< DenseColumn<T1,SO1>, SparseColumn<T2,SO2> >
-{
-   typedef typename MultTrait< typename DenseColumn <T1,SO1>::ResultType,
-                               typename SparseColumn<T2,SO2>::ResultType >::Type  Type;
-};
-
-template< typename T1, bool SO, typename T2, bool TF >
-struct MultTrait< SparseColumn<T1,SO>, CompressedVector<T2,TF> >
-{
-   typedef typename MultTrait< typename SparseColumn<T1,SO>::ResultType,
-                               CompressedVector<T2,TF> >::Type  Type;
-};
-
-template< typename T1, bool TF, typename T2, bool SO >
-struct MultTrait< CompressedVector<T1,TF>, SparseColumn<T2,SO> >
-{
-   typedef typename MultTrait< CompressedVector<T1,TF>,
-                               typename SparseColumn<T2,SO>::ResultType >::Type  Type;
-};
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-struct MultTrait< SparseColumn<T1,SO1>, SparseColumn<T2,SO2> >
-{
-   typedef typename MultTrait< typename SparseColumn<T1,SO1>::ResultType,
-                               typename SparseColumn<T2,SO2>::ResultType >::Type  Type;
-};
-
-template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
-struct MultTrait< StaticMatrix<T1,M,N,SO1>, SparseColumn<T2,SO2> >
-{
-   typedef typename MultTrait< StaticMatrix<T1,M,N,SO1>,
-                               typename SparseColumn<T2,SO2>::ResultType >::Type  Type;
-};
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-struct MultTrait< DynamicMatrix<T1,SO1>, SparseColumn<T2,SO2> >
-{
-   typedef typename MultTrait< DynamicMatrix<T1,SO1>,
-                               typename SparseColumn<T2,SO2>::ResultType >::Type  Type;
-};
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-struct MultTrait< CompressedMatrix<T1,SO1>, SparseColumn<T2,SO2> >
-{
-   typedef typename MultTrait< CompressedMatrix<T1,SO1>,
-                               typename SparseColumn<T2,SO2>::ResultType >::Type  Type;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DIVTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO, typename T2 >
-struct DivTrait< SparseColumn<T1,SO>, T2 >
-{
-   typedef typename DivTrait< typename SparseColumn<T1,SO>::ResultType, T2 >::Type  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
-};
 /*! \endcond */
 //*************************************************************************************************
 
