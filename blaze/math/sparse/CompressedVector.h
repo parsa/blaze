@@ -546,7 +546,7 @@ inline typename CompressedVector<Type,TF>::ConstReference
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid compressed vector access index" );
 
-   const Iterator pos( std::lower_bound( begin_, end_, index, FindIndex() ) );
+   const ConstIterator pos( lowerBound( index ) );
 
    if( pos == end_ || pos->index_ != index )
       return zero_;
@@ -997,7 +997,7 @@ typename CompressedVector<Type,TF>::Iterator
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid compressed vector access index" );
 
-   const Iterator pos( std::lower_bound( begin_, end_, index, FindIndex() ) );
+   const Iterator pos( lowerBound( index ) );
 
    if( pos != end_ && pos->index_ == index )
       throw std::invalid_argument( "Bad access index" );
@@ -1113,7 +1113,7 @@ template< typename Type  // Data type of the vector
 inline void CompressedVector<Type,TF>::resize( size_t n, bool preserve )
 {
    if( preserve ) {
-      end_ = std::lower_bound( begin_, end_, n, FindIndex() );
+      end_ = lowerBound( n );
    }
    else {
       end_ = begin_;
@@ -1263,7 +1263,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline typename CompressedVector<Type,TF>::ConstIterator CompressedVector<Type,TF>::find( size_t index ) const
 {
-   const Iterator pos( lowerBound( index ) );
+   const ConstIterator pos( lowerBound( index ) );
    if( pos != end_ && pos->index_ == index )
       return pos;
    else return end_;
