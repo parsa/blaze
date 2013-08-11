@@ -279,6 +279,7 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
                                      Iterator          insert( size_t index, const Type& value );
                               inline void              erase ( size_t index );
                               inline Iterator          erase ( Iterator pos );
+                              inline Iterator          erase ( Iterator first, Iterator last );
                               inline Iterator          find  ( size_t index );
                               inline ConstIterator     find  ( size_t index ) const;
                               inline void              resize( size_t n, bool preserve=true );
@@ -1056,6 +1057,30 @@ inline typename CompressedVector<Type,TF>::Iterator CompressedVector<Type,TF>::e
    if( pos != end_ )
       end_ = std::copy( pos+1, end_, pos );
    return pos;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Erasing a range of elements from the compressed vector.
+//
+// \param first Iterator to first element to be erased.
+// \param last Iterator just past the last element to be erased.
+// \return Iterator to the element after the erased element.
+//
+// This function erases a range of elements from the compressed vector.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename CompressedVector<Type,TF>::Iterator
+   CompressedVector<Type,TF>::erase( Iterator first, Iterator last )
+{
+   BLAZE_USER_ASSERT( first >= begin_ && first <= end_, "Invalid compressed vector iterator" );
+   BLAZE_USER_ASSERT( last  >= begin_ && last  <= end_, "Invalid compressed vector iterator" );
+
+   if( first != last )
+      end_ = std::copy( last, end_, first );
+   return first;
 }
 //*************************************************************************************************
 
