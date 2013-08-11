@@ -303,8 +303,6 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
                               inline void              erase  ( size_t i, size_t j );
                               inline Iterator          erase  ( size_t i, Iterator pos );
                               inline Iterator          erase  ( size_t i, Iterator first, Iterator last );
-                              inline Iterator          find   ( size_t i, size_t j );
-                              inline ConstIterator     find   ( size_t i, size_t j ) const;
                                      void              resize ( size_t m, size_t n, bool preserve=true );
                               inline void              reserve( size_t nonzeros );
                                      void              reserve( size_t i, size_t nonzeros );
@@ -314,6 +312,18 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
    template< typename Other > inline CompressedMatrix& scale( Other scalar );
    template< typename Other > inline CompressedMatrix& scaleDiagonal( Other scalar );
                               inline void              swap( CompressedMatrix& sm ) /* throw() */;
+   //@}
+   //**********************************************************************************************
+
+   //**Lookup functions****************************************************************************
+   /*!\name Lookup functions */
+   //@{
+   inline Iterator      find      ( size_t i, size_t j );
+   inline ConstIterator find      ( size_t i, size_t j ) const;
+   inline Iterator      lowerBound( size_t i, size_t j );
+   inline ConstIterator lowerBound( size_t i, size_t j ) const;
+   inline Iterator      upperBound( size_t i, size_t j );
+   inline ConstIterator upperBound( size_t i, size_t j ) const;
    //@}
    //**********************************************************************************************
 
@@ -637,7 +647,7 @@ inline typename CompressedMatrix<Type,SO>::ConstReference
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
-   const ConstIterator pos( std::lower_bound( begin_[i], end_[i], j, FindIndex() ) );
+   const ConstIterator pos( lowerBound( i, j ) );
 
    if( pos == end_[i] || pos->index_ != j )
       return zero_;
@@ -1237,7 +1247,7 @@ typename CompressedMatrix<Type,SO>::Iterator
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
-   const Iterator pos( std::lower_bound( begin_[i], end_[i], j, FindIndex() ) );
+   const Iterator pos( lowerBound( i, j ) );
 
    if( pos != end_[i] && pos->index_ == j )
       throw std::invalid_argument( "Bad access index" );
@@ -1381,57 +1391,6 @@ inline typename CompressedMatrix<Type,SO>::Iterator
 
 
 //*************************************************************************************************
-/*!\brief Searches for a specific matrix element.
-//
-// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
-// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
-// \return Iterator to the element in case the index is found, end() iterator otherwise.
-//
-// This function can be used to check whether a specific element is contained in the sparse
-// matrix. It specifically searches for the element with row index \a i and column index \a j.
-// In case the element is found, the function returns an row/column iterator to the element.
-// Otherwise an iterator just past the last non-zero element of row \a i or column \a j (the
-// end() iterator) is returned. Note that the returned sparse matrix iterator is subject to
-// invalidation due to inserting operations via the subscript operator or the insert() function!
-*/
-template< typename Type  // Data type of the sparse matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::Iterator
-   CompressedMatrix<Type,SO>::find( size_t i, size_t j )
-{
-   return const_cast<Iterator>( const_cast<const This&>( *this ).find( i, j ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Searches for a specific matrix element.
-//
-// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
-// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
-// \return Iterator to the element in case the index is found, end() iterator otherwise.
-//
-// This function can be used to check whether a specific element is contained in the sparse
-// matrix. It specifically searches for the element with row index \a i and column index \a j.
-// In case the element is found, the function returns an row/column iterator to the element.
-// Otherwise an iterator just past the last non-zero element of row \a i or column \a j (the
-// end() iterator) is returned. Note that the returned sparse matrix iterator is subject to
-// invalidation due to inserting operations via the subscript operator or the insert() function!
-*/
-template< typename Type  // Data type of the sparse matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::ConstIterator
-   CompressedMatrix<Type,SO>::find( size_t i, size_t j ) const
-{
-   const Iterator pos( std::lower_bound( begin_[i], end_[i], j, FindIndex() ) );
-   if( pos != end_[i] && pos->index_ == j )
-      return pos;
-   else return end_[i];
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Changing the size of the sparse matrix.
 //
 // \param m The new number of rows of the sparse matrix.
@@ -1499,7 +1458,7 @@ void CompressedMatrix<Type,SO>::resize( size_t m, size_t n, bool preserve )
    {
       if( preserve ) {
          for( size_t i=0UL; i<m; ++i )
-            end_[i] = std::lower_bound( begin_[i], end_[i], n, FindIndex() );
+            end_[i] = lowerBound( i, n );
       }
       else {
          for( size_t i=0UL; i<m; ++i )
@@ -1671,7 +1630,7 @@ bool CompressedMatrix<Type,SO>::isSymmetric() const
          if( isDefault( element->value_ ) )
             continue;
 
-         const Iterator pos( std::lower_bound( begin_[index], end_[index], i, FindIndex() ) );
+         const ConstIterator pos( lowerBound( index, i ) );
          if( pos == end_[index] || pos->index_ != i || !equal( pos->value_, element->value_ ) )
             return false;
       }
@@ -1716,7 +1675,7 @@ inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::scaleDiagonal( Othe
    const size_t size( blaze::min( m_, n_ ) );
 
    for( size_t i=0UL; i<size; ++i ) {
-      Iterator pos = std::lower_bound( begin_[i], end_[i], i, FindIndex() );
+      Iterator pos = lowerBound( i, i );
       if( pos != end_[i] && pos->index_ == i )
          pos->value_ *= scalar;
    }
@@ -1796,6 +1755,167 @@ void CompressedMatrix<Type,SO>::reserveElements( size_t nonzeros )
    delete [] newBegin[0UL];
    delete [] newBegin;
    end_ = newEnd;
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  LOOKUP FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Searches for a specific matrix element.
+//
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the element in case the index is found, end() iterator otherwise.
+//
+// This function can be used to check whether a specific element is contained in the sparse
+// matrix. It specifically searches for the element with row index \a i and column index \a j.
+// In case the element is found, the function returns an row/column iterator to the element.
+// Otherwise an iterator just past the last non-zero element of row \a i or column \a j (the
+// end() iterator) is returned. Note that the returned sparse matrix iterator is subject to
+// invalidation due to inserting operations via the function call operator or the insert()
+// function!
+*/
+template< typename Type  // Data type of the sparse matrix
+        , bool SO >      // Storage order
+inline typename CompressedMatrix<Type,SO>::Iterator
+   CompressedMatrix<Type,SO>::find( size_t i, size_t j )
+{
+   return const_cast<Iterator>( const_cast<const This&>( *this ).find( i, j ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Searches for a specific matrix element.
+//
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the element in case the index is found, end() iterator otherwise.
+//
+// This function can be used to check whether a specific element is contained in the sparse
+// matrix. It specifically searches for the element with row index \a i and column index \a j.
+// In case the element is found, the function returns an row/column iterator to the element.
+// Otherwise an iterator just past the last non-zero element of row \a i or column \a j (the
+// end() iterator) is returned. Note that the returned sparse matrix iterator is subject to
+// invalidation due to inserting operations via the function call operator or the insert()
+// function!
+*/
+template< typename Type  // Data type of the sparse matrix
+        , bool SO >      // Storage order
+inline typename CompressedMatrix<Type,SO>::ConstIterator
+   CompressedMatrix<Type,SO>::find( size_t i, size_t j ) const
+{
+   const ConstIterator pos( lowerBound( i, j ) );
+   if( pos != end_[i] && pos->index_ == j )
+      return pos;
+   else return end_[i];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index not less then the given index.
+//
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index not less then the given index, end() iterator otherwise.
+//
+// In case of a row-major matrix, this function returns a row iterator to the first element with
+// an index not less then the given column index. In case of a column-major matrix, the function
+// returns a column iterator to the first element with an index not less then the given row
+// index. In combination with the upperBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned compressed matrix
+// iterator is subject to invalidation due to inserting operations via the function call operator
+// or the insert() function!
+*/
+template< typename Type  // Data type of the sparse matrix
+        , bool SO >      // Storage order
+inline typename CompressedMatrix<Type,SO>::Iterator
+   CompressedMatrix<Type,SO>::lowerBound( size_t i, size_t j )
+{
+   return const_cast<Iterator>( const_cast<const This&>( *this ).lowerBound( i, j ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index not less then the given index.
+//
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index not less then the given index, end() iterator otherwise.
+//
+// In case of a row-major matrix, this function returns a row iterator to the first element with
+// an index not less then the given column index. In case of a column-major matrix, the function
+// returns a column iterator to the first element with an index not less then the given row
+// index. In combination with the upperBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned compressed matrix
+// iterator is subject to invalidation due to inserting operations via the function call operator
+// or the insert() function!
+*/
+template< typename Type  // Data type of the sparse matrix
+        , bool SO >      // Storage order
+inline typename CompressedMatrix<Type,SO>::ConstIterator
+   CompressedMatrix<Type,SO>::lowerBound( size_t i, size_t j ) const
+{
+   return std::lower_bound( begin_[i], end_[i], j, FindIndex() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index greater then the given index.
+//
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index greater then the given index, end() iterator otherwise.
+//
+// In case of a row-major matrix, this function returns a row iterator to the first element with
+// an index greater then the given column index. In case of a column-major matrix, the function
+// returns a column iterator to the first element with an index greater then the given row
+// index. In combination with the upperBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned compressed matrix
+// iterator is subject to invalidation due to inserting operations via the function call operator
+// or the insert() function!
+*/
+template< typename Type  // Data type of the sparse matrix
+        , bool SO >      // Storage order
+inline typename CompressedMatrix<Type,SO>::Iterator
+   CompressedMatrix<Type,SO>::upperBound( size_t i, size_t j )
+{
+   return const_cast<Iterator>( const_cast<const This&>( *this ).upperBound( i, j ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index greater then the given index.
+//
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index greater then the given index, end() iterator otherwise.
+//
+// In case of a row-major matrix, this function returns a row iterator to the first element with
+// an index greater then the given column index. In case of a column-major matrix, the function
+// returns a column iterator to the first element with an index greater then the given row
+// index. In combination with the upperBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned compressed matrix
+// iterator is subject to invalidation due to inserting operations via the function call operator
+// or the insert() function!
+*/
+template< typename Type  // Data type of the sparse matrix
+        , bool SO >      // Storage order
+inline typename CompressedMatrix<Type,SO>::ConstIterator
+   CompressedMatrix<Type,SO>::upperBound( size_t i, size_t j ) const
+{
+   return std::upper_bound( begin_[i], end_[i], j, FindIndex() );
 }
 //*************************************************************************************************
 
@@ -2300,8 +2420,6 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
                               inline void              erase  ( size_t i, size_t j );
                               inline Iterator          erase  ( size_t j, Iterator pos );
                               inline Iterator          erase  ( size_t j, Iterator first, Iterator last );
-                              inline Iterator          find   ( size_t i, size_t j );
-                              inline ConstIterator     find   ( size_t i, size_t j ) const;
                                      void              resize ( size_t m, size_t n, bool preserve=true );
                               inline void              reserve( size_t nonzeros );
                                      void              reserve( size_t j, size_t nonzeros );
@@ -2314,8 +2432,20 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
    //@}
    //**********************************************************************************************
 
-   //**Utility functions***************************************************************************
-   /*!\name Utility functions */
+   //**Lookup functions****************************************************************************
+   /*!\name Lookup functions */
+   //@{
+   inline Iterator      find      ( size_t i, size_t j );
+   inline ConstIterator find      ( size_t i, size_t j ) const;
+   inline Iterator      lowerBound( size_t i, size_t j );
+   inline ConstIterator lowerBound( size_t i, size_t j ) const;
+   inline Iterator      upperBound( size_t i, size_t j );
+   inline ConstIterator upperBound( size_t i, size_t j ) const;
+   //@}
+   //**********************************************************************************************
+
+   //**Low-level utility functions*****************************************************************
+   /*!\name Low-level utility functions */
    //@{
    inline void append  ( size_t i, size_t j, const Type& value, bool check=false );
    inline void finalize( size_t j );
@@ -2644,7 +2774,7 @@ inline typename CompressedMatrix<Type,true>::ConstReference
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
-   const ConstIterator pos( std::lower_bound( begin_[j], end_[j], i, FindIndex() ) );
+   const ConstIterator pos( lowerBound( i, j ) );
 
    if( pos == end_[j] || pos->index_ != i )
       return zero_;
@@ -3225,7 +3355,7 @@ typename CompressedMatrix<Type,true>::Iterator
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
-   const Iterator pos( std::lower_bound( begin_[j], end_[j], i, FindIndex() ) );
+   const Iterator pos( lowerBound( i, j ) );
 
    if( pos != end_[j] && pos->index_ == i )
       throw std::invalid_argument( "Bad access index" );
@@ -3368,59 +3498,6 @@ inline typename CompressedMatrix<Type,true>::Iterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Searches for a specific matrix element.
-//
-// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
-// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
-// \return Iterator to the element in case the index is found, end() iterator otherwise.
-//
-// This function can be used to check whether a specific element is contained in the sparse
-// matrix. It specifically searches for the element with row index \a i and column index \a j.
-// In case the element is found, the function returns an iterator to the element. Otherwise an
-// iterator just past the last non-zero element of column \a j (the end() iterator) is returned.
-// Note that the returned sparse matrix iterator is subject to invalidation due to inserting
-// operations via the subscript operator or the insert() function!
-*/
-template< typename Type >  // Data type of the sparse matrix
-inline typename CompressedMatrix<Type,true>::Iterator
-   CompressedMatrix<Type,true>::find( size_t i, size_t j )
-{
-   return const_cast<Iterator>( const_cast<const This&>( *this ).find( i, j ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Searches for a specific matrix element.
-//
-// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
-// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
-// \return Iterator to the element in case the index is found, end() iterator otherwise.
-//
-// This function can be used to check whether a specific element is contained in the sparse
-// matrix. It specifically searches for the element with row index \a i and column index \a j.
-// In case the element is found, the function returns an iterator to the element. Otherwise an
-// iterator just past the last non-zero element of column \a j (the end() iterator) is returned.
-// Note that the returned sparse matrix iterator is subject to invalidation due to inserting
-// operations via the subscript operator or the insert() function!
-*/
-template< typename Type >  // Data type of the sparse matrix
-inline typename CompressedMatrix<Type,true>::ConstIterator
-   CompressedMatrix<Type,true>::find( size_t i, size_t j ) const
-{
-   const Iterator pos( std::lower_bound( begin_[j], end_[j], i, FindIndex() ) );
-   if( pos != end_[j] && pos->index_ == i )
-      return pos;
-   else return end_[j];
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Changing the size of the sparse matrix.
 //
 // \param m The new number of rows of the sparse matrix.
@@ -3487,7 +3564,7 @@ void CompressedMatrix<Type,true>::resize( size_t m, size_t n, bool preserve )
    {
       if( preserve ) {
          for( size_t j=0UL; j<n; ++j )
-            end_[j] = std::lower_bound( begin_[j], end_[j], m, FindIndex() );
+            end_[j] = lowerBound( m, j );
       }
       else {
          for( size_t j=0UL; j<n; ++j )
@@ -3653,7 +3730,7 @@ bool CompressedMatrix<Type,true>::isSymmetric() const
 {
    if( m_ != n_ ) return false;
 
-   for( size_t j=0UL; j<rows(); ++j ) {
+   for( size_t j=0UL; j<columns(); ++j ) {
       for( ConstIterator element=begin_[j]; element!=end_[j]; ++element )
       {
          const size_t index( element->index_ );
@@ -3661,7 +3738,7 @@ bool CompressedMatrix<Type,true>::isSymmetric() const
          if( isDefault( element->value_ ) )
             continue;
 
-         const Iterator pos( std::lower_bound( begin_[index], end_[index], j, FindIndex() ) );
+         const Iterator pos( lowerBound( j, index ) );
          if( pos == end_[index] || pos->index_ != j || !equal( pos->value_, element->value_ ) )
             return false;
       }
@@ -3708,7 +3785,7 @@ inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::scaleDiagonal( 
    const size_t size( blaze::min( m_, n_ ) );
 
    for( size_t j=0UL; j<size; ++j ) {
-      Iterator pos = std::lower_bound( begin_[j], end_[j], j, FindIndex() );
+      Iterator pos = lowerBound( j, j );
       if( pos != end_[j] && pos->index_ == j )
          pos->value_ *= scalar;
    }
@@ -3791,6 +3868,163 @@ void CompressedMatrix<Type,true>::reserveElements( size_t nonzeros )
    delete [] newBegin[0UL];
    delete [] newBegin;
    end_ = newEnd;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  LOOKUP FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Searches for a specific matrix element.
+//
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the element in case the index is found, end() iterator otherwise.
+//
+// This function can be used to check whether a specific element is contained in the sparse
+// matrix. It specifically searches for the element with row index \a i and column index \a j.
+// In case the element is found, the function returns an iterator to the element. Otherwise an
+// iterator just past the last non-zero element of column \a j (the end() iterator) is returned.
+// Note that the returned sparse matrix iterator is subject to invalidation due to inserting
+// operations via the subscript operator or the insert() function!
+*/
+template< typename Type >  // Data type of the sparse matrix
+inline typename CompressedMatrix<Type,true>::Iterator
+   CompressedMatrix<Type,true>::find( size_t i, size_t j )
+{
+   return const_cast<Iterator>( const_cast<const This&>( *this ).find( i, j ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Searches for a specific matrix element.
+//
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the element in case the index is found, end() iterator otherwise.
+//
+// This function can be used to check whether a specific element is contained in the sparse
+// matrix. It specifically searches for the element with row index \a i and column index \a j.
+// In case the element is found, the function returns an iterator to the element. Otherwise an
+// iterator just past the last non-zero element of column \a j (the end() iterator) is returned.
+// Note that the returned sparse matrix iterator is subject to invalidation due to inserting
+// operations via the subscript operator or the insert() function!
+*/
+template< typename Type >  // Data type of the sparse matrix
+inline typename CompressedMatrix<Type,true>::ConstIterator
+   CompressedMatrix<Type,true>::find( size_t i, size_t j ) const
+{
+   const ConstIterator pos( lowerBound( i, j ) );
+   if( pos != end_[j] && pos->index_ == i )
+      return pos;
+   else return end_[j];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first index not less then the given index.
+//
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index not less then the given index, end() iterator otherwise.
+//
+// The function returns a column iterator to the first element with an index not less then the
+// given row index. In combination with the upperBound() function this function can be used to
+// create a pair of iterators specifying a range of indices. Note that the returned compressed
+// matrix iterator is subject to invalidation due to inserting operations via the function call
+// operator or the insert() function!
+*/
+template< typename Type >  // Data type of the sparse matrix
+inline typename CompressedMatrix<Type,true>::Iterator
+   CompressedMatrix<Type,true>::lowerBound( size_t i, size_t j )
+{
+   return const_cast<Iterator>( const_cast<const This&>( *this ).lowerBound( i, j ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first index not less then the given index.
+//
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index not less then the given index, end() iterator otherwise.
+//
+// The function returns a column iterator to the first element with an index not less then the
+// given row index. In combination with the upperBound() function this function can be used to
+// create a pair of iterators specifying a range of indices. Note that the returned compressed
+// matrix iterator is subject to invalidation due to inserting operations via the function call
+// operator or the insert() function!
+*/
+template< typename Type >  // Data type of the sparse matrix
+inline typename CompressedMatrix<Type,true>::ConstIterator
+   CompressedMatrix<Type,true>::lowerBound( size_t i, size_t j ) const
+{
+   return std::lower_bound( begin_[j], end_[j], i, FindIndex() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first index greater then the given index.
+//
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index greater then the given index, end() iterator otherwise.
+//
+// The function returns a column iterator to the first element with an index greater then the
+// given row index. In combination with the upperBound() function this function can be used to
+// create a pair of iterators specifying a range of indices. Note that the returned compressed
+// matrix iterator is subject to invalidation due to inserting operations via the function call
+// operator or the insert() function!
+*/
+template< typename Type >  // Data type of the sparse matrix
+inline typename CompressedMatrix<Type,true>::Iterator
+   CompressedMatrix<Type,true>::upperBound( size_t i, size_t j )
+{
+   return const_cast<Iterator>( const_cast<const This&>( *this ).upperBound( i, j ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first index greater then the given index.
+//
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index greater then the given index, end() iterator otherwise.
+//
+// The function returns a column iterator to the first element with an index greater then the
+// given row index. In combination with the upperBound() function this function can be used to
+// create a pair of iterators specifying a range of indices. Note that the returned compressed
+// matrix iterator is subject to invalidation due to inserting operations via the function call
+// operator or the insert() function!
+*/
+template< typename Type >  // Data type of the sparse matrix
+inline typename CompressedMatrix<Type,true>::ConstIterator
+   CompressedMatrix<Type,true>::upperBound( size_t i, size_t j ) const
+{
+   return std::upper_bound( begin_[j], end_[j], i, FindIndex() );
 }
 /*! \endcond */
 //*************************************************************************************************
