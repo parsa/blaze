@@ -280,12 +280,22 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
                               inline void              erase ( size_t index );
                               inline Iterator          erase ( Iterator pos );
                               inline Iterator          erase ( Iterator first, Iterator last );
-                              inline Iterator          find  ( size_t index );
-                              inline ConstIterator     find  ( size_t index ) const;
                               inline void              resize( size_t n, bool preserve=true );
                                      void              reserve( size_t n );
    template< typename Other > inline CompressedVector& scale( Other scalar );
                               inline void              swap( CompressedVector& sv ) /* throw() */;
+   //@}
+   //**********************************************************************************************
+
+   //**Lookup functions****************************************************************************
+   /*!\name Lookup functions */
+   //@{
+   inline Iterator      find      ( size_t index );
+   inline ConstIterator find      ( size_t index ) const;
+   inline Iterator      lowerBound( size_t index );
+   inline ConstIterator lowerBound( size_t index ) const;
+   inline Iterator      upperBound( size_t index );
+   inline ConstIterator upperBound( size_t index ) const;
    //@}
    //**********************************************************************************************
 
@@ -1087,53 +1097,6 @@ inline typename CompressedVector<Type,TF>::Iterator
 
 
 //*************************************************************************************************
-/*!\brief Searches for a specific vector element.
-//
-// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
-// \return Iterator to the element in case the index is found, end() iterator otherwise.
-//
-// This function can be used to check whether a specific element is contained in the sparse
-// vector. It specifically searches for the element with index \a index. In case the element
-// is found, the function returns an iterator to the element. Otherwise an iterator just past
-// the last non-zero element of the compressed vector (the end() iterator) is returned. Note
-// that the returned compressed vector iterator is subject to invalidation due to inserting
-// operations via the subscript operator or the insert() function!
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename CompressedVector<Type,TF>::Iterator CompressedVector<Type,TF>::find( size_t index )
-{
-   return const_cast<Iterator>( const_cast<const This&>( *this ).find( index ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Searches for a specific vector element.
-//
-// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
-// \return Iterator to the element in case the index is found, end() iterator otherwise.
-//
-// This function can be used to check whether a specific element is contained in the sparse
-// vector. It specifically searches for the element with index \a index. In case the element
-// is found, the function returns an iterator to the element. Otherwise an iterator just past
-// the last non-zero element of the compressed vector (the end() iterator) is returned. Note
-// that the returned compressed vector iterator is subject to invalidation due to inserting
-// operations via the subscript operator or the insert() function!
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename CompressedVector<Type,TF>::ConstIterator CompressedVector<Type,TF>::find( size_t index ) const
-{
-   const Iterator pos( std::lower_bound( begin_, end_, index, FindIndex() ) );
-   if( pos != end_ && pos->index_ == index )
-      return pos;
-   else return end_;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Changing the size of the compressed vector.
 //
 // \param n The new size of the compressed vector.
@@ -1249,6 +1212,149 @@ inline size_t CompressedVector<Type,TF>::extendCapacity() const
    BLAZE_INTERNAL_ASSERT( nonzeros > capacity_, "Invalid capacity value" );
 
    return nonzeros;
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  LOOKUP FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Searches for a specific vector element.
+//
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the element in case the index is found, end() iterator otherwise.
+//
+// This function can be used to check whether a specific element is contained in the sparse
+// vector. It specifically searches for the element with index \a index. In case the element
+// is found, the function returns an iterator to the element. Otherwise an iterator just past
+// the last non-zero element of the compressed vector (the end() iterator) is returned. Note
+// that the returned compressed vector iterator is subject to invalidation due to inserting
+// operations via the subscript operator or the insert() function!
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename CompressedVector<Type,TF>::Iterator CompressedVector<Type,TF>::find( size_t index )
+{
+   return const_cast<Iterator>( const_cast<const This&>( *this ).find( index ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Searches for a specific vector element.
+//
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the element in case the index is found, end() iterator otherwise.
+//
+// This function can be used to check whether a specific element is contained in the sparse
+// vector. It specifically searches for the element with index \a index. In case the element
+// is found, the function returns an iterator to the element. Otherwise an iterator just past
+// the last non-zero element of the compressed vector (the end() iterator) is returned. Note
+// that the returned compressed vector iterator is subject to invalidation due to inserting
+// operations via the subscript operator or the insert() function!
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename CompressedVector<Type,TF>::ConstIterator CompressedVector<Type,TF>::find( size_t index ) const
+{
+   const Iterator pos( lowerBound( index ) );
+   if( pos != end_ && pos->index_ == index )
+      return pos;
+   else return end_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index not less then the given index.
+//
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index not less then the given index, end() iterator otherwise.
+//
+// This function returns an iterator to the first element with an index not less then the given
+// index. In combination with the upperBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned compressed vector
+// iterator is subject to invalidation due to inserting operations via the subscript operator
+// or the insert() function!
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename CompressedVector<Type,TF>::Iterator
+   CompressedVector<Type,TF>::lowerBound( size_t index )
+{
+   return const_cast<Iterator>( const_cast<const This&>( *this ).lowerBound( index ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index not less then the given index.
+//
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index not less then the given index, end() iterator otherwise.
+//
+// This function returns an iterator to the first element with an index not less then the given
+// index. In combination with the upperBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned compressed vector
+// iterator is subject to invalidation due to inserting operations via the subscript operator
+// or the insert() function!
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename CompressedVector<Type,TF>::ConstIterator
+   CompressedVector<Type,TF>::lowerBound( size_t index ) const
+{
+   return std::lower_bound( begin_, end_, index, FindIndex() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index greater then the given index.
+//
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index greater then the given index, end() iterator otherwise.
+//
+// This function returns an iterator to the first element with an index greater then the given
+// index. In combination with the lowerBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned compressed vector
+// iterator is subject to invalidation due to inserting operations via the subscript operator
+// or the insert() function!
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename CompressedVector<Type,TF>::Iterator
+   CompressedVector<Type,TF>::upperBound( size_t index )
+{
+   return const_cast<Iterator>( const_cast<const This&>( *this ).upperBound( index ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index greater then the given index.
+//
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index greater then the given index, end() iterator otherwise.
+//
+// This function returns an iterator to the first element with an index greater then the given
+// index. In combination with the lowerBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned compressed vector
+// iterator is subject to invalidation due to inserting operations via the subscript operator
+// or the insert() function!
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename CompressedVector<Type,TF>::ConstIterator
+   CompressedVector<Type,TF>::upperBound( size_t index ) const
+{
+   return std::upper_bound( begin_, end_, index, FindIndex() );
 }
 //*************************************************************************************************
 
