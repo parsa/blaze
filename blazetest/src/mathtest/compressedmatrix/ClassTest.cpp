@@ -66,7 +66,6 @@ ClassTest::ClassTest()
    testAppend();
    testInsert();
    testErase();
-   testFind();
    testResize();
    testReserve();
    testTranspose();
@@ -74,6 +73,9 @@ ClassTest::ClassTest()
    testIsSymmetric();
    testScale();
    testSwap();
+   testFind();
+   testLowerBound();
+   testUpperBound();
 }
 //*************************************************************************************************
 
@@ -4257,275 +4259,6 @@ void ClassTest::testErase()
 
 
 //*************************************************************************************************
-/*!\brief Test of the find member function of CompressedMatrix.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the find member function of CompressedMatrix. In case
-// an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testFind()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major CompressedMatrix::find()";
-
-      typedef blaze::CompressedMatrix<int,blaze::rowMajor>::ConstIterator  ConstIterator;
-
-      // Initialization check
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 8UL, 6UL, 3UL );
-      mat(1,2) = 1;
-      mat(2,3) = 2;
-      mat(6,5) = 3;
-
-      checkRows    ( mat, 8UL );
-      checkColumns ( mat, 6UL );
-      checkCapacity( mat, 3UL );
-      checkNonZeros( mat, 3UL );
-      checkNonZeros( mat, 0UL, 0UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-      checkNonZeros( mat, 3UL, 0UL );
-      checkNonZeros( mat, 4UL, 0UL );
-      checkNonZeros( mat, 5UL, 0UL );
-      checkNonZeros( mat, 6UL, 1UL );
-      checkNonZeros( mat, 7UL, 0UL );
-
-      // Searching for the first element
-      {
-         ConstIterator pos( mat.find( 1UL, 2UL ) );
-
-         if( pos == mat.end( 1UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Element could not be found\n"
-                << " Details:\n"
-                << "   Required position = (1,2)\n"
-                << "   Current matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-         else if( pos->index() != 2 || pos->value() != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Wrong element found\n"
-                << " Details:\n"
-                << "   Required index = 2\n"
-                << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = 1\n"
-                << "   Value at index = " << pos->value() << "\n"
-                << "   Current matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Searching for the second element
-      {
-         ConstIterator pos( mat.find( 2UL, 3UL ) );
-
-         if( pos == mat.end( 2UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Element could not be found\n"
-                << " Details:\n"
-                << "   Required position = (2,3)\n"
-                << "   Current matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-         else if( pos->index() != 3 || pos->value() != 2 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Wrong element found\n"
-                << " Details:\n"
-                << "   Required index = 3\n"
-                << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = 2\n"
-                << "   Value at index = " << pos->value() << "\n"
-                << "   Current matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Searching for the third element
-      {
-         ConstIterator pos( mat.find( 6UL, 5UL ) );
-
-         if( pos == mat.end( 6UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Element could not be found\n"
-                << " Details:\n"
-                << "   Required position = (6,5)\n"
-                << "   Current matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-         else if( pos->index() != 5 || pos->value() != 3 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Wrong element found\n"
-                << " Details:\n"
-                << "   Required index = 5\n"
-                << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = 3\n"
-                << "   Value at index = " << pos->value() << "\n"
-                << "   Current matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Searching for a non-existing non-zero element
-      {
-         ConstIterator pos( mat.find( 4UL, 0UL ) );
-
-         if( pos != mat.end( 4UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Non-existing element could be found\n"
-                << " Details:\n"
-                << "   Required index = 4\n"
-                << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = 0\n"
-                << "   Value at index = " << pos->value() << "\n"
-                << "   Current matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major CompressedMatrix::find()";
-
-      typedef blaze::CompressedMatrix<int,blaze::columnMajor>::ConstIterator  ConstIterator;
-
-      // Initialization check
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 8UL, 6UL, 3UL );
-      mat(1,2) = 1;
-      mat(2,3) = 2;
-      mat(6,5) = 3;
-
-      checkRows    ( mat, 8UL );
-      checkColumns ( mat, 6UL );
-      checkCapacity( mat, 3UL );
-      checkNonZeros( mat, 3UL );
-      checkNonZeros( mat, 0UL, 0UL );
-      checkNonZeros( mat, 1UL, 0UL );
-      checkNonZeros( mat, 2UL, 1UL );
-      checkNonZeros( mat, 3UL, 1UL );
-      checkNonZeros( mat, 4UL, 0UL );
-      checkNonZeros( mat, 5UL, 1UL );
-
-      // Searching for the first element
-      {
-         ConstIterator pos( mat.find( 1UL, 2UL ) );
-
-         if( pos == mat.end( 2UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Element could not be found\n"
-                << " Details:\n"
-                << "   Required position = (1,2)\n"
-                << "   Current matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-         else if( pos->index() != 1 || pos->value() != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Wrong element found\n"
-                << " Details:\n"
-                << "   Required index = 1\n"
-                << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = 1\n"
-                << "   Value at index = " << pos->value() << "\n"
-                << "   Current matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Searching for the second element
-      {
-         ConstIterator pos( mat.find( 2UL, 3UL ) );
-
-         if( pos == mat.end( 3UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Element could not be found\n"
-                << " Details:\n"
-                << "   Required position = (2,3)\n"
-                << "   Current matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-         else if( pos->index() != 2 || pos->value() != 2 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Wrong element found\n"
-                << " Details:\n"
-                << "   Required index = 2\n"
-                << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = 2\n"
-                << "   Value at index = " << pos->value() << "\n"
-                << "   Current matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Searching for the third element
-      {
-         ConstIterator pos( mat.find( 6UL, 5UL ) );
-
-         if( pos == mat.end( 5UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Element could not be found\n"
-                << " Details:\n"
-                << "   Required position = (6,5)\n"
-                << "   Current matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-         else if( pos->index() != 6 || pos->value() != 3 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Wrong element found\n"
-                << " Details:\n"
-                << "   Required index = 6\n"
-                << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = 3\n"
-                << "   Value at index = " << pos->value() << "\n"
-                << "   Current matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Searching for a non-existing non-zero element
-      {
-         ConstIterator pos( mat.find( 4UL, 0UL ) );
-
-         if( pos != mat.end( 0UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Non-existing element could be found\n"
-                << " Details:\n"
-                << "   Required index = 0\n"
-                << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = 0\n"
-                << "   Value at index = " << pos->value() << "\n"
-                << "   Current matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Test of the resize member function of CompressedMatrix.
 //
 // \return void
@@ -5849,6 +5582,865 @@ void ClassTest::testSwap()
              << "   Result:\n" << mat2 << "\n"
              << "   Expected result:\n( 1 0 )\n( 0 0 )\n( 0 0 )\n( 0 2 )\n( 0 0 )\n";
          throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the find member function of CompressedMatrix.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the find member function of CompressedMatrix. In case
+// an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testFind()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CompressedMatrix::find()";
+
+      typedef blaze::CompressedMatrix<int,blaze::rowMajor>::ConstIterator  ConstIterator;
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 8UL, 6UL, 3UL );
+      mat(1,2) = 1;
+      mat(2,3) = 2;
+      mat(6,5) = 3;
+
+      checkRows    ( mat, 8UL );
+      checkColumns ( mat, 6UL );
+      checkCapacity( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 0UL );
+      checkNonZeros( mat, 4UL, 0UL );
+      checkNonZeros( mat, 5UL, 0UL );
+      checkNonZeros( mat, 6UL, 1UL );
+      checkNonZeros( mat, 7UL, 0UL );
+
+      // Searching for the first element
+      {
+         ConstIterator pos( mat.find( 1UL, 2UL ) );
+
+         if( pos == mat.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Element could not be found\n"
+                << " Details:\n"
+                << "   Required position = (1,2)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 2 || pos->value() != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 2\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 1\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Searching for the second element
+      {
+         ConstIterator pos( mat.find( 2UL, 3UL ) );
+
+         if( pos == mat.end( 2UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Element could not be found\n"
+                << " Details:\n"
+                << "   Required position = (2,3)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 3 || pos->value() != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 3\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 2\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Searching for the third element
+      {
+         ConstIterator pos( mat.find( 6UL, 5UL ) );
+
+         if( pos == mat.end( 6UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Element could not be found\n"
+                << " Details:\n"
+                << "   Required position = (6,5)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 5 || pos->value() != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 5\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 3\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Searching for a non-existing non-zero element
+      {
+         ConstIterator pos( mat.find( 4UL, 0UL ) );
+
+         if( pos != mat.end( 4UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Non-existing element could be found\n"
+                << " Details:\n"
+                << "   Required index = 4\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 0\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CompressedMatrix::find()";
+
+      typedef blaze::CompressedMatrix<int,blaze::columnMajor>::ConstIterator  ConstIterator;
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 8UL, 6UL, 3UL );
+      mat(1,2) = 1;
+      mat(2,3) = 2;
+      mat(6,5) = 3;
+
+      checkRows    ( mat, 8UL );
+      checkColumns ( mat, 6UL );
+      checkCapacity( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 1UL );
+      checkNonZeros( mat, 4UL, 0UL );
+      checkNonZeros( mat, 5UL, 1UL );
+
+      // Searching for the first element
+      {
+         ConstIterator pos( mat.find( 1UL, 2UL ) );
+
+         if( pos == mat.end( 2UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Element could not be found\n"
+                << " Details:\n"
+                << "   Required position = (1,2)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 1 || pos->value() != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 1\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 1\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Searching for the second element
+      {
+         ConstIterator pos( mat.find( 2UL, 3UL ) );
+
+         if( pos == mat.end( 3UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Element could not be found\n"
+                << " Details:\n"
+                << "   Required position = (2,3)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 2 || pos->value() != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 2\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 2\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Searching for the third element
+      {
+         ConstIterator pos( mat.find( 6UL, 5UL ) );
+
+         if( pos == mat.end( 5UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Element could not be found\n"
+                << " Details:\n"
+                << "   Required position = (6,5)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 6 || pos->value() != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 6\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 3\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Searching for a non-existing non-zero element
+      {
+         ConstIterator pos( mat.find( 4UL, 0UL ) );
+
+         if( pos != mat.end( 0UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Non-existing element could be found\n"
+                << " Details:\n"
+                << "   Required index = 0\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 0\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the lowerBound member function of CompressedMatrix.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the lowerBound member function of CompressedMatrix. In case
+// an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testLowerBound()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CompressedMatrix::find()";
+
+      typedef blaze::CompressedMatrix<int,blaze::rowMajor>::ConstIterator  ConstIterator;
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 6UL, 3UL );
+      mat(1,2) = 1;
+      mat(1,4) = 2;
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 6UL );
+      checkCapacity( mat, 2UL );
+      checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 0UL );
+
+      // Determining the lower bound for position (1,1)
+      {
+         ConstIterator pos( mat.lowerBound( 1UL, 1UL ) );
+
+         if( pos == mat.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lower bound could not be determined\n"
+                << " Details:\n"
+                << "   Required position = (1,1)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 2 || pos->value() != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 2\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 1\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the lower bound for position (1,2)
+      {
+         ConstIterator pos( mat.lowerBound( 1UL, 2UL ) );
+
+         if( pos == mat.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lower bound could not be determined\n"
+                << " Details:\n"
+                << "   Required position = (1,2)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 2 || pos->value() != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 2\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 1\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the lower bound for position (1,3)
+      {
+         ConstIterator pos( mat.lowerBound( 1UL, 3UL ) );
+
+         if( pos == mat.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lower bound could not be determined\n"
+                << " Details:\n"
+                << "   Required position = (1,3)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 4 || pos->value() != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 4\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 2\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the lower bound for position (1,4)
+      {
+         ConstIterator pos( mat.lowerBound( 1UL, 4UL ) );
+
+         if( pos == mat.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lower bound could not be determined\n"
+                << " Details:\n"
+                << "   Required position = (1,4)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 4 || pos->value() != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 4\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 2\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the lower bound for position (1,5)
+      {
+         ConstIterator pos( mat.lowerBound( 1UL, 5UL ) );
+
+         if( pos != mat.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lower bound could not be determined\n"
+                << " Details:\n"
+                << "   Required position = (1,5)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CompressedMatrix::find()";
+
+      typedef blaze::CompressedMatrix<int,blaze::columnMajor>::ConstIterator  ConstIterator;
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 6L, 3UL, 3UL );
+      mat(2,1) = 1;
+      mat(4,1) = 2;
+
+      checkRows    ( mat, 6UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 2UL );
+      checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 0UL );
+
+      // Determining the lower bound for position (1,1)
+      {
+         ConstIterator pos( mat.lowerBound( 1UL, 1UL ) );
+
+         if( pos == mat.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lower bound could not be determined\n"
+                << " Details:\n"
+                << "   Required position = (1,1)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 2 || pos->value() != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 2\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 1\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the lower bound for position (2,1)
+      {
+         ConstIterator pos( mat.lowerBound( 2UL, 1UL ) );
+
+         if( pos == mat.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lower bound could not be determined\n"
+                << " Details:\n"
+                << "   Required position = (2,1)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 2 || pos->value() != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 2\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 1\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the lower bound for position (3,1)
+      {
+         ConstIterator pos( mat.lowerBound( 3UL, 1UL ) );
+
+         if( pos == mat.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lower bound could not be determined\n"
+                << " Details:\n"
+                << "   Required position = (3,1)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 4 || pos->value() != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 4\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 2\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the lower bound for position (4,1)
+      {
+         ConstIterator pos( mat.lowerBound( 4UL, 1UL ) );
+
+         if( pos == mat.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lower bound could not be determined\n"
+                << " Details:\n"
+                << "   Required position = (4,1)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 4 || pos->value() != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 4\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 2\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the lower bound for position (5,1)
+      {
+         ConstIterator pos( mat.lowerBound( 5UL, 1UL ) );
+
+         if( pos != mat.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lower bound could not be determined\n"
+                << " Details:\n"
+                << "   Required position = (5,1)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the upperBound member function of CompressedMatrix.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the upperBound member function of CompressedMatrix. In case
+// an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testUpperBound()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CompressedMatrix::find()";
+
+      typedef blaze::CompressedMatrix<int,blaze::rowMajor>::ConstIterator  ConstIterator;
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 6UL, 3UL );
+      mat(1,2) = 1;
+      mat(1,4) = 2;
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 6UL );
+      checkCapacity( mat, 2UL );
+      checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 0UL );
+
+      // Determining the upper bound for position (1,1)
+      {
+         ConstIterator pos( mat.upperBound( 1UL, 1UL ) );
+
+         if( pos == mat.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Upper bound could not be determined\n"
+                << " Details:\n"
+                << "   Required position = (1,1)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 2 || pos->value() != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 2\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 1\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the upper bound for position (1,2)
+      {
+         ConstIterator pos( mat.upperBound( 1UL, 2UL ) );
+
+         if( pos == mat.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Upper bound could not be determined\n"
+                << " Details:\n"
+                << "   Required position = (1,2)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 4 || pos->value() != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 4\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 2\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the upper bound for position (1,3)
+      {
+         ConstIterator pos( mat.upperBound( 1UL, 3UL ) );
+
+         if( pos == mat.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Upper bound could not be determined\n"
+                << " Details:\n"
+                << "   Required position = (1,3)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 4 || pos->value() != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 4\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 2\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the upper bound for position (1,4)
+      {
+         ConstIterator pos( mat.upperBound( 1UL, 4UL ) );
+
+         if( pos != mat.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Upper bound could not be determined\n"
+                << " Details:\n"
+                << "   Required position = (1,4)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the upper bound for position (1,5)
+      {
+         ConstIterator pos( mat.upperBound( 1UL, 5UL ) );
+
+         if( pos != mat.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Upper bound could not be determined\n"
+                << " Details:\n"
+                << "   Required position = (1,5)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CompressedMatrix::find()";
+
+      typedef blaze::CompressedMatrix<int,blaze::columnMajor>::ConstIterator  ConstIterator;
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 6UL, 3UL, 3UL );
+      mat(2,1) = 1;
+      mat(4,1) = 2;
+
+      checkRows    ( mat, 6UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 2UL );
+      checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 0UL );
+
+      // Determining the upper bound for position (1,1)
+      {
+         ConstIterator pos( mat.upperBound( 1UL, 1UL ) );
+
+         if( pos == mat.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Upper bound could not be determined\n"
+                << " Details:\n"
+                << "   Required position = (1,1)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 2 || pos->value() != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 2\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 1\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the upper bound for position (2,1)
+      {
+         ConstIterator pos( mat.upperBound( 2UL, 1UL ) );
+
+         if( pos == mat.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Upper bound could not be determined\n"
+                << " Details:\n"
+                << "   Required position = (2,1)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 4 || pos->value() != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 4\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 2\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the upper bound for position (3,1)
+      {
+         ConstIterator pos( mat.upperBound( 3UL, 1UL ) );
+
+         if( pos == mat.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Upper bound could not be determined\n"
+                << " Details:\n"
+                << "   Required position = (3,1)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 4 || pos->value() != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 4\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 2\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the upper bound for position (4,1)
+      {
+         ConstIterator pos( mat.upperBound( 4UL, 1UL ) );
+
+         if( pos != mat.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Upper bound could not be determined\n"
+                << " Details:\n"
+                << "   Required position = (4,1)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the upper bound for position (5,1)
+      {
+         ConstIterator pos( mat.upperBound( 5UL, 1UL ) );
+
+         if( pos != mat.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Upper bound could not be determined\n"
+                << " Details:\n"
+                << "   Required position = (5,1)\n"
+                << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 }
