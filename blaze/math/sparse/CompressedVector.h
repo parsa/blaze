@@ -1075,6 +1075,7 @@ template< typename Type  // Data type of the vector
 inline typename CompressedVector<Type,TF>::Iterator
    CompressedVector<Type,TF>::erase( Iterator first, Iterator last )
 {
+   BLAZE_USER_ASSERT( first <= last, "Invalid iterator range" );
    BLAZE_USER_ASSERT( first >= begin_ && first <= end_, "Invalid compressed vector iterator" );
    BLAZE_USER_ASSERT( last  >= begin_ && last  <= end_, "Invalid compressed vector iterator" );
 
