@@ -423,10 +423,20 @@ class SparseRow : public SparseVector< SparseRow<MT,SO>, true >
                               inline ElementType&  insert ( size_t index, const ElementType& value );
                               inline void          erase  ( size_t index );
                               inline Iterator      erase  ( Iterator pos );
-                              inline Iterator      find   ( size_t index );
-                              inline ConstIterator find   ( size_t index ) const;
                               inline void          reserve( size_t n );
    template< typename Other > inline SparseRow&    scale  ( Other scalar );
+   //@}
+   //**********************************************************************************************
+
+   //**Lookup functions****************************************************************************
+   /*!\name Lookup functions */
+   //@{
+   inline Iterator      find      ( size_t index );
+   inline ConstIterator find      ( size_t index ) const;
+   inline Iterator      lowerBound( size_t index );
+   inline ConstIterator lowerBound( size_t index ) const;
+   inline Iterator      upperBound( size_t index );
+   inline ConstIterator upperBound( size_t index ) const;
    //@}
    //**********************************************************************************************
 
@@ -1035,50 +1045,6 @@ inline typename SparseRow<MT,SO>::Iterator SparseRow<MT,SO>::erase( Iterator pos
 
 
 //*************************************************************************************************
-/*!\brief Searches for a specific row element.
-//
-// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
-// \return Iterator to the element in case the index is found, end() iterator otherwise.
-//
-// This function can be used to check whether a specific element is contained in the sparse
-// row. It specifically searches for the element with index \a index. In case the element is
-// found, the function returns an iterator to the element. Otherwise an iterator just past
-// the last non-zero element of the sparse row (the end() iterator) is returned. Note that
-// the returned sparse row iterator is subject to invalidation due to inserting operations
-// via the subscript operator or the insert() function!
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline typename SparseRow<MT,SO>::Iterator SparseRow<MT,SO>::find( size_t index )
-{
-   return matrix_.find( row_, index );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Searches for a specific row element.
-//
-// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
-// \return Iterator to the element in case the index is found, end() iterator otherwise.
-//
-// This function can be used to check whether a specific element is contained in the sparse
-// row. It specifically searches for the element with index \a index. In case the element is
-// found, the function returns an iterator to the element. Otherwise an iterator just past
-// the last non-zero element of the sparse row (the end() iterator) is returned. Note that
-// the returned sparse row iterator is subject to invalidation due to inserting operations
-// via the subscript operator or the insert() function!
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline typename SparseRow<MT,SO>::ConstIterator SparseRow<MT,SO>::find( size_t index ) const
-{
-   return matrix_.find( row_, index );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Setting the minimum capacity of the sparse row.
 //
 // \param n The new minimum capacity of the sparse row.
@@ -1136,6 +1102,142 @@ inline size_t SparseRow<MT,SO>::extendCapacity() const
    BLAZE_INTERNAL_ASSERT( nonzeros > capacity(), "Invalid capacity value" );
 
    return nonzeros;
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  LOOKUP FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Searches for a specific row element.
+//
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the element in case the index is found, end() iterator otherwise.
+//
+// This function can be used to check whether a specific element is contained in the sparse
+// row. It specifically searches for the element with index \a index. In case the element is
+// found, the function returns an iterator to the element. Otherwise an iterator just past
+// the last non-zero element of the sparse row (the end() iterator) is returned. Note that
+// the returned sparse row iterator is subject to invalidation due to inserting operations
+// via the subscript operator or the insert() function!
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline typename SparseRow<MT,SO>::Iterator SparseRow<MT,SO>::find( size_t index )
+{
+   return matrix_.find( row_, index );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Searches for a specific row element.
+//
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the element in case the index is found, end() iterator otherwise.
+//
+// This function can be used to check whether a specific element is contained in the sparse
+// row. It specifically searches for the element with index \a index. In case the element is
+// found, the function returns an iterator to the element. Otherwise an iterator just past
+// the last non-zero element of the sparse row (the end() iterator) is returned. Note that
+// the returned sparse row iterator is subject to invalidation due to inserting operations
+// via the subscript operator or the insert() function!
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline typename SparseRow<MT,SO>::ConstIterator SparseRow<MT,SO>::find( size_t index ) const
+{
+   return matrix_.find( row_, index );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index not less then the given index.
+//
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index not less then the given index, end() iterator otherwise.
+//
+// This function returns an iterator to the first element with an index not less then the given
+// index. In combination with the upperBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned sparse row iterator
+// is subject to invalidation due to inserting operations via the subscript operator or the
+// insert() function!
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline typename SparseRow<MT,SO>::Iterator SparseRow<MT,SO>::lowerBound( size_t index )
+{
+   return matrix_.lowerBound( row_, index );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index not less then the given index.
+//
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index not less then the given index, end() iterator otherwise.
+//
+// This function returns an iterator to the first element with an index not less then the given
+// index. In combination with the upperBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned sparse row iterator
+// is subject to invalidation due to inserting operations via the subscript operator or the
+// insert() function!
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline typename SparseRow<MT,SO>::ConstIterator SparseRow<MT,SO>::lowerBound( size_t index ) const
+{
+   return matrix_.lowerBound( row_, index );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index greater then the given index.
+//
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index greater then the given index, end() iterator otherwise.
+//
+// This function returns an iterator to the first element with an index greater then the given
+// index. In combination with the upperBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned sparse row iterator
+// is subject to invalidation due to inserting operations via the subscript operator or the
+// insert() function!
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline typename SparseRow<MT,SO>::Iterator SparseRow<MT,SO>::upperBound( size_t index )
+{
+   return matrix_.upperBound( row_, index );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index greater then the given index.
+//
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index greater then the given index, end() iterator otherwise.
+//
+// This function returns an iterator to the first element with an index greater then the given
+// index. In combination with the upperBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned sparse row iterator
+// is subject to invalidation due to inserting operations via the subscript operator or the
+// insert() function!
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline typename SparseRow<MT,SO>::ConstIterator SparseRow<MT,SO>::upperBound( size_t index ) const
+{
+   return matrix_.upperBound( row_, index );
 }
 //*************************************************************************************************
 
@@ -1853,10 +1955,20 @@ class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
                               inline ElementType&  insert ( size_t index, const ElementType& value );
                               inline void          erase  ( size_t index );
                               inline Iterator      erase  ( Iterator pos );
-                              inline Iterator      find   ( size_t index );
-                              inline ConstIterator find   ( size_t index ) const;
                               inline void          reserve( size_t n );
    template< typename Other > inline SparseRow&    scale  ( Other scalar );
+   //@}
+   //**********************************************************************************************
+
+   //**Lookup functions****************************************************************************
+   /*!\name Lookup functions */
+   //@{
+   inline Iterator      find      ( size_t index );
+   inline ConstIterator find      ( size_t index ) const;
+   inline Iterator      lowerBound( size_t index );
+   inline ConstIterator lowerBound( size_t index ) const;
+   inline Iterator      upperBound( size_t index );
+   inline ConstIterator upperBound( size_t index ) const;
    //@}
    //**********************************************************************************************
 
@@ -2444,6 +2556,52 @@ inline typename SparseRow<MT,false>::Iterator SparseRow<MT,false>::erase( Iterat
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Setting the minimum capacity of the sparse row.
+//
+// \param n The new minimum capacity of the sparse row.
+// \return void
+//
+// This function increases the capacity of the sparse row to at least \a n elements. The
+// current values of the row elements are preserved.
+*/
+template< typename MT >  // Type of the sparse matrix
+void SparseRow<MT,false>::reserve( size_t n )
+{
+   return;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Scaling of the sparse row by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
+//
+// \param scalar The scalar value for the row scaling.
+// \return Reference to the sparse row.
+*/
+template< typename MT >     // Type of the sparse matrix
+template< typename Other >  // Data type of the scalar value
+inline SparseRow<MT,false>& SparseRow<MT,false>::scale( Other scalar )
+{
+   for( Iterator element=begin(); element!=end(); ++element )
+      element->value() *= scalar;
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  LOOKUP FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Searches for a specific row element.
 //
 // \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
@@ -2500,18 +2658,29 @@ inline typename SparseRow<MT,false>::ConstIterator SparseRow<MT,false>::find( si
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Setting the minimum capacity of the sparse row.
+/*!\brief Returns an iterator to the first index not less then the given index.
 //
-// \param n The new minimum capacity of the sparse row.
-// \return void
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index not less then the given index, end() iterator otherwise.
 //
-// This function increases the capacity of the sparse row to at least \a n elements. The
-// current values of the row elements are preserved.
+// This function returns an iterator to the first element with an index not less then the given
+// index. In combination with the upperBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned sparse row iterator
+// is subject to invalidation due to inserting operations via the subscript operator or the
+// insert() function!
 */
 template< typename MT >  // Type of the sparse matrix
-void SparseRow<MT,false>::reserve( size_t n )
+inline typename SparseRow<MT,false>::Iterator SparseRow<MT,false>::lowerBound( size_t index )
 {
-   return;
+   for( size_t i=index; i<size(); ++i )
+   {
+      const typename MT::Iterator pos( matrix_.find( row_, i ) );
+
+      if( pos != matrix_.end( i ) )
+         return Iterator( matrix_, row_, i, pos );
+   }
+
+   return end();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2519,18 +2688,89 @@ void SparseRow<MT,false>::reserve( size_t n )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Scaling of the sparse row by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
+/*!\brief Returns an iterator to the first index not less then the given index.
 //
-// \param scalar The scalar value for the row scaling.
-// \return Reference to the sparse row.
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index not less then the given index, end() iterator otherwise.
+//
+// This function returns an iterator to the first element with an index not less then the given
+// index. In combination with the upperBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned sparse row iterator
+// is subject to invalidation due to inserting operations via the subscript operator or the
+// insert() function!
 */
-template< typename MT >     // Type of the sparse matrix
-template< typename Other >  // Data type of the scalar value
-inline SparseRow<MT,false>& SparseRow<MT,false>::scale( Other scalar )
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseRow<MT,false>::ConstIterator SparseRow<MT,false>::lowerBound( size_t index ) const
 {
-   for( Iterator element=begin(); element!=end(); ++element )
-      element->value() *= scalar;
-   return *this;
+   for( size_t i=index; i<size(); ++i )
+   {
+      const typename MT::ConstIterator pos( matrix_.find( row_, i ) );
+
+      if( pos != matrix_.end( i ) )
+         return ConstIterator( matrix_, row_, i, pos );
+   }
+
+   return end();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first index greater then the given index.
+//
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index greater then the given index, end() iterator otherwise.
+//
+// This function returns an iterator to the first element with an index greater then the given
+// index. In combination with the upperBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned sparse row iterator
+// is subject to invalidation due to inserting operations via the subscript operator or the
+// insert() function!
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseRow<MT,false>::Iterator SparseRow<MT,false>::upperBound( size_t index )
+{
+   for( size_t i=index+1UL; i<size(); ++i )
+   {
+      const typename MT::Iterator pos( matrix_.find( row_, i ) );
+
+      if( pos != matrix_.end( i ) )
+         return Iterator( matrix_, row_, i, pos );
+   }
+
+   return end();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first index greater then the given index.
+//
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index greater then the given index, end() iterator otherwise.
+//
+// This function returns an iterator to the first element with an index greater then the given
+// index. In combination with the upperBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned sparse row iterator
+// is subject to invalidation due to inserting operations via the subscript operator or the
+// insert() function!
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseRow<MT,false>::ConstIterator SparseRow<MT,false>::upperBound( size_t index ) const
+{
+   for( size_t i=index+1UL; i<size(); ++i )
+   {
+      const typename MT::ConstIterator pos( matrix_.find( row_, i ) );
+
+      if( pos != matrix_.end( i ) )
+         return ConstIterator( matrix_, row_, i, pos );
+   }
+
+   return end();
 }
 /*! \endcond */
 //*************************************************************************************************
