@@ -65,9 +65,11 @@ ClassTest::ClassTest()
    testAppend();
    testInsert();
    testErase();
-   testFind();
    testReserve();
    testScale();
+   testFind();
+   testLowerBound();
+   testUpperBound();
    testMinimum();
    testMaximum();
 }
@@ -3799,6 +3801,184 @@ void ClassTest::testErase()
 
 
 //*************************************************************************************************
+/*!\brief Test of the reserve member function of SparseColumn.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the reserve member function of SparseColumn. In case
+// an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testReserve()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major SparseColumn::reserve()";
+
+      MT mat( 20UL, 3UL );
+
+      CT col0 = column( mat, 0UL );
+
+      // Increasing the capacity of the column
+      col0.reserve( 10UL );
+
+      checkSize    ( col0, 20UL );
+      checkCapacity( col0, 10UL );
+      checkNonZeros( col0,  0UL );
+
+      // Further increasing the capacity of the column
+      col0.reserve( 15UL );
+
+      checkSize    ( col0, 20UL );
+      checkCapacity( col0, 15UL );
+      checkNonZeros( col0,  0UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major SparseColumn::reserve()";
+
+      TMT mat( 20UL, 3UL );
+
+      TCT col0 = column( mat, 0UL );
+
+      // Increasing the capacity of the column
+      col0.reserve( 10UL );
+
+      checkSize    ( col0, 20UL );
+      checkCapacity( col0, 10UL );
+      checkNonZeros( col0,  0UL );
+
+      // Further increasing the capacity of the column
+      col0.reserve( 15UL );
+
+      checkSize    ( col0, 20UL );
+      checkCapacity( col0, 15UL );
+      checkNonZeros( col0,  0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the scale member function of SparseColumn.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the scale member function of SparseColumn. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testScale()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major SparseColumn::scale()";
+
+      initialize();
+
+      // Scaling the 3rd column
+      {
+         CT col3 = column( mat_, 3UL );
+         col3.scale( 3 );
+
+         checkSize    ( col3,  4UL );
+         checkNonZeros( col3,  3UL );
+         checkRows    ( mat_,  4UL );
+         checkColumns ( mat_,  5UL );
+         checkNonZeros( mat_, 10UL );
+
+         if( col3[0] != 0 || col3[1] != 12 || col3[2] != 15 || col3[3] != -18 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Scale operation of 3rd column failed\n"
+                << " Details:\n"
+                << "   Result:\n" << col3 << "\n"
+                << "   Expected result:\n( 0 12 15 -18 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=   0 || mat_(0,4) !=  7 ||
+             mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  12 || mat_(1,4) != -8 ||
+             mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  15 || mat_(2,4) !=  9 ||
+             mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -18 || mat_(3,4) != 10 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Scale operation of 3rd column failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat_ << "\n"
+                << "   Expected result:\n( 0  0 -2   0  7 )\n"
+                                        "( 0  1  0  12 -8 )\n"
+                                        "( 0  0 -3  15  9 )\n"
+                                        "( 0  0  0 -18 10 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major SparseColumn::scale()";
+
+      initialize();
+
+      // Scaling the 3rd column
+      {
+         TCT col3 = column( tmat_, 3UL );
+         col3.scale( 3 );
+
+         checkSize    ( col3 ,  4UL );
+         checkNonZeros( col3 ,  3UL );
+         checkRows    ( tmat_,  4UL );
+         checkColumns ( tmat_,  5UL );
+         checkNonZeros( tmat_, 10UL );
+
+         if( col3[0] != 0 || col3[1] != 12 || col3[2] != 15 || col3[3] != -18 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Scale operation of 3rd column failed\n"
+                << " Details:\n"
+                << "   Result:\n" << col3 << "\n"
+                << "   Expected result:\n( 0 12 15 -18 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=   0 || tmat_(0,4) !=  7 ||
+             tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  12 || tmat_(1,4) != -8 ||
+             tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  15 || tmat_(2,4) !=  9 ||
+             tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -18 || tmat_(3,4) != 10 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Scale operation of 3rd column failed\n"
+                << " Details:\n"
+                << "   Result:\n" << tmat_ << "\n"
+                << "   Expected result:\n( 0  0 -2   0  7 )\n"
+                                        "( 0  1  0  12 -8 )\n"
+                                        "( 0  0 -3  15  9 )\n"
+                                        "( 0  0  0 -18 10 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the find member function of SparseColumn.
 //
 // \return void
@@ -3982,126 +4162,92 @@ void ClassTest::testFind()
 
 
 //*************************************************************************************************
-/*!\brief Test of the reserve member function of SparseColumn.
+/*!\brief Test of the lowerBound member function of SparseColumn.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the reserve member function of SparseColumn. In case
-// an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testReserve()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major SparseColumn::reserve()";
-
-      MT mat( 20UL, 3UL );
-
-      CT col0 = column( mat, 0UL );
-
-      // Increasing the capacity of the column
-      col0.reserve( 10UL );
-
-      checkSize    ( col0, 20UL );
-      checkCapacity( col0, 10UL );
-      checkNonZeros( col0,  0UL );
-
-      // Further increasing the capacity of the column
-      col0.reserve( 15UL );
-
-      checkSize    ( col0, 20UL );
-      checkCapacity( col0, 15UL );
-      checkNonZeros( col0,  0UL );
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major SparseColumn::reserve()";
-
-      TMT mat( 20UL, 3UL );
-
-      TCT col0 = column( mat, 0UL );
-
-      // Increasing the capacity of the column
-      col0.reserve( 10UL );
-
-      checkSize    ( col0, 20UL );
-      checkCapacity( col0, 10UL );
-      checkNonZeros( col0,  0UL );
-
-      // Further increasing the capacity of the column
-      col0.reserve( 15UL );
-
-      checkSize    ( col0, 20UL );
-      checkCapacity( col0, 15UL );
-      checkNonZeros( col0,  0UL );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the scale member function of SparseColumn.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the scale member function of SparseColumn. In case an
+// This function performs a test of the lowerBound member function of SparseColumn. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testScale()
+void ClassTest::testLowerBound()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn::scale()";
+      test_ = "Row-major SparseColumn::lowerBound()";
 
       initialize();
 
-      // Scaling the 3rd column
+      CT col1 = column( mat_, 1UL );
+
+      // Determining the lower bound for index 0
       {
-         CT col3 = column( mat_, 3UL );
-         col3.scale( 3 );
+         CT::Iterator pos = col1.lowerBound( 0UL );
 
-         checkSize    ( col3,  4UL );
-         checkNonZeros( col3,  3UL );
-         checkRows    ( mat_,  4UL );
-         checkColumns ( mat_,  5UL );
-         checkNonZeros( mat_, 10UL );
-
-         if( col3[0] != 0 || col3[1] != 12 || col3[2] != 15 || col3[3] != -18 ) {
+         if( pos == col1.end() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Scale operation of 3rd column failed\n"
+                << " Error: Lower bound could not be determined\n"
                 << " Details:\n"
-                << "   Result:\n" << col3 << "\n"
-                << "   Expected result:\n( 0 12 15 -18 )\n";
+                << "   Required index = 0\n"
+                << "   Current column:\n" << col1 << "\n";
             throw std::runtime_error( oss.str() );
          }
-
-         if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=   0 || mat_(0,4) !=  7 ||
-             mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  12 || mat_(1,4) != -8 ||
-             mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  15 || mat_(2,4) !=  9 ||
-             mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -18 || mat_(3,4) != 10 ) {
+         else if( pos->index() != 1 || pos->value() != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Scale operation of 3rd column failed\n"
+                << " Error: Wrong element found\n"
                 << " Details:\n"
-                << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n( 0  0 -2   0  7 )\n"
-                                        "( 0  1  0  12 -8 )\n"
-                                        "( 0  0 -3  15  9 )\n"
-                                        "( 0  0  0 -18 10 )\n";
+                << "   Required index = 1\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 1\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current column:\n" << col1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the lower bound for index 1
+      {
+         CT::Iterator pos = col1.lowerBound( 1UL );
+
+         if( pos == col1.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lower bound could not be determined\n"
+                << " Details:\n"
+                << "   Required index = 1\n"
+                << "   Current column:\n" << col1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 1 || pos->value() != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 1\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 1\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current column:\n" << col1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the lower bound for index 2
+      {
+         CT::Iterator pos = col1.lowerBound( 2UL );
+
+         if( pos != col1.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lower bound could not be determined\n"
+                << " Details:\n"
+                << "   Required index = 2\n"
+                << "   Current column:\n" << col1 << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4113,44 +4259,230 @@ void ClassTest::testScale()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn::scale()";
+      test_ = "Column-major SparseColumn::lowerBound()";
 
       initialize();
 
-      // Scaling the 3rd column
+      TCT col1 = column( tmat_, 1UL );
+
+      // Determining the lower bound for index 0
       {
-         TCT col3 = column( tmat_, 3UL );
-         col3.scale( 3 );
+         TCT::Iterator pos = col1.lowerBound( 0UL );
 
-         checkSize    ( col3 ,  4UL );
-         checkNonZeros( col3 ,  3UL );
-         checkRows    ( tmat_,  4UL );
-         checkColumns ( tmat_,  5UL );
-         checkNonZeros( tmat_, 10UL );
-
-         if( col3[0] != 0 || col3[1] != 12 || col3[2] != 15 || col3[3] != -18 ) {
+         if( pos == col1.end() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Scale operation of 3rd column failed\n"
+                << " Error: Lower bound could not be determined\n"
                 << " Details:\n"
-                << "   Result:\n" << col3 << "\n"
-                << "   Expected result:\n( 0 12 15 -18 )\n";
+                << "   Required index = 0\n"
+                << "   Current column:\n" << col1 << "\n";
             throw std::runtime_error( oss.str() );
          }
-
-         if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=   0 || tmat_(0,4) !=  7 ||
-             tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  12 || tmat_(1,4) != -8 ||
-             tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  15 || tmat_(2,4) !=  9 ||
-             tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -18 || tmat_(3,4) != 10 ) {
+         else if( pos->index() != 1 || pos->value() != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Scale operation of 3rd column failed\n"
+                << " Error: Wrong element found\n"
                 << " Details:\n"
-                << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n( 0  0 -2   0  7 )\n"
-                                        "( 0  1  0  12 -8 )\n"
-                                        "( 0  0 -3  15  9 )\n"
-                                        "( 0  0  0 -18 10 )\n";
+                << "   Required index = 1\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 1\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current column:\n" << col1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the lower bound for index 1
+      {
+         TCT::Iterator pos = col1.lowerBound( 1UL );
+
+         if( pos == col1.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lower bound could not be determined\n"
+                << " Details:\n"
+                << "   Required index = 1\n"
+                << "   Current column:\n" << col1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 1 || pos->value() != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 1\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 1\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current column:\n" << col1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the lower bound for index 2
+      {
+         TCT::Iterator pos = col1.lowerBound( 2UL );
+
+         if( pos != col1.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lower bound could not be determined\n"
+                << " Details:\n"
+                << "   Required index = 2\n"
+                << "   Current column:\n" << col1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the upperBound member function of SparseColumn.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the upperBound member function of SparseColumn. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testUpperBound()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major SparseColumn::upperBound()";
+
+      initialize();
+
+      CT col1 = column( mat_, 1UL );
+
+      // Determining the upper bound for index 0
+      {
+         CT::Iterator pos = col1.upperBound( 0UL );
+
+         if( pos == col1.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Upper bound could not be determined\n"
+                << " Details:\n"
+                << "   Required index = 0\n"
+                << "   Current column:\n" << col1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 1 || pos->value() != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 1\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 1\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current column:\n" << col1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the upper bound for index 1
+      {
+         CT::Iterator pos = col1.upperBound( 1UL );
+
+         if( pos != col1.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Upper bound could not be determined\n"
+                << " Details:\n"
+                << "   Required index = 1\n"
+                << "   Current column:\n" << col1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the upper bound for index 2
+      {
+         CT::Iterator pos = col1.upperBound( 2UL );
+
+         if( pos != col1.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Upper bound could not be determined\n"
+                << " Details:\n"
+                << "   Required index = 2\n"
+                << "   Current column:\n" << col1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major SparseColumn::upperBound()";
+
+      initialize();
+
+      TCT col1 = column( tmat_, 1UL );
+
+      // Determining the upper bound for index 0
+      {
+         TCT::Iterator pos = col1.upperBound( 0UL );
+
+         if( pos == col1.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Upper bound could not be determined\n"
+                << " Details:\n"
+                << "   Required index = 0\n"
+                << "   Current column:\n" << col1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 1 || pos->value() != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 1\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 1\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current column:\n" << col1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the upper bound for index 1
+      {
+         TCT::Iterator pos = col1.upperBound( 1UL );
+
+         if( pos != col1.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Upper bound could not be determined\n"
+                << " Details:\n"
+                << "   Required index = 1\n"
+                << "   Current column:\n" << col1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the upper bound for index 2
+      {
+         TCT::Iterator pos = col1.upperBound( 2UL );
+
+         if( pos != col1.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Upper bound could not be determined\n"
+                << " Details:\n"
+                << "   Required index = 2\n"
+                << "   Current column:\n" << col1 << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
