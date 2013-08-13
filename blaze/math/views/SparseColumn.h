@@ -425,6 +425,7 @@ class SparseColumn : public SparseVector< SparseColumn<MT,SO>, false >
                               inline ElementType&  insert ( size_t index, const ElementType& value );
                               inline void          erase  ( size_t index );
                               inline Iterator      erase  ( Iterator pos );
+                              inline Iterator      erase  ( Iterator first, Iterator last );
                               inline void          reserve( size_t n );
    template< typename Other > inline SparseColumn& scale  ( Other scalar );
    //@}
@@ -1042,6 +1043,24 @@ template< typename MT  // Type of the sparse matrix
 inline typename SparseColumn<MT,SO>::Iterator SparseColumn<MT,SO>::erase( Iterator pos )
 {
    return matrix_.erase( col_, pos );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Erasing a range of elements from the sparse column.
+//
+// \param first Iterator to first element to be erased.
+// \param last Iterator just past the last element to be erased.
+// \return Iterator to the element after the erased element.
+//
+// This function erases a range of elements from the sparse column.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline typename SparseColumn<MT,SO>::Iterator SparseColumn<MT,SO>::erase( Iterator first, Iterator last )
+{
+   return matrix_.erase( col_, first, last );
 }
 //*************************************************************************************************
 
@@ -1957,6 +1976,7 @@ class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, fals
                               inline ElementType&  insert ( size_t index, const ElementType& value );
                               inline void          erase  ( size_t index );
                               inline Iterator      erase  ( Iterator pos );
+                              inline Iterator      erase  ( Iterator first, Iterator last );
                               inline void          reserve( size_t n );
    template< typename Other > inline SparseColumn& scale  ( Other scalar );
    //@}
@@ -2551,6 +2571,28 @@ inline typename SparseColumn<MT,false>::Iterator SparseColumn<MT,false>::erase( 
 
    matrix_.erase( row, pos.pos_ );
    return Iterator( matrix_, row+1UL, col_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing a range of elements from the sparse column.
+//
+// \param first Iterator to first element to be erased.
+// \param last Iterator just past the last element to be erased.
+// \return Iterator to the element after the erased element.
+//
+// This function erases a range of elements from the sparse column.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseColumn<MT,false>::Iterator SparseColumn<MT,false>::erase( Iterator first, Iterator last )
+{
+   for( ; first!=last; ++first ) {
+      matrix_.erase( first.row_, first.pos_ );
+   }
+   return last;
 }
 /*! \endcond */
 //*************************************************************************************************
