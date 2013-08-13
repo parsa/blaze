@@ -3662,6 +3662,148 @@ void ClassTest::testErase()
 
 
    //=====================================================================================
+   // Row-major iterator-range-based erase function
+   //=====================================================================================
+
+   {
+      test_ = "Row-major SparseRow::erase( Iterator, Iterator )";
+
+      initialize();
+
+      // Erasing the 2nd row
+      {
+         RT row2 = row( mat_, 2UL );
+
+         RT::Iterator pos = row2.erase( row2.begin(), row2.end() );
+
+         checkSize    ( row2, 4UL );
+         checkNonZeros( row2, 0UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 8UL );
+
+         if( row2[0] != 0 || row2[1] != -0 || row2[2] != 0 || row2[3] != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing the row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row2 << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos != row2.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Erasing the first half of the 4th row
+      {
+         RT row4 = row( mat_, 4UL );
+
+         RT::Iterator pos = row4.erase( row4.begin(), row4.find( 2UL ) );
+
+         checkSize    ( row4, 4UL );
+         checkNonZeros( row4, 2UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 6UL );
+
+         if( row4[0] != 0 || row4[1] != 0 || row4[2] != 9 || row4[3] != 10 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a partial row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row4 << "\n"
+                << "   Expected result:\n( 0 0 9 10 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos->value() != 9 || pos->index() != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 9\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Erasing the second half of the 4th row
+      {
+         RT row4 = row( mat_, 4UL );
+
+         RT::Iterator pos = row4.erase( row4.find( 2UL ), row4.end() );
+
+         checkSize    ( row4, 4UL );
+         checkNonZeros( row4, 0UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 4UL );
+
+         if( row4[0] != 0 || row4[1] != 0 || row4[2] != 0 || row4[3] != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a partial row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row4 << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos != row4.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to erase an empty range
+      {
+         RT row3 = row( mat_, 3UL );
+
+         RT::Iterator pos = row3.erase( row3.find( 1UL ), row3.find( 1UL ) );
+
+         checkSize    ( row3, 4UL );
+         checkNonZeros( row3, 3UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 4UL );
+
+         if( row3[0] != 0 || row3[1] != 4 || row3[2] != 5 || row3[3] != -6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing an empty range failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 4 5 -6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos != row3.find( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major index-based erase function
    //=====================================================================================
 
@@ -3875,6 +4017,148 @@ void ClassTest::testErase()
          }
 
          if( pos != row4.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major iterator-range-based erase function
+   //=====================================================================================
+
+   {
+      test_ = "Column-major SparseRow::erase( Iterator, Iterator )";
+
+      initialize();
+
+      // Erasing the 2nd row
+      {
+         TRT row2 = row( tmat_, 2UL );
+
+         TRT::Iterator pos = row2.erase( row2.begin(), row2.end() );
+
+         checkSize    ( row2 , 4UL );
+         checkNonZeros( row2 , 0UL );
+         checkRows    ( tmat_, 5UL );
+         checkColumns ( tmat_, 4UL );
+         checkNonZeros( tmat_, 8UL );
+
+         if( row2[0] != 0 || row2[1] != -0 || row2[2] != 0 || row2[3] != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing the row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row2 << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos != row2.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Erasing the first half of the 4th row
+      {
+         TRT row4 = row( tmat_, 4UL );
+
+         TRT::Iterator pos = row4.erase( row4.begin(), row4.find( 2UL ) );
+
+         checkSize    ( row4 , 4UL );
+         checkNonZeros( row4 , 2UL );
+         checkRows    ( tmat_, 5UL );
+         checkColumns ( tmat_, 4UL );
+         checkNonZeros( tmat_, 6UL );
+
+         if( row4[0] != 0 || row4[1] != 0 || row4[2] != 9 || row4[3] != 10 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a partial row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row4 << "\n"
+                << "   Expected result:\n( 0 0 9 10 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos->value() != 9 || pos->index() != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 9\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Erasing the second half of the 4th row
+      {
+         TRT row4 = row( tmat_, 4UL );
+
+         TRT::Iterator pos = row4.erase( row4.find( 2UL ), row4.end() );
+
+         checkSize    ( row4 , 4UL );
+         checkNonZeros( row4 , 0UL );
+         checkRows    ( tmat_, 5UL );
+         checkColumns ( tmat_, 4UL );
+         checkNonZeros( tmat_, 4UL );
+
+         if( row4[0] != 0 || row4[1] != 0 || row4[2] != 0 || row4[3] != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a partial row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row4 << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos != row4.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to erase an empty range
+      {
+         TRT row3 = row( tmat_, 3UL );
+
+         TRT::Iterator pos = row3.erase( row3.find( 1UL ), row3.find( 1UL ) );
+
+         checkSize    ( row3 , 4UL );
+         checkNonZeros( row3 , 3UL );
+         checkRows    ( tmat_, 5UL );
+         checkColumns ( tmat_, 4UL );
+         checkNonZeros( tmat_, 4UL );
+
+         if( row3[0] != 0 || row3[1] != 4 || row3[2] != 5 || row3[3] != -6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing an empty range failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 4 5 -6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos != row3.find( 1UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
