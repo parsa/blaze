@@ -1293,8 +1293,8 @@ inline typename SparseRow<MT,SO>::ConstIterator SparseRow<MT,SO>::upperBound( si
 // \b Note: Although append() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
-template< typename MT       // Type of the sparse matrix
-        , bool SO >         // Storage order
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
 inline void SparseRow<MT,SO>::append( size_t index, const ElementType& value, bool check )
 {
    matrix_.append( row_, index, value, check );
@@ -1857,7 +1857,7 @@ class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
       //**Equality operator************************************************************************
       /*!\brief Equality comparison between two RowIterator objects.
       //
-      // \param rhs The right-hand side expression iterator.
+      // \param rhs The right-hand side row iterator.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
       template< typename MatrixType2, typename IteratorType2 >
@@ -1869,7 +1869,7 @@ class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
       //**Inequality operator**********************************************************************
       /*!\brief Inequality comparison between two RowIterator objects.
       //
-      // \param rhs The right-hand side expression iterator.
+      // \param rhs The right-hand side row iterator.
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
       template< typename MatrixType2, typename IteratorType2 >
@@ -1879,10 +1879,10 @@ class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
       //*******************************************************************************************
 
       //**Subtraction operator*********************************************************************
-      /*!\brief Calculating the number of elements between two expression iterators.
+      /*!\brief Calculating the number of elements between two row iterators.
       //
-      // \param rhs The right-hand side expression iterator.
-      // \return The number of elements between the two expression iterators.
+      // \param rhs The right-hand side row iterator.
+      // \return The number of elements between the two row iterators.
       */
       inline DifferenceType operator-( const RowIterator& rhs ) const {
          size_t counter( 0UL );

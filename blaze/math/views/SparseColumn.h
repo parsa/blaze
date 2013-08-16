@@ -1859,7 +1859,7 @@ class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, fals
       //**Equality operator************************************************************************
       /*!\brief Equality comparison between two ColumnIterator objects.
       //
-      // \param rhs The right-hand side expression iterator.
+      // \param rhs The right-hand side column iterator.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
       template< typename MatrixType2, typename IteratorType2 >
@@ -1871,7 +1871,7 @@ class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, fals
       //**Inequality operator**********************************************************************
       /*!\brief Inequality comparison between two ColumnIterator objects.
       //
-      // \param rhs The right-hand side expression iterator.
+      // \param rhs The right-hand side column iterator.
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
       template< typename MatrixType2, typename IteratorType2 >
@@ -1881,10 +1881,10 @@ class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, fals
       //*******************************************************************************************
 
       //**Subtraction operator*********************************************************************
-      /*!\brief Calculating the number of elements between two expression iterators.
+      /*!\brief Calculating the number of elements between two column iterators.
       //
-      // \param rhs The right-hand side expression iterator.
-      // \return The number of elements between the two expression iterators.
+      // \param rhs The right-hand side column iterator.
+      // \return The number of elements between the two column iterators.
       */
       inline DifferenceType operator-( const ColumnIterator& rhs ) const {
          size_t counter( 0UL );

@@ -1648,7 +1648,7 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
       //**Equality operator************************************************************************
       /*!\brief Equality comparison between two RowIterator objects.
       //
-      // \param rhs The right-hand side expression iterator.
+      // \param rhs The right-hand side row iterator.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
       template< typename MatrixType2 >
@@ -1660,7 +1660,7 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
       //**Inequality operator**********************************************************************
       /*!\brief Inequality comparison between two RowIterator objects.
       //
-      // \param rhs The right-hand side expression iterator.
+      // \param rhs The right-hand side row iterator.
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
       template< typename MatrixType2 >
@@ -1670,10 +1670,10 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
       //*******************************************************************************************
 
       //**Subtraction operator*********************************************************************
-      /*!\brief Calculating the number of elements between two expression iterators.
+      /*!\brief Calculating the number of elements between two row iterators.
       //
-      // \param rhs The right-hand side expression iterator.
-      // \return The number of elements between the two expression iterators.
+      // \param rhs The right-hand side row iterator.
+      // \return The number of elements between the two row iterators.
       */
       inline DifferenceType operator-( const RowIterator& rhs ) const {
          return column_ - rhs.column_;
