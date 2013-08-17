@@ -30,7 +30,6 @@
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/EqualTo.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/IfNot.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/NotEqualTo.h>
 #include <blaze/util/mpl/Or.h>
