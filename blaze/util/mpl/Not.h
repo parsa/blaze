@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/MPL.h
-//  \brief Header file for all meta-programming tools
+//  \file blaze/util/mpl/Not.h
+//  \brief Header file for the Not class template
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,20 +19,44 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_MPL_H_
-#define _BLAZE_UTIL_MPL_H_
+#ifndef _BLAZE_UTIL_MPL_NOT_H_
+#define _BLAZE_UTIL_MPL_NOT_H_
 
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
 
 //*************************************************************************************************
-// Includes
+/*!\brief Compile time type negation.
+// \ingroup mpl
+//
+// The Not class template negates the given compile time condition. In case the given condition
+// would evaluate to \a true, the nested member enumeration is set to \a false and vice versa:
+
+   \code
+   using namespace blaze;
+
+   Not< IsIntegral<int> >::value  // Evaluates to 0
+   Not< IsDouble<int>   >::value  // Evaluates to 1
+   \endcode
+*/
+template< typename C >  // Condition to be negated
+struct Not
+{
+ public:
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   enum { value = !C::value };
+   /*! \endcond */
+   //**********************************************************************************************
+};
 //*************************************************************************************************
 
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/EqualTo.h>
-#include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/IfNot.h>
-#include <blaze/util/mpl/Not.h>
-#include <blaze/util/mpl/NotEqualTo.h>
-#include <blaze/util/mpl/Or.h>
+} // namespace blaze
 
 #endif
