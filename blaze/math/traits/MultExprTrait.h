@@ -91,7 +91,7 @@
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/IfNot.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -155,14 +155,14 @@ struct MultExprTrait
                                                                           >::Type
                                                              , typename If< IsVector<T2>
                                                                           , typename If< IsDenseVector<T2>
-                                                                                       , typename IfNot< IsTransposeVector<T2>
-                                                                                                       , DMatDVecMultExprTrait<T1,T2>
-                                                                                                       , Failure
-                                                                                                       >::Type
-                                                                                       , typename IfNot< IsTransposeVector<T2>
-                                                                                                       , DMatSVecMultExprTrait<T1,T2>
-                                                                                                       , Failure
-                                                                                                       >::Type
+                                                                                       , typename If< Not< IsTransposeVector<T2> >
+                                                                                                    , DMatDVecMultExprTrait<T1,T2>
+                                                                                                    , Failure
+                                                                                                    >::Type
+                                                                                       , typename If< Not< IsTransposeVector<T2> >
+                                                                                                    , DMatSVecMultExprTrait<T1,T2>
+                                                                                                    , Failure
+                                                                                                    >::Type
                                                                                        >::Type
                                                                           , typename If< IsNumeric<T2>
                                                                                        , DMatScalarMultExprTrait<T1,T2>
@@ -183,14 +183,14 @@ struct MultExprTrait
                                                                           >::Type
                                                              , typename If< IsVector<T2>
                                                                           , typename If< IsDenseVector<T2>
-                                                                                       , typename IfNot< IsTransposeVector<T2>
-                                                                                                       , TDMatDVecMultExprTrait<T1,T2>
-                                                                                                       , Failure
-                                                                                                       >::Type
-                                                                                       , typename IfNot< IsTransposeVector<T2>
-                                                                                                       , TDMatSVecMultExprTrait<T1,T2>
-                                                                                                       , Failure
-                                                                                                       >::Type
+                                                                                       , typename If< Not< IsTransposeVector<T2> >
+                                                                                                    , TDMatDVecMultExprTrait<T1,T2>
+                                                                                                    , Failure
+                                                                                                    >::Type
+                                                                                       , typename If< Not< IsTransposeVector<T2> >
+                                                                                                    , TDMatSVecMultExprTrait<T1,T2>
+                                                                                                    , Failure
+                                                                                                    >::Type
                                                                                        >::Type
                                                                           , typename If< IsNumeric<T2>
                                                                                        , TDMatScalarMultExprTrait<T1,T2>
@@ -213,14 +213,14 @@ struct MultExprTrait
                                                                           >::Type
                                                              , typename If< IsVector<T2>
                                                                           , typename If< IsDenseVector<T2>
-                                                                                       , typename IfNot< IsTransposeVector<T2>
-                                                                                                       , SMatDVecMultExprTrait<T1,T2>
-                                                                                                       , Failure
-                                                                                                       >::Type
-                                                                                       , typename IfNot< IsTransposeVector<T2>
-                                                                                                       , SMatSVecMultExprTrait<T1,T2>
-                                                                                                       , Failure
-                                                                                                       >::Type
+                                                                                       , typename If< Not< IsTransposeVector<T2> >
+                                                                                                    , SMatDVecMultExprTrait<T1,T2>
+                                                                                                    , Failure
+                                                                                                    >::Type
+                                                                                       , typename If< Not< IsTransposeVector<T2> >
+                                                                                                    , SMatSVecMultExprTrait<T1,T2>
+                                                                                                    , Failure
+                                                                                                    >::Type
                                                                                        >::Type
                                                                           , typename If< IsNumeric<T2>
                                                                                        , SMatScalarMultExprTrait<T1,T2>
@@ -241,14 +241,14 @@ struct MultExprTrait
                                                                           >::Type
                                                              , typename If< IsVector<T2>
                                                                           , typename If< IsDenseVector<T2>
-                                                                                       , typename IfNot< IsTransposeVector<T2>
-                                                                                                       , TSMatDVecMultExprTrait<T1,T2>
-                                                                                                       , Failure
-                                                                                                       >::Type
-                                                                                       , typename IfNot< IsTransposeVector<T2>
-                                                                                                       , TSMatSVecMultExprTrait<T1,T2>
-                                                                                                       , Failure
-                                                                                                       >::Type
+                                                                                       , typename If< Not< IsTransposeVector<T2> >
+                                                                                                    , TSMatDVecMultExprTrait<T1,T2>
+                                                                                                    , Failure
+                                                                                                    >::Type
+                                                                                       , typename If< Not< IsTransposeVector<T2> >
+                                                                                                    , TSMatSVecMultExprTrait<T1,T2>
+                                                                                                    , Failure
+                                                                                                    >::Type
                                                                                        >::Type
                                                                           , typename If< IsNumeric<T2>
                                                                                        , TSMatScalarMultExprTrait<T1,T2>
