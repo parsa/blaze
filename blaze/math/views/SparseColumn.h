@@ -47,6 +47,7 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatAbsExpr.h>
@@ -3239,7 +3240,7 @@ inline typename DisableIf< IsExpression<MT>, SparseColumn<const MT> >::Type
 /*!\brief Creating a view on a specific column of the given matrix/matrix addition.
 // \ingroup views
 //
-// \param dm The constant matrix/matrix addition.
+// \param sm The constant matrix/matrix addition.
 // \param index The index of the column.
 // \return View on the specified column of the addition.
 //
@@ -3249,11 +3250,11 @@ inline typename DisableIf< IsExpression<MT>, SparseColumn<const MT> >::Type
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline typename EnableIf< IsMatMatAddExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
-   column( const SparseMatrix<MT,SO>& dm, size_t index )
+   column( const SparseMatrix<MT,SO>& sm, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return column( (~dm).leftOperand(), index ) + column( (~dm).rightOperand(), index );
+   return column( (~sm).leftOperand(), index ) + column( (~sm).rightOperand(), index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3264,7 +3265,7 @@ inline typename EnableIf< IsMatMatAddExpr<MT>, typename ColumnExprTrait<MT>::Typ
 /*!\brief Creating a view on a specific column of the given matrix/matrix subtraction.
 // \ingroup views
 //
-// \param dm The constant matrix/matrix subtraction.
+// \param sm The constant matrix/matrix subtraction.
 // \param index The index of the column.
 // \return View on the specified column of the subtraction.
 //
@@ -3274,11 +3275,11 @@ inline typename EnableIf< IsMatMatAddExpr<MT>, typename ColumnExprTrait<MT>::Typ
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline typename EnableIf< IsMatMatSubExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
-   column( const SparseMatrix<MT,SO>& dm, size_t index )
+   column( const SparseMatrix<MT,SO>& sm, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return column( (~dm).leftOperand(), index ) - column( (~dm).rightOperand(), index );
+   return column( (~sm).leftOperand(), index ) - column( (~sm).rightOperand(), index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3289,7 +3290,7 @@ inline typename EnableIf< IsMatMatSubExpr<MT>, typename ColumnExprTrait<MT>::Typ
 /*!\brief Creating a view on a specific column of the given matrix/matrix multiplication.
 // \ingroup views
 //
-// \param dm The constant matrix/matrix multiplication.
+// \param sm The constant matrix/matrix multiplication.
 // \param index The index of the column.
 // \return View on the specified column of the multiplication.
 //
@@ -3299,11 +3300,11 @@ inline typename EnableIf< IsMatMatSubExpr<MT>, typename ColumnExprTrait<MT>::Typ
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline typename EnableIf< IsMatMatMultExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
-   column( const SparseMatrix<MT,SO>& dm, size_t index )
+   column( const SparseMatrix<MT,SO>& sm, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return (~dm).leftOperand() * column( (~dm).rightOperand(), index );
+   return (~sm).leftOperand() * column( (~sm).rightOperand(), index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3314,7 +3315,7 @@ inline typename EnableIf< IsMatMatMultExpr<MT>, typename ColumnExprTrait<MT>::Ty
 /*!\brief Creating a view on a specific column of the given outer product.
 // \ingroup views
 //
-// \param dm The constant outer product.
+// \param sm The constant outer product.
 // \param index The index of the column.
 // \return View on the specified column of the outer product.
 //
@@ -3324,11 +3325,11 @@ inline typename EnableIf< IsMatMatMultExpr<MT>, typename ColumnExprTrait<MT>::Ty
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline typename EnableIf< IsVecTVecMultExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
-   column( const SparseMatrix<MT,SO>& dm, size_t index )
+   column( const SparseMatrix<MT,SO>& sm, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return (~dm).leftOperand() * (~dm).rightOperand()[index];
+   return (~sm).leftOperand() * (~sm).rightOperand()[index];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3339,7 +3340,7 @@ inline typename EnableIf< IsVecTVecMultExpr<MT>, typename ColumnExprTrait<MT>::T
 /*!\brief Creating a view on a specific column of the given matrix/scalar multiplication.
 // \ingroup views
 //
-// \param dm The constant matrix/scalar multiplication.
+// \param sm The constant matrix/scalar multiplication.
 // \param index The index of the column.
 // \return View on the specified column of the multiplication.
 //
@@ -3349,11 +3350,11 @@ inline typename EnableIf< IsVecTVecMultExpr<MT>, typename ColumnExprTrait<MT>::T
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline typename EnableIf< IsMatScalarMultExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
-   column( const SparseMatrix<MT,SO>& dm, size_t index )
+   column( const SparseMatrix<MT,SO>& sm, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return column( (~dm).leftOperand(), index ) * (~dm).rightOperand();
+   return column( (~sm).leftOperand(), index ) * (~sm).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3364,7 +3365,7 @@ inline typename EnableIf< IsMatScalarMultExpr<MT>, typename ColumnExprTrait<MT>:
 /*!\brief Creating a view on a specific column of the given matrix/scalar division.
 // \ingroup views
 //
-// \param dm The constant matrix/scalar division.
+// \param sm The constant matrix/scalar division.
 // \param index The index of the column.
 // \return View on the specified column of the division.
 //
@@ -3374,11 +3375,11 @@ inline typename EnableIf< IsMatScalarMultExpr<MT>, typename ColumnExprTrait<MT>:
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline typename EnableIf< IsMatScalarDivExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
-   column( const SparseMatrix<MT,SO>& dm, size_t index )
+   column( const SparseMatrix<MT,SO>& sm, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return column( (~dm).leftOperand(), index ) / (~dm).rightOperand();
+   return column( (~sm).leftOperand(), index ) / (~sm).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3389,7 +3390,7 @@ inline typename EnableIf< IsMatScalarDivExpr<MT>, typename ColumnExprTrait<MT>::
 /*!\brief Creating a view on a specific column of the given matrix abs operation.
 // \ingroup views
 //
-// \param dm The constant matrix abs operation.
+// \param sm The constant matrix abs operation.
 // \param index The index of the column.
 // \return View on the specified column of the abs operation.
 //
@@ -3399,11 +3400,11 @@ inline typename EnableIf< IsMatScalarDivExpr<MT>, typename ColumnExprTrait<MT>::
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline typename EnableIf< IsMatAbsExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
-   column( const SparseMatrix<MT,SO>& dm, size_t index )
+   column( const SparseMatrix<MT,SO>& sm, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return abs( column( (~dm).operand(), index ) );
+   return abs( column( (~sm).operand(), index ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3414,7 +3415,7 @@ inline typename EnableIf< IsMatAbsExpr<MT>, typename ColumnExprTrait<MT>::Type >
 /*!\brief Creating a view on a specific column of the given matrix evaluation operation.
 // \ingroup views
 //
-// \param dm The constant matrix evaluation operation.
+// \param sm The constant matrix evaluation operation.
 // \param index The index of the column.
 // \return View on the specified column of the evaluation operation.
 //
@@ -3424,11 +3425,11 @@ inline typename EnableIf< IsMatAbsExpr<MT>, typename ColumnExprTrait<MT>::Type >
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline typename EnableIf< IsMatEvalExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
-   column( const SparseMatrix<MT,SO>& dm, size_t index )
+   column( const SparseMatrix<MT,SO>& sm, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( column( (~dm).operand(), index ) );
+   return eval( column( (~sm).operand(), index ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3439,7 +3440,7 @@ inline typename EnableIf< IsMatEvalExpr<MT>, typename ColumnExprTrait<MT>::Type 
 /*!\brief Creating a view on a specific column of the given matrix transpose operation.
 // \ingroup views
 //
-// \param dm The constant matrix transpose operation.
+// \param sm The constant matrix transpose operation.
 // \param index The index of the column.
 // \return View on the specified column of the transpose operation.
 //
@@ -3449,12 +3450,31 @@ inline typename EnableIf< IsMatEvalExpr<MT>, typename ColumnExprTrait<MT>::Type 
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline typename EnableIf< IsMatTransExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
-   column( const SparseMatrix<MT,SO>& dm, size_t index )
+   column( const SparseMatrix<MT,SO>& sm, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( row( (~dm).operand(), index ) );
+   return trans( row( (~sm).operand(), index ) );
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBVECTORTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct SubvectorTrait< SparseColumn<MT,SO> >
+{
+   typedef typename SubvectorTrait< typename SparseColumn<MT,SO>::ResultType >::Type  Type;
+};
 /*! \endcond */
 //*************************************************************************************************
 
