@@ -2855,9 +2855,10 @@ inline typename SparseColumn<MT,false>::ConstIterator SparseColumn<MT,false>::up
 // returned by the end() functions!
 */
 template< typename MT >  // Type of the sparse matrix
-inline void SparseColumn<MT,false>::append( size_t index, const ElementType& value, bool /*check*/ )
+inline void SparseColumn<MT,false>::append( size_t index, const ElementType& value, bool check )
 {
-   matrix_.insert( index, col_, value );
+   if( !check || !isDefault( value ) )
+      matrix_.insert( index, col_, value );
 }
 /*! \endcond */
 //*************************************************************************************************

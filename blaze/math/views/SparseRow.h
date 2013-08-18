@@ -2852,9 +2852,10 @@ inline typename SparseRow<MT,false>::ConstIterator SparseRow<MT,false>::upperBou
 // returned by the end() functions!
 */
 template< typename MT >  // Type of the sparse matrix
-inline void SparseRow<MT,false>::append( size_t index, const ElementType& value, bool /*check*/ )
+inline void SparseRow<MT,false>::append( size_t index, const ElementType& value, bool check )
 {
-   matrix_.insert( row_, index, value );
+   if( !check || !isDefault( value ) )
+      matrix_.insert( row_, index, value );
 }
 /*! \endcond */
 //*************************************************************************************************
