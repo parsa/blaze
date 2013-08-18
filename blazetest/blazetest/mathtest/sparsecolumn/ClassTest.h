@@ -89,9 +89,11 @@ class ClassTest
    void testAppend      ();
    void testInsert      ();
    void testErase       ();
-   void testFind        ();
    void testReserve     ();
    void testScale       ();
+   void testFind        ();
+   void testLowerBound  ();
+   void testUpperBound  ();
    void testMinimum     ();
    void testMaximum     ();
 
@@ -294,9 +296,9 @@ void ClassTest::checkCapacity( const Type& object, size_t minCapacity ) const
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of non-zero elements of the given sparse column. In case
-// the actual number of non-zero elements does not correspond to the given expected number,
-// a \a std::runtime_error exception is thrown.
+// This function checks the number of non-zero elements of the given sparse column or compressed
+// matrix. In case the actual number of non-zero elements does not correspond to the given
+// expected number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the sparse column or compressed matrix
 void ClassTest::checkNonZeros( const Type& object, size_t expectedNonZeros ) const
