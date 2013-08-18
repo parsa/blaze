@@ -3546,6 +3546,15 @@ void ClassTest::testErase()
          checkColumns ( mat_, 4UL );
          checkNonZeros( mat_, 9UL );
 
+         if( pos != row4.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
          if( row4[0] != 7 || row4[1] != -8 || row4[2] != 9 || row4[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -3553,15 +3562,6 @@ void ClassTest::testErase()
                 << " Details:\n"
                 << "   Result:\n" << row4 << "\n"
                 << "   Expected result:\n( 7 -8 9 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos != row4.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3576,16 +3576,6 @@ void ClassTest::testErase()
          checkColumns ( mat_, 4UL );
          checkNonZeros( mat_, 8UL );
 
-         if( row4[0] != 0 || row4[1] != -8 || row4[2] != 9 || row4[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 0 -8 9 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
          if( pos->value() != -8 || pos->index() != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -3595,6 +3585,16 @@ void ClassTest::testErase()
                 << "   Index: " << pos->index() << "\n"
                 << "   Expected value: -8\n"
                 << "   Expected index:  1\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( row4[0] != 0 || row4[1] != -8 || row4[2] != 9 || row4[3] != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row4 << "\n"
+                << "   Expected result:\n( 0 -8 9 0 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3609,6 +3609,15 @@ void ClassTest::testErase()
          checkColumns ( mat_, 4UL );
          checkNonZeros( mat_, 7UL );
 
+         if( pos != row4.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
          if( row4[0] != 0 || row4[1] != -8 || row4[2] != 0 || row4[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -3616,15 +3625,6 @@ void ClassTest::testErase()
                 << " Details:\n"
                 << "   Result:\n" << row4 << "\n"
                 << "   Expected result:\n( 0 -8 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos != row4.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3639,6 +3639,15 @@ void ClassTest::testErase()
          checkColumns ( mat_, 4UL );
          checkNonZeros( mat_, 7UL );
 
+         if( pos != row4.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
          if( row4[0] != 0 || row4[1] != -8 || row4[2] != 0 || row4[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -3646,15 +3655,6 @@ void ClassTest::testErase()
                 << " Details:\n"
                 << "   Result:\n" << row4 << "\n"
                 << "   Expected result:\n( 0 -8 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos != row4.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3682,6 +3682,15 @@ void ClassTest::testErase()
          checkColumns ( mat_, 4UL );
          checkNonZeros( mat_, 8UL );
 
+         if( pos != row2.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
          if( row2[0] != 0 || row2[1] != -0 || row2[2] != 0 || row2[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -3689,15 +3698,6 @@ void ClassTest::testErase()
                 << " Details:\n"
                 << "   Result:\n" << row2 << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos != row2.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3714,16 +3714,6 @@ void ClassTest::testErase()
          checkColumns ( mat_, 4UL );
          checkNonZeros( mat_, 6UL );
 
-         if( row4[0] != 0 || row4[1] != 0 || row4[2] != 9 || row4[3] != 10 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a partial row failed\n"
-                << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 0 0 9 10 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
          if( pos->value() != 9 || pos->index() != 2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -3733,6 +3723,16 @@ void ClassTest::testErase()
                 << "   Index: " << pos->index() << "\n"
                 << "   Expected value: 9\n"
                 << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( row4[0] != 0 || row4[1] != 0 || row4[2] != 9 || row4[3] != 10 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a partial row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row4 << "\n"
+                << "   Expected result:\n( 0 0 9 10 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3749,6 +3749,15 @@ void ClassTest::testErase()
          checkColumns ( mat_, 4UL );
          checkNonZeros( mat_, 4UL );
 
+         if( pos != row4.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
          if( row4[0] != 0 || row4[1] != 0 || row4[2] != 0 || row4[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -3756,15 +3765,6 @@ void ClassTest::testErase()
                 << " Details:\n"
                 << "   Result:\n" << row4 << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos != row4.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3781,6 +3781,15 @@ void ClassTest::testErase()
          checkColumns ( mat_, 4UL );
          checkNonZeros( mat_, 4UL );
 
+         if( pos != row3.find( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
          if( row3[0] != 0 || row3[1] != 4 || row3[2] != 5 || row3[3] != -6 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -3788,15 +3797,6 @@ void ClassTest::testErase()
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
                 << "   Expected result:\n( 0 4 5 -6 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos != row3.find( 1UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3913,6 +3913,15 @@ void ClassTest::testErase()
          checkColumns ( tmat_, 4UL );
          checkNonZeros( tmat_, 9UL );
 
+         if( pos != row4.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
          if( row4[0] != 7 || row4[1] != -8 || row4[2] != 9 || row4[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -3920,15 +3929,6 @@ void ClassTest::testErase()
                 << " Details:\n"
                 << "   Result:\n" << row4 << "\n"
                 << "   Expected result:\n( 7 -8 9 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos != row4.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3943,16 +3943,6 @@ void ClassTest::testErase()
          checkColumns ( tmat_, 4UL );
          checkNonZeros( tmat_, 8UL );
 
-         if( row4[0] != 0 || row4[1] != -8 || row4[2] != 9 || row4[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 0 -8 9 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
          if( pos->value() != -8 || pos->index() != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -3962,6 +3952,16 @@ void ClassTest::testErase()
                 << "   Index: " << pos->index() << "\n"
                 << "   Expected value: -8\n"
                 << "   Expected index:  1\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( row4[0] != 0 || row4[1] != -8 || row4[2] != 9 || row4[3] != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row4 << "\n"
+                << "   Expected result:\n( 0 -8 9 0 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3976,6 +3976,15 @@ void ClassTest::testErase()
          checkColumns ( tmat_, 4UL );
          checkNonZeros( tmat_, 7UL );
 
+         if( pos != row4.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
          if( row4[0] != 0 || row4[1] != -8 || row4[2] != 0 || row4[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -3983,15 +3992,6 @@ void ClassTest::testErase()
                 << " Details:\n"
                 << "   Result:\n" << row4 << "\n"
                 << "   Expected result:\n( 0 -8 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos != row4.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4006,6 +4006,15 @@ void ClassTest::testErase()
          checkColumns ( tmat_, 4UL );
          checkNonZeros( tmat_, 7UL );
 
+         if( pos != row4.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
          if( row4[0] != 0 || row4[1] != -8 || row4[2] != 0 || row4[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -4013,15 +4022,6 @@ void ClassTest::testErase()
                 << " Details:\n"
                 << "   Result:\n" << row4 << "\n"
                 << "   Expected result:\n( 0 -8 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos != row4.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4049,6 +4049,15 @@ void ClassTest::testErase()
          checkColumns ( tmat_, 4UL );
          checkNonZeros( tmat_, 8UL );
 
+         if( pos != row2.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
          if( row2[0] != 0 || row2[1] != -0 || row2[2] != 0 || row2[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -4056,15 +4065,6 @@ void ClassTest::testErase()
                 << " Details:\n"
                 << "   Result:\n" << row2 << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos != row2.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4081,16 +4081,6 @@ void ClassTest::testErase()
          checkColumns ( tmat_, 4UL );
          checkNonZeros( tmat_, 6UL );
 
-         if( row4[0] != 0 || row4[1] != 0 || row4[2] != 9 || row4[3] != 10 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a partial row failed\n"
-                << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 0 0 9 10 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
          if( pos->value() != 9 || pos->index() != 2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -4100,6 +4090,16 @@ void ClassTest::testErase()
                 << "   Index: " << pos->index() << "\n"
                 << "   Expected value: 9\n"
                 << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( row4[0] != 0 || row4[1] != 0 || row4[2] != 9 || row4[3] != 10 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a partial row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row4 << "\n"
+                << "   Expected result:\n( 0 0 9 10 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4116,6 +4116,15 @@ void ClassTest::testErase()
          checkColumns ( tmat_, 4UL );
          checkNonZeros( tmat_, 4UL );
 
+         if( pos != row4.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
          if( row4[0] != 0 || row4[1] != 0 || row4[2] != 0 || row4[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -4123,15 +4132,6 @@ void ClassTest::testErase()
                 << " Details:\n"
                 << "   Result:\n" << row4 << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos != row4.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4148,6 +4148,15 @@ void ClassTest::testErase()
          checkColumns ( tmat_, 4UL );
          checkNonZeros( tmat_, 4UL );
 
+         if( pos != row3.find( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
          if( row3[0] != 0 || row3[1] != 4 || row3[2] != 5 || row3[3] != -6 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -4155,15 +4164,6 @@ void ClassTest::testErase()
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
                 << "   Expected result:\n( 0 4 5 -6 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos != row3.find( 1UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4883,7 +4883,7 @@ void ClassTest::testMinimum()
    //=====================================================================================
 
    {
-      test_ = "Row-major min function";
+      test_ = "Row-major min() function";
 
       initialize();
 
@@ -4969,7 +4969,7 @@ void ClassTest::testMinimum()
    //=====================================================================================
 
    {
-      test_ = "Column-major min function";
+      test_ = "Column-major min() function";
 
       initialize();
 
@@ -5068,7 +5068,7 @@ void ClassTest::testMaximum()
    //=====================================================================================
 
    {
-      test_ = "Row-major max function";
+      test_ = "Row-major max() function";
 
       initialize();
 
@@ -5154,7 +5154,7 @@ void ClassTest::testMaximum()
    //=====================================================================================
 
    {
-      test_ = "Column-major max function";
+      test_ = "Column-major max() function";
 
       initialize();
 
