@@ -41,6 +41,7 @@
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/RowTrait.h>
+#include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatAbsExpr.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
@@ -3020,6 +3021,25 @@ inline typename EnableIf< IsMatTransExpr<MT>, typename RowExprTrait<MT>::Type >:
 
    return trans( column( (~dm).operand(), index ) );
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBVECTORTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct SubvectorTrait< DenseRow<MT,SO> >
+{
+   typedef typename SubvectorTrait< typename DenseRow<MT,SO>::ResultType >::Type  Type;
+};
 /*! \endcond */
 //*************************************************************************************************
 
