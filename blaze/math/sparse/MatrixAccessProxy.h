@@ -203,8 +203,7 @@ inline MatrixAccessProxy<MT>::~MatrixAccessProxy()
 {
    const Iterator element( sm_.find( i_, j_ ) );
    const size_t index( rmm ? i_ : j_ );
-   BLAZE_INTERNAL_ASSERT( element != sm_.end(index), "Missing matrix element detected" );
-   if( isDefault( element->value() ) )
+   if( element != sm_.end( index ) && isDefault( element->value() ) )
       sm_.erase( index, element );
 }
 //*************************************************************************************************

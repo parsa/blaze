@@ -194,8 +194,7 @@ template< typename VT >  // Type of the sparse vector
 inline VectorAccessProxy<VT>::~VectorAccessProxy()
 {
    const Iterator element( sv_.find( i_ ) );
-   BLAZE_INTERNAL_ASSERT( element != sv_.end(), "Missing vector element detected" );
-   if( isDefault( element->value() ) )
+   if( element != sv_.end() && isDefault( element->value() ) )
       sv_.erase( element );
 }
 //*************************************************************************************************
