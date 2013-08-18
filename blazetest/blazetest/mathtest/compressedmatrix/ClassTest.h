@@ -87,7 +87,6 @@ class ClassTest
    void testAppend      ();
    void testInsert      ();
    void testErase       ();
-   void testFind        ();
    void testResize      ();
    void testReserve     ();
    void testTranspose   ();
@@ -95,6 +94,9 @@ class ClassTest
    void testIsSymmetric ();
    void testScale       ();
    void testSwap        ();
+   void testFind        ();
+   void testLowerBound  ();
+   void testUpperBound  ();
 
    template< typename Type >
    void checkRows( const Type& matrix, size_t expectedRows ) const;

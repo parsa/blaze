@@ -86,11 +86,13 @@ class ClassTest
    void testAppend      ();
    void testInsert      ();
    void testErase       ();
-   void testFind        ();
    void testResize      ();
    void testReserve     ();
    void testScale       ();
    void testSwap        ();
+   void testFind        ();
+   void testLowerBound  ();
+   void testUpperBound  ();
    void testLength      ();
    void testNormalize   ();
    void testMinimum     ();
