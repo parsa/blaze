@@ -42,6 +42,7 @@
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/system/TransposeFlag.h>
 #include <blaze/util/AlignedStorage.h>
@@ -2054,6 +2055,25 @@ struct MathTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 {
    typedef StaticVector< typename MathTrait<T1,T2>::HighType, N, TF >  HighType;
    typedef StaticVector< typename MathTrait<T1,T2>::LowType , N, TF >  LowType;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBVECTORTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, size_t N, bool TF >
+struct SubvectorTrait< StaticVector<T1,N,TF> >
+{
+   typedef DynamicVector<T1,TF>  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
