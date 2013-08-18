@@ -3439,7 +3439,7 @@ void ClassTest::testMinimum()
    //=====================================================================================
 
    {
-      test_ = "Row-major min function";
+      test_ = "Row-major min() function";
 
       initialize();
 
@@ -3525,7 +3525,7 @@ void ClassTest::testMinimum()
    //=====================================================================================
 
    {
-      test_ = "Column-major min function";
+      test_ = "Column-major min() function";
 
       initialize();
 
@@ -3624,7 +3624,7 @@ void ClassTest::testMaximum()
    //=====================================================================================
 
    {
-      test_ = "Row-major max function";
+      test_ = "Row-major max() function";
 
       initialize();
 
@@ -3710,7 +3710,7 @@ void ClassTest::testMaximum()
    //=====================================================================================
 
    {
-      test_ = "Column-major max function";
+      test_ = "Column-major max() function";
 
       initialize();
 
