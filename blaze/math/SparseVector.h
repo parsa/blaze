@@ -109,7 +109,7 @@ inline bool operator==( const SparseVector<T1,TF1>& lhs, const SparseVector<T2,T
    LhsConstIterator lelem( a.begin() );
    RhsConstIterator relem( b.begin() );
 
-   while( lelem < lend && relem < rend )
+   while( lelem != lend && relem != rend )
    {
       if( isDefault( lelem->value() ) ) { ++lelem; continue; }
       if( isDefault( relem->value() ) ) { ++relem; continue; }
@@ -123,13 +123,13 @@ inline bool operator==( const SparseVector<T1,TF1>& lhs, const SparseVector<T2,T
       }
    }
 
-   while( lelem < lend ) {
+   while( lelem != lend ) {
       if( !isDefault( lelem->value() ) )
          return false;
       ++lelem;
    }
 
-   while( relem < rend ) {
+   while( relem != rend ) {
       if( !isDefault( relem->value() ) )
          return false;
       ++relem;
