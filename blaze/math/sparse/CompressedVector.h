@@ -45,6 +45,7 @@
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/system/Precision.h>
@@ -2119,6 +2120,25 @@ struct MathTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 {
    typedef CompressedVector< typename MathTrait<T1,T2>::HighType, TF >  HighType;
    typedef CompressedVector< typename MathTrait<T1,T2>::LowType , TF >  LowType;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBVECTORTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, bool TF >
+struct SubvectorTrait< CompressedVector<T1,TF> >
+{
+   typedef CompressedVector<T1,TF>  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
