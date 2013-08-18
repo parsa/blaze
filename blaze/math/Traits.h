@@ -96,6 +96,8 @@
 #include <blaze/math/traits/SMatTSMatSubExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/traits/SubvectorExprTrait.h>
+#include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/traits/SVecAbsExprTrait.h>
 #include <blaze/math/traits/SVecDVecAddExprTrait.h>
 #include <blaze/math/traits/SVecDVecCrossExprTrait.h>
