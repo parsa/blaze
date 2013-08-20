@@ -28,6 +28,7 @@
 //*************************************************************************************************
 
 #include <blaze/util/AlignedStorage.h>
+#include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/Algorithm.h>
 #include <blaze/util/Assert.h>
