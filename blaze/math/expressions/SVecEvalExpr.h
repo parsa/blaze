@@ -34,6 +34,8 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/VecEvalExpr.h>
 #include <blaze/math/expressions/SparseVector.h>
+#include <blaze/math/traits/EvalExprTrait.h>
+#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -413,6 +415,28 @@ inline const SVecEvalExpr<VT,TF> eval( const SparseVector<VT,TF>& sv )
 
    return SVecEvalExpr<VT,TF>( ~sv );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  EXPRESSION TRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct SubvectorExprTrait< SVecEvalExpr<VT,TF> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename EvalExprTrait< typename SubvectorExprTrait<const VT>::Type >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

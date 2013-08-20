@@ -37,6 +37,7 @@
 #include <blaze/math/expressions/VecAbsExpr.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AbsExprTrait.h>
+#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
@@ -610,6 +611,28 @@ inline const SVecAbsExpr<VT,TF>& abs( const SVecAbsExpr<VT,TF>& sv )
 
    return sv;
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  EXPRESSION TRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct SubvectorExprTrait< SVecAbsExpr<VT,TF> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename AbsExprTrait< typename SubvectorExprTrait<const VT>::Type >::Type  Type;
+   //**********************************************************************************************
+};
 /*! \endcond */
 //*************************************************************************************************
 

@@ -37,6 +37,7 @@
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
@@ -474,6 +475,29 @@ inline const DVecDVecAddExpr<T1,T2,TF>
 
    return DVecDVecAddExpr<T1,T2,TF>( ~lhs, ~rhs );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  EXPRESSION TRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT1, typename VT2, bool TF >
+struct SubvectorExprTrait< DVecDVecAddExpr<VT1,VT2,TF> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename AddExprTrait< typename SubvectorExprTrait<const VT1>::Type
+                                , typename SubvectorExprTrait<const VT2>::Type >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

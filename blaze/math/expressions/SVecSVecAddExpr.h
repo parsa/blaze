@@ -38,6 +38,7 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -246,11 +247,11 @@ class SVecSVecAddExpr : public SparseVector< SVecSVecAddExpr<VT1,VT2,TF>, TF >
       const LeftIterator  lend( x.end() );
       const RightIterator rend( y.end() );
 
-      for( LeftIterator l=x.begin(); l<lend; ++l ) {
+      for( LeftIterator l=x.begin(); l!=lend; ++l ) {
          (~lhs)[l->index()] = l->value();
       }
 
-      for( RightIterator r=y.begin(); r<rend; ++r ) {
+      for( RightIterator r=y.begin(); r!=rend; ++r ) {
          if( isDefault( (~lhs)[r->index()] ) )
             (~lhs)[r->index()] = r->value();
          else
@@ -294,11 +295,11 @@ class SVecSVecAddExpr : public SparseVector< SVecSVecAddExpr<VT1,VT2,TF>, TF >
       const LeftIterator  lend( x.end() );
       const RightIterator rend( y.end() );
 
-      for( LeftIterator l=x.begin(); l<lend; ++l ) {
+      for( LeftIterator l=x.begin(); l!=lend; ++l ) {
          (~lhs)[l->index()] = l->value();
       }
 
-      for( RightIterator r=y.begin(); r<rend; ++r ) {
+      for( RightIterator r=y.begin(); r!=rend; ++r ) {
          (~lhs)[r->index()] += r->value();
       }
    }
@@ -518,6 +519,29 @@ inline const SVecSVecAddExpr<T1,T2,TF>
 
    return SVecSVecAddExpr<T1,T2,TF>( ~lhs, ~rhs );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  EXPRESSION TRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT1, typename VT2, bool TF >
+struct SubvectorExprTrait< SVecSVecAddExpr<VT1,VT2,TF> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename AddExprTrait< typename SubvectorExprTrait<const VT1>::Type
+                                , typename SubvectorExprTrait<const VT2>::Type >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
