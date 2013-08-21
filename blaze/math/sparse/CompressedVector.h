@@ -118,11 +118,11 @@ namespace blaze {
    a.append( 51, -2.1 );
 
    // In order to traverse all non-zero elements currently stored in the vector, the begin()
-   // and end() functions can be used. In the example, all non-zero elements of vector are
+   // and end() functions can be used. In the example, all non-zero elements of the vector are
    // traversed.
-   for( CompressedVector<double,false>::Iterator i=a.begin(); i!=a.end(); ++i ) {
-      ... = i->value();  // Access to the value of the non-zero element
-      ... = i->index();  // Access to the index of the non-zero element
+   for( CompressedVector<double,false>::Iterator it=a.begin(); it!=a.end(); ++it ) {
+      ... = it->value();  // Access to the value of the non-zero element
+      ... = it->index();  // Access to the index of the non-zero element
    }
    \endcode
 
