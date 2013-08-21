@@ -105,7 +105,7 @@ namespace blaze {
 // both sides of an assignment: The row can be either used as an alias to grant write access to a
 // specific row of a matrix primitive on the left-hand side of an assignment or to grant read-access
 // to a specific row of a matrix primitive or expression on the right-hand side of an assignment.
-// The following two examples demonstrate this in detail:
+// The following example demonstrates this in detail:
 
    \code
    typedef blaze::DynamicVector<double,rowVector>     DenseVectorType;
@@ -143,7 +143,7 @@ namespace blaze {
 // where N is the number of columns of the referenced matrix. Alternatively, the elements of
 // a row can be traversed via iterators. Just as with vectors, in case of non-const rows,
 // \c begin() and \c end() return an Iterator, which allows a manipulation of the non-zero
-// value, in case of a constant rows a ConstIterator is returned:
+// values, in case of constant rows a ConstIterator is returned:
 
    \code
    typedef blaze::DynamicMatrix<int,rowMajor>  MatrixType;
@@ -215,8 +215,8 @@ namespace blaze {
    typedef DenseRow<DenseMatrix>  RowType;
    RowType row0( row( A, 0UL ) );  // Reference to the 0th row of A
 
-   row0[0] = 0UL;        // Manual initialization of the 0th row of A
-   row0[1] = 0UL;
+   row0[0] = 0.0;        // Manual initialization of the 0th row of A
+   row0[1] = 0.0;
    row( A, 1UL ) = 1.0;  // Homogeneous initialization of the 1st row of A
    row( A, 2UL ) = a;    // Dense vector initialization of the 2nd row of A
    row( A, 3UL ) = c;    // Sparse vector initialization of the 3rd row of A

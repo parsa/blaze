@@ -109,7 +109,7 @@ namespace blaze {
 // both sides of an assignment: The row can be either used as an alias to grant write access to a
 // specific row of a matrix primitive on the left-hand side of an assignment or to grant read-access
 // to a specific row of a matrix primitive or expression on the right-hand side of an assignment.
-// The following two examples demonstrate this in detail:
+// The following example demonstrates this in detail:
 
    \code
    typedef blaze::DynamicVector<double,rowVector>     DenseVectorType;
@@ -118,7 +118,7 @@ namespace blaze {
 
    DenseVectorType  x;
    SparseVectorType y;
-   SparseMatrixType  A, B;
+   SparseMatrixType A, B;
    // ... Resizing and initialization
 
    // Setting the 2nd row of matrix A to x
@@ -147,7 +147,7 @@ namespace blaze {
 // where N is the number of columns of the referenced matrix. Alternatively, the elements of
 // a row can be traversed via iterators. Just as with vectors, in case of non-const rows,
 // \c begin() and \c end() return an Iterator, which allows a manipulation of the non-zero
-// value, in case of a constant rows a ConstIterator is returned:
+// values, in case of constant rows a ConstIterator is returned:
 
    \code
    typedef blaze::CompressedMatrix<int,rowMajor>  MatrixType;
@@ -166,7 +166,7 @@ namespace blaze {
       ... = it->index();  // OK: Read access to the index of the sparse element.
    }
 
-   for( RowType::Iterator it=row31.begin(); it!=row31.end(); ++it ) {
+   for( RowType::ConstIterator it=row31.begin(); it!=row31.end(); ++it ) {
       it->value() = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
       ... = it->value();  // OK: Read access to the value of the non-zero element.
       it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
@@ -206,11 +206,11 @@ namespace blaze {
    row0.append( 51UL, -2.1 );
 
    // In order to traverse all non-zero elements currently stored in the row, the begin()
-   // and end() functions can be used. In the example, all non-zero elements of row are
+   // and end() functions can be used. In the example, all non-zero elements of the row are
    // traversed.
-   for( RowType::Iterator i=a.begin(); i!=a.end(); ++i ) {
-      ... = i->value();  // Access to the value of the non-zero element
-      ... = i->index();  // Access to the index of the non-zero element
+   for( RowType::Iterator it=a.begin(); it!=a.end(); ++it ) {
+      ... = it->value();  // Access to the value of the non-zero element
+      ... = it->index();  // Access to the index of the non-zero element
    }
    \endcode
 
@@ -250,12 +250,12 @@ namespace blaze {
    \code
    using blaze::DynamicVector;
    using blaze::CompressedVector;
-   using blaze::DynamicMatrix;
+   using blaze::CompressedMatrix;
    using blaze::SparseRow;
 
    CompressedVector<double,rowVector> a( 2UL ), b;
    a[1] = 2.0;
-   DynamicVector<double,rowVector> c( 2UL, 3UL );
+   DynamicVector<double,rowVector> c( 2UL, 3.0 );
 
    typedef CompressedMatrix<double,rowMajor>  MatrixType;
    MatrixType A( 3UL, 2UL );  // Non-initialized 3x2 matrix
@@ -263,10 +263,10 @@ namespace blaze {
    typedef SparseRow<MatrixType>  RowType;
    RowType row0( row( A, 0UL ) );  // Reference to the 0th row of A
 
-   row0[0] = 0UL;        // Manual initialization of the 0th row of A
-   row0[1] = 0UL;
-   row( A, 1UL ) = a;    // Dense vector initialization of the 1st row of A
-   row( A, 2UL ) = c;    // Sparse vector initialization of the 2nd row of A
+   row0[0] = 0.0;        // Manual initialization of the 0th row of A
+   row0[1] = 0.0;
+   row( A, 1UL ) = a;    // Sparse vector initialization of the 1st row of A
+   row( A, 2UL ) = c;    // Dense vector initialization of the 2nd row of A
 
    b = row0 + a;              // Sparse vector/sparse vector addition
    b = c + row( A, 1UL );     // Dense vector/sparse vector addition
@@ -285,7 +285,7 @@ namespace blaze {
    A = trans( c ) * row( A, 1UL );  // Outer product between two vectors
    \endcode
 
-// \n \section dense_row_on_column_major_matrix Dense Row on a Column-Major Matrix
+// \n \section sparse_row_on_column_major_matrix Sparse Row on a Column-Major Matrix
 //
 // It is especially noteworthy that row views can be created for both row-major and column-major
 // matrices. Whereas the interface of a row-major matrix only allows to traverse a row directly
@@ -1750,9 +1750,6 @@ class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
       typedef PointerType       pointer;            //!< Pointer return type.
       typedef ReferenceType     reference;          //!< Reference return type.
       typedef DifferenceType    difference_type;    //!< Difference between two iterators.
-
-      //! Return type for the access to the value of a sparse element.
-      typedef typename SelectType< returnConst, ReturnType, ElementType& >::Type  Value;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************

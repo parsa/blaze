@@ -109,7 +109,7 @@ namespace blaze {
 // both sides of an assignment: The column can be either used as an alias to grant write access
 // to a specific column of a matrix primitive on the left-hand side of an assignment or to grant
 // read-access to a specific column of a matrix primitive or expression on the right-hand side
-// of an assignment. The following two examples demonstrate this in detail:
+// of an assignment. The following example demonstrates this in detail:
 
    \code
    typedef blaze::DynamicVector<double,columnVector>     DenseVectorType;
@@ -118,7 +118,7 @@ namespace blaze {
 
    DenseVectorType  x;
    SparseVectorType y;
-   SparseMatrixType  A, B;
+   SparseMatrixType A, B;
    // ... Resizing and initialization
 
    // Setting the 2nd column of matrix A to x
@@ -148,7 +148,7 @@ namespace blaze {
 // where N is the number of rows of the referenced matrix. Alternatively, the elements of a
 // column can be traversed via iterators. Just as with vectors, in case of non-const columns,
 // \c begin() and \c end() return an Iterator, which allows a manipulation of the non-zero
-// value, in case of a constant columns a ConstIterator is returned:
+// values, in case of constant columns a ConstIterator is returned:
 
    \code
    typedef blaze::CompressedMatrix<int,columnMajor>  MatrixType;
@@ -167,7 +167,7 @@ namespace blaze {
       ... = it->index();  // OK: Read access to the index of the sparse element.
    }
 
-   for( ColumnType::Iterator it=col31.begin(); it!=col31.end(); ++it ) {
+   for( ColumnType::ConstIterator it=col31.begin(); it!=col31.end(); ++it ) {
       it->value() = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
       ... = it->value();  // OK: Read access to the value of the non-zero element.
       it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
@@ -207,11 +207,11 @@ namespace blaze {
    col0.append( 51UL, -2.1 );
 
    // In order to traverse all non-zero elements currently stored in the column, the begin()
-   // and end() functions can be used. In the example, all non-zero elements of column are
+   // and end() functions can be used. In the example, all non-zero elements of the column are
    // traversed.
-   for( ColumnType::Iterator i=a.begin(); i!=a.end(); ++i ) {
-      ... = i->value();  // Access to the value of the non-zero element
-      ... = i->index();  // Access to the index of the non-zero element
+   for( ColumnType::Iterator it=a.begin(); it!=a.end(); ++it ) {
+      ... = it->value();  // Access to the value of the non-zero element
+      ... = it->index();  // Access to the index of the non-zero element
    }
    \endcode
 
@@ -252,12 +252,12 @@ namespace blaze {
    \code
    using blaze::DynamicVector;
    using blaze::CompressedVector;
-   using blaze::DynamicMatrix;
+   using blaze::CompressedMatrix;
    using blaze::SparseColumn;
 
    CompressedVector<double,columnVector> a( 2UL ), b;
    a[1] = 2.0;
-   DynamicVector<double,columnVector> c( 2UL, 3UL );
+   DynamicVector<double,columnVector> c( 2UL, 3.0 );
 
    typedef CompressedMatrix<double,columnMajor>  MatrixType;
    MatrixType A( 2UL, 3UL );  // Non-initialized 2x3 matrix
@@ -265,10 +265,10 @@ namespace blaze {
    typedef SparseColumn<MatrixType>  ColumnType;
    ColumnType col0( column( A, 0UL ) );  // Reference to the 0th column of A
 
-   col0[0] = 0UL;         // Manual initialization of the 0th column of A
-   col0[1] = 0UL;
-   column( A, 1UL ) = a;  // Dense vector initialization of the 1st column of A
-   column( A, 2UL ) = c;  // Sparse vector initialization of the 2nd column of A
+   col0[0] = 0.0;         // Manual initialization of the 0th column of A
+   col0[1] = 0.0;
+   column( A, 1UL ) = a;  // Sparse vector initialization of the 1st column of A
+   column( A, 2UL ) = c;  // Dense vector initialization of the 2nd column of A
 
    b = col0 + a;                 // Sparse vector/sparse vector addition
    b = c + column( A, 1UL );     // Dense vector/sparse vector addition
@@ -287,7 +287,7 @@ namespace blaze {
    A = column( A, 1UL ) * trans( c );  // Outer product between two vectors
    \endcode
 
-// \n \section dense_column_on_row_major_matrix Dense Column on a Row-Major Matrix
+// \n \section sparse_column_on_row_major_matrix Sparse Column on a Row-Major Matrix
 //
 // It is especially noteworthy that column views can be created for both row-major and column-major
 // matrices. Whereas the interface of a row-major matrix only allows to traverse a row directly
@@ -1752,9 +1752,6 @@ class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, fals
       typedef PointerType       pointer;            //!< Pointer return type.
       typedef ReferenceType     reference;          //!< Reference return type.
       typedef DifferenceType    difference_type;    //!< Difference between two iterators.
-
-      //! Return type for the access to the value of a sparse element.
-      typedef typename SelectType< returnConst, ReturnType, ElementType& >::Type  Value;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************

@@ -106,7 +106,7 @@ namespace blaze {
 // on both sides of an assignment: The column can be either used as an alias to grant write access
 // to a specific column of a matrix primitive on the left-hand side of an assignment or to grant
 // read-access to a specific column of a matrix primitive or expression on the right-hand side of
-// an assignment. The following two examples demonstrate this in detail:
+// an assignment. The following example demonstrates this in detail:
 
    \code
    typedef blaze::DynamicVector<double,columnVector>     DenseVectorType;
@@ -145,7 +145,7 @@ namespace blaze {
 // where N is the number of rows of the referenced matrix. Alternatively, the elements of a
 // column can be traversed via iterators. Just as with vectors, in case of non-const rows,
 // \c begin() and \c end() return an Iterator, which allows a manipulation of the non-zero
-// value, in case of a constant columns a ConstIterator is returned:
+// values, in case of constant columns a ConstIterator is returned:
 
    \code
    typedef blaze::DynamicMatrix<int,columnMajor>  MatrixType;
@@ -216,8 +216,8 @@ namespace blaze {
    typedef DenseColumn<DenseMatrix>  RowType;
    RowType col0( column( A, 0UL ) );  // Reference to the 0th column of A
 
-   col0[0] = 0UL;           // Manual initialization of the 0th column of A
-   col0[1] = 0UL;
+   col0[0] = 0.0;           // Manual initialization of the 0th column of A
+   col0[1] = 0.0;
    column( A, 1UL ) = 1.0;  // Homogeneous initialization of the 1st column of A
    column( A, 2UL ) = a;    // Dense vector initialization of the 2nd column of A
    column( A, 3UL ) = c;    // Sparse vector initialization of the 3rd column of A
