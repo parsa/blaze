@@ -31,5 +31,6 @@
 #include <blaze/math/views/DenseRow.h>
 #include <blaze/math/views/SparseColumn.h>
 #include <blaze/math/views/SparseRow.h>
+#include <blaze/math/views/SparseSubvector.h>
 
 #endif

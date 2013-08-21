@@ -33,8 +33,10 @@ namespace blaze {
 
 template< typename, bool > class DenseColumn;
 template< typename, bool > class DenseRow;
+template< typename, bool > class DenseSubvector;
 template< typename, bool > class SparseColumn;
 template< typename, bool > class SparseRow;
+template< typename, bool > class SparseSubvector;
 
 } // namespace blaze
 
