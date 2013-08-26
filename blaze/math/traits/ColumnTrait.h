@@ -85,13 +85,14 @@ namespace blaze {
 // the given matrix type the resulting column type is selected:
 
    \code
+   using blaze::rowMajor;
    using blaze::columnMajor;
 
-   // Definition of the column type of a column major dynamic matrix
+   // Definition of the column type of a column-major dynamic matrix
    typedef blaze::DynamicMatrix<int,columnMajor>    MatrixType1;
    typedef typename ColumnTrait<MatrixType1>::Type  ColumnType1;
 
-   // Definition of the column type of the row major static matrix
+   // Definition of the column type of the row-major static matrix
    typedef blaze::StaticMatrix<int,3UL,3UL,rowMajor>  MatrixType2;
    typedef typename ColumnTrait<MatrixType2>::Type    ColumnType2;
    \endcode

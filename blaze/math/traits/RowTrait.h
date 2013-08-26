@@ -86,12 +86,13 @@ namespace blaze {
 
    \code
    using blaze::rowMajor;
+   using blaze::columnMajor;
 
-   // Definition of the row type of a row major dynamic matrix
+   // Definition of the row type of a row-major dynamic matrix
    typedef blaze::DynamicMatrix<int,rowMajor>    MatrixType1;
    typedef typename RowTrait<MatrixType1>::Type  RowType1;
 
-   // Definition of the row type of the column major static matrix
+   // Definition of the row type of the column-major static matrix
    typedef blaze::StaticMatrix<int,3UL,3UL,columnMajor>  MatrixType2;
    typedef typename RowTrait<MatrixType2>::Type          RowType2;
    \endcode
