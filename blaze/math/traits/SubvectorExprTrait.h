@@ -27,13 +27,15 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
-#include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
+#include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/math/views/Forward.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -92,7 +94,7 @@ struct SubvectorExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< IsExpression<VT>
+   typedef typename If< Or< IsComputation<VT>, IsTransExpr<VT> >
                       , SubvectorExprTrait<Tmp>
                       , typename If< IsDenseVector<VT>
                                    , DenseResult<VT>
@@ -108,8 +110,8 @@ struct SubvectorExprTrait
  private:
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_STATIC_ASSERT( !IsExpression<VT>::value || IsConst<VT>::value ||
-                        IsVolatile<VT>::value || IsReference<VT>::value );
+   BLAZE_STATIC_ASSERT( !( Or< IsComputation<VT>, IsTransExpr<VT> >::value ) ||
+                        IsConst<VT>::value || IsVolatile<VT>::value || IsReference<VT>::value );
    /*! \endcond */
    //**********************************************************************************************
 };
