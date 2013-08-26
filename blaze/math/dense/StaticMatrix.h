@@ -43,6 +43,7 @@
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
+#include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
@@ -5226,6 +5227,25 @@ struct MathTrait< StaticMatrix<T1,M,N,SO>, StaticMatrix<T2,M,N,SO> >
 {
    typedef StaticMatrix< typename MathTrait<T1,T2>::HighType, M, N, SO >  HighType;
    typedef StaticMatrix< typename MathTrait<T1,T2>::LowType , M, N, SO >  LowType;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBMATRIXTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, size_t M, size_t N, bool SO >
+struct SubmatrixTrait< StaticMatrix<T1,M,N,SO> >
+{
+   typedef DynamicMatrix<T1,SO>  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
