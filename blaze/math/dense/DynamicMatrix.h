@@ -4158,13 +4158,13 @@ inline void DynamicMatrix<Type,true>::subAssign( const SparseMatrix<MT,false>& r
 /*!\name DynamicMatrix operators */
 //@{
 template< typename Type, bool SO >
-inline bool isnan( const DynamicMatrix<Type,SO>& m );
-
-template< typename Type, bool SO >
 inline void reset( DynamicMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
 inline void clear( DynamicMatrix<Type,SO>& m );
+
+template< typename Type, bool SO >
+inline bool isnan( const DynamicMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
 inline bool isDefault( const DynamicMatrix<Type,SO>& m );
@@ -4172,26 +4172,6 @@ inline bool isDefault( const DynamicMatrix<Type,SO>& m );
 template< typename Type, bool SO >
 inline void swap( DynamicMatrix<Type,SO>& a, DynamicMatrix<Type,SO>& b ) /* throw() */;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks the given matrix for not-a-number elements.
-// \ingroup dynamic_matrix
-//
-// \param m The matrix to be checked for not-a-number elements.
-// \return \a true if at least one element of the matrix is not-a-number, \a false otherwise.
-*/
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline bool isnan( const DynamicMatrix<Type,SO>& m )
-{
-   for( size_t i=0UL; i<m.rows(); ++i ) {
-      for( size_t j=0UL; j<m.columns(); ++j )
-         if( isnan( m(i,j) ) ) return true;
-   }
-   return false;
-}
 //*************************************************************************************************
 
 
@@ -4223,6 +4203,35 @@ template< typename Type  // Data type of the matrix
 inline void clear( DynamicMatrix<Type,SO>& m )
 {
    m.clear();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks the given matrix for not-a-number elements.
+// \ingroup dynamic_matrix
+//
+// \param m The matrix to be checked for not-a-number elements.
+// \return \a true if at least one element of the matrix is not-a-number, \a false otherwise.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline bool isnan( const DynamicMatrix<Type,SO>& m )
+{
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<m.rows(); ++i ) {
+         for( size_t j=0UL; j<m.columns(); ++j )
+            if( isnan( m(i,j) ) ) return true;
+      }
+   }
+   else {
+      for( size_t j=0UL; j<m.columns(); ++j ) {
+         for( size_t i=0UL; i<m.rows(); ++i )
+            if( isnan( m(i,j) ) ) return true;
+      }
+   }
+
+   return false;
 }
 //*************************************************************************************************
 
