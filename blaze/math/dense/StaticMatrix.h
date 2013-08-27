@@ -4946,13 +4946,13 @@ class StaticMatrix<Type,0UL,0UL,SO>;
 /*!\name StaticMatrix operators */
 //@{
 template< typename Type, size_t M, size_t N, bool SO >
-inline bool isnan( const StaticMatrix<Type,M,N,SO>& m );
-
-template< typename Type, size_t M, size_t N, bool SO >
 inline void reset( StaticMatrix<Type,M,N,SO>& m );
 
 template< typename Type, size_t M, size_t N, bool SO >
 inline void clear( StaticMatrix<Type,M,N,SO>& m );
+
+template< typename Type, size_t M, size_t N, bool SO >
+inline bool isnan( const StaticMatrix<Type,M,N,SO>& m );
 
 template< typename Type, size_t M, size_t N, bool SO >
 inline bool isDefault( const StaticMatrix<Type,M,N,SO>& m );
@@ -4960,29 +4960,6 @@ inline bool isDefault( const StaticMatrix<Type,M,N,SO>& m );
 template< typename Type, size_t M, size_t N, bool SO >
 inline void swap( StaticMatrix<Type,M,N,SO>& a, StaticMatrix<Type,M,N,SO>& b ) /* throw() */;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks the given matrix for not-a-number elements.
-// \ingroup static_matrix
-//
-// \param m The matrix to be checked for not-a-number elements.
-// \return \a true if at least one element of the matrix is not-a-number, \a false otherwise.
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline bool isnan( const StaticMatrix<Type,M,N,SO>& m )
-{
-   for( size_t i=0UL; i<M*N; ++i ) {
-      if( isnan( m[i] ) )
-         return true;
-   }
-
-   return false;
-}
 //*************************************************************************************************
 
 
@@ -5020,6 +4997,35 @@ template< typename Type  // Data type of the matrix
 inline void clear( StaticMatrix<Type,M,N,SO>& m )
 {
    m.reset();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks the given matrix for not-a-number elements.
+// \ingroup static_matrix
+//
+// \param m The matrix to be checked for not-a-number elements.
+// \return \a true if at least one element of the matrix is not-a-number, \a false otherwise.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline bool isnan( const StaticMatrix<Type,M,N,SO>& m )
+{
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<M; ++i )
+         for( size_t j=0UL; j<N; ++j )
+            if( !isnan( m(i,j) ) ) return true;
+   }
+   else {
+      for( size_t j=0UL; j<N; ++j )
+         for( size_t i=0UL; i<M; ++i )
+            if( !isnan( m(i,j) ) ) return true;
+   }
+
+   return false;
 }
 //*************************************************************************************************
 
