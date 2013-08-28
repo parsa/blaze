@@ -95,6 +95,7 @@ class ClassTest
    void testFind        ();
    void testLowerBound  ();
    void testUpperBound  ();
+   void testIsNan       ();
    void testIsDiagonal  ();
    void testIsSymmetric ();
 

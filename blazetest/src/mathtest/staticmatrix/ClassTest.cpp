@@ -79,6 +79,7 @@ ClassTest::ClassTest()
    testTranspose();
    testScale();
    testSwap();
+   testIsNan();
    testIsDiagonal();
    testIsSymmetric();
 }
@@ -3897,6 +3898,117 @@ void ClassTest::testSwap()
              << "   Result:\n" << mat2 << "\n"
              << "   Expected result:\n( 1 0 )\n( 2 3 )\n";
          throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the isnan function with the StaticMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the isnan functions with the StaticMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testIsNan()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isnan()";
+      
+      // isnan with empty 3x5 matrix
+      {
+         blaze::StaticMatrix<float,3UL,5UL,blaze::rowMajor> mat;
+         
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 5UL );
+         checkNonZeros( mat, 0UL );
+         
+         if( isnan( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+      
+      // isnan with filled 4x2 matrix
+      {
+         blaze::StaticMatrix<float,4UL,2UL,blaze::rowMajor> mat;
+         mat(1,1) =  1.0F;
+         mat(2,0) = -2.0F;
+         mat(2,1) =  3.0F;
+         mat(3,0) =  4.0F;
+         
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 2UL );
+         checkNonZeros( mat, 4UL );
+         
+         if( isnan( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+   
+   
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isnan()";
+      
+      // isnan with empty 3x5 matrix
+      {
+         blaze::StaticMatrix<float,3UL,5UL,blaze::columnMajor> mat;
+         
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 5UL );
+         checkNonZeros( mat, 0UL );
+         
+         if( isnan( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+      
+      // isnan with filled 4x2 matrix
+      {
+         blaze::StaticMatrix<float,4UL,2UL,blaze::columnMajor> mat;
+         mat(1,1) =  1.0F;
+         mat(2,0) = -2.0F;
+         mat(2,1) =  3.0F;
+         mat(3,0) =  4.0F;
+         
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 2UL );
+         checkNonZeros( mat, 4UL );
+         
+         if( isnan( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 }

@@ -4877,6 +4877,10 @@ inline void clear( StaticMatrix<Type,M,N,SO>& m )
 //
 // \param m The matrix to be checked for not-a-number elements.
 // \return \a true if at least one element of the matrix is not-a-number, \a false otherwise.
+//
+// This function checks if the given static matrix contains any not-a-number elements. Note that
+// this function only works for floating point elements. The attempt to use it for a matrix with
+// a non-floating point element type results in a compile time error.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -4887,12 +4891,12 @@ inline bool isnan( const StaticMatrix<Type,M,N,SO>& m )
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<M; ++i )
          for( size_t j=0UL; j<N; ++j )
-            if( !isnan( m(i,j) ) ) return true;
+            if( isnan( m(i,j) ) ) return true;
    }
    else {
       for( size_t j=0UL; j<N; ++j )
          for( size_t i=0UL; i<M; ++i )
-            if( !isnan( m(i,j) ) ) return true;
+            if( isnan( m(i,j) ) ) return true;
    }
 
    return false;

@@ -4335,6 +4335,10 @@ inline void clear( CompressedMatrix<Type,SO>& m )
 //
 // \param m The sparse matrix to be checked for not-a-number elements.
 // \return \a true if at least one element of the sparse matrix is not-a-number, \a false otherwise.
+//
+// This function checks if the given compressed matrix contains any not-a-number elements. Note
+// that this function only works for floating point elements. The attempt to use it for a matrix
+// with a non-floating point element type results in a compile time error.
 */
 template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
@@ -4345,13 +4349,13 @@ inline bool isnan( const CompressedMatrix<Type,SO>& m )
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<m.rows(); ++i ) {
          for( ConstIterator element=m.begin(i); element!=m.end(i); ++element )
-            if( isnan( *element ) ) return true;
+            if( isnan( element->value() ) ) return true;
       }
    }
    else {
       for( size_t j=0UL; j<m.columns(); ++j ) {
          for( ConstIterator element=m.begin(j); element!=m.end(j); ++element )
-            if( isnan( *element ) ) return true;
+            if( isnan( element->value() ) ) return true;
       }
    }
 
