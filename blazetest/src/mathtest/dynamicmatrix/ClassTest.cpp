@@ -86,6 +86,8 @@ ClassTest::ClassTest()
    testIsNan();
    testIsDiagonal();
    testIsSymmetric();
+   testMinimum();
+   testMaximum();
 }
 //*************************************************************************************************
 
@@ -3649,7 +3651,7 @@ void ClassTest::testIsNan()
       
       // isnan with empty 3x5 matrix
       {
-         blaze::DynamicMatrix<float,blaze::rowMajor> mat( 3UL, 5UL );
+         blaze::DynamicMatrix<float,blaze::rowMajor> mat( 3UL, 5UL, 0.0F );
          
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 5UL );
@@ -3667,7 +3669,7 @@ void ClassTest::testIsNan()
       
       // isnan with filled 4x2 matrix
       {
-         blaze::DynamicMatrix<float,blaze::rowMajor> mat( 4UL, 2UL );
+         blaze::DynamicMatrix<float,blaze::rowMajor> mat( 4UL, 2UL, 0.0F );
          mat(1,1) =  1.0F;
          mat(2,0) = -2.0F;
          mat(2,1) =  3.0F;
@@ -3716,7 +3718,7 @@ void ClassTest::testIsNan()
       
       // isnan with empty 3x5 matrix
       {
-         blaze::DynamicMatrix<float,blaze::columnMajor> mat( 3UL, 5UL );
+         blaze::DynamicMatrix<float,blaze::columnMajor> mat( 3UL, 5UL, 0.0F );
          
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 5UL );
@@ -3734,7 +3736,7 @@ void ClassTest::testIsNan()
       
       // isnan with filled 4x2 matrix
       {
-         blaze::DynamicMatrix<float,blaze::columnMajor> mat( 4UL, 2UL );
+         blaze::DynamicMatrix<float,blaze::columnMajor> mat( 4UL, 2UL, 0.0F );
          mat(1,1) =  1.0F;
          mat(2,0) = -2.0F;
          mat(2,1) =  3.0F;
@@ -4257,6 +4259,594 @@ void ClassTest::testIsSymmetric()
                 << " Error: Invalid isSymmetric evaluation\n"
                 << " Details:\n"
                 << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the min function with the DynamicMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the min function with the DynamicMatrix class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testMinimum()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major min()";
+      
+      // Attempt to find the minimum at the beginning in a fully filled matrix
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 0 );
+         mat(0,0) = -1;
+         mat(0,1) =  2;
+         mat(1,0) =  3;
+         mat(1,1) =  4;
+         mat(2,0) =  5;
+         mat(2,1) =  6;
+         
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 2UL );
+         checkNonZeros( mat, 6UL );
+         
+         const int minimum = min( mat );
+
+         if( minimum != -1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: First computation failed\n"
+                << " Details:\n"
+                << "   Result: " << minimum << "\n"
+                << "   Expected result: -1\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+      
+      // Attempt to find the minimum at the end in a fully filled matrix
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 0 );
+         mat(0,0) =  1;
+         mat(0,1) =  2;
+         mat(0,2) =  3;
+         mat(1,0) =  4;
+         mat(1,1) =  5;
+         mat(1,2) = -6;
+         
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 6UL );
+         
+         const int minimum = min( mat );
+
+         if( minimum != -6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Second computation failed\n"
+                << " Details:\n"
+                << "   Result: " << minimum << "\n"
+                << "   Expected result: -6\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+      
+      // Attempt to find the minimum at the beginning in a partially filled matrix
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 5UL, 3UL, 0 );
+         mat(0,0) = -1;
+         mat(0,2) =  2;
+         mat(2,1) =  3;
+         mat(4,0) =  4;
+         mat(4,2) =  5;
+         
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 5UL );
+         
+         const int minimum = min( mat );
+
+         if( minimum != -1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Third computation failed\n"
+                << " Details:\n"
+                << "   Result: " << minimum << "\n"
+                << "   Expected result: -1\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+      
+      // Attempt to find the minimum at the end in a partially filled matrix
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 5UL, 0 );
+         mat(0,0) =  1;
+         mat(0,4) =  2;
+         mat(1,2) =  3;
+         mat(2,0) =  4;
+         mat(2,4) = -5;
+         
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         
+         const int minimum = min( mat );
+
+         if( minimum != -5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Fourth computation failed\n"
+                << " Details:\n"
+                << "   Result: " << minimum << "\n"
+                << "   Expected result: -5\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+      
+      // Attempt to detect 0 as the minimum value
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
+         mat(0,0) = 1;
+         mat(0,2) = 2;
+         mat(1,1) = 3;
+         mat(2,0) = 4;
+         mat(2,2) = 5;
+         
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 5UL );
+         
+         const int minimum = min( mat );
+
+         if( minimum != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Fifth computation failed\n"
+                << " Details:\n"
+                << "   Result: " << minimum << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+   
+   
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major min()";
+      
+      // Attempt to find the minimum at the beginning in a partially filled matrix
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 5UL, 3UL, 0 );
+         mat(0,0) = -1;
+         mat(0,2) =  2;
+         mat(2,1) =  3;
+         mat(4,0) =  4;
+         mat(4,2) =  5;
+         
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 5UL );
+         
+         const int minimum = min( mat );
+
+         if( minimum != -1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: First computation failed\n"
+                << " Details:\n"
+                << "   Result: " << minimum << "\n"
+                << "   Expected result: -1\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+      
+      // Attempt to find the minimum at the end in a partially filled matrix
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 5UL, 0 );
+         mat(0,0) =  1;
+         mat(0,4) =  2;
+         mat(1,2) =  3;
+         mat(2,0) =  4;
+         mat(2,4) = -5;
+         
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         
+         const int minimum = min( mat );
+
+         if( minimum != -5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Second computation failed\n"
+                << " Details:\n"
+                << "   Result: " << minimum << "\n"
+                << "   Expected result: -5\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+      
+      // Attempt to find the minimum at the beginning in a partially filled matrix
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 5UL, 3UL, 0 );
+         mat(0,0) = -1;
+         mat(0,2) =  2;
+         mat(2,1) =  3;
+         mat(4,0) =  4;
+         mat(4,2) =  5;
+         
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 5UL );
+         
+         const int minimum = min( mat );
+
+         if( minimum != -1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Third computation failed\n"
+                << " Details:\n"
+                << "   Result: " << minimum << "\n"
+                << "   Expected result: -1\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+      
+      // Attempt to find the minimum at the end in a partially filled matrix
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 5UL, 0 );
+         mat(0,0) =  1;
+         mat(0,4) =  2;
+         mat(1,2) =  3;
+         mat(2,0) =  4;
+         mat(2,4) = -5;
+         
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         
+         const int minimum = min( mat );
+
+         if( minimum != -5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Fourth computation failed\n"
+                << " Details:\n"
+                << "   Result: " << minimum << "\n"
+                << "   Expected result: -5\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+      
+      // Attempt to detect 0 as the minimum value
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
+         mat(0,0) = 1;
+         mat(0,2) = 2;
+         mat(1,1) = 3;
+         mat(2,0) = 4;
+         mat(2,2) = 5;
+         
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 5UL );
+         
+         const int minimum = min( mat );
+
+         if( minimum != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Fifth computation failed\n"
+                << " Details:\n"
+                << "   Result: " << minimum << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the max function with the DynamicMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the max function with the DynamicMatrix class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testMaximum()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major max()";
+      
+      // Attempt to find the maximum at the beginning in a fully filled matrix
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 0 );
+         mat(0,0) =  1;
+         mat(0,1) = -2;
+         mat(1,0) = -3;
+         mat(1,1) = -4;
+         mat(2,0) = -5;
+         mat(2,1) = -6;
+         
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 2UL );
+         checkNonZeros( mat, 6UL );
+         
+         const int maximum = max( mat );
+
+         if( maximum != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: First computation failed\n"
+                << " Details:\n"
+                << "   Result: " << maximum << "\n"
+                << "   Expected result: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+      
+      // Attempt to find the maximum at the end in a fully filled matrix
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 0 );
+         mat(0,0) = -1;
+         mat(0,1) = -2;
+         mat(0,2) = -3;
+         mat(1,0) = -4;
+         mat(1,1) = -5;
+         mat(1,2) =  6;
+         
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 6UL );
+         
+         const int maximum = max( mat );
+
+         if( maximum != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Second computation failed\n"
+                << " Details:\n"
+                << "   Result: " << maximum << "\n"
+                << "   Expected result: 6\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+      
+      // Attempt to find the maximum at the beginning in a partially filled matrix
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 5UL, 3UL, 0 );
+         mat(0,0) =  1;
+         mat(0,2) = -2;
+         mat(2,1) = -3;
+         mat(4,0) = -4;
+         mat(4,2) = -5;
+         
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 5UL );
+         
+         const int maximum = max( mat );
+
+         if( maximum != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Third computation failed\n"
+                << " Details:\n"
+                << "   Result: " << maximum << "\n"
+                << "   Expected result: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+      
+      // Attempt to find the maximum at the end in a partially filled matrix
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 5UL, 0 );
+         mat(0,0) = -1;
+         mat(0,4) = -2;
+         mat(1,2) = -3;
+         mat(2,0) = -4;
+         mat(2,4) =  5;
+         
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         
+         const int maximum = max( mat );
+
+         if( maximum != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Fourth computation failed\n"
+                << " Details:\n"
+                << "   Result: " << maximum << "\n"
+                << "   Expected result: 5\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+      
+      // Attempt to detect 0 as the maximum value
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
+         mat(0,0) = -1;
+         mat(0,2) = -2;
+         mat(1,1) = -3;
+         mat(2,0) = -4;
+         mat(2,2) = -5;
+         
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 5UL );
+         
+         const int maximum = max( mat );
+
+         if( maximum != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Fifth computation failed\n"
+                << " Details:\n"
+                << "   Result: " << maximum << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+   
+   
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major max()";
+      
+      // Attempt to find the maximum at the beginning in a fully filled matrix
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 0 );
+         mat(0,0) =  1;
+         mat(0,1) = -2;
+         mat(1,0) = -3;
+         mat(1,1) = -4;
+         mat(2,0) = -5;
+         mat(2,1) = -6;
+         
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 2UL );
+         checkNonZeros( mat, 6UL );
+         
+         const int maximum = max( mat );
+
+         if( maximum != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: First computation failed\n"
+                << " Details:\n"
+                << "   Result: " << maximum << "\n"
+                << "   Expected result: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+      
+      // Attempt to find the maximum at the end in a fully filled matrix
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 0 );
+         mat(0,0) = -1;
+         mat(0,1) = -2;
+         mat(0,2) = -3;
+         mat(1,0) = -4;
+         mat(1,1) = -5;
+         mat(1,2) =  6;
+         
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 6UL );
+         
+         const int maximum = max( mat );
+
+         if( maximum != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Second computation failed\n"
+                << " Details:\n"
+                << "   Result: " << maximum << "\n"
+                << "   Expected result: 6\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+      
+      // Attempt to find the maximum at the beginning in a partially filled matrix
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 5UL, 3UL, 0 );
+         mat(0,0) =  1;
+         mat(0,2) = -2;
+         mat(2,1) = -3;
+         mat(4,0) = -4;
+         mat(4,2) = -5;
+         
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 5UL );
+         
+         const int maximum = max( mat );
+
+         if( maximum != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Third computation failed\n"
+                << " Details:\n"
+                << "   Result: " << maximum << "\n"
+                << "   Expected result: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+      
+      // Attempt to find the maximum at the end in a partially filled matrix
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 5UL, 0 );
+         mat(0,0) = -1;
+         mat(0,4) = -2;
+         mat(1,2) = -3;
+         mat(2,0) = -4;
+         mat(2,4) =  5;
+         
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         
+         const int maximum = max( mat );
+
+         if( maximum != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Fourth computation failed\n"
+                << " Details:\n"
+                << "   Result: " << maximum << "\n"
+                << "   Expected result: 5\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+      
+      // Attempt to detect 0 as the maximum value
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
+         mat(0,0) = -1;
+         mat(0,2) = -2;
+         mat(1,1) = -3;
+         mat(2,0) = -4;
+         mat(2,2) = -5;
+         
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 5UL );
+         
+         const int maximum = max( mat );
+
+         if( maximum != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Fifth computation failed\n"
+                << " Details:\n"
+                << "   Result: " << maximum << "\n"
+                << "   Expected result: 0\n";
             throw std::runtime_error( oss.str() );
          }
       }

@@ -97,6 +97,8 @@ class ClassTest
    void testIsNan       ();
    void testIsDiagonal  ();
    void testIsSymmetric ();
+   void testMinimum     ();
+   void testMaximum     ();
 
    template< typename Type >
    void checkRows( const Type& matrix, size_t expectedRows ) const;
