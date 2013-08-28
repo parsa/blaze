@@ -1811,6 +1811,9 @@ inline void clear( StaticVector<Type,N,TF>& v )
    // ... Initialization
    if( isnan( a ) ) { ... }
    \endcode
+
+// Note that this function only works for vectors with floating point elements. The attempt to
+// use it for a vector with a non-floating point element type results in a compile time error.
 */
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements

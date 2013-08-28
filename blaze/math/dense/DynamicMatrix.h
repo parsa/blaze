@@ -4092,9 +4092,18 @@ inline void clear( DynamicMatrix<Type,SO>& m )
 // \param m The matrix to be checked for not-a-number elements.
 // \return \a true if at least one element of the matrix is not-a-number, \a false otherwise.
 //
-// This function checks if the given dynamic matrix contains any not-a-number elements. Note that
-// this function only works for floating point elements. The attempt to use it for a matrix with
-// a non-floating point element type results in a compile time error.
+// This function checks the dynamic matrix for not-a-number (NaN) elements. If at least one
+// element of the matrix is not-a-number, the function returns \a true, otherwise it returns
+// \a false.
+
+   \code
+   blaze::DynamicMatrix<double> a( 3UL, 4UL );
+   // ... Initialization
+   if( isnan( a ) ) { ... }
+   \endcode
+
+// Note that this function only works for matrices with floating point elements. The attempt to
+// use it for a matrix with a non-floating point element type results in a compile time error.
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order

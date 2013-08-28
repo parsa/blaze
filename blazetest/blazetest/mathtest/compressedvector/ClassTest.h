@@ -97,6 +97,7 @@ class ClassTest
    void testNormalize   ();
    void testMinimum     ();
    void testMaximum     ();
+   void testIsNan       ();
 
    template< typename Type >
    void checkSize( const Type& vector, size_t expectedSize ) const;

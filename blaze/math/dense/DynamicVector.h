@@ -1870,6 +1870,9 @@ inline void clear( DynamicVector<Type,TF>& v )
    // ... Resizing and initialization
    if( isnan( a ) ) { ... }
    \endcode
+
+// Note that this function only works for vectors with floating point elements. The attempt to
+// use it for a vector with a non-floating point element type results in a compile time error.
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
