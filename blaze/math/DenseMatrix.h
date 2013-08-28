@@ -585,12 +585,19 @@ bool isDiagonal( const DenseMatrix<MT,SO>& dm );
 
 template< typename MT, bool SO >
 bool isSymmetric( const DenseMatrix<MT,SO>& dm );
+
+template< typename MT, bool SO >
+const typename MT::ElementType min( const DenseVector<MT,SO>& dm );
+
+template< typename MT, bool SO >
+const typename MT::ElementType max( const DenseVector<MT,SO>& dm );
 //@}
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*!\brief Checks if the give dense matrix is diagonal.
+// \ingroup dense_matrix
 //
 // \param dm The dense matrix to be checked.
 // \return \a true if the matrix is diagonal, \a false if not.
@@ -640,6 +647,7 @@ bool isDiagonal( const DenseMatrix<MT,SO>& dm )
 
 //*************************************************************************************************
 /*!\brief Checks if the given dense matrix is symmetric.
+// \ingroup dense_matrix
 //
 // \param dm The dense matrix to be checked.
 // \return \a true if the matrix is symmetric, \a false if not.
@@ -671,6 +679,100 @@ bool isSymmetric( const DenseMatrix<MT,SO>& dm )
    }
 
    return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the smallest element of the dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix.
+// \return The smallest dense matrix element.
+//
+// This function returns the smallest element of the given dense matrix. This function can
+// only be used for element types that support the smaller-than relationship. In case the
+// matrix currently has either 0 rows or 0 columns, the returned value is the default value
+// (e.g. 0 in case of fundamental data types).
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+const typename MT::ElementType min( const DenseMatrix<MT,SO>& dm )
+{
+   using blaze::min;
+
+   typedef typename MT::ElementType    ET;
+   typedef typename MT::CompositeType  CT;
+   
+   CT A( ~dm );  // Evaluation of the dense matrix operand
+
+   if( A.rows() == 0UL || A.columns() == 0UL ) return ET();
+
+   ET minimum( A(0,0) );
+
+   if( SO == rowMajor ) {
+      for( size_t j=1UL; j<A.columns(); ++j )
+         minimum = min( minimum, A(0UL,j) );
+      for( size_t i=1UL; i<A.rows(); ++i )
+         for( size_t j=0UL; j<A.columns(); ++j )
+            minimum = min( minimum, A(i,j) );
+   }
+   else {
+      for( size_t i=1UL; i<A.rows(); ++i )
+         minimum = min( minimum, A(i,0UL) );
+      for( size_t j=1UL; j<A.columns(); ++j )
+         for( size_t i=0UL; i<A.rows(); ++i )
+            minimum = min( minimum, A(i,j) );
+   }
+
+   return minimum;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the largest element of the dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix.
+// \return The largest dense matrix element.
+//
+// This function returns the largest element of the given dense matrix. This function can
+// only be used for element types that support the smaller-than relationship. In case the
+// matrix currently has either 0 rows or 0 columns, the returned value is the default value
+// (e.g. 0 in case of fundamental data types).
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Transpose flag
+const typename MT::ElementType max( const DenseMatrix<MT,SO>& dm )
+{
+   using blaze::max;
+
+   typedef typename MT::ElementType    ET;
+   typedef typename MT::CompositeType  CT;
+   
+   CT A( ~dm );  // Evaluation of the dense matrix operand
+
+   if( A.rows() == 0UL || A.columns() == 0UL ) return ET();
+
+   ET maximum( A(0,0) );
+
+   if( SO == rowMajor ) {
+      for( size_t j=1UL; j<A.columns(); ++j )
+         maximum = max( maximum, A(0UL,j) );
+      for( size_t i=1UL; i<A.rows(); ++i )
+         for( size_t j=0UL; j<A.columns(); ++j )
+            maximum = max( maximum, A(i,j) );
+   }
+   else {
+      for( size_t i=1UL; i<A.rows(); ++i )
+         maximum = max( maximum, A(i,0UL) );
+      for( size_t j=1UL; j<A.columns(); ++j )
+         for( size_t i=0UL; i<A.rows(); ++i )
+            maximum = max( maximum, A(i,j) );
+   }
+
+   return maximum;
 }
 //*************************************************************************************************
 

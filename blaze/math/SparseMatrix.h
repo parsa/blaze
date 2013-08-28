@@ -265,12 +265,19 @@ bool isDiagonal( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
 bool isSymmetric( const SparseMatrix<MT,SO>& sm );
+
+template< typename MT, bool SO >
+const typename MT::ElementType min( const SparseVector<MT,SO>& sm );
+
+template< typename MT, bool SO >
+const typename MT::ElementType max( const SparseVector<MT,SO>& sm );
 //@}
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*!\brief Checks if the give sparse matrix is diagonal.
+// \ingroup sparse_matrix
 //
 // \param sm The sparse matrix to be checked.
 // \return \a true if the matrix is diagonal, \a false if not.
@@ -320,6 +327,7 @@ bool isDiagonal( const SparseMatrix<MT,SO>& sm )
 
 //*************************************************************************************************
 /*!\brief Checks if the given sparse matrix is symmetric.
+// \ingroup sparse_matrix
 //
 // \param sm The sparse matrix to be checked.
 // \return \a true if the matrix is symmetric, \a false if not.
@@ -367,6 +375,104 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
    }
 
    return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the smallest element of the sparse matrix.
+// \ingroup sparse_matrix
+//
+// \param sm The given sparse matrix.
+// \return The smallest sparse matrix element.
+//
+// This function returns the smallest element of the given sparse matrix. This function can
+// only be used for element types that support the smaller-than relationship. In case the
+// matrix currently has either 0 rows or 0 columns, the returned value is the default value
+// (e.g. 0 in case of fundamental data types).
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+const typename MT::ElementType min( const SparseMatrix<MT,SO>& sm )
+{
+   using blaze::min;
+
+   typedef typename MT::ElementType    ET;
+   typedef typename MT::CompositeType  CT;
+   typedef typename RemoveReference<CT>::Type::ConstIterator  ConstIterator;
+
+   CT A( ~sm );  // Evaluation of the sparse matrix operand
+   
+   const size_t nonzeros( A.nonZeros() );
+   
+   if( nonzeros == 0UL ) {
+      return ET();
+   }
+
+   ET minimum = ET();
+   if( nonzeros == A.rows() * A.columns() ) {
+      minimum = A.begin( 0UL )->value();
+   }
+
+   const size_t index( ( SO == rowMajor )?( A.rows() ):( A.columns() ) );
+
+   for( size_t i=0UL; i<index; ++i ) {
+      const ConstIterator end( A.end( index ) );
+      ConstIterator element( A.begin( index ) );
+      for( ; element!=end; ++element )
+         minimum = min( minimum, element->value() );
+   }
+      
+   return minimum;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the largest element of the sparse matrix.
+// \ingroup sparse_matrix
+//
+// \param dm The given sparse matrix.
+// \return The largest sparse matrix element.
+//
+// This function returns the largest element of the given sparse matrix. This function can
+// only be used for element types that support the smaller-than relationship. In case the
+// matrix currently has either 0 rows or 0 columns, the returned value is the default value
+// (e.g. 0 in case of fundamental data types).
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+const typename MT::ElementType max( const SparseMatrix<MT,SO>& sm )
+{
+   using blaze::max;
+
+   typedef typename MT::ElementType    ET;
+   typedef typename MT::CompositeType  CT;
+   typedef typename RemoveReference<CT>::Type::ConstIterator  ConstIterator;
+
+   CT A( ~sm );  // Evaluation of the sparse matrix operand
+   
+   const size_t nonzeros( A.nonZeros() );
+   
+   if( nonzeros == 0UL ) {
+      return ET();
+   }
+
+   ET maximum = ET();
+   if( nonzeros == A.rows() * A.columns() ) {
+      maximum = A.begin( 0UL )->value();
+   }
+
+   const size_t index( ( SO == rowMajor )?( A.rows() ):( A.columns() ) );
+
+   for( size_t i=0UL; i<index; ++i ) {
+      const ConstIterator end( A.end( index ) );
+      ConstIterator element( A.begin( index ) );
+      for( ; element!=end; ++element )
+         maximum = max( maximum, element->value() );
+   }
+      
+   return maximum;
 }
 //*************************************************************************************************
 
