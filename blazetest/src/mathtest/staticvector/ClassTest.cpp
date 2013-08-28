@@ -79,11 +79,11 @@ ClassTest::ClassTest()
    testReset();
    testScale();
    testSwap();
+   testIsNan();
    testLength();
    testNormalize();
    testMinimum();
    testMaximum();
-   testIsNan();
 }
 //*************************************************************************************************
 
@@ -1122,6 +1122,54 @@ void ClassTest::testSwap()
 
 
 //*************************************************************************************************
+/*!\brief Test of the isnan function with the StaticVector class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the isnan function with the StaticVector class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testIsNan()
+{
+   test_ = "isnan() function";
+
+   // isnan with empty 9-dimensional vector
+   {
+      blaze::StaticVector<float,9UL,blaze::rowVector> vec;
+
+      if( isnan( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isnan evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+   
+   // isnan with filled 9-dimensional vector
+   {
+      blaze::StaticVector<float,9UL,blaze::rowVector> vec;
+      vec[3] =  1.0F;
+      vec[4] = -2.0F;
+      vec[6] =  3.0F;
+      vec[8] =  4.0F;
+
+      if( isnan( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isnan evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the length and sqrLength functions with the StaticVector class template.
 //
 // \return void
@@ -1409,54 +1457,6 @@ void ClassTest::testMaximum()
              << " Details:\n"
              << "   Result: " << maximum << "\n"
              << "   Expected result: 4\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the isnan function with the StaticVector class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the isnan function with the StaticVector class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testIsNan()
-{
-   test_ = "isnan() function";
-
-   // isnan with empty 9-dimensional vector
-   {
-      blaze::StaticVector<float,9UL,blaze::rowVector> vec;
-
-      if( isnan( vec ) != false ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Invalid isnan evaluation\n"
-             << " Details:\n"
-             << "   Vector:\n" << vec << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-   
-   // isnan with filled 9-dimensional vector
-   {
-      blaze::StaticVector<float,9UL,blaze::rowVector> vec;
-      vec[3] =  1.0F;
-      vec[4] = -2.0F;
-      vec[6] =  3.0F;
-      vec[8] =  4.0F;
-
-      if( isnan( vec ) != false ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Invalid isnan evaluation\n"
-             << " Details:\n"
-             << "   Vector:\n" << vec << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
