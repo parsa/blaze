@@ -267,6 +267,7 @@ inline const typename VT::ElementType sqrLength( const SparseVector<VT,TF>& sv )
 //*************************************************************************************************
 /*!\brief Returns the smallest element of the sparse vector.
 //
+// \param sv The given sparse vector.
 // \return The smallest sparse vector element.
 //
 // This function returns the smallest element of the given sparse vector. This function can
@@ -322,6 +323,7 @@ inline const typename VT::ElementType min( const SparseVector<VT,TF>& sv )
 //*************************************************************************************************
 /*!\brief Returns the largest element of the sparse vector.
 //
+// \param sv The given sparse vector.
 // \return The largest sparse vector element.
 //
 // This function returns the largest element of the given sparse vector. This function can
