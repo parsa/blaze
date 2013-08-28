@@ -248,6 +248,128 @@ inline bool operator!=( const SparseMatrix<T1,SO1>& lhs, const SparseMatrix<T2,S
 }
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  GLOBAL FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\name SparseMatrix functions */
+//@{
+template< typename MT, bool SO >
+bool isDiagonal( const SparseMatrix<MT,SO>& sm );
+
+template< typename MT, bool SO >
+bool isSymmetric( const SparseMatrix<MT,SO>& sm );
+//@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the give sparse matrix is diagonal.
+//
+// \param sm The sparse matrix to be checked.
+// \return \a true if the matrix is diagonal, \a false if not.
+//
+// This function tests whether the matrix is diagonal, i.e. if the non-diagonal elements are
+// default elements. In case of integral or floating point data types, a diagonal matrix has
+// the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        aa     & 0      & 0      & \cdots & 0  \\
+                        0      & bb     & 0      & \cdots & 0  \\
+                        0      & 0      & cc     & \cdots & 0  \\
+                        \vdots & \vdots & \vdots & \ddots & 0  \\
+                        0      & 0      & 0      & 0      & xx \\
+                        \end{array}\right)\f]
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+bool isDiagonal( const SparseMatrix<MT,SO>& sm )
+{
+   typedef typename MT::ConstIterator  ConstIterator;
+
+   const size_t rows   ( (~sm).rows()    );
+   const size_t columns( (~sm).columns() );
+
+   if( rows != columns ) return false;
+
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<rows; ++i ) {
+         for( ConstIterator element=(~sm).begin(i); element!=(~sm).end(i); ++element )
+            if( element->index() != i && !isDefault( element->value() ) )
+               return false;
+      }
+   }
+   else {
+      for( size_t j=0UL; j<columns; ++j ) {
+         for( ConstIterator element=(~sm).begin(j); element!=(~sm).end(j); ++element )
+            if( element->index() != j && !isDefault( element->value() ) )
+               return false;
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given sparse matrix is symmetric.
+//
+// \param sm The sparse matrix to be checked.
+// \return \a true if the matrix is symmetric, \a false if not.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+bool isSymmetric( const SparseMatrix<MT,SO>& sm )
+{
+   typedef typename MT::ConstIterator  ConstIterator;
+
+   const size_t rows   ( (~sm).rows()    );
+   const size_t columns( (~sm).columns() );
+
+   if( rows != columns ) return false;
+
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<rows; ++i ) {
+         for( ConstIterator element=(~sm).begin(i); element!=(~sm).end(i); ++element )
+         {
+            const size_t index( element->index() );
+
+            if( isDefault( element->value() ) )
+               continue;
+
+            const ConstIterator pos( (~sm).lowerBound( index, i ) );
+            if( pos == (~sm).end(index) || pos->index() != i || !equal( pos->value(), element->value() ) )
+               return false;
+         }
+      }
+   }
+   else {
+      for( size_t j=0UL; j<columns; ++j ) {
+         for( ConstIterator element=(~sm).begin(j); element!=(~sm).end(j); ++element )
+         {
+            const size_t index( element->index() );
+
+            if( isDefault( element->value() ) )
+               continue;
+
+            const ConstIterator pos( (~sm).lowerBound( j, index ) );
+            if( pos == (~sm).end(index) || pos->index() != j || !equal( pos->value(), element->value() ) )
+               return false;
+         }
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -271,8 +271,6 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
                               inline void           extend ( size_t m, size_t n, bool preserve=true );
                               inline void           reserve( size_t elements );
                               inline DynamicMatrix& transpose();
-                              inline bool           isDiagonal() const;
-                              inline bool           isSymmetric() const;
    template< typename Other > inline DynamicMatrix& scale( Other scalar );
                               inline void           swap( DynamicMatrix& m ) /* throw() */;
    //@}
@@ -1447,64 +1445,6 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::transpose()
 
 
 //*************************************************************************************************
-/*!\brief Checks if the matrix is diagonal.
-//
-// \return \a true if the matrix is diagonal, \a false if not.
-//
-// This function tests whether the matrix is diagonal, i.e. if the non-diagonal elements are
-// default elements. In case of integral or floating point data types, a diagonal matrix has
-// the form
-
-                        \f[\left(\begin{array}{*{5}{c}}
-                        aa     & 0      & 0      & \cdots & 0  \\
-                        0      & bb     & 0      & \cdots & 0  \\
-                        0      & 0      & cc     & \cdots & 0  \\
-                        \vdots & \vdots & \vdots & \ddots & 0  \\
-                        0      & 0      & 0      & 0      & mn \\
-                        \end{array}\right)\f]
-*/
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline bool DynamicMatrix<Type,SO>::isDiagonal() const
-{
-   if( m_ != n_ ) return false;
-
-   for( size_t i=1UL; i<m_; ++i ) {
-      for( size_t j=0UL; j<i; ++j ) {
-         if( !isDefault( v_[i*nn_+j] ) || !isDefault( v_[j*nn_+i] ) )
-            return false;
-      }
-   }
-
-   return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks if the matrix is symmetric.
-//
-// \return \a true if the matrix is symmetric, \a false if not.
-*/
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline bool DynamicMatrix<Type,SO>::isSymmetric() const
-{
-   if( m_ != n_ ) return false;
-
-   for( size_t i=1UL; i<m_; ++i ) {
-      for( size_t j=0UL; j<i; ++j ) {
-         if( !equal( v_[i*nn_+j], v_[j*nn_+i] ) )
-            return false;
-      }
-   }
-
-   return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Scaling of the matrix by the scalar value \a scalar (\f$ A=B*s \f$).
 //
 // \param scalar The scalar value for the matrix scaling.
@@ -2271,8 +2211,6 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
                               inline void           extend ( size_t m, size_t n, bool preserve=true );
                               inline void           reserve( size_t elements );
                               inline DynamicMatrix& transpose();
-                              inline bool           isDiagonal() const;
-                              inline bool           isSymmetric() const;
    template< typename Other > inline DynamicMatrix& scale( Other scalar );
                               inline void           swap( DynamicMatrix& m ) /* throw() */;
    //@}
@@ -3441,66 +3379,6 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::transpose()
    DynamicMatrix tmp( trans(*this) );
    swap( tmp );
    return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checks if the matrix is diagonal.
-//
-// \return \a true if the matrix is diagonal, \a false if not.
-//
-// This function tests whether the matrix is diagonal, i.e. if the non-diagonal elements are
-// default elements. In case of integral or floating point data types, a diagonal matrix has
-// the form
-
-                        \f[\left(\begin{array}{*{5}{c}}
-                        aa     & 0      & 0      & \cdots & 0  \\
-                        0      & bb     & 0      & \cdots & 0  \\
-                        0      & 0      & cc     & \cdots & 0  \\
-                        \vdots & \vdots & \vdots & \ddots & 0  \\
-                        0      & 0      & 0      & 0      & mn \\
-                        \end{array}\right)\f]
-*/
-template< typename Type >  // Data type of the matrix
-inline bool DynamicMatrix<Type,true>::isDiagonal() const
-{
-   if( m_ != n_ ) return false;
-
-   for( size_t j=1UL; j<n_; ++j ) {
-      for( size_t i=0UL; i<j; ++i ) {
-         if( !isDefault( v_[i+j*mm_] ) || !isDefault( v_[j+i*mm_] ) )
-            return false;
-      }
-   }
-
-   return true;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checks if the matrix is symmetric.
-//
-// \return \a true if the matrix is symmetric, \a false if not.
-*/
-template< typename Type >  // Data type of the matrix
-inline bool DynamicMatrix<Type,true>::isSymmetric() const
-{
-   if( m_ != n_ ) return false;
-
-   for( size_t j=1UL; j<n_; ++j ) {
-      for( size_t i=0UL; i<j; ++i ) {
-         if( !equal( v_[i+j*mm_], v_[j+i*mm_] ) )
-            return false;
-      }
-   }
-
-   return true;
 }
 /*! \endcond */
 //*************************************************************************************************

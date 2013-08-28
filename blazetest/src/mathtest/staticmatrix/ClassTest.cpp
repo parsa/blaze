@@ -77,10 +77,10 @@ ClassTest::ClassTest()
    testNonZeros();
    testReset();
    testTranspose();
-   testIsDiagonal();
-   testIsSymmetric();
    testScale();
    testSwap();
+   testIsDiagonal();
+   testIsSymmetric();
 }
 //*************************************************************************************************
 
@@ -3571,475 +3571,6 @@ void ClassTest::testTranspose()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isDiagonal member function of the StaticMatrix class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the isDiagonal member functions of the StaticMatrix class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testIsDiagonal()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major StaticMatrix::isDiagonal()";
-
-      // Non-quadratic matrix
-      {
-         blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat;
-
-         checkRows    ( mat, 2UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 6UL );
-         checkNonZeros( mat, 0UL );
-         checkNonZeros( mat, 0UL, 0UL );
-         checkNonZeros( mat, 1UL, 0UL );
-
-         if( mat.isDiagonal() != false ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isDiagonal evaluation\n"
-                << " Details:\n"
-                << "   Matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Default initialized matrix
-      {
-         // Initialization check
-         blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat;
-
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 9UL );
-         checkNonZeros( mat, 0UL );
-         checkNonZeros( mat, 0UL, 0UL );
-         checkNonZeros( mat, 1UL, 0UL );
-         checkNonZeros( mat, 2UL, 0UL );
-
-         if( mat.isDiagonal() != true ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isDiagonal evaluation\n"
-                << " Details:\n"
-                << "   Matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Diagonal matrix
-      {
-         // Initialization check
-         blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( 1, 0, 0, 0, 2, 0, 0, 0, 3 );
-
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 9UL );
-         checkNonZeros( mat, 3UL );
-         checkNonZeros( mat, 0UL, 1UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 1UL );
-
-         if( mat.isDiagonal() != true ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isDiagonal evaluation\n"
-                << " Details:\n"
-                << "   Matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Non-diagonal matrix
-      {
-         // Initialization check
-         blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( 1, 0, 4, 0, 2, 0, 0, 0, 3 );
-
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 9UL );
-         checkNonZeros( mat, 4UL );
-         checkNonZeros( mat, 0UL, 2UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 1UL );
-
-         if( mat.isDiagonal() != false ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isDiagonal evaluation\n"
-                << " Details:\n"
-                << "   Matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major StaticMatrix::isDiagonal()";
-
-      // Non-quadratic matrix
-      {
-         blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat;
-
-         checkRows    ( mat, 2UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 6UL );
-         checkNonZeros( mat, 0UL );
-         checkNonZeros( mat, 0UL, 0UL );
-         checkNonZeros( mat, 1UL, 0UL );
-         checkNonZeros( mat, 2UL, 0UL );
-
-         if( mat.isDiagonal() != false ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isDiagonal evaluation\n"
-                << " Details:\n"
-                << "   Matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Default initialized matrix
-      {
-         // Initialization check
-         blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat;
-
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 9UL );
-         checkNonZeros( mat, 0UL );
-         checkNonZeros( mat, 0UL, 0UL );
-         checkNonZeros( mat, 1UL, 0UL );
-         checkNonZeros( mat, 2UL, 0UL );
-
-         if( mat.isDiagonal() != true ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isDiagonal evaluation\n"
-                << " Details:\n"
-                << "   Matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Diagonal matrix
-      {
-         // Initialization check
-         blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( 1, 0, 0, 0, 2, 0, 0, 0, 3 );
-
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 9UL );
-         checkNonZeros( mat, 3UL );
-         checkNonZeros( mat, 0UL, 1UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 1UL );
-
-         if( mat.isDiagonal() != true ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isDiagonal evaluation\n"
-                << " Details:\n"
-                << "   Matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Non-diagonal matrix
-      {
-         // Initialization check
-         blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( 1, 0, 4, 0, 2, 0, 0, 0, 3 );
-
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 9UL );
-         checkNonZeros( mat, 4UL );
-         checkNonZeros( mat, 0UL, 2UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 1UL );
-
-         if( mat.isDiagonal() != false ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isDiagonal evaluation\n"
-                << " Details:\n"
-                << "   Matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the isSymmetric member function of the StaticMatrix class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the isSymmetric member functions of the StaticMatrix class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testIsSymmetric()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major StaticMatrix::isSymmetric()";
-
-      // Non-quadratic matrix
-      {
-         blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat;
-
-         checkRows    ( mat, 2UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 6UL );
-         checkNonZeros( mat, 0UL );
-         checkNonZeros( mat, 0UL, 0UL );
-         checkNonZeros( mat, 1UL, 0UL );
-
-         if( mat.isSymmetric() != false ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isSymmetric evaluation\n"
-                << " Details:\n"
-                << "   Matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Default initialized matrix
-      {
-         // Initialization check
-         blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat;
-
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 9UL );
-         checkNonZeros( mat, 0UL );
-         checkNonZeros( mat, 0UL, 0UL );
-         checkNonZeros( mat, 1UL, 0UL );
-         checkNonZeros( mat, 2UL, 0UL );
-
-         if( mat.isSymmetric() != true ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isSymmetric evaluation\n"
-                << " Details:\n"
-                << "   Matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Diagonal matrix
-      {
-         // Initialization check
-         blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( 1, 0, 0, 0, 2, 0, 0, 0, 3 );
-
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 9UL );
-         checkNonZeros( mat, 3UL );
-         checkNonZeros( mat, 0UL, 1UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 1UL );
-
-         if( mat.isSymmetric() != true ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isSymmetric evaluation\n"
-                << " Details:\n"
-                << "   Matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Non-symmetric matrix
-      {
-         // Initialization check
-         blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( 1, 0, 4, 0, 2, 0, 0, 0, 3 );
-
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 9UL );
-         checkNonZeros( mat, 4UL );
-         checkNonZeros( mat, 0UL, 2UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 1UL );
-
-         if( mat.isSymmetric() != false ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isSymmetric evaluation\n"
-                << " Details:\n"
-                << "   Matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Symmetric matrix
-      {
-         // Initialization check
-         blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( 1, 0, 4, 0, 2, 0, 4, 0, 3 );
-
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 9UL );
-         checkNonZeros( mat, 5UL );
-         checkNonZeros( mat, 0UL, 2UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 2UL );
-
-         if( mat.isSymmetric() != true ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isSymmetric evaluation\n"
-                << " Details:\n"
-                << "   Matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major StaticMatrix::isSymmetric()";
-
-      // Non-quadratic matrix
-      {
-         blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat;
-
-         checkRows    ( mat, 2UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 6UL );
-         checkNonZeros( mat, 0UL );
-         checkNonZeros( mat, 0UL, 0UL );
-         checkNonZeros( mat, 1UL, 0UL );
-         checkNonZeros( mat, 2UL, 0UL );
-
-         if( mat.isSymmetric() != false ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isSymmetric evaluation\n"
-                << " Details:\n"
-                << "   Matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Default initialized matrix
-      {
-         // Initialization check
-         blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat;
-
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 9UL );
-         checkNonZeros( mat, 0UL );
-         checkNonZeros( mat, 0UL, 0UL );
-         checkNonZeros( mat, 1UL, 0UL );
-         checkNonZeros( mat, 2UL, 0UL );
-
-         if( mat.isSymmetric() != true ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isSymmetric evaluation\n"
-                << " Details:\n"
-                << "   Matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Diagonal matrix
-      {
-         // Initialization check
-         blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( 1, 0, 0, 0, 2, 0, 0, 0, 3 );
-
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 9UL );
-         checkNonZeros( mat, 3UL );
-         checkNonZeros( mat, 0UL, 1UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 1UL );
-
-         if( mat.isSymmetric() != true ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isSymmetric evaluation\n"
-                << " Details:\n"
-                << "   Matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Non-symmetric matrix
-      {
-         // Initialization check
-         blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( 1, 0, 4, 0, 2, 0, 0, 0, 3 );
-
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 9UL );
-         checkNonZeros( mat, 4UL );
-         checkNonZeros( mat, 0UL, 2UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 1UL );
-
-         if( mat.isSymmetric() != false ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isSymmetric evaluation\n"
-                << " Details:\n"
-                << "   Matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Symmetric matrix
-      {
-         // Initialization check
-         blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( 1, 0, 4, 0, 2, 0, 4, 0, 3 );
-
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 9UL );
-         checkNonZeros( mat, 5UL );
-         checkNonZeros( mat, 0UL, 2UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 2UL );
-
-         if( mat.isSymmetric() != true ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isSymmetric evaluation\n"
-                << " Details:\n"
-                << "   Matrix:\n" << mat << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Test of the scale member function of StaticMatrix.
 //
 // \return void
@@ -4366,6 +3897,475 @@ void ClassTest::testSwap()
              << "   Result:\n" << mat2 << "\n"
              << "   Expected result:\n( 1 0 )\n( 2 3 )\n";
          throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the isDiagonal member function of the StaticMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the isDiagonal member functions of the StaticMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testIsDiagonal()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major StaticMatrix::isDiagonal()";
+
+      // Non-quadratic matrix
+      {
+         blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat;
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 6UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+
+         if( isDiagonal( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDiagonal evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Default initialized matrix
+      {
+         // Initialization check
+         blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isDiagonal( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDiagonal evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal matrix
+      {
+         // Initialization check
+         blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( 1, 0, 0, 0, 2, 0, 0, 0, 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isDiagonal( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDiagonal evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-diagonal matrix
+      {
+         // Initialization check
+         blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( 1, 0, 4, 0, 2, 0, 0, 0, 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isDiagonal( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDiagonal evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major StaticMatrix::isDiagonal()";
+
+      // Non-quadratic matrix
+      {
+         blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat;
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 6UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isDiagonal( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDiagonal evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Default initialized matrix
+      {
+         // Initialization check
+         blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isDiagonal( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDiagonal evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal matrix
+      {
+         // Initialization check
+         blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( 1, 0, 0, 0, 2, 0, 0, 0, 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isDiagonal( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDiagonal evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-diagonal matrix
+      {
+         // Initialization check
+         blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( 1, 0, 4, 0, 2, 0, 0, 0, 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isDiagonal( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDiagonal evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the isSymmetric member function of the StaticMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the isSymmetric member functions of the StaticMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testIsSymmetric()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major StaticMatrix::isSymmetric()";
+
+      // Non-quadratic matrix
+      {
+         blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat;
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 6UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+
+         if( isSymmetric( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Default initialized matrix
+      {
+         // Initialization check
+         blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal matrix
+      {
+         // Initialization check
+         blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( 1, 0, 0, 0, 2, 0, 0, 0, 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-symmetric matrix
+      {
+         // Initialization check
+         blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( 1, 0, 4, 0, 2, 0, 0, 0, 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isSymmetric( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Symmetric matrix
+      {
+         // Initialization check
+         blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( 1, 0, 4, 0, 2, 0, 4, 0, 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major StaticMatrix::isSymmetric()";
+
+      // Non-quadratic matrix
+      {
+         blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat;
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 6UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isSymmetric( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Default initialized matrix
+      {
+         // Initialization check
+         blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal matrix
+      {
+         // Initialization check
+         blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( 1, 0, 0, 0, 2, 0, 0, 0, 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-symmetric matrix
+      {
+         // Initialization check
+         blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( 1, 0, 4, 0, 2, 0, 0, 0, 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isSymmetric( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Symmetric matrix
+      {
+         // Initialization check
+         blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( 1, 0, 4, 0, 2, 0, 4, 0, 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 }

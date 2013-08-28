@@ -568,6 +568,112 @@ inline typename EnableIf< IsNumeric<T1>, bool >::Type
 }
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  GLOBAL FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\name DenseMatrix functions */
+//@{
+template< typename MT, bool SO >
+bool isDiagonal( const DenseMatrix<MT,SO>& dm );
+
+template< typename MT, bool SO >
+bool isSymmetric( const DenseMatrix<MT,SO>& dm );
+//@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the give dense matrix is diagonal.
+//
+// \param dm The dense matrix to be checked.
+// \return \a true if the matrix is diagonal, \a false if not.
+//
+// This function tests whether the matrix is diagonal, i.e. if the non-diagonal elements are
+// default elements. In case of integral or floating point data types, a diagonal matrix has
+// the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        aa     & 0      & 0      & \cdots & 0  \\
+                        0      & bb     & 0      & \cdots & 0  \\
+                        0      & 0      & cc     & \cdots & 0  \\
+                        \vdots & \vdots & \vdots & \ddots & 0  \\
+                        0      & 0      & 0      & 0      & xx \\
+                        \end{array}\right)\f]
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+bool isDiagonal( const DenseMatrix<MT,SO>& dm )
+{
+   const size_t rows   ( (~dm).rows()    );
+   const size_t columns( (~dm).columns() );
+
+   if( rows != columns ) return false;
+
+   if( SO == rowMajor ) {
+      for( size_t i=1UL; i<rows; ++i ) {
+         for( size_t j=0UL; j<i; ++j ) {
+            if( !isDefault( (~dm)(i,j) ) || !isDefault( (~dm)(j,i) ) )
+               return false;
+         }
+      }
+   }
+   else {
+      for( size_t j=1UL; j<columns; ++j ) {
+         for( size_t i=0UL; i<j; ++i ) {
+            if( !isDefault( (~dm)(i,j) ) || !isDefault( (~dm)(j,i) ) )
+               return false;
+         }
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given dense matrix is symmetric.
+//
+// \param dm The dense matrix to be checked.
+// \return \a true if the matrix is symmetric, \a false if not.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+bool isSymmetric( const DenseMatrix<MT,SO>& dm )
+{
+   const size_t rows   ( (~dm).rows()    );
+   const size_t columns( (~dm).columns() );
+
+   if( rows != columns ) return false;
+
+   if( SO == rowMajor ) {
+      for( size_t i=1UL; i<rows; ++i ) {
+         for( size_t j=0UL; j<i; ++j ) {
+            if( !equal( (~dm)(i,j), (~dm)(j,i) ) )
+               return false;
+         }
+      }
+   }
+   else {
+      for( size_t j=1UL; j<columns; ++j ) {
+         for( size_t i=0UL; i<j; ++i ) {
+            if( !equal( (~dm)(i,j), (~dm)(j,i) ) )
+               return false;
+         }
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

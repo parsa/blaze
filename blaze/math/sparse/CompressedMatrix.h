@@ -308,8 +308,6 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
                               inline void              reserve( size_t nonzeros );
                                      void              reserve( size_t i, size_t nonzeros );
                               inline CompressedMatrix& transpose();
-                                     bool              isDiagonal() const;
-                                     bool              isSymmetric() const;
    template< typename Other > inline CompressedMatrix& scale( Other scalar );
    template< typename Other > inline CompressedMatrix& scaleDiagonal( Other scalar );
                               inline void              swap( CompressedMatrix& sm ) /* throw() */;
@@ -1579,70 +1577,6 @@ inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::transpose()
 
 
 //*************************************************************************************************
-/*!\brief Checks if the matrix is diagonal.
-//
-// \return \a true if the matrix is diagonal, \a false if not.
-//
-// This function tests whether the matrix is diagonal, i.e. if the non-diagonal elements are
-// default elements. In case of integral or floating point data types, a diagonal matrix has
-// the form
-
-                        \f[\left(\begin{array}{*{5}{c}}
-                        aa     & 0      & 0      & \cdots & 0  \\
-                        0      & bb     & 0      & \cdots & 0  \\
-                        0      & 0      & cc     & \cdots & 0  \\
-                        \vdots & \vdots & \vdots & \ddots & 0  \\
-                        0      & 0      & 0      & 0      & mn \\
-                        \end{array}\right)\f]
-*/
-template< typename Type  // Data type of the sparse matrix
-        , bool SO >      // Storage order
-bool CompressedMatrix<Type,SO>::isDiagonal() const
-{
-   if( m_ != n_ ) return false;
-
-   for( size_t i=0UL; i<rows(); ++i ) {
-      for( ConstIterator element=begin_[i]; element!=end_[i]; ++element )
-         if( element->index_ != i && !isDefault( element->value_ ) )
-            return false;
-   }
-
-   return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks if the matrix is symmetric.
-//
-// \return \a true if the matrix is symmetric, \a false if not.
-*/
-template< typename Type  // Data type of the sparse matrix
-        , bool SO >      // Storage order
-bool CompressedMatrix<Type,SO>::isSymmetric() const
-{
-   if( m_ != n_ ) return false;
-
-   for( size_t i=0UL; i<rows(); ++i ) {
-      for( ConstIterator element=begin_[i]; element!=end_[i]; ++element )
-      {
-         const size_t index( element->index_ );
-
-         if( isDefault( element->value_ ) )
-            continue;
-
-         const ConstIterator pos( lowerBound( index, i ) );
-         if( pos == end_[index] || pos->index_ != i || !equal( pos->value_, element->value_ ) )
-            return false;
-      }
-   }
-
-   return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Scaling of the sparse matrix by the scalar value \a scalar (\f$ A=B*s \f$).
 //
 // \param scalar The scalar value for the matrix scaling.
@@ -2425,8 +2359,6 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
                               inline void              reserve( size_t nonzeros );
                                      void              reserve( size_t j, size_t nonzeros );
                               inline CompressedMatrix& transpose();
-                                     bool              isDiagonal() const;
-                                     bool              isSymmetric() const;
    template< typename Other > inline CompressedMatrix& scale( Other scalar );
    template< typename Other > inline CompressedMatrix& scaleDiagonal( Other scalar );
                               inline void              swap( CompressedMatrix& sm ) /* throw() */;
@@ -3680,72 +3612,6 @@ inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::transpose()
    CompressedMatrix tmp( trans( *this ) );
    swap( tmp );
    return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checks if the matrix is diagonal.
-//
-// \return \a true if the matrix is diagonal, \a false if not.
-//
-// This function tests whether the matrix is diagonal, i.e. if the non-diagonal elements are
-// default elements. In case of integral or floating point data types, a diagonal matrix has
-// the form
-
-                        \f[\left(\begin{array}{*{5}{c}}
-                        aa     & 0      & 0      & \cdots & 0  \\
-                        0      & bb     & 0      & \cdots & 0  \\
-                        0      & 0      & cc     & \cdots & 0  \\
-                        \vdots & \vdots & \vdots & \ddots & 0  \\
-                        0      & 0      & 0      & 0      & mn \\
-                        \end{array}\right)\f]
-*/
-template< typename Type >  // Data type of the sparse matrix
-bool CompressedMatrix<Type,true>::isDiagonal() const
-{
-   if( m_ != n_ ) return false;
-
-   for( size_t j=0UL; j<columns(); ++j ) {
-      for( ConstIterator element=begin_[j]; element!=end_[j]; ++element )
-         if( element->index_ != j && !isDefault( element->value_ ) )
-            return false;
-   }
-
-   return true;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checks if the matrix is symmetric.
-//
-// \return \a true if the matrix is symmetric, \a false if not.
-*/
-template< typename Type >  // Data type of the sparse matrix
-bool CompressedMatrix<Type,true>::isSymmetric() const
-{
-   if( m_ != n_ ) return false;
-
-   for( size_t j=0UL; j<columns(); ++j ) {
-      for( ConstIterator element=begin_[j]; element!=end_[j]; ++element )
-      {
-         const size_t index( element->index_ );
-
-         if( isDefault( element->value_ ) )
-            continue;
-
-         const Iterator pos( lowerBound( j, index ) );
-         if( pos == end_[index] || pos->index_ != j || !equal( pos->value_, element->value_ ) )
-            return false;
-      }
-   }
-
-   return true;
 }
 /*! \endcond */
 //*************************************************************************************************

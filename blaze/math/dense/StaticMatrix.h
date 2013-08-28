@@ -285,8 +285,6 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
                               inline void          reset();
                               inline void          reset( size_t i );
                               inline StaticMatrix& transpose();
-                              inline bool          isDiagonal() const;
-                              inline bool          isSymmetric() const;
    template< typename Other > inline StaticMatrix& scale( const Other& scalar );
                               inline void          swap( StaticMatrix& m ) /* throw() */;
    //@}
@@ -1944,68 +1942,6 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::transpose()
 
 
 //*************************************************************************************************
-/*!\brief Checks if the matrix is diagonal.
-//
-// \return \a true if the matrix is diagonal, \a false if not.
-//
-// This function tests whether the matrix is diagonal, i.e. if the non-diagonal elements are
-// default elements. In case of integral or floating point data types, a diagonal matrix has
-// the form
-
-                        \f[\left(\begin{array}{*{5}{c}}
-                        aa     & 0      & 0      & \cdots & 0  \\
-                        0      & bb     & 0      & \cdots & 0  \\
-                        0      & 0      & cc     & \cdots & 0  \\
-                        \vdots & \vdots & \vdots & \ddots & 0  \\
-                        0      & 0      & 0      & 0      & mn \\
-                        \end{array}\right)\f]
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline bool StaticMatrix<Type,M,N,SO>::isDiagonal() const
-{
-   if( M != N ) return false;
-
-   for( size_t i=1UL; i<M; ++i ) {
-      for( size_t j=0UL; j<i; ++j ) {
-         if( !isDefault( v_[i*NN+j] ) || !isDefault( v_[j*NN+i] ) )
-            return false;
-      }
-   }
-
-   return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks if the matrix is symmetric.
-//
-// \return \a true if the matrix is symmetric, \a false if not.
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline bool StaticMatrix<Type,M,N,SO>::isSymmetric() const
-{
-   if( M != N ) return false;
-
-   for( size_t i=1UL; i<M; ++i ) {
-      for( size_t j=0UL; j<i; ++j ) {
-         if( !equal( v_[i*NN+j], v_[j*NN+i] ) )
-            return false;
-      }
-   }
-
-   return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Scaling of the matrix by the scalar value \a scalar (\f$ A*=s \f$).
 //
 // \param scalar The scalar value for the matrix scaling.
@@ -2644,8 +2580,6 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
                               inline void          reset();
                               inline void          reset( size_t i );
                               inline StaticMatrix& transpose();
-                              inline bool          isDiagonal() const;
-                              inline bool          isSymmetric() const;
    template< typename Other > inline StaticMatrix& scale( const Other& scalar );
                               inline void          swap( StaticMatrix& m ) /* throw() */;
    //@}
@@ -4289,70 +4223,6 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::transpose()
          swap( v_[i+j*MM], v_[j+i*MM] );
 
    return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checks if the matrix is diagonal.
-//
-// \return \a true if the matrix is diagonal, \a false if not.
-//
-// This function tests whether the matrix is diagonal, i.e. if the non-diagonal elements are
-// default elements. In case of integral or floating point data types, a diagonal matrix has
-// the form
-
-                        \f[\left(\begin{array}{*{5}{c}}
-                        aa     & 0      & 0      & \cdots & 0  \\
-                        0      & bb     & 0      & \cdots & 0  \\
-                        0      & 0      & cc     & \cdots & 0  \\
-                        \vdots & \vdots & \vdots & \ddots & 0  \\
-                        0      & 0      & 0      & 0      & mn \\
-                        \end{array}\right)\f]
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline bool StaticMatrix<Type,M,N,true>::isDiagonal() const
-{
-   if( M != N ) return false;
-
-   for( size_t j=1UL; j<N; ++j ) {
-      for( size_t i=0UL; i<j; ++i ) {
-         if( !isDefault( v_[i+j*MM] ) || !isDefault( v_[j+i*MM] ) )
-            return false;
-      }
-   }
-
-   return true;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checks if the matrix is symmetric.
-//
-// \return \a true if the matrix is symmetric, \a false if not.
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline bool StaticMatrix<Type,M,N,true>::isSymmetric() const
-{
-   if( M != N ) return false;
-
-   for( size_t j=1; j<N; ++j ) {
-      for( size_t i=0; i<j; ++i ) {
-         if( !equal( v_[i+j*MM], v_[j+i*MM] ) )
-            return false;
-      }
-   }
-
-   return true;
 }
 /*! \endcond */
 //*************************************************************************************************
