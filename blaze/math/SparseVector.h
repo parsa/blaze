@@ -171,22 +171,23 @@ inline bool operator!=( const SparseVector<T1,TF1>& lhs, const SparseVector<T2,T
 /*!\name SparseVector functions */
 //@{
 template< typename VT, bool TF >
-inline typename CMathTrait<typename VT::ElementType>::Type length( const SparseVector<VT,TF>& dv );
+typename CMathTrait<typename VT::ElementType>::Type length( const SparseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
-inline const typename VT::ElementType sqrLength( const SparseVector<VT,TF>& dv );
+const typename VT::ElementType sqrLength( const SparseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
-inline const typename VT::ElementType min( const SparseVector<VT,TF>& sv );
+const typename VT::ElementType min( const SparseVector<VT,TF>& sv );
 
 template< typename VT, bool TF >
-inline const typename VT::ElementType max( const SparseVector<VT,TF>& sv );
+const typename VT::ElementType max( const SparseVector<VT,TF>& sv );
 //@}
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*!\brief Calculation of the sparse vector length \f$|\vec{a}|\f$.
+// \ingroup sparse_vector
 //
 // \param sv The given sparse vector.
 // \return The length of the sparse vector.
@@ -219,7 +220,7 @@ inline const typename VT::ElementType max( const SparseVector<VT,TF>& sv );
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline typename CMathTrait<typename VT::ElementType>::Type length( const SparseVector<VT,TF>& sv )
+typename CMathTrait<typename VT::ElementType>::Type length( const SparseVector<VT,TF>& sv )
 {
    typedef typename VT::ElementType                ElementType;
    typedef typename VT::ConstIterator              ConstIterator;
@@ -237,6 +238,7 @@ inline typename CMathTrait<typename VT::ElementType>::Type length( const SparseV
 
 //*************************************************************************************************
 /*!\brief Calculation of the sparse vector square length \f$|\vec{a}|^2\f$.
+// \ingroup sparse_vector
 //
 // \param sv The given sparse vector.
 // \return The square length of the vector.
@@ -249,7 +251,7 @@ inline typename CMathTrait<typename VT::ElementType>::Type length( const SparseV
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const typename VT::ElementType sqrLength( const SparseVector<VT,TF>& sv )
+const typename VT::ElementType sqrLength( const SparseVector<VT,TF>& sv )
 {
    typedef typename VT::ElementType    ElementType;
    typedef typename VT::ConstIterator  ConstIterator;
@@ -266,6 +268,7 @@ inline const typename VT::ElementType sqrLength( const SparseVector<VT,TF>& sv )
 
 //*************************************************************************************************
 /*!\brief Returns the smallest element of the sparse vector.
+// \ingroup sparse_vector
 //
 // \param sv The given sparse vector.
 // \return The smallest sparse vector element.
@@ -287,15 +290,15 @@ inline const typename VT::ElementType sqrLength( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const typename VT::ElementType min( const SparseVector<VT,TF>& sv )
+const typename VT::ElementType min( const SparseVector<VT,TF>& sv )
 {
    using blaze::min;
 
    typedef typename VT::ElementType    ET;
-   typedef typename VT::CompositeType  SV;
-   typedef typename RemoveReference<SV>::Type::ConstIterator  ConstIterator;
+   typedef typename VT::CompositeType  CT;
+   typedef typename RemoveReference<CT>::Type::ConstIterator  ConstIterator;
 
-   SV a( ~sv );  // Evaluation of the sparse vector operand
+   CT a( ~sv );  // Evaluation of the sparse vector operand
 
    const ConstIterator end( a.end() );
    ConstIterator element( a.begin() );
@@ -322,6 +325,7 @@ inline const typename VT::ElementType min( const SparseVector<VT,TF>& sv )
 
 //*************************************************************************************************
 /*!\brief Returns the largest element of the sparse vector.
+// \ingroup sparse_vector
 //
 // \param sv The given sparse vector.
 // \return The largest sparse vector element.
@@ -343,15 +347,15 @@ inline const typename VT::ElementType min( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const typename VT::ElementType max( const SparseVector<VT,TF>& sv )
+const typename VT::ElementType max( const SparseVector<VT,TF>& sv )
 {
    using blaze::max;
 
    typedef typename VT::ElementType    ET;
-   typedef typename VT::CompositeType  SV;
-   typedef typename RemoveReference<SV>::Type::ConstIterator  ConstIterator;
+   typedef typename VT::CompositeType  CT;
+   typedef typename RemoveReference<CT>::Type::ConstIterator  ConstIterator;
 
-   SV a( ~sv );  // Evaluation of the sparse vector operand
+   CT a( ~sv );  // Evaluation of the sparse vector operand
 
    const ConstIterator end( a.end() );
    ConstIterator element( a.begin() );

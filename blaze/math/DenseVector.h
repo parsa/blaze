@@ -375,22 +375,23 @@ inline typename EnableIf< IsNumeric<T1>, bool >::Type
 /*!\name DenseVector functions */
 //@{
 template< typename VT, bool TF >
-inline typename CMathTrait<typename VT::ElementType>::Type length( const DenseVector<VT,TF>& dv );
+typename CMathTrait<typename VT::ElementType>::Type length( const DenseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
-inline const typename VT::ElementType sqrLength( const DenseVector<VT,TF>& dv );
+const typename VT::ElementType sqrLength( const DenseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
-inline const typename VT::ElementType min( const DenseVector<VT,TF>& dv );
+const typename VT::ElementType min( const DenseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
-inline const typename VT::ElementType max( const DenseVector<VT,TF>& dv );
+const typename VT::ElementType max( const DenseVector<VT,TF>& dv );
 //@}
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*!\brief Calculation of the dense vector length \f$|\vec{a}|\f$.
+// \ingroup dense_vector
 //
 // \param dv The given dense vector.
 // \return The length of the dense vector.
@@ -423,7 +424,7 @@ inline const typename VT::ElementType max( const DenseVector<VT,TF>& dv );
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline typename CMathTrait<typename VT::ElementType>::Type length( const DenseVector<VT,TF>& dv )
+typename CMathTrait<typename VT::ElementType>::Type length( const DenseVector<VT,TF>& dv )
 {
    typedef typename VT::ElementType                ElementType;
    typedef typename CMathTrait<ElementType>::Type  LengthType;
@@ -440,6 +441,7 @@ inline typename CMathTrait<typename VT::ElementType>::Type length( const DenseVe
 
 //*************************************************************************************************
 /*!\brief Calculation of the dense vector square length \f$|\vec{a}|^2\f$.
+// \ingroup dense_vector
 //
 // \param dv The given dense vector.
 // \return The square length of the dense vector.
@@ -452,7 +454,7 @@ inline typename CMathTrait<typename VT::ElementType>::Type length( const DenseVe
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const typename VT::ElementType sqrLength( const DenseVector<VT,TF>& dv )
+const typename VT::ElementType sqrLength( const DenseVector<VT,TF>& dv )
 {
    typedef typename VT::ElementType  ElementType;
 
@@ -470,6 +472,7 @@ inline const typename VT::ElementType sqrLength( const DenseVector<VT,TF>& dv )
 /*!\brief Returns the smallest element of the dense vector.
 // \ingroup dense_vector
 //
+// \param dv The given dense vector.
 // \return The smallest dense vector element.
 //
 // This function returns the smallest element of the given dense vector. This function can
@@ -479,17 +482,20 @@ inline const typename VT::ElementType sqrLength( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const typename VT::ElementType min( const DenseVector<VT,TF>& dv )
+const typename VT::ElementType min( const DenseVector<VT,TF>& dv )
 {
    using blaze::min;
 
-   typedef typename VT::ElementType  ET;
+   typedef typename VT::ElementType    ET;
+   typedef typename VT::CompositeType  CT;
+   
+   CT a( ~dv );  // Evaluation of the dense vector operand
 
-   if( (~dv).size() == 0 ) return ET();
+   if( a.size() == 0UL ) return ET();
 
-   ET minimum( (~dv)[0] );
-   for( size_t i=1; i<(~dv).size(); ++i )
-      minimum = min( minimum, (~dv)[i] );
+   ET minimum( a[0] );
+   for( size_t i=1UL; i<a.size(); ++i )
+      minimum = min( minimum, a[i] );
    return minimum;
 }
 //*************************************************************************************************
@@ -499,6 +505,7 @@ inline const typename VT::ElementType min( const DenseVector<VT,TF>& dv )
 /*!\brief Returns the largest element of the dense vector.
 // \ingroup dense_vector
 //
+// \param dv The given dense vector.
 // \return The largest dense vector element.
 //
 // This function returns the largest element of the given dense vector. This function can
@@ -508,17 +515,20 @@ inline const typename VT::ElementType min( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const typename VT::ElementType max( const DenseVector<VT,TF>& dv )
+const typename VT::ElementType max( const DenseVector<VT,TF>& dv )
 {
    using blaze::max;
 
-   typedef typename VT::ElementType  ET;
+   typedef typename VT::ElementType    ET;
+   typedef typename VT::CompositeType  CT;
+   
+   CT a( ~dv );  // Evaluation of the dense vector operand
 
-   if( (~dv).size() == 0 ) return ET();
+   if( a.size() == 0UL ) return ET();
 
-   ET maximum( (~dv)[0] );
-   for( size_t i=1; i<(~dv).size(); ++i )
-      maximum = max( maximum, (~dv)[i] );
+   ET maximum( a[0] );
+   for( size_t i=1UL; i<a.size(); ++i )
+      maximum = max( maximum, a[i] );
    return maximum;
 }
 //*************************************************************************************************
