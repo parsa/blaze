@@ -4883,9 +4883,9 @@ inline void clear( StaticMatrix<Type,M,N,SO>& m )
 // \a false.
 
    \code
-   blaze::StaticMatrix<double,3UL,4UL> a;
+   blaze::StaticMatrix<double,3UL,4UL> A;
    // ... Initialization
-   if( isnan( a ) ) { ... }
+   if( isnan( A ) ) { ... }
    \endcode
 
 // Note that this function only works for matrices with floating point elements. The attempt to

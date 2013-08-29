@@ -4097,9 +4097,9 @@ inline void clear( DynamicMatrix<Type,SO>& m )
 // \a false.
 
    \code
-   blaze::DynamicMatrix<double> a( 3UL, 4UL );
+   blaze::DynamicMatrix<double> A( 3UL, 4UL );
    // ... Initialization
-   if( isnan( a ) ) { ... }
+   if( isnan( A ) ) { ... }
    \endcode
 
 // Note that this function only works for matrices with floating point elements. The attempt to
