@@ -261,6 +261,9 @@ inline bool operator!=( const SparseMatrix<T1,SO1>& lhs, const SparseMatrix<T2,S
 /*!\name SparseMatrix functions */
 //@{
 template< typename MT, bool SO >
+bool isnan( const SparseMatrix<MT,SO>& sm );
+
+template< typename MT, bool SO >
 bool isDiagonal( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
@@ -272,6 +275,53 @@ const typename MT::ElementType min( const SparseVector<MT,SO>& sm );
 template< typename MT, bool SO >
 const typename MT::ElementType max( const SparseVector<MT,SO>& sm );
 //@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks the given sparse matrix for not-a-number elements.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix to be checked for not-a-number elements.
+// \return \a true if at least one element of the sparse matrix is not-a-number, \a false otherwise.
+//
+// This function checks the sparse matrix for not-a-number (NaN) elements. If at least one
+// element of the matrix is not-a-number, the function returns \a true, otherwise it returns
+// \a false.
+
+   \code
+   blaze::CompressedMatrix<double> A( 3UL, 4UL );
+   // ... Initialization
+   if( isnan( A ) ) { ... }
+   \endcode
+
+// Note that this function only works for matrices with floating point elements. The attempt to
+// use it for a matrix with a non-floating point element type results in a compile time error.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+bool isnan( const SparseMatrix<MT,SO>& sm )
+{
+   typedef typename MT::CompositeType  CT;
+   typedef typename RemoveReference<CT>::Type::ConstIterator  ConstIterator;
+   
+   CT A( ~sm );  // Evaluation of the sparse matrix operand
+   
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<A.rows(); ++i ) {
+         for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
+            if( isnan( element->value() ) ) return true;
+      }
+   }
+   else {
+      for( size_t j=0UL; j<A.columns(); ++j ) {
+         for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
+            if( isnan( element->value() ) ) return true;
+      }
+   }
+
+   return false;
+}
 //*************************************************************************************************
 
 
