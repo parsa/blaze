@@ -67,6 +67,7 @@ ClassTest::ClassTest()
    testFind();
    testLowerBound();
    testUpperBound();
+   testIsNan();
    testMinimum();
    testMaximum();
 }
@@ -2297,6 +2298,82 @@ void ClassTest::testUpperBound()
              << " Details:\n"
              << "   Required index = 2\n"
              << "   Current subvector:\n" << subvector << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the isnan function with the SparseSubvector class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the isnan function with the SparseSubvector class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testIsNan()
+{
+   test_ = "isnan() function";
+   
+   typedef blaze::CompressedVector<float,blaze::columnVector>  VectorType;
+   typedef blaze::SparseSubvector<VectorType>                  SubvectorType;
+   
+   VectorType vec( 9UL, 4UL );
+   vec[2] =  1;
+   vec[3] = -2;
+   vec[4] = -3;
+   vec[8] =  4;
+   
+   // isnan with empty 3-dimensional subvector
+   {
+      SubvectorType subvector( vec, 5UL, 3UL );
+      
+      checkSize    ( subvector, 3UL );
+      checkNonZeros( subvector, 0UL );
+
+      if( isnan( subvector ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isnan evaluation\n"
+             << " Details:\n"
+             << "   Subvector:\n" << subvector << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+   
+   // isnan with partially filled 5-dimensional subvector
+   {
+      SubvectorType subvector( vec, 4UL, 5UL );
+      
+      checkSize    ( subvector, 5UL );
+      checkNonZeros( subvector, 2UL );
+
+      if( isnan( subvector ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isnan evaluation\n"
+             << " Details:\n"
+             << "   Subvector:\n" << subvector << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+   
+   // isnan with fully filled 5-dimensional subvector
+   {
+      SubvectorType subvector( vec, 2UL, 3UL );
+      
+      checkSize    ( subvector, 3UL );
+      checkNonZeros( subvector, 3UL );
+
+      if( isnan( subvector ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isnan evaluation\n"
+             << " Details:\n"
+             << "   Subvector:\n" << subvector << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
