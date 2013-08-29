@@ -375,6 +375,9 @@ inline typename EnableIf< IsNumeric<T1>, bool >::Type
 /*!\name DenseVector functions */
 //@{
 template< typename VT, bool TF >
+bool isnan( const DenseVector<VT,TF>& dv );
+
+template< typename VT, bool TF >
 typename CMathTrait<typename VT::ElementType>::Type length( const DenseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
@@ -386,6 +389,42 @@ const typename VT::ElementType min( const DenseVector<VT,TF>& dv );
 template< typename VT, bool TF >
 const typename VT::ElementType max( const DenseVector<VT,TF>& dv );
 //@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks the given dense vector for not-a-number elements.
+// \ingroup dense_vector
+//
+// \param dv The vector to be checked for not-a-number elements.
+// \return \a true if at least one element of the vector is not-a-number, \a false otherwise.
+//
+// This function checks the N-dimensional dense vector for not-a-number (NaN) elements. If at
+// least one element of the vector is not-a-number, the function returns \a true, otherwise it
+// returns \a false.
+
+   \code
+   blaze::DynamicVector<double> a;
+   // ... Resizing and initialization
+   if( isnan( a ) ) { ... }
+   \endcode
+
+// Note that this function only works for vectors with floating point elements. The attempt to
+// use it for a vector with a non-floating point element type results in a compile time error.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+bool isnan( const DenseVector<VT,TF>& dv )
+{
+   typedef typename VT::CompositeType  CT;
+   
+   CT a( ~dv );  // Evaluation of the dense vector operand
+
+   for( size_t i=0UL; i<a.size(); ++i ) {
+      if( isnan( a[i] ) ) return true;
+   }
+   return false;
+}
 //*************************************************************************************************
 
 

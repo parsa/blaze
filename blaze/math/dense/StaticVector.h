@@ -1742,9 +1742,6 @@ template< typename Type, size_t N, bool TF >
 inline void clear( StaticVector<Type,N,TF>& v );
 
 template< typename Type, size_t N, bool TF >
-inline bool isnan( const StaticVector<Type,N,TF>& v );
-
-template< typename Type, size_t N, bool TF >
 inline bool isDefault( const StaticVector<Type,N,TF>& v );
 
 template< typename Type, bool TF >
@@ -1791,39 +1788,6 @@ template< typename Type  // Data type of the vector
 inline void clear( StaticVector<Type,N,TF>& v )
 {
    v.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks the given vector for not-a-number elements.
-// \ingroup static_vector
-//
-// \param v The vector to be checked for not-a-number elements.
-// \return \a true if at least one element of the vector is not-a-number, \a false otherwise.
-//
-// This function checks the static vector for not-a-number (NaN) elements. If at least one
-// element of the vector is not-a-number, the function returns \a true, otherwise it returns
-// \a false.
-
-   \code
-   blaze::StaticVector<double,3> a;
-   // ... Initialization
-   if( isnan( a ) ) { ... }
-   \endcode
-
-// Note that this function only works for vectors with floating point elements. The attempt to
-// use it for a vector with a non-floating point element type results in a compile time error.
-*/
-template< typename Type  // Data type of the vector
-        , size_t N       // Number of elements
-        , bool TF >      // Transpose flag
-inline bool isnan( const StaticVector<Type,N,TF>& v )
-{
-   for( size_t i=0UL; i<N; ++i ) {
-      if( isnan( v[i] ) ) return true;
-   }
-   return false;
 }
 //*************************************************************************************************
 
