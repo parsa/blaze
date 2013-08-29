@@ -2329,7 +2329,7 @@ void ClassTest::testIsNan()
    
    // isnan with empty 3-dimensional subvector
    {
-      SubvectorType subvector( vec, 5UL, 3UL );
+      SubvectorType subvector = sub( vec, 5UL, 3UL );
       
       checkSize    ( subvector, 3UL );
       checkNonZeros( subvector, 0UL );
@@ -2346,7 +2346,7 @@ void ClassTest::testIsNan()
    
    // isnan with partially filled 5-dimensional subvector
    {
-      SubvectorType subvector( vec, 4UL, 5UL );
+      SubvectorType subvector = sub( vec, 4UL, 5UL );
       
       checkSize    ( subvector, 5UL );
       checkNonZeros( subvector, 2UL );
@@ -2363,7 +2363,7 @@ void ClassTest::testIsNan()
    
    // isnan with fully filled 5-dimensional subvector
    {
-      SubvectorType subvector( vec, 2UL, 3UL );
+      SubvectorType subvector = sub( vec, 2UL, 3UL );
       
       checkSize    ( subvector, 3UL );
       checkNonZeros( subvector, 3UL );
