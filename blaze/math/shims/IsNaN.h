@@ -27,7 +27,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/constraints/FloatingPoint.h>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/typetraits/IsFloatingPoint.h>
 
 
 //*************************************************************************************************
@@ -62,9 +63,8 @@ namespace blaze {
 // data type results in a compile time error.
 */
 template< typename T >
-inline bool isnan( T a )
+inline typename EnableIf< IsFloatingPoint<T>, bool >::Type isnan( T a )
 {
-   BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return a != a;
 }
 //*************************************************************************************************
