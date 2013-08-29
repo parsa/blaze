@@ -4822,9 +4822,6 @@ template< typename Type, size_t M, size_t N, bool SO >
 inline void clear( StaticMatrix<Type,M,N,SO>& m );
 
 template< typename Type, size_t M, size_t N, bool SO >
-inline bool isnan( const StaticMatrix<Type,M,N,SO>& m );
-
-template< typename Type, size_t M, size_t N, bool SO >
 inline bool isDefault( const StaticMatrix<Type,M,N,SO>& m );
 
 template< typename Type, size_t M, size_t N, bool SO >
@@ -4867,48 +4864,6 @@ template< typename Type  // Data type of the matrix
 inline void clear( StaticMatrix<Type,M,N,SO>& m )
 {
    m.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks the given matrix for not-a-number elements.
-// \ingroup static_matrix
-//
-// \param m The matrix to be checked for not-a-number elements.
-// \return \a true if at least one element of the matrix is not-a-number, \a false otherwise.
-//
-// This function checks the static matrix for not-a-number (NaN) elements. If at least one
-// element of the matrix is not-a-number, the function returns \a true, otherwise it returns
-// \a false.
-
-   \code
-   blaze::StaticMatrix<double,3UL,4UL> A;
-   // ... Initialization
-   if( isnan( A ) ) { ... }
-   \endcode
-
-// Note that this function only works for matrices with floating point elements. The attempt to
-// use it for a matrix with a non-floating point element type results in a compile time error.
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline bool isnan( const StaticMatrix<Type,M,N,SO>& m )
-{
-   if( SO == rowMajor ) {
-      for( size_t i=0UL; i<M; ++i )
-         for( size_t j=0UL; j<N; ++j )
-            if( isnan( m(i,j) ) ) return true;
-   }
-   else {
-      for( size_t j=0UL; j<N; ++j )
-         for( size_t i=0UL; i<M; ++i )
-            if( isnan( m(i,j) ) ) return true;
-   }
-
-   return false;
 }
 //*************************************************************************************************
 

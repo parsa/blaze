@@ -581,6 +581,9 @@ inline typename EnableIf< IsNumeric<T1>, bool >::Type
 /*!\name DenseMatrix functions */
 //@{
 template< typename MT, bool SO >
+bool isnan( const DenseMatrix<MT,SO>& dm );
+
+template< typename MT, bool SO >
 bool isDiagonal( const DenseMatrix<MT,SO>& dm );
 
 template< typename MT, bool SO >
@@ -592,6 +595,52 @@ const typename MT::ElementType min( const DenseVector<MT,SO>& dm );
 template< typename MT, bool SO >
 const typename MT::ElementType max( const DenseVector<MT,SO>& dm );
 //@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks the given dense matrix for not-a-number elements.
+// \ingroup dense_matrix
+//
+// \param dm The matrix to be checked for not-a-number elements.
+// \return \a true if at least one element of the matrix is not-a-number, \a false otherwise.
+//
+// This function checks the dense matrix for not-a-number (NaN) elements. If at least one
+// element of the matrix is not-a-number, the function returns \a true, otherwise it returns
+// \a false.
+
+   \code
+   blaze::DynamicMatrix<double> A( 3UL, 4UL );
+   // ... Initialization
+   if( isnan( A ) ) { ... }
+   \endcode
+
+// Note that this function only works for matrices with floating point elements. The attempt to
+// use it for a matrix with a non-floating point element type results in a compile time error.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+bool isnan( const DenseMatrix<MT,SO>& dm )
+{
+   typedef typename MT::CompositeType  CT;
+   
+   CT A( ~dm );  // Evaluation of the dense matrix operand
+
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<A.rows(); ++i ) {
+         for( size_t j=0UL; j<A.columns(); ++j )
+            if( isnan( A(i,j) ) ) return true;
+      }
+   }
+   else {
+      for( size_t j=0UL; j<A.columns(); ++j ) {
+         for( size_t i=0UL; i<A.rows(); ++i )
+            if( isnan( A(i,j) ) ) return true;
+      }
+   }
+
+   return false;
+}
 //*************************************************************************************************
 
 
