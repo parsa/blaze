@@ -1653,9 +1653,6 @@ template< typename Type, bool TF >
 inline void clear( CompressedVector<Type,TF>& v );
 
 template< typename Type, bool TF >
-inline bool isnan( const CompressedVector<Type,TF>& v );
-
-template< typename Type, bool TF >
 inline bool isDefault( const CompressedVector<Type,TF>& v );
 
 template< typename Type, bool TF >
@@ -1692,41 +1689,6 @@ template< typename Type  // Data type of the vector
 inline void clear( CompressedVector<Type,TF>& v )
 {
    v.clear();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks the given compressed vector for not-a-number elements.
-// \ingroup compressed_vector
-//
-// \param v The compressed vector to be checked for not-a-number elements.
-// \return \a true if at least one element of the vector is not-a-number, \a false otherwise.
-//
-// This function checks the N-dimensional compressed vector for not-a-number (NaN) elements. If
-// at least one element of the vector is not-a-number, the function returns \a true, otherwise
-// it returns \a false.
-
-   \code
-   blaze::CompressedVector<double> a;
-   // ... Resizing and initialization
-   if( isnan( a ) ) { ... }
-   \endcode
-
-// Note that this function only works for vectors with floating point elements. The attempt to
-// use it for a vector with a non-floating point element type results in a compile time error.
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline bool isnan( const CompressedVector<Type,TF>& v )
-{
-   typedef typename CompressedVector<Type,TF>::ConstIterator  ConstIterator;
-
-   const ConstIterator end( v.end() );
-   for( ConstIterator element=v.begin(); element!=end; ++element ) {
-      if( isnan( element->value() ) ) return true;
-   }
-   return false;
 }
 //*************************************************************************************************
 

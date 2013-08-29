@@ -171,10 +171,13 @@ inline bool operator!=( const SparseVector<T1,TF1>& lhs, const SparseVector<T2,T
 /*!\name SparseVector functions */
 //@{
 template< typename VT, bool TF >
-typename CMathTrait<typename VT::ElementType>::Type length( const SparseVector<VT,TF>& dv );
+bool isnan( const SparseVector<VT,TF>& sv );
 
 template< typename VT, bool TF >
-const typename VT::ElementType sqrLength( const SparseVector<VT,TF>& dv );
+typename CMathTrait<typename VT::ElementType>::Type length( const SparseVector<VT,TF>& sv );
+
+template< typename VT, bool TF >
+const typename VT::ElementType sqrLength( const SparseVector<VT,TF>& sv );
 
 template< typename VT, bool TF >
 const typename VT::ElementType min( const SparseVector<VT,TF>& sv );
@@ -182,6 +185,44 @@ const typename VT::ElementType min( const SparseVector<VT,TF>& sv );
 template< typename VT, bool TF >
 const typename VT::ElementType max( const SparseVector<VT,TF>& sv );
 //@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks the given sparse vector for not-a-number elements.
+// \ingroup sparse_vector
+//
+// \param sv The sparse vector to be checked for not-a-number elements.
+// \return \a true if at least one element of the vector is not-a-number, \a false otherwise.
+//
+// This function checks the N-dimensional sparse vector for not-a-number (NaN) elements. If
+// at least one element of the vector is not-a-number, the function returns \a true, otherwise
+// it returns \a false.
+
+   \code
+   blaze::CompressedVector<double> a;
+   // ... Resizing and initialization
+   if( isnan( a ) ) { ... }
+   \endcode
+
+// Note that this function only works for vectors with floating point elements. The attempt to
+// use it for a vector with a non-floating point element type results in a compile time error.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline bool isnan( const SparseVector<VT,TF>& sv )
+{
+   typedef typename VT::CompositeType  CT;
+   typedef typename RemoveReference<CT>::Type::ConstIterator  ConstIterator;
+   
+   CT a( ~sv );  // Evaluation of the sparse vector operand
+
+   const ConstIterator end( a.end() );
+   for( ConstIterator element=a.begin(); element!=end; ++element ) {
+      if( isnan( element->value() ) ) return true;
+   }
+   return false;
+}
 //*************************************************************************************************
 
 
