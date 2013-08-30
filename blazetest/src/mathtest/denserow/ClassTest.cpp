@@ -63,6 +63,7 @@ ClassTest::ClassTest()
    testNonZeros();
    testReset();
    testScale();
+   testIsNan();
    testMinimum();
    testMaximum();
 }
@@ -3415,6 +3416,157 @@ void ClassTest::testScale()
                                         "( -2   0  -3   0 )\n"
                                         "(  0  12  15 -18 )\n"
                                         "(  7  -8   9  10 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the isnan function with the DenseRow class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the isnan function with the DenseRow class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testIsNan()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isnan() function";
+   
+      typedef blaze::DynamicMatrix<float,blaze::rowMajor>  MatrixType;
+      typedef blaze::DenseRow<MatrixType>                  RowType;
+      
+      MatrixType mat( mat_ );
+      
+      checkRows    ( mat,  5UL );
+      checkColumns ( mat,  4UL );
+      checkNonZeros( mat, 10UL );
+   
+      // isnan with empty row
+      {
+         RowType row0( mat, 0UL );
+
+         checkSize    ( row0, 4UL );
+         checkNonZeros( row0, 0UL );
+
+         if( isnan( row0 ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Row:\n" << row0 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   
+      // isnan with partially filled row
+      {
+         RowType row2( mat, 2UL );
+
+         checkSize    ( row2, 4UL );
+         checkNonZeros( row2, 2UL );
+
+         if( isnan( row2 ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Row:\n" << row2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   
+      // isnan with fully filled row
+      {
+         RowType row4( mat, 4UL );
+
+         checkSize    ( row4, 4UL );
+         checkNonZeros( row4, 4UL );
+
+         if( isnan( row4 ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Row:\n" << row4 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+   
+   
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isnan() function";
+   
+      typedef blaze::DynamicMatrix<float,blaze::columnMajor>  MatrixType;
+      typedef blaze::DenseRow<MatrixType>                     RowType;
+      
+      MatrixType mat( mat_ );
+      
+      checkRows    ( mat,  5UL );
+      checkColumns ( mat,  4UL );
+      checkNonZeros( mat, 10UL );
+   
+      // isnan with empty row
+      {
+         RowType row0( mat, 0UL );
+
+         checkSize    ( row0, 4UL );
+         checkNonZeros( row0, 0UL );
+
+         if( isnan( row0 ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Row:\n" << row0 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   
+      // isnan with partially filled row
+      {
+         RowType row2( mat, 2UL );
+
+         checkSize    ( row2, 4UL );
+         checkNonZeros( row2, 2UL );
+
+         if( isnan( row2 ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Row:\n" << row2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   
+      // isnan with fully filled row
+      {
+         RowType row4( mat, 4UL );
+
+         checkSize    ( row4, 4UL );
+         checkNonZeros( row4, 4UL );
+
+         if( isnan( row4 ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Row:\n" << row4 << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
