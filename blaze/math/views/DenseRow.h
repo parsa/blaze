@@ -2649,6 +2649,8 @@ inline void reset( DenseRow<MT,SO>& row )
 //
 // \param row The dense row to be cleared.
 // \return void
+//
+// Clearing a dense row is equivalent to resetting it via the reset() function.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order

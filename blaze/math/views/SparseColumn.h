@@ -3075,6 +3075,8 @@ inline void reset( SparseColumn<MT,SO>& column )
 //
 // \param column The sparse column to be cleared.
 // \return void
+//
+// Clearing a sparse column is equivalent to resetting it via the reset() function.
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order

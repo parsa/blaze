@@ -2650,6 +2650,8 @@ inline void reset( DenseColumn<MT,SO>& column )
 //
 // \param column The dense column to be cleared.
 // \return void
+//
+// Clearing a dense column is equivalent to resetting it via the reset() function.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order

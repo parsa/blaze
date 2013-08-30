@@ -3073,6 +3073,8 @@ inline void reset( SparseRow<MT,SO>& row )
 //
 // \param row The sparse row to be cleared.
 // \return void
+//
+// Clearing a sparse row is equivalent to resetting it via the reset() function.
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
