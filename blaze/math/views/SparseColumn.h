@@ -3048,9 +3048,6 @@ template< typename MT, bool SO >
 inline void clear( SparseColumn<MT,SO>& column );
 
 template< typename MT, bool SO >
-inline bool isnan( const SparseColumn<MT,SO>& column );
-
-template< typename MT, bool SO >
 inline bool isDefault( const SparseColumn<MT,SO>& column );
 //@}
 //*************************************************************************************************
@@ -3084,37 +3081,6 @@ template< typename MT  // Type of the sparse matrix
 inline void clear( SparseColumn<MT,SO>& column )
 {
    column.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks the given sparse column for not-a-number elements.
-// \ingroup sparse_column
-//
-// \param column The sparse column to be checked for not-a-number elements.
-// \return \a true if at least one element of the column is not-a-number, \a false otherwise.
-//
-// This function checks the sparse column for not-a-number (NaN) elements. If at least one element
-// of the column is not-a-number, the function returns \a true, otherwise it returns \a false.
-
-   \code
-   blaze::CompressedMatrix<double,columnMajor> A;
-   // ... Resizing and initialization
-   if( isnan( column( A, 0UL ) ) ) { ... }
-   \endcode
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline bool isnan( const SparseColumn<MT,SO>& column )
-{
-   typedef typename SparseColumn<MT,SO>::ConstIterator  ConstIterator;
-
-   const ConstIterator end( column.end() );
-   for( ConstIterator element=column.begin(); element!=end; ++element ) {
-      if( isnan( element->value() ) ) return true;
-   }
-   return false;
 }
 //*************************************************************************************************
 

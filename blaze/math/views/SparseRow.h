@@ -3046,9 +3046,6 @@ template< typename MT, bool SO >
 inline void clear( SparseRow<MT,SO>& row );
 
 template< typename MT, bool SO >
-inline bool isnan( const SparseRow<MT,SO>& row );
-
-template< typename MT, bool SO >
 inline bool isDefault( const SparseRow<MT,SO>& row );
 //@}
 //*************************************************************************************************
@@ -3082,37 +3079,6 @@ template< typename MT  // Type of the sparse matrix
 inline void clear( SparseRow<MT,SO>& row )
 {
    row.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks the given sparse row for not-a-number elements.
-// \ingroup sparse_row
-//
-// \param row The sparse row to be checked for not-a-number elements.
-// \return \a true if at least one element of the row is not-a-number, \a false otherwise.
-//
-// This function checks the sparse row for not-a-number (NaN) elements. If at least one element
-// of the row is not-a-number, the function returns \a true, otherwise it returns \a false.
-
-   \code
-   blaze::CompressedMatrix<double,rowMajor> A;
-   // ... Resizing and initialization
-   if( isnan( row( A, 0UL ) ) ) { ... }
-   \endcode
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline bool isnan( const SparseRow<MT,SO>& row )
-{
-   typedef typename SparseRow<MT,SO>::ConstIterator  ConstIterator;
-
-   const ConstIterator end( row.end() );
-   for( ConstIterator element=row.begin(); element!=end; ++element ) {
-      if( isnan( element->value() ) ) return true;
-   }
-   return false;
 }
 //*************************************************************************************************
 

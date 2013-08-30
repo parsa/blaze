@@ -2623,9 +2623,6 @@ template< typename MT, bool SO >
 inline void clear( DenseColumn<MT,SO>& column );
 
 template< typename MT, bool SO >
-inline bool isnan( const DenseColumn<MT,SO>& column );
-
-template< typename MT, bool SO >
 inline bool isDefault( const DenseColumn<MT,SO>& column );
 //@}
 //*************************************************************************************************
@@ -2659,34 +2656,6 @@ template< typename MT  // Type of the dense matrix
 inline void clear( DenseColumn<MT,SO>& column )
 {
    column.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks the given dense column for not-a-number elements.
-// \ingroup dense_column
-//
-// \param column The dense column to be checked for not-a-number elements.
-// \return \a true if at least one element of the column is not-a-number, \a false otherwise.
-//
-// This function checks the dense column for not-a-number (NaN) elements. If at least one element
-// of the column is not-a-number, the function returns \a true, otherwise it returns \a false.
-
-   \code
-   blaze::DynamicMatrix<int,columnMajor> A;
-   // ... Resizing and initialization
-   if( isnan( column( A, 0UL ) ) ) { ... }
-   \endcode
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline bool isnan( const DenseColumn<MT,SO>& column )
-{
-   for( size_t i=0UL; i<column.size(); ++i ) {
-      if( isnan( column[i] ) ) return true;
-   }
-   return false;
 }
 //*************************************************************************************************
 
