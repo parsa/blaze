@@ -1407,7 +1407,8 @@ template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
 void CompressedMatrix<Type,SO>::resize( size_t m, size_t n, bool preserve )
 {
-   BLAZE_INTERNAL_ASSERT( end_ - begin_ == capacity_ + 1UL, "Invalid storage setting detected" );
+   BLAZE_INTERNAL_ASSERT( end_ >= begin_, "Invalid internal storage detected" );
+   BLAZE_INTERNAL_ASSERT( static_cast<size_t>( end_ - begin_ ) == capacity_ + 1UL, "Invalid storage setting detected" );
 
    if( m == m_ && n == n_ ) return;
 
@@ -3447,7 +3448,8 @@ inline typename CompressedMatrix<Type,true>::Iterator
 template< typename Type >  // Data type of the sparse matrix
 void CompressedMatrix<Type,true>::resize( size_t m, size_t n, bool preserve )
 {
-   BLAZE_INTERNAL_ASSERT( end_ - begin_ == capacity_ + 1UL, "Invalid storage setting detected" );
+   BLAZE_INTERNAL_ASSERT( end_ >= begin_, "Invalid internal storage detected" );
+   BLAZE_INTERNAL_ASSERT( static_cast<size_t>( end_ - begin_ ) == capacity_ + 1UL, "Invalid storage setting detected" );
 
    if( m == m_ && n == n_ ) return;
 
