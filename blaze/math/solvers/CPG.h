@@ -117,7 +117,7 @@ bool CPG::solve( CP& cp )
    real beta( 0 ),  beta_nom( 0 ),  beta_denom( 0 );
    real tmp( 0 );
 
-   BLAZE_INTERNAL_ASSERT( A.isSymmetric(), "The CPG solver requires that the system matrix is symmetric" );
+   BLAZE_INTERNAL_ASSERT( isSymmetric( A ), "The CPG solver requires that the system matrix is symmetric" );
 
    // Allocating helper data
    r_.resize( n, false );
