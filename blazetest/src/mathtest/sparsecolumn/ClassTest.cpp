@@ -70,6 +70,7 @@ ClassTest::ClassTest()
    testFind();
    testLowerBound();
    testUpperBound();
+   testIsNan();
    testMinimum();
    testMaximum();
 }
@@ -4767,6 +4768,157 @@ void ClassTest::testUpperBound()
                 << " Details:\n"
                 << "   Required index = 2\n"
                 << "   Current column:\n" << col1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the isnan function with the SparseColumn class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the isnan function with the SparseColumn class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testIsNan()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isnan() function";
+   
+      typedef blaze::CompressedMatrix<float,blaze::rowMajor>  MatrixType;
+      typedef blaze::SparseColumn<MatrixType>                 ColumnType;
+      
+      MatrixType mat( mat_ );
+      
+      checkRows    ( mat,  4UL );
+      checkColumns ( mat,  5UL );
+      checkNonZeros( mat, 10UL );
+   
+      // isnan with empty column
+      {
+         ColumnType col0( mat, 0UL );
+
+         checkSize    ( col0, 4UL );
+         checkNonZeros( col0, 0UL );
+
+         if( isnan( col0 ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Column:\n" << col0 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   
+      // isnan with partially filled column
+      {
+         ColumnType col2( mat, 2UL );
+
+         checkSize    ( col2, 4UL );
+         checkNonZeros( col2, 2UL );
+
+         if( isnan( col2 ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   
+      // isnan with fully filled column
+      {
+         ColumnType col4( mat, 4UL );
+
+         checkSize    ( col4, 4UL );
+         checkNonZeros( col4, 4UL );
+
+         if( isnan( col4 ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Column:\n" << col4 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+   
+   
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isnan() function";
+   
+      typedef blaze::CompressedMatrix<float,blaze::columnMajor>  MatrixType;
+      typedef blaze::SparseColumn<MatrixType>                    ColumnType;
+      
+      MatrixType mat( mat_ );
+      
+      checkRows    ( mat,  4UL );
+      checkColumns ( mat,  5UL );
+      checkNonZeros( mat, 10UL );
+   
+      // isnan with empty column
+      {
+         ColumnType col0( mat, 0UL );
+
+         checkSize    ( col0, 4UL );
+         checkNonZeros( col0, 0UL );
+
+         if( isnan( col0 ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Column:\n" << col0 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   
+      // isnan with partially filled column
+      {
+         ColumnType col2( mat, 2UL );
+
+         checkSize    ( col2, 4UL );
+         checkNonZeros( col2, 2UL );
+
+         if( isnan( col2 ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   
+      // isnan with fully filled column
+      {
+         ColumnType col4( mat, 4UL );
+
+         checkSize    ( col4, 4UL );
+         checkNonZeros( col4, 4UL );
+
+         if( isnan( col4 ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Column:\n" << col4 << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
