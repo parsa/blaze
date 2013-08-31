@@ -90,6 +90,7 @@ class ClassTest
    void testTranspose   ();
    void testScale       ();
    void testSwap        ();
+   void testIsDefault   ();
    void testIsNan       ();
    void testIsDiagonal  ();
    void testIsSymmetric ();

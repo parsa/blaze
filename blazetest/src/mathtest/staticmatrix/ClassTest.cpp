@@ -3907,6 +3907,93 @@ void ClassTest::testSwap()
 
 
 //*************************************************************************************************
+/*!\brief Test of the isDefault function with the StaticMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the isDefault function with the StaticMatrix class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testIsDefault()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+   
+   {
+      test_ = "Row-major isDefault() function";
+
+      // isDefault with default matrix
+      {
+         blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat;
+
+         if( isDefault( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   
+      // isDefault with non-default matrix
+      {
+         blaze::StaticMatrix<int,3UL,2UL,blaze::rowMajor> mat( 0, 1, 0, 0, 0, 0 );
+
+         if( isDefault( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+   
+   
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+   
+   {
+      test_ = "Column-major isDefault() function";
+
+      // isDefault with default matrix
+      {
+         blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat;
+
+         if( isDefault( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   
+      // isDefault with non-default matrix
+      {
+         blaze::StaticMatrix<int,3UL,2UL,blaze::columnMajor> mat( 0, 1, 0, 0, 0, 0 );
+
+         if( isDefault( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the isnan function with the StaticMatrix class template.
 //
 // \return void
