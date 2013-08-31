@@ -5950,6 +5950,123 @@ void ClassTest::testUpperBound()
 
 
 //*************************************************************************************************
+/*!\brief Test of the isDefault function with the CompressedMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the isDefault function with the CompressedMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testIsDefault()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+   
+   {
+      test_ = "Row-major isDefault() function";
+      
+      // isDefault with 0x0 matrix
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat;
+
+         if( isDefault( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isDefault with default matrix
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 3UL );
+
+         if( isDefault( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   
+      // isDefault with non-default matrix
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 2UL );
+         mat(0,1) = 1;
+
+         if( isDefault( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+   
+   
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+   
+   {
+      test_ = "Column-major isDefault() function";
+
+      // isDefault with 0x0 matrix
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat;
+
+         if( isDefault( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isDefault with default matrix
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 3UL );
+
+         if( isDefault( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   
+      // isDefault with non-default matrix
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 1UL );
+         mat(1,0) = 1;
+
+         if( isDefault( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the isnan function with the CompressedMatrix class template.
 //
 // \return void
