@@ -5376,7 +5376,7 @@ void ClassTest::testLowerBound()
    //=====================================================================================
 
    {
-      test_ = "Row-major CompressedMatrix::find()";
+      test_ = "Row-major CompressedMatrix::lowerBound()";
 
       typedef blaze::CompressedMatrix<int,blaze::rowMajor>::ConstIterator  ConstIterator;
 
@@ -5523,7 +5523,7 @@ void ClassTest::testLowerBound()
    //=====================================================================================
 
    {
-      test_ = "Column-major CompressedMatrix::find()";
+      test_ = "Column-major CompressedMatrix::lowerBound()";
 
       typedef blaze::CompressedMatrix<int,blaze::columnMajor>::ConstIterator  ConstIterator;
 
@@ -5683,7 +5683,7 @@ void ClassTest::testUpperBound()
    //=====================================================================================
 
    {
-      test_ = "Row-major CompressedMatrix::find()";
+      test_ = "Row-major CompressedMatrix::upperBound()";
 
       typedef blaze::CompressedMatrix<int,blaze::rowMajor>::ConstIterator  ConstIterator;
 
@@ -5818,7 +5818,7 @@ void ClassTest::testUpperBound()
    //=====================================================================================
 
    {
-      test_ = "Column-major CompressedMatrix::find()";
+      test_ = "Column-major CompressedMatrix::upperBound()";
 
       typedef blaze::CompressedMatrix<int,blaze::columnMajor>::ConstIterator  ConstIterator;
 
