@@ -4869,6 +4869,97 @@ void ClassTest::testUpperBound()
 
 
 //*************************************************************************************************
+/*!\brief Test of the isDefault function with the SparseRow class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the isDefault function with the SparseRow class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testIsDefault()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+   
+   {
+      test_ = "Row-major isDefault() function";
+      
+      initialize();
+
+      // isDefault with default row
+      {
+         RT row0 = row( mat_, 0UL );
+
+         if( isDefault( row0 ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Row:\n" << row0 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   
+      // isDefault with non-default row
+      {
+         RT row1 = row( mat_, 1UL );
+
+         if( isDefault( row1 ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Row:\n" << row1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+   
+   
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+   
+   {
+      test_ = "Column-major isDefault() function";
+      
+      initialize();
+
+      // isDefault with default row
+      {
+         TRT row0 = row( tmat_, 0UL );
+
+         if( isDefault( row0 ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Row:\n" << row0 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   
+      // isDefault with non-default row
+      {
+         TRT row1 = row( tmat_, 1UL );
+
+         if( isDefault( row1 ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Row:\n" << row1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the isnan function with the SparseRow class template.
 //
 // \return void

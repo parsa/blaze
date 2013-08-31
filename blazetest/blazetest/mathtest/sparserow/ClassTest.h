@@ -93,6 +93,7 @@ class ClassTest
    void testFind        ();
    void testLowerBound  ();
    void testUpperBound  ();
+   void testIsDefault   ();
    void testIsNan       ();
    void testMinimum     ();
    void testMaximum     ();
