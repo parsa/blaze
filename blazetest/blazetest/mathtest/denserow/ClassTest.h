@@ -86,6 +86,7 @@ class ClassTest
    void testNonZeros    ();
    void testReset       ();
    void testScale       ();
+   void testIsDefault   ();
    void testIsNan       ();
    void testMinimum     ();
    void testMaximum     ();
