@@ -83,6 +83,7 @@ ClassTest::ClassTest()
    testReserve();
    testScale();
    testSwap();
+   testIsDefault();
    testIsNan();
    testLength();
    testNormalize();

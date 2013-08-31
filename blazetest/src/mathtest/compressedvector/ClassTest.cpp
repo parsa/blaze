@@ -73,6 +73,7 @@ ClassTest::ClassTest()
    testFind();
    testLowerBound();
    testUpperBound();
+   testIsDefault();
    testIsNan();
    testLength();
    testNormalize();

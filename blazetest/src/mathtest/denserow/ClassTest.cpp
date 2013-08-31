@@ -63,6 +63,7 @@ ClassTest::ClassTest()
    testNonZeros();
    testReset();
    testScale();
+   testIsDefault();
    testIsNan();
    testMinimum();
    testMaximum();
@@ -3448,7 +3449,7 @@ void ClassTest::testIsDefault()
       {
          RT row0 = row( mat_, 0UL );
 
-         if( isDefault( row0 ) != false ) {
+         if( isDefault( row0 ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
@@ -3462,7 +3463,7 @@ void ClassTest::testIsDefault()
       {
          RT row1 = row( mat_, 1UL );
 
-         if( isDefault( row1 ) != true ) {
+         if( isDefault( row1 ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
@@ -3487,7 +3488,7 @@ void ClassTest::testIsDefault()
       {
          TRT row0 = row( tmat_, 0UL );
 
-         if( isDefault( row0 ) != false ) {
+         if( isDefault( row0 ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
@@ -3501,7 +3502,7 @@ void ClassTest::testIsDefault()
       {
          TRT row1 = row( tmat_, 1UL );
 
-         if( isDefault( row1 ) != true ) {
+         if( isDefault( row1 ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"

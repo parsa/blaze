@@ -83,6 +83,7 @@ ClassTest::ClassTest()
    testTranspose();
    testScale();
    testSwap();
+   testIsDefault();
    testIsNan();
    testIsDiagonal();
    testIsSymmetric();
@@ -3664,7 +3665,7 @@ void ClassTest::testIsDefault()
          blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 0 );
          mat(0,1) = 1;
 
-         if( isDefault( mat ) != true ) {
+         if( isDefault( mat ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
@@ -3716,7 +3717,7 @@ void ClassTest::testIsDefault()
          blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 0 );
          mat(1,0) = 1;
 
-         if( isDefault( mat ) != true ) {
+         if( isDefault( mat ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
