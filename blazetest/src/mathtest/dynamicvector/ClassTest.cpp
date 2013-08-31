@@ -1354,6 +1354,65 @@ void ClassTest::testSwap()
 
 
 //*************************************************************************************************
+/*!\brief Test of the isDefault function with the DynamicVector class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the isDefault function with the DynamicVector class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testIsDefault()
+{
+   test_ = "isDefault() function";
+
+   // isDefault with vector of size 0
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec;
+
+      if( isDefault( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isDefault evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+   
+   // isDefault with default vector
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec( 3UL, 0 );
+
+      if( isDefault( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isDefault evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+   
+   // isDefault with non-default vector
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec( 3UL, 0 );
+      vec[1] = 1;
+
+      if( isDefault( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isDefault evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the isnan function with the DynamicVector class template.
 //
 // \return void
