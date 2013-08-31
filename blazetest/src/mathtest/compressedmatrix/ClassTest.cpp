@@ -6230,7 +6230,7 @@ void ClassTest::testIsDiagonal()
    //=====================================================================================
 
    {
-      test_ = "Row-major CompressedMatrix::isDiagonal()";
+      test_ = "Row-major isDiagonal()";
 
       // Non-quadratic matrix
       {
@@ -6333,7 +6333,7 @@ void ClassTest::testIsDiagonal()
    //=====================================================================================
 
    {
-      test_ = "Column-major CompressedMatrix::isDiagonal()";
+      test_ = "Column-major isDiagonal()";
 
       // Non-quadratic matrix
       {
@@ -6451,7 +6451,7 @@ void ClassTest::testIsSymmetric()
    //=====================================================================================
 
    {
-      test_ = "Row-major CompressedMatrix::isSymmetric()";
+      test_ = "Row-major isSymmetric()";
 
       // Non-quadratic matrix
       {
@@ -6583,7 +6583,7 @@ void ClassTest::testIsSymmetric()
    //=====================================================================================
 
    {
-      test_ = "Column-major CompressedMatrix::isSymmetric()";
+      test_ = "Column-major isSymmetric()";
 
       // Non-quadratic matrix
       {

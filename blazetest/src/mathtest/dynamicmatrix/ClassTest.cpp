@@ -3894,7 +3894,7 @@ void ClassTest::testIsDiagonal()
    //=====================================================================================
 
    {
-      test_ = "Row-major DynamicMatrix::isDiagonal()";
+      test_ = "Row-major isDiagonal()";
 
       // Non-quadratic matrix
       {
@@ -3999,7 +3999,7 @@ void ClassTest::testIsDiagonal()
    //=====================================================================================
 
    {
-      test_ = "Column-major DynamicMatrix::isDiagonal()";
+      test_ = "Column-major isDiagonal()";
 
       // Non-quadratic matrix
       {
@@ -4119,7 +4119,7 @@ void ClassTest::testIsSymmetric()
    //=====================================================================================
 
    {
-      test_ = "Row-major DynamicMatrix::isSymmetric()";
+      test_ = "Row-major isSymmetric()";
 
       // Non-quadratic matrix
       {
@@ -4253,7 +4253,7 @@ void ClassTest::testIsSymmetric()
    //=====================================================================================
 
    {
-      test_ = "Column-major DynamicMatrix::isSymmetric()";
+      test_ = "Column-major isSymmetric()";
 
       // Non-quadratic matrix
       {
