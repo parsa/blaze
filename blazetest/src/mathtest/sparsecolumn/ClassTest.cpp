@@ -4777,6 +4777,97 @@ void ClassTest::testUpperBound()
 
 
 //*************************************************************************************************
+/*!\brief Test of the isDefault function with the SparseColumn class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the isDefault function with the SparseColumn class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testIsDefault()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+   
+   {
+      test_ = "Row-major isDefault() function";
+      
+      initialize();
+
+      // isDefault with default column
+      {
+         CT col0 = column( mat_, 0UL );
+
+         if( isDefault( col0 ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Column:\n" << col0 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   
+      // isDefault with non-default column
+      {
+         CT col1 = column( mat_, 1UL );
+
+         if( isDefault( col1 ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Column:\n" << col1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+   
+   
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+   
+   {
+      test_ = "Column-major isDefault() function";
+      
+      initialize();
+
+      // isDefault with default column
+      {
+         TCT col0 = column( tmat_, 0UL );
+
+         if( isDefault( col0 ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Column:\n" << col0 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   
+      // isDefault with non-default column
+      {
+         TCT col1 = column( tmat_, 1UL );
+
+         if( isDefault( col1 ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Column:\n" << col1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the isnan function with the SparseColumn class template.
 //
 // \return void
