@@ -88,6 +88,7 @@ class ClassTest
    void testReset       ();
    void testScale       ();
    void testSwap        ();
+   void testIsDefault   ();
    void testIsNan       ();
    void testLength      ();
    void testNormalize   ();
