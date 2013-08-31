@@ -67,6 +67,7 @@ ClassTest::ClassTest()
    testFind();
    testLowerBound();
    testUpperBound();
+   testIsDefault();
    testIsNan();
    testMinimum();
    testMaximum();
@@ -2298,6 +2299,53 @@ void ClassTest::testUpperBound()
              << " Details:\n"
              << "   Required index = 2\n"
              << "   Current subvector:\n" << subvector << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the isDefault function with the SparseSubvector class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the isDefault function with the SparseSubvector class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testIsDefault()
+{
+   test_ = "isDefault() function";
+   
+   initialize();
+
+   // isDefault with default vector
+   {
+      VT vec( 8UL );
+      SVT subvector( vec, 2UL, 5UL );
+
+      if( isDefault( subvector ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isDefault evaluation\n"
+             << " Details:\n"
+             << "   Subvector:\n" << subvector << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+   
+   // isDefault with non-default vector
+   {
+      SVT subvector( vec_, 2UL, 5UL );
+
+      if( isDefault( subvector ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isDefault evaluation\n"
+             << " Details:\n"
+             << "   Subvector:\n" << subvector << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
