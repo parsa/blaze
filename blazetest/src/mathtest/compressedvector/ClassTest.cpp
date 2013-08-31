@@ -2200,6 +2200,65 @@ void ClassTest::testUpperBound()
 
 
 //*************************************************************************************************
+/*!\brief Test of the isDefault function with the CompressedVector class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the isDefault function with the CompressedVector class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testIsDefault()
+{
+   test_ = "isDefault() function";
+
+   // isDefault with vector of size 0
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec;
+
+      if( isDefault( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isDefault evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+   
+   // isDefault with default vector
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 3UL );
+
+      if( isDefault( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isDefault evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+   
+   // isDefault with non-default vector
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 3UL, 1UL );
+      vec[1] = 1;
+
+      if( isDefault( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isDefault evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the isnan function with the CompressedVector class template.
 //
 // \return void
