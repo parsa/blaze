@@ -2226,7 +2226,7 @@ void ClassTest::testIsDefault()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    // isDefault with default vector
    {
       blaze::CompressedVector<int,blaze::rowVector> vec( 3UL );
@@ -2240,7 +2240,7 @@ void ClassTest::testIsDefault()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    // isDefault with non-default vector
    {
       blaze::CompressedVector<int,blaze::rowVector> vec( 3UL, 1UL );
@@ -2271,7 +2271,7 @@ void ClassTest::testIsDefault()
 void ClassTest::testIsNan()
 {
    test_ = "isnan() function";
-   
+
    // isnan with 0-dimensional vector
    {
       blaze::CompressedVector<float,blaze::rowVector> vec;
@@ -2285,7 +2285,7 @@ void ClassTest::testIsNan()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    // isnan with empty 9-dimensional vector
    {
       blaze::CompressedVector<float,blaze::rowVector> vec( 9UL );
@@ -2299,7 +2299,7 @@ void ClassTest::testIsNan()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    // isnan with filled 9-dimensional vector
    {
       blaze::CompressedVector<float,blaze::rowVector> vec( 9UL );

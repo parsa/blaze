@@ -3439,10 +3439,10 @@ void ClassTest::testIsDefault()
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
-   
+
    {
       test_ = "Row-major isDefault() function";
-      
+
       initialize();
 
       // isDefault with default row
@@ -3458,7 +3458,7 @@ void ClassTest::testIsDefault()
             throw std::runtime_error( oss.str() );
          }
       }
-   
+
       // isDefault with non-default row
       {
          RT row1 = row( mat_, 1UL );
@@ -3473,15 +3473,15 @@ void ClassTest::testIsDefault()
          }
       }
    }
-   
-   
+
+
    //=====================================================================================
    // Column-major matrix tests
    //=====================================================================================
-   
+
    {
       test_ = "Column-major isDefault() function";
-      
+
       initialize();
 
       // isDefault with default row
@@ -3497,7 +3497,7 @@ void ClassTest::testIsDefault()
             throw std::runtime_error( oss.str() );
          }
       }
-   
+
       // isDefault with non-default row
       {
          TRT row1 = row( tmat_, 1UL );
@@ -3533,16 +3533,16 @@ void ClassTest::testIsNan()
 
    {
       test_ = "Row-major isnan() function";
-   
+
       typedef blaze::DynamicMatrix<float,blaze::rowMajor>  MatrixType;
       typedef blaze::DenseRow<MatrixType>                  RowType;
-      
+
       MatrixType mat( mat_ );
-      
+
       checkRows    ( mat,  5UL );
       checkColumns ( mat,  4UL );
       checkNonZeros( mat, 10UL );
-   
+
       // isnan with empty row
       {
          RowType row0( mat, 0UL );
@@ -3559,7 +3559,7 @@ void ClassTest::testIsNan()
             throw std::runtime_error( oss.str() );
          }
       }
-   
+
       // isnan with partially filled row
       {
          RowType row2( mat, 2UL );
@@ -3576,7 +3576,7 @@ void ClassTest::testIsNan()
             throw std::runtime_error( oss.str() );
          }
       }
-   
+
       // isnan with fully filled row
       {
          RowType row4( mat, 4UL );
@@ -3594,24 +3594,24 @@ void ClassTest::testIsNan()
          }
       }
    }
-   
-   
+
+
    //=====================================================================================
    // Column-major matrix tests
    //=====================================================================================
 
    {
       test_ = "Column-major isnan() function";
-   
+
       typedef blaze::DynamicMatrix<float,blaze::columnMajor>  MatrixType;
       typedef blaze::DenseRow<MatrixType>                     RowType;
-      
+
       MatrixType mat( mat_ );
-      
+
       checkRows    ( mat,  5UL );
       checkColumns ( mat,  4UL );
       checkNonZeros( mat, 10UL );
-   
+
       // isnan with empty row
       {
          RowType row0( mat, 0UL );
@@ -3628,7 +3628,7 @@ void ClassTest::testIsNan()
             throw std::runtime_error( oss.str() );
          }
       }
-   
+
       // isnan with partially filled row
       {
          RowType row2( mat, 2UL );
@@ -3645,7 +3645,7 @@ void ClassTest::testIsNan()
             throw std::runtime_error( oss.str() );
          }
       }
-   
+
       // isnan with fully filled row
       {
          RowType row4( mat, 4UL );

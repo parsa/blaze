@@ -1380,7 +1380,7 @@ void ClassTest::testIsDefault()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    // isDefault with default vector
    {
       blaze::DynamicVector<int,blaze::rowVector> vec( 3UL, 0 );
@@ -1394,7 +1394,7 @@ void ClassTest::testIsDefault()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    // isDefault with non-default vector
    {
       blaze::DynamicVector<int,blaze::rowVector> vec( 3UL, 0 );
@@ -1425,7 +1425,7 @@ void ClassTest::testIsDefault()
 void ClassTest::testIsNan()
 {
    test_ = "isnan() function";
-   
+
    // isnan with 0-dimensional vector
    {
       blaze::DynamicVector<float,blaze::rowVector> vec;
@@ -1439,7 +1439,7 @@ void ClassTest::testIsNan()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    // isnan with empty 9-dimensional vector
    {
       blaze::DynamicVector<float,blaze::rowVector> vec( 9UL, 0.0F );
@@ -1453,7 +1453,7 @@ void ClassTest::testIsNan()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    // isnan with filled 9-dimensional vector
    {
       blaze::DynamicVector<float,blaze::rowVector> vec( 9UL, 0.0F );

@@ -1148,7 +1148,7 @@ void ClassTest::testIsDefault()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    // isDefault with non-default vector
    {
       blaze::StaticVector<int,3UL,blaze::rowVector> vec( 0, 1, 0 );
@@ -1192,7 +1192,7 @@ void ClassTest::testIsNan()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    // isnan with filled 9-dimensional vector
    {
       blaze::StaticVector<float,9UL,blaze::rowVector> vec;

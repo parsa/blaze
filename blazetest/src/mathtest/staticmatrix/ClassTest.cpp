@@ -3921,7 +3921,7 @@ void ClassTest::testIsDefault()
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
-   
+
    {
       test_ = "Row-major isDefault() function";
 
@@ -3938,7 +3938,7 @@ void ClassTest::testIsDefault()
             throw std::runtime_error( oss.str() );
          }
       }
-   
+
       // isDefault with non-default matrix
       {
          blaze::StaticMatrix<int,3UL,2UL,blaze::rowMajor> mat( 0, 1, 0, 0, 0, 0 );
@@ -3953,12 +3953,12 @@ void ClassTest::testIsDefault()
          }
       }
    }
-   
-   
+
+
    //=====================================================================================
    // Column-major matrix tests
    //=====================================================================================
-   
+
    {
       test_ = "Column-major isDefault() function";
 
@@ -3975,7 +3975,7 @@ void ClassTest::testIsDefault()
             throw std::runtime_error( oss.str() );
          }
       }
-   
+
       // isDefault with non-default matrix
       {
          blaze::StaticMatrix<int,3UL,2UL,blaze::columnMajor> mat( 0, 1, 0, 0, 0, 0 );
@@ -4011,15 +4011,15 @@ void ClassTest::testIsNan()
 
    {
       test_ = "Row-major isnan()";
-      
+
       // isnan with empty 3x5 matrix
       {
          blaze::StaticMatrix<float,3UL,5UL,blaze::rowMajor> mat;
-         
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 5UL );
          checkNonZeros( mat, 0UL );
-         
+
          if( isnan( mat ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -4029,7 +4029,7 @@ void ClassTest::testIsNan()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // isnan with filled 4x2 matrix
       {
          blaze::StaticMatrix<float,4UL,2UL,blaze::rowMajor> mat;
@@ -4037,11 +4037,11 @@ void ClassTest::testIsNan()
          mat(2,0) = -2.0F;
          mat(2,1) =  3.0F;
          mat(3,0) =  4.0F;
-         
+
          checkRows    ( mat, 4UL );
          checkColumns ( mat, 2UL );
          checkNonZeros( mat, 4UL );
-         
+
          if( isnan( mat ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -4052,23 +4052,23 @@ void ClassTest::testIsNan()
          }
       }
    }
-   
-   
+
+
    //=====================================================================================
    // Column-major matrix tests
    //=====================================================================================
 
    {
       test_ = "Column-major isnan()";
-      
+
       // isnan with empty 3x5 matrix
       {
          blaze::StaticMatrix<float,3UL,5UL,blaze::columnMajor> mat;
-         
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 5UL );
          checkNonZeros( mat, 0UL );
-         
+
          if( isnan( mat ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -4078,7 +4078,7 @@ void ClassTest::testIsNan()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // isnan with filled 4x2 matrix
       {
          blaze::StaticMatrix<float,4UL,2UL,blaze::columnMajor> mat;
@@ -4086,11 +4086,11 @@ void ClassTest::testIsNan()
          mat(2,0) = -2.0F;
          mat(2,1) =  3.0F;
          mat(3,0) =  4.0F;
-         
+
          checkRows    ( mat, 4UL );
          checkColumns ( mat, 2UL );
          checkNonZeros( mat, 4UL );
-         
+
          if( isnan( mat ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -4591,7 +4591,7 @@ void ClassTest::testMinimum()
 
    {
       test_ = "Row-major min()";
-      
+
       // Attempt to find the minimum at the beginning in a fully filled matrix
       {
          blaze::StaticMatrix<int,3UL,2UL,blaze::rowMajor> mat;
@@ -4601,11 +4601,11 @@ void ClassTest::testMinimum()
          mat(1,1) =  4;
          mat(2,0) =  5;
          mat(2,1) =  6;
-         
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 2UL );
          checkNonZeros( mat, 6UL );
-         
+
          const int minimum = min( mat );
 
          if( minimum != -1 ) {
@@ -4618,7 +4618,7 @@ void ClassTest::testMinimum()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // Attempt to find the minimum at the end in a fully filled matrix
       {
          blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat;
@@ -4628,11 +4628,11 @@ void ClassTest::testMinimum()
          mat(1,0) =  4;
          mat(1,1) =  5;
          mat(1,2) = -6;
-         
+
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
          checkNonZeros( mat, 6UL );
-         
+
          const int minimum = min( mat );
 
          if( minimum != -6 ) {
@@ -4645,7 +4645,7 @@ void ClassTest::testMinimum()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // Attempt to find the minimum at the beginning in a partially filled matrix
       {
          blaze::StaticMatrix<int,5UL,3UL,blaze::rowMajor> mat;
@@ -4654,11 +4654,11 @@ void ClassTest::testMinimum()
          mat(2,1) =  3;
          mat(4,0) =  4;
          mat(4,2) =  5;
-         
+
          checkRows    ( mat, 5UL );
          checkColumns ( mat, 3UL );
          checkNonZeros( mat, 5UL );
-         
+
          const int minimum = min( mat );
 
          if( minimum != -1 ) {
@@ -4671,7 +4671,7 @@ void ClassTest::testMinimum()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // Attempt to find the minimum at the end in a partially filled matrix
       {
          blaze::StaticMatrix<int,3UL,5UL,blaze::rowMajor> mat;
@@ -4680,11 +4680,11 @@ void ClassTest::testMinimum()
          mat(1,2) =  3;
          mat(2,0) =  4;
          mat(2,4) = -5;
-         
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 5UL );
          checkNonZeros( mat, 5UL );
-         
+
          const int minimum = min( mat );
 
          if( minimum != -5 ) {
@@ -4697,7 +4697,7 @@ void ClassTest::testMinimum()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // Attempt to detect 0 as the minimum value
       {
          blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat;
@@ -4706,11 +4706,11 @@ void ClassTest::testMinimum()
          mat(1,1) = 3;
          mat(2,0) = 4;
          mat(2,2) = 5;
-         
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
          checkNonZeros( mat, 5UL );
-         
+
          const int minimum = min( mat );
 
          if( minimum != 0 ) {
@@ -4724,15 +4724,15 @@ void ClassTest::testMinimum()
          }
       }
    }
-   
-   
+
+
    //=====================================================================================
    // Column-major matrix tests
    //=====================================================================================
 
    {
       test_ = "Column-major min()";
-      
+
       // Attempt to find the minimum at the beginning in a partially filled matrix
       {
          blaze::StaticMatrix<int,5UL,3UL,blaze::columnMajor> mat;
@@ -4741,11 +4741,11 @@ void ClassTest::testMinimum()
          mat(2,1) =  3;
          mat(4,0) =  4;
          mat(4,2) =  5;
-         
+
          checkRows    ( mat, 5UL );
          checkColumns ( mat, 3UL );
          checkNonZeros( mat, 5UL );
-         
+
          const int minimum = min( mat );
 
          if( minimum != -1 ) {
@@ -4758,7 +4758,7 @@ void ClassTest::testMinimum()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // Attempt to find the minimum at the end in a partially filled matrix
       {
          blaze::StaticMatrix<int,3UL,5UL,blaze::columnMajor> mat;
@@ -4767,11 +4767,11 @@ void ClassTest::testMinimum()
          mat(1,2) =  3;
          mat(2,0) =  4;
          mat(2,4) = -5;
-         
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 5UL );
          checkNonZeros( mat, 5UL );
-         
+
          const int minimum = min( mat );
 
          if( minimum != -5 ) {
@@ -4784,7 +4784,7 @@ void ClassTest::testMinimum()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // Attempt to find the minimum at the beginning in a partially filled matrix
       {
          blaze::StaticMatrix<int,5UL,3UL,blaze::columnMajor> mat;
@@ -4793,11 +4793,11 @@ void ClassTest::testMinimum()
          mat(2,1) =  3;
          mat(4,0) =  4;
          mat(4,2) =  5;
-         
+
          checkRows    ( mat, 5UL );
          checkColumns ( mat, 3UL );
          checkNonZeros( mat, 5UL );
-         
+
          const int minimum = min( mat );
 
          if( minimum != -1 ) {
@@ -4810,7 +4810,7 @@ void ClassTest::testMinimum()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // Attempt to find the minimum at the end in a partially filled matrix
       {
          blaze::StaticMatrix<int,3UL,5UL,blaze::columnMajor> mat;
@@ -4819,11 +4819,11 @@ void ClassTest::testMinimum()
          mat(1,2) =  3;
          mat(2,0) =  4;
          mat(2,4) = -5;
-         
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 5UL );
          checkNonZeros( mat, 5UL );
-         
+
          const int minimum = min( mat );
 
          if( minimum != -5 ) {
@@ -4836,7 +4836,7 @@ void ClassTest::testMinimum()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // Attempt to detect 0 as the minimum value
       {
          blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat;
@@ -4845,11 +4845,11 @@ void ClassTest::testMinimum()
          mat(1,1) = 3;
          mat(2,0) = 4;
          mat(2,2) = 5;
-         
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
          checkNonZeros( mat, 5UL );
-         
+
          const int minimum = min( mat );
 
          if( minimum != 0 ) {
@@ -4884,7 +4884,7 @@ void ClassTest::testMaximum()
 
    {
       test_ = "Row-major max()";
-      
+
       // Attempt to find the maximum at the beginning in a fully filled matrix
       {
          blaze::StaticMatrix<int,3UL,2UL,blaze::rowMajor> mat;
@@ -4894,11 +4894,11 @@ void ClassTest::testMaximum()
          mat(1,1) = -4;
          mat(2,0) = -5;
          mat(2,1) = -6;
-         
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 2UL );
          checkNonZeros( mat, 6UL );
-         
+
          const int maximum = max( mat );
 
          if( maximum != 1 ) {
@@ -4911,7 +4911,7 @@ void ClassTest::testMaximum()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // Attempt to find the maximum at the end in a fully filled matrix
       {
          blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat;
@@ -4921,11 +4921,11 @@ void ClassTest::testMaximum()
          mat(1,0) = -4;
          mat(1,1) = -5;
          mat(1,2) =  6;
-         
+
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
          checkNonZeros( mat, 6UL );
-         
+
          const int maximum = max( mat );
 
          if( maximum != 6 ) {
@@ -4938,7 +4938,7 @@ void ClassTest::testMaximum()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // Attempt to find the maximum at the beginning in a partially filled matrix
       {
          blaze::StaticMatrix<int,5UL,3UL,blaze::rowMajor> mat;
@@ -4947,11 +4947,11 @@ void ClassTest::testMaximum()
          mat(2,1) = -3;
          mat(4,0) = -4;
          mat(4,2) = -5;
-         
+
          checkRows    ( mat, 5UL );
          checkColumns ( mat, 3UL );
          checkNonZeros( mat, 5UL );
-         
+
          const int maximum = max( mat );
 
          if( maximum != 1 ) {
@@ -4964,7 +4964,7 @@ void ClassTest::testMaximum()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // Attempt to find the maximum at the end in a partially filled matrix
       {
          blaze::StaticMatrix<int,3UL,5UL,blaze::rowMajor> mat;
@@ -4973,11 +4973,11 @@ void ClassTest::testMaximum()
          mat(1,2) = -3;
          mat(2,0) = -4;
          mat(2,4) =  5;
-         
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 5UL );
          checkNonZeros( mat, 5UL );
-         
+
          const int maximum = max( mat );
 
          if( maximum != 5 ) {
@@ -4990,7 +4990,7 @@ void ClassTest::testMaximum()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // Attempt to detect 0 as the maximum value
       {
          blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat;
@@ -4999,11 +4999,11 @@ void ClassTest::testMaximum()
          mat(1,1) = -3;
          mat(2,0) = -4;
          mat(2,2) = -5;
-         
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
          checkNonZeros( mat, 5UL );
-         
+
          const int maximum = max( mat );
 
          if( maximum != 0 ) {
@@ -5017,15 +5017,15 @@ void ClassTest::testMaximum()
          }
       }
    }
-   
-   
+
+
    //=====================================================================================
    // Column-major matrix tests
    //=====================================================================================
 
    {
       test_ = "Column-major max()";
-      
+
       // Attempt to find the maximum at the beginning in a fully filled matrix
       {
          blaze::StaticMatrix<int,3UL,2UL,blaze::columnMajor> mat;
@@ -5035,11 +5035,11 @@ void ClassTest::testMaximum()
          mat(1,1) = -4;
          mat(2,0) = -5;
          mat(2,1) = -6;
-         
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 2UL );
          checkNonZeros( mat, 6UL );
-         
+
          const int maximum = max( mat );
 
          if( maximum != 1 ) {
@@ -5052,7 +5052,7 @@ void ClassTest::testMaximum()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // Attempt to find the maximum at the end in a fully filled matrix
       {
          blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat;
@@ -5062,11 +5062,11 @@ void ClassTest::testMaximum()
          mat(1,0) = -4;
          mat(1,1) = -5;
          mat(1,2) =  6;
-         
+
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
          checkNonZeros( mat, 6UL );
-         
+
          const int maximum = max( mat );
 
          if( maximum != 6 ) {
@@ -5079,7 +5079,7 @@ void ClassTest::testMaximum()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // Attempt to find the maximum at the beginning in a partially filled matrix
       {
          blaze::StaticMatrix<int,5UL,3UL,blaze::columnMajor> mat;
@@ -5088,11 +5088,11 @@ void ClassTest::testMaximum()
          mat(2,1) = -3;
          mat(4,0) = -4;
          mat(4,2) = -5;
-         
+
          checkRows    ( mat, 5UL );
          checkColumns ( mat, 3UL );
          checkNonZeros( mat, 5UL );
-         
+
          const int maximum = max( mat );
 
          if( maximum != 1 ) {
@@ -5105,7 +5105,7 @@ void ClassTest::testMaximum()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // Attempt to find the maximum at the end in a partially filled matrix
       {
          blaze::StaticMatrix<int,3UL,5UL,blaze::columnMajor> mat;
@@ -5114,11 +5114,11 @@ void ClassTest::testMaximum()
          mat(1,2) = -3;
          mat(2,0) = -4;
          mat(2,4) =  5;
-         
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 5UL );
          checkNonZeros( mat, 5UL );
-         
+
          const int maximum = max( mat );
 
          if( maximum != 5 ) {
@@ -5131,7 +5131,7 @@ void ClassTest::testMaximum()
             throw std::runtime_error( oss.str() );
          }
       }
-      
+
       // Attempt to detect 0 as the maximum value
       {
          blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat;
@@ -5140,11 +5140,11 @@ void ClassTest::testMaximum()
          mat(1,1) = -3;
          mat(2,0) = -4;
          mat(2,2) = -5;
-         
+
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
          checkNonZeros( mat, 5UL );
-         
+
          const int maximum = max( mat );
 
          if( maximum != 0 ) {
