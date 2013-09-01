@@ -417,7 +417,7 @@ template< typename VT  // Type of the dense vector
 bool isnan( const DenseVector<VT,TF>& dv )
 {
    typedef typename VT::CompositeType  CT;
-   
+
    CT a( ~dv );  // Evaluation of the dense vector operand
 
    for( size_t i=0UL; i<a.size(); ++i ) {
@@ -527,7 +527,7 @@ const typename VT::ElementType min( const DenseVector<VT,TF>& dv )
 
    typedef typename VT::ElementType    ET;
    typedef typename VT::CompositeType  CT;
-   
+
    CT a( ~dv );  // Evaluation of the dense vector operand
 
    if( a.size() == 0UL ) return ET();
@@ -560,7 +560,7 @@ const typename VT::ElementType max( const DenseVector<VT,TF>& dv )
 
    typedef typename VT::ElementType    ET;
    typedef typename VT::CompositeType  CT;
-   
+
    CT a( ~dv );  // Evaluation of the dense vector operand
 
    if( a.size() == 0UL ) return ET();

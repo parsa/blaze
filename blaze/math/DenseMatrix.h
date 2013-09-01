@@ -623,7 +623,7 @@ template< typename MT  // Type of the dense matrix
 bool isnan( const DenseMatrix<MT,SO>& dm )
 {
    typedef typename MT::CompositeType  CT;
-   
+
    CT A( ~dm );  // Evaluation of the dense matrix operand
 
    if( SO == rowMajor ) {
@@ -752,7 +752,7 @@ const typename MT::ElementType min( const DenseMatrix<MT,SO>& dm )
 
    typedef typename MT::ElementType    ET;
    typedef typename MT::CompositeType  CT;
-   
+
    CT A( ~dm );  // Evaluation of the dense matrix operand
 
    if( A.rows() == 0UL || A.columns() == 0UL ) return ET();
@@ -799,7 +799,7 @@ const typename MT::ElementType max( const DenseMatrix<MT,SO>& dm )
 
    typedef typename MT::ElementType    ET;
    typedef typename MT::CompositeType  CT;
-   
+
    CT A( ~dm );  // Evaluation of the dense matrix operand
 
    if( A.rows() == 0UL || A.columns() == 0UL ) return ET();

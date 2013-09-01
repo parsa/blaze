@@ -304,9 +304,9 @@ bool isnan( const SparseMatrix<MT,SO>& sm )
 {
    typedef typename MT::CompositeType  CT;
    typedef typename RemoveReference<CT>::Type::ConstIterator  ConstIterator;
-   
+
    CT A( ~sm );  // Evaluation of the sparse matrix operand
-   
+
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
          for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
@@ -452,9 +452,9 @@ const typename MT::ElementType min( const SparseMatrix<MT,SO>& sm )
    typedef typename RemoveReference<CT>::Type::ConstIterator  ConstIterator;
 
    CT A( ~sm );  // Evaluation of the sparse matrix operand
-   
+
    const size_t nonzeros( A.nonZeros() );
-   
+
    if( nonzeros == 0UL ) {
       return ET();
    }
@@ -472,7 +472,7 @@ const typename MT::ElementType min( const SparseMatrix<MT,SO>& sm )
       for( ; element!=end; ++element )
          minimum = min( minimum, element->value() );
    }
-      
+
    return minimum;
 }
 //*************************************************************************************************
@@ -501,9 +501,9 @@ const typename MT::ElementType max( const SparseMatrix<MT,SO>& sm )
    typedef typename RemoveReference<CT>::Type::ConstIterator  ConstIterator;
 
    CT A( ~sm );  // Evaluation of the sparse matrix operand
-   
+
    const size_t nonzeros( A.nonZeros() );
-   
+
    if( nonzeros == 0UL ) {
       return ET();
    }
@@ -521,7 +521,7 @@ const typename MT::ElementType max( const SparseMatrix<MT,SO>& sm )
       for( ; element!=end; ++element )
          maximum = max( maximum, element->value() );
    }
-      
+
    return maximum;
 }
 //*************************************************************************************************

@@ -214,7 +214,7 @@ inline bool isnan( const SparseVector<VT,TF>& sv )
 {
    typedef typename VT::CompositeType  CT;
    typedef typename RemoveReference<CT>::Type::ConstIterator  ConstIterator;
-   
+
    CT a( ~sv );  // Evaluation of the sparse vector operand
 
    const ConstIterator end( a.end() );
