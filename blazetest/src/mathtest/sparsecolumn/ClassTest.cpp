@@ -3700,7 +3700,7 @@ void ClassTest::testErase()
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
                 << " Details:\n"
-                << "   Expected result: the end() iterator\n";
+                << "   Expected result: the given end() iterator\n";
             throw std::runtime_error( oss.str() );
          }
 
@@ -4067,7 +4067,7 @@ void ClassTest::testErase()
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
                 << " Details:\n"
-                << "   Expected result: the end() iterator\n";
+                << "   Expected result: the given end() iterator\n";
             throw std::runtime_error( oss.str() );
          }
 
@@ -4791,10 +4791,10 @@ void ClassTest::testIsDefault()
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
-   
+
    {
       test_ = "Row-major isDefault() function";
-      
+
       initialize();
 
       // isDefault with default column
@@ -4810,7 +4810,7 @@ void ClassTest::testIsDefault()
             throw std::runtime_error( oss.str() );
          }
       }
-   
+
       // isDefault with non-default column
       {
          CT col1 = column( mat_, 1UL );
@@ -4825,15 +4825,15 @@ void ClassTest::testIsDefault()
          }
       }
    }
-   
-   
+
+
    //=====================================================================================
    // Column-major matrix tests
    //=====================================================================================
-   
+
    {
       test_ = "Column-major isDefault() function";
-      
+
       initialize();
 
       // isDefault with default column
@@ -4849,7 +4849,7 @@ void ClassTest::testIsDefault()
             throw std::runtime_error( oss.str() );
          }
       }
-   
+
       // isDefault with non-default column
       {
          TCT col1 = column( tmat_, 1UL );
@@ -4885,16 +4885,16 @@ void ClassTest::testIsNan()
 
    {
       test_ = "Row-major isnan() function";
-   
+
       typedef blaze::CompressedMatrix<float,blaze::rowMajor>  MatrixType;
       typedef blaze::SparseColumn<MatrixType>                 ColumnType;
-      
+
       MatrixType mat( mat_ );
-      
+
       checkRows    ( mat,  4UL );
       checkColumns ( mat,  5UL );
       checkNonZeros( mat, 10UL );
-   
+
       // isnan with empty column
       {
          ColumnType col0( mat, 0UL );
@@ -4911,7 +4911,7 @@ void ClassTest::testIsNan()
             throw std::runtime_error( oss.str() );
          }
       }
-   
+
       // isnan with partially filled column
       {
          ColumnType col2( mat, 2UL );
@@ -4928,7 +4928,7 @@ void ClassTest::testIsNan()
             throw std::runtime_error( oss.str() );
          }
       }
-   
+
       // isnan with fully filled column
       {
          ColumnType col4( mat, 4UL );
@@ -4946,24 +4946,24 @@ void ClassTest::testIsNan()
          }
       }
    }
-   
-   
+
+
    //=====================================================================================
    // Column-major matrix tests
    //=====================================================================================
 
    {
       test_ = "Column-major isnan() function";
-   
+
       typedef blaze::CompressedMatrix<float,blaze::columnMajor>  MatrixType;
       typedef blaze::SparseColumn<MatrixType>                    ColumnType;
-      
+
       MatrixType mat( mat_ );
-      
+
       checkRows    ( mat,  4UL );
       checkColumns ( mat,  5UL );
       checkNonZeros( mat, 10UL );
-   
+
       // isnan with empty column
       {
          ColumnType col0( mat, 0UL );
@@ -4980,7 +4980,7 @@ void ClassTest::testIsNan()
             throw std::runtime_error( oss.str() );
          }
       }
-   
+
       // isnan with partially filled column
       {
          ColumnType col2( mat, 2UL );
@@ -4997,7 +4997,7 @@ void ClassTest::testIsNan()
             throw std::runtime_error( oss.str() );
          }
       }
-   
+
       // isnan with fully filled column
       {
          ColumnType col4( mat, 4UL );
