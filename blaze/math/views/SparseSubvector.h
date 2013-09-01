@@ -78,7 +78,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\defgroup sparse_subvector Subvector
+/*!\defgroup sparse_subvector Sparse Subvector
 // \ingroup views
 */
 /*!\brief View to a specific subvector of a sparse vector.
@@ -304,7 +304,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
        the non-const reference and iterator types. In case the given sparse vector of type
        \a VT is const qualified, \a useConst will be set to 1 and the sparse subvector will
        return references and iterators to const. Otherwise \a useConst will be set to 0 and
-       the sparse subvector will offer write access to the sparse matrix elements both via
+       the sparse subvector will offer write access to the sparse vector elements both via
        the subscript operator and iterators. */
    enum { useConst = IsConst<VT>::value };
    //**********************************************************************************************
@@ -346,9 +346,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
       inline SubvectorElement( IteratorType pos, size_t offset )
          : pos_   ( pos    )  // Iterator to the current position within the sparse subvector
          , offset_( offset )  // Offset within the according sparse vector
-      {
-         BLAZE_INTERNAL_ASSERT( pos_->index() >= offset_, "Invalid offset detected" );
-      }
+      {}
       //*******************************************************************************************
 
       //**Assignment operator**********************************************************************
@@ -412,9 +410,9 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
       //*******************************************************************************************
 
       //**Element access operator******************************************************************
-      /*!\brief Direct access to the sparse vector element at the current iterator position.
+      /*!\brief Direct access to the sparse subvector element at the current iterator position.
       //
-      // \return Reference to the sparse vector element at the current iterator position.
+      // \return Reference to the sparse subvector element at the current iterator position.
       */
       inline const SubvectorElement* operator->() const {
          return this;
@@ -520,9 +518,9 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
       //*******************************************************************************************
 
       //**Element access operator******************************************************************
-      /*!\brief Direct access to the sparse vector element at the current iterator position.
+      /*!\brief Direct access to the current sparse subvector element.
       //
-      // \return The current value of the sparse element.
+      // \return Reference to the sparse subvector element.
       */
       inline ReferenceType operator*() const {
          return ReferenceType( pos_, offset_ );
@@ -530,9 +528,9 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
       //*******************************************************************************************
 
       //**Element access operator******************************************************************
-      /*!\brief Direct access to the sparse vector element at the current iterator position.
+      /*!\brief Direct access to the current sparse subvector element.
       //
-      // \return Reference to the sparse vector element at the current iterator position.
+      // \return Pointer to the sparse subvector element.
       */
       inline PointerType operator->() const {
          return PointerType( pos_, offset_ );
@@ -542,7 +540,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
       //**Equality operator************************************************************************
       /*!\brief Equality comparison between two SubvectorIterator objects.
       //
-      // \param rhs The right-hand side expression iterator.
+      // \param rhs The right-hand side subvector iterator.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
       template< typename IteratorType2, bool ConstFlag2 >
@@ -554,7 +552,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
       //**Inequality operator**********************************************************************
       /*!\brief Inequality comparison between two SubvectorIterator objects.
       //
-      // \param rhs The right-hand side expression iterator.
+      // \param rhs The right-hand side subvector iterator.
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
       template< typename IteratorType2, bool ConstFlag2 >
@@ -600,7 +598,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SparseSubvector( VT& vector, size_t start, size_t n );
+   explicit inline SparseSubvector( VT& vector, size_t index, size_t n );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -696,7 +694,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
    /*!\name Member variables */
    //@{
    VT&          vector_;  //!< The sparse vector containing the subvector.
-   const size_t start_;   //!< The first index of the subvector.
+   const size_t offset_;  //!< The offset of the subvector within the sparse vector.
    const size_t size_;    //!< The size of the subvector.
    //@}
    //**********************************************************************************************
@@ -725,18 +723,18 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
 /*!\brief The constructor for SparseSubvector.
 //
 // \param vector The sparse vector containing the subvector.
-// \param start The first index of the subvector in the given sparse vector.
+// \param index The index of the first element of the subvector.
 // \param n The size of the subvector.
 // \exception std::invalid_argument Invalid subvector specification.
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline SparseSubvector<VT,TF>::SparseSubvector( VT& vector, size_t start, size_t n )
+inline SparseSubvector<VT,TF>::SparseSubvector( VT& vector, size_t index, size_t n )
    : vector_( vector )  // The sparse vector containing the subvector
-   , start_ ( start  )  // The first index of the subvector
+   , offset_( index  )  // The offset of the subvector within the sparse vector
    , size_  ( n      )  // The size of the subvector
 {
-   if( n == 0UL || start + n > vector.size() )
+   if( n == 0UL || index + n > vector.size() )
       throw std::invalid_argument( "Invalid subvector specification" );
 }
 //*************************************************************************************************
@@ -762,7 +760,7 @@ inline typename SparseSubvector<VT,TF>::Reference
    SparseSubvector<VT,TF>::operator[]( size_t index )
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid subvector access index" );
-   return vector_[start_+index];
+   return vector_[offset_+index];
 }
 //*************************************************************************************************
 
@@ -779,7 +777,7 @@ inline typename SparseSubvector<VT,TF>::ConstReference
    SparseSubvector<VT,TF>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid subvector access index" );
-   return const_cast<const VT&>( vector_ )[start_+index];
+   return const_cast<const VT&>( vector_ )[offset_+index];
 }
 //*************************************************************************************************
 
@@ -795,7 +793,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename SparseSubvector<VT,TF>::Iterator SparseSubvector<VT,TF>::begin()
 {
-   return Iterator( vector_.lowerBound( start_ ), start_ );
+   return Iterator( vector_.lowerBound( offset_ ), offset_ );
 }
 //*************************************************************************************************
 
@@ -811,7 +809,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::begin() const
 {
-   return ConstIterator( vector_.lowerBound( start_ ), start_ );
+   return ConstIterator( vector_.lowerBound( offset_ ), offset_ );
 }
 //*************************************************************************************************
 
@@ -827,7 +825,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::cbegin() const
 {
-   return ConstIterator( vector_.lowerBound( start_ ), start_ );
+   return ConstIterator( vector_.lowerBound( offset_ ), offset_ );
 }
 //*************************************************************************************************
 
@@ -843,7 +841,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename SparseSubvector<VT,TF>::Iterator SparseSubvector<VT,TF>::end()
 {
-   return Iterator( vector_.lowerBound( start_ + size_ ), start_ );
+   return Iterator( vector_.lowerBound( offset_ + size_ ), offset_ );
 }
 //*************************************************************************************************
 
@@ -859,7 +857,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::end() const
 {
-   return ConstIterator( vector_.lowerBound( start_ + size_ ), start_ );
+   return ConstIterator( vector_.lowerBound( offset_ + size_ ), offset_ );
 }
 //*************************************************************************************************
 
@@ -875,7 +873,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::cend() const
 {
-   return ConstIterator( vector_.lowerBound( start_ + size_ ), start_ );
+   return ConstIterator( vector_.lowerBound( offset_ + size_ ), offset_ );
 }
 //*************************************************************************************************
 
@@ -904,7 +902,7 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator=( const SparseSu
 {
    using blaze::assign;
 
-   if( this == &rhs || ( &vector_ == &rhs.vector_ && start_ == rhs.start_ ) )
+   if( this == &rhs || ( &vector_ == &rhs.vector_ && offset_ == rhs.offset_ ) )
       return *this;
 
    if( size() != rhs.size() )
@@ -1120,7 +1118,7 @@ inline typename EnableIf< IsNumeric<Other>, SparseSubvector<VT,TF> >::Type&
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Returns the current size/dimension of the sparse subvector.
+/*!\brief Returns the size/dimension of the sparse subvector.
 //
 // \return The size of the sparse subvector.
 */
@@ -1172,7 +1170,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline void SparseSubvector<VT,TF>::reset()
 {
-   vector_.erase( vector_.lowerBound( start_ ), vector_.lowerBound( start_ + size_ ) );
+   vector_.erase( vector_.lowerBound( offset_ ), vector_.lowerBound( offset_ + size_ ) );
 }
 //*************************************************************************************************
 
@@ -1194,7 +1192,7 @@ template< typename VT  // Type of the sparse vector
 inline typename SparseSubvector<VT,TF>::ElementType&
    SparseSubvector<VT,TF>::insert( size_t index, const ElementType& value )
 {
-   return vector_.insert( start_ + index, value )->value();
+   return vector_.insert( offset_ + index, value )->value();
 }
 //*************************************************************************************************
 
@@ -1211,7 +1209,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline void SparseSubvector<VT,TF>::erase( size_t index )
 {
-   vector_.erase( start_ + index );
+   vector_.erase( offset_ + index );
 }
 //*************************************************************************************************
 
@@ -1228,7 +1226,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename SparseSubvector<VT,TF>::Iterator SparseSubvector<VT,TF>::erase( Iterator pos )
 {
-   return Iterator( vector_.erase( pos.pos_ ), start_ );
+   return Iterator( vector_.erase( pos.pos_ ), offset_ );
 }
 //*************************************************************************************************
 
@@ -1246,7 +1244,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename SparseSubvector<VT,TF>::Iterator SparseSubvector<VT,TF>::erase( Iterator first, Iterator last )
 {
-   return Iterator( vector_.erase( first.pos_, last.pos_ ), start_ );
+   return Iterator( vector_.erase( first.pos_, last.pos_ ), offset_ );
 }
 //*************************************************************************************************
 
@@ -1312,10 +1310,10 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename SparseSubvector<VT,TF>::Iterator SparseSubvector<VT,TF>::find( size_t index )
 {
-   const typename VT::Iterator pos( vector_.find( start_ + index ) );
+   const typename VT::Iterator pos( vector_.find( offset_ + index ) );
 
    if( pos != vector_.end() )
-      return Iterator( pos, start_ );
+      return Iterator( pos, offset_ );
    else
       return end();
 }
@@ -1339,10 +1337,10 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::find( size_t index ) const
 {
-   const typename VT::ConstIterator pos( vector_.find( start_ + index ) );
+   const typename VT::ConstIterator pos( vector_.find( offset_ + index ) );
 
    if( pos != vector_.end() )
-      return Iterator( pos, start_ );
+      return Iterator( pos, offset_ );
    else
       return end();
 }
@@ -1365,7 +1363,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename SparseSubvector<VT,TF>::Iterator SparseSubvector<VT,TF>::lowerBound( size_t index )
 {
-   return Iterator( vector_.lowerBound( start_ + index ), start_ );
+   return Iterator( vector_.lowerBound( offset_ + index ), offset_ );
 }
 //*************************************************************************************************
 
@@ -1386,7 +1384,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::lowerBound( size_t index ) const
 {
-   return ConstIterator( vector_.lowerBound( start_ + index ), start_ );
+   return ConstIterator( vector_.lowerBound( offset_ + index ), offset_ );
 }
 //*************************************************************************************************
 
@@ -1407,7 +1405,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename SparseSubvector<VT,TF>::Iterator SparseSubvector<VT,TF>::upperBound( size_t index )
 {
-   return Iterator( vector_.upperBound( start_ + index ), start_ );
+   return Iterator( vector_.upperBound( offset_ + index ), offset_ );
 }
 //*************************************************************************************************
 
@@ -1428,7 +1426,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::upperBound( size_t index ) const
 {
-   return ConstIterator( vector_.upperBound( start_ + index ), start_ );
+   return ConstIterator( vector_.upperBound( offset_ + index ), offset_ );
 }
 //*************************************************************************************************
 
@@ -1470,7 +1468,7 @@ template< typename VT  // Type of the sparse vector
 inline void SparseSubvector<VT,TF>::append( size_t index, const ElementType& value, bool check )
 {
    if( !check || !isDefault( value ) )
-      vector_.insert( start_ + index, value );
+      vector_.insert( offset_ + index, value );
 }
 //*************************************************************************************************
 
@@ -1701,6 +1699,95 @@ inline void SparseSubvector<VT,TF>::subAssign( const SparseVector<VT2,TF>& rhs )
 
 //=================================================================================================
 //
+//  SPARSESUBVECTOR OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\name SparseSubvector operators */
+//@{
+template< typename VT, bool TF >
+inline void reset( SparseSubvector<VT,TF>& sv );
+
+template< typename VT, bool TF >
+inline void clear( SparseSubvector<VT,TF>& sv );
+
+template< typename VT, bool TF >
+inline bool isDefault( const SparseSubvector<VT,TF>& sv );
+//@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Resetting the given sparse subvector.
+// \ingroup sparse_subvector
+//
+// \param sv The sparse subvector to be resetted.
+// \return void
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline void reset( SparseSubvector<VT,TF>& sv )
+{
+   sv.reset();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Clearing the given sparse subvector.
+// \ingroup sparse_subvector
+//
+// \param sv The sparse subvector to be cleared.
+// \return void
+//
+// Clearing a sparse subvector is equivalent to resetting it via the reset() function.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline void clear( SparseSubvector<VT,TF>& sv )
+{
+   sv.reset();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the given sparse subvector is in default state.
+// \ingroup sparse_subvector
+//
+// \param sv The sparse subvector to be tested for its default state.
+// \return \a true in case the given subvector is component-wise zero, \a false otherwise.
+//
+// This function checks whether the sparse subvector is in default state. For instance, in case
+// the subvector is instantiated for a vector of built-in integral or floating point data type,
+// the function returns \a true in case all subvector elements are 0 and \a false in case any
+// element is not 0. The following example demonstrates the use of the \a isDefault function:
+
+   \code
+   blaze::CompressedVector<double,rowVector> v;
+   // ... Resizing and initialization
+   if( isDefault( sub( v, 10UL, 20UL ) ) ) { ... }
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline bool isDefault( const SparseSubvector<VT,TF>& sv )
+{
+   typedef typename SparseSubvector<VT,TF>::ConstIterator  ConstIterator;
+
+   const ConstIterator end( sv.end() );
+   for( ConstIterator element=sv.begin(); element!=end; ++element )
+      if( !isDefault( element->value() ) ) return false;
+   return true;
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  GLOBAL FUNCTION
 //
 //=================================================================================================
@@ -1710,8 +1797,8 @@ inline void SparseSubvector<VT,TF>::subAssign( const SparseVector<VT2,TF>& rhs )
 // \ingroup views
 //
 // \param sv The sparse vector containing the subvector.
-// \param start The index of the first element of the subvector.
-// \param n The size of the subvector.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
 // \return View on the specific subvector of the sparse vector.
 // \exception std::invalid_argument Invalid subvector specification.
 //
@@ -1729,14 +1816,14 @@ inline void SparseSubvector<VT,TF>::subAssign( const SparseVector<VT2,TF>& rhs )
    blaze::SparseSubvector<Vector> = sub( v, 4UL, 8UL );
    \endcode
 */
-template< typename VT  // Type of the vector
+template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, SparseSubvector<VT> >::Type
-   sub( SparseVector<VT,TF>& sv, size_t start, size_t n )
+   sub( SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SparseSubvector<VT>( ~sv, start, n );
+   return SparseSubvector<VT>( ~sv, index, size );
 }
 //*************************************************************************************************
 
@@ -1746,8 +1833,8 @@ inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, SparseSubve
 // \ingroup views
 //
 // \param sv The sparse vector containing the subvector.
-// \param start The index of the first element of the subvector.
-// \param n The size of the subvector.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
 // \return View on the specific subvector of the sparse vector.
 // \exception std::invalid_argument Invalid subvector specification.
 //
@@ -1765,14 +1852,14 @@ inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, SparseSubve
    blaze::SparseSubvector<Vector> = sub( v, 4UL, 8UL );
    \endcode
 */
-template< typename VT  // Type of the vector
+template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, SparseSubvector<const VT> >::Type
-   sub( const SparseVector<VT,TF>& sv, size_t start, size_t n )
+   sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SparseSubvector<const VT>( ~sv, start, n );
+   return SparseSubvector<const VT>( ~sv, index, size );
 }
 //*************************************************************************************************
 
@@ -1791,8 +1878,8 @@ inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, SparseSubve
 // \ingroup views
 //
 // \param sv The constant vector/vector addition.
-// \param start The index of the first element of the subvector.
-// \param n The size of the subvector.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
 // \return View on the specified subvector of the addition.
 //
 // This function returns an expression representing the specified subvector of the given
@@ -1801,11 +1888,11 @@ inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, SparseSubve
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename EnableIf< IsVecVecAddExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
-   sub( const SparseVector<VT,TF>& sv, size_t start, size_t n )
+   sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return sub( (~sv).leftOperand(), start, n ) + sub( (~sv).rightOperand(), start, n );
+   return sub( (~sv).leftOperand(), index, size ) + sub( (~sv).rightOperand(), index, size );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1817,8 +1904,8 @@ inline typename EnableIf< IsVecVecAddExpr<VT>, typename SubvectorExprTrait<VT>::
 // \ingroup views
 //
 // \param sv The constant vector/vector subtraction.
-// \param start The index of the first element of the subvector.
-// \param n The size of the subvector.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
 // \return View on the specified subvector of the subtraction.
 //
 // This function returns an expression representing the specified subvector of the given
@@ -1827,11 +1914,11 @@ inline typename EnableIf< IsVecVecAddExpr<VT>, typename SubvectorExprTrait<VT>::
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename EnableIf< IsVecVecSubExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
-   sub( const SparseVector<VT,TF>& sv, size_t start, size_t n )
+   sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return sub( (~sv).leftOperand(), start, n ) - sub( (~sv).rightOperand(), start, n );
+   return sub( (~sv).leftOperand(), index, size ) - sub( (~sv).rightOperand(), index, size );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1843,8 +1930,8 @@ inline typename EnableIf< IsVecVecSubExpr<VT>, typename SubvectorExprTrait<VT>::
 // \ingroup views
 //
 // \param sv The constant vector/vector multiplication.
-// \param start The index of the first element of the subvector.
-// \param n The size of the subvector.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
 // \return View on the specified subvector of the multiplication.
 //
 // This function returns an expression representing the specified subvector of the given
@@ -1853,11 +1940,11 @@ inline typename EnableIf< IsVecVecSubExpr<VT>, typename SubvectorExprTrait<VT>::
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename EnableIf< IsVecVecMultExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
-   sub( const SparseVector<VT,TF>& sv, size_t start, size_t n )
+   sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return sub( (~sv).leftOperand(), start, n ) * sub( (~sv).rightOperand(), start, n );
+   return sub( (~sv).leftOperand(), index, size ) * sub( (~sv).rightOperand(), index, size );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1869,8 +1956,8 @@ inline typename EnableIf< IsVecVecMultExpr<VT>, typename SubvectorExprTrait<VT>:
 // \ingroup views
 //
 // \param sv The constant vector/scalar multiplication.
-// \param start The index of the first element of the subvector.
-// \param n The size of the subvector.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
 // \return View on the specified subvector of the multiplication.
 //
 // This function returns an expression representing the specified subvector of the given
@@ -1879,11 +1966,11 @@ inline typename EnableIf< IsVecVecMultExpr<VT>, typename SubvectorExprTrait<VT>:
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Storage order
 inline typename EnableIf< IsVecScalarMultExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
-   sub( const SparseVector<VT,TF>& sv, size_t start, size_t n )
+   sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return sub( (~sv).leftOperand(), start, n ) * (~sv).rightOperand();
+   return sub( (~sv).leftOperand(), index, size ) * (~sv).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1895,8 +1982,8 @@ inline typename EnableIf< IsVecScalarMultExpr<VT>, typename SubvectorExprTrait<V
 // \ingroup views
 //
 // \param sv The constant vector/scalar division.
-// \param start The index of the first element of the subvector.
-// \param n The size of the subvector.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
 // \return View on the specified subvector of the division.
 //
 // This function returns an expression representing the specified subvector of the given
@@ -1905,11 +1992,11 @@ inline typename EnableIf< IsVecScalarMultExpr<VT>, typename SubvectorExprTrait<V
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Storage order
 inline typename EnableIf< IsVecScalarDivExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
-   sub( const SparseVector<VT,TF>& sv, size_t start, size_t n )
+   sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return sub( (~sv).leftOperand(), start, n ) / (~sv).rightOperand();
+   return sub( (~sv).leftOperand(), index, size ) / (~sv).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1921,8 +2008,8 @@ inline typename EnableIf< IsVecScalarDivExpr<VT>, typename SubvectorExprTrait<VT
 // \ingroup views
 //
 // \param sv The constant vector abs operation.
-// \param start The index of the first element of the subvector.
-// \param n The size of the subvector.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
 // \return View on the specified subvector of the abs operation.
 //
 // This function returns an expression representing the specified subvector of the given vector
@@ -1931,11 +2018,11 @@ inline typename EnableIf< IsVecScalarDivExpr<VT>, typename SubvectorExprTrait<VT
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Storage order
 inline typename EnableIf< IsVecAbsExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
-   sub( const SparseVector<VT,TF>& sv, size_t start, size_t n )
+   sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return abs( sub( (~sv).operand(), start, n ) );
+   return abs( sub( (~sv).operand(), index, size ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1947,8 +2034,8 @@ inline typename EnableIf< IsVecAbsExpr<VT>, typename SubvectorExprTrait<VT>::Typ
 // \ingroup views
 //
 // \param sv The constant vector evaluation operation.
-// \param start The index of the first element of the subvector.
-// \param n The size of the subvector.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
 // \return View on the specified subvector of the evaluation operation.
 //
 // This function returns an expression representing the specified subvector of the given vector
@@ -1957,11 +2044,11 @@ inline typename EnableIf< IsVecAbsExpr<VT>, typename SubvectorExprTrait<VT>::Typ
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Storage order
 inline typename EnableIf< IsVecEvalExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
-   sub( const SparseVector<VT,TF>& sv, size_t start, size_t n )
+   sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( sub( (~sv).operand(), start, n ) );
+   return eval( sub( (~sv).operand(), index, size ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1973,8 +2060,8 @@ inline typename EnableIf< IsVecEvalExpr<VT>, typename SubvectorExprTrait<VT>::Ty
 // \ingroup views
 //
 // \param sv The constant vector transpose operation.
-// \param start The index of the first element of the subvector.
-// \param n The size of the subvector.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
 // \return View on the specified subvector of the transpose operation.
 //
 // This function returns an expression representing the specified subvector of the given vector
@@ -1983,11 +2070,11 @@ inline typename EnableIf< IsVecEvalExpr<VT>, typename SubvectorExprTrait<VT>::Ty
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Storage order
 inline typename EnableIf< IsVecTransExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
-   sub( const SparseVector<VT,TF>& sv, size_t start, size_t n )
+   sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( sub( (~sv).operand(), start, n ) );
+   return trans( sub( (~sv).operand(), index, size ) );
 }
 /*! \endcond */
 //*************************************************************************************************
