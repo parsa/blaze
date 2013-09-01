@@ -1888,17 +1888,20 @@ inline typename CompressedMatrix<Type,SO>::ConstIterator
 // not appended. Per default the values are not tested.
 //
 // In combination with the reserve() and the finalize() function, append() provides the most
-// efficient way to add new elements to a (new created) sparse matrix:
+// efficient way to add new elements to a (newly created) sparse matrix:
 
    \code
+   using blaze::rowMajor;
+
    blaze::CompressedMatrix<double,rowMajor> A( 4, 3 );
-   A.reserve( 3 );       // Reserving enough space for 3 non-zero elements
-   A.append( 0, 1, 1 );  // Appending the value 1 in row 0 with column index 1
-   A.finalize( 0 );      // Finalizing row 0
-   A.append( 1, 1, 2 );  // Appending the value 2 in row 1 with column index 1
-   A.finalize( 1 );      // Finalizing row 1
-   A.append( 2, 0, 3 );  // Appending the value 3 in row 2 with column index 0
-   A.finalize( 2 );      // Finalizing row 2
+
+   A.reserve( 3 );         // Reserving enough space for 3 non-zero elements
+   A.append( 0, 1, 1.0 );  // Appending the value 1 in row 0 with column index 1
+   A.finalize( 0 );        // Finalizing row 0
+   A.append( 1, 1, 2.0 );  // Appending the value 2 in row 1 with column index 1
+   A.finalize( 1 );        // Finalizing row 1
+   A.append( 2, 0, 3.0 );  // Appending the value 3 in row 2 with column index 0
+   A.finalize( 2 );        // Finalizing row 2
    \endcode
 
 // \b Note: Although append() does not allocate new memory, it still invalidates all iterators
@@ -1929,7 +1932,7 @@ inline void CompressedMatrix<Type,SO>::append( size_t i, size_t j, const Type& v
 // \param i The index of the row/column to be finalized \f$[0..M-1]\f$.
 // \return void
 //
-// This function is part of the low-level interface to efficiently fill the matrix with elements.
+// This function is part of the low-level interface to efficiently fill a matrix with elements.
 // After completion of row/column \a i via the append() function, this function can be called to
 // finalize row/column \a i and prepare the next row/column for insertion process via append().
 //
