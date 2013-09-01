@@ -3265,7 +3265,7 @@ void ClassTest::testErase()
    //=====================================================================================
 
    {
-      test_ = "Row-major CompressedMatrix::erase( size_t )";
+      test_ = "Row-major CompressedMatrix::erase( size_t, size_t )";
 
       // Initialization check
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 5UL );
@@ -3396,7 +3396,7 @@ void ClassTest::testErase()
    //=====================================================================================
 
    {
-      test_ = "Row-major CompressedMatrix::erase( Iterator )";
+      test_ = "Row-major CompressedMatrix::erase( size_t, Iterator )";
 
       typedef blaze::CompressedMatrix<int,blaze::rowMajor>  MatrixType;
       typedef MatrixType::Iterator  Iterator;
@@ -3580,7 +3580,7 @@ void ClassTest::testErase()
    //=====================================================================================
 
    {
-      test_ = "Row-major CompressedMatrix::erase( Iterator, Iterator )";
+      test_ = "Row-major CompressedMatrix::erase( size_t, Iterator, Iterator )";
 
       typedef blaze::CompressedMatrix<int,blaze::rowMajor>  MatrixType;
       typedef MatrixType::Iterator  Iterator;
@@ -3764,7 +3764,7 @@ void ClassTest::testErase()
    //=====================================================================================
 
    {
-      test_ = "Column-major CompressedMatrix::erase( size_t )";
+      test_ = "Column-major CompressedMatrix::erase( size_t, size_t )";
 
       // Initialization check
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 5UL, 3UL );
@@ -3895,7 +3895,7 @@ void ClassTest::testErase()
    //=====================================================================================
 
    {
-      test_ = "Column-major CompressedMatrix::erase( Iterator )";
+      test_ = "Column-major CompressedMatrix::erase( size_t, Iterator )";
 
       typedef blaze::CompressedMatrix<int,blaze::columnMajor>  MatrixType;
       typedef MatrixType::Iterator  Iterator;
@@ -4079,7 +4079,7 @@ void ClassTest::testErase()
    //=====================================================================================
 
    {
-      test_ = "Column-major CompressedMatrix::erase( Iterator, Iterator )";
+      test_ = "Column-major CompressedMatrix::erase( size_t, Iterator, Iterator )";
 
       typedef blaze::CompressedMatrix<int,blaze::columnMajor>  MatrixType;
       typedef MatrixType::Iterator  Iterator;
