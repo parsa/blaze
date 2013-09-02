@@ -3181,60 +3181,102 @@ void ClassTest::testInsert()
       CT col0 = column( mat_, 0UL );
 
       // Inserting a non-zero element at the end of the column
-      col0.insert( 3UL, 1 );
+      {
+         CT::Iterator pos = col0.insert( 3UL, 1 );
 
-      checkSize    ( col0,  4UL );
-      checkNonZeros( col0,  1UL );
-      checkRows    ( mat_,  4UL );
-      checkColumns ( mat_,  5UL );
-      checkNonZeros( mat_, 11UL );
+         checkSize    ( col0,  4UL );
+         checkNonZeros( col0,  1UL );
+         checkRows    ( mat_,  4UL );
+         checkColumns ( mat_,  5UL );
+         checkNonZeros( mat_, 11UL );
 
-      if( col0[0] != 0 || col0[1] != 0 || col0[2] != 0 || col0[3] != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inserting a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << col0 << "\n"
-             << "   Expected result:\n( 0 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
+         if( pos->value() != 1 || pos->index() != 3UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 1\n"
+                << "   Expected index: 3\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( col0[0] != 0 || col0[1] != 0 || col0[2] != 0 || col0[3] != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Inserting a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << col0 << "\n"
+                << "   Expected result:\n( 0 0 0 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
       // Inserting a non-zero element at the beginning of the column
-      col0.insert( 0UL, 2 );
+      {
+         CT::Iterator pos = col0.insert( 0UL, 2 );
 
-      checkSize    ( col0,  4UL );
-      checkNonZeros( col0,  2UL );
-      checkRows    ( mat_,  4UL );
-      checkColumns ( mat_,  5UL );
-      checkNonZeros( mat_, 12UL );
+         checkSize    ( col0,  4UL );
+         checkNonZeros( col0,  2UL );
+         checkRows    ( mat_,  4UL );
+         checkColumns ( mat_,  5UL );
+         checkNonZeros( mat_, 12UL );
 
-      if( col0[0] != 2 || col0[1] != 0 || col0[2] != 0 || col0[3] != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inserting a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << col0 << "\n"
-             << "   Expected result:\n( 2 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
+         if( pos->value() != 2 || pos->index() != 0UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 2\n"
+                << "   Expected index: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( col0[0] != 2 || col0[1] != 0 || col0[2] != 0 || col0[3] != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Inserting a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << col0 << "\n"
+                << "   Expected result:\n( 2 0 0 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
       // Inserting a non-zero element at the center of the column
-      col0.insert( 2UL, 3 );
+      {
+         CT::Iterator pos = col0.insert( 2UL, 3 );
 
-      checkSize    ( col0,  4UL );
-      checkNonZeros( col0,  3UL );
-      checkRows    ( mat_,  4UL );
-      checkColumns ( mat_,  5UL );
-      checkNonZeros( mat_, 13UL );
+         checkSize    ( col0,  4UL );
+         checkNonZeros( col0,  3UL );
+         checkRows    ( mat_,  4UL );
+         checkColumns ( mat_,  5UL );
+         checkNonZeros( mat_, 13UL );
 
-      if( col0[0] != 2 || col0[1] != 0 || col0[2] != 3 || col0[3] != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inserting a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << col0 << "\n"
-             << "   Expected result:\n( 2 0 3 1 )\n";
-         throw std::runtime_error( oss.str() );
+         if( pos->value() != 3 || pos->index() != 2UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 3\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( col0[0] != 2 || col0[1] != 0 || col0[2] != 3 || col0[3] != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Inserting a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << col0 << "\n"
+                << "   Expected result:\n( 2 0 3 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
       // Trying to insert an already existing element
@@ -3265,60 +3307,102 @@ void ClassTest::testInsert()
       TCT col0 = column( tmat_, 0UL );
 
       // Inserting a non-zero element at the end of the column
-      col0.insert( 3UL, 1 );
+      {
+         TCT::Iterator pos = col0.insert( 3UL, 1 );
 
-      checkSize    ( col0 ,  4UL );
-      checkNonZeros( col0 ,  1UL );
-      checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 11UL );
+         checkSize    ( col0 ,  4UL );
+         checkNonZeros( col0 ,  1UL );
+         checkRows    ( tmat_,  4UL );
+         checkColumns ( tmat_,  5UL );
+         checkNonZeros( tmat_, 11UL );
 
-      if( col0[0] != 0 || col0[1] != 0 || col0[2] != 0 || col0[3] != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inserting a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << col0 << "\n"
-             << "   Expected result:\n( 0 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
+         if( pos->value() != 1 || pos->index() != 3UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 1\n"
+                << "   Expected index: 3\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( col0[0] != 0 || col0[1] != 0 || col0[2] != 0 || col0[3] != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Inserting a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << col0 << "\n"
+                << "   Expected result:\n( 0 0 0 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
       // Inserting a non-zero element at the beginning of the column
-      col0.insert( 0UL, 2 );
+      {
+         TCT::Iterator pos = col0.insert( 0UL, 2 );
 
-      checkSize    ( col0 ,  4UL );
-      checkNonZeros( col0 ,  2UL );
-      checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 12UL );
+         checkSize    ( col0 ,  4UL );
+         checkNonZeros( col0 ,  2UL );
+         checkRows    ( tmat_,  4UL );
+         checkColumns ( tmat_,  5UL );
+         checkNonZeros( tmat_, 12UL );
 
-      if( col0[0] != 2 || col0[1] != 0 || col0[2] != 0 || col0[3] != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inserting a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << col0 << "\n"
-             << "   Expected result:\n( 2 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
+         if( pos->value() != 2 || pos->index() != 0UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 2\n"
+                << "   Expected index: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( col0[0] != 2 || col0[1] != 0 || col0[2] != 0 || col0[3] != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Inserting a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << col0 << "\n"
+                << "   Expected result:\n( 2 0 0 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
       // Inserting a non-zero element at the center of the column
-      col0.insert( 2UL, 3 );
+      {
+         TCT::Iterator pos = col0.insert( 2UL, 3 );
 
-      checkSize    ( col0 ,  4UL );
-      checkNonZeros( col0 ,  3UL );
-      checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 13UL );
+         checkSize    ( col0 ,  4UL );
+         checkNonZeros( col0 ,  3UL );
+         checkRows    ( tmat_,  4UL );
+         checkColumns ( tmat_,  5UL );
+         checkNonZeros( tmat_, 13UL );
 
-      if( col0[0] != 2 || col0[1] != 0 || col0[2] != 3 || col0[3] != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inserting a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << col0 << "\n"
-             << "   Expected result:\n( 2 0 3 1 )\n";
-         throw std::runtime_error( oss.str() );
+         if( pos->value() != 3 || pos->index() != 2UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 3\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( col0[0] != 2 || col0[1] != 0 || col0[2] != 3 || col0[3] != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Inserting a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << col0 << "\n"
+                << "   Expected result:\n( 2 0 3 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
       // Trying to insert an already existing element

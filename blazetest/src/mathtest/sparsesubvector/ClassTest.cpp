@@ -1539,60 +1539,102 @@ void ClassTest::testInsert()
    SVT subvector = sub( vec_, 0UL, 8UL );
 
    // Inserting a non-zero element at the end of the subvector
-   subvector.insert( 7UL, 9 );
+   {
+      SVT::Iterator pos = subvector.insert( 7UL, 9 );
 
-   checkSize    ( subvector, 8UL );
-   checkNonZeros( subvector, 5UL );
-   checkSize    ( vec_     , 8UL );
-   checkNonZeros( vec_     , 5UL );
+      checkSize    ( subvector, 8UL );
+      checkNonZeros( subvector, 5UL );
+      checkSize    ( vec_     , 8UL );
+      checkNonZeros( vec_     , 5UL );
 
-   if( subvector[0] !=  0 || subvector[1] != 1 || subvector[2] != 0 || subvector[3] != -2 ||
-       subvector[4] != -3 || subvector[5] != 0 || subvector[6] != 4 || subvector[7] !=  9 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Inserting a non-zero element failed\n"
-          << " Details:\n"
-          << "   Result:\n" << subvector << "\n"
-          << "   Expected result:\n( 0 2 0 -2 -3 0 4 9 )\n";
-      throw std::runtime_error( oss.str() );
+      if( pos->value() != 9 || pos->index() != 7UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid iterator returned\n"
+             << " Details:\n"
+             << "   Value: " << pos->value() << "\n"
+             << "   Index: " << pos->index() << "\n"
+             << "   Expected value: 9\n"
+             << "   Expected index: 7\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( subvector[0] !=  0 || subvector[1] != 1 || subvector[2] != 0 || subvector[3] != -2 ||
+          subvector[4] != -3 || subvector[5] != 0 || subvector[6] != 4 || subvector[7] !=  9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << subvector << "\n"
+             << "   Expected result:\n( 0 2 0 -2 -3 0 4 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
    // Inserting a non-zero element at the beginning of the subvector
-   subvector.insert( 0UL, 9 );
+   {
+      SVT::Iterator pos = subvector.insert( 0UL, 9 );
 
-   checkSize    ( subvector, 8UL );
-   checkNonZeros( subvector, 6UL );
-   checkSize    ( vec_     , 8UL );
-   checkNonZeros( vec_     , 6UL );
+      checkSize    ( subvector, 8UL );
+      checkNonZeros( subvector, 6UL );
+      checkSize    ( vec_     , 8UL );
+      checkNonZeros( vec_     , 6UL );
 
-   if( subvector[0] !=  9 || subvector[1] != 1 || subvector[2] != 0 || subvector[3] != -2 ||
-       subvector[4] != -3 || subvector[5] != 0 || subvector[6] != 4 || subvector[7] !=  9 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Inserting a non-zero element failed\n"
-          << " Details:\n"
-          << "   Result:\n" << subvector << "\n"
-          << "   Expected result:\n( 9 2 0 -2 -3 0 4 9 )\n";
-      throw std::runtime_error( oss.str() );
+      if( pos->value() != 9 || pos->index() != 0UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid iterator returned\n"
+             << " Details:\n"
+             << "   Value: " << pos->value() << "\n"
+             << "   Index: " << pos->index() << "\n"
+             << "   Expected value: 9\n"
+             << "   Expected index: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( subvector[0] !=  9 || subvector[1] != 1 || subvector[2] != 0 || subvector[3] != -2 ||
+          subvector[4] != -3 || subvector[5] != 0 || subvector[6] != 4 || subvector[7] !=  9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << subvector << "\n"
+             << "   Expected result:\n( 9 2 0 -2 -3 0 4 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
    // Inserting a non-zero element at the center of the subvector
-   subvector.insert( 2UL, 9 );
+   {
+      SVT::Iterator pos = subvector.insert( 2UL, 9 );
 
-   checkSize    ( subvector, 8UL );
-   checkNonZeros( subvector, 7UL );
-   checkSize    ( vec_     , 8UL );
-   checkNonZeros( vec_     , 7UL );
+      checkSize    ( subvector, 8UL );
+      checkNonZeros( subvector, 7UL );
+      checkSize    ( vec_     , 8UL );
+      checkNonZeros( vec_     , 7UL );
 
-   if( subvector[0] !=  9 || subvector[1] != 1 || subvector[2] != 9 || subvector[3] != -2 ||
-       subvector[4] != -3 || subvector[5] != 0 || subvector[6] != 4 || subvector[7] !=  9 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Inserting a non-zero element failed\n"
-          << " Details:\n"
-          << "   Result:\n" << subvector << "\n"
-          << "   Expected result:\n( 9 2 9 -2 -3 0 4 9 )\n";
-      throw std::runtime_error( oss.str() );
+      if( pos->value() != 9 || pos->index() != 2UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid iterator returned\n"
+             << " Details:\n"
+             << "   Value: " << pos->value() << "\n"
+             << "   Index: " << pos->index() << "\n"
+             << "   Expected value: 9\n"
+             << "   Expected index: 2\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( subvector[0] !=  9 || subvector[1] != 1 || subvector[2] != 9 || subvector[3] != -2 ||
+          subvector[4] != -3 || subvector[5] != 0 || subvector[6] != 4 || subvector[7] !=  9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << subvector << "\n"
+             << "   Expected result:\n( 9 2 9 -2 -3 0 4 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
    // Trying to insert an already existing element
@@ -2318,7 +2360,7 @@ void ClassTest::testUpperBound()
 void ClassTest::testIsDefault()
 {
    test_ = "isDefault() function";
-   
+
    initialize();
 
    // isDefault with default vector
@@ -2335,7 +2377,7 @@ void ClassTest::testIsDefault()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    // isDefault with non-default vector
    {
       SVT subvector( vec_, 2UL, 5UL );
@@ -2365,20 +2407,20 @@ void ClassTest::testIsDefault()
 void ClassTest::testIsNan()
 {
    test_ = "isnan() function";
-   
+
    typedef blaze::CompressedVector<float,blaze::columnVector>  VectorType;
    typedef blaze::SparseSubvector<VectorType>                  SubvectorType;
-   
+
    VectorType vec( 9UL, 4UL );
    vec[2] =  1;
    vec[3] = -2;
    vec[4] = -3;
    vec[8] =  4;
-   
+
    // isnan with empty 3-dimensional subvector
    {
       SubvectorType subvector = sub( vec, 5UL, 3UL );
-      
+
       checkSize    ( subvector, 3UL );
       checkNonZeros( subvector, 0UL );
 
@@ -2391,11 +2433,11 @@ void ClassTest::testIsNan()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    // isnan with partially filled 5-dimensional subvector
    {
       SubvectorType subvector = sub( vec, 4UL, 5UL );
-      
+
       checkSize    ( subvector, 5UL );
       checkNonZeros( subvector, 2UL );
 
@@ -2408,11 +2450,11 @@ void ClassTest::testIsNan()
          throw std::runtime_error( oss.str() );
       }
    }
-   
+
    // isnan with fully filled 5-dimensional subvector
    {
       SubvectorType subvector = sub( vec, 2UL, 3UL );
-      
+
       checkSize    ( subvector, 3UL );
       checkNonZeros( subvector, 3UL );
 
