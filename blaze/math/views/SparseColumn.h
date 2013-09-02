@@ -423,7 +423,7 @@ class SparseColumn : public SparseVector< SparseColumn<MT,SO>, false >
                               inline size_t        capacity() const;
                               inline size_t        nonZeros() const;
                               inline void          reset();
-                              inline ElementType&  insert ( size_t index, const ElementType& value );
+                              inline Iterator      insert ( size_t index, const ElementType& value );
                               inline void          erase  ( size_t index );
                               inline Iterator      erase  ( Iterator pos );
                               inline Iterator      erase  ( Iterator first, Iterator last );
@@ -1006,10 +1006,10 @@ inline void SparseColumn<MT,SO>::reset()
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline typename SparseColumn<MT,SO>::ElementType&
+inline typename SparseColumn<MT,SO>::Iterator
    SparseColumn<MT,SO>::insert( size_t index, const ElementType& value )
 {
-   return matrix_.insert( index, col_, value )->value();
+   return matrix_.insert( index, col_, value );
 }
 //*************************************************************************************************
 
@@ -1971,7 +1971,7 @@ class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, fals
                               inline size_t        capacity() const;
                               inline size_t        nonZeros() const;
                               inline void          reset();
-                              inline ElementType&  insert ( size_t index, const ElementType& value );
+                              inline Iterator      insert ( size_t index, const ElementType& value );
                               inline void          erase  ( size_t index );
                               inline Iterator      erase  ( Iterator pos );
                               inline Iterator      erase  ( Iterator first, Iterator last );
@@ -2523,10 +2523,10 @@ inline void SparseColumn<MT,false>::reset()
 // a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the sparse matrix
-inline typename SparseColumn<MT,false>::ElementType&
+inline typename SparseColumn<MT,false>::Iterator
    SparseColumn<MT,false>::insert( size_t index, const ElementType& value )
 {
-   return matrix_.insert( index, col_, value )->value();
+   return Iterator( matrix_, index, col_, matrix_.insert( index, col_, value ) );
 }
 /*! \endcond */
 //*************************************************************************************************

@@ -647,7 +647,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
                               inline size_t           capacity() const;
                               inline size_t           nonZeros() const;
                               inline void             reset();
-                              inline ElementType&     insert ( size_t index, const ElementType& value );
+                              inline Iterator         insert ( size_t index, const ElementType& value );
                               inline void             erase  ( size_t index );
                               inline Iterator         erase  ( Iterator pos );
                               inline Iterator         erase  ( Iterator first, Iterator last );
@@ -1189,10 +1189,10 @@ inline void SparseSubvector<VT,TF>::reset()
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline typename SparseSubvector<VT,TF>::ElementType&
+inline typename SparseSubvector<VT,TF>::Iterator
    SparseSubvector<VT,TF>::insert( size_t index, const ElementType& value )
 {
-   return vector_.insert( offset_ + index, value )->value();
+   return Iterator( vector_.insert( offset_ + index, value ), offset_ );
 }
 //*************************************************************************************************
 

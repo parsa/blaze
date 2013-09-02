@@ -417,16 +417,16 @@ class SparseRow : public SparseVector< SparseRow<MT,SO>, true >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t        size() const;
-                              inline size_t        capacity() const;
-                              inline size_t        nonZeros() const;
-                              inline void          reset();
-                              inline ElementType&  insert ( size_t index, const ElementType& value );
-                              inline void          erase  ( size_t index );
-                              inline Iterator      erase  ( Iterator pos );
-                              inline Iterator      erase  ( Iterator first, Iterator last );
-                              inline void          reserve( size_t n );
-   template< typename Other > inline SparseRow&    scale  ( Other scalar );
+                              inline size_t     size() const;
+                              inline size_t     capacity() const;
+                              inline size_t     nonZeros() const;
+                              inline void       reset();
+                              inline Iterator   insert ( size_t index, const ElementType& value );
+                              inline void       erase  ( size_t index );
+                              inline Iterator   erase  ( Iterator pos );
+                              inline Iterator   erase  ( Iterator first, Iterator last );
+                              inline void       reserve( size_t n );
+   template< typename Other > inline SparseRow& scale  ( Other scalar );
    //@}
    //**********************************************************************************************
 
@@ -1004,10 +1004,10 @@ inline void SparseRow<MT,SO>::reset()
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline typename SparseRow<MT,SO>::ElementType&
+inline typename SparseRow<MT,SO>::Iterator
    SparseRow<MT,SO>::insert( size_t index, const ElementType& value )
 {
-   return matrix_.insert( row_, index, value )->value();
+   return matrix_.insert( row_, index, value );
 }
 //*************************************************************************************************
 
@@ -1965,16 +1965,16 @@ class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t        size() const;
-                              inline size_t        capacity() const;
-                              inline size_t        nonZeros() const;
-                              inline void          reset();
-                              inline ElementType&  insert ( size_t index, const ElementType& value );
-                              inline void          erase  ( size_t index );
-                              inline Iterator      erase  ( Iterator pos );
-                              inline Iterator      erase  ( Iterator first, Iterator last );
-                              inline void          reserve( size_t n );
-   template< typename Other > inline SparseRow&    scale  ( Other scalar );
+                              inline size_t     size() const;
+                              inline size_t     capacity() const;
+                              inline size_t     nonZeros() const;
+                              inline void       reset();
+                              inline Iterator   insert ( size_t index, const ElementType& value );
+                              inline void       erase  ( size_t index );
+                              inline Iterator   erase  ( Iterator pos );
+                              inline Iterator   erase  ( Iterator first, Iterator last );
+                              inline void       reserve( size_t n );
+   template< typename Other > inline SparseRow& scale  ( Other scalar );
    //@}
    //**********************************************************************************************
 
@@ -2521,10 +2521,10 @@ inline void SparseRow<MT,false>::reset()
 // a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the sparse matrix
-inline typename SparseRow<MT,false>::ElementType&
+inline typename SparseRow<MT,false>::Iterator
    SparseRow<MT,false>::insert( size_t index, const ElementType& value )
 {
-   return matrix_.insert( row_, index, value )->value();
+   return Iterator( matrix_, row_, index, matrix_.insert( row_, index, value ) );
 }
 /*! \endcond */
 //*************************************************************************************************
