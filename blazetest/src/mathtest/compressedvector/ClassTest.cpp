@@ -980,6 +980,8 @@ void ClassTest::testInsert()
 {
    test_ = "CompressedVector::insert()";
 
+   typedef blaze::CompressedVector<int,blaze::rowVector>::Iterator  Iterator;
+
    // Initialization check
    blaze::CompressedVector<int,blaze::rowVector> vec( 7UL );
 
@@ -987,71 +989,127 @@ void ClassTest::testInsert()
    checkNonZeros( vec, 0UL );
 
    // Inserting a non-zero element
-   vec.insert( 4UL, 1 );
+   {
+      Iterator pos = vec.insert( 4UL, 1 );
 
-   checkSize    ( vec, 7UL );
-   checkCapacity( vec, 1UL );
-   checkNonZeros( vec, 1UL );
+      checkSize    ( vec, 7UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
 
-   if( vec[4] != 1 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Inserting an element failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 0 0 0 0 1 0 0 )\n";
-      throw std::runtime_error( oss.str() );
+      if( pos->value() != 1 || pos->index() != 4UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid iterator returned\n"
+             << " Details:\n"
+             << "   Value: " << pos->value() << "\n"
+             << "   Index: " << pos->index() << "\n"
+             << "   Expected value: 1\n"
+             << "   Expected index: 4\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec[4] != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting an element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 0 0 0 1 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
    // Inserting a second non-zero element
-   vec.insert( 6UL, 2 );
+   {
+      Iterator pos = vec.insert( 6UL, 2 );
 
-   checkSize    ( vec, 7UL );
-   checkCapacity( vec, 2UL );
-   checkNonZeros( vec, 2UL );
+      checkSize    ( vec, 7UL );
+      checkCapacity( vec, 2UL );
+      checkNonZeros( vec, 2UL );
 
-   if( vec[4] != 1 || vec[6] != 2 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Inserting an element failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 0 0 0 0 1 0 2 )\n";
-      throw std::runtime_error( oss.str() );
+      if( pos->value() != 2 || pos->index() != 6UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid iterator returned\n"
+             << " Details:\n"
+             << "   Value: " << pos->value() << "\n"
+             << "   Index: " << pos->index() << "\n"
+             << "   Expected value: 2\n"
+             << "   Expected index: 6\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec[4] != 1 || vec[6] != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting an element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 0 0 0 1 0 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
    // Inserting a third non-zero element
-   vec.insert( 2UL, 3 );
+   {
+      Iterator pos = vec.insert( 2UL, 3 );
 
-   checkSize    ( vec, 7UL );
-   checkCapacity( vec, 3UL );
-   checkNonZeros( vec, 3UL );
+      checkSize    ( vec, 7UL );
+      checkCapacity( vec, 3UL );
+      checkNonZeros( vec, 3UL );
 
-   if( vec[2] != 3 || vec[4] != 1 || vec[6] != 2 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Inserting an element failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 0 0 3 0 1 0 2 )\n";
-      throw std::runtime_error( oss.str() );
+      if( pos->value() != 3 || pos->index() != 2UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid iterator returned\n"
+             << " Details:\n"
+             << "   Value: " << pos->value() << "\n"
+             << "   Index: " << pos->index() << "\n"
+             << "   Expected value: 3\n"
+             << "   Expected index: 2\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec[2] != 3 || vec[4] != 1 || vec[6] != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting an element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 0 3 0 1 0 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
    // Inserting a fourth non-zero element
-   vec.insert( 3UL, 4 );
+   {
+      Iterator pos = vec.insert( 3UL, 4 );
 
-   checkSize    ( vec, 7UL );
-   checkCapacity( vec, 4UL );
-   checkNonZeros( vec, 4UL );
+      checkSize    ( vec, 7UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
 
-   if( vec[2] != 3 || vec[3] != 4 || vec[4] != 1 || vec[6] != 2 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Inserting an element failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 0 0 3 4 1 0 2 )\n";
-      throw std::runtime_error( oss.str() );
+      if( pos->value() != 4 || pos->index() != 3UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid iterator returned\n"
+             << " Details:\n"
+             << "   Value: " << pos->value() << "\n"
+             << "   Index: " << pos->index() << "\n"
+             << "   Expected value: 4\n"
+             << "   Expected index: 3\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec[2] != 3 || vec[3] != 4 || vec[4] != 1 || vec[6] != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting an element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 0 3 4 1 0 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
    // Trying to insert an already existing element
