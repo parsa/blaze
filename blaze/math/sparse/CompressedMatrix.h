@@ -997,7 +997,7 @@ inline CompressedMatrix<Type,SO>&
 
 //*************************************************************************************************
 /*!\brief Multiplication assignment operator for the multiplication between a sparse matrix and
-// \brief a scalar value (\f$ A*=s \f$).
+//        a scalar value (\f$ A*=s \f$).
 //
 // \param rhs The right-hand side scalar value for the multiplication.
 // \return Reference to the sparse matrix.
@@ -1021,7 +1021,7 @@ inline typename EnableIf< IsNumeric<Other>, CompressedMatrix<Type,SO> >::Type&
 
 //*************************************************************************************************
 /*!\brief Division assignment operator for the division of a sparse matrix by a scalar value
-// \brief (\f$ A/=s \f$).
+//        (\f$ A/=s \f$).
 //
 // \param rhs The right-hand side scalar value for the division.
 // \return Reference to the matrix.
