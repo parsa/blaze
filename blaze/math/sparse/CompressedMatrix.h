@@ -1966,7 +1966,7 @@ inline void CompressedMatrix<Type,SO>::finalize( size_t i )
 // \param alias The alias to be checked.
 // \return \a true in case the alias corresponds to this matrix, \a false if not.
 //
-// This function returns whether the given address can alias with the vector. In contrast
+// This function returns whether the given address can alias with the matrix. In contrast
 // to the isAliased() function this function is allowed to use compile time expressions
 // to optimize the evaluation.
 */
@@ -1986,7 +1986,7 @@ inline bool CompressedMatrix<Type,SO>::canAlias( const Other* alias ) const
 // \param alias The alias to be checked.
 // \return \a true in case the alias corresponds to this matrix, \a false if not.
 //
-// This function returns whether the given address is aliased with the vector. In contrast
+// This function returns whether the given address is aliased with the matrix. In contrast
 // to the conAlias() function this function is not allowed to use compile time expressions
 // to optimize the evaluation.
 */
