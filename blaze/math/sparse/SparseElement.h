@@ -61,7 +61,7 @@ class SparseElement
    /*!\name Operators */
    //@{
    // No explicitly declared copy assignment operator.
-   template< typename Other > SparseElement& operator=( const SparseElement<Other>& rhs );
+   template< typename Other > SparseElement& operator=( const Other& rhs );
 
    inline SparseElement& operator= ( const Type& v );
    inline SparseElement& operator+=( const Type& v );
@@ -141,17 +141,21 @@ inline SparseElement<Type>::SparseElement( const Type& v, size_t i )
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Assignment operator for different SparseElement instances.
+/*!\brief Assignment operator for different sparse element types.
 //
 // \param rhs Sparse element to be copied.
 // \return Reference to the assigned sparse element.
+//
+// This assignment operator enables the assignment of other sparse element types. The given
+// \a Other data type qualifies as sparse element type in case it provides a value() and an
+// index() member function.
 */
 template< typename Type >   // Data type of the sparse element
 template< typename Other >  // Data type of the right-hand side sparse element
-inline SparseElement<Type>& SparseElement<Type>::operator=( const SparseElement<Other>& rhs )
+inline SparseElement<Type>& SparseElement<Type>::operator=( const Other& rhs )
 {
-   value_ = rhs.value_;
-   index_ = rhs.index_;
+   value_ = rhs.value();
+   index_ = rhs.index();
    return *this;
 }
 //*************************************************************************************************
