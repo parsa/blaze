@@ -1009,9 +1009,9 @@ inline typename EnableIf< IsNumeric<Other>, CompressedMatrix<Type,SO> >::Type&
    CompressedMatrix<Type,SO>::operator*=( Other rhs )
 {
    for( size_t i=0UL; i<m_; ++i ) {
-      const Iterator endElem( end(i) );
-      for( Iterator elem=begin(i); elem<endElem; ++elem )
-         elem->value_ *= rhs;
+      const Iterator last( end(i) );
+      for( Iterator element=begin(i); element!=last; ++element )
+         element->value_ *= rhs;
    }
 
    return *this;
@@ -1042,16 +1042,16 @@ inline typename EnableIf< IsNumeric<Other>, CompressedMatrix<Type,SO> >::Type&
    if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
       const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
       for( size_t i=0UL; i<m_; ++i ) {
-         const Iterator endElem( end(i) );
-         for( Iterator elem=begin(i); elem<endElem; ++elem )
-            elem->value_ *= tmp;
+         const Iterator last( end(i) );
+         for( Iterator element=begin(i); element!=last; ++element )
+            element->value_ *= tmp;
       }
    }
    else {
       for( size_t i=0UL; i<m_; ++i ) {
-         const Iterator endElem( end(i) );
-         for( Iterator elem=begin(i); elem<endElem; ++elem )
-            elem->value_ /= rhs;
+         const Iterator last( end(i) );
+         for( Iterator element=begin(i); element!=last; ++element )
+            element->value_ /= rhs;
       }
    }
 
@@ -3056,9 +3056,9 @@ inline typename EnableIf< IsNumeric<Other>, CompressedMatrix<Type,true> >::Type&
    CompressedMatrix<Type,true>::operator*=( Other rhs )
 {
    for( size_t j=0UL; j<n_; ++j ) {
-      const Iterator endElem( end(j) );
-      for( Iterator elem=begin(j); elem<endElem; ++elem )
-         elem->value_ *= rhs;
+      const Iterator last( end(j) );
+      for( Iterator element=begin(j); element!=last; ++element )
+         element->value_ *= rhs;
    }
 
    return *this;
@@ -3090,16 +3090,16 @@ inline typename EnableIf< IsNumeric<Other>, CompressedMatrix<Type,true> >::Type&
    if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
       const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
       for( size_t j=0UL; j<n_; ++j ) {
-         const Iterator endElem( end(j) );
-         for( Iterator elem=begin(j); elem<endElem; ++elem )
-            elem->value_ *= tmp;
+         const Iterator last( end(j) );
+         for( Iterator element=begin(j); element!=last; ++element )
+            element->value_ *= tmp;
       }
    }
    else {
       for( size_t j=0UL; j<n_; ++j ) {
-         const Iterator endElem( end(j) );
-         for( Iterator elem=begin(j); elem<endElem; ++elem )
-            elem->value_ /= rhs;
+         const Iterator last( end(j) );
+         for( Iterator element=begin(j); element!=last; ++element )
+            element->value_ /= rhs;
       }
    }
 
