@@ -1062,7 +1062,8 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, SparseSubvector<VT,TF> >::Type&
    SparseSubvector<VT,TF>::operator*=( Other rhs )
 {
-   for( Iterator element=begin(); element!=end(); ++element )
+   const Iterator last( end() );
+   for( Iterator element=begin(); element!=last; ++element )
       element->value() *= rhs;
    return *this;
 }
@@ -1092,15 +1093,17 @@ inline typename EnableIf< IsNumeric<Other>, SparseSubvector<VT,TF> >::Type&
    typedef typename DivTrait<ElementType,Other>::Type  DT;
    typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
 
+   const Iterator last( end() );
+
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
    if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
       const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
-      for( Iterator element=begin(); element!=end(); ++element )
+      for( Iterator element=begin(); element!=last; ++element )
          element->value() *= tmp;
    }
    else {
-      for( Iterator element=begin(); element!=end(); ++element )
+      for( Iterator element=begin(); element!=last; ++element )
          element->value() /= rhs;
    }
 
