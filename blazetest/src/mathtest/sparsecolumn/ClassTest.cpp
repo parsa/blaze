@@ -628,7 +628,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      CT col2( mat_, 2UL );
+      CT col2 = column( mat_, 2UL );
       col2 += column( mat_, 3UL );
 
       checkSize    ( col2,  4UL );
@@ -674,7 +674,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      CT col2( mat_, 2UL );
+      CT col2 = column( mat_, 2UL );
 
       blaze::DynamicVector<int,blaze::columnVector> vec( 4UL, 0 );
       vec[0] =  2;
@@ -725,7 +725,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      CT col2( mat_, 2UL );
+      CT col2 = column( mat_, 2UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec( 4UL );
       vec[0] =  2;
@@ -776,7 +776,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      TCT col2( tmat_, 2UL );
+      TCT col2 = column( tmat_, 2UL );
       col2 += column( tmat_, 3UL );
 
       checkSize    ( col2 ,  4UL );
@@ -822,7 +822,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      TCT col2( tmat_, 2UL );
+      TCT col2 = column( tmat_, 2UL );
 
       blaze::DynamicVector<int,blaze::columnVector> vec( 4UL, 0 );
       vec[0] =  2;
@@ -873,7 +873,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      TCT col2( tmat_, 2UL );
+      TCT col2 = column( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec( 4UL );
       vec[0] =  2;
@@ -937,7 +937,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      CT col2( mat_, 2UL );
+      CT col2 = column( mat_, 2UL );
       col2 -= column( mat_, 3UL );
 
       checkSize    ( col2,  4UL );
@@ -983,7 +983,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      CT col2( mat_, 2UL );
+      CT col2 = column( mat_, 2UL );
 
       blaze::DynamicVector<int,blaze::columnVector> vec( 4UL, 0 );
       vec[0] =  2;
@@ -1034,7 +1034,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      CT col2( mat_, 2UL );
+      CT col2 = column( mat_, 2UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec( 4UL );
       vec[0] =  2;
@@ -1085,7 +1085,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      TCT col2( tmat_, 2UL );
+      TCT col2 = column( tmat_, 2UL );
       col2 -= column( tmat_, 3UL );
 
       checkSize    ( col2 ,  4UL );
@@ -1131,7 +1131,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      TCT col2( tmat_, 2UL );
+      TCT col2 = column( tmat_, 2UL );
 
       blaze::DynamicVector<int,blaze::columnVector> vec( 4UL, 0 );
       vec[0] =  2;
@@ -1182,7 +1182,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      TCT col2( tmat_, 2UL );
+      TCT col2 = column( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec( 4UL );
       vec[0] =  2;
@@ -1246,7 +1246,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      CT col2( mat_, 2UL );
+      CT col2 = column( mat_, 2UL );
       col2 *= column( mat_, 3UL );
 
       checkSize    ( col2, 4UL );
@@ -1292,7 +1292,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      CT col2( mat_, 2UL );
+      CT col2 = column( mat_, 2UL );
 
       blaze::DynamicVector<int,blaze::columnVector> vec( 4UL, 0 );
       vec[0] =  2;
@@ -1343,7 +1343,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      CT col2( mat_, 2UL );
+      CT col2 = column( mat_, 2UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec( 4UL );
       vec[0] =  2;
@@ -1394,7 +1394,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      CT col2( mat_, 2UL );
+      CT col2 = column( mat_, 2UL );
 
       col2 *= 3;
 
@@ -1441,7 +1441,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      TCT col2( tmat_, 2UL );
+      TCT col2 = column( tmat_, 2UL );
       col2 *= column( tmat_, 3UL );
 
       checkSize    ( col2 , 4UL );
@@ -1487,7 +1487,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      TCT col2( tmat_, 2UL );
+      TCT col2 = column( tmat_, 2UL );
 
       blaze::DynamicVector<int,blaze::columnVector> vec( 4UL, 0 );
       vec[0] =  2;
@@ -1538,7 +1538,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      TCT col2( tmat_, 2UL );
+      TCT col2 = column( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec( 4UL );
       vec[0] =  2;
@@ -1589,7 +1589,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      TCT col2( tmat_, 2UL );
+      TCT col2 = column( tmat_, 2UL );
 
       col2 *= 3;
 
@@ -1649,7 +1649,7 @@ void ClassTest::testDivAssign()
 
       initialize();
 
-      CT col2( mat_, 2UL );
+      CT col2 = column( mat_, 2UL );
 
       col2 /= 0.5;
 
@@ -1696,7 +1696,7 @@ void ClassTest::testDivAssign()
 
       initialize();
 
-      TCT col2( tmat_, 2UL );
+      TCT col2 = column( tmat_, 2UL );
 
       col2 /= 0.5;
 
@@ -4981,7 +4981,7 @@ void ClassTest::testIsNan()
 
       // isnan with empty column
       {
-         ColumnType col0( mat, 0UL );
+         ColumnType col0 = column( mat, 0UL );
 
          checkSize    ( col0, 4UL );
          checkNonZeros( col0, 0UL );
@@ -4998,7 +4998,7 @@ void ClassTest::testIsNan()
 
       // isnan with partially filled column
       {
-         ColumnType col2( mat, 2UL );
+         ColumnType col2 = column( mat, 2UL );
 
          checkSize    ( col2, 4UL );
          checkNonZeros( col2, 2UL );
@@ -5015,7 +5015,7 @@ void ClassTest::testIsNan()
 
       // isnan with fully filled column
       {
-         ColumnType col4( mat, 4UL );
+         ColumnType col4 = column( mat, 4UL );
 
          checkSize    ( col4, 4UL );
          checkNonZeros( col4, 4UL );
@@ -5050,7 +5050,7 @@ void ClassTest::testIsNan()
 
       // isnan with empty column
       {
-         ColumnType col0( mat, 0UL );
+         ColumnType col0 = column( mat, 0UL );
 
          checkSize    ( col0, 4UL );
          checkNonZeros( col0, 0UL );
@@ -5067,7 +5067,7 @@ void ClassTest::testIsNan()
 
       // isnan with partially filled column
       {
-         ColumnType col2( mat, 2UL );
+         ColumnType col2 = column( mat, 2UL );
 
          checkSize    ( col2, 4UL );
          checkNonZeros( col2, 2UL );
@@ -5084,7 +5084,7 @@ void ClassTest::testIsNan()
 
       // isnan with fully filled column
       {
-         ColumnType col4( mat, 4UL );
+         ColumnType col4 = column( mat, 4UL );
 
          checkSize    ( col4, 4UL );
          checkNonZeros( col4, 4UL );

@@ -747,7 +747,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      RT row2( mat_, 2UL );
+      RT row2 = row( mat_, 2UL );
       row2 += row( mat_, 3UL );
 
       checkSize    ( row2,  4UL );
@@ -796,7 +796,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      RT row2( mat_, 2UL );
+      RT row2 = row( mat_, 2UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
       vec[0] =  2;
@@ -850,7 +850,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      RT row2( mat_, 2UL );
+      RT row2 = row( mat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
@@ -904,7 +904,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      TRT row2( tmat_, 2UL );
+      TRT row2 = row( tmat_, 2UL );
       row2 += row( tmat_, 3UL );
 
       checkSize    ( row2 ,  4UL );
@@ -953,7 +953,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      TRT row2( tmat_, 2UL );
+      TRT row2 = row( tmat_, 2UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
       vec[0] =  2;
@@ -1007,7 +1007,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      TRT row2( tmat_, 2UL );
+      TRT row2 = row( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
@@ -1074,7 +1074,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      RT row2( mat_, 2UL );
+      RT row2 = row( mat_, 2UL );
       row2 -= row( mat_, 3UL );
 
       checkSize    ( row2,  4UL );
@@ -1123,7 +1123,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      RT row2( mat_, 2UL );
+      RT row2 = row( mat_, 2UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
       vec[0] =  2;
@@ -1177,7 +1177,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      RT row2( mat_, 2UL );
+      RT row2 = row( mat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
@@ -1231,7 +1231,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      TRT row2( tmat_, 2UL );
+      TRT row2 = row( tmat_, 2UL );
       row2 -= row( tmat_, 3UL );
 
       checkSize    ( row2 ,  4UL );
@@ -1280,7 +1280,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      TRT row2( tmat_, 2UL );
+      TRT row2 = row( tmat_, 2UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
       vec[0] =  2;
@@ -1334,7 +1334,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      TRT row2( tmat_, 2UL );
+      TRT row2 = row( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
@@ -1401,7 +1401,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      RT row2( mat_, 2UL );
+      RT row2 = row( mat_, 2UL );
       row2 *= row( mat_, 3UL );
 
       checkSize    ( row2, 4UL );
@@ -1450,7 +1450,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      RT row2( mat_, 2UL );
+      RT row2 = row( mat_, 2UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
       vec[0] =  2;
@@ -1504,7 +1504,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      RT row2( mat_, 2UL );
+      RT row2 = row( mat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
@@ -1558,7 +1558,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      RT row2( mat_, 2UL );
+      RT row2 = row( mat_, 2UL );
 
       row2 *= 3;
 
@@ -1608,7 +1608,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      TRT row2( tmat_, 2UL );
+      TRT row2 = row( tmat_, 2UL );
       row2 *= row( tmat_, 3UL );
 
       checkSize    ( row2 , 4UL );
@@ -1657,7 +1657,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      TRT row2( tmat_, 2UL );
+      TRT row2 = row( tmat_, 2UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
       vec[0] =  2;
@@ -1711,7 +1711,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      TRT row2( tmat_, 2UL );
+      TRT row2 = row( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
@@ -1765,7 +1765,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      TRT row2( tmat_, 2UL );
+      TRT row2 = row( tmat_, 2UL );
 
       row2 *= 3;
 
@@ -1828,7 +1828,7 @@ void ClassTest::testDivAssign()
 
       initialize();
 
-      RT row2( mat_, 2UL );
+      RT row2 = row( mat_, 2UL );
 
       row2 /= 0.5;
 
@@ -1878,7 +1878,7 @@ void ClassTest::testDivAssign()
 
       initialize();
 
-      TRT row2( tmat_, 2UL );
+      TRT row2 = row( tmat_, 2UL );
 
       row2 /= 0.5;
 
@@ -3545,7 +3545,7 @@ void ClassTest::testIsNan()
 
       // isnan with empty row
       {
-         RowType row0( mat, 0UL );
+         RowType row0 = row( mat, 0UL );
 
          checkSize    ( row0, 4UL );
          checkNonZeros( row0, 0UL );
@@ -3562,7 +3562,7 @@ void ClassTest::testIsNan()
 
       // isnan with partially filled row
       {
-         RowType row2( mat, 2UL );
+         RowType row2 = row( mat, 2UL );
 
          checkSize    ( row2, 4UL );
          checkNonZeros( row2, 2UL );
@@ -3579,7 +3579,7 @@ void ClassTest::testIsNan()
 
       // isnan with fully filled row
       {
-         RowType row4( mat, 4UL );
+         RowType row4 = row( mat, 4UL );
 
          checkSize    ( row4, 4UL );
          checkNonZeros( row4, 4UL );
@@ -3614,7 +3614,7 @@ void ClassTest::testIsNan()
 
       // isnan with empty row
       {
-         RowType row0( mat, 0UL );
+         RowType row0 = row( mat, 0UL );
 
          checkSize    ( row0, 4UL );
          checkNonZeros( row0, 0UL );
@@ -3631,7 +3631,7 @@ void ClassTest::testIsNan()
 
       // isnan with partially filled row
       {
-         RowType row2( mat, 2UL );
+         RowType row2 = row( mat, 2UL );
 
          checkSize    ( row2, 4UL );
          checkNonZeros( row2, 2UL );
@@ -3648,7 +3648,7 @@ void ClassTest::testIsNan()
 
       // isnan with fully filled row
       {
-         RowType row4( mat, 4UL );
+         RowType row4 = row( mat, 4UL );
 
          checkSize    ( row4, 4UL );
          checkNonZeros( row4, 4UL );
