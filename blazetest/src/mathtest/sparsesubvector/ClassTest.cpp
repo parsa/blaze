@@ -173,7 +173,7 @@ void ClassTest::testAssignment()
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << vec_ << "\n"
+             << "   Result:\n" << vec << "\n"
              << "   Expected result:\n( 0 0 0 0 0 -3 0 4 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
