@@ -4801,7 +4801,7 @@ void ClassTest::testReserve()
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the transpose member functions of the CompressedMatrix
+// This function performs a test of the transpose member function of the CompressedMatrix
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testTranspose()
@@ -6217,7 +6217,7 @@ void ClassTest::testIsDefault()
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isnan functions with the CompressedMatrix class
+// This function performs a test of the isnan function with the CompressedMatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsNan()
@@ -6364,7 +6364,7 @@ void ClassTest::testIsNan()
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isDiagonal functions with the CompressedMatrix class
+// This function performs a test of the isDiagonal function with the CompressedMatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsDiagonal()
@@ -6585,7 +6585,7 @@ void ClassTest::testIsDiagonal()
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isSymmetric functions of the CompressedMatrix class
+// This function performs a test of the isSymmetric function of the CompressedMatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsSymmetric()

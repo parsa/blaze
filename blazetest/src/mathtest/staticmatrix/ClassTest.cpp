@@ -3501,7 +3501,7 @@ void ClassTest::testReset()
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the transpose member functions of the StaticMatrix class
+// This function performs a test of the transpose member function of the StaticMatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testTranspose()
@@ -4000,7 +4000,7 @@ void ClassTest::testIsDefault()
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isnan functions with the StaticMatrix class
+// This function performs a test of the isnan function with the StaticMatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsNan()
@@ -4106,12 +4106,12 @@ void ClassTest::testIsNan()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isDiagonal member function of the StaticMatrix class template.
+/*!\brief Test of the isDiagonal function of the StaticMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isDiagonal member functions of the StaticMatrix class
+// This function performs a test of the isDiagonal function of the StaticMatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsDiagonal()
@@ -4317,12 +4317,12 @@ void ClassTest::testIsDiagonal()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isSymmetric member function of the StaticMatrix class template.
+/*!\brief Test of the isSymmetric function of the StaticMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isSymmetric member functions of the StaticMatrix class
+// This function performs a test of the isSymmetric function of the StaticMatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsSymmetric()
