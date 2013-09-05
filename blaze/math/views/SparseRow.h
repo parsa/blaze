@@ -789,7 +789,7 @@ inline SparseRow<MT,SO>& SparseRow<MT,SO>::operator+=( const Vector<VT,true>& rh
 {
    using blaze::addAssign;
 
-   if( (~rhs).size() != size() )
+   if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
    addAssign( *this, ~rhs );
@@ -816,7 +816,7 @@ inline SparseRow<MT,SO>& SparseRow<MT,SO>::operator-=( const Vector<VT,true>& rh
 {
    using blaze::subAssign;
 
-   if( (~rhs).size() != size() )
+   if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
    subAssign( *this, ~rhs );
@@ -842,7 +842,7 @@ template< typename MT    // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side vector
 inline SparseRow<MT,SO>& SparseRow<MT,SO>::operator*=( const Vector<VT,true>& rhs )
 {
-   if( (~rhs).size() != size() )
+   if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
    typedef typename MultTrait<ResultType,typename VT::ResultType>::Type  MultType;
@@ -2292,7 +2292,7 @@ inline SparseRow<MT,false>& SparseRow<MT,false>::operator+=( const Vector<VT,tru
 {
    using blaze::addAssign;
 
-   if( (~rhs).size() != size() )
+   if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
    addAssign( *this, ~rhs );
@@ -2320,7 +2320,7 @@ inline SparseRow<MT,false>& SparseRow<MT,false>::operator-=( const Vector<VT,tru
 {
    using blaze::subAssign;
 
-   if( (~rhs).size() != size() )
+   if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
    subAssign( *this, ~rhs );
@@ -2347,7 +2347,7 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side vector
 inline SparseRow<MT,false>& SparseRow<MT,false>::operator*=( const Vector<VT,true>& rhs )
 {
-   if( (~rhs).size() != size() )
+   if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
    typedef typename MultTrait<ResultType,typename VT::ResultType>::Type  MultType;
