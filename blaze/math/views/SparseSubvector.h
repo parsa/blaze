@@ -2082,6 +2082,25 @@ inline typename EnableIf< IsVecTransExpr<VT>, typename SubvectorExprTrait<VT>::T
 /*! \endcond */
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  SUBVECTORTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct SubvectorTrait< SparseSubvector<VT,TF> >
+{
+   typedef typename SubvectorTrait< typename SparseSubvector<VT,TF>::ResultType >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
