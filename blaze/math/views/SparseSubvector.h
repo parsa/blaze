@@ -975,7 +975,7 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator+=( const Vector<
 {
    using blaze::addAssign;
 
-   if( (~rhs).size() != size() )
+   if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
    addAssign( *this, ~rhs );
@@ -1002,7 +1002,7 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator-=( const Vector<
 {
    using blaze::subAssign;
 
-   if( (~rhs).size() != size() )
+   if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
    subAssign( *this, ~rhs );
@@ -1028,7 +1028,7 @@ template< typename VT     // Type of the sparse vector
 template< typename VT2 >  // Type of the right-hand side vector
 inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator*=( const Vector<VT2,TF>& rhs )
 {
-   if( (~rhs).size() != size() )
+   if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
    typedef typename MultTrait<ResultType,typename VT2::ResultType>::Type  MultType;
