@@ -29,10 +29,11 @@
 
 #include <iterator>
 #include <stdexcept>
-#include <blaze/math/constraints/Expression.h>
+#include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
+#include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -64,6 +65,7 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -482,7 +484,8 @@ class SparseRow : public SparseVector< SparseRow<MT,SO>, true >
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE   ( MT );
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE  ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE   ( MT );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -2021,7 +2024,8 @@ class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE      ( MT );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE     ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE    ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE      ( MT );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -3147,7 +3151,7 @@ inline bool isDefault( const SparseRow<MT,SO>& row )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline typename DisableIf< IsExpression<MT>, SparseRow<MT> >::Type
+inline typename DisableIf< Or< IsComputation<MT>, IsTransExpr<MT> >, SparseRow<MT> >::Type
    row( SparseMatrix<MT,SO>& sm, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
@@ -3180,7 +3184,7 @@ inline typename DisableIf< IsExpression<MT>, SparseRow<MT> >::Type
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline typename DisableIf< IsExpression<MT>, SparseRow<const MT> >::Type
+inline typename DisableIf< Or< IsComputation<MT>, IsTransExpr<MT> >, SparseRow<const MT> >::Type
    row( const SparseMatrix<MT,SO>& sm, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
