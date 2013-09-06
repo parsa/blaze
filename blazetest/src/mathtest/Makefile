@@ -22,7 +22,7 @@
 # Rules
 default: staticvector dynamicvector compressedvector \
          staticmatrix dynamicmatrix compressedmatrix \
-         sparsesubvector \
+         sparsesubvector sparsesubmatrix\
          denserow densecolumn sparserow sparsecolumn \
          dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
          dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
@@ -71,6 +71,11 @@ sparsesubvector:
 	@echo
 	@echo "Building the SparseSubvector tests..."
 	@$(MAKE) --no-print-directory -C ./sparsesubvector/
+
+sparsesubmatrix:
+	@echo
+	@echo "Building the SparseSubmatrix tests..."
+	@$(MAKE) --no-print-directory -C ./sparsesubmatrix/
 
 denserow:
 	@echo
@@ -330,6 +335,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./dynamicmatrix clean
 	@$(MAKE) --no-print-directory -C ./compressedmatrix clean
 	@$(MAKE) --no-print-directory -C ./sparsesubvector clean
+	@$(MAKE) --no-print-directory -C ./sparsesubmatrix clean
 	@$(MAKE) --no-print-directory -C ./denserow clean
 	@$(MAKE) --no-print-directory -C ./densecolumn clean
 	@$(MAKE) --no-print-directory -C ./sparserow clean
@@ -387,7 +393,7 @@ clean:
 .PHONY: default clean \
         staticvector dynamicvector compressedvector \
         staticmatrix dynamicmatrix compressedmatrix \
-        sparsesubvector \
+        sparsesubvector sparsesubmatrix \
         denserow densecolumn sparserow sparsecolumn \
         dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
         dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
