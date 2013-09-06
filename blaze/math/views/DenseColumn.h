@@ -109,9 +109,9 @@ namespace blaze {
 // an assignment. The following example demonstrates this in detail:
 
    \code
-   typedef blaze::DynamicVector<double,columnVector>     DenseVectorType;
-   typedef blaze::CompressedVector<double,columnVector>  SparseVectorType;
-   typedef blaze::DynamicMatrix<double,columnMajor>      DenseMatrixType;
+   typedef blaze::DynamicVector<double,blaze::columnVector>     DenseVectorType;
+   typedef blaze::CompressedVector<double,blaze::columnVector>  SparseVectorType;
+   typedef blaze::DynamicMatrix<double,blaze::columnMajor>      DenseMatrixType;
 
    DenseVectorType  x;
    SparseVectorType y;
@@ -135,8 +135,22 @@ namespace blaze {
 // \n \section dense_column_element_access Element access
 //
 // A dense column can be used like any other column vector. For instance, the elements of the
-// dense column can be directly accessed with the subscript operator. The numbering of the
-// column elements is
+// dense column can be directly accessed with the subscript operator.
+
+   \code
+   typedef blaze::DynamicMatrix<double,blaze::columnMajor>  MatrixType;
+   MatrixType A;
+   // ... Resizing and initialization
+
+   // Creating a view on the 4th column of matrix A
+   blaze::DenseColumn<MatrixType> col4 = column( A, 4UL );
+
+   // Setting the 1st element of the dense column, which corresponds
+   // to the 1st element in the 4th column of matrix A
+   col4[1] = 2.0;
+   \endcode
+
+// The numbering of the column elements is
 
                              \f[\left(\begin{array}{*{5}{c}}
                              0 & 1 & 2 & \cdots & N-1 \\
@@ -148,8 +162,8 @@ namespace blaze {
 // values, in case of constant columns a ConstIterator is returned:
 
    \code
-   typedef blaze::DynamicMatrix<int,columnMajor>  MatrixType;
-   typedef blaze::DenseColumn<MatrixType>         ColumnType;
+   typedef blaze::DynamicMatrix<int,blaze::columnMajor>  MatrixType;
+   typedef blaze::DenseColumn<MatrixType>                ColumnType;
 
    MatrixType A( 128UL, 256UL );
    // ... Resizing and initialization
@@ -176,8 +190,8 @@ namespace blaze {
 // several operations are not possible on views, such as resizing and swapping:
 
    \code
-   typedef blaze::DynamicMatrix<int,columnMajor>  MatrixType;
-   typedef blaze::DenseColumn<MatrixType>         ColumnType;
+   typedef blaze::DynamicMatrix<int,blaze::columnMajor>  MatrixType;
+   typedef blaze::DenseColumn<MatrixType>                ColumnType;
 
    MatrixType A( 42UL, 42UL );
    // ... Resizing and initialization
@@ -202,18 +216,14 @@ namespace blaze {
 // possible combinations of dense and sparse vectors with fitting element types:
 
    \code
-   using blaze::DynamicVector;
-   using blaze::CompressedVector;
-   using blaze::DynamicMatrix;
-
-   DynamicVector<double,columnVector> a( 2UL, 2.0 ), b;
-   CompressedVector<double,columnVector> c( 2UL );
+   blaze::DynamicVector<double,blaze::columnVector> a( 2UL, 2.0 ), b;
+   blaze::CompressedVector<double,blaze::columnVector> c( 2UL );
    c[1] = 3.0;
 
-   typedef DynamicMatrix<double,columnMajor>  MatrixType;
+   typedef blaze::DynamicMatrix<double,blaze::columnMajor>  MatrixType;
    MatrixType A( 2UL, 4UL );  // Non-initialized 2x4 matrix
 
-   typedef DenseColumn<DenseMatrix>  RowType;
+   typedef blaze::DenseColumn<DenseMatrix>  RowType;
    RowType col0( column( A, 0UL ) );  // Reference to the 0th column of A
 
    col0[0] = 0.0;           // Manual initialization of the 0th column of A
@@ -247,8 +257,8 @@ namespace blaze {
 // also possible to traverse a column of a row-major matrix. For instance:
 
    \code
-   typedef blaze::DynamicMatrix<int,rowMajor>  MatrixType;
-   typedef blaze::DenseColumn<MatrixType>      ColumnType;
+   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  MatrixType;
+   typedef blaze::DenseColumn<MatrixType>             ColumnType;
 
    MatrixType A( 64UL, 32UL );
    // ... Resizing and initialization
@@ -268,16 +278,16 @@ namespace blaze {
 
    \code
    // Setup of two row-major matrices
-   DynamicMatrix<double,rowMajor> A( 128UL, 128UL );
-   DynamicMatrix<double,rowMajor> B( 128UL, 128UL );
+   blaze::DynamicMatrix<double,blaze::rowMajor> A( 128UL, 128UL );
+   blaze::DynamicMatrix<double,blaze::rowMajor> B( 128UL, 128UL );
    // ... Resizing and initialization
 
    // The computation of the 15th column of the multiplication between A and B ...
-   DynamicVector<double,columnVector> x = column( A * B, 15UL );
+   blaze::DynamicVector<double,blaze::columnVector> x = column( A * B, 15UL );
 
    // ... is essentially the same as the following computation, which multiplies
    // A with the 15th column of the row-major matrix B.
-   DynamicVector<double,rowVector> x = A * column( B, 15UL );
+   blaze::DynamicVector<double,blaze::rowVector> x = A * column( B, 15UL );
    \endcode
 
 // Although Blaze performs the resulting matrix/vector multiplication as efficiently as possible
