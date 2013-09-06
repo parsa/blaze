@@ -110,9 +110,9 @@ namespace blaze {
 // side of an assignment. The following example demonstrates this in detail:
 
    \code
-   typedef blaze::DynamicVector<double,rowVector>     DenseVectorType;
-   typedef blaze::CompressedVector<double,rowVector>  SparseVectorType;
-   typedef blaze::CompressedMatrix<double,rowMajor>   SparseMatrixType;
+   typedef blaze::DynamicVector<double,blaze::rowVector>     DenseVectorType;
+   typedef blaze::CompressedVector<double,blaze::rowVector>  SparseVectorType;
+   typedef blaze::CompressedMatrix<double,blaze::rowMajor>   SparseMatrixType;
 
    DenseVectorType  x;
    SparseVectorType y;
@@ -136,8 +136,22 @@ namespace blaze {
 // \n \section sparse_subvector_element_access Element access
 //
 // A sparse subvector can be used like any other sparse vector. For instance, the elements of the
-// sparse subvector can be directly accessed with the subscript operator. The numbering of the
-// subvector elements is
+// sparse subvector can be directly accessed with the subscript operator.
+
+   \code
+   typedef blaze::CompressedVector<double,blaze::rowVector>  VectorType;
+   VectorType v;
+   // ... Resizing and initialization
+
+   // Creating an 8-dimensional subvector, starting from index 4
+   blaze::SparseSubvector<VectorType> sv = sub( v, 4UL, 8UL );
+
+   // Setting the 1st element of the subvector, which corresponds to
+   // the element at index 5 in vector v
+   sv[1] = 2.0;
+   \endcode
+
+// The numbering of the subvector elements is
 
                              \f[\left(\begin{array}{*{5}{c}}
                              0 & 1 & 2 & \cdots & N-1 \\
@@ -149,8 +163,8 @@ namespace blaze {
 // of constant subvectors a ConstIterator is returned:
 
    \code
-   typedef blaze::CompressedVector<int,rowVector>  VectorType;
-   typedef blaze::SparseSubvector<VectorType>      SubvectorType;
+   typedef blaze::CompressedVector<int,blaze::rowVector>  VectorType;
+   typedef blaze::SparseSubvector<VectorType>             SubvectorType;
 
    VectorType v( 256UL );
    // ... Resizing and initialization
@@ -179,13 +193,10 @@ namespace blaze {
 // The following example demonstrates all options:
 
    \code
-   using blaze::CompressedVector;
-   using blaze::SparseSubvector;
-
-   typedef CompressedVector<double,rowVector>  VectorType;
+   typedef blaze::CompressedVector<double,blaze::rowVector>  VectorType;
    VectorType v( 256UL );  // Non-initialized vector of size 256
 
-   typedef SparseSubvector<VectorType>  SubvectorType;
+   typedef blaze::SparseSubvector<VectorType>  SubvectorType;
    SubvectorType sv( sub( v, 10UL, 60UL ) );  // View to the range [10..69] of v
 
    // The subscript operator provides access to all possible elements of the sparse subvector,
@@ -203,17 +214,9 @@ namespace blaze {
    // larger than the currently largest non-zero index of the subvector and that the subvector's
    // capacity is large enough to hold the new element. Note however that due to the nature of
    // a subvector, which may be an alias to the middle of a sparse vector, the append() function
-   // is not as efficient for a subvector as it is for a vector.
+   // does not work as efficiently for a subvector as it does for a vector.
    sv.reserve( 10UL );
    sv.append( 51UL, -2.1 );
-
-   // In order to traverse all non-zero elements currently stored in the subvector, the begin()
-   // and end() functions can be used. In the example, all non-zero elements of the subvector
-   // are traversed.
-   for( SubvectorType::Iterator it=sv.begin(); it!=a.end(); ++it ) {
-      ... = it->value();  // Access to the value of the non-zero element
-      ... = it->index();  // Access to the index of the non-zero element
-   }
    \endcode
 
 // \n \section sparse_subvector_common_operations Common Operations
@@ -224,8 +227,8 @@ namespace blaze {
 // a vector, several operations are not possible on views, such as resizing and swapping:
 
    \code
-   typedef blaze::CompressedVector<int,rowVector>  VectorType;
-   typedef blaze::SparseSubvector<VectorType>      SubvectorType;
+   typedef blaze::CompressedVector<int,blaze::rowVector>  VectorType;
+   typedef blaze::SparseSubvector<VectorType>             SubvectorType;
 
    VectorType v( 42UL );
    // ... Resizing and initialization
@@ -251,41 +254,33 @@ namespace blaze {
 // types:
 
    \code
-   using blaze::DynamicVector;
-   using blaze::CompressedVector;
-   using blaze::CompressedMatrix;
-   using blaze::SparseSubvector;
-
-   typedef CompressedVector<double,rowVector>  SparseVectorType;
-   typedef DynamicVector<double,rowVector>     DenseVectorType;
+   typedef blaze::CompressedVector<double,blaze::rowVector>  SparseVectorType;
+   typedef blaze::DynamicVector<double,blaze::rowVector>     DenseVectorType;
    SparseVectorType s1, s2, s3;
    DenseVectorType d1, d2;
 
    // ... Resizing and initialization
 
-   typedef CompressedMatrix<double,rowMajor>  SparseMatrixType;
+   typedef blaze::CompressedMatrix<double,blaze::rowMajor>  SparseMatrixType;
    SparseMatrixType A;
 
-   typedef SparseSubvector<SparseVectorType>  SubvectorType;
-   SubvectorType sv1( sub( s1,  0UL, 10UL ) );  // View on the range [0..9] of vector s1
-   SubvectorType sv2( sub( s1, 20UL, 10UL ) );  // View on the range [20..29] of vector s1
+   typedef blaze::SparseSubvector<SparseVectorType>  SubvectorType;
+   SubvectorType sv( sub( s1,  0UL, 10UL ) );  // View on the range [0..9] of vector s1
 
-   sv1[1] = 2.0;                 // Manual initialization of values in the range [0..9]
-   sv1[5] = 3.0;
-   sub( s1, 10UL, 10UL ) = s2;   // Sparse vector initialization of the range [10..19]
-   sv2 = d1;                     // Dense vector initialization of the range [20..29]
+   sv = s2;                     // Sparse vector initialization of the range [0..9]
+   sub( s1, 10UL, 10UL ) = d1;  // Dense vector initialization of the range [10..19]
 
-   s3 = sv1 + s2;                      // Sparse vector/sparse vector addition
-   d2 = d1  + sub( s1, 10UL, 10UL );   // Dense vector/sparse vector addition
-   s2 = sv1 * sub( s1, 20UL, 10UL );   // Component-wise vector multiplication
+   s3 = sv + s2;                     // Sparse vector/sparse vector addition
+   d2 = d1 + sub( s1, 10UL, 10UL );  // Dense vector/sparse vector addition
+   s2 = sv * sub( s1, 20UL, 10UL );  // Component-wise vector multiplication
 
    sub( s1, 3UL, 4UL ) *= 2.0;     // In-place scaling of the range [3..6]
    b = sub( s1, 7UL, 3UL ) * 2.0;  // Scaling of the range [7..9]
    b = 2.0 * sub( s1, 7UL, 3UL );  // Scaling of the range [7..9]
 
-   sub( s1, 0UL , 10UL ) += a;    // Addition assignment
-   sub( s1, 10UL, 10UL ) -= c;    // Subtraction assignment
-   sub( s1, 20UL, 10UL ) *= sv1;  // Multiplication assignment
+   sub( s1, 0UL , 10UL ) += a;   // Addition assignment
+   sub( s1, 10UL, 10UL ) -= c;   // Subtraction assignment
+   sub( s1, 20UL, 10UL ) *= sv;  // Multiplication assignment
 
    double scalar = sub( s1, 5UL, 10UL ) * trans( d1 );  // Scalar/dot/inner product between two vectors
 
