@@ -112,9 +112,9 @@ namespace blaze {
 // of an assignment. The following example demonstrates this in detail:
 
    \code
-   typedef blaze::DynamicVector<double,columnVector>     DenseVectorType;
-   typedef blaze::CompressedVector<double,columnVector>  SparseVectorType;
-   typedef blaze::CompressedMatrix<double,columnMajor>   SparseMatrixType;
+   typedef blaze::DynamicVector<double,blaze::columnVector>     DenseVectorType;
+   typedef blaze::CompressedVector<double,blaze::columnVector>  SparseVectorType;
+   typedef blaze::CompressedMatrix<double,blaze::columnMajor>   SparseMatrixType;
 
    DenseVectorType  x;
    SparseVectorType y;
@@ -138,8 +138,22 @@ namespace blaze {
 // \n \section sparse_column_element_access Element access
 //
 // A sparse column can be used like any other column vector. For instance, the elements of the
-// sparse column can be directly accessed with the subscript operator. The numbering of the
-// column elements is
+// sparse column can be directly accessed with the subscript operator.
+
+   \code
+   typedef blaze::CompressedMatrix<double,blaze::columnMajor>  MatrixType;
+   MatrixType A;
+   // ... Resizing and initialization
+
+   // Creating a view on the 4th column of matrix A
+   blaze::SparseColumn<MatrixType> col4 = column( A, 4UL );
+
+   // Setting the 1st element of the sparse column, which corresponds
+   // to the 1st element in the 4th column of matrix A
+   col4[1] = 2.0;
+   \endcode
+
+// The numbering of the column elements is
 
                              \f[\left(\begin{array}{*{5}{c}}
                              0 & 1 & 2 & \cdots & N-1 \\
@@ -151,8 +165,8 @@ namespace blaze {
 // values, in case of constant columns a ConstIterator is returned:
 
    \code
-   typedef blaze::CompressedMatrix<int,columnMajor>  MatrixType;
-   typedef blaze::SparseColumn<MatrixType>           ColumnType;
+   typedef blaze::CompressedMatrix<int,blaze::columnMajor>  MatrixType;
+   typedef blaze::SparseColumn<MatrixType>                  ColumnType;
 
    MatrixType A( 128UL, 256UL );
    // ... Resizing and initialization
@@ -181,13 +195,10 @@ namespace blaze {
 // The following example demonstrates all options:
 
    \code
-   using blaze::CompressedMatrix;
-   using blaze::SparseColumn;
-
-   typedef CompressedMatrix<double,columnMajor>  MatrixType;
+   typedef blaze::CompressedMatrix<double,blaze::columnMajor>  MatrixType;
    MatrixType A( 100UL, 10UL );  // Non-initialized 10x100 matrix
 
-   typedef SparseColumn<MatrixType>  ColumnType;
+   typedef blaze::SparseColumn<MatrixType>  ColumnType;
    ColumnType col0( column( A, 0UL ) );  // Reference to the 0th column of A
 
    // The subscript operator provides access to all possible elements of the sparse column,
@@ -205,14 +216,6 @@ namespace blaze {
    // large enough to hold the new element.
    col0.reserve( 10UL );
    col0.append( 51UL, -2.1 );
-
-   // In order to traverse all non-zero elements currently stored in the column, the begin()
-   // and end() functions can be used. In the example, all non-zero elements of the column are
-   // traversed.
-   for( ColumnType::Iterator it=a.begin(); it!=a.end(); ++it ) {
-      ... = it->value();  // Access to the value of the non-zero element
-      ... = it->index();  // Access to the index of the non-zero element
-   }
    \endcode
 
 // \n \section sparse_column_common_operations Common Operations
@@ -223,8 +226,8 @@ namespace blaze {
 // several operations are not possible on views, such as resizing and swapping:
 
    \code
-   typedef blaze::CompressedMatrix<int,columnMajor>  MatrixType;
-   typedef blaze::SparseColumn<MatrixType>           ColumnType;
+   typedef blaze::CompressedMatrix<int,blaze::columnMajor>  MatrixType;
+   typedef blaze::SparseColumn<MatrixType>                  ColumnType;
 
    MatrixType A( 42UL, 42UL );
    // ... Resizing and initialization
@@ -250,19 +253,14 @@ namespace blaze {
 // types:
 
    \code
-   using blaze::DynamicVector;
-   using blaze::CompressedVector;
-   using blaze::CompressedMatrix;
-   using blaze::SparseColumn;
-
-   CompressedVector<double,columnVector> a( 2UL ), b;
+   blaze::CompressedVector<double,blaze::columnVector> a( 2UL ), b;
    a[1] = 2.0;
-   DynamicVector<double,columnVector> c( 2UL, 3.0 );
+   blaze::DynamicVector<double,blaze::columnVector> c( 2UL, 3.0 );
 
-   typedef CompressedMatrix<double,columnMajor>  MatrixType;
+   typedef blaze::CompressedMatrix<double,blaze::columnMajor>  MatrixType;
    MatrixType A( 2UL, 3UL );  // Non-initialized 2x3 matrix
 
-   typedef SparseColumn<MatrixType>  ColumnType;
+   typedef blaze::SparseColumn<MatrixType>  ColumnType;
    ColumnType col0( column( A, 0UL ) );  // Reference to the 0th column of A
 
    col0[0] = 0.0;         // Manual initialization of the 0th column of A
@@ -295,8 +293,8 @@ namespace blaze {
 // also possible to traverse a column of a row-major matrix. For instance:
 
    \code
-   typedef blaze::CompressedMatrix<int,rowMajor>  MatrixType;
-   typedef blaze::SparseColumn<MatrixType>        ColumnType;
+   typedef blaze::CompressedMatrix<int,blaze::rowMajor>  MatrixType;
+   typedef blaze::SparseColumn<MatrixType>               ColumnType;
 
    MatrixType A( 64UL, 32UL );
    // ... Resizing and initialization
@@ -316,16 +314,16 @@ namespace blaze {
 
    \code
    // Setup of two row-major matrices
-   CompressedMatrix<double,rowMajor> A( 128UL, 128UL );
-   CompressedMatrix<double,rowMajor> B( 128UL, 128UL );
+   blaze::CompressedMatrix<double,blaze::rowMajor> A( 128UL, 128UL );
+   blaze::CompressedMatrix<double,blaze::rowMajor> B( 128UL, 128UL );
    // ... Resizing and initialization
 
    // The computation of the 15th column of the multiplication between A and B ...
-   CompressedVector<double,columnVector> x = column( A * B, 15UL );
+   blaze::CompressedVector<double,blaze::columnVector> x = column( A * B, 15UL );
 
    // ... is essentially the same as the following computation, which multiplies
    // A with the 15th column of the row-major matrix B.
-   CompressedVector<double,columnVector> x = A * column( B, 15UL );
+   blaze::CompressedVector<double,blaze::columnVector> x = A * column( B, 15UL );
    \endcode
 
 // Although Blaze performs the resulting matrix/vector multiplication as efficiently as possible
