@@ -1962,7 +1962,7 @@ inline typename EnableIf< IsVecVecMultExpr<VT>, typename SubvectorExprTrait<VT>:
 // vector/scalar multiplication.
 */
 template< typename VT  // Type of the sparse vector
-        , bool TF >    // Storage order
+        , bool TF >    // Transpose flag
 inline typename EnableIf< IsVecScalarMultExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
    sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
@@ -1988,7 +1988,7 @@ inline typename EnableIf< IsVecScalarMultExpr<VT>, typename SubvectorExprTrait<V
 // vector/scalar division.
 */
 template< typename VT  // Type of the sparse vector
-        , bool TF >    // Storage order
+        , bool TF >    // Transpose flag
 inline typename EnableIf< IsVecScalarDivExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
    sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
@@ -2014,7 +2014,7 @@ inline typename EnableIf< IsVecScalarDivExpr<VT>, typename SubvectorExprTrait<VT
 // abs operation.
 */
 template< typename VT  // Type of the sparse vector
-        , bool TF >    // Storage order
+        , bool TF >    // Transpose flag
 inline typename EnableIf< IsVecAbsExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
    sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
@@ -2040,7 +2040,7 @@ inline typename EnableIf< IsVecAbsExpr<VT>, typename SubvectorExprTrait<VT>::Typ
 // evaluation operation.
 */
 template< typename VT  // Type of the sparse vector
-        , bool TF >    // Storage order
+        , bool TF >    // Transpose flag
 inline typename EnableIf< IsVecEvalExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
    sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
@@ -2066,7 +2066,7 @@ inline typename EnableIf< IsVecEvalExpr<VT>, typename SubvectorExprTrait<VT>::Ty
 // transpose operation.
 */
 template< typename VT  // Type of the sparse vector
-        , bool TF >    // Storage order
+        , bool TF >    // Transpose flag
 inline typename EnableIf< IsVecTransExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
    sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
