@@ -110,7 +110,7 @@ void ClassTest::testConstructors()
             for( size_t rsize=1UL; rstart+rsize<mat_.rows(); ++rsize ) {
                for( size_t csize=1UL; cstart+csize<mat_.columns(); ++csize )
                {
-                  SMT submatrix = sub( mat_, rstart, rsize, cstart, csize );
+                  SMT submatrix = sub( mat_, rstart, cstart, rsize, csize );
 
                   for( size_t i=0UL; i<rsize; ++i ) {
                      for( size_t j=0UL; j<csize; ++j )
@@ -149,7 +149,7 @@ void ClassTest::testConstructors()
             for( size_t csize=1UL; cstart+csize<tmat_.columns(); ++csize ) {
                for( size_t rsize=1UL; rstart+rsize<tmat_.rows(); ++rsize )
                {
-                  TSMT submatrix = sub( tmat_, rstart, rsize, cstart, csize );
+                  TSMT submatrix = sub( tmat_, rstart, cstart, rsize, csize );
 
                   for( size_t j=0UL; j<csize; ++j ) {
                      for( size_t i=0UL; i<rsize; ++i )
@@ -201,8 +201,8 @@ void ClassTest::testAssignment()
       mat(2,0) = 12;
       mat(2,2) = 13;
 
-      SMT submatrix = sub( mat, 1UL, 2UL, 0UL, 3UL );
-      submatrix = sub( mat_, 2UL, 2UL, 1UL, 3UL );
+      SMT submatrix = sub( mat, 1UL, 0UL, 2UL, 3UL );
+      submatrix = sub( mat_, 2UL, 1UL, 2UL, 3UL );
 
       checkRows    ( submatrix,  2UL );
       checkColumns ( submatrix,  3UL );
@@ -249,8 +249,8 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 2UL, 0UL, 3UL );
-      submatrix = sub( mat_, 2UL, 2UL, 1UL, 3UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
+      submatrix = sub( mat_, 2UL, 1UL, 2UL, 3UL );
 
       checkRows    ( submatrix,  2UL );
       checkColumns ( submatrix,  3UL );
@@ -299,7 +299,7 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 2UL, 0UL, 3UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 0 );
       mat(0,1) = 11;
@@ -351,7 +351,7 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 2UL, 0UL, 3UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 0 );
       mat(0,1) = 11;
@@ -408,7 +408,7 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 2UL, 0UL, 3UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 4UL );
       mat(0,1) = 11;
@@ -460,7 +460,7 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 2UL, 0UL, 3UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 4UL );
       mat(0,1) = 11;
@@ -522,8 +522,8 @@ void ClassTest::testAssignment()
       mat(0,2) = 12;
       mat(2,2) = 13;
 
-      TSMT submatrix = sub( mat, 0UL, 3UL, 1UL, 2UL );
-      submatrix = sub( tmat_, 1UL, 3UL, 2UL, 2UL );
+      TSMT submatrix = sub( mat, 0UL, 1UL, 3UL, 2UL );
+      submatrix = sub( tmat_, 1UL, 2UL, 3UL, 2UL );
 
       checkRows    ( submatrix,  3UL );
       checkColumns ( submatrix,  2UL );
@@ -569,8 +569,8 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 3UL, 1UL, 2UL );
-      submatrix = sub( tmat_, 1UL, 3UL, 2UL, 2UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
+      submatrix = sub( tmat_, 1UL, 2UL, 3UL, 2UL );
 
       checkRows    ( submatrix,  3UL );
       checkColumns ( submatrix,  2UL );
@@ -618,7 +618,7 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 3UL, 1UL, 2UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 0 );
       mat(1,0) = 11;
@@ -669,7 +669,7 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 3UL, 1UL, 2UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 0 );
       mat(1,0) = 11;
@@ -725,7 +725,7 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 3UL, 1UL, 2UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 4UL );
       mat(1,0) = 11;
@@ -776,7 +776,7 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 3UL, 1UL, 2UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 4UL );
       mat(1,0) = 11;
@@ -850,8 +850,8 @@ void ClassTest::testAddAssign()
       mat(2,0) = 12;
       mat(2,2) = 13;
 
-      SMT submatrix = sub( mat, 1UL, 2UL, 0UL, 3UL );
-      submatrix += sub( mat_, 2UL, 2UL, 1UL, 3UL );
+      SMT submatrix = sub( mat, 1UL, 0UL, 2UL, 3UL );
+      submatrix += sub( mat_, 2UL, 1UL, 2UL, 3UL );
 
       checkRows    ( submatrix,  2UL );
       checkColumns ( submatrix,  3UL );
@@ -898,8 +898,8 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 2UL, 0UL, 3UL );
-      submatrix += sub( mat_, 2UL, 2UL, 1UL, 3UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
+      submatrix += sub( mat_, 2UL, 1UL, 2UL, 3UL );
 
       checkRows    ( submatrix,  2UL );
       checkColumns ( submatrix,  3UL );
@@ -948,7 +948,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 2UL, 0UL, 3UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 0 );
       mat(0,1) = 11;
@@ -1000,7 +1000,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 2UL, 0UL, 3UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 0 );
       mat(0,1) = 11;
@@ -1057,7 +1057,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 2UL, 0UL, 3UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 4UL );
       mat(0,1) = 11;
@@ -1109,7 +1109,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 2UL, 0UL, 3UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 4UL );
       mat(0,1) = 11;
@@ -1171,8 +1171,8 @@ void ClassTest::testAddAssign()
       mat(0,2) = 12;
       mat(2,2) = 13;
 
-      TSMT submatrix = sub( mat, 0UL, 3UL, 1UL, 2UL );
-      submatrix += sub( tmat_, 1UL, 3UL, 2UL, 2UL );
+      TSMT submatrix = sub( mat, 0UL, 1UL, 3UL, 2UL );
+      submatrix += sub( tmat_, 1UL, 2UL, 3UL, 2UL );
 
       checkRows    ( submatrix,  3UL );
       checkColumns ( submatrix,  2UL );
@@ -1218,8 +1218,8 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 3UL, 1UL, 2UL );
-      submatrix += sub( tmat_, 1UL, 3UL, 2UL, 2UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
+      submatrix += sub( tmat_, 1UL, 2UL, 3UL, 2UL );
 
       checkRows    ( submatrix,  3UL );
       checkColumns ( submatrix,  2UL );
@@ -1267,7 +1267,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 3UL, 1UL, 2UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 0 );
       mat(1,0) = 11;
@@ -1318,7 +1318,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 3UL, 1UL, 2UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 0 );
       mat(1,0) = 11;
@@ -1374,7 +1374,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 3UL, 1UL, 2UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 4UL );
       mat(1,0) = 11;
@@ -1425,7 +1425,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 3UL, 1UL, 2UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 4UL );
       mat(1,0) = 11;
@@ -1499,8 +1499,8 @@ void ClassTest::testSubAssign()
       mat(2,0) = 12;
       mat(2,2) = 13;
 
-      SMT submatrix = sub( mat, 1UL, 2UL, 0UL, 3UL );
-      submatrix -= sub( mat_, 2UL, 2UL, 1UL, 3UL );
+      SMT submatrix = sub( mat, 1UL, 0UL, 2UL, 3UL );
+      submatrix -= sub( mat_, 2UL, 1UL, 2UL, 3UL );
 
       checkRows    ( submatrix,  2UL );
       checkColumns ( submatrix,  3UL );
@@ -1547,8 +1547,8 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 2UL, 0UL, 3UL );
-      submatrix -= sub( mat_, 2UL, 2UL, 1UL, 3UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
+      submatrix -= sub( mat_, 2UL, 1UL, 2UL, 3UL );
 
       checkRows    ( submatrix,  2UL );
       checkColumns ( submatrix,  3UL );
@@ -1597,7 +1597,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 2UL, 0UL, 3UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 0 );
       mat(0,1) = -11;
@@ -1649,7 +1649,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 2UL, 0UL, 3UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 0 );
       mat(0,1) = -11;
@@ -1706,7 +1706,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 2UL, 0UL, 3UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 4UL );
       mat(0,1) = -11;
@@ -1758,7 +1758,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 2UL, 0UL, 3UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 4UL );
       mat(0,1) = -11;
@@ -1820,8 +1820,8 @@ void ClassTest::testSubAssign()
       mat(0,2) = 12;
       mat(2,2) = 13;
 
-      TSMT submatrix = sub( mat, 0UL, 3UL, 1UL, 2UL );
-      submatrix -= sub( tmat_, 1UL, 3UL, 2UL, 2UL );
+      TSMT submatrix = sub( mat, 0UL, 1UL, 3UL, 2UL );
+      submatrix -= sub( tmat_, 1UL, 2UL, 3UL, 2UL );
 
       checkRows    ( submatrix,  3UL );
       checkColumns ( submatrix,  2UL );
@@ -1867,8 +1867,8 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 3UL, 1UL, 2UL );
-      submatrix -= sub( tmat_, 1UL, 3UL, 2UL, 2UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
+      submatrix -= sub( tmat_, 1UL, 2UL, 3UL, 2UL );
 
       checkRows    ( submatrix,  3UL );
       checkColumns ( submatrix,  2UL );
@@ -1916,7 +1916,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 3UL, 1UL, 2UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 0 );
       mat(1,0) = -11;
@@ -1967,7 +1967,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 3UL, 1UL, 2UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 0 );
       mat(1,0) = -11;
@@ -2023,7 +2023,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 3UL, 1UL, 2UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 4UL );
       mat(1,0) = -11;
@@ -2074,7 +2074,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 3UL, 1UL, 2UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 4UL );
       mat(1,0) = -11;
@@ -2149,8 +2149,8 @@ void ClassTest::testMultAssign()
       mat(2,0) = 1;
       mat(2,1) = 1;
 
-      SMT submatrix = sub( mat, 1UL, 2UL, 0UL, 2UL );
-      submatrix *= sub( mat_, 2UL, 2UL, 1UL, 2UL );
+      SMT submatrix = sub( mat, 1UL, 0UL, 2UL, 2UL );
+      submatrix *= sub( mat_, 2UL, 1UL, 2UL, 2UL );
 
       checkRows    ( submatrix,  2UL );
       checkColumns ( submatrix,  2UL );
@@ -2197,8 +2197,8 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 2UL, 0UL, 2UL );
-      submatrix *= sub( mat_, 2UL, 2UL, 1UL, 2UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 2UL );
+      submatrix *= sub( mat_, 2UL, 1UL, 2UL, 2UL );
 
       checkRows    ( submatrix,  2UL );
       checkColumns ( submatrix,  2UL );
@@ -2247,7 +2247,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 2UL, 0UL, 2UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 2UL, 0 );
       mat(0,0) = -11;
@@ -2299,7 +2299,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 2UL, 0UL, 2UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 2UL, 0 );
       mat(0,0) = -11;
@@ -2356,7 +2356,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 2UL, 0UL, 2UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 2UL, 4UL );
       mat(0,0) = -11;
@@ -2408,7 +2408,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 2UL, 0UL, 2UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 2UL, 4UL );
       mat(0,0) = -11;
@@ -2465,7 +2465,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 2UL, 2UL, 0UL, 3UL );
+      SMT submatrix = sub( mat_, 2UL, 0UL, 2UL, 3UL );
 
       submatrix *= 3;
 
@@ -2511,7 +2511,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 2UL, 3UL, 0UL, 2UL );
+      SMT submatrix = sub( mat_, 2UL, 0UL, 3UL, 2UL );
 
       submatrix *= 3;
 
@@ -2569,7 +2569,7 @@ void ClassTest::testMultAssign()
       mat(1,1) = 1;
       mat(1,2) = 1;
 
-      TSMT submatrix = sub( mat, 0UL, 2UL, 1UL, 2UL );
+      TSMT submatrix = sub( mat, 0UL, 1UL, 2UL, 2UL );
       submatrix *= sub( tmat_, 1UL, 2UL, 2UL, 2UL );
 
       checkRows    ( submatrix,  2UL );
@@ -2615,7 +2615,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 2UL, 1UL, 2UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 2UL, 2UL );
       submatrix *= sub( tmat_, 1UL, 2UL, 2UL, 2UL );
 
       checkRows    ( submatrix,  2UL );
@@ -2663,7 +2663,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 2UL, 1UL, 2UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 2UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 2UL, 0 );
       mat(0,0) =  11;
@@ -2713,7 +2713,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 2UL, 1UL, 2UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 2UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 2UL, 0 );
       mat(0,0) =  11;
@@ -2768,7 +2768,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 2UL, 1UL, 2UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 2UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 2UL, 4UL );
       mat(0,0) =  11;
@@ -2818,7 +2818,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 2UL, 1UL, 2UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 2UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 2UL, 4UL );
       mat(0,0) =  11;
@@ -2873,7 +2873,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 3UL, 2UL, 2UL );
+      TSMT submatrix = sub( tmat_, 0UL, 2UL, 3UL, 2UL );
 
       submatrix *= 3;
 
@@ -2980,7 +2980,7 @@ void ClassTest::testDivAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 2UL, 2UL, 0UL, 3UL );
+      SMT submatrix = sub( mat_, 2UL, 0UL, 2UL, 3UL );
 
       submatrix /= 0.5;
 
@@ -3026,7 +3026,7 @@ void ClassTest::testDivAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 2UL, 3UL, 0UL, 2UL );
+      SMT submatrix = sub( mat_, 2UL, 0UL, 3UL, 2UL );
 
       submatrix /= 0.5;
 
@@ -3078,7 +3078,7 @@ void ClassTest::testDivAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 3UL, 2UL, 2UL );
+      TSMT submatrix = sub( tmat_, 0UL, 2UL, 3UL, 2UL );
 
       submatrix /= 0.5;
 
@@ -3186,7 +3186,7 @@ void ClassTest::testFunctionCall()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 3UL, 1UL, 2UL );
+      SMT submatrix = sub( mat_, 1UL, 1UL, 3UL, 2UL );
 
       // Writing the first element
       {
@@ -3334,7 +3334,7 @@ void ClassTest::testFunctionCall()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 1UL, 2UL, 1UL, 3UL );
+      TSMT submatrix = sub( tmat_, 1UL, 1UL, 2UL, 3UL );
 
       // Writing the first element
       {
@@ -3484,7 +3484,7 @@ void ClassTest::testIterator()
    {
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 3UL, 0UL, 3UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 3UL, 3UL );
 
       // Counting the number of elements in 0th row
       {
@@ -3787,7 +3787,7 @@ void ClassTest::testIterator()
    {
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 3UL, 1UL, 3UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 3UL );
 
       // Counting the number of elements in 0th column
       {
@@ -4096,7 +4096,7 @@ void ClassTest::testNonZeros()
       initialize();
 
       // Initialization check
-      SMT submatrix = sub( mat_, 1UL, 2UL, 1UL, 3UL );
+      SMT submatrix = sub( mat_, 1UL, 1UL, 2UL, 3UL );
 
       checkRows    ( submatrix, 2UL );
       checkColumns ( submatrix, 3UL );
@@ -4167,7 +4167,7 @@ void ClassTest::testNonZeros()
       initialize();
 
       // Initialization check
-      TSMT submatrix = sub( tmat_, 1UL, 3UL, 1UL, 2UL );
+      TSMT submatrix = sub( tmat_, 1UL, 1UL, 3UL, 2UL );
 
       checkRows    ( submatrix, 3UL );
       checkColumns ( submatrix, 2UL );
@@ -4253,7 +4253,7 @@ void ClassTest::testReset()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 3UL, 0UL, 2UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 3UL, 2UL );
 
       submatrix.reset();
 
@@ -4303,7 +4303,7 @@ void ClassTest::testReset()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 3UL, 0UL, 2UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 3UL, 2UL );
 
       // Resetting the 0th row
       {
@@ -4388,7 +4388,7 @@ void ClassTest::testReset()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 2UL, 1UL, 3UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 2UL, 3UL );
 
       submatrix.reset();
 
@@ -4436,7 +4436,7 @@ void ClassTest::testReset()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 2UL, 1UL, 3UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 2UL, 3UL );
 
       // Resetting the 0th column
       {
@@ -4534,7 +4534,7 @@ void ClassTest::testAppend()
          mat_.reset();
 
          // Initialization check
-         SMT submatrix = sub( mat_, 0UL, 4UL, 0UL, 4UL );
+         SMT submatrix = sub( mat_, 0UL, 0UL, 4UL, 4UL );
          submatrix.reserve( 0UL, 2UL );
          submatrix.reserve( 2UL, 1UL );
          submatrix.reserve( 3UL, 2UL );
@@ -4623,7 +4623,7 @@ void ClassTest::testAppend()
          mat_.reset();
 
          // Initialization check
-         SMT submatrix = sub( mat_, 0UL, 4UL, 0UL, 4UL );
+         SMT submatrix = sub( mat_, 0UL, 0UL, 4UL, 4UL );
          submatrix.reserve( 0UL, 2UL );
          submatrix.reserve( 2UL, 1UL );
          submatrix.reserve( 3UL, 2UL );
@@ -4715,7 +4715,7 @@ void ClassTest::testAppend()
          tmat_.reset();
 
          // Initialization check
-         TSMT submatrix = sub( tmat_, 0UL, 4UL, 0UL, 4UL );
+         TSMT submatrix = sub( tmat_, 0UL, 0UL, 4UL, 4UL );
          submatrix.reserve( 0UL, 2UL );
          submatrix.reserve( 2UL, 1UL );
          submatrix.reserve( 3UL, 2UL );
@@ -4804,7 +4804,7 @@ void ClassTest::testAppend()
          tmat_.reset();
 
          // Initialization check
-         TSMT submatrix = sub( tmat_, 0UL, 4UL, 0UL, 4UL );
+         TSMT submatrix = sub( tmat_, 0UL, 0UL, 4UL, 4UL );
          submatrix.reserve( 0UL, 2UL );
          submatrix.reserve( 2UL, 1UL );
          submatrix.reserve( 3UL, 2UL );
@@ -4906,7 +4906,7 @@ void ClassTest::testInsert()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 0UL, 2UL, 1UL, 3UL );
+      SMT submatrix = sub( mat_, 0UL, 1UL, 2UL, 3UL );
 
       // Inserting a non-zero element at the end of the 0th row
       submatrix.insert( 0UL, 2UL, 1 );
@@ -4996,7 +4996,7 @@ void ClassTest::testInsert()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 1UL, 3UL, 0UL, 2UL );
+      TSMT submatrix = sub( tmat_, 1UL, 0UL, 3UL, 2UL );
 
       // Inserting a non-zero element at the end of the 0th column
       submatrix.insert( 2UL, 0UL, 1 );
@@ -5102,7 +5102,7 @@ void ClassTest::testErase()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 3UL, 2UL, 1UL, 3UL );
+      SMT submatrix = sub( mat_, 3UL, 1UL, 2UL, 3UL );
 
       // Erasing the non-zero element at the end of the 1st row
       submatrix.erase( 1UL, 2UL );
@@ -5199,7 +5199,7 @@ void ClassTest::testErase()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 3UL, 2UL, 1UL, 3UL );
+      SMT submatrix = sub( mat_, 3UL, 1UL, 2UL, 3UL );
 
       // Erasing the non-zero element at the end of the 1st row
       {
@@ -5343,7 +5343,7 @@ void ClassTest::testErase()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 3UL, 2UL, 0UL, 4UL );
+      SMT submatrix = sub( mat_, 3UL, 0UL, 2UL, 4UL );
 
       // Erasing the 0th row
       {
@@ -5736,7 +5736,7 @@ void ClassTest::testErase()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 4UL, 3UL, 2UL );
+      TSMT submatrix = sub( tmat_, 0UL, 3UL, 4UL, 2UL );
 
       // Erasing the 0th column
       {
@@ -5901,7 +5901,7 @@ void ClassTest::testReserve()
 
       MT mat( 3UL, 20UL );
 
-      SMT submatrix = sub( mat, 1UL, 1UL, 0UL, 20UL );
+      SMT submatrix = sub( mat, 1UL, 0UL, 1UL, 20UL );
 
       // Increasing the capacity of the row
       submatrix.reserve( 10UL );
@@ -5930,7 +5930,7 @@ void ClassTest::testReserve()
 
       TMT mat( 20UL, 3UL );
 
-      TSMT submatrix = sub( mat, 0UL, 20UL, 1UL, 1UL );
+      TSMT submatrix = sub( mat, 0UL, 1UL, 20UL, 1UL );
 
       // Increasing the capacity of the column
       submatrix.reserve( 10UL );
@@ -5973,7 +5973,7 @@ void ClassTest::testScale()
       initialize();
 
       // Initialization check
-      SMT submatrix = sub( mat_, 2UL, 2UL, 1UL, 2UL );
+      SMT submatrix = sub( mat_, 2UL, 1UL, 2UL, 2UL );
 
       checkRows    ( submatrix, 2UL );
       checkColumns ( submatrix, 2UL );
@@ -6129,7 +6129,7 @@ void ClassTest::testFind()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 3UL, 1UL, 2UL );
+      SMT submatrix = sub( mat_, 1UL, 1UL, 3UL, 2UL );
 
       checkRows    ( submatrix, 3UL );
       checkColumns ( submatrix, 2UL );
@@ -6223,7 +6223,7 @@ void ClassTest::testFind()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 1UL, 2UL, 1UL, 3UL );
+      TSMT submatrix = sub( tmat_, 1UL, 1UL, 2UL, 3UL );
 
       checkRows    ( submatrix, 2UL );
       checkColumns ( submatrix, 3UL );
@@ -6328,7 +6328,7 @@ void ClassTest::testLowerBound()
 
       typedef SMT::ConstIterator  ConstIterator;
 
-      SMT submatrix = sub( mat_, 1UL, 1UL, 0UL, 4UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 1UL, 4UL );
 
       checkRows    ( submatrix, 1UL );
       checkColumns ( submatrix, 4UL );
@@ -6415,7 +6415,7 @@ void ClassTest::testLowerBound()
 
       typedef TSMT::ConstIterator  ConstIterator;
 
-      TSMT submatrix = sub( tmat_, 0UL, 4UL, 1UL, 1UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 4UL, 1UL );
 
       checkRows    ( submatrix, 4UL );
       checkColumns ( submatrix, 1UL );
@@ -6515,7 +6515,7 @@ void ClassTest::testUpperBound()
 
       typedef SMT::ConstIterator  ConstIterator;
 
-      SMT submatrix = sub( mat_, 1UL, 1UL, 0UL, 4UL );
+      SMT submatrix = sub( mat_, 1UL, 0UL, 1UL, 4UL );
 
       checkRows    ( submatrix, 1UL );
       checkColumns ( submatrix, 4UL );
@@ -6590,7 +6590,7 @@ void ClassTest::testUpperBound()
 
       typedef TSMT::ConstIterator  ConstIterator;
 
-      TSMT submatrix = sub( tmat_, 0UL, 4UL, 1UL, 1UL );
+      TSMT submatrix = sub( tmat_, 0UL, 1UL, 4UL, 1UL );
 
       checkRows    ( submatrix, 4UL );
       checkColumns ( submatrix, 1UL );
@@ -6680,7 +6680,7 @@ void ClassTest::testIsDefault()
 
       // isDefault with default submatrix
       {
-         SMT submatrix = sub( mat_, 0UL, 1UL, 0UL, 4UL );
+         SMT submatrix = sub( mat_, 0UL, 0UL, 1UL, 4UL );
 
          if( isDefault( submatrix ) != true ) {
             std::ostringstream oss;
@@ -6694,7 +6694,7 @@ void ClassTest::testIsDefault()
 
       // isDefault with non-default submatrix
       {
-         SMT submatrix = sub( mat_, 1UL, 1UL, 0UL, 4UL );
+         SMT submatrix = sub( mat_, 1UL, 0UL, 1UL, 4UL );
 
          if( isDefault( submatrix ) != false ) {
             std::ostringstream oss;
@@ -6719,7 +6719,7 @@ void ClassTest::testIsDefault()
 
       // isDefault with default submatrix
       {
-         TSMT submatrix = sub( tmat_, 0UL, 4UL, 0UL, 1UL );
+         TSMT submatrix = sub( tmat_, 0UL, 0UL, 4UL, 1UL );
 
          if( isDefault( submatrix ) != true ) {
             std::ostringstream oss;
@@ -6733,7 +6733,7 @@ void ClassTest::testIsDefault()
 
       // isDefault with non-default submatrix
       {
-         TSMT submatrix = sub( tmat_, 0UL, 4UL, 1UL, 1UL );
+         TSMT submatrix = sub( tmat_, 0UL, 1UL, 4UL, 1UL );
 
          if( isDefault( submatrix ) != false ) {
             std::ostringstream oss;
@@ -6794,7 +6794,7 @@ void ClassTest::testIsNan()
 
       // isnan with filled 2x3 matrix
       {
-         SubmatrixType submatrix = sub( mat, 2UL, 2UL, 1UL, 3UL );
+         SubmatrixType submatrix = sub( mat, 2UL, 1UL, 2UL, 3UL );
 
          checkRows    ( submatrix, 2UL );
          checkColumns ( submatrix, 3UL );
@@ -6828,7 +6828,7 @@ void ClassTest::testIsNan()
 
       // isnan with empty 2x2 matrix
       {
-         SubmatrixType submatrix = sub( mat, 2UL, 2UL, 0UL, 2UL );
+         SubmatrixType submatrix = sub( mat, 2UL, 0UL, 2UL, 2UL );
 
          checkRows    ( submatrix, 2UL );
          checkColumns ( submatrix, 2UL );
@@ -6848,7 +6848,7 @@ void ClassTest::testIsNan()
 
       // isnan with filled 3x2 matrix
       {
-         SubmatrixType submatrix = sub( mat, 1UL, 3UL, 2UL, 2UL );
+         SubmatrixType submatrix = sub( mat, 1UL, 2UL, 3UL, 2UL );
 
          checkRows    ( submatrix, 3UL );
          checkColumns ( submatrix, 2UL );
@@ -6894,7 +6894,7 @@ void ClassTest::testIsDiagonal()
 
       // Non-quadratic submatrix
       {
-         SMT submatrix = sub( mat_, 0UL, 2UL, 0UL, 3UL );
+         SMT submatrix = sub( mat_, 0UL, 0UL, 2UL, 3UL );
 
          checkRows    ( submatrix, 2UL );
          checkColumns ( submatrix, 3UL );
@@ -6934,7 +6934,7 @@ void ClassTest::testIsDiagonal()
 
       // Diagonal matrix
       {
-         SMT submatrix = sub( mat_, 0UL, 3UL, 0UL, 3UL );
+         SMT submatrix = sub( mat_, 0UL, 0UL, 3UL, 3UL );
 
          checkRows    ( submatrix, 3UL );
          checkColumns ( submatrix, 3UL );
@@ -6955,7 +6955,7 @@ void ClassTest::testIsDiagonal()
 
       // Non-diagonal matrix
       {
-         SMT submatrix = sub( mat_, 0UL, 4UL, 0UL, 4UL );
+         SMT submatrix = sub( mat_, 0UL, 0UL, 4UL, 4UL );
 
          checkRows    ( submatrix, 4UL );
          checkColumns ( submatrix, 4UL );
@@ -6990,7 +6990,7 @@ void ClassTest::testIsDiagonal()
 
       // Non-quadratic submatrix
       {
-         TSMT submatrix = sub( tmat_, 0UL, 3UL, 0UL, 2UL );
+         TSMT submatrix = sub( tmat_, 0UL, 0UL, 3UL, 2UL );
 
          checkRows    ( submatrix, 3UL );
          checkColumns ( submatrix, 2UL );
@@ -7010,7 +7010,7 @@ void ClassTest::testIsDiagonal()
 
       // Default initialized matrix
       {
-         TSMT submatrix = sub( tmat_, 2UL, 2UL, 0UL, 2UL );
+         TSMT submatrix = sub( tmat_, 2UL, 0UL, 2UL, 2UL );
 
          checkRows    ( submatrix, 2UL );
          checkColumns ( submatrix, 2UL );
@@ -7030,7 +7030,7 @@ void ClassTest::testIsDiagonal()
 
       // Diagonal matrix
       {
-         TSMT submatrix = sub( tmat_, 0UL, 3UL, 0UL, 3UL );
+         TSMT submatrix = sub( tmat_, 0UL, 0UL, 3UL, 3UL );
 
          checkRows    ( submatrix, 3UL );
          checkColumns ( submatrix, 3UL );
@@ -7051,7 +7051,7 @@ void ClassTest::testIsDiagonal()
 
       // Non-diagonal matrix
       {
-         TSMT submatrix = sub( tmat_, 0UL, 4UL, 0UL, 4UL );
+         TSMT submatrix = sub( tmat_, 0UL, 0UL, 4UL, 4UL );
 
          checkRows    ( submatrix, 4UL );
          checkColumns ( submatrix, 4UL );
@@ -7101,7 +7101,7 @@ void ClassTest::testIsSymmetric()
 
       // Non-quadratic matrix
       {
-         SMT submatrix = sub( mat_, 0UL, 2UL, 0UL, 3UL );
+         SMT submatrix = sub( mat_, 0UL, 0UL, 2UL, 3UL );
 
          checkRows    ( submatrix, 2UL );
          checkColumns ( submatrix, 3UL );
@@ -7141,7 +7141,7 @@ void ClassTest::testIsSymmetric()
 
       // Diagonal matrix
       {
-         SMT submatrix = sub( mat_, 0UL, 3UL, 0UL, 3UL );
+         SMT submatrix = sub( mat_, 0UL, 0UL, 3UL, 3UL );
 
          checkRows    ( submatrix, 3UL );
          checkColumns ( submatrix, 3UL );
@@ -7162,7 +7162,7 @@ void ClassTest::testIsSymmetric()
 
       // Non-symmetric matrix
       {
-         SMT submatrix = sub( mat_, 1UL, 4UL, 0UL, 4UL );
+         SMT submatrix = sub( mat_, 1UL, 0UL, 4UL, 4UL );
 
          checkRows    ( submatrix, 4UL );
          checkColumns ( submatrix, 4UL );
@@ -7184,7 +7184,7 @@ void ClassTest::testIsSymmetric()
 
       // Symmetric matrix
       {
-         SMT submatrix = sub( mat_, 0UL, 4UL, 0UL, 4UL );
+         SMT submatrix = sub( mat_, 0UL, 0UL, 4UL, 4UL );
 
          checkRows    ( submatrix, 4UL );
          checkColumns ( submatrix, 4UL );
@@ -7221,7 +7221,7 @@ void ClassTest::testIsSymmetric()
 
       // Non-quadratic matrix
       {
-         TSMT submatrix = sub( tmat_, 0UL, 3UL, 0UL, 2UL );
+         TSMT submatrix = sub( tmat_, 0UL, 0UL, 3UL, 2UL );
 
          checkRows    ( submatrix, 3UL );
          checkColumns ( submatrix, 2UL );
@@ -7241,7 +7241,7 @@ void ClassTest::testIsSymmetric()
 
       // Default initialized matrix
       {
-         TSMT submatrix = sub( tmat_, 2UL, 2UL, 0UL, 2UL );
+         TSMT submatrix = sub( tmat_, 2UL, 0UL, 2UL, 2UL );
 
          checkRows    ( submatrix, 2UL );
          checkColumns ( submatrix, 2UL );
@@ -7261,7 +7261,7 @@ void ClassTest::testIsSymmetric()
 
       // Diagonal matrix
       {
-         TSMT submatrix = sub( tmat_, 0UL, 3UL, 0UL, 3UL );
+         TSMT submatrix = sub( tmat_, 0UL, 0UL, 3UL, 3UL );
 
          checkRows    ( submatrix, 3UL );
          checkColumns ( submatrix, 3UL );
@@ -7282,7 +7282,7 @@ void ClassTest::testIsSymmetric()
 
       // Non-symmetric matrix
       {
-         TSMT submatrix = sub( tmat_, 0UL, 4UL, 1UL, 4UL );
+         TSMT submatrix = sub( tmat_, 0UL, 1UL, 4UL, 4UL );
 
          checkRows    ( submatrix, 4UL );
          checkColumns ( submatrix, 4UL );
@@ -7304,7 +7304,7 @@ void ClassTest::testIsSymmetric()
 
       // Symmetric matrix
       {
-         TSMT submatrix = sub( tmat_, 0UL, 4UL, 0UL, 4UL );
+         TSMT submatrix = sub( tmat_, 0UL, 0UL, 4UL, 4UL );
 
          checkRows    ( submatrix, 4UL );
          checkColumns ( submatrix, 4UL );
