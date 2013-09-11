@@ -798,7 +798,7 @@ struct TSVecScalarMultExprTrait< SVecScalarDivExpr<VT,ST1,true>, ST2 >
 
 //=================================================================================================
 //
-//  EXPRESSION TRAIT SPECIALIZATIONS
+//  SUBVECTOREXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 

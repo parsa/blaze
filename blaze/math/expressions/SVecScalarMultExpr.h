@@ -1939,7 +1939,7 @@ struct TSVecTSMatMultExprTrait< SVecScalarMultExpr<VT,ST,true>, MT >
 
 //=================================================================================================
 //
-//  EXPRESSION TRAIT SPECIALIZATIONS
+//  SUBVECTOREXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
