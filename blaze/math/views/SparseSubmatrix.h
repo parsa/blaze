@@ -45,10 +45,19 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
+#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
+#include <blaze/math/typetraits/IsMatAbsExpr.h>
+#include <blaze/math/typetraits/IsMatEvalExpr.h>
+#include <blaze/math/typetraits/IsMatMatAddExpr.h>
+#include <blaze/math/typetraits/IsMatMatMultExpr.h>
+#include <blaze/math/typetraits/IsMatMatSubExpr.h>
+#include <blaze/math/typetraits/IsMatScalarDivExpr.h>
+#include <blaze/math/typetraits/IsMatScalarMultExpr.h>
+#include <blaze/math/typetraits/IsMatTransExpr.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
@@ -298,6 +307,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
    //**Type definitions****************************************************************************
    typedef SparseSubmatrix<MT,SO>              This;           //!< Type of this SparseSubmatrix instance.
    typedef typename SubmatrixTrait<MT>::Type   ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename MT::ElementType            ElementType;    //!< Type of the submatrix elements.
    typedef typename MT::ReturnType             ReturnType;     //!< Return type for expression template evaluations
@@ -2233,6 +2243,241 @@ inline typename DisableIf< Or< IsComputation<MT>, IsTransExpr<MT> >, SparseSubma
 
    return SparseSubmatrix<const MT>( ~sm, row, column, m, n );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given matrix/matrix addition.
+// \ingroup views
+//
+// \param sm The constant matrix/matrix addition.
+// \param row The index of the first row of the submatrix.
+// \param column The index of the first column of the submatrix.
+// \param m The number of rows of the submatrix.
+// \param n The number of columns of the submatrix.
+// \return View on the specified submatrix of the addition.
+//
+// This function returns an expression representing the specified submatrix of the given
+// matrix/matrix addition.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline typename EnableIf< IsMatMatAddExpr<MT>, typename SubmatrixExprTrait<MT>::Type >::Type
+   sub( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sub( (~sm).leftOperand(), row, column, m, n ) + sub( (~sm).rightOperand(), row, column, m, n );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given matrix/matrix subtraction.
+// \ingroup views
+//
+// \param sm The constant matrix/matrix subtraction.
+// \param row The index of the first row of the submatrix.
+// \param column The index of the first column of the submatrix.
+// \param m The number of rows of the submatrix.
+// \param n The number of columns of the submatrix.
+// \return View on the specified submatrix of the subtraction.
+//
+// This function returns an expression representing the specified submatrix of the given
+// matrix/matrix subtraction.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline typename EnableIf< IsMatMatSubExpr<MT>, typename SubmatrixExprTrait<MT>::Type >::Type
+   sub( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sub( (~sm).leftOperand(), row, column, m, n ) - sub( (~sm).rightOperand(), row, column, m, n );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given matrix/matrix multiplication.
+// \ingroup views
+//
+// \param sm The constant matrix/matrix multiplication.
+// \param row The index of the first row of the submatrix.
+// \param column The index of the first column of the submatrix.
+// \param m The number of rows of the submatrix.
+// \param n The number of columns of the submatrix.
+// \return View on the specified submatrix of the multiplication.
+//
+// This function returns an expression representing the specified submatrix of the given
+// matrix/matrix multiplication.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline typename EnableIf< IsMatMatMultExpr<MT>, typename SubmatrixExprTrait<MT>::Type >::Type
+   sub( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   typename MT::LeftOperand  left ( (~sm).leftOperand()  );
+   typename MT::RightOperand right( (~sm).rightOperand() );
+
+   return sub( left, row, 0UL, m, left.columns() ) * sub( right, 0UL, column, right.rows(), n );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given matrix/scalar multiplication.
+// \ingroup views
+//
+// \param sm The constant matrix/scalar multiplication.
+// \param row The index of the first row of the submatrix.
+// \param column The index of the first column of the submatrix.
+// \param m The number of rows of the submatrix.
+// \param n The number of columns of the submatrix.
+// \return View on the specified submatrix of the multiplication.
+//
+// This function returns an expression representing the specified submatrix of the given
+// matrix/scalar multiplication.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline typename EnableIf< IsMatScalarMultExpr<MT>, typename SubmatrixExprTrait<MT>::Type >::Type
+   sub( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sub( (~sm).leftOperand(), row, column, m, n ) * (~sm).rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given matrix/scalar division.
+// \ingroup views
+//
+// \param sm The constant matrix/scalar division.
+// \param row The index of the first row of the submatrix.
+// \param column The index of the first column of the submatrix.
+// \param m The number of rows of the submatrix.
+// \param n The number of columns of the submatrix.
+// \return View on the specified submatrix of the division.
+//
+// This function returns an expression representing the specified submatrix of the given
+// matrix/scalar division.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline typename EnableIf< IsMatScalarDivExpr<MT>, typename SubmatrixExprTrait<MT>::Type >::Type
+   sub( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sub( (~sm).leftOperand(), row, column, m, n ) / (~sm).rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given matrix abs operation.
+// \ingroup views
+//
+// \param sv The constant matrix abs operation.
+// \param row The index of the first row of the submatrix.
+// \param column The index of the first column of the submatrix.
+// \param m The number of rows of the submatrix.
+// \param n The number of columns of the submatrix.
+// \return View on the specified submatrix of the abs operation.
+//
+// This function returns an expression representing the specified submatrix of the given matrix
+// abs operation.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline typename EnableIf< IsMatAbsExpr<MT>, typename SubmatrixExprTrait<MT>::Type >::Type
+   sub( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return abs( sub( (~sm).operand(), row, column, m, n ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given matrix evaluation operation.
+// \ingroup views
+//
+// \param sv The constant matrix evaluation operation.
+// \param row The index of the first row of the submatrix.
+// \param column The index of the first column of the submatrix.
+// \param m The number of rows of the submatrix.
+// \param n The number of columns of the submatrix.
+// \return View on the specified submatrix of the evaluation operation.
+//
+// This function returns an expression representing the specified submatrix of the given matrix
+// evaluation operation.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline typename EnableIf< IsMatEvalExpr<MT>, typename SubmatrixExprTrait<MT>::Type >::Type
+   sub( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return eval( sub( (~sm).operand(), row, column, m, n ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given matrix transpose operation.
+// \ingroup views
+//
+// \param sv The constant matrix transpose operation.
+// \param row The index of the first row of the submatrix.
+// \param column The index of the first column of the submatrix.
+// \param m The number of rows of the submatrix.
+// \param n The number of columns of the submatrix.
+// \return View on the specified submatrix of the transpose operation.
+//
+// This function returns an expression representing the specified submatrix of the given matrix
+// transpose operation.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline typename EnableIf< IsMatTransExpr<MT>, typename SubmatrixExprTrait<MT>::Type >::Type
+   sub( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( sub( (~sm).operand(), column, row, n, m ) );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
