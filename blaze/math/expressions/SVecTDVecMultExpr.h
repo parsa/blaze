@@ -43,6 +43,8 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
+#include <blaze/math/traits/SubmatrixExprTrait.h>
+#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
@@ -1095,6 +1097,21 @@ inline const SVecTDVecMultExpr<T1,T2>
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT1, typename VT2 >
+struct SubmatrixExprTrait< SVecTDVecMultExpr<VT1,VT2> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename MultExprTrait< typename SubvectorExprTrait<VT1>::Type
+                                 , typename SubvectorExprTrait<VT2>::Type >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
