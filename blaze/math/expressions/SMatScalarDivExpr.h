@@ -41,6 +41,7 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
+#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
@@ -793,6 +794,28 @@ struct TSMatScalarMultExprTrait< SMatScalarDivExpr<MT,ST1,true>, ST2 >
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
                               , typename SelectType<condition,T1,T2>::Type
                               , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBVECTOREXPRTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename ST, bool SO >
+struct SubvectorExprTrait< SMatScalarDivExpr<MT,ST,SO> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename DivExprTrait< typename SubmatrixExprTrait<const MT>::Type, ST >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
