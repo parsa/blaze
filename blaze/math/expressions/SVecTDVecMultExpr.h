@@ -1105,8 +1105,8 @@ struct SubmatrixExprTrait< SVecTDVecMultExpr<VT1,VT2> >
 {
  public:
    //**********************************************************************************************
-   typedef typename MultExprTrait< typename SubvectorExprTrait<VT1>::Type
-                                 , typename SubvectorExprTrait<VT2>::Type >::Type  Type;
+   typedef typename MultExprTrait< typename SubvectorExprTrait<const VT1>::Type
+                                 , typename SubvectorExprTrait<const VT2>::Type >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
