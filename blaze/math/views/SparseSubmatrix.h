@@ -2343,6 +2343,34 @@ inline typename EnableIf< IsMatMatMultExpr<MT>, typename SubmatrixExprTrait<MT>:
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given outer product.
+// \ingroup views
+//
+// \param sm The constant outer product.
+// \param row The index of the first row of the submatrix.
+// \param column The index of the first column of the submatrix.
+// \param m The number of rows of the submatrix.
+// \param n The number of columns of the submatrix.
+// \return View on the specified submatrix of the outer product.
+//
+// This function returns an expression representing the specified submatrix of the given
+// outer product.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline typename EnableIf< IsVecTVecMultExpr<MT>, typename SubmatrixExprTrait<MT>::Type >::Type
+   sub( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sub( (~sm).leftOperand(), row, m ) * sub( (~sm).rightOperand(), column, n );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific submatrix of the given matrix/scalar multiplication.
 // \ingroup views
 //
