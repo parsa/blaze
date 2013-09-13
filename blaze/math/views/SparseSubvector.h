@@ -48,6 +48,8 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/typetraits/IsTransposeVector.h>
+#include <blaze/math/typetraits/IsMatVecMultExpr.h>
+#include <blaze/math/typetraits/IsTVecMatMultExpr.h>
 #include <blaze/math/typetraits/IsVecAbsExpr.h>
 #include <blaze/math/typetraits/IsVecEvalExpr.h>
 #include <blaze/math/typetraits/IsVecScalarDivExpr.h>
@@ -1943,6 +1945,64 @@ inline typename EnableIf< IsVecVecMultExpr<VT>, typename SubvectorExprTrait<VT>:
    BLAZE_FUNCTION_TRACE;
 
    return sub( (~sv).leftOperand(), index, size ) * sub( (~sv).rightOperand(), index, size );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given matrix/vector multiplication.
+// \ingroup views
+//
+// \param sv The constant matrix/vector multiplication.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
+// \return View on the specified subvector of the multiplication.
+//
+// This function returns an expression representing the specified subvector of the given
+// matrix/vector multiplication.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline typename EnableIf< IsMatVecMultExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
+   sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   typename VT::LeftOperand  left ( (~sv).leftOperand()  );
+   typename VT::RightOperand right( (~sv).rightOperand() );
+
+   return sub( left, index, 0UL, size, left.columns() ) * right;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given vector/matrix multiplication.
+// \ingroup views
+//
+// \param sv The constant vector/matrix multiplication.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
+// \return View on the specified subvector of the multiplication.
+//
+// This function returns an expression representing the specified subvector of the given
+// vector/matrix multiplication.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline typename EnableIf< IsTVecMatMultExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
+   sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   typename VT::LeftOperand  left ( (~sv).leftOperand()  );
+   typename VT::RightOperand right( (~sv).rightOperand() );
+
+   return left * sub( right, 0UL, index, right.rows(), size );
 }
 /*! \endcond */
 //*************************************************************************************************
