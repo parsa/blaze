@@ -1243,7 +1243,7 @@ void ClassTest::testIterator()
       if( subvector[0] != 0 || subvector[1] != 6 || subvector[2] != 7 || subvector[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment via iterator failed\n"
+             << " Error: Subtraction assignment via iterator failed\n"
              << " Details:\n"
              << "   Result:\n" << subvector << "\n"
              << "   Expected result:\n( 0 8 10 0 )\n";
@@ -1254,7 +1254,7 @@ void ClassTest::testIterator()
           vec_[4] != 7 || vec_[5] != 0 || vec_[6] != 4 || vec_[7] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment via iterator failed\n"
+             << " Error: Subtraction assignment via iterator failed\n"
              << " Details:\n"
              << "   Result:\n" << vec_ << "\n"
              << "   Expected result:\n( 0 1 0 6 7 0 4 0 )\n";
@@ -1276,7 +1276,7 @@ void ClassTest::testIterator()
       if( subvector[0] != 0 || subvector[1] != 6 || subvector[2] != 14 || subvector[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment via iterator failed\n"
+             << " Error: Multiplication assignment via iterator failed\n"
              << " Details:\n"
              << "   Result:\n" << subvector << "\n"
              << "   Expected result:\n( 0 8 10 0 )\n";
@@ -1287,7 +1287,7 @@ void ClassTest::testIterator()
           vec_[4] != 14 || vec_[5] != 0 || vec_[6] != 4 || vec_[7] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment via iterator failed\n"
+             << " Error: Multiplication assignment via iterator failed\n"
              << " Details:\n"
              << "   Result:\n" << vec_ << "\n"
              << "   Expected result:\n( 0 1 0 6 14 0 4 0 )\n";
@@ -1308,7 +1308,7 @@ void ClassTest::testIterator()
       if( subvector[0] != 0 || subvector[1] != 3 || subvector[2] != 7 || subvector[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment via iterator failed\n"
+             << " Error: Division assignment via iterator failed\n"
              << " Details:\n"
              << "   Result:\n" << subvector << "\n"
              << "   Expected result:\n( 0 8 10 0 )\n";
@@ -1319,7 +1319,7 @@ void ClassTest::testIterator()
           vec_[4] != 7 || vec_[5] != 0 || vec_[6] != 4 || vec_[7] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment via iterator failed\n"
+             << " Error: Division assignment via iterator failed\n"
              << " Details:\n"
              << "   Result:\n" << vec_ << "\n"
              << "   Expected result:\n( 0 1 0 3 7 0 4 0 )\n";
@@ -2451,7 +2451,7 @@ void ClassTest::testIsNan()
       }
    }
 
-   // isnan with fully filled 5-dimensional subvector
+   // isnan with fully filled 3-dimensional subvector
    {
       SubvectorType subvector = sub( vec, 2UL, 3UL );
 
