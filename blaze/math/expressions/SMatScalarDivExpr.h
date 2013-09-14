@@ -804,14 +804,14 @@ struct TSMatScalarMultExprTrait< SMatScalarDivExpr<MT,ST1,true>, ST2 >
 
 //=================================================================================================
 //
-//  SUBVECTOREXPRTRAIT SPECIALIZATIONS
+//  SUBMATRIXEXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
-struct SubvectorExprTrait< SMatScalarDivExpr<MT,ST,SO> >
+struct SubmatrixExprTrait< SMatScalarDivExpr<MT,ST,SO> >
 {
  public:
    //**********************************************************************************************
