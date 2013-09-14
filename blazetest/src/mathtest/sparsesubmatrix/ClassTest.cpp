@@ -105,23 +105,25 @@ void ClassTest::testConstructors()
 
       initialize();
 
-      for( size_t rstart=0UL; rstart<mat_.rows(); ++rstart ) {
-         for( size_t cstart=0UL; cstart<mat_.columns(); ++cstart ) {
-            for( size_t rsize=1UL; rstart+rsize<mat_.rows(); ++rsize ) {
-               for( size_t csize=1UL; cstart+csize<mat_.columns(); ++csize )
+      for( size_t row=0UL; row<mat_.rows(); ++row ) {
+         for( size_t column=0UL; column<mat_.columns(); ++column ) {
+            for( size_t m=1UL; (row+m)<mat_.rows(); ++m ) {
+               for( size_t n=1UL; (column+n)<mat_.columns(); ++n )
                {
-                  SMT submatrix = sub( mat_, rstart, cstart, rsize, csize );
+                  SMT submatrix = sub( mat_, row, column, m, n );
 
-                  for( size_t i=0UL; i<rsize; ++i ) {
-                     for( size_t j=0UL; j<csize; ++j )
+                  for( size_t i=0UL; i<m; ++i ) {
+                     for( size_t j=0UL; j<n; ++j )
                      {
-                        if( submatrix(i,j) != mat_(rstart+i,cstart+j) ) {
+                        if( submatrix(i,j) != mat_(row+i,column+j) ) {
                            std::ostringstream oss;
                            oss << " Test: " << test_ << "\n"
                                << " Error: Setup of sparse submatrix failed\n"
                                << " Details:\n"
-                               << "   Start = " << rstart << "\n"
-                               << "   Size  = " << rsize  << "\n"
+                               << "   Index of first row    = " << row << "\n"
+                               << "   Index of first column = " << column << "\n"
+                               << "   Number of rows        = " << m << "\n"
+                               << "   Number of columns     = " << n << "\n"
                                << "   Submatrix:\n" << submatrix << "\n"
                                << "   Matrix:\n" << mat_ << "\n";
                            throw std::runtime_error( oss.str() );
@@ -144,23 +146,25 @@ void ClassTest::testConstructors()
 
       initialize();
 
-      for( size_t cstart=0UL; cstart<tmat_.columns(); ++cstart ) {
-         for( size_t rstart=0UL; rstart<tmat_.rows(); ++rstart ) {
-            for( size_t csize=1UL; cstart+csize<tmat_.columns(); ++csize ) {
-               for( size_t rsize=1UL; rstart+rsize<tmat_.rows(); ++rsize )
+      for( size_t column=0UL; column<tmat_.columns(); ++column ) {
+         for( size_t row=0UL; row<tmat_.rows(); ++row ) {
+            for( size_t n=1UL; (column+n)<tmat_.columns(); ++n ) {
+               for( size_t m=1UL; (row+m)<tmat_.rows(); ++m )
                {
-                  TSMT submatrix = sub( tmat_, rstart, cstart, rsize, csize );
+                  TSMT submatrix = sub( tmat_, row, column, m, n );
 
-                  for( size_t j=0UL; j<csize; ++j ) {
-                     for( size_t i=0UL; i<rsize; ++i )
+                  for( size_t j=0UL; j<n; ++j ) {
+                     for( size_t i=0UL; i<m; ++i )
                      {
-                        if( submatrix(i,j) != tmat_(rstart+i,cstart+j) ) {
+                        if( submatrix(i,j) != tmat_(row+i,column+j) ) {
                            std::ostringstream oss;
                            oss << " Test: " << test_ << "\n"
                                << " Error: Setup of sparse submatrix failed\n"
                                << " Details:\n"
-                               << "   Start = " << rstart << "\n"
-                               << "   Size  = " << rsize  << "\n"
+                               << "   Index of first row    = " << row << "\n"
+                               << "   Index of first column = " << column << "\n"
+                               << "   Number of rows        = " << m << "\n"
+                               << "   Number of columns     = " << n << "\n"
                                << "   Submatrix:\n" << submatrix << "\n"
                                << "   Matrix:\n" << tmat_ << "\n";
                            throw std::runtime_error( oss.str() );
