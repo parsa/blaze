@@ -59,6 +59,7 @@
 #include <blaze/math/typetraits/IsMatScalarMultExpr.h>
 #include <blaze/math/typetraits/IsMatTransExpr.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
+#include <blaze/math/typetraits/IsVecTVecMultExpr.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
