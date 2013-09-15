@@ -34,6 +34,8 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/VecEvalExpr.h>
+#include <blaze/math/traits/EvalExprTrait.h>
+#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
@@ -406,6 +408,28 @@ inline const DVecEvalExpr<VT,TF> eval( const DenseVector<VT,TF>& dv )
 
    return DVecEvalExpr<VT,TF>( ~dv );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  EXPRESSION TRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct SubvectorExprTrait< DVecEvalExpr<VT,TF> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename EvalExprTrait< typename SubvectorExprTrait<const VT>::Type >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

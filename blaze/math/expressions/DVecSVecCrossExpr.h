@@ -36,9 +36,11 @@
 #include <blaze/math/expressions/CrossExpr.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/traits/CrossExprTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
+#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
@@ -451,6 +453,29 @@ inline const DVecSVecCrossExpr<T1,T2>
 
    return DVecSVecCrossExpr<T1,T2>( ~lhs, ~rhs );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  EXPRESSION TRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT1, typename VT2 >
+struct SubvectorExprTrait< DVecSVecCrossExpr<VT1,VT2> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename CrossExprTrait< typename SubvectorExprTrait<const VT1>::Type
+                                  , typename SubvectorExprTrait<const VT2>::Type >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

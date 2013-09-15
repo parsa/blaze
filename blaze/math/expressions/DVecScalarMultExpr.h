@@ -41,6 +41,7 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
@@ -2028,6 +2029,28 @@ struct TDVecTSMatMultExprTrait< DVecScalarMultExpr<VT,ST,true>, MT >
                                 IsNumeric<ST>::value
                               , typename TDVecScalarMultExprTrait<typename TDVecTSMatMultExprTrait<VT,MT>::Type,ST>::Type
                               , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBVECTOREXPRTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, typename ST, bool TF >
+struct SubvectorExprTrait< DVecScalarMultExpr<VT,ST,TF> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename MultExprTrait< typename SubvectorExprTrait<const VT>::Type, ST >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

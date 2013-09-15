@@ -37,6 +37,7 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -636,6 +637,28 @@ struct TDVecScalarMultExprTrait< DVecScalarDivExpr<VT,ST1,true>, ST2 >
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
                               , typename SelectType<condition,T1,T2>::Type
                               , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBVECTOREXPRTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, typename ST, bool TF >
+struct SubvectorExprTrait< DVecScalarDivExpr<VT,ST,TF> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename DivExprTrait< typename SubvectorExprTrait<const VT>::Type, ST >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

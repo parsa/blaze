@@ -40,7 +40,10 @@
 #include <blaze/math/expressions/VecScalarMultExpr.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/SubmatrixExprTrait.h>
+#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/IsBlasCompatible.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -2996,6 +2999,28 @@ inline const typename DisableIf< IsMatMatMultExpr<T1>, TDMatDVecMultExpr<T1,T2> 
 
    return TDMatDVecMultExpr<T1,T2>( ~mat, ~vec );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  EXPRESSION TRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename VT >
+struct SubvectorExprTrait< TDMatDVecMultExpr<MT,VT> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename MultExprTrait< typename SubmatrixExprTrait<const MT>::Type, VT >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

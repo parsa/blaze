@@ -38,6 +38,7 @@
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -568,6 +569,21 @@ struct TDVecTDVecSubExprTrait< DVecSVecSubExpr<VT1,VT2,true>, VT3 >
                               , typename TDVecTSVecSubExprTrait< typename TDVecTDVecSubExprTrait<VT1,VT3>::Type, VT2 >::Type
                               , INVALID_TYPE >::Type  Type;
    /*! \endcond */
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT1, typename VT2, bool TF >
+struct SubvectorExprTrait< DVecSVecSubExpr<VT1,VT2,TF> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SubExprTrait< typename SubvectorExprTrait<const VT1>::Type
+                                , typename SubvectorExprTrait<const VT2>::Type >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
