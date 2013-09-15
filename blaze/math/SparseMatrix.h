@@ -467,8 +467,8 @@ const typename MT::ElementType min( const SparseMatrix<MT,SO>& sm )
    const size_t index( ( SO == rowMajor )?( A.rows() ):( A.columns() ) );
 
    for( size_t i=0UL; i<index; ++i ) {
-      const ConstIterator end( A.end( index ) );
-      ConstIterator element( A.begin( index ) );
+      const ConstIterator end( A.end( i ) );
+      ConstIterator element( A.begin( i ) );
       for( ; element!=end; ++element )
          minimum = min( minimum, element->value() );
    }
@@ -516,8 +516,8 @@ const typename MT::ElementType max( const SparseMatrix<MT,SO>& sm )
    const size_t index( ( SO == rowMajor )?( A.rows() ):( A.columns() ) );
 
    for( size_t i=0UL; i<index; ++i ) {
-      const ConstIterator end( A.end( index ) );
-      ConstIterator element( A.begin( index ) );
+      const ConstIterator end( A.end( i ) );
+      ConstIterator element( A.begin( i ) );
       for( ; element!=end; ++element )
          maximum = max( maximum, element->value() );
    }
