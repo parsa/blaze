@@ -73,6 +73,8 @@ ClassTest::ClassTest()
    testIsNan();
    testIsDiagonal();
    testIsSymmetric();
+   testMinimum();
+   testMaximum();
 }
 //*************************************************************************************************
 
@@ -7324,6 +7326,328 @@ void ClassTest::testIsSymmetric()
                 << " Error: Invalid isSymmetric evaluation\n"
                 << " Details:\n"
                 << "   Submatrix:\n" << submatrix << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the min function with the SparseSubmatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the min function with the SparseSubmatrix class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testMinimum()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major min()";
+
+      initialize();
+
+      // Attempt to find the minimum in an empty submatrix
+      {
+         SMT submatrix = sub( mat_, 0UL, 2UL, 2UL, 2UL );
+
+         checkRows    ( submatrix, 2UL );
+         checkColumns ( submatrix, 2UL );
+         checkNonZeros( submatrix, 0UL );
+
+         const int minimum = min( submatrix );
+
+         if( minimum != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: First computation failed\n"
+                << " Details:\n"
+                << "   Result: " << minimum << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Attempt to find the minimum in a partially filled submatrix
+      {
+         SMT submatrix = sub( mat_, 1UL, 1UL, 2UL, 3UL );
+
+         checkRows    ( submatrix, 2UL );
+         checkColumns ( submatrix, 3UL );
+         checkNonZeros( submatrix, 2UL );
+
+         const int minimum = min( submatrix );
+
+         if( minimum != -3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Second computation failed\n"
+                << " Details:\n"
+                << "   Result: " << minimum << "\n"
+                << "   Expected result: -3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Attempt to find the minimum in a fully filled submatrix
+      {
+         SMT submatrix = sub( mat_, 3UL, 1UL, 2UL, 3UL );
+
+         checkRows    ( submatrix, 2UL );
+         checkColumns ( submatrix, 3UL );
+         checkNonZeros( submatrix, 6UL );
+
+         const int minimum = min( submatrix );
+
+         if( minimum != -8 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Third computation failed\n"
+                << " Details:\n"
+                << "   Result: " << minimum << "\n"
+                << "   Expected result: -8\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major min()";
+
+      initialize();
+
+      // Attempt to find the minimum in an empty submatrix
+      {
+         TSMT submatrix = sub( tmat_, 2UL, 0UL, 2UL, 2UL );
+
+         checkRows    ( submatrix, 2UL );
+         checkColumns ( submatrix, 2UL );
+         checkNonZeros( submatrix, 0UL );
+
+         const int minimum = min( submatrix );
+
+         if( minimum != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: First computation failed\n"
+                << " Details:\n"
+                << "   Result: " << minimum << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Attempt to find the minimum in a partially filled submatrix
+      {
+         TSMT submatrix = sub( tmat_, 1UL, 1UL, 3UL, 2UL );
+
+         checkRows    ( submatrix, 3UL );
+         checkColumns ( submatrix, 2UL );
+         checkNonZeros( submatrix, 2UL );
+
+         const int minimum = min( submatrix );
+
+         if( minimum != -3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Second computation failed\n"
+                << " Details:\n"
+                << "   Result: " << minimum << "\n"
+                << "   Expected result: -3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Attempt to find the minimum in a fully filled submatrix
+      {
+         TSMT submatrix = sub( tmat_, 1UL, 3UL, 3UL, 2UL );
+
+         checkRows    ( submatrix, 3UL );
+         checkColumns ( submatrix, 2UL );
+         checkNonZeros( submatrix, 6UL );
+
+         const int minimum = min( submatrix );
+
+         if( minimum != -8 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Third computation failed\n"
+                << " Details:\n"
+                << "   Result: " << minimum << "\n"
+                << "   Expected result: -8\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the max function with the SparseSubmatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the max function with the SparseSubmatrix class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testMaximum()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major max()";
+
+      initialize();
+
+      // Attempt to find the maximum in an empty submatrix
+      {
+         SMT submatrix = sub( mat_, 0UL, 2UL, 2UL, 2UL );
+
+         checkRows    ( submatrix, 2UL );
+         checkColumns ( submatrix, 2UL );
+         checkNonZeros( submatrix, 0UL );
+
+         const int maximum = max( submatrix );
+
+         if( maximum != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: First computation failed\n"
+                << " Details:\n"
+                << "   Result: " << maximum << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Attempt to find the maximum in a partially filled submatrix
+      {
+         SMT submatrix = sub( mat_, 1UL, 1UL, 2UL, 3UL );
+
+         checkRows    ( submatrix, 2UL );
+         checkColumns ( submatrix, 3UL );
+         checkNonZeros( submatrix, 2UL );
+
+         const int maximum = max( submatrix );
+
+         if( maximum != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Second computation failed\n"
+                << " Details:\n"
+                << "   Result: " << maximum << "\n"
+                << "   Expected result: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Attempt to find the maximum in a fully filled submatrix
+      {
+         SMT submatrix = sub( mat_, 3UL, 1UL, 2UL, 3UL );
+
+         checkRows    ( submatrix, 2UL );
+         checkColumns ( submatrix, 3UL );
+         checkNonZeros( submatrix, 6UL );
+
+         const int maximum = max( submatrix );
+
+         if( maximum != 10 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Third computation failed\n"
+                << " Details:\n"
+                << "   Result: " << maximum << "\n"
+                << "   Expected result: 10\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major max()";
+
+      initialize();
+
+      // Attempt to find the maximum in an empty submatrix
+      {
+         TSMT submatrix = sub( tmat_, 2UL, 0UL, 2UL, 2UL );
+
+         checkRows    ( submatrix, 2UL );
+         checkColumns ( submatrix, 2UL );
+         checkNonZeros( submatrix, 0UL );
+
+         const int maximum = max( submatrix );
+
+         if( maximum != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: First computation failed\n"
+                << " Details:\n"
+                << "   Result: " << maximum << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Attempt to find the maximum in a partially filled submatrix
+      {
+         TSMT submatrix = sub( tmat_, 1UL, 1UL, 3UL, 2UL );
+
+         checkRows    ( submatrix, 3UL );
+         checkColumns ( submatrix, 2UL );
+         checkNonZeros( submatrix, 2UL );
+
+         const int maximum = max( submatrix );
+
+         if( maximum != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Second computation failed\n"
+                << " Details:\n"
+                << "   Result: " << maximum << "\n"
+                << "   Expected result: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Attempt to find the maximum in a fully filled submatrix
+      {
+         TSMT submatrix = sub( tmat_, 1UL, 3UL, 3UL, 2UL );
+
+         checkRows    ( submatrix, 3UL );
+         checkColumns ( submatrix, 2UL );
+         checkNonZeros( submatrix, 6UL );
+
+         const int maximum = max( submatrix );
+
+         if( maximum != 10 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Third computation failed\n"
+                << " Details:\n"
+                << "   Result: " << maximum << "\n"
+                << "   Expected result: 10\n";
             throw std::runtime_error( oss.str() );
          }
       }
