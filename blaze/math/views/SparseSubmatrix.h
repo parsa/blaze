@@ -2079,13 +2079,13 @@ inline void SparseSubmatrix<MT,SO>::subAssign( const SparseMatrix<MT2,SO2>& rhs 
 /*!\name SparseSubmatrix operators */
 //@{
 template< typename MT, bool SO >
-inline void reset( SparseSubmatrix<MT,SO>& m );
+inline void reset( SparseSubmatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
-inline void clear( SparseSubmatrix<MT,SO>& m );
+inline void clear( SparseSubmatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
-inline bool isDefault( const SparseSubmatrix<MT,SO>& m );
+inline bool isDefault( const SparseSubmatrix<MT,SO>& sm );
 //@}
 //*************************************************************************************************
 
@@ -2137,9 +2137,6 @@ inline void clear( SparseSubmatrix<MT,SO>& sm )
 // element is not 0. The following example demonstrates the use of the \a isDefault function:
 
    \code
-   typedef blaze::CompressedMatrix<double>     MatrixType;
-   typedef blaze::SparseSubmatrix<MatrixType>  SubmatrixType;
-
    blaze::CompressedMatrix<double,rowMajor> A;
    // ... Resizing and initialization
    if( isDefault( sub( A, 12UL, 13UL, 22UL, 33UL ) ) ) { ... }
@@ -2149,6 +2146,8 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline bool isDefault( const SparseSubmatrix<MT,SO>& sm )
 {
+   using blaze::isDefault;
+
    typedef typename SparseSubmatrix<MT,SO>::ConstIterator  ConstIterator;
 
    const size_t iend( ( SO == rowMajor)?( sm.rows() ):( sm.columns() ) );
