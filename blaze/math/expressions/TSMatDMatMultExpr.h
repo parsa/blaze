@@ -42,6 +42,7 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
+#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/TDMatDVecMultExprTrait.h>
 #include <blaze/math/traits/TDMatSVecMultExprTrait.h>
 #include <blaze/math/traits/TSMatDVecMultExprTrait.h>
@@ -742,6 +743,21 @@ struct TSVecTDMatMultExprTrait< VT, TSMatDMatMultExpr<MT1,MT2> >
                                 IsDenseMatrix<MT2>::value  && IsRowMajorMatrix<MT2>::value
                               , typename TDVecDMatMultExprTrait< typename TDVecTSMatMultExprTrait<VT,MT1>::Type, MT2 >::Type
                               , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct SubmatrixExprTrait< TSMatDMatMultExpr<MT1,MT2> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename MultExprTrait< typename SubmatrixExprTrait<const MT1>::Type
+                                 , typename SubmatrixExprTrait<const MT2>::Type >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

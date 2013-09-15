@@ -36,6 +36,7 @@
 #include <blaze/math/expressions/MatTransExpr.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
+#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -445,6 +446,20 @@ inline const DMatTransExpr<MT,!SO> trans( const DenseMatrix<MT,SO>& dm )
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct SubmatrixExprTrait< DMatTransExpr<MT,SO> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename TransExprTrait< typename SubmatrixExprTrait<const MT>::Type >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

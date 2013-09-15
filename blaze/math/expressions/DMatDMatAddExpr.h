@@ -39,6 +39,7 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
+#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -487,6 +488,21 @@ inline const DMatDMatAddExpr<T1,T2,SO>
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2, bool SO >
+struct SubmatrixExprTrait< DMatDMatAddExpr<MT1,MT2,SO> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename AddExprTrait< typename SubmatrixExprTrait<const MT1>::Type
+                                , typename SubmatrixExprTrait<const MT2>::Type >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

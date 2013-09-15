@@ -37,6 +37,7 @@
 #include <blaze/math/traits/AbsExprTrait.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
+#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -500,6 +501,20 @@ inline const DMatAbsExpr<MT,SO>& abs( const DMatAbsExpr<MT,SO>& dm )
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct SubmatrixExprTrait< DMatAbsExpr<MT,SO> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename AbsExprTrait< typename SubmatrixExprTrait<const MT>::Type >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
