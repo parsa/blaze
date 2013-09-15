@@ -78,6 +78,8 @@ ClassTest::ClassTest()
    testIsNan();
    testIsDiagonal();
    testIsSymmetric();
+   testMinimum();
+   testMaximum();
 }
 //*************************************************************************************************
 
