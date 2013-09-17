@@ -980,10 +980,12 @@ inline typename SparseSubmatrix<MT,SO>::ConstIterator SparseSubmatrix<MT,SO>::ce
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline SparseSubmatrix<MT,SO>&
-   SparseSubmatrix<MT,SO>::operator=( const SparseSubmatrix& rhs )
+inline SparseSubmatrix<MT,SO>& SparseSubmatrix<MT,SO>::operator=( const SparseSubmatrix& rhs )
 {
    using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
    if( this == &rhs || ( &matrix_ == &rhs.matrix_ && row_ == rhs.row_ && column_ == rhs.column_ ) )
       return *this;
@@ -1020,10 +1022,11 @@ template< typename MT   // Type of the sparse matrix
         , bool SO >     // Storage order
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline SparseSubmatrix<MT,SO>&
-   SparseSubmatrix<MT,SO>::operator=( const Matrix<MT2,SO2>& rhs )
+inline SparseSubmatrix<MT,SO>& SparseSubmatrix<MT,SO>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
@@ -1057,8 +1060,7 @@ template< typename MT   // Type of the sparse matrix
         , bool SO >     // Storage order
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline SparseSubmatrix<MT,SO>&
-   SparseSubmatrix<MT,SO>::operator+=( const Matrix<MT2,SO2>& rhs )
+inline SparseSubmatrix<MT,SO>& SparseSubmatrix<MT,SO>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    using blaze::addAssign;
 
@@ -1121,8 +1123,9 @@ inline SparseSubmatrix<MT,SO>& SparseSubmatrix<MT,SO>::operator*=( const Matrix<
 
    typedef typename MultTrait<ResultType,typename MT2::ResultType>::Type  MultType;
 
-   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE( MultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE        ( MultType   );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType   );
 
    const MultType tmp( *this * (~rhs) );
    reset();
@@ -1870,7 +1873,7 @@ inline bool SparseSubmatrix<MT,SO>::isAliased( const Other* alias ) const
 
 
 //*************************************************************************************************
-/*!\brief Default implementation of the assignment of a row-major dense matrix.
+/*!\brief Default implementation of the assignment of a dense matrix.
 //
 // \param rhs The right-hand side dense matrix to be assigned.
 // \return void
@@ -1886,6 +1889,9 @@ template< typename MT2  // Type of the right-hand side dense matrix
         , bool SO2 >    // Storage order of the right-hand side dense matrix
 inline void SparseSubmatrix<MT,SO>::assign( const DenseMatrix<MT2,SO2>& rhs )
 {
+   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          for( size_t j=0UL; j<columns(); ++j ) {
@@ -1905,7 +1911,7 @@ inline void SparseSubmatrix<MT,SO>::assign( const DenseMatrix<MT2,SO2>& rhs )
 
 
 //*************************************************************************************************
-/*!\brief Default implementation of the assignment of an equally stored sparse matrix.
+/*!\brief Default implementation of the assignment of a sparse matrix.
 //
 // \param rhs The right-hand side sparse matrix to be assigned.
 // \return void
@@ -1921,6 +1927,9 @@ template< typename MT2  // Type of the right-hand side sparse matrix
         , bool SO2 >    // Storage order of the right-hand side sparse matrix
 inline void SparseSubmatrix<MT,SO>::assign( const SparseMatrix<MT2,SO2>& rhs )
 {
+   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+
    if( SO2 == rowMajor ) {
       for( size_t i=0UL; i<(~rhs).rows(); ++i ) {
          for( typename MT2::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {

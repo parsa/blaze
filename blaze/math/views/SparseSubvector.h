@@ -899,6 +899,9 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator=( const SparseSu
 {
    using blaze::assign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+
    if( this == &rhs || ( &vector_ == &rhs.vector_ && offset_ == rhs.offset_ ) )
       return *this;
 
@@ -937,6 +940,9 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator=( const Vector<V
 {
    using blaze::assign;
 
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT::ResultType, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
@@ -959,7 +965,7 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator=( const Vector<V
 /*!\brief Addition assignment operator for the addition of a vector (\f$ \vec{a}+=\vec{b} \f$).
 //
 // \param rhs The right-hand side vector to be added to the sparse subvector.
-// \return Reference to the sparse subvector.
+// \return Reference to the assigned subvector.
 // \exception std::invalid_argument Vector sizes do not match.
 //
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
@@ -986,7 +992,7 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator+=( const Vector<
 /*!\brief Subtraction assignment operator for the subtraction of a vector (\f$ \vec{a}-=\vec{b} \f$).
 //
 // \param rhs The right-hand side vector to be subtracted from the sparse subvector.
-// \return Reference to the sparse subvector.
+// \return Reference to the assigned subvector.
 // \exception std::invalid_argument Vector sizes do not match.
 //
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
@@ -1014,7 +1020,7 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator-=( const Vector<
 //        (\f$ \vec{a}*=\vec{b} \f$).
 //
 // \param rhs The right-hand side vector to be multiplied with the sparse subvector.
-// \return Reference to the sparse subvector.
+// \return Reference to the assigned subvector.
 // \exception std::invalid_argument Vector sizes do not match.
 //
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
@@ -1030,8 +1036,9 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator*=( const Vector<
 
    typedef typename MultTrait<ResultType,typename VT2::ResultType>::Type  MultType;
 
-   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( MultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( MultType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE   ( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( MultType   );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( MultType   );
 
    const MultType tmp( *this * (~rhs) );
    reset();
@@ -1047,7 +1054,7 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator*=( const Vector<
 //        and a scalar value (\f$ \vec{a}*=s \f$).
 //
 // \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the sparse subvector.
+// \return Reference to the assigned subvector.
 //
 // This operator can only be used for built-in data types. Additionally, the elements of
 // the sparse subvector must support the multiplication assignment operator for the given
@@ -1072,7 +1079,7 @@ inline typename EnableIf< IsNumeric<Other>, SparseSubvector<VT,TF> >::Type&
 //        (\f$ \vec{a}/=s \f$).
 //
 // \param rhs The right-hand side scalar value for the division.
-// \return Reference to the sparse subvector.
+// \return Reference to the assigned subvector.
 //
 // This operator can only be used for built-in data types. Additionally, the elements of the
 // sparse subvector must either support the multiplication assignment operator for the given
