@@ -30,8 +30,10 @@
 #include <iterator>
 #include <stdexcept>
 #include <blaze/math/constraints/Computation.h>
+#include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseMatrix.h>
+#include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/TransposeFlag.h>
@@ -679,6 +681,10 @@ inline SparseRow<MT,SO>& SparseRow<MT,SO>::operator=( const SparseRow& rhs )
 {
    using blaze::assign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE   ( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType );
+
    if( this == &rhs || ( &matrix_ == &rhs.matrix_ && row_ == rhs.row_ ) )
       return *this;
 
@@ -719,6 +725,10 @@ inline SparseRow<MT,SO>& SparseRow<MT,SO>::operator=( const DenseVector<VT,true>
 {
    using blaze::assign;
 
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE    ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( typename VT::ResultType );
+
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
@@ -753,6 +763,10 @@ template< typename VT >  // Type of the right-hand side sparse vector
 inline SparseRow<MT,SO>& SparseRow<MT,SO>::operator=( const SparseVector<VT,true>& rhs )
 {
    using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE   ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( typename VT::ResultType );
 
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
@@ -2228,6 +2242,10 @@ template< typename MT >  // Type of the sparse matrix
 inline SparseRow<MT,false>& SparseRow<MT,false>::operator=( const SparseRow& rhs )
 {
    using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE   ( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType );
 
    if( this == &rhs || ( &matrix_ == &rhs.matrix_ && row_ == rhs.row_ ) )
       return *this;

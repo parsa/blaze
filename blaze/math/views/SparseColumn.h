@@ -30,8 +30,10 @@
 #include <iterator>
 #include <stdexcept>
 #include <blaze/math/constraints/Computation.h>
+#include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseMatrix.h>
+#include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/TransposeFlag.h>
@@ -680,6 +682,10 @@ inline SparseColumn<MT,SO>& SparseColumn<MT,SO>::operator=( const SparseColumn& 
 {
    using blaze::assign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE      ( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION     ( ResultType );
+
    if( this == &rhs || ( &matrix_ == &rhs.matrix_ && col_ == rhs.col_ ) )
       return *this;
 
@@ -720,6 +726,10 @@ inline SparseColumn<MT,SO>& SparseColumn<MT,SO>::operator=( const DenseVector<VT
 {
    using blaze::assign;
 
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE       ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION     ( typename VT::ResultType );
+
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
@@ -757,6 +767,10 @@ inline SparseColumn<MT,SO>& SparseColumn<MT,SO>::operator=( const SparseVector<V
 
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE      ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION     ( typename VT::ResultType );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename VT::ResultType tmp( ~rhs );
@@ -2229,6 +2243,10 @@ template< typename MT >  // Type of the sparse matrix
 inline SparseColumn<MT,false>& SparseColumn<MT,false>::operator=( const SparseColumn& rhs )
 {
    using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE      ( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION     ( ResultType );
 
    if( this == &rhs || ( &matrix_ == &rhs.matrix_ && col_ == rhs.col_ ) )
       return *this;

@@ -31,6 +31,7 @@
 #include <stdexcept>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseMatrix.h>
+#include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/TransExpr.h>
@@ -2065,6 +2066,10 @@ template< typename VT >  // Type of the right-hand side vector
 inline DenseRow<MT,false>& DenseRow<MT,false>::operator=( const Vector<VT,true>& rhs )
 {
    using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE    ( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType );
 
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
