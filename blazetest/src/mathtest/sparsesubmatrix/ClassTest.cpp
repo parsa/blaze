@@ -112,12 +112,12 @@ void ClassTest::testConstructors()
             for( size_t m=1UL; (row+m)<mat_.rows(); ++m ) {
                for( size_t n=1UL; (column+n)<mat_.columns(); ++n )
                {
-                  SMT submatrix = sub( mat_, row, column, m, n );
+                  SMT sm = submatrix( mat_, row, column, m, n );
 
                   for( size_t i=0UL; i<m; ++i ) {
                      for( size_t j=0UL; j<n; ++j )
                      {
-                        if( submatrix(i,j) != mat_(row+i,column+j) ) {
+                        if( sm(i,j) != mat_(row+i,column+j) ) {
                            std::ostringstream oss;
                            oss << " Test: " << test_ << "\n"
                                << " Error: Setup of sparse submatrix failed\n"
@@ -126,7 +126,7 @@ void ClassTest::testConstructors()
                                << "   Index of first column = " << column << "\n"
                                << "   Number of rows        = " << m << "\n"
                                << "   Number of columns     = " << n << "\n"
-                               << "   Submatrix:\n" << submatrix << "\n"
+                               << "   Submatrix:\n" << sm << "\n"
                                << "   Matrix:\n" << mat_ << "\n";
                            throw std::runtime_error( oss.str() );
                         }
@@ -153,12 +153,12 @@ void ClassTest::testConstructors()
             for( size_t n=1UL; (column+n)<tmat_.columns(); ++n ) {
                for( size_t m=1UL; (row+m)<tmat_.rows(); ++m )
                {
-                  TSMT submatrix = sub( tmat_, row, column, m, n );
+                  TSMT sm = submatrix( tmat_, row, column, m, n );
 
                   for( size_t j=0UL; j<n; ++j ) {
                      for( size_t i=0UL; i<m; ++i )
                      {
-                        if( submatrix(i,j) != tmat_(row+i,column+j) ) {
+                        if( sm(i,j) != tmat_(row+i,column+j) ) {
                            std::ostringstream oss;
                            oss << " Test: " << test_ << "\n"
                                << " Error: Setup of sparse submatrix failed\n"
@@ -167,7 +167,7 @@ void ClassTest::testConstructors()
                                << "   Index of first column = " << column << "\n"
                                << "   Number of rows        = " << m << "\n"
                                << "   Number of columns     = " << n << "\n"
-                               << "   Submatrix:\n" << submatrix << "\n"
+                               << "   Submatrix:\n" << sm << "\n"
                                << "   Matrix:\n" << tmat_ << "\n";
                            throw std::runtime_error( oss.str() );
                         }
@@ -207,26 +207,26 @@ void ClassTest::testAssignment()
       mat(2,0) = 12;
       mat(2,2) = 13;
 
-      SMT submatrix = sub( mat, 1UL, 0UL, 2UL, 3UL );
-      submatrix = sub( mat_, 2UL, 1UL, 2UL, 3UL );
+      SMT sm = submatrix( mat, 1UL, 0UL, 2UL, 3UL );
+      sm = submatrix( mat_, 2UL, 1UL, 2UL, 3UL );
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 10UL );
-      checkRows    ( mat      ,  5UL );
-      checkColumns ( mat      ,  4UL );
-      checkNonZeros( mat      ,  4UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+      checkRows    ( mat ,  5UL );
+      checkColumns ( mat ,  4UL );
+      checkNonZeros( mat ,  4UL );
 
-      if( submatrix(0,0) != 0 || submatrix(0,1) != -3 || submatrix(0,2) !=  0 ||
-          submatrix(1,0) != 4 || submatrix(1,1) !=  5 || submatrix(1,2) != -6 ) {
+      if( sm(0,0) != 0 || sm(0,1) != -3 || sm(0,2) !=  0 ||
+          sm(1,0) != 4 || sm(1,1) !=  5 || sm(1,2) != -6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 0 -3  0 )\n( 4  5 -6 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -255,23 +255,23 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
-      submatrix = sub( mat_, 2UL, 1UL, 2UL, 3UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
+      sm = submatrix( mat_, 2UL, 1UL, 2UL, 3UL );
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 11UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
 
-      if( submatrix(0,0) != 0 || submatrix(0,1) != -3 || submatrix(0,2) !=  0 ||
-          submatrix(1,0) != 4 || submatrix(1,1) !=  5 || submatrix(1,2) != -6 ) {
+      if( sm(0,0) != 0 || sm(0,1) != -3 || sm(0,2) !=  0 ||
+          sm(1,0) != 4 || sm(1,1) !=  5 || sm(1,2) != -6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 0 -3  0 )\n( 4  5 -6 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -305,7 +305,7 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 0 );
       mat(0,1) = 11;
@@ -313,22 +313,22 @@ void ClassTest::testAssignment()
       mat(1,1) = 13;
       mat(1,2) = 14;
 
-      submatrix = mat;
+      sm = mat;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 11UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 11 || submatrix(0,2) !=  0 ||
-          submatrix(1,0) != 12 || submatrix(1,1) != 13 || submatrix(1,2) != 14 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 11 || sm(0,2) !=  0 ||
+          sm(1,0) != 12 || sm(1,1) != 13 || sm(1,2) != 14 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 11  0 )\n( 12 13 14 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -357,7 +357,7 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 0 );
       mat(0,1) = 11;
@@ -365,22 +365,22 @@ void ClassTest::testAssignment()
       mat(1,1) = 13;
       mat(1,2) = 14;
 
-      submatrix = mat;
+      sm = mat;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 11UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 11 || submatrix(0,2) !=  0 ||
-          submatrix(1,0) != 12 || submatrix(1,1) != 13 || submatrix(1,2) != 14 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 11 || sm(0,2) !=  0 ||
+          sm(1,0) != 12 || sm(1,1) != 13 || sm(1,2) != 14 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 11  0 )\n( 12 13 14 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -414,7 +414,7 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 4UL );
       mat(0,1) = 11;
@@ -422,22 +422,22 @@ void ClassTest::testAssignment()
       mat(1,1) = 13;
       mat(1,2) = 14;
 
-      submatrix = mat;
+      sm = mat;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 11UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 11 || submatrix(0,2) !=  0 ||
-          submatrix(1,0) != 12 || submatrix(1,1) != 13 || submatrix(1,2) != 14 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 11 || sm(0,2) !=  0 ||
+          sm(1,0) != 12 || sm(1,1) != 13 || sm(1,2) != 14 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 11  0 )\n( 12 13 14 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -466,7 +466,7 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 4UL );
       mat(0,1) = 11;
@@ -474,22 +474,22 @@ void ClassTest::testAssignment()
       mat(1,1) = 13;
       mat(1,2) = 14;
 
-      submatrix = mat;
+      sm = mat;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 11UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 11 || submatrix(0,2) !=  0 ||
-          submatrix(1,0) != 12 || submatrix(1,1) != 13 || submatrix(1,2) != 14 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 11 || sm(0,2) !=  0 ||
+          sm(1,0) != 12 || sm(1,1) != 13 || sm(1,2) != 14 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 11  0 )\n( 12 13 14 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -528,27 +528,27 @@ void ClassTest::testAssignment()
       mat(0,2) = 12;
       mat(2,2) = 13;
 
-      TSMT submatrix = sub( mat, 0UL, 1UL, 3UL, 2UL );
-      submatrix = sub( tmat_, 1UL, 2UL, 3UL, 2UL );
+      TSMT sm = submatrix( mat, 0UL, 1UL, 3UL, 2UL );
+      sm = submatrix( tmat_, 1UL, 2UL, 3UL, 2UL );
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 10UL );
-      checkRows    ( mat      ,  4UL );
-      checkColumns ( mat      ,  5UL );
-      checkNonZeros( mat      ,  4UL );
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+      checkRows    ( mat  ,  4UL );
+      checkColumns ( mat  ,  5UL );
+      checkNonZeros( mat  ,  4UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) !=  4 ||
-          submatrix(1,0) != -3 || submatrix(1,1) !=  5 ||
-          submatrix(2,0) !=  0 || submatrix(2,1) != -6 ) {
+      if( sm(0,0) !=  0 || sm(0,1) !=  4 ||
+          sm(1,0) != -3 || sm(1,1) !=  5 ||
+          sm(2,0) !=  0 || sm(2,1) != -6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0  4 )\n( -3  5 )\n(  0 -6 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -575,24 +575,24 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
-      submatrix = sub( tmat_, 1UL, 2UL, 3UL, 2UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+      sm = submatrix( tmat_, 1UL, 2UL, 3UL, 2UL );
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 11UL );
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) !=  4 ||
-          submatrix(1,0) != -3 || submatrix(1,1) !=  5 ||
-          submatrix(2,0) !=  0 || submatrix(2,1) != -6 ) {
+      if( sm(0,0) !=  0 || sm(0,1) !=  4 ||
+          sm(1,0) != -3 || sm(1,1) !=  5 ||
+          sm(2,0) !=  0 || sm(2,1) != -6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0  4 )\n( -3  5 )\n(  0 -6 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -624,7 +624,7 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 0 );
       mat(1,0) = 11;
@@ -632,23 +632,23 @@ void ClassTest::testAssignment()
       mat(1,1) = 13;
       mat(2,1) = 14;
 
-      submatrix = mat;
+      sm = mat;
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 11UL );
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 12 ||
-          submatrix(1,0) != 11 || submatrix(1,1) != 13 ||
-          submatrix(2,0) !=  0 || submatrix(2,1) != 14 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 12 ||
+          sm(1,0) != 11 || sm(1,1) != 13 ||
+          sm(2,0) !=  0 || sm(2,1) != 14 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 12 )\n( 11 13 )\n(  0 14 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -675,7 +675,7 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 0 );
       mat(1,0) = 11;
@@ -683,23 +683,23 @@ void ClassTest::testAssignment()
       mat(1,1) = 13;
       mat(2,1) = 14;
 
-      submatrix = mat;
+      sm = mat;
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 11UL );
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 12 ||
-          submatrix(1,0) != 11 || submatrix(1,1) != 13 ||
-          submatrix(2,0) !=  0 || submatrix(2,1) != 14 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 12 ||
+          sm(1,0) != 11 || sm(1,1) != 13 ||
+          sm(2,0) !=  0 || sm(2,1) != 14 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 12 )\n( 11 13 )\n(  0 14 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -731,7 +731,7 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 4UL );
       mat(1,0) = 11;
@@ -739,23 +739,23 @@ void ClassTest::testAssignment()
       mat(1,1) = 13;
       mat(2,1) = 14;
 
-      submatrix = mat;
+      sm = mat;
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 11UL );
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 12 ||
-          submatrix(1,0) != 11 || submatrix(1,1) != 13 ||
-          submatrix(2,0) !=  0 || submatrix(2,1) != 14 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 12 ||
+          sm(1,0) != 11 || sm(1,1) != 13 ||
+          sm(2,0) !=  0 || sm(2,1) != 14 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 12 )\n( 11 13 )\n(  0 14 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -782,7 +782,7 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 4UL );
       mat(1,0) = 11;
@@ -790,23 +790,23 @@ void ClassTest::testAssignment()
       mat(1,1) = 13;
       mat(2,1) = 14;
 
-      submatrix = mat;
+      sm = mat;
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 11UL );
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 12 ||
-          submatrix(1,0) != 11 || submatrix(1,1) != 13 ||
-          submatrix(2,0) !=  0 || submatrix(2,1) != 14 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 12 ||
+          sm(1,0) != 11 || sm(1,1) != 13 ||
+          sm(2,0) !=  0 || sm(2,1) != 14 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 12 )\n( 11 13 )\n(  0 14 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -856,26 +856,26 @@ void ClassTest::testAddAssign()
       mat(2,0) = 12;
       mat(2,2) = 13;
 
-      SMT submatrix = sub( mat, 1UL, 0UL, 2UL, 3UL );
-      submatrix += sub( mat_, 2UL, 1UL, 2UL, 3UL );
+      SMT sm = submatrix( mat, 1UL, 0UL, 2UL, 3UL );
+      sm += submatrix( mat_, 2UL, 1UL, 2UL, 3UL );
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  5UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 10UL );
-      checkRows    ( mat      ,  5UL );
-      checkColumns ( mat      ,  4UL );
-      checkNonZeros( mat      ,  5UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  5UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+      checkRows    ( mat ,  5UL );
+      checkColumns ( mat ,  4UL );
+      checkNonZeros( mat ,  5UL );
 
-      if( submatrix(0,0) != 11 || submatrix(0,1) != -3 || submatrix(0,2) != 0 ||
-          submatrix(1,0) != 16 || submatrix(1,1) !=  5 || submatrix(1,2) != 7 ) {
+      if( sm(0,0) != 11 || sm(0,1) != -3 || sm(0,2) != 0 ||
+          sm(1,0) != 16 || sm(1,1) !=  5 || sm(1,2) != 7 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 11 -3  0 )\n( 16  5  7 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -904,23 +904,23 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
-      submatrix += sub( mat_, 2UL, 1UL, 2UL, 3UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
+      sm += submatrix( mat_, 2UL, 1UL, 2UL, 3UL );
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 11UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
 
-      if( submatrix(0,0) != 0 || submatrix(0,1) != -2 || submatrix(0,2) !=  0 ||
-          submatrix(1,0) != 2 || submatrix(1,1) !=  5 || submatrix(1,2) != -9 ) {
+      if( sm(0,0) != 0 || sm(0,1) != -2 || sm(0,2) !=  0 ||
+          sm(1,0) != 2 || sm(1,1) !=  5 || sm(1,2) != -9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 0 -2  0 )\n( 2  5 -9 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -954,7 +954,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 0 );
       mat(0,1) = 11;
@@ -962,22 +962,22 @@ void ClassTest::testAddAssign()
       mat(1,1) = 13;
       mat(1,2) = 14;
 
-      submatrix += mat;
+      sm += mat;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 11UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 12 || submatrix(0,2) !=  0 ||
-          submatrix(1,0) != 10 || submatrix(1,1) != 13 || submatrix(1,2) != 11 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 12 || sm(0,2) !=  0 ||
+          sm(1,0) != 10 || sm(1,1) != 13 || sm(1,2) != 11 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 12  0 )\n( 10 13 11 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1006,7 +1006,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 0 );
       mat(0,1) = 11;
@@ -1014,22 +1014,22 @@ void ClassTest::testAddAssign()
       mat(1,1) = 13;
       mat(1,2) = 14;
 
-      submatrix += mat;
+      sm += mat;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 11UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 12 || submatrix(0,2) !=  0 ||
-          submatrix(1,0) != 10 || submatrix(1,1) != 13 || submatrix(1,2) != 11 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 12 || sm(0,2) !=  0 ||
+          sm(1,0) != 10 || sm(1,1) != 13 || sm(1,2) != 11 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 12  0 )\n( 10 13 11 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1063,7 +1063,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 4UL );
       mat(0,1) = 11;
@@ -1071,22 +1071,22 @@ void ClassTest::testAddAssign()
       mat(1,1) = 13;
       mat(1,2) = 14;
 
-      submatrix += mat;
+      sm += mat;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 11UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 12 || submatrix(0,2) !=  0 ||
-          submatrix(1,0) != 10 || submatrix(1,1) != 13 || submatrix(1,2) != 11 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 12 || sm(0,2) !=  0 ||
+          sm(1,0) != 10 || sm(1,1) != 13 || sm(1,2) != 11 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 12  0 )\n( 10 13 11 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1115,7 +1115,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 4UL );
       mat(0,1) = 11;
@@ -1123,22 +1123,22 @@ void ClassTest::testAddAssign()
       mat(1,1) = 13;
       mat(1,2) = 14;
 
-      submatrix += mat;
+      sm += mat;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 11UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 12 || submatrix(0,2) !=  0 ||
-          submatrix(1,0) != 10 || submatrix(1,1) != 13 || submatrix(1,2) != 11 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 12 || sm(0,2) !=  0 ||
+          sm(1,0) != 10 || sm(1,1) != 13 || sm(1,2) != 11 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 12  0 )\n( 10 13 11 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1177,27 +1177,27 @@ void ClassTest::testAddAssign()
       mat(0,2) = 12;
       mat(2,2) = 13;
 
-      TSMT submatrix = sub( mat, 0UL, 1UL, 3UL, 2UL );
-      submatrix += sub( tmat_, 1UL, 2UL, 3UL, 2UL );
+      TSMT sm = submatrix( mat, 0UL, 1UL, 3UL, 2UL );
+      sm += submatrix( tmat_, 1UL, 2UL, 3UL, 2UL );
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  5UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 10UL );
-      checkRows    ( mat      ,  4UL );
-      checkColumns ( mat      ,  5UL );
-      checkNonZeros( mat      ,  5UL );
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  5UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+      checkRows    ( mat  ,  4UL );
+      checkColumns ( mat  ,  5UL );
+      checkNonZeros( mat  ,  5UL );
 
-      if( submatrix(0,0) != 11 || submatrix(0,1) != 16 ||
-          submatrix(1,0) != -3 || submatrix(1,1) !=  5 ||
-          submatrix(2,0) !=  0 || submatrix(2,1) !=  7 ) {
+      if( sm(0,0) != 11 || sm(0,1) != 16 ||
+          sm(1,0) != -3 || sm(1,1) !=  5 ||
+          sm(2,0) !=  0 || sm(2,1) !=  7 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 11 16 )\n( -3  5 )\n(  0  7 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1224,24 +1224,24 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
-      submatrix += sub( tmat_, 1UL, 2UL, 3UL, 2UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+      sm += submatrix( tmat_, 1UL, 2UL, 3UL, 2UL );
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 11UL );
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) !=  2 ||
-          submatrix(1,0) != -2 || submatrix(1,1) !=  5 ||
-          submatrix(2,0) !=  0 || submatrix(2,1) != -9 ) {
+      if( sm(0,0) !=  0 || sm(0,1) !=  2 ||
+          sm(1,0) != -2 || sm(1,1) !=  5 ||
+          sm(2,0) !=  0 || sm(2,1) != -9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0  2 )\n( -2  5 )\n(  0 -9 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1273,7 +1273,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 0 );
       mat(1,0) = 11;
@@ -1281,23 +1281,23 @@ void ClassTest::testAddAssign()
       mat(1,1) = 13;
       mat(2,1) = 14;
 
-      submatrix += mat;
+      sm += mat;
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 11UL );
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 10 ||
-          submatrix(1,0) != 12 || submatrix(1,1) != 13 ||
-          submatrix(2,0) !=  0 || submatrix(2,1) != 11 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 10 ||
+          sm(1,0) != 12 || sm(1,1) != 13 ||
+          sm(2,0) !=  0 || sm(2,1) != 11 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 10 )\n( 12 13 )\n(  0 11 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1324,7 +1324,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 0 );
       mat(1,0) = 11;
@@ -1332,23 +1332,23 @@ void ClassTest::testAddAssign()
       mat(1,1) = 13;
       mat(2,1) = 14;
 
-      submatrix += mat;
+      sm += mat;
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 11UL );
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 10 ||
-          submatrix(1,0) != 12 || submatrix(1,1) != 13 ||
-          submatrix(2,0) !=  0 || submatrix(2,1) != 11 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 10 ||
+          sm(1,0) != 12 || sm(1,1) != 13 ||
+          sm(2,0) !=  0 || sm(2,1) != 11 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 10 )\n( 12 13 )\n(  0 11 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1380,7 +1380,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 4UL );
       mat(1,0) = 11;
@@ -1388,23 +1388,23 @@ void ClassTest::testAddAssign()
       mat(1,1) = 13;
       mat(2,1) = 14;
 
-      submatrix += mat;
+      sm += mat;
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 11UL );
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 10 ||
-          submatrix(1,0) != 12 || submatrix(1,1) != 13 ||
-          submatrix(2,0) !=  0 || submatrix(2,1) != 11 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 10 ||
+          sm(1,0) != 12 || sm(1,1) != 13 ||
+          sm(2,0) !=  0 || sm(2,1) != 11 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 10 )\n( 12 13 )\n(  0 11 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1431,7 +1431,7 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 4UL );
       mat(1,0) = 11;
@@ -1439,23 +1439,23 @@ void ClassTest::testAddAssign()
       mat(1,1) = 13;
       mat(2,1) = 14;
 
-      submatrix += mat;
+      sm += mat;
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 11UL );
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 10 ||
-          submatrix(1,0) != 12 || submatrix(1,1) != 13 ||
-          submatrix(2,0) !=  0 || submatrix(2,1) != 11 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 10 ||
+          sm(1,0) != 12 || sm(1,1) != 13 ||
+          sm(2,0) !=  0 || sm(2,1) != 11 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 10 )\n( 12 13 )\n(  0 11 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1505,26 +1505,26 @@ void ClassTest::testSubAssign()
       mat(2,0) = 12;
       mat(2,2) = 13;
 
-      SMT submatrix = sub( mat, 1UL, 0UL, 2UL, 3UL );
-      submatrix -= sub( mat_, 2UL, 1UL, 2UL, 3UL );
+      SMT sm = submatrix( mat, 1UL, 0UL, 2UL, 3UL );
+      sm -= submatrix( mat_, 2UL, 1UL, 2UL, 3UL );
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  5UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 10UL );
-      checkRows    ( mat      ,  5UL );
-      checkColumns ( mat      ,  4UL );
-      checkNonZeros( mat      ,  5UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  5UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+      checkRows    ( mat ,  5UL );
+      checkColumns ( mat ,  4UL );
+      checkNonZeros( mat ,  5UL );
 
-      if( submatrix(0,0) != 11 || submatrix(0,1) !=  3 || submatrix(0,2) !=  0 ||
-          submatrix(1,0) !=  8 || submatrix(1,1) != -5 || submatrix(1,2) != 19 ) {
+      if( sm(0,0) != 11 || sm(0,1) !=  3 || sm(0,2) !=  0 ||
+          sm(1,0) !=  8 || sm(1,1) != -5 || sm(1,2) != 19 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 11  3  0 )\n(  8 -5 19 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1553,23 +1553,23 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
-      submatrix -= sub( mat_, 2UL, 1UL, 2UL, 3UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
+      sm -= submatrix( mat_, 2UL, 1UL, 2UL, 3UL );
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 11UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) !=  4 || submatrix(0,2) != 0 ||
-          submatrix(1,0) != -6 || submatrix(1,1) != -5 || submatrix(1,2) != 3 ) {
+      if( sm(0,0) !=  0 || sm(0,1) !=  4 || sm(0,2) != 0 ||
+          sm(1,0) != -6 || sm(1,1) != -5 || sm(1,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0  4  0 )\n( -6 -5  3 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1603,7 +1603,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 0 );
       mat(0,1) = -11;
@@ -1611,22 +1611,22 @@ void ClassTest::testSubAssign()
       mat(1,1) = -13;
       mat(1,2) = -14;
 
-      submatrix -= mat;
+      sm -= mat;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 11UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 12 || submatrix(0,2) !=  0 ||
-          submatrix(1,0) != 10 || submatrix(1,1) != 13 || submatrix(1,2) != 11 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 12 || sm(0,2) !=  0 ||
+          sm(1,0) != 10 || sm(1,1) != 13 || sm(1,2) != 11 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 12  0 )\n( 12 13 14 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1655,7 +1655,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 0 );
       mat(0,1) = -11;
@@ -1663,22 +1663,22 @@ void ClassTest::testSubAssign()
       mat(1,1) = -13;
       mat(1,2) = -14;
 
-      submatrix -= mat;
+      sm -= mat;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 11UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 12 || submatrix(0,2) !=  0 ||
-          submatrix(1,0) != 10 || submatrix(1,1) != 13 || submatrix(1,2) != 11 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 12 || sm(0,2) !=  0 ||
+          sm(1,0) != 10 || sm(1,1) != 13 || sm(1,2) != 11 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 12  0 )\n( 10 13 11 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1712,7 +1712,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 4UL );
       mat(0,1) = -11;
@@ -1720,22 +1720,22 @@ void ClassTest::testSubAssign()
       mat(1,1) = -13;
       mat(1,2) = -14;
 
-      submatrix -= mat;
+      sm -= mat;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 11UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 12 || submatrix(0,2) !=  0 ||
-          submatrix(1,0) != 10 || submatrix(1,1) != 13 || submatrix(1,2) != 11 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 12 || sm(0,2) !=  0 ||
+          sm(1,0) != 10 || sm(1,1) != 13 || sm(1,2) != 11 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 12  0 )\n( 12 13 14 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1764,7 +1764,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 3UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 4UL );
       mat(0,1) = -11;
@@ -1772,22 +1772,22 @@ void ClassTest::testSubAssign()
       mat(1,1) = -13;
       mat(1,2) = -14;
 
-      submatrix -= mat;
+      sm -= mat;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 11UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 12 || submatrix(0,2) !=  0 ||
-          submatrix(1,0) != 10 || submatrix(1,1) != 13 || submatrix(1,2) != 11 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 12 || sm(0,2) !=  0 ||
+          sm(1,0) != 10 || sm(1,1) != 13 || sm(1,2) != 11 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 12  0 )\n( 12 13 14 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1826,27 +1826,27 @@ void ClassTest::testSubAssign()
       mat(0,2) = 12;
       mat(2,2) = 13;
 
-      TSMT submatrix = sub( mat, 0UL, 1UL, 3UL, 2UL );
-      submatrix -= sub( tmat_, 1UL, 2UL, 3UL, 2UL );
+      TSMT sm = submatrix( mat, 0UL, 1UL, 3UL, 2UL );
+      sm -= submatrix( tmat_, 1UL, 2UL, 3UL, 2UL );
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  5UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 10UL );
-      checkRows    ( mat      ,  4UL );
-      checkColumns ( mat      ,  5UL );
-      checkNonZeros( mat      ,  5UL );
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  5UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+      checkRows    ( mat  ,  4UL );
+      checkColumns ( mat  ,  5UL );
+      checkNonZeros( mat  ,  5UL );
 
-      if( submatrix(0,0) != 11 || submatrix(0,1) !=  8 ||
-          submatrix(1,0) !=  3 || submatrix(1,1) != -5 ||
-          submatrix(2,0) !=  0 || submatrix(2,1) != 19 ) {
+      if( sm(0,0) != 11 || sm(0,1) !=  8 ||
+          sm(1,0) !=  3 || sm(1,1) != -5 ||
+          sm(2,0) !=  0 || sm(2,1) != 19 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 11  8 )\n(  3 -5 )\n(  0 19 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1873,24 +1873,24 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
-      submatrix -= sub( tmat_, 1UL, 2UL, 3UL, 2UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+      sm -= submatrix( tmat_, 1UL, 2UL, 3UL, 2UL );
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 11UL );
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( submatrix(0,0) != 0 || submatrix(0,1) != -6 ||
-          submatrix(1,0) != 4 || submatrix(1,1) != -5 ||
-          submatrix(2,0) != 0 || submatrix(2,1) !=  3 ) {
+      if( sm(0,0) != 0 || sm(0,1) != -6 ||
+          sm(1,0) != 4 || sm(1,1) != -5 ||
+          sm(2,0) != 0 || sm(2,1) !=  3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 0 -6 )\n( 4 -5 )\n( 0  3 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1922,7 +1922,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 0 );
       mat(1,0) = -11;
@@ -1930,23 +1930,23 @@ void ClassTest::testSubAssign()
       mat(1,1) = -13;
       mat(2,1) = -14;
 
-      submatrix -= mat;
+      sm -= mat;
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 11UL );
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 10 ||
-          submatrix(1,0) != 12 || submatrix(1,1) != 13 ||
-          submatrix(2,0) !=  0 || submatrix(2,1) != 11 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 10 ||
+          sm(1,0) != 12 || sm(1,1) != 13 ||
+          sm(2,0) !=  0 || sm(2,1) != 11 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 10 )\n( 12 13 )\n(  0 11 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1973,7 +1973,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 0 );
       mat(1,0) = -11;
@@ -1981,23 +1981,23 @@ void ClassTest::testSubAssign()
       mat(1,1) = -13;
       mat(2,1) = -14;
 
-      submatrix -= mat;
+      sm -= mat;
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 11UL );
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 10 ||
-          submatrix(1,0) != 12 || submatrix(1,1) != 13 ||
-          submatrix(2,0) !=  0 || submatrix(2,1) != 11 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 10 ||
+          sm(1,0) != 12 || sm(1,1) != 13 ||
+          sm(2,0) !=  0 || sm(2,1) != 11 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 10 )\n( 12 13 )\n(  0 11 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2029,7 +2029,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 4UL );
       mat(1,0) = -11;
@@ -2037,23 +2037,23 @@ void ClassTest::testSubAssign()
       mat(1,1) = -13;
       mat(2,1) = -14;
 
-      submatrix -= mat;
+      sm -= mat;
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 11UL );
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 10 ||
-          submatrix(1,0) != 12 || submatrix(1,1) != 13 ||
-          submatrix(2,0) !=  0 || submatrix(2,1) != 11 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 10 ||
+          sm(1,0) != 12 || sm(1,1) != 13 ||
+          sm(2,0) !=  0 || sm(2,1) != 11 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 10 )\n( 12 13 )\n(  0 11 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2080,7 +2080,7 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 2UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 4UL );
       mat(1,0) = -11;
@@ -2088,23 +2088,23 @@ void ClassTest::testSubAssign()
       mat(1,1) = -13;
       mat(2,1) = -14;
 
-      submatrix -= mat;
+      sm -= mat;
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 11UL );
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 10 ||
-          submatrix(1,0) != 12 || submatrix(1,1) != 13 ||
-          submatrix(2,0) !=  0 || submatrix(2,1) != 11 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 10 ||
+          sm(1,0) != 12 || sm(1,1) != 13 ||
+          sm(2,0) !=  0 || sm(2,1) != 11 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 10 )\n( 12 13 )\n(  0 11 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2155,26 +2155,26 @@ void ClassTest::testMultAssign()
       mat(2,0) = 1;
       mat(2,1) = 1;
 
-      SMT submatrix = sub( mat, 1UL, 0UL, 2UL, 2UL );
-      submatrix *= sub( mat_, 2UL, 1UL, 2UL, 2UL );
+      SMT sm = submatrix( mat, 1UL, 0UL, 2UL, 2UL );
+      sm *= submatrix( mat_, 2UL, 1UL, 2UL, 2UL );
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 10UL );
-      checkRows    ( mat      ,  5UL );
-      checkColumns ( mat      ,  4UL );
-      checkNonZeros( mat      ,  4UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  2UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+      checkRows    ( mat ,  5UL );
+      checkColumns ( mat ,  4UL );
+      checkNonZeros( mat ,  4UL );
 
-      if( submatrix(0,0) != 4 || submatrix(0,1) != 2 ||
-          submatrix(1,0) != 4 || submatrix(1,1) != 2 ) {
+      if( sm(0,0) != 4 || sm(0,1) != 2 ||
+          sm(1,0) != 4 || sm(1,1) != 2 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 4 2 )\n( 4 2 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2203,23 +2203,23 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 2UL );
-      submatrix *= sub( mat_, 2UL, 1UL, 2UL, 2UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 2UL );
+      sm *= submatrix( mat_, 2UL, 1UL, 2UL, 2UL );
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  3UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 11UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  2UL );
+      checkNonZeros( sm  ,  3UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
 
-      if( submatrix(0,0) != 4 || submatrix(0,1) != 5 ||
-          submatrix(1,0) != 0 || submatrix(1,1) != 6 ) {
+      if( sm(0,0) != 4 || sm(0,1) != 5 ||
+          sm(1,0) != 0 || sm(1,1) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 4  5 )\n( 0  6 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2253,7 +2253,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 2UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 2UL, 0 );
       mat(0,0) = -11;
@@ -2261,22 +2261,22 @@ void ClassTest::testMultAssign()
       mat(1,0) =  13;
       mat(1,1) =  14;
 
-      submatrix *= mat;
+      sm *= mat;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 12UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  2UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 12UL );
 
-      if( submatrix(0,0) != 13 || submatrix(0,1) != 14 ||
-          submatrix(1,0) != 22 || submatrix(1,1) != 24 ) {
+      if( sm(0,0) != 13 || sm(0,1) != 14 ||
+          sm(1,0) != 22 || sm(1,1) != 24 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 13 14 )\n( 22 24 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2305,7 +2305,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 2UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 2UL, 0 );
       mat(0,0) = -11;
@@ -2313,22 +2313,22 @@ void ClassTest::testMultAssign()
       mat(1,0) =  13;
       mat(1,1) =  14;
 
-      submatrix *= mat;
+      sm *= mat;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 12UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  2UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 12UL );
 
-      if( submatrix(0,0) != 13 || submatrix(0,1) != 14 ||
-          submatrix(1,0) != 22 || submatrix(1,1) != 24 ) {
+      if( sm(0,0) != 13 || sm(0,1) != 14 ||
+          sm(1,0) != 22 || sm(1,1) != 24 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 13 14 )\n( 22 24 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2362,7 +2362,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 2UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 2UL, 4UL );
       mat(0,0) = -11;
@@ -2370,22 +2370,22 @@ void ClassTest::testMultAssign()
       mat(1,0) =  13;
       mat(1,1) =  14;
 
-      submatrix *= mat;
+      sm *= mat;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 12UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  2UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 12UL );
 
-      if( submatrix(0,0) != 13 || submatrix(0,1) != 14 ||
-          submatrix(1,0) != 22 || submatrix(1,1) != 24 ) {
+      if( sm(0,0) != 13 || sm(0,1) != 14 ||
+          sm(1,0) != 22 || sm(1,1) != 24 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 13 14 )\n( 22 24 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2414,7 +2414,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 2UL, 2UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 2UL, 4UL );
       mat(0,0) = -11;
@@ -2422,22 +2422,22 @@ void ClassTest::testMultAssign()
       mat(1,0) =  13;
       mat(1,1) =  14;
 
-      submatrix *= mat;
+      sm *= mat;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 12UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  2UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 12UL );
 
-      if( submatrix(0,0) != 13 || submatrix(0,1) != 14 ||
-          submatrix(1,0) != 22 || submatrix(1,1) != 24 ) {
+      if( sm(0,0) != 13 || sm(0,1) != 14 ||
+          sm(1,0) != 22 || sm(1,1) != 24 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 13 14 )\n( 22 24 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2471,24 +2471,24 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 2UL, 0UL, 2UL, 3UL );
+      SMT sm = submatrix( mat_, 2UL, 0UL, 2UL, 3UL );
 
-      submatrix *= 3;
+      sm *= 3;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 10UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
 
-      if( submatrix(0,0) != -6 || submatrix(0,1) !=  0 || submatrix(0,2) != -9 ||
-          submatrix(1,0) !=  0 || submatrix(1,1) != 12 || submatrix(1,2) != 15 ) {
+      if( sm(0,0) != -6 || sm(0,1) !=  0 || sm(0,2) != -9 ||
+          sm(1,0) !=  0 || sm(1,1) != 12 || sm(1,2) != 15 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( -6  0 -9 )\n(  0 12 15 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2517,25 +2517,25 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 2UL, 0UL, 3UL, 2UL );
+      SMT sm = submatrix( mat_, 2UL, 0UL, 3UL, 2UL );
 
-      submatrix *= 3;
+      sm *= 3;
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 10UL );
+      checkRows    ( sm  ,  3UL );
+      checkColumns ( sm  ,  2UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
 
-      if( submatrix(0,0) != -6 || submatrix(0,1) !=   0 ||
-          submatrix(1,0) !=  0 || submatrix(1,1) !=  12 ||
-          submatrix(2,0) != 21 || submatrix(2,1) != -24 ) {
+      if( sm(0,0) != -6 || sm(0,1) !=   0 ||
+          sm(1,0) !=  0 || sm(1,1) !=  12 ||
+          sm(2,0) != 21 || sm(2,1) != -24 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( -6   0 )\n(  0  12 )\n( 21 -24 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2575,26 +2575,26 @@ void ClassTest::testMultAssign()
       mat(1,1) = 1;
       mat(1,2) = 1;
 
-      TSMT submatrix = sub( mat, 0UL, 1UL, 2UL, 2UL );
-      submatrix *= sub( tmat_, 1UL, 2UL, 2UL, 2UL );
+      TSMT sm = submatrix( mat, 0UL, 1UL, 2UL, 2UL );
+      sm *= submatrix( tmat_, 1UL, 2UL, 2UL, 2UL );
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 10UL );
-      checkRows    ( mat      ,  4UL );
-      checkColumns ( mat      ,  5UL );
-      checkNonZeros( mat      ,  4UL );
+      checkRows    ( sm   ,  2UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+      checkRows    ( mat  ,  4UL );
+      checkColumns ( mat  ,  5UL );
+      checkNonZeros( mat  ,  4UL );
 
-      if( submatrix(0,0) != -3 || submatrix(0,1) != 9 ||
-          submatrix(1,0) != -3 || submatrix(1,1) != 9 ) {
+      if( sm(0,0) != -3 || sm(0,1) != 9 ||
+          sm(1,0) != -3 || sm(1,1) != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( -3 -3 )\n(  9  9 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2621,23 +2621,23 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 2UL, 2UL );
-      submatrix *= sub( tmat_, 1UL, 2UL, 2UL, 2UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 2UL );
+      sm *= submatrix( tmat_, 1UL, 2UL, 2UL, 2UL );
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  3UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 11UL );
+      checkRows    ( sm   ,  2UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  3UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( submatrix(0,0) != 6 || submatrix(0,1) != -10 ||
-          submatrix(1,0) != 0 || submatrix(1,1) !=   4 ) {
+      if( sm(0,0) != 6 || sm(0,1) != -10 ||
+          sm(1,0) != 0 || sm(1,1) !=   4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 6 -10 )\n( 0   4 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2669,7 +2669,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 2UL, 2UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 2UL, 0 );
       mat(0,0) =  11;
@@ -2677,22 +2677,22 @@ void ClassTest::testMultAssign()
       mat(1,0) = -13;
       mat(1,1) = -14;
 
-      submatrix *= mat;
+      sm *= mat;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 12UL );
+      checkRows    ( sm   ,  2UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 12UL );
 
-      if( submatrix(0,0) != 26 || submatrix(0,1) != 28 ||
-          submatrix(1,0) != 11 || submatrix(1,1) != 12 ) {
+      if( sm(0,0) != 26 || sm(0,1) != 28 ||
+          sm(1,0) != 11 || sm(1,1) != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 26 28 )\n( 11 12 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2719,7 +2719,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 2UL, 2UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 2UL, 0 );
       mat(0,0) =  11;
@@ -2727,22 +2727,22 @@ void ClassTest::testMultAssign()
       mat(1,0) = -13;
       mat(1,1) = -14;
 
-      submatrix *= mat;
+      sm *= mat;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 12UL );
+      checkRows    ( sm   ,  2UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 12UL );
 
-      if( submatrix(0,0) != 26 || submatrix(0,1) != 28 ||
-          submatrix(1,0) != 11 || submatrix(1,1) != 12 ) {
+      if( sm(0,0) != 26 || sm(0,1) != 28 ||
+          sm(1,0) != 11 || sm(1,1) != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 26 28 )\n( 11 12 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2774,7 +2774,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 2UL, 2UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 2UL, 4UL );
       mat(0,0) =  11;
@@ -2782,22 +2782,22 @@ void ClassTest::testMultAssign()
       mat(1,0) = -13;
       mat(1,1) = -14;
 
-      submatrix *= mat;
+      sm *= mat;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 12UL );
+      checkRows    ( sm   ,  2UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 12UL );
 
-      if( submatrix(0,0) != 26 || submatrix(0,1) != 28 ||
-          submatrix(1,0) != 11 || submatrix(1,1) != 12 ) {
+      if( sm(0,0) != 26 || sm(0,1) != 28 ||
+          sm(1,0) != 11 || sm(1,1) != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 26 28 )\n( 11 12 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2824,7 +2824,7 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 2UL, 2UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 2UL, 4UL );
       mat(0,0) =  11;
@@ -2832,22 +2832,22 @@ void ClassTest::testMultAssign()
       mat(1,0) = -13;
       mat(1,1) = -14;
 
-      submatrix *= mat;
+      sm *= mat;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 12UL );
+      checkRows    ( sm   ,  2UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 12UL );
 
-      if( submatrix(0,0) != 26 || submatrix(0,1) != 28 ||
-          submatrix(1,0) != 11 || submatrix(1,1) != 12 ) {
+      if( sm(0,0) != 26 || sm(0,1) != 28 ||
+          sm(1,0) != 11 || sm(1,1) != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 26 28 )\n( 11 12 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2879,25 +2879,25 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 2UL, 3UL, 2UL );
+      TSMT sm = submatrix( tmat_, 0UL, 2UL, 3UL, 2UL );
 
-      submatrix *= 3;
+      sm *= 3;
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 10UL );
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
 
-      if( submatrix(0,0) != -6 || submatrix(0,1) !=  0 ||
-          submatrix(1,0) !=  0 || submatrix(1,1) != 12 ||
-          submatrix(2,0) != -9 || submatrix(2,1) != 15 ) {
+      if( sm(0,0) != -6 || sm(0,1) !=  0 ||
+          sm(1,0) !=  0 || sm(1,1) != 12 ||
+          sm(2,0) != -9 || sm(2,1) != 15 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( -6  0 )\n(  0 12 )\n( -9 15 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2924,24 +2924,24 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 2UL, 2UL, 3UL );
+      TSMT sm = submatrix( tmat_, 0UL, 2UL, 2UL, 3UL );
 
-      submatrix *= 3;
+      sm *= 3;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 10UL );
+      checkRows    ( sm   ,  2UL );
+      checkColumns ( sm   ,  3UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
 
-      if( submatrix(0,0) != -6 || submatrix(0,1) !=  0 || submatrix(0,2) !=  21 ||
-          submatrix(1,0) !=  0 || submatrix(1,1) != 12 || submatrix(1,2) != -24 ) {
+      if( sm(0,0) != -6 || sm(0,1) !=  0 || sm(0,2) !=  21 ||
+          sm(1,0) !=  0 || sm(1,1) != 12 || sm(1,2) != -24 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( -6  0  21 )\n(  0 12 -24 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2986,24 +2986,24 @@ void ClassTest::testDivAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 2UL, 0UL, 2UL, 3UL );
+      SMT sm = submatrix( mat_, 2UL, 0UL, 2UL, 3UL );
 
-      submatrix /= 0.5;
+      sm /= 0.5;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 10UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
 
-      if( submatrix(0,0) != -4 || submatrix(0,1) != 0 || submatrix(0,2) != -6 ||
-          submatrix(1,0) !=  0 || submatrix(1,1) != 8 || submatrix(1,2) != 10 ) {
+      if( sm(0,0) != -4 || sm(0,1) != 0 || sm(0,2) != -6 ||
+          sm(1,0) !=  0 || sm(1,1) != 8 || sm(1,2) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Division assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( -4  0 -6 )\n(  0  8 10 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -3032,25 +3032,25 @@ void ClassTest::testDivAssign()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 2UL, 0UL, 3UL, 2UL );
+      SMT sm = submatrix( mat_, 2UL, 0UL, 3UL, 2UL );
 
-      submatrix /= 0.5;
+      sm /= 0.5;
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 10UL );
+      checkRows    ( sm  ,  3UL );
+      checkColumns ( sm  ,  2UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
 
-      if( submatrix(0,0) != -4 || submatrix(0,1) !=   0 ||
-          submatrix(1,0) !=  0 || submatrix(1,1) !=   8 ||
-          submatrix(2,0) != 14 || submatrix(2,1) != -16 ) {
+      if( sm(0,0) != -4 || sm(0,1) !=   0 ||
+          sm(1,0) !=  0 || sm(1,1) !=   8 ||
+          sm(2,0) != 14 || sm(2,1) != -16 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Division assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( -4   0 )\n(  0   8 )\n( 14 -16 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -3084,25 +3084,25 @@ void ClassTest::testDivAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 2UL, 3UL, 2UL );
+      TSMT sm = submatrix( tmat_, 0UL, 2UL, 3UL, 2UL );
 
-      submatrix /= 0.5;
+      sm /= 0.5;
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 10UL );
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
 
-      if( submatrix(0,0) != -4 || submatrix(0,1) !=  0 ||
-          submatrix(1,0) !=  0 || submatrix(1,1) !=  8 ||
-          submatrix(2,0) != -6 || submatrix(2,1) != 10 ) {
+      if( sm(0,0) != -4 || sm(0,1) !=  0 ||
+          sm(1,0) !=  0 || sm(1,1) !=  8 ||
+          sm(2,0) != -6 || sm(2,1) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Division assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( -4  0 )\n(  0  8 )\n( -6 10 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -3129,24 +3129,24 @@ void ClassTest::testDivAssign()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 2UL, 2UL, 3UL );
+      TSMT sm = submatrix( tmat_, 0UL, 2UL, 2UL, 3UL );
 
-      submatrix /= 0.5;
+      sm /= 0.5;
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 10UL );
+      checkRows    ( sm   ,  2UL );
+      checkColumns ( sm   ,  3UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
 
-      if( submatrix(0,0) != -4 || submatrix(0,1) != 0 || submatrix(0,2) !=  14 ||
-          submatrix(1,0) !=  0 || submatrix(1,1) != 8 || submatrix(1,2) != -16 ) {
+      if( sm(0,0) != -4 || sm(0,1) != 0 || sm(0,2) !=  14 ||
+          sm(1,0) !=  0 || sm(1,1) != 8 || sm(1,2) != -16 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Division assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( -4  0  14 )\n(  0  8 -16 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -3192,30 +3192,30 @@ void ClassTest::testFunctionCall()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 1UL, 3UL, 2UL );
+      SMT sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
 
       // Writing the first element
       {
-         submatrix(1,0) = 9;
+         sm(1,0) = 9;
 
-         checkRows    ( submatrix,  3UL );
-         checkColumns ( submatrix,  2UL );
-         checkNonZeros( submatrix,  5UL );
-         checkNonZeros( submatrix,  0UL, 1UL );
-         checkNonZeros( submatrix,  1UL, 2UL );
-         checkNonZeros( submatrix,  2UL, 2UL );
-         checkRows    ( mat_     ,  5UL );
-         checkColumns ( mat_     ,  4UL );
-         checkNonZeros( mat_     , 11UL );
+         checkRows    ( sm  ,  3UL );
+         checkColumns ( sm  ,  2UL );
+         checkNonZeros( sm  ,  5UL );
+         checkNonZeros( sm  ,  0UL, 1UL );
+         checkNonZeros( sm  ,  1UL, 2UL );
+         checkNonZeros( sm  ,  2UL, 2UL );
+         checkRows    ( mat_,  5UL );
+         checkColumns ( mat_,  4UL );
+         checkNonZeros( mat_, 11UL );
 
-         if( submatrix(0,0) != 1 || submatrix(0,1) !=  0 ||
-             submatrix(1,0) != 9 || submatrix(1,1) != -3 ||
-             submatrix(2,0) != 4 || submatrix(2,1) !=  5 ) {
+         if( sm(0,0) != 1 || sm(0,1) !=  0 ||
+             sm(1,0) != 9 || sm(1,1) != -3 ||
+             sm(2,0) != 4 || sm(2,1) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Function call operator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 1  0 )\n( 9 -3 )\n( 4  5 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3241,26 +3241,26 @@ void ClassTest::testFunctionCall()
 
       // Writing the second element
       {
-         submatrix(2,0) = 0;
+         sm(2,0) = 0;
 
-         checkRows    ( submatrix,  3UL );
-         checkColumns ( submatrix,  2UL );
-         checkNonZeros( submatrix,  4UL );
-         checkNonZeros( submatrix,  0UL, 1UL );
-         checkNonZeros( submatrix,  1UL, 2UL );
-         checkNonZeros( submatrix,  2UL, 1UL );
-         checkRows    ( mat_     ,  5UL );
-         checkColumns ( mat_     ,  4UL );
-         checkNonZeros( mat_     , 10UL );
+         checkRows    ( sm  ,  3UL );
+         checkColumns ( sm  ,  2UL );
+         checkNonZeros( sm  ,  4UL );
+         checkNonZeros( sm  ,  0UL, 1UL );
+         checkNonZeros( sm  ,  1UL, 2UL );
+         checkNonZeros( sm  ,  2UL, 1UL );
+         checkRows    ( mat_,  5UL );
+         checkColumns ( mat_,  4UL );
+         checkNonZeros( mat_, 10UL );
 
-         if( submatrix(0,0) != 1 || submatrix(0,1) !=  0 ||
-             submatrix(1,0) != 9 || submatrix(1,1) != -3 ||
-             submatrix(2,0) != 0 || submatrix(2,1) !=  5 ) {
+         if( sm(0,0) != 1 || sm(0,1) !=  0 ||
+             sm(1,0) != 9 || sm(1,1) != -3 ||
+             sm(2,0) != 0 || sm(2,1) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Function call operator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 1  0 )\n( 9 -3 )\n( 0  5 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3286,26 +3286,26 @@ void ClassTest::testFunctionCall()
 
       // Writing the third element
       {
-         submatrix(1,1) = 11;
+         sm(1,1) = 11;
 
-         checkRows    ( submatrix,  3UL );
-         checkColumns ( submatrix,  2UL );
-         checkNonZeros( submatrix,  4UL );
-         checkNonZeros( submatrix,  0UL, 1UL );
-         checkNonZeros( submatrix,  1UL, 2UL );
-         checkNonZeros( submatrix,  2UL, 1UL );
-         checkRows    ( mat_     ,  5UL );
-         checkColumns ( mat_     ,  4UL );
-         checkNonZeros( mat_     , 10UL );
+         checkRows    ( sm  ,  3UL );
+         checkColumns ( sm  ,  2UL );
+         checkNonZeros( sm  ,  4UL );
+         checkNonZeros( sm  ,  0UL, 1UL );
+         checkNonZeros( sm  ,  1UL, 2UL );
+         checkNonZeros( sm  ,  2UL, 1UL );
+         checkRows    ( mat_,  5UL );
+         checkColumns ( mat_,  4UL );
+         checkNonZeros( mat_, 10UL );
 
-         if( submatrix(0,0) != 1 || submatrix(0,1) !=  0 ||
-             submatrix(1,0) != 9 || submatrix(1,1) != 11 ||
-             submatrix(2,0) != 0 || submatrix(2,1) !=  5 ) {
+         if( sm(0,0) != 1 || sm(0,1) !=  0 ||
+             sm(1,0) != 9 || sm(1,1) != 11 ||
+             sm(2,0) != 0 || sm(2,1) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Function call operator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 1  0 )\n( 9 11 )\n( 0  5 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3340,29 +3340,29 @@ void ClassTest::testFunctionCall()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 1UL, 1UL, 2UL, 3UL );
+      TSMT sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
 
       // Writing the first element
       {
-         submatrix(0,1) = 9;
+         sm(0,1) = 9;
 
-         checkRows    ( submatrix,  2UL );
-         checkColumns ( submatrix,  3UL );
-         checkNonZeros( submatrix,  5UL );
-         checkNonZeros( submatrix,  0UL, 1UL );
-         checkNonZeros( submatrix,  1UL, 2UL );
-         checkNonZeros( submatrix,  2UL, 2UL );
-         checkRows    ( tmat_    ,  4UL );
-         checkColumns ( tmat_    ,  5UL );
-         checkNonZeros( tmat_    , 11UL );
+         checkRows    ( sm   ,  2UL );
+         checkColumns ( sm   ,  3UL );
+         checkNonZeros( sm   ,  5UL );
+         checkNonZeros( sm   ,  0UL, 1UL );
+         checkNonZeros( sm   ,  1UL, 2UL );
+         checkNonZeros( sm   ,  2UL, 2UL );
+         checkRows    ( tmat_,  4UL );
+         checkColumns ( tmat_,  5UL );
+         checkNonZeros( tmat_, 11UL );
 
-         if( submatrix(0,0) != 1 || submatrix(0,1) !=  9 || submatrix(0,2) != 4 ||
-             submatrix(1,0) != 0 || submatrix(1,1) != -3 || submatrix(1,2) != 5 ) {
+         if( sm(0,0) != 1 || sm(0,1) !=  9 || sm(0,2) != 4 ||
+             sm(1,0) != 0 || sm(1,1) != -3 || sm(1,2) != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Function call operator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 1  9 4 )\n( 0 -3 5 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3386,25 +3386,25 @@ void ClassTest::testFunctionCall()
 
       // Writing the second element
       {
-         submatrix(0,2) = 0;
+         sm(0,2) = 0;
 
-         checkRows    ( submatrix,  2UL );
-         checkColumns ( submatrix,  3UL );
-         checkNonZeros( submatrix,  4UL );
-         checkNonZeros( submatrix,  0UL, 1UL );
-         checkNonZeros( submatrix,  1UL, 2UL );
-         checkNonZeros( submatrix,  2UL, 1UL );
-         checkRows    ( tmat_    ,  4UL );
-         checkColumns ( tmat_    ,  5UL );
-         checkNonZeros( tmat_    , 10UL );
+         checkRows    ( sm   ,  2UL );
+         checkColumns ( sm   ,  3UL );
+         checkNonZeros( sm   ,  4UL );
+         checkNonZeros( sm   ,  0UL, 1UL );
+         checkNonZeros( sm   ,  1UL, 2UL );
+         checkNonZeros( sm   ,  2UL, 1UL );
+         checkRows    ( tmat_,  4UL );
+         checkColumns ( tmat_,  5UL );
+         checkNonZeros( tmat_, 10UL );
 
-         if( submatrix(0,0) != 1 || submatrix(0,1) !=  9 || submatrix(0,2) != 0 ||
-             submatrix(1,0) != 0 || submatrix(1,1) != -3 || submatrix(1,2) != 5 ) {
+         if( sm(0,0) != 1 || sm(0,1) !=  9 || sm(0,2) != 0 ||
+             sm(1,0) != 0 || sm(1,1) != -3 || sm(1,2) != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Function call operator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 1  9 0 )\n( 0 -3 5 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3428,25 +3428,25 @@ void ClassTest::testFunctionCall()
 
       // Writing the third element
       {
-         submatrix(1,1) = 11;
+         sm(1,1) = 11;
 
-         checkRows    ( submatrix,  2UL );
-         checkColumns ( submatrix,  3UL );
-         checkNonZeros( submatrix,  4UL );
-         checkNonZeros( submatrix,  0UL, 1UL );
-         checkNonZeros( submatrix,  1UL, 2UL );
-         checkNonZeros( submatrix,  2UL, 1UL );
-         checkRows    ( tmat_    ,  4UL );
-         checkColumns ( tmat_    ,  5UL );
-         checkNonZeros( tmat_    , 10UL );
+         checkRows    ( sm   ,  2UL );
+         checkColumns ( sm   ,  3UL );
+         checkNonZeros( sm   ,  4UL );
+         checkNonZeros( sm   ,  0UL, 1UL );
+         checkNonZeros( sm   ,  1UL, 2UL );
+         checkNonZeros( sm   ,  2UL, 1UL );
+         checkRows    ( tmat_,  4UL );
+         checkColumns ( tmat_,  5UL );
+         checkNonZeros( tmat_, 10UL );
 
-         if( submatrix(0,0) != 1 || submatrix(0,1) !=  9 || submatrix(0,2) != 0 ||
-             submatrix(1,0) != 0 || submatrix(1,1) != 11 || submatrix(1,2) != 5 ) {
+         if( sm(0,0) != 1 || sm(0,1) !=  9 || sm(0,2) != 0 ||
+             sm(1,0) != 0 || sm(1,1) != 11 || sm(1,2) != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Function call operator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 1 11 0 )\n( 0 -3 5 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3490,13 +3490,13 @@ void ClassTest::testIterator()
    {
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 3UL, 3UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 3UL, 3UL );
 
       // Counting the number of elements in 0th row
       {
          test_ = "Row-major iterator subtraction";
 
-         const size_t number( submatrix.end(0) - submatrix.begin(0) );
+         const size_t number( sm.end(0) - sm.begin(0) );
 
          if( number != 1UL ) {
             std::ostringstream oss;
@@ -3513,7 +3513,7 @@ void ClassTest::testIterator()
       {
          test_ = "Row-major iterator subtraction";
 
-         const size_t number( submatrix.end(1) - submatrix.begin(1) );
+         const size_t number( sm.end(1) - sm.begin(1) );
 
          if( number != 2UL ) {
             std::ostringstream oss;
@@ -3530,7 +3530,7 @@ void ClassTest::testIterator()
       {
          test_ = "Row-major iterator subtraction";
 
-         const size_t number( submatrix.end(2) - submatrix.begin(2) );
+         const size_t number( sm.end(2) - sm.begin(2) );
 
          if( number != 2UL ) {
             std::ostringstream oss;
@@ -3547,7 +3547,7 @@ void ClassTest::testIterator()
       {
          test_ = "Row-major read-only access via ConstIterator";
 
-         SMT::ConstIterator it( submatrix.cbegin(2) );
+         SMT::ConstIterator it( sm.cbegin(2) );
 
          if( it->value() != 4 ) {
             std::ostringstream oss;
@@ -3573,7 +3573,7 @@ void ClassTest::testIterator()
 
          ++it;
 
-         if( it != submatrix.cend(2) ) {
+         if( it != sm.cend(2) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator end\n";
@@ -3587,18 +3587,18 @@ void ClassTest::testIterator()
 
          int value = 8;
 
-         for( SMT::Iterator it=submatrix.begin(2); it!=submatrix.end(2); ++it ) {
+         for( SMT::Iterator it=sm.begin(2); it!=sm.end(2); ++it ) {
             *it = value++;
          }
 
-         if( submatrix(0,0) !=  0 || submatrix(0,1) != 1 || submatrix(0,2) !=  0 ||
-             submatrix(1,0) != -2 || submatrix(1,1) != 0 || submatrix(1,2) != -3 ||
-             submatrix(2,0) !=  0 || submatrix(2,1) != 8 || submatrix(2,2) !=  9 ) {
+         if( sm(0,0) !=  0 || sm(0,1) != 1 || sm(0,2) !=  0 ||
+             sm(1,0) != -2 || sm(1,1) != 0 || sm(1,2) != -3 ||
+             sm(2,0) !=  0 || sm(2,1) != 8 || sm(2,2) !=  9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n(  0  1  0 )\n( -2  0 -3 )\n(  0  8  9 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3628,18 +3628,18 @@ void ClassTest::testIterator()
 
          int value = 4;
 
-         for( SMT::Iterator it=submatrix.begin(1); it!=submatrix.end(1); ++it ) {
+         for( SMT::Iterator it=sm.begin(1); it!=sm.end(1); ++it ) {
             *it += value++;
          }
 
-         if( submatrix(0,0) != 0 || submatrix(0,1) != 1 || submatrix(0,2) != 0 ||
-             submatrix(1,0) != 2 || submatrix(1,1) != 0 || submatrix(1,2) != 2 ||
-             submatrix(2,0) != 0 || submatrix(2,1) != 8 || submatrix(2,2) != 9 ) {
+         if( sm(0,0) != 0 || sm(0,1) != 1 || sm(0,2) != 0 ||
+             sm(1,0) != 2 || sm(1,1) != 0 || sm(1,2) != 2 ||
+             sm(2,0) != 0 || sm(2,1) != 8 || sm(2,2) != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 1 0 )\n( 2 0 2 )\n( 0 8 9 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3669,18 +3669,18 @@ void ClassTest::testIterator()
 
          int value = 4;
 
-         for( SMT::Iterator it=submatrix.begin(1); it!=submatrix.end(1); ++it ) {
+         for( SMT::Iterator it=sm.begin(1); it!=sm.end(1); ++it ) {
             *it -= value++;
          }
 
-         if( submatrix(0,0) !=  0 || submatrix(0,1) != 1 || submatrix(0,2) !=  0 ||
-             submatrix(1,0) != -2 || submatrix(1,1) != 0 || submatrix(1,2) != -3 ||
-             submatrix(2,0) !=  0 || submatrix(2,1) != 8 || submatrix(2,2) !=  9 ) {
+         if( sm(0,0) !=  0 || sm(0,1) != 1 || sm(0,2) !=  0 ||
+             sm(1,0) != -2 || sm(1,1) != 0 || sm(1,2) != -3 ||
+             sm(2,0) !=  0 || sm(2,1) != 8 || sm(2,2) !=  9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n(  0  1  0 )\n( -2  0 -3 )\n(  0  8  9 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3710,18 +3710,18 @@ void ClassTest::testIterator()
 
          int value = 1;
 
-         for( SMT::Iterator it=submatrix.begin(1); it!=submatrix.end(1); ++it ) {
+         for( SMT::Iterator it=sm.begin(1); it!=sm.end(1); ++it ) {
             *it *= value++;
          }
 
-         if( submatrix(0,0) !=  0 || submatrix(0,1) != 1 || submatrix(0,2) !=  0 ||
-             submatrix(1,0) != -2 || submatrix(1,1) != 0 || submatrix(1,2) != -6 ||
-             submatrix(2,0) !=  0 || submatrix(2,1) != 8 || submatrix(2,2) !=  9 ) {
+         if( sm(0,0) !=  0 || sm(0,1) != 1 || sm(0,2) !=  0 ||
+             sm(1,0) != -2 || sm(1,1) != 0 || sm(1,2) != -6 ||
+             sm(2,0) !=  0 || sm(2,1) != 8 || sm(2,2) !=  9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n(  0  1  0 )\n( -2  0 -6 )\n(  0  8  9 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3749,18 +3749,18 @@ void ClassTest::testIterator()
       {
          test_ = "Row-major division assignment via Iterator";
 
-         for( SMT::Iterator it=submatrix.begin(1); it!=submatrix.end(1); ++it ) {
+         for( SMT::Iterator it=sm.begin(1); it!=sm.end(1); ++it ) {
             *it /= 2;
          }
 
-         if( submatrix(0,0) !=  0 || submatrix(0,1) != 1 || submatrix(0,2) !=  0 ||
-             submatrix(1,0) != -1 || submatrix(1,1) != 0 || submatrix(1,2) != -3 ||
-             submatrix(2,0) !=  0 || submatrix(2,1) != 8 || submatrix(2,2) !=  9 ) {
+         if( sm(0,0) !=  0 || sm(0,1) != 1 || sm(0,2) !=  0 ||
+             sm(1,0) != -1 || sm(1,1) != 0 || sm(1,2) != -3 ||
+             sm(2,0) !=  0 || sm(2,1) != 8 || sm(2,2) !=  9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n(  0  1  0 )\n( -1  0 -3 )\n(  0  8  9 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3793,13 +3793,13 @@ void ClassTest::testIterator()
    {
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 3UL, 3UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
 
       // Counting the number of elements in 0th column
       {
          test_ = "Column-major iterator subtraction";
 
-         const size_t number( submatrix.end(0) - submatrix.begin(0) );
+         const size_t number( sm.end(0) - sm.begin(0) );
 
          if( number != 1UL ) {
             std::ostringstream oss;
@@ -3816,7 +3816,7 @@ void ClassTest::testIterator()
       {
          test_ = "Column-major iterator subtraction";
 
-         const size_t number( submatrix.end(1) - submatrix.begin(1) );
+         const size_t number( sm.end(1) - sm.begin(1) );
 
          if( number != 2UL ) {
             std::ostringstream oss;
@@ -3833,7 +3833,7 @@ void ClassTest::testIterator()
       {
          test_ = "Column-major iterator subtraction";
 
-         const size_t number( submatrix.end(2) - submatrix.begin(2) );
+         const size_t number( sm.end(2) - sm.begin(2) );
 
          if( number != 2UL ) {
             std::ostringstream oss;
@@ -3850,7 +3850,7 @@ void ClassTest::testIterator()
       {
          test_ = "Column-major read-only access via ConstIterator";
 
-         TSMT::ConstIterator it( submatrix.cbegin(2) );
+         TSMT::ConstIterator it( sm.cbegin(2) );
 
          if( it->value() != 4 ) {
             std::ostringstream oss;
@@ -3876,7 +3876,7 @@ void ClassTest::testIterator()
 
          ++it;
 
-         if( it != submatrix.cend(2) ) {
+         if( it != sm.cend(2) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator end\n";
@@ -3890,18 +3890,18 @@ void ClassTest::testIterator()
 
          int value = 8;
 
-         for( TSMT::Iterator it=submatrix.begin(2); it!=submatrix.end(2); ++it ) {
+         for( TSMT::Iterator it=sm.begin(2); it!=sm.end(2); ++it ) {
             *it = value++;
          }
 
-         if( submatrix(0,0) != 0 || submatrix(0,1) != -2 || submatrix(0,2) != 0 ||
-             submatrix(1,0) != 1 || submatrix(1,1) !=  0 || submatrix(1,2) != 8 ||
-             submatrix(2,0) != 0 || submatrix(2,1) != -3 || submatrix(2,2) != 9 ) {
+         if( sm(0,0) != 0 || sm(0,1) != -2 || sm(0,2) != 0 ||
+             sm(1,0) != 1 || sm(1,1) !=  0 || sm(1,2) != 8 ||
+             sm(2,0) != 0 || sm(2,1) != -3 || sm(2,2) != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 -2  0 )\n( 1  0  8 )\n( 0 -3  9 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3929,18 +3929,18 @@ void ClassTest::testIterator()
 
          int value = 4;
 
-         for( TSMT::Iterator it=submatrix.begin(1); it!=submatrix.end(1); ++it ) {
+         for( TSMT::Iterator it=sm.begin(1); it!=sm.end(1); ++it ) {
             *it += value++;
          }
 
-         if( submatrix(0,0) != 0 || submatrix(0,1) != 2 || submatrix(0,2) != 0 ||
-             submatrix(1,0) != 1 || submatrix(1,1) != 0 || submatrix(1,2) != 8 ||
-             submatrix(2,0) != 0 || submatrix(2,1) != 2 || submatrix(2,2) != 9 ) {
+         if( sm(0,0) != 0 || sm(0,1) != 2 || sm(0,2) != 0 ||
+             sm(1,0) != 1 || sm(1,1) != 0 || sm(1,2) != 8 ||
+             sm(2,0) != 0 || sm(2,1) != 2 || sm(2,2) != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 2 0 )\n( 1 0 8 )\n( 0 2 9 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3968,18 +3968,18 @@ void ClassTest::testIterator()
 
          int value = 4;
 
-         for( TSMT::Iterator it=submatrix.begin(1); it!=submatrix.end(1); ++it ) {
+         for( TSMT::Iterator it=sm.begin(1); it!=sm.end(1); ++it ) {
             *it -= value++;
          }
 
-         if( submatrix(0,0) != 0 || submatrix(0,1) != -2 || submatrix(0,2) != 0 ||
-             submatrix(1,0) != 1 || submatrix(1,1) !=  0 || submatrix(1,2) != 8 ||
-             submatrix(2,0) != 0 || submatrix(2,1) != -3 || submatrix(2,2) != 9 ) {
+         if( sm(0,0) != 0 || sm(0,1) != -2 || sm(0,2) != 0 ||
+             sm(1,0) != 1 || sm(1,1) !=  0 || sm(1,2) != 8 ||
+             sm(2,0) != 0 || sm(2,1) != -3 || sm(2,2) != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 -2  0 )\n( 1  0  8 )\n( 0 -3  9 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -4007,18 +4007,18 @@ void ClassTest::testIterator()
 
          int value = 1;
 
-         for( TSMT::Iterator it=submatrix.begin(1); it!=submatrix.end(1); ++it ) {
+         for( TSMT::Iterator it=sm.begin(1); it!=sm.end(1); ++it ) {
             *it *= value++;
          }
 
-         if( submatrix(0,0) != 0 || submatrix(0,1) != -2 || submatrix(0,2) != 0 ||
-             submatrix(1,0) != 1 || submatrix(1,1) !=  0 || submatrix(1,2) != 8 ||
-             submatrix(2,0) != 0 || submatrix(2,1) != -6 || submatrix(2,2) != 9 ) {
+         if( sm(0,0) != 0 || sm(0,1) != -2 || sm(0,2) != 0 ||
+             sm(1,0) != 1 || sm(1,1) !=  0 || sm(1,2) != 8 ||
+             sm(2,0) != 0 || sm(2,1) != -6 || sm(2,2) != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 -2  0 )\n( 1  0  8 )\n( 0 -6  9 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -4044,18 +4044,18 @@ void ClassTest::testIterator()
       {
          test_ = "Column-major division assignment via Iterator";
 
-         for( TSMT::Iterator it=submatrix.begin(1); it!=submatrix.end(1); ++it ) {
+         for( TSMT::Iterator it=sm.begin(1); it!=sm.end(1); ++it ) {
             *it /= 2;
          }
 
-         if( submatrix(0,0) != 0 || submatrix(0,1) != -1 || submatrix(0,2) != 0 ||
-             submatrix(1,0) != 1 || submatrix(1,1) !=  0 || submatrix(1,2) != 8 ||
-             submatrix(2,0) != 0 || submatrix(2,1) != -3 || submatrix(2,2) != 9 ) {
+         if( sm(0,0) != 0 || sm(0,1) != -1 || sm(0,2) != 0 ||
+             sm(1,0) != 1 || sm(1,1) !=  0 || sm(1,2) != 8 ||
+             sm(2,0) != 0 || sm(2,1) != -3 || sm(2,2) != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 -1  0 )\n( 1  0  8 )\n( 0 -3  9 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -4102,41 +4102,41 @@ void ClassTest::testNonZeros()
       initialize();
 
       // Initialization check
-      SMT submatrix = sub( mat_, 1UL, 1UL, 2UL, 3UL );
+      SMT sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
 
-      checkRows    ( submatrix, 2UL );
-      checkColumns ( submatrix, 3UL );
-      checkNonZeros( submatrix, 2UL );
-      checkNonZeros( submatrix, 0UL, 1UL );
-      checkNonZeros( submatrix, 1UL, 1UL );
+      checkRows    ( sm, 2UL );
+      checkColumns ( sm, 3UL );
+      checkNonZeros( sm, 2UL );
+      checkNonZeros( sm, 0UL, 1UL );
+      checkNonZeros( sm, 1UL, 1UL );
 
-      if( submatrix(0,0) != 1 || submatrix(0,1) !=  0 || submatrix(0,2) != 0 ||
-          submatrix(1,0) != 0 || submatrix(1,1) != -3 || submatrix(1,2) != 0 ) {
+      if( sm(0,0) != 1 || sm(0,1) !=  0 || sm(0,2) != 0 ||
+          sm(1,0) != 0 || sm(1,1) != -3 || sm(1,2) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 1  0 0 )\n( 0 -3 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Changing the number of non-zeros via the sparse submatrix
-      submatrix(1,1) = 0;
+      sm(1,1) = 0;
 
-      checkRows    ( submatrix, 2UL );
-      checkColumns ( submatrix, 3UL );
-      checkNonZeros( submatrix, 1UL );
-      checkNonZeros( submatrix, 0UL, 1UL );
-      checkNonZeros( submatrix, 1UL, 0UL );
+      checkRows    ( sm, 2UL );
+      checkColumns ( sm, 3UL );
+      checkNonZeros( sm, 1UL );
+      checkNonZeros( sm, 0UL, 1UL );
+      checkNonZeros( sm, 1UL, 0UL );
 
-      if( submatrix(0,0) != 1 || submatrix(0,1) != 0 || submatrix(0,2) != 0 ||
-          submatrix(1,0) != 0 || submatrix(1,1) != 0 || submatrix(1,2) != 0 ) {
+      if( sm(0,0) != 1 || sm(0,1) != 0 || sm(0,2) != 0 ||
+          sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 1 0 0 )\n( 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -4144,19 +4144,19 @@ void ClassTest::testNonZeros()
       // Changing the number of non-zeros via the sparse matrix
       mat_(2,3) = 5;
 
-      checkRows    ( submatrix, 2UL );
-      checkColumns ( submatrix, 3UL );
-      checkNonZeros( submatrix, 2UL );
-      checkNonZeros( submatrix, 0UL, 1UL );
-      checkNonZeros( submatrix, 1UL, 1UL );
+      checkRows    ( sm, 2UL );
+      checkColumns ( sm, 3UL );
+      checkNonZeros( sm, 2UL );
+      checkNonZeros( sm, 0UL, 1UL );
+      checkNonZeros( sm, 1UL, 1UL );
 
-      if( submatrix(0,0) != 1 || submatrix(0,1) != 0 || submatrix(0,2) != 0 ||
-          submatrix(1,0) != 0 || submatrix(1,1) != 0 || submatrix(1,2) != 5 ) {
+      if( sm(0,0) != 1 || sm(0,1) != 0 || sm(0,2) != 0 ||
+          sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 1 0 0 )\n( 0 0 5 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -4173,43 +4173,43 @@ void ClassTest::testNonZeros()
       initialize();
 
       // Initialization check
-      TSMT submatrix = sub( tmat_, 1UL, 1UL, 3UL, 2UL );
+      TSMT sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
 
-      checkRows    ( submatrix, 3UL );
-      checkColumns ( submatrix, 2UL );
-      checkNonZeros( submatrix, 2UL );
-      checkNonZeros( submatrix, 0UL, 1UL );
-      checkNonZeros( submatrix, 1UL, 1UL );
+      checkRows    ( sm, 3UL );
+      checkColumns ( sm, 2UL );
+      checkNonZeros( sm, 2UL );
+      checkNonZeros( sm, 0UL, 1UL );
+      checkNonZeros( sm, 1UL, 1UL );
 
-      if( submatrix(0,0) != 1 || submatrix(0,1) !=  0 ||
-          submatrix(1,0) != 0 || submatrix(1,1) != -3 ||
-          submatrix(2,0) != 0 || submatrix(2,1) !=  0 ) {
+      if( sm(0,0) != 1 || sm(0,1) !=  0 ||
+          sm(1,0) != 0 || sm(1,1) != -3 ||
+          sm(2,0) != 0 || sm(2,1) !=  0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 1  0 )\n( 0 -3 )\n( 0  0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Changing the number of non-zeros via the sparse submatrix
-      submatrix(1,1) = 0;
+      sm(1,1) = 0;
 
-      checkRows    ( submatrix, 3UL );
-      checkColumns ( submatrix, 2UL );
-      checkNonZeros( submatrix, 1UL );
-      checkNonZeros( submatrix, 0UL, 1UL );
-      checkNonZeros( submatrix, 1UL, 0UL );
+      checkRows    ( sm, 3UL );
+      checkColumns ( sm, 2UL );
+      checkNonZeros( sm, 1UL );
+      checkNonZeros( sm, 0UL, 1UL );
+      checkNonZeros( sm, 1UL, 0UL );
 
-      if( submatrix(0,0) != 1 || submatrix(0,1) != 0 ||
-          submatrix(1,0) != 0 || submatrix(1,1) != 0 ||
-          submatrix(2,0) != 0 || submatrix(2,1) != 0 ) {
+      if( sm(0,0) != 1 || sm(0,1) != 0 ||
+          sm(1,0) != 0 || sm(1,1) != 0 ||
+          sm(2,0) != 0 || sm(2,1) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 1 0 )\n( 0 0 )\n( 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -4217,20 +4217,20 @@ void ClassTest::testNonZeros()
       // Changing the number of non-zeros via the sparse matrix
       tmat_(3,2) = 5;
 
-      checkRows    ( submatrix, 3UL );
-      checkColumns ( submatrix, 2UL );
-      checkNonZeros( submatrix, 2UL );
-      checkNonZeros( submatrix, 0UL, 1UL );
-      checkNonZeros( submatrix, 1UL, 1UL );
+      checkRows    ( sm, 3UL );
+      checkColumns ( sm, 2UL );
+      checkNonZeros( sm, 2UL );
+      checkNonZeros( sm, 0UL, 1UL );
+      checkNonZeros( sm, 1UL, 1UL );
 
-      if( submatrix(0,0) != 1 || submatrix(0,1) != 0 ||
-          submatrix(1,0) != 0 || submatrix(1,1) != 0 ||
-          submatrix(2,0) != 0 || submatrix(2,1) != 5 ) {
+      if( sm(0,0) != 1 || sm(0,1) != 0 ||
+          sm(1,0) != 0 || sm(1,1) != 0 ||
+          sm(2,0) != 0 || sm(2,1) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 1 0 )\n( 0 0 )\n( 0 5 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -4255,27 +4255,27 @@ void ClassTest::testReset()
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseSubmatix::reset()";
+      test_ = "Row-major SparseSubmatrix::reset()";
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 3UL, 2UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 3UL, 2UL );
 
-      submatrix.reset();
+      sm.reset();
 
-      checkRows    ( submatrix, 3UL );
-      checkColumns ( submatrix, 2UL );
-      checkNonZeros( submatrix, 0UL );
-      checkRows    ( mat_     , 5UL );
-      checkColumns ( mat_     , 4UL );
-      checkNonZeros( mat_     , 7UL );
+      checkRows    ( sm  , 3UL );
+      checkColumns ( sm  , 2UL );
+      checkNonZeros( sm  , 0UL );
+      checkRows    ( mat_, 5UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( !isDefault( submatrix ) ) {
+      if( !isDefault( sm ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Reset operation failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 0 0 )\n( 0 0 )\n( 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -4309,27 +4309,27 @@ void ClassTest::testReset()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 3UL, 2UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 3UL, 2UL );
 
       // Resetting the 0th row
       {
-         submatrix.reset( 0UL );
+         sm.reset( 0UL );
 
-         checkRows    ( submatrix, 3UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 2UL );
-         checkRows    ( mat_     , 5UL );
-         checkColumns ( mat_     , 4UL );
-         checkNonZeros( mat_     , 9UL );
+         checkRows    ( sm  , 3UL );
+         checkColumns ( sm  , 2UL );
+         checkNonZeros( sm  , 2UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 9UL );
 
-         if( submatrix(0,0) !=  0 || submatrix(0,1) != 0 ||
-             submatrix(1,0) != -2 || submatrix(1,1) != 0 ||
-             submatrix(2,0) !=  0 || submatrix(2,1) != 4 ) {
+         if( sm(0,0) !=  0 || sm(0,1) != 0 ||
+             sm(1,0) != -2 || sm(1,1) != 0 ||
+             sm(2,0) !=  0 || sm(2,1) != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Reset operation of 0th row failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n(  0 0 )\n( -2 0 )\n(  0 4 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -4337,23 +4337,23 @@ void ClassTest::testReset()
 
       // Resetting the 1st row
       {
-         submatrix.reset( 1UL );
+         sm.reset( 1UL );
 
-         checkRows    ( submatrix, 3UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 1UL );
-         checkRows    ( mat_     , 5UL );
-         checkColumns ( mat_     , 4UL );
-         checkNonZeros( mat_     , 8UL );
+         checkRows    ( sm  , 3UL );
+         checkColumns ( sm  , 2UL );
+         checkNonZeros( sm  , 1UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 8UL );
 
-         if( submatrix(0,0) != 0 || submatrix(0,1) != 0 ||
-             submatrix(1,0) != 0 || submatrix(1,1) != 0 ||
-             submatrix(2,0) != 0 || submatrix(2,1) != 4 ) {
+         if( sm(0,0) != 0 || sm(0,1) != 0 ||
+             sm(1,0) != 0 || sm(1,1) != 0 ||
+             sm(2,0) != 0 || sm(2,1) != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Reset operation of 1st row failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 0 )\n( 0 0 )\n( 0 4 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -4361,23 +4361,23 @@ void ClassTest::testReset()
 
       // Resetting the 2nd row
       {
-         submatrix.reset( 2UL );
+         sm.reset( 2UL );
 
-         checkRows    ( submatrix, 3UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 0UL );
-         checkRows    ( mat_     , 5UL );
-         checkColumns ( mat_     , 4UL );
-         checkNonZeros( mat_     , 7UL );
+         checkRows    ( sm  , 3UL );
+         checkColumns ( sm  , 2UL );
+         checkNonZeros( sm  , 0UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 7UL );
 
-         if( submatrix(0,0) != 0 || submatrix(0,1) != 0 ||
-             submatrix(1,0) != 0 || submatrix(1,1) != 0 ||
-             submatrix(2,0) != 0 || submatrix(2,1) != 0 ) {
+         if( sm(0,0) != 0 || sm(0,1) != 0 ||
+             sm(1,0) != 0 || sm(1,1) != 0 ||
+             sm(2,0) != 0 || sm(2,1) != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Reset operation of 2nd row failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 0 )\n( 0 0 )\n( 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -4390,27 +4390,27 @@ void ClassTest::testReset()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseSubmatix::reset()";
+      test_ = "Column-major SparseSubmatrix::reset()";
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 2UL, 3UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 3UL );
 
-      submatrix.reset();
+      sm.reset();
 
-      checkRows    ( submatrix, 2UL );
-      checkColumns ( submatrix, 3UL );
-      checkNonZeros( submatrix, 0UL );
-      checkRows    ( tmat_    , 4UL );
-      checkColumns ( tmat_    , 5UL );
-      checkNonZeros( tmat_    , 7UL );
+      checkRows    ( sm   , 2UL );
+      checkColumns ( sm   , 3UL );
+      checkNonZeros( sm   , 0UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 7UL );
 
-      if( !isDefault( submatrix ) ) {
+      if( !isDefault( sm ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Reset operation failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 0 0 0 )\n( 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -4442,26 +4442,26 @@ void ClassTest::testReset()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 2UL, 3UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 3UL );
 
       // Resetting the 0th column
       {
-         submatrix.reset( 0UL );
+         sm.reset( 0UL );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 3UL );
-         checkNonZeros( submatrix, 2UL );
-         checkRows    ( tmat_    , 4UL );
-         checkColumns ( tmat_    , 5UL );
-         checkNonZeros( tmat_    , 9UL );
+         checkRows    ( sm   , 2UL );
+         checkColumns ( sm   , 3UL );
+         checkNonZeros( sm   , 2UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 5UL );
+         checkNonZeros( tmat_, 9UL );
 
-         if( submatrix(0,0) != 0 || submatrix(0,1) != -2 || submatrix(0,2) != 0 ||
-             submatrix(1,0) != 0 || submatrix(1,1) !=  0 || submatrix(1,2) != 4 ) {
+         if( sm(0,0) != 0 || sm(0,1) != -2 || sm(0,2) != 0 ||
+             sm(1,0) != 0 || sm(1,1) !=  0 || sm(1,2) != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Reset operation of 0th column failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 -2  0 )\n( 0  0  4 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -4469,22 +4469,22 @@ void ClassTest::testReset()
 
       // Resetting the 1st column
       {
-         submatrix.reset( 1UL );
+         sm.reset( 1UL );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 3UL );
-         checkNonZeros( submatrix, 1UL );
-         checkRows    ( tmat_    , 4UL );
-         checkColumns ( tmat_    , 5UL );
-         checkNonZeros( tmat_    , 8UL );
+         checkRows    ( sm   , 2UL );
+         checkColumns ( sm   , 3UL );
+         checkNonZeros( sm   , 1UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 5UL );
+         checkNonZeros( tmat_, 8UL );
 
-         if( submatrix(0,0) != 0 || submatrix(0,1) != 0 || submatrix(0,2) != 0 ||
-             submatrix(1,0) != 0 || submatrix(1,1) != 0 || submatrix(1,2) != 4 ) {
+         if( sm(0,0) != 0 || sm(0,1) != 0 || sm(0,2) != 0 ||
+             sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Reset operation of 1st column failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 0 0 )\n( 0 0 4 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -4492,22 +4492,22 @@ void ClassTest::testReset()
 
       // Resetting the 2nd column
       {
-         submatrix.reset( 2UL );
+         sm.reset( 2UL );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 3UL );
-         checkNonZeros( submatrix, 0UL );
-         checkRows    ( tmat_    , 4UL );
-         checkColumns ( tmat_    , 5UL );
-         checkNonZeros( tmat_    , 7UL );
+         checkRows    ( sm   , 2UL );
+         checkColumns ( sm   , 3UL );
+         checkNonZeros( sm   , 0UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 5UL );
+         checkNonZeros( tmat_, 7UL );
 
-         if( submatrix(0,0) != 0 || submatrix(0,1) != 0 || submatrix(0,2) != 0 ||
-             submatrix(1,0) != 0 || submatrix(1,1) != 0 || submatrix(1,2) != 0 ) {
+         if( sm(0,0) != 0 || sm(0,1) != 0 || sm(0,2) != 0 ||
+             sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Reset operation of 2nd column failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 0 0 )\n( 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -4540,85 +4540,85 @@ void ClassTest::testAppend()
          mat_.reset();
 
          // Initialization check
-         SMT submatrix = sub( mat_, 0UL, 0UL, 4UL, 4UL );
-         submatrix.reserve( 0UL, 2UL );
-         submatrix.reserve( 2UL, 1UL );
-         submatrix.reserve( 3UL, 2UL );
+         SMT sm = submatrix( mat_, 0UL, 0UL, 4UL, 4UL );
+         sm.reserve( 0UL, 2UL );
+         sm.reserve( 2UL, 1UL );
+         sm.reserve( 3UL, 2UL );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 4UL );
-         checkCapacity( submatrix, 5UL );
-         checkNonZeros( submatrix, 0UL );
-         checkNonZeros( submatrix, 0UL, 0UL );
-         checkNonZeros( submatrix, 1UL, 0UL );
-         checkNonZeros( submatrix, 2UL, 0UL );
-         checkNonZeros( submatrix, 3UL, 0UL );
+         checkRows    ( sm, 4UL );
+         checkColumns ( sm, 4UL );
+         checkCapacity( sm, 5UL );
+         checkNonZeros( sm, 0UL );
+         checkNonZeros( sm, 0UL, 0UL );
+         checkNonZeros( sm, 1UL, 0UL );
+         checkNonZeros( sm, 2UL, 0UL );
+         checkNonZeros( sm, 3UL, 0UL );
 
          // Appending one non-zero element
-         submatrix.append( 2UL, 1UL, 1 );
+         sm.append( 2UL, 1UL, 1 );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 4UL );
-         checkCapacity( submatrix, 5UL );
-         checkNonZeros( submatrix, 1UL );
-         checkNonZeros( submatrix, 0UL, 0UL );
-         checkNonZeros( submatrix, 1UL, 0UL );
-         checkNonZeros( submatrix, 2UL, 1UL );
-         checkNonZeros( submatrix, 3UL, 0UL );
+         checkRows    ( sm, 4UL );
+         checkColumns ( sm, 4UL );
+         checkCapacity( sm, 5UL );
+         checkNonZeros( sm, 1UL );
+         checkNonZeros( sm, 0UL, 0UL );
+         checkNonZeros( sm, 1UL, 0UL );
+         checkNonZeros( sm, 2UL, 1UL );
+         checkNonZeros( sm, 3UL, 0UL );
 
-         if( submatrix(2,1) != 1 ) {
+         if( sm(2,1) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Initialization failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 1 0 0 )\n( 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
 
          // Appending two more non-zero elements
-         submatrix.append( 0UL, 0UL, 2 );
-         submatrix.append( 0UL, 3UL, 3 );
+         sm.append( 0UL, 0UL, 2 );
+         sm.append( 0UL, 3UL, 3 );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 4UL );
-         checkCapacity( submatrix, 5UL );
-         checkNonZeros( submatrix, 3UL );
-         checkNonZeros( submatrix, 0UL, 2UL );
-         checkNonZeros( submatrix, 1UL, 0UL );
-         checkNonZeros( submatrix, 2UL, 1UL );
-         checkNonZeros( submatrix, 3UL, 0UL );
+         checkRows    ( sm, 4UL );
+         checkColumns ( sm, 4UL );
+         checkCapacity( sm, 5UL );
+         checkNonZeros( sm, 3UL );
+         checkNonZeros( sm, 0UL, 2UL );
+         checkNonZeros( sm, 1UL, 0UL );
+         checkNonZeros( sm, 2UL, 1UL );
+         checkNonZeros( sm, 3UL, 0UL );
 
-         if( submatrix(2,1) != 1 || submatrix(0,0) != 2 || submatrix(0,3) != 3 ) {
+         if( sm(2,1) != 1 || sm(0,0) != 2 || sm(0,3) != 3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Initialization failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 2 0 0 3 )\n( 0 0 0 0 )\n( 0 1 0 0 )\n( 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
 
          // Appending two more non-zero elements
-         submatrix.append( 3UL, 1UL, 4 );
-         submatrix.append( 3UL, 2UL, 5 );
+         sm.append( 3UL, 1UL, 4 );
+         sm.append( 3UL, 2UL, 5 );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 4UL );
-         checkCapacity( submatrix, 5UL );
-         checkNonZeros( submatrix, 5UL );
-         checkNonZeros( submatrix, 0UL, 2UL );
-         checkNonZeros( submatrix, 1UL, 0UL );
-         checkNonZeros( submatrix, 2UL, 1UL );
-         checkNonZeros( submatrix, 3UL, 2UL );
+         checkRows    ( sm, 4UL );
+         checkColumns ( sm, 4UL );
+         checkCapacity( sm, 5UL );
+         checkNonZeros( sm, 5UL );
+         checkNonZeros( sm, 0UL, 2UL );
+         checkNonZeros( sm, 1UL, 0UL );
+         checkNonZeros( sm, 2UL, 1UL );
+         checkNonZeros( sm, 3UL, 2UL );
 
-         if( submatrix(2,1) != 1 || submatrix(0,0) != 2 || submatrix(0,3) != 3 ||
-             submatrix(3,1) != 4 || submatrix(3,2) != 5 ) {
+         if( sm(2,1) != 1 || sm(0,0) != 2 || sm(0,3) != 3 ||
+             sm(3,1) != 4 || sm(3,2) != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Initialization failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 2 0 0 3 )\n( 0 0 0 0 )\n( 0 1 0 0 )\n( 0 4 5 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -4629,79 +4629,79 @@ void ClassTest::testAppend()
          mat_.reset();
 
          // Initialization check
-         SMT submatrix = sub( mat_, 0UL, 0UL, 4UL, 4UL );
-         submatrix.reserve( 0UL, 2UL );
-         submatrix.reserve( 2UL, 1UL );
-         submatrix.reserve( 3UL, 2UL );
+         SMT sm = submatrix( mat_, 0UL, 0UL, 4UL, 4UL );
+         sm.reserve( 0UL, 2UL );
+         sm.reserve( 2UL, 1UL );
+         sm.reserve( 3UL, 2UL );
 
          // Appending one non-zero element
-         submatrix.append( 0UL, 1UL, 1 );
-         submatrix.finalize( 0UL );
+         sm.append( 0UL, 1UL, 1 );
+         sm.finalize( 0UL );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 4UL );
-         checkCapacity( submatrix, 5UL );
-         checkNonZeros( submatrix, 1UL );
-         checkNonZeros( submatrix, 0UL, 1UL );
-         checkNonZeros( submatrix, 1UL, 0UL );
-         checkNonZeros( submatrix, 2UL, 0UL );
-         checkNonZeros( submatrix, 3UL, 0UL );
+         checkRows    ( sm, 4UL );
+         checkColumns ( sm, 4UL );
+         checkCapacity( sm, 5UL );
+         checkNonZeros( sm, 1UL );
+         checkNonZeros( sm, 0UL, 1UL );
+         checkNonZeros( sm, 1UL, 0UL );
+         checkNonZeros( sm, 2UL, 0UL );
+         checkNonZeros( sm, 3UL, 0UL );
 
-         if( submatrix(0,1) != 1 ) {
+         if( sm(0,1) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Initialization failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 1 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
 
          // Appending two more non-zero elements
-         submatrix.append( 1UL, 1UL, 2 );
-         submatrix.append( 1UL, 3UL, 3 );
-         submatrix.finalize( 1UL );
+         sm.append( 1UL, 1UL, 2 );
+         sm.append( 1UL, 3UL, 3 );
+         sm.finalize( 1UL );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 4UL );
-         checkCapacity( submatrix, 5UL );
-         checkNonZeros( submatrix, 3UL );
-         checkNonZeros( submatrix, 0UL, 1UL );
-         checkNonZeros( submatrix, 1UL, 2UL );
-         checkNonZeros( submatrix, 2UL, 0UL );
-         checkNonZeros( submatrix, 3UL, 0UL );
+         checkRows    ( sm, 4UL );
+         checkColumns ( sm, 4UL );
+         checkCapacity( sm, 5UL );
+         checkNonZeros( sm, 3UL );
+         checkNonZeros( sm, 0UL, 1UL );
+         checkNonZeros( sm, 1UL, 2UL );
+         checkNonZeros( sm, 2UL, 0UL );
+         checkNonZeros( sm, 3UL, 0UL );
 
-         if( submatrix(0,1) != 1 || submatrix(1,1) != 2 || submatrix(1,3) != 3 ) {
+         if( sm(0,1) != 1 || sm(1,1) != 2 || sm(1,3) != 3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Initialization failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 1 0 0 )\n( 0 2 0 3 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
 
          // Appending two more non-zero elements
-         submatrix.append( 3UL, 0UL, 4 );
-         submatrix.append( 3UL, 1UL, 5 );
-         submatrix.finalize( 1UL );
+         sm.append( 3UL, 0UL, 4 );
+         sm.append( 3UL, 1UL, 5 );
+         sm.finalize( 1UL );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 4UL );
-         checkCapacity( submatrix, 5UL );
-         checkNonZeros( submatrix, 5UL );
-         checkNonZeros( submatrix, 0UL, 1UL );
-         checkNonZeros( submatrix, 1UL, 2UL );
-         checkNonZeros( submatrix, 2UL, 0UL );
-         checkNonZeros( submatrix, 3UL, 2UL );
+         checkRows    ( sm, 4UL );
+         checkColumns ( sm, 4UL );
+         checkCapacity( sm, 5UL );
+         checkNonZeros( sm, 5UL );
+         checkNonZeros( sm, 0UL, 1UL );
+         checkNonZeros( sm, 1UL, 2UL );
+         checkNonZeros( sm, 2UL, 0UL );
+         checkNonZeros( sm, 3UL, 2UL );
 
-         if( submatrix(0,1) != 1 || submatrix(1,1) != 2 || submatrix(1,3) != 3 ||
-             submatrix(3,0) != 4 || submatrix(3,1) != 5 ) {
+         if( sm(0,1) != 1 || sm(1,1) != 2 || sm(1,3) != 3 ||
+             sm(3,0) != 4 || sm(3,1) != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Initialization failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 1 0 0 )\n( 0 2 0 3 )\n( 0 0 0 0 )\n( 4 5 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -4721,85 +4721,85 @@ void ClassTest::testAppend()
          tmat_.reset();
 
          // Initialization check
-         TSMT submatrix = sub( tmat_, 0UL, 0UL, 4UL, 4UL );
-         submatrix.reserve( 0UL, 2UL );
-         submatrix.reserve( 2UL, 1UL );
-         submatrix.reserve( 3UL, 2UL );
+         TSMT sm = submatrix( tmat_, 0UL, 0UL, 4UL, 4UL );
+         sm.reserve( 0UL, 2UL );
+         sm.reserve( 2UL, 1UL );
+         sm.reserve( 3UL, 2UL );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 4UL );
-         checkCapacity( submatrix, 5UL );
-         checkNonZeros( submatrix, 0UL );
-         checkNonZeros( submatrix, 0UL, 0UL );
-         checkNonZeros( submatrix, 1UL, 0UL );
-         checkNonZeros( submatrix, 2UL, 0UL );
-         checkNonZeros( submatrix, 3UL, 0UL );
+         checkRows    ( sm, 4UL );
+         checkColumns ( sm, 4UL );
+         checkCapacity( sm, 5UL );
+         checkNonZeros( sm, 0UL );
+         checkNonZeros( sm, 0UL, 0UL );
+         checkNonZeros( sm, 1UL, 0UL );
+         checkNonZeros( sm, 2UL, 0UL );
+         checkNonZeros( sm, 3UL, 0UL );
 
          // Appending one non-zero element
-         submatrix.append( 1UL, 2UL, 1 );
+         sm.append( 1UL, 2UL, 1 );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 4UL );
-         checkCapacity( submatrix, 5UL );
-         checkNonZeros( submatrix, 1UL );
-         checkNonZeros( submatrix, 0UL, 0UL );
-         checkNonZeros( submatrix, 1UL, 0UL );
-         checkNonZeros( submatrix, 2UL, 1UL );
-         checkNonZeros( submatrix, 3UL, 0UL );
+         checkRows    ( sm, 4UL );
+         checkColumns ( sm, 4UL );
+         checkCapacity( sm, 5UL );
+         checkNonZeros( sm, 1UL );
+         checkNonZeros( sm, 0UL, 0UL );
+         checkNonZeros( sm, 1UL, 0UL );
+         checkNonZeros( sm, 2UL, 1UL );
+         checkNonZeros( sm, 3UL, 0UL );
 
-         if( submatrix(1,2) != 1 ) {
+         if( sm(1,2) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Initialization failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n( 0 0 1 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
 
          // Appending two more non-zero elements
-         submatrix.append( 0UL, 0UL, 2 );
-         submatrix.append( 3UL, 0UL, 3 );
+         sm.append( 0UL, 0UL, 2 );
+         sm.append( 3UL, 0UL, 3 );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 4UL );
-         checkCapacity( submatrix, 5UL );
-         checkNonZeros( submatrix, 3UL );
-         checkNonZeros( submatrix, 0UL, 2UL );
-         checkNonZeros( submatrix, 1UL, 0UL );
-         checkNonZeros( submatrix, 2UL, 1UL );
-         checkNonZeros( submatrix, 3UL, 0UL );
+         checkRows    ( sm, 4UL );
+         checkColumns ( sm, 4UL );
+         checkCapacity( sm, 5UL );
+         checkNonZeros( sm, 3UL );
+         checkNonZeros( sm, 0UL, 2UL );
+         checkNonZeros( sm, 1UL, 0UL );
+         checkNonZeros( sm, 2UL, 1UL );
+         checkNonZeros( sm, 3UL, 0UL );
 
-         if( submatrix(1,2) != 1 || submatrix(0,0) != 2 || submatrix(3,0) != 3 ) {
+         if( sm(1,2) != 1 || sm(0,0) != 2 || sm(3,0) != 3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Initialization failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 2 0 0 0 )\n( 0 0 1 0 )\n( 0 0 0 0 )\n( 3 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
 
          // Appending two more non-zero elements
-         submatrix.append( 1UL, 3UL, 4 );
-         submatrix.append( 2UL, 3UL, 5 );
+         sm.append( 1UL, 3UL, 4 );
+         sm.append( 2UL, 3UL, 5 );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 4UL );
-         checkCapacity( submatrix, 5UL );
-         checkNonZeros( submatrix, 5UL );
-         checkNonZeros( submatrix, 0UL, 2UL );
-         checkNonZeros( submatrix, 1UL, 0UL );
-         checkNonZeros( submatrix, 2UL, 1UL );
-         checkNonZeros( submatrix, 3UL, 2UL );
+         checkRows    ( sm, 4UL );
+         checkColumns ( sm, 4UL );
+         checkCapacity( sm, 5UL );
+         checkNonZeros( sm, 5UL );
+         checkNonZeros( sm, 0UL, 2UL );
+         checkNonZeros( sm, 1UL, 0UL );
+         checkNonZeros( sm, 2UL, 1UL );
+         checkNonZeros( sm, 3UL, 2UL );
 
-         if( submatrix(1,2) != 1 || submatrix(0,0) != 2 || submatrix(3,0) != 3 ||
-             submatrix(1,3) != 4 || submatrix(2,3) != 5 ) {
+         if( sm(1,2) != 1 || sm(0,0) != 2 || sm(3,0) != 3 ||
+             sm(1,3) != 4 || sm(2,3) != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Initialization failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 2 0 0 0 )\n( 0 0 1 4 )\n( 0 0 0 5 )\n( 3 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -4810,79 +4810,79 @@ void ClassTest::testAppend()
          tmat_.reset();
 
          // Initialization check
-         TSMT submatrix = sub( tmat_, 0UL, 0UL, 4UL, 4UL );
-         submatrix.reserve( 0UL, 2UL );
-         submatrix.reserve( 2UL, 1UL );
-         submatrix.reserve( 3UL, 2UL );
+         TSMT sm = submatrix( tmat_, 0UL, 0UL, 4UL, 4UL );
+         sm.reserve( 0UL, 2UL );
+         sm.reserve( 2UL, 1UL );
+         sm.reserve( 3UL, 2UL );
 
          // Appending one non-zero element
-         submatrix.append( 1UL, 0UL, 1 );
-         submatrix.finalize( 0UL );
+         sm.append( 1UL, 0UL, 1 );
+         sm.finalize( 0UL );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 4UL );
-         checkCapacity( submatrix, 5UL );
-         checkNonZeros( submatrix, 1UL );
-         checkNonZeros( submatrix, 0UL, 1UL );
-         checkNonZeros( submatrix, 1UL, 0UL );
-         checkNonZeros( submatrix, 2UL, 0UL );
-         checkNonZeros( submatrix, 3UL, 0UL );
+         checkRows    ( sm, 4UL );
+         checkColumns ( sm, 4UL );
+         checkCapacity( sm, 5UL );
+         checkNonZeros( sm, 1UL );
+         checkNonZeros( sm, 0UL, 1UL );
+         checkNonZeros( sm, 1UL, 0UL );
+         checkNonZeros( sm, 2UL, 0UL );
+         checkNonZeros( sm, 3UL, 0UL );
 
-         if( submatrix(1,0) != 1 ) {
+         if( sm(1,0) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Initialization failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n( 1 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
 
          // Appending two more non-zero elements
-         submatrix.append( 1UL, 1UL, 2 );
-         submatrix.append( 3UL, 1UL, 3 );
-         submatrix.finalize( 1UL );
+         sm.append( 1UL, 1UL, 2 );
+         sm.append( 3UL, 1UL, 3 );
+         sm.finalize( 1UL );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 4UL );
-         checkCapacity( submatrix, 5UL );
-         checkNonZeros( submatrix, 3UL );
-         checkNonZeros( submatrix, 0UL, 1UL );
-         checkNonZeros( submatrix, 1UL, 2UL );
-         checkNonZeros( submatrix, 2UL, 0UL );
-         checkNonZeros( submatrix, 3UL, 0UL );
+         checkRows    ( sm, 4UL );
+         checkColumns ( sm, 4UL );
+         checkCapacity( sm, 5UL );
+         checkNonZeros( sm, 3UL );
+         checkNonZeros( sm, 0UL, 1UL );
+         checkNonZeros( sm, 1UL, 2UL );
+         checkNonZeros( sm, 2UL, 0UL );
+         checkNonZeros( sm, 3UL, 0UL );
 
-         if( submatrix(1,0) != 1 || submatrix(1,1) != 2 || submatrix(3,1) != 3 ) {
+         if( sm(1,0) != 1 || sm(1,1) != 2 || sm(3,1) != 3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Initialization failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n( 1 2 0 0 )\n( 0 0 0 0 )\n( 0 3 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
 
          // Appending two more non-zero elements
-         submatrix.append( 0UL, 3UL, 4 );
-         submatrix.append( 1UL, 3UL, 5 );
-         submatrix.finalize( 1UL );
+         sm.append( 0UL, 3UL, 4 );
+         sm.append( 1UL, 3UL, 5 );
+         sm.finalize( 1UL );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 4UL );
-         checkCapacity( submatrix, 5UL );
-         checkNonZeros( submatrix, 5UL );
-         checkNonZeros( submatrix, 0UL, 1UL );
-         checkNonZeros( submatrix, 1UL, 2UL );
-         checkNonZeros( submatrix, 2UL, 0UL );
-         checkNonZeros( submatrix, 3UL, 2UL );
+         checkRows    ( sm, 4UL );
+         checkColumns ( sm, 4UL );
+         checkCapacity( sm, 5UL );
+         checkNonZeros( sm, 5UL );
+         checkNonZeros( sm, 0UL, 1UL );
+         checkNonZeros( sm, 1UL, 2UL );
+         checkNonZeros( sm, 2UL, 0UL );
+         checkNonZeros( sm, 3UL, 2UL );
 
-         if( submatrix(1,0) != 1 || submatrix(1,1) != 2 || submatrix(3,1) != 3 ||
-             submatrix(0,3) != 4 || submatrix(1,3) != 5 ) {
+         if( sm(1,0) != 1 || sm(1,1) != 2 || sm(3,1) != 3 ||
+             sm(0,3) != 4 || sm(1,3) != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Initialization failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 0 0 4 )\n( 1 2 0 5 )\n( 0 0 0 0 )\n( 0 3 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -4912,80 +4912,80 @@ void ClassTest::testInsert()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 0UL, 1UL, 2UL, 3UL );
+      SMT sm = submatrix( mat_, 0UL, 1UL, 2UL, 3UL );
 
       // Inserting a non-zero element at the end of the 0th row
-      submatrix.insert( 0UL, 2UL, 1 );
+      sm.insert( 0UL, 2UL, 1 );
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  2UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 11UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  2UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
 
-      if( submatrix(0,0) != 0 || submatrix(0,1) != 0 || submatrix(0,2) != 1 ||
-          submatrix(1,0) != 1 || submatrix(1,1) != 0 || submatrix(1,2) != 0 ) {
+      if( sm(0,0) != 0 || sm(0,1) != 0 || sm(0,2) != 1 ||
+          sm(1,0) != 1 || sm(1,1) != 0 || sm(1,2) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Inserting a non-zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 0 0 1 )\n( 1 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Inserting a non-zero element at the beginning of the 0th row
-      submatrix.insert( 0UL, 0UL, 2 );
+      sm.insert( 0UL, 0UL, 2 );
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  3UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 12UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  3UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 12UL );
 
-      if( submatrix(0,0) != 2 || submatrix(0,1) != 0 || submatrix(0,2) != 1 ||
-          submatrix(1,0) != 1 || submatrix(1,1) != 0 || submatrix(1,2) != 0 ) {
+      if( sm(0,0) != 2 || sm(0,1) != 0 || sm(0,2) != 1 ||
+          sm(1,0) != 1 || sm(1,1) != 0 || sm(1,2) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Inserting a non-zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 2 0 1 )\n( 1 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Inserting a non-zero element at the center of the 0th row
-      submatrix.insert( 0UL, 1UL, 3 );
+      sm.insert( 0UL, 1UL, 3 );
 
-      checkRows    ( submatrix,  2UL );
-      checkColumns ( submatrix,  3UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( mat_     ,  5UL );
-      checkColumns ( mat_     ,  4UL );
-      checkNonZeros( mat_     , 13UL );
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 13UL );
 
-      if( submatrix(0,0) != 2 || submatrix(0,1) != 3 || submatrix(0,2) != 1 ||
-          submatrix(1,0) != 1 || submatrix(1,1) != 0 || submatrix(1,2) != 0 ) {
+      if( sm(0,0) != 2 || sm(0,1) != 3 || sm(0,2) != 1 ||
+          sm(1,0) != 1 || sm(1,1) != 0 || sm(1,2) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Inserting a non-zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 2 3 1 )\n( 1 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Trying to insert an already existing element
       try {
-         submatrix.insert( 1UL, 0UL, 4 );
+         sm.insert( 1UL, 0UL, 4 );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Inserting an existing element succeeded\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 2 3 1 )\n( 4 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -5002,83 +5002,83 @@ void ClassTest::testInsert()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 1UL, 0UL, 3UL, 2UL );
+      TSMT sm = submatrix( tmat_, 1UL, 0UL, 3UL, 2UL );
 
       // Inserting a non-zero element at the end of the 0th column
-      submatrix.insert( 2UL, 0UL, 1 );
+      sm.insert( 2UL, 0UL, 1 );
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  2UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 11UL );
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  2UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( submatrix(0,0) != 0 || submatrix(0,1) != 1 ||
-          submatrix(1,0) != 0 || submatrix(1,1) != 0 ||
-          submatrix(2,0) != 1 || submatrix(2,1) != 0 ) {
+      if( sm(0,0) != 0 || sm(0,1) != 1 ||
+          sm(1,0) != 0 || sm(1,1) != 0 ||
+          sm(2,0) != 1 || sm(2,1) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Inserting a non-zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 0 1 )\n( 0 0 )\n( 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Inserting a non-zero element at the beginning of the 0th column
-      submatrix.insert( 0UL, 0UL, 2 );
+      sm.insert( 0UL, 0UL, 2 );
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  3UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 12UL );
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  3UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 12UL );
 
-      if( submatrix(0,0) != 2 || submatrix(0,1) != 1 ||
-          submatrix(1,0) != 0 || submatrix(1,1) != 0 ||
-          submatrix(2,0) != 1 || submatrix(2,1) != 0 ) {
+      if( sm(0,0) != 2 || sm(0,1) != 1 ||
+          sm(1,0) != 0 || sm(1,1) != 0 ||
+          sm(2,0) != 1 || sm(2,1) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Inserting a non-zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 2 1 )\n( 0 0 )\n( 1 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Inserting a non-zero element at the center of the 0th column
-      submatrix.insert( 1UL, 0UL, 3 );
+      sm.insert( 1UL, 0UL, 3 );
 
-      checkRows    ( submatrix,  3UL );
-      checkColumns ( submatrix,  2UL );
-      checkNonZeros( submatrix,  4UL );
-      checkRows    ( tmat_    ,  4UL );
-      checkColumns ( tmat_    ,  5UL );
-      checkNonZeros( tmat_    , 13UL );
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 13UL );
 
-      if( submatrix(0,0) != 2 || submatrix(0,1) != 1 ||
-          submatrix(1,0) != 3 || submatrix(1,1) != 0 ||
-          submatrix(2,0) != 1 || submatrix(2,1) != 0 ) {
+      if( sm(0,0) != 2 || sm(0,1) != 1 ||
+          sm(1,0) != 3 || sm(1,1) != 0 ||
+          sm(2,0) != 1 || sm(2,1) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Inserting a non-zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 2 1 )\n( 3 0 )\n( 1 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Trying to insert an already existing element
       try {
-         submatrix.insert( 0UL, 1UL, 4 );
+         sm.insert( 0UL, 1UL, 4 );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Inserting an existing element succeeded\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 2 4 )\n( 3 0 )\n( 1 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -5108,88 +5108,88 @@ void ClassTest::testErase()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 3UL, 1UL, 2UL, 3UL );
+      SMT sm = submatrix( mat_, 3UL, 1UL, 2UL, 3UL );
 
       // Erasing the non-zero element at the end of the 1st row
-      submatrix.erase( 1UL, 2UL );
+      sm.erase( 1UL, 2UL );
 
-      checkRows    ( submatrix, 2UL );
-      checkColumns ( submatrix, 3UL );
-      checkNonZeros( submatrix, 5UL );
-      checkRows    ( mat_     , 5UL );
-      checkColumns ( mat_     , 4UL );
-      checkNonZeros( mat_     , 9UL );
+      checkRows    ( sm  , 2UL );
+      checkColumns ( sm  , 3UL );
+      checkNonZeros( sm  , 5UL );
+      checkRows    ( mat_, 5UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 9UL );
 
-      if( submatrix(0,0) !=  4 || submatrix(0,1) != 5 || submatrix(0,2) != -6 ||
-          submatrix(1,0) != -8 || submatrix(1,1) != 9 || submatrix(1,2) !=  0 ) {
+      if( sm(0,0) !=  4 || sm(0,1) != 5 || sm(0,2) != -6 ||
+          sm(1,0) != -8 || sm(1,1) != 9 || sm(1,2) !=  0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Erasing a non-zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  4  5 -6 )\n( -8  9  0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Erasing the non-zero element at the beginning of the 1st row
-      submatrix.erase( 1UL, 0UL );
+      sm.erase( 1UL, 0UL );
 
-      checkRows    ( submatrix, 2UL );
-      checkColumns ( submatrix, 3UL );
-      checkNonZeros( submatrix, 4UL );
-      checkRows    ( mat_     , 5UL );
-      checkColumns ( mat_     , 4UL );
-      checkNonZeros( mat_     , 8UL );
+      checkRows    ( sm  , 2UL );
+      checkColumns ( sm  , 3UL );
+      checkNonZeros( sm  , 4UL );
+      checkRows    ( mat_, 5UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 8UL );
 
-      if( submatrix(0,0) != 4 || submatrix(0,1) != 5 || submatrix(0,2) != -6 ||
-          submatrix(1,0) != 0 || submatrix(1,1) != 9 || submatrix(1,2) !=  0 ) {
+      if( sm(0,0) != 4 || sm(0,1) != 5 || sm(0,2) != -6 ||
+          sm(1,0) != 0 || sm(1,1) != 9 || sm(1,2) !=  0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Erasing a non-zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 4  5 -6 )\n( 0  9  0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Erasing the non-zero element at the beginning of the 1st row
-      submatrix.erase( 1UL, 1UL );
+      sm.erase( 1UL, 1UL );
 
-      checkRows    ( submatrix, 2UL );
-      checkColumns ( submatrix, 3UL );
-      checkNonZeros( submatrix, 3UL );
-      checkRows    ( mat_     , 5UL );
-      checkColumns ( mat_     , 4UL );
-      checkNonZeros( mat_     , 7UL );
+      checkRows    ( sm  , 2UL );
+      checkColumns ( sm  , 3UL );
+      checkNonZeros( sm  , 3UL );
+      checkRows    ( mat_, 5UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( submatrix(0,0) != 4 || submatrix(0,1) != 5 || submatrix(0,2) != -6 ||
-          submatrix(1,0) != 0 || submatrix(1,1) != 0 || submatrix(1,2) !=  0 ) {
+      if( sm(0,0) != 4 || sm(0,1) != 5 || sm(0,2) != -6 ||
+          sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) !=  0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Erasing a non-zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 4  5 -6 )\n( 0  0  0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Trying to erase an already erased element
-      submatrix.erase( 1UL, 2UL );
+      sm.erase( 1UL, 2UL );
 
-      checkRows    ( submatrix, 2UL );
-      checkColumns ( submatrix, 3UL );
-      checkNonZeros( submatrix, 3UL );
-      checkRows    ( mat_     , 5UL );
-      checkColumns ( mat_     , 4UL );
-      checkNonZeros( mat_     , 7UL );
+      checkRows    ( sm  , 2UL );
+      checkColumns ( sm  , 3UL );
+      checkNonZeros( sm  , 3UL );
+      checkRows    ( mat_, 5UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( submatrix(0,0) != 4 || submatrix(0,1) != 5 || submatrix(0,2) != -6 ||
-          submatrix(1,0) != 0 || submatrix(1,1) != 0 || submatrix(1,2) !=  0 ) {
+      if( sm(0,0) != 4 || sm(0,1) != 5 || sm(0,2) != -6 ||
+          sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) !=  0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Erasing a zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 4  5 -6 )\n( 0  0  0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -5205,20 +5205,20 @@ void ClassTest::testErase()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 3UL, 1UL, 2UL, 3UL );
+      SMT sm = submatrix( mat_, 3UL, 1UL, 2UL, 3UL );
 
       // Erasing the non-zero element at the end of the 1st row
       {
-         SMT::Iterator pos = submatrix.erase( 1UL, submatrix.find( 1UL, 2UL ) );
+         SMT::Iterator pos = sm.erase( 1UL, sm.find( 1UL, 2UL ) );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 3UL );
-         checkNonZeros( submatrix, 5UL );
-         checkRows    ( mat_     , 5UL );
-         checkColumns ( mat_     , 4UL );
-         checkNonZeros( mat_     , 9UL );
+         checkRows    ( sm  , 2UL );
+         checkColumns ( sm  , 3UL );
+         checkNonZeros( sm  , 5UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 9UL );
 
-         if( pos != submatrix.end( 1UL ) ) {
+         if( pos != sm.end( 1UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -5227,13 +5227,13 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( submatrix(0,0) !=  4 || submatrix(0,1) != 5 || submatrix(0,2) != -6 ||
-             submatrix(1,0) != -8 || submatrix(1,1) != 9 || submatrix(1,2) !=  0 ) {
+         if( sm(0,0) !=  4 || sm(0,1) != 5 || sm(0,2) != -6 ||
+             sm(1,0) != -8 || sm(1,1) != 9 || sm(1,2) !=  0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a non-zero element failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n(  4  5 -6 )\n( -8  9  0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5241,14 +5241,14 @@ void ClassTest::testErase()
 
       // Erasing the non-zero element at the beginning of the 1st row
       {
-         SMT::Iterator pos = submatrix.erase( 1UL, submatrix.find( 1UL, 0UL ) );
+         SMT::Iterator pos = sm.erase( 1UL, sm.find( 1UL, 0UL ) );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 3UL );
-         checkNonZeros( submatrix, 4UL );
-         checkRows    ( mat_     , 5UL );
-         checkColumns ( mat_     , 4UL );
-         checkNonZeros( mat_     , 8UL );
+         checkRows    ( sm  , 2UL );
+         checkColumns ( sm  , 3UL );
+         checkNonZeros( sm  , 4UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 8UL );
 
          if( pos->value() != 9 || pos->index() != 1 ) {
             std::ostringstream oss;
@@ -5262,13 +5262,13 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( submatrix(0,0) != 4 || submatrix(0,1) != 5 || submatrix(0,2) != -6 ||
-             submatrix(1,0) != 0 || submatrix(1,1) != 9 || submatrix(1,2) !=  0 ) {
+         if( sm(0,0) != 4 || sm(0,1) != 5 || sm(0,2) != -6 ||
+             sm(1,0) != 0 || sm(1,1) != 9 || sm(1,2) !=  0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a non-zero element failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 4  5 -6 )\n( 0  9  0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5276,16 +5276,16 @@ void ClassTest::testErase()
 
       // Erasing the non-zero element at the beginning of the 1st row
       {
-         SMT::Iterator pos = submatrix.erase( 1UL, submatrix.find( 1UL, 1UL ) );
+         SMT::Iterator pos = sm.erase( 1UL, sm.find( 1UL, 1UL ) );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 3UL );
-         checkNonZeros( submatrix, 3UL );
-         checkRows    ( mat_     , 5UL );
-         checkColumns ( mat_     , 4UL );
-         checkNonZeros( mat_     , 7UL );
+         checkRows    ( sm  , 2UL );
+         checkColumns ( sm  , 3UL );
+         checkNonZeros( sm  , 3UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 7UL );
 
-         if( pos != submatrix.end( 1UL ) ) {
+         if( pos != sm.end( 1UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -5294,13 +5294,13 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( submatrix(0,0) != 4 || submatrix(0,1) != 5 || submatrix(0,2) != -6 ||
-             submatrix(1,0) != 0 || submatrix(1,1) != 0 || submatrix(1,2) !=  0 ) {
+         if( sm(0,0) != 4 || sm(0,1) != 5 || sm(0,2) != -6 ||
+             sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) !=  0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a non-zero element failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 4  5 -6 )\n( 0  0  0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5308,16 +5308,16 @@ void ClassTest::testErase()
 
       // Trying to erase an already erased element
       {
-         SMT::Iterator pos = submatrix.erase( 1UL, submatrix.find( 1UL, 2UL ) );
+         SMT::Iterator pos = sm.erase( 1UL, sm.find( 1UL, 2UL ) );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 3UL );
-         checkNonZeros( submatrix, 3UL );
-         checkRows    ( mat_     , 5UL );
-         checkColumns ( mat_     , 4UL );
-         checkNonZeros( mat_     , 7UL );
+         checkRows    ( sm  , 2UL );
+         checkColumns ( sm  , 3UL );
+         checkNonZeros( sm  , 3UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 7UL );
 
-         if( pos != submatrix.end( 1UL ) ) {
+         if( pos != sm.end( 1UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -5326,13 +5326,13 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( submatrix(0,0) != 4 || submatrix(0,1) != 5 || submatrix(0,2) != -6 ||
-             submatrix(1,0) != 0 || submatrix(1,1) != 0 || submatrix(1,2) !=  0 ) {
+         if( sm(0,0) != 4 || sm(0,1) != 5 || sm(0,2) != -6 ||
+             sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) !=  0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a zero element failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 4  5 -6 )\n( 0  0  0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5349,20 +5349,20 @@ void ClassTest::testErase()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 3UL, 0UL, 2UL, 4UL );
+      SMT sm = submatrix( mat_, 3UL, 0UL, 2UL, 4UL );
 
       // Erasing the 0th row
       {
-         SMT::Iterator pos = submatrix.erase( 0UL, submatrix.begin( 0UL ), submatrix.end( 0UL ) );
+         SMT::Iterator pos = sm.erase( 0UL, sm.begin( 0UL ), sm.end( 0UL ) );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 4UL );
-         checkNonZeros( submatrix, 4UL );
-         checkRows    ( mat_     , 5UL );
-         checkColumns ( mat_     , 4UL );
-         checkNonZeros( mat_     , 7UL );
+         checkRows    ( sm  , 2UL );
+         checkColumns ( sm  , 4UL );
+         checkNonZeros( sm  , 4UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 7UL );
 
-         if( pos != submatrix.end( 0UL ) ) {
+         if( pos != sm.end( 0UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -5371,13 +5371,13 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( submatrix(0,0) != 0 || submatrix(0,1) !=  0 || submatrix(0,2) != 0 || submatrix(0,3) !=  0 ||
-             submatrix(1,0) != 7 || submatrix(1,1) != -8 || submatrix(1,2) != 9 || submatrix(1,3) != 10 ) {
+         if( sm(0,0) != 0 || sm(0,1) !=  0 || sm(0,2) != 0 || sm(0,3) !=  0 ||
+             sm(1,0) != 7 || sm(1,1) != -8 || sm(1,2) != 9 || sm(1,3) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing the 0th row failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0  0  0  0 )\n( 7 -8  9 10 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5385,14 +5385,14 @@ void ClassTest::testErase()
 
       // Erasing the first half of the 1st row
       {
-         SMT::Iterator pos = submatrix.erase( 1UL, submatrix.begin( 1UL ), submatrix.find( 1UL, 2UL ) );
+         SMT::Iterator pos = sm.erase( 1UL, sm.begin( 1UL ), sm.find( 1UL, 2UL ) );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 4UL );
-         checkNonZeros( submatrix, 2UL );
-         checkRows    ( mat_     , 5UL );
-         checkColumns ( mat_     , 4UL );
-         checkNonZeros( mat_     , 5UL );
+         checkRows    ( sm  , 2UL );
+         checkColumns ( sm  , 4UL );
+         checkNonZeros( sm  , 2UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 5UL );
 
          if( pos->value() != 9 || pos->index() != 2 ) {
             std::ostringstream oss;
@@ -5406,13 +5406,13 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( submatrix(0,0) != 0 || submatrix(0,1) != 0 || submatrix(0,2) != 0 || submatrix(0,3) !=  0 ||
-             submatrix(1,0) != 0 || submatrix(1,1) != 0 || submatrix(1,2) != 9 || submatrix(1,3) != 10 ) {
+         if( sm(0,0) != 0 || sm(0,1) != 0 || sm(0,2) != 0 || sm(0,3) !=  0 ||
+             sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) != 9 || sm(1,3) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing the first half of the 1st row failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0  0  0  0 )\n( 0  0  9 10 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5420,16 +5420,16 @@ void ClassTest::testErase()
 
       // Erasing the second half of the 1st row
       {
-         SMT::Iterator pos = submatrix.erase( 1UL, submatrix.find( 1UL, 2UL ), submatrix.end( 1UL ) );
+         SMT::Iterator pos = sm.erase( 1UL, sm.find( 1UL, 2UL ), sm.end( 1UL ) );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 4UL );
-         checkNonZeros( submatrix, 0UL );
-         checkRows    ( mat_     , 5UL );
-         checkColumns ( mat_     , 4UL );
-         checkNonZeros( mat_     , 3UL );
+         checkRows    ( sm  , 2UL );
+         checkColumns ( sm  , 4UL );
+         checkNonZeros( sm  , 0UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 3UL );
 
-         if( pos != submatrix.end( 1UL ) ) {
+         if( pos != sm.end( 1UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -5438,13 +5438,13 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( submatrix(0,0) != 0 || submatrix(0,1) != 0 || submatrix(0,2) != 0 || submatrix(0,3) != 0 ||
-             submatrix(1,0) != 0 || submatrix(1,1) != 0 || submatrix(1,2) != 0 || submatrix(1,3) != 0 ) {
+         if( sm(0,0) != 0 || sm(0,1) != 0 || sm(0,2) != 0 || sm(0,3) != 0 ||
+             sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) != 0 || sm(1,3) != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing the second half of the 1st row failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5452,16 +5452,16 @@ void ClassTest::testErase()
 
       // Trying to erase an empty range
       {
-         SMT::Iterator pos = submatrix.erase( 1UL, submatrix.begin( 1UL ), submatrix.begin( 1UL ) );
+         SMT::Iterator pos = sm.erase( 1UL, sm.begin( 1UL ), sm.begin( 1UL ) );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 4UL );
-         checkNonZeros( submatrix, 0UL );
-         checkRows    ( mat_     , 5UL );
-         checkColumns ( mat_     , 4UL );
-         checkNonZeros( mat_     , 3UL );
+         checkRows    ( sm  , 2UL );
+         checkColumns ( sm  , 4UL );
+         checkNonZeros( sm  , 0UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 3UL );
 
-         if( pos != submatrix.begin( 1UL ) ) {
+         if( pos != sm.begin( 1UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -5470,13 +5470,13 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( submatrix(0,0) != 0 || submatrix(0,1) != 0 || submatrix(0,2) != 0 || submatrix(0,3) != 0 ||
-             submatrix(1,0) != 0 || submatrix(1,1) != 0 || submatrix(1,2) != 0 || submatrix(1,3) != 0 ) {
+         if( sm(0,0) != 0 || sm(0,1) != 0 || sm(0,2) != 0 || sm(0,3) != 0 ||
+             sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) != 0 || sm(1,3) != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing an empty range failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5493,92 +5493,92 @@ void ClassTest::testErase()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 1UL, 3UL, 3UL, 2UL );
+      TSMT sm = submatrix( tmat_, 1UL, 3UL, 3UL, 2UL );
 
       // Erasing the non-zero element at the end of the 1st column
-      submatrix.erase( 2UL, 1UL );
+      sm.erase( 2UL, 1UL );
 
-      checkRows    ( submatrix, 3UL );
-      checkColumns ( submatrix, 2UL );
-      checkNonZeros( submatrix, 5UL );
-      checkRows    ( tmat_    , 4UL );
-      checkColumns ( tmat_    , 5UL );
-      checkNonZeros( tmat_    , 9UL );
+      checkRows    ( sm   , 3UL );
+      checkColumns ( sm   , 2UL );
+      checkNonZeros( sm   , 5UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 9UL );
 
-      if( submatrix(0,0) !=  4 || submatrix(0,1) != -8 ||
-          submatrix(1,0) !=  5 || submatrix(1,1) !=  9 ||
-          submatrix(2,0) != -6 || submatrix(2,1) !=  0 ) {
+      if( sm(0,0) !=  4 || sm(0,1) != -8 ||
+          sm(1,0) !=  5 || sm(1,1) !=  9 ||
+          sm(2,0) != -6 || sm(2,1) !=  0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Erasing a non-zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  4 -8 )\n(  5  9 )\n( -6  0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Erasing the non-zero element at the beginning of the 1st column
-      submatrix.erase( 0UL, 1UL );
+      sm.erase( 0UL, 1UL );
 
-      checkRows    ( submatrix, 3UL );
-      checkColumns ( submatrix, 2UL );
-      checkNonZeros( submatrix, 4UL );
-      checkRows    ( tmat_    , 4UL );
-      checkColumns ( tmat_    , 5UL );
-      checkNonZeros( tmat_    , 8UL );
+      checkRows    ( sm   , 3UL );
+      checkColumns ( sm   , 2UL );
+      checkNonZeros( sm   , 4UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 8UL );
 
-      if( submatrix(0,0) !=  4 || submatrix(0,1) != 0 ||
-          submatrix(1,0) !=  5 || submatrix(1,1) != 9 ||
-          submatrix(2,0) != -6 || submatrix(2,1) != 0 ) {
+      if( sm(0,0) !=  4 || sm(0,1) != 0 ||
+          sm(1,0) !=  5 || sm(1,1) != 9 ||
+          sm(2,0) != -6 || sm(2,1) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Erasing a non-zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  4 0 )\n(  5 9 )\n( -6 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Erasing the non-zero element at the beginning of the 1st column
-      submatrix.erase( 1UL, 1UL );
+      sm.erase( 1UL, 1UL );
 
-      checkRows    ( submatrix, 3UL );
-      checkColumns ( submatrix, 2UL );
-      checkNonZeros( submatrix, 3UL );
-      checkRows    ( tmat_    , 4UL );
-      checkColumns ( tmat_    , 5UL );
-      checkNonZeros( tmat_    , 7UL );
+      checkRows    ( sm   , 3UL );
+      checkColumns ( sm   , 2UL );
+      checkNonZeros( sm   , 3UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 7UL );
 
-      if( submatrix(0,0) !=  4 || submatrix(0,1) != 0 ||
-          submatrix(1,0) !=  5 || submatrix(1,1) != 0 ||
-          submatrix(2,0) != -6 || submatrix(2,1) != 0 ) {
+      if( sm(0,0) !=  4 || sm(0,1) != 0 ||
+          sm(1,0) !=  5 || sm(1,1) != 0 ||
+          sm(2,0) != -6 || sm(2,1) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Erasing a non-zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  4 0 )\n(  5 0 )\n( -6 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Trying to erase an already erased element
-      submatrix.erase( 2UL, 1UL );
+      sm.erase( 2UL, 1UL );
 
-      checkRows    ( submatrix, 3UL );
-      checkColumns ( submatrix, 2UL );
-      checkNonZeros( submatrix, 3UL );
-      checkRows    ( tmat_    , 4UL );
-      checkColumns ( tmat_    , 5UL );
-      checkNonZeros( tmat_    , 7UL );
+      checkRows    ( sm   , 3UL );
+      checkColumns ( sm   , 2UL );
+      checkNonZeros( sm   , 3UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 7UL );
 
-      if( submatrix(0,0) !=  4 || submatrix(0,1) != 0 ||
-          submatrix(1,0) !=  5 || submatrix(1,1) != 0 ||
-          submatrix(2,0) != -6 || submatrix(2,1) != 0 ) {
+      if( sm(0,0) !=  4 || sm(0,1) != 0 ||
+          sm(1,0) !=  5 || sm(1,1) != 0 ||
+          sm(2,0) != -6 || sm(2,1) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Erasing a zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  4 0 )\n(  5 0 )\n( -6 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -5594,20 +5594,20 @@ void ClassTest::testErase()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 1UL, 3UL, 3UL, 2UL );
+      TSMT sm = submatrix( tmat_, 1UL, 3UL, 3UL, 2UL );
 
       // Erasing the non-zero element at the end of the 1st column
       {
-         TSMT::Iterator pos = submatrix.erase( 1UL, submatrix.find( 2UL, 1UL ) );
+         TSMT::Iterator pos = sm.erase( 1UL, sm.find( 2UL, 1UL ) );
 
-         checkRows    ( submatrix, 3UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 5UL );
-         checkRows    ( tmat_    , 4UL );
-         checkColumns ( tmat_    , 5UL );
-         checkNonZeros( tmat_    , 9UL );
+         checkRows    ( sm   , 3UL );
+         checkColumns ( sm   , 2UL );
+         checkNonZeros( sm   , 5UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 5UL );
+         checkNonZeros( tmat_, 9UL );
 
-         if( pos != submatrix.end( 1UL ) ) {
+         if( pos != sm.end( 1UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -5616,14 +5616,14 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( submatrix(0,0) !=  4 || submatrix(0,1) != -8 ||
-             submatrix(1,0) !=  5 || submatrix(1,1) !=  9 ||
-             submatrix(2,0) != -6 || submatrix(2,1) !=  0 ) {
+         if( sm(0,0) !=  4 || sm(0,1) != -8 ||
+             sm(1,0) !=  5 || sm(1,1) !=  9 ||
+             sm(2,0) != -6 || sm(2,1) !=  0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a non-zero element failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n(  4 -8 )\n(  5  9 )\n( -6  0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5631,14 +5631,14 @@ void ClassTest::testErase()
 
       // Erasing the non-zero element at the beginning of the 1st column
       {
-         TSMT::Iterator pos = submatrix.erase( 1UL, submatrix.find( 0UL, 1UL ) );
+         TSMT::Iterator pos = sm.erase( 1UL, sm.find( 0UL, 1UL ) );
 
-         checkRows    ( submatrix, 3UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 4UL );
-         checkRows    ( tmat_    , 4UL );
-         checkColumns ( tmat_    , 5UL );
-         checkNonZeros( tmat_    , 8UL );
+         checkRows    ( sm   , 3UL );
+         checkColumns ( sm   , 2UL );
+         checkNonZeros( sm   , 4UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 5UL );
+         checkNonZeros( tmat_, 8UL );
 
          if( pos->value() != 9 || pos->index() != 1 ) {
             std::ostringstream oss;
@@ -5652,14 +5652,14 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( submatrix(0,0) !=  4 || submatrix(0,1) != 0 ||
-             submatrix(1,0) !=  5 || submatrix(1,1) != 9 ||
-             submatrix(2,0) != -6 || submatrix(2,1) != 0 ) {
+         if( sm(0,0) !=  4 || sm(0,1) != 0 ||
+             sm(1,0) !=  5 || sm(1,1) != 9 ||
+             sm(2,0) != -6 || sm(2,1) != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a non-zero element failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n(  4 0 )\n(  5 9 )\n( -6 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5667,16 +5667,16 @@ void ClassTest::testErase()
 
       // Erasing the non-zero element at the beginning of the 1st column
       {
-         TSMT::Iterator pos = submatrix.erase( 1UL, submatrix.find( 1UL, 1UL ) );
+         TSMT::Iterator pos = sm.erase( 1UL, sm.find( 1UL, 1UL ) );
 
-         checkRows    ( submatrix, 3UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 3UL );
-         checkRows    ( tmat_    , 4UL );
-         checkColumns ( tmat_    , 5UL );
-         checkNonZeros( tmat_    , 7UL );
+         checkRows    ( sm   , 3UL );
+         checkColumns ( sm   , 2UL );
+         checkNonZeros( sm   , 3UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 5UL );
+         checkNonZeros( tmat_, 7UL );
 
-         if( pos != submatrix.end( 1UL ) ) {
+         if( pos != sm.end( 1UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -5685,14 +5685,14 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( submatrix(0,0) !=  4 || submatrix(0,1) != 0 ||
-             submatrix(1,0) !=  5 || submatrix(1,1) != 0 ||
-             submatrix(2,0) != -6 || submatrix(2,1) != 0 ) {
+         if( sm(0,0) !=  4 || sm(0,1) != 0 ||
+             sm(1,0) !=  5 || sm(1,1) != 0 ||
+             sm(2,0) != -6 || sm(2,1) != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a non-zero element failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n(  4 0 )\n(  5 0 )\n( -6 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5700,16 +5700,16 @@ void ClassTest::testErase()
 
       // Trying to erase an already erased element
       {
-         TSMT::Iterator pos = submatrix.erase( 1UL, submatrix.find( 2UL, 1UL ) );
+         TSMT::Iterator pos = sm.erase( 1UL, sm.find( 2UL, 1UL ) );
 
-         checkRows    ( submatrix, 3UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 3UL );
-         checkRows    ( tmat_    , 4UL );
-         checkColumns ( tmat_    , 5UL );
-         checkNonZeros( tmat_    , 7UL );
+         checkRows    ( sm   , 3UL );
+         checkColumns ( sm   , 2UL );
+         checkNonZeros( sm   , 3UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 5UL );
+         checkNonZeros( tmat_, 7UL );
 
-         if( pos != submatrix.end( 1UL ) ) {
+         if( pos != sm.end( 1UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -5718,14 +5718,14 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( submatrix(0,0) !=  4 || submatrix(0,1) != 0 ||
-             submatrix(1,0) !=  5 || submatrix(1,1) != 0 ||
-             submatrix(2,0) != -6 || submatrix(2,1) != 0 ) {
+         if( sm(0,0) !=  4 || sm(0,1) != 0 ||
+             sm(1,0) !=  5 || sm(1,1) != 0 ||
+             sm(2,0) != -6 || sm(2,1) != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a zero element failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n(  4 0 )\n(  5 0 )\n( -6 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5742,20 +5742,20 @@ void ClassTest::testErase()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 0UL, 3UL, 4UL, 2UL );
+      TSMT sm = submatrix( tmat_, 0UL, 3UL, 4UL, 2UL );
 
       // Erasing the 0th column
       {
-         TSMT::Iterator pos = submatrix.erase( 0UL, submatrix.begin( 0UL ), submatrix.end( 0UL ) );
+         TSMT::Iterator pos = sm.erase( 0UL, sm.begin( 0UL ), sm.end( 0UL ) );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 4UL );
-         checkRows    ( tmat_    , 4UL );
-         checkColumns ( tmat_    , 5UL );
-         checkNonZeros( tmat_    , 7UL );
+         checkRows    ( sm   , 4UL );
+         checkColumns ( sm   , 2UL );
+         checkNonZeros( sm   , 4UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 5UL );
+         checkNonZeros( tmat_, 7UL );
 
-         if( pos != submatrix.end( 0UL ) ) {
+         if( pos != sm.end( 0UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -5764,15 +5764,15 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( submatrix(0,0) != 0 || submatrix(0,1) !=  7 ||
-             submatrix(1,0) != 0 || submatrix(1,1) != -8 ||
-             submatrix(2,0) != 0 || submatrix(2,1) !=  9 ||
-             submatrix(3,0) != 0 || submatrix(3,1) != 10 ) {
+         if( sm(0,0) != 0 || sm(0,1) !=  7 ||
+             sm(1,0) != 0 || sm(1,1) != -8 ||
+             sm(2,0) != 0 || sm(2,1) !=  9 ||
+             sm(3,0) != 0 || sm(3,1) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing the 0th column failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0  7 )\n( 0 -8 )\n( 0  9 )\n( 0 10 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5780,14 +5780,14 @@ void ClassTest::testErase()
 
       // Erasing the first half of the 1st column
       {
-         TSMT::Iterator pos = submatrix.erase( 1UL, submatrix.begin( 1UL ), submatrix.find( 2UL, 1UL ) );
+         TSMT::Iterator pos = sm.erase( 1UL, sm.begin( 1UL ), sm.find( 2UL, 1UL ) );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 2UL );
-         checkRows    ( tmat_    , 4UL );
-         checkColumns ( tmat_    , 5UL );
-         checkNonZeros( tmat_    , 5UL );
+         checkRows    ( sm   , 4UL );
+         checkColumns ( sm   , 2UL );
+         checkNonZeros( sm   , 2UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 5UL );
+         checkNonZeros( tmat_, 5UL );
 
          if( pos->value() != 9 || pos->index() != 2 ) {
             std::ostringstream oss;
@@ -5801,15 +5801,15 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( submatrix(0,0) != 0 || submatrix(0,1) !=  0 ||
-             submatrix(1,0) != 0 || submatrix(1,1) !=  0 ||
-             submatrix(2,0) != 0 || submatrix(2,1) !=  9 ||
-             submatrix(3,0) != 0 || submatrix(3,1) != 10 ) {
+         if( sm(0,0) != 0 || sm(0,1) !=  0 ||
+             sm(1,0) != 0 || sm(1,1) !=  0 ||
+             sm(2,0) != 0 || sm(2,1) !=  9 ||
+             sm(3,0) != 0 || sm(3,1) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing the 0th column failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0  0 )\n( 0  0 )\n( 0  9 )\n( 0 10 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5817,16 +5817,16 @@ void ClassTest::testErase()
 
       // Erasing the second half of the 1st column
       {
-         TSMT::Iterator pos = submatrix.erase( 1UL, submatrix.find( 2UL, 1UL ), submatrix.end( 1UL ) );
+         TSMT::Iterator pos = sm.erase( 1UL, sm.find( 2UL, 1UL ), sm.end( 1UL ) );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 0UL );
-         checkRows    ( tmat_    , 4UL );
-         checkColumns ( tmat_    , 5UL );
-         checkNonZeros( tmat_    , 3UL );
+         checkRows    ( sm   , 4UL );
+         checkColumns ( sm   , 2UL );
+         checkNonZeros( sm   , 0UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 5UL );
+         checkNonZeros( tmat_, 3UL );
 
-         if( pos != submatrix.end( 1UL ) ) {
+         if( pos != sm.end( 1UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -5835,15 +5835,15 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( submatrix(0,0) != 0 || submatrix(0,1) != 0 ||
-             submatrix(1,0) != 0 || submatrix(1,1) != 0 ||
-             submatrix(2,0) != 0 || submatrix(2,1) != 0 ||
-             submatrix(3,0) != 0 || submatrix(3,1) != 0 ) {
+         if( sm(0,0) != 0 || sm(0,1) != 0 ||
+             sm(1,0) != 0 || sm(1,1) != 0 ||
+             sm(2,0) != 0 || sm(2,1) != 0 ||
+             sm(3,0) != 0 || sm(3,1) != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing the 0th column failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 0 )\n( 0 0 )\n( 0 0 )\n( 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5851,16 +5851,16 @@ void ClassTest::testErase()
 
       // Trying to erase an empty range
       {
-         TSMT::Iterator pos = submatrix.erase( 1UL, submatrix.begin( 1UL ), submatrix.begin( 1UL ) );
+         TSMT::Iterator pos = sm.erase( 1UL, sm.begin( 1UL ), sm.begin( 1UL ) );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 0UL );
-         checkRows    ( tmat_    , 4UL );
-         checkColumns ( tmat_    , 5UL );
-         checkNonZeros( tmat_    , 3UL );
+         checkRows    ( sm   , 4UL );
+         checkColumns ( sm   , 2UL );
+         checkNonZeros( sm   , 0UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 5UL );
+         checkNonZeros( tmat_, 3UL );
 
-         if( pos != submatrix.begin( 1UL ) ) {
+         if( pos != sm.begin( 1UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -5869,15 +5869,15 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( submatrix(0,0) != 0 || submatrix(0,1) != 0 ||
-             submatrix(1,0) != 0 || submatrix(1,1) != 0 ||
-             submatrix(2,0) != 0 || submatrix(2,1) != 0 ||
-             submatrix(3,0) != 0 || submatrix(3,1) != 0 ) {
+         if( sm(0,0) != 0 || sm(0,1) != 0 ||
+             sm(1,0) != 0 || sm(1,1) != 0 ||
+             sm(2,0) != 0 || sm(2,1) != 0 ||
+             sm(3,0) != 0 || sm(3,1) != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing the 0th column failed\n"
                 << " Details:\n"
-                << "   Result:\n" << submatrix << "\n"
+                << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 0 )\n( 0 0 )\n( 0 0 )\n( 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5907,23 +5907,23 @@ void ClassTest::testReserve()
 
       MT mat( 3UL, 20UL );
 
-      SMT submatrix = sub( mat, 1UL, 0UL, 1UL, 20UL );
+      SMT sm = submatrix( mat, 1UL, 0UL, 1UL, 20UL );
 
       // Increasing the capacity of the row
-      submatrix.reserve( 10UL );
+      sm.reserve( 10UL );
 
-      checkRows    ( submatrix,  1UL );
-      checkColumns ( submatrix, 20UL );
-      checkCapacity( submatrix, 10UL );
-      checkNonZeros( submatrix,  0UL );
+      checkRows    ( sm,  1UL );
+      checkColumns ( sm, 20UL );
+      checkCapacity( sm, 10UL );
+      checkNonZeros( sm,  0UL );
 
       // Further increasing the capacity of the row
-      submatrix.reserve( 15UL );
+      sm.reserve( 15UL );
 
-      checkRows    ( submatrix,  1UL );
-      checkColumns ( submatrix, 20UL );
-      checkCapacity( submatrix, 15UL );
-      checkNonZeros( submatrix,  0UL );
+      checkRows    ( sm,  1UL );
+      checkColumns ( sm, 20UL );
+      checkCapacity( sm, 15UL );
+      checkNonZeros( sm,  0UL );
    }
 
 
@@ -5936,23 +5936,23 @@ void ClassTest::testReserve()
 
       TMT mat( 20UL, 3UL );
 
-      TSMT submatrix = sub( mat, 0UL, 1UL, 20UL, 1UL );
+      TSMT sm = submatrix( mat, 0UL, 1UL, 20UL, 1UL );
 
       // Increasing the capacity of the column
-      submatrix.reserve( 10UL );
+      sm.reserve( 10UL );
 
-      checkRows    ( submatrix, 20UL );
-      checkColumns ( submatrix,  1UL );
-      checkCapacity( submatrix, 10UL );
-      checkNonZeros( submatrix,  0UL );
+      checkRows    ( sm, 20UL );
+      checkColumns ( sm,  1UL );
+      checkCapacity( sm, 10UL );
+      checkNonZeros( sm,  0UL );
 
       // Further increasing the capacity of the column
-      submatrix.reserve( 15UL );
+      sm.reserve( 15UL );
 
-      checkRows    ( submatrix, 20UL );
-      checkColumns ( submatrix,  1UL );
-      checkCapacity( submatrix, 15UL );
-      checkNonZeros( submatrix,  0UL );
+      checkRows    ( sm, 20UL );
+      checkColumns ( sm,  1UL );
+      checkCapacity( sm, 15UL );
+      checkNonZeros( sm,  0UL );
    }
 }
 //*************************************************************************************************
@@ -5979,61 +5979,61 @@ void ClassTest::testScale()
       initialize();
 
       // Initialization check
-      SMT submatrix = sub( mat_, 2UL, 1UL, 2UL, 2UL );
+      SMT sm = submatrix( mat_, 2UL, 1UL, 2UL, 2UL );
 
-      checkRows    ( submatrix, 2UL );
-      checkColumns ( submatrix, 2UL );
-      checkNonZeros( submatrix, 3UL );
-      checkNonZeros( submatrix, 0UL, 1UL );
-      checkNonZeros( submatrix, 1UL, 2UL );
+      checkRows    ( sm, 2UL );
+      checkColumns ( sm, 2UL );
+      checkNonZeros( sm, 3UL );
+      checkNonZeros( sm, 0UL, 1UL );
+      checkNonZeros( sm, 1UL, 2UL );
 
-      if( submatrix(0,0) != 0 || submatrix(0,1) != -3 ||
-          submatrix(1,0) != 4 || submatrix(1,1) !=  5 ) {
+      if( sm(0,0) != 0 || sm(0,1) != -3 ||
+          sm(1,0) != 4 || sm(1,1) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 0 -3 )\n( 4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Integral scaling of the matrix
-      submatrix.scale( 2 );
+      sm.scale( 2 );
 
-      checkRows    ( submatrix, 2UL );
-      checkColumns ( submatrix, 2UL );
-      checkNonZeros( submatrix, 3UL );
-      checkNonZeros( submatrix, 0UL, 1UL );
-      checkNonZeros( submatrix, 1UL, 2UL );
+      checkRows    ( sm, 2UL );
+      checkColumns ( sm, 2UL );
+      checkNonZeros( sm, 3UL );
+      checkNonZeros( sm, 0UL, 1UL );
+      checkNonZeros( sm, 1UL, 2UL );
 
-      if( submatrix(0,0) != 0 || submatrix(0,1) != -6 ||
-          submatrix(1,0) != 8 || submatrix(1,1) != 10 ) {
+      if( sm(0,0) != 0 || sm(0,1) != -6 ||
+          sm(1,0) != 8 || sm(1,1) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 0 -6 )\n( 8 10 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Floating point scaling of the matrix
-      submatrix.scale( 0.5 );
+      sm.scale( 0.5 );
 
-      checkRows    ( submatrix, 2UL );
-      checkColumns ( submatrix, 2UL );
-      checkNonZeros( submatrix, 3UL );
-      checkNonZeros( submatrix, 0UL, 1UL );
-      checkNonZeros( submatrix, 1UL, 2UL );
+      checkRows    ( sm, 2UL );
+      checkColumns ( sm, 2UL );
+      checkNonZeros( sm, 3UL );
+      checkNonZeros( sm, 0UL, 1UL );
+      checkNonZeros( sm, 1UL, 2UL );
 
-      if( submatrix(0,0) != 0 || submatrix(0,1) != -3 ||
-          submatrix(1,0) != 4 || submatrix(1,1) !=  5 ) {
+      if( sm(0,0) != 0 || sm(0,1) != -3 ||
+          sm(1,0) != 4 || sm(1,1) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 0 -3 )\n( 4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -6050,61 +6050,61 @@ void ClassTest::testScale()
       initialize();
 
       // Initialization check
-      TSMT submatrix = sub( tmat_, 1UL, 2UL, 2UL, 2UL );
+      TSMT sm = submatrix( tmat_, 1UL, 2UL, 2UL, 2UL );
 
-      checkRows    ( submatrix, 2UL );
-      checkColumns ( submatrix, 2UL );
-      checkNonZeros( submatrix, 3UL );
-      checkNonZeros( submatrix, 0UL, 1UL );
-      checkNonZeros( submatrix, 1UL, 2UL );
+      checkRows    ( sm, 2UL );
+      checkColumns ( sm, 2UL );
+      checkNonZeros( sm, 3UL );
+      checkNonZeros( sm, 0UL, 1UL );
+      checkNonZeros( sm, 1UL, 2UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 4 ||
-          submatrix(1,0) != -3 || submatrix(1,1) != 5 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 4 ||
+          sm(1,0) != -3 || sm(1,1) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 4 )\n( -3 5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Integral scaling of the matrix
-      submatrix.scale( 2 );
+      sm.scale( 2 );
 
-      checkRows    ( submatrix, 2UL );
-      checkColumns ( submatrix, 2UL );
-      checkNonZeros( submatrix, 3UL );
-      checkNonZeros( submatrix, 0UL, 1UL );
-      checkNonZeros( submatrix, 1UL, 2UL );
+      checkRows    ( sm, 2UL );
+      checkColumns ( sm, 2UL );
+      checkNonZeros( sm, 3UL );
+      checkNonZeros( sm, 0UL, 1UL );
+      checkNonZeros( sm, 1UL, 2UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) !=  8 ||
-          submatrix(1,0) != -6 || submatrix(1,1) != 10 ) {
+      if( sm(0,0) !=  0 || sm(0,1) !=  8 ||
+          sm(1,0) != -6 || sm(1,1) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0  8 )\n( -6 10 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Floating point scaling of the matrix
-      submatrix.scale( 0.5 );
+      sm.scale( 0.5 );
 
-      checkRows    ( submatrix, 2UL );
-      checkColumns ( submatrix, 2UL );
-      checkNonZeros( submatrix, 3UL );
-      checkNonZeros( submatrix, 0UL, 1UL );
-      checkNonZeros( submatrix, 1UL, 2UL );
+      checkRows    ( sm, 2UL );
+      checkColumns ( sm, 2UL );
+      checkNonZeros( sm, 3UL );
+      checkNonZeros( sm, 0UL, 1UL );
+      checkNonZeros( sm, 1UL, 2UL );
 
-      if( submatrix(0,0) !=  0 || submatrix(0,1) != 4 ||
-          submatrix(1,0) != -3 || submatrix(1,1) != 5 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 4 ||
+          sm(1,0) != -3 || sm(1,1) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"
              << " Details:\n"
-             << "   Result:\n" << submatrix << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 4 )\n( -3 5 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -6135,26 +6135,26 @@ void ClassTest::testFind()
 
       initialize();
 
-      SMT submatrix = sub( mat_, 1UL, 1UL, 3UL, 2UL );
+      SMT sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
 
-      checkRows    ( submatrix, 3UL );
-      checkColumns ( submatrix, 2UL );
-      checkNonZeros( submatrix, 4UL );
-      checkNonZeros( submatrix, 0UL, 1UL );
-      checkNonZeros( submatrix, 1UL, 1UL );
-      checkNonZeros( submatrix, 2UL, 2UL );
+      checkRows    ( sm, 3UL );
+      checkColumns ( sm, 2UL );
+      checkNonZeros( sm, 4UL );
+      checkNonZeros( sm, 0UL, 1UL );
+      checkNonZeros( sm, 1UL, 1UL );
+      checkNonZeros( sm, 2UL, 2UL );
 
       // Searching for the first element
       {
-         ConstIterator pos( submatrix.find( 0UL, 0UL ) );
+         ConstIterator pos( sm.find( 0UL, 0UL ) );
 
-         if( pos == submatrix.end( 0UL ) ) {
+         if( pos == sm.end( 0UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Element could not be found\n"
                 << " Details:\n"
                 << "   Required position = (0,0)\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
          else if( pos->index() != 0 || pos->value() != 1 ) {
@@ -6166,22 +6166,22 @@ void ClassTest::testFind()
                 << "   Found index    = " << pos->index() << "\n"
                 << "   Expected value = 1\n"
                 << "   Value at index = " << pos->value() << "\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Searching for the second element
       {
-         ConstIterator pos( submatrix.find( 1UL, 1UL ) );
+         ConstIterator pos( sm.find( 1UL, 1UL ) );
 
-         if( pos == submatrix.end( 1UL ) ) {
+         if( pos == sm.end( 1UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Element could not be found\n"
                 << " Details:\n"
                 << "   Required position = (1,1)\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
          else if( pos->index() != 1 || pos->value() != -3 ) {
@@ -6193,16 +6193,16 @@ void ClassTest::testFind()
                 << "   Found index    = " << pos->index() << "\n"
                 << "   Expected value = -3\n"
                 << "   Value at index = " << pos->value() << "\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Searching for a non-existing non-zero element
       {
-         ConstIterator pos( submatrix.find( 1UL, 0UL ) );
+         ConstIterator pos( sm.find( 1UL, 0UL ) );
 
-         if( pos != submatrix.end( 1UL ) ) {
+         if( pos != sm.end( 1UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Non-existing element could be found\n"
@@ -6211,7 +6211,7 @@ void ClassTest::testFind()
                 << "   Found index    = " << pos->index() << "\n"
                 << "   Expected value = 0\n"
                 << "   Value at index = " << pos->value() << "\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -6229,26 +6229,26 @@ void ClassTest::testFind()
 
       initialize();
 
-      TSMT submatrix = sub( tmat_, 1UL, 1UL, 2UL, 3UL );
+      TSMT sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
 
-      checkRows    ( submatrix, 2UL );
-      checkColumns ( submatrix, 3UL );
-      checkNonZeros( submatrix, 4UL );
-      checkNonZeros( submatrix, 0UL, 1UL );
-      checkNonZeros( submatrix, 1UL, 1UL );
-      checkNonZeros( submatrix, 2UL, 2UL );
+      checkRows    ( sm, 2UL );
+      checkColumns ( sm, 3UL );
+      checkNonZeros( sm, 4UL );
+      checkNonZeros( sm, 0UL, 1UL );
+      checkNonZeros( sm, 1UL, 1UL );
+      checkNonZeros( sm, 2UL, 2UL );
 
       // Searching for the first element
       {
-         ConstIterator pos( submatrix.find( 0UL, 0UL ) );
+         ConstIterator pos( sm.find( 0UL, 0UL ) );
 
-         if( pos == submatrix.end( 0UL ) ) {
+         if( pos == sm.end( 0UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Element could not be found\n"
                 << " Details:\n"
                 << "   Required position = (0,0)\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
          else if( pos->index() != 0 || pos->value() != 1 ) {
@@ -6260,22 +6260,22 @@ void ClassTest::testFind()
                 << "   Found index    = " << pos->index() << "\n"
                 << "   Expected value = 1\n"
                 << "   Value at index = " << pos->value() << "\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Searching for the second element
       {
-         ConstIterator pos( submatrix.find( 1UL, 2UL ) );
+         ConstIterator pos( sm.find( 1UL, 2UL ) );
 
-         if( pos == submatrix.end( 2UL ) ) {
+         if( pos == sm.end( 2UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Element could not be found\n"
                 << " Details:\n"
                 << "   Required position = (1,2)\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
          else if( pos->index() != 1 || pos->value() != 5 ) {
@@ -6287,16 +6287,16 @@ void ClassTest::testFind()
                 << "   Found index    = " << pos->index() << "\n"
                 << "   Expected value = 5\n"
                 << "   Value at index = " << pos->value() << "\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Searching for a non-existing non-zero element
       {
-         ConstIterator pos( submatrix.find( 1UL, 0UL ) );
+         ConstIterator pos( sm.find( 1UL, 0UL ) );
 
-         if( pos != submatrix.end( 0UL ) ) {
+         if( pos != sm.end( 0UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Non-existing element could be found\n"
@@ -6305,7 +6305,7 @@ void ClassTest::testFind()
                 << "   Found index    = " << pos->index() << "\n"
                 << "   Expected value = 0\n"
                 << "   Value at index = " << pos->value() << "\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -6334,24 +6334,24 @@ void ClassTest::testLowerBound()
 
       typedef SMT::ConstIterator  ConstIterator;
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 1UL, 4UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 1UL, 4UL );
 
-      checkRows    ( submatrix, 1UL );
-      checkColumns ( submatrix, 4UL );
-      checkNonZeros( submatrix, 1UL );
-      checkNonZeros( submatrix, 0UL, 1UL );
+      checkRows    ( sm, 1UL );
+      checkColumns ( sm, 4UL );
+      checkNonZeros( sm, 1UL );
+      checkNonZeros( sm, 0UL, 1UL );
 
       // Determining the lower bound for position (0,0)
       {
-         ConstIterator pos( submatrix.lowerBound( 0UL, 0UL ) );
+         ConstIterator pos( sm.lowerBound( 0UL, 0UL ) );
 
-         if( pos == submatrix.end( 0UL ) ) {
+         if( pos == sm.end( 0UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Lower bound could not be determined\n"
                 << " Details:\n"
                 << "   Required position = (0,0)\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
          else if( pos->index() != 1 || pos->value() != 1 ) {
@@ -6363,22 +6363,22 @@ void ClassTest::testLowerBound()
                 << "   Found index    = " << pos->index() << "\n"
                 << "   Expected value = 1\n"
                 << "   Value at index = " << pos->value() << "\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Determining the lower bound for position (0,1)
       {
-         ConstIterator pos( submatrix.lowerBound( 0UL, 1UL ) );
+         ConstIterator pos( sm.lowerBound( 0UL, 1UL ) );
 
-         if( pos == submatrix.end( 0UL ) ) {
+         if( pos == sm.end( 0UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Lower bound could not be determined\n"
                 << " Details:\n"
                 << "   Required position = (0,1)\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
          else if( pos->index() != 1 || pos->value() != 1 ) {
@@ -6390,22 +6390,22 @@ void ClassTest::testLowerBound()
                 << "   Found index    = " << pos->index() << "\n"
                 << "   Expected value = 1\n"
                 << "   Value at index = " << pos->value() << "\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Determining the lower bound for position (0,2)
       {
-         ConstIterator pos( submatrix.lowerBound( 0UL, 2UL ) );
+         ConstIterator pos( sm.lowerBound( 0UL, 2UL ) );
 
-         if( pos != submatrix.end( 0UL ) ) {
+         if( pos != sm.end( 0UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Lower bound could not be determined\n"
                 << " Details:\n"
                 << "   Required position = (0,2)\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -6421,24 +6421,24 @@ void ClassTest::testLowerBound()
 
       typedef TSMT::ConstIterator  ConstIterator;
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 4UL, 1UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 4UL, 1UL );
 
-      checkRows    ( submatrix, 4UL );
-      checkColumns ( submatrix, 1UL );
-      checkNonZeros( submatrix, 1UL );
-      checkNonZeros( submatrix, 0UL, 1UL );
+      checkRows    ( sm, 4UL );
+      checkColumns ( sm, 1UL );
+      checkNonZeros( sm, 1UL );
+      checkNonZeros( sm, 0UL, 1UL );
 
       // Determining the lower bound for position (0,0)
       {
-         ConstIterator pos( submatrix.lowerBound( 0UL, 0UL ) );
+         ConstIterator pos( sm.lowerBound( 0UL, 0UL ) );
 
-         if( pos == submatrix.end( 0UL ) ) {
+         if( pos == sm.end( 0UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Lower bound could not be determined\n"
                 << " Details:\n"
                 << "   Required position = (0,0)\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
          else if( pos->index() != 1 || pos->value() != 1 ) {
@@ -6450,22 +6450,22 @@ void ClassTest::testLowerBound()
                 << "   Found index    = " << pos->index() << "\n"
                 << "   Expected value = 1\n"
                 << "   Value at index = " << pos->value() << "\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Determining the lower bound for position (1,0)
       {
-         ConstIterator pos( submatrix.lowerBound( 1UL, 0UL ) );
+         ConstIterator pos( sm.lowerBound( 1UL, 0UL ) );
 
-         if( pos == submatrix.end( 0UL ) ) {
+         if( pos == sm.end( 0UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Lower bound could not be determined\n"
                 << " Details:\n"
                 << "   Required position = (1,0)\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
          else if( pos->index() != 1 || pos->value() != 1 ) {
@@ -6477,22 +6477,22 @@ void ClassTest::testLowerBound()
                 << "   Found index    = " << pos->index() << "\n"
                 << "   Expected value = 1\n"
                 << "   Value at index = " << pos->value() << "\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Determining the lower bound for position (2,0)
       {
-         ConstIterator pos( submatrix.lowerBound( 2UL, 0UL ) );
+         ConstIterator pos( sm.lowerBound( 2UL, 0UL ) );
 
-         if( pos != submatrix.end( 0UL ) ) {
+         if( pos != sm.end( 0UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Lower bound could not be determined\n"
                 << " Details:\n"
                 << "   Required position = (2,0)\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -6521,24 +6521,24 @@ void ClassTest::testUpperBound()
 
       typedef SMT::ConstIterator  ConstIterator;
 
-      SMT submatrix = sub( mat_, 1UL, 0UL, 1UL, 4UL );
+      SMT sm = submatrix( mat_, 1UL, 0UL, 1UL, 4UL );
 
-      checkRows    ( submatrix, 1UL );
-      checkColumns ( submatrix, 4UL );
-      checkNonZeros( submatrix, 1UL );
-      checkNonZeros( submatrix, 0UL, 1UL );
+      checkRows    ( sm, 1UL );
+      checkColumns ( sm, 4UL );
+      checkNonZeros( sm, 1UL );
+      checkNonZeros( sm, 0UL, 1UL );
 
       // Determining the upper bound for position (0,0)
       {
-         ConstIterator pos( submatrix.upperBound( 0UL, 0UL ) );
+         ConstIterator pos( sm.upperBound( 0UL, 0UL ) );
 
-         if( pos == submatrix.end( 0UL ) ) {
+         if( pos == sm.end( 0UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Upper bound could not be determined\n"
                 << " Details:\n"
                 << "   Required position = (0,0)\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
          else if( pos->index() != 1 || pos->value() != 1 ) {
@@ -6550,37 +6550,37 @@ void ClassTest::testUpperBound()
                 << "   Found index    = " << pos->index() << "\n"
                 << "   Expected value = 1\n"
                 << "   Value at index = " << pos->value() << "\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Determining the upper bound for position (0,1)
       {
-         ConstIterator pos( submatrix.upperBound( 0UL, 1UL ) );
+         ConstIterator pos( sm.upperBound( 0UL, 1UL ) );
 
-         if( pos != submatrix.end( 0UL ) ) {
+         if( pos != sm.end( 0UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Upper bound could not be determined\n"
                 << " Details:\n"
                 << "   Required position = (0,1)\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Determining the upper bound for position (0,2)
       {
-         ConstIterator pos( submatrix.upperBound( 0UL, 2UL ) );
+         ConstIterator pos( sm.upperBound( 0UL, 2UL ) );
 
-         if( pos != submatrix.end( 0UL ) ) {
+         if( pos != sm.end( 0UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Upper bound could not be determined\n"
                 << " Details:\n"
                 << "   Required position = (0,2)\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -6596,24 +6596,24 @@ void ClassTest::testUpperBound()
 
       typedef TSMT::ConstIterator  ConstIterator;
 
-      TSMT submatrix = sub( tmat_, 0UL, 1UL, 4UL, 1UL );
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 4UL, 1UL );
 
-      checkRows    ( submatrix, 4UL );
-      checkColumns ( submatrix, 1UL );
-      checkNonZeros( submatrix, 1UL );
-      checkNonZeros( submatrix, 0UL, 1UL );
+      checkRows    ( sm, 4UL );
+      checkColumns ( sm, 1UL );
+      checkNonZeros( sm, 1UL );
+      checkNonZeros( sm, 0UL, 1UL );
 
       // Determining the upper bound for position (0,0)
       {
-         ConstIterator pos( submatrix.upperBound( 0UL, 0UL ) );
+         ConstIterator pos( sm.upperBound( 0UL, 0UL ) );
 
-         if( pos == submatrix.end( 0UL ) ) {
+         if( pos == sm.end( 0UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Upper bound could not be determined\n"
                 << " Details:\n"
                 << "   Required position = (0,0)\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
          else if( pos->index() != 1 || pos->value() != 1 ) {
@@ -6625,37 +6625,37 @@ void ClassTest::testUpperBound()
                 << "   Found index    = " << pos->index() << "\n"
                 << "   Expected value = 1\n"
                 << "   Value at index = " << pos->value() << "\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Determining the upper bound for position (1,0)
       {
-         ConstIterator pos( submatrix.upperBound( 1UL, 0UL ) );
+         ConstIterator pos( sm.upperBound( 1UL, 0UL ) );
 
-         if( pos != submatrix.end( 0UL ) ) {
+         if( pos != sm.end( 0UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Upper bound could not be determined\n"
                 << " Details:\n"
                 << "   Required position = (1,0)\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Determining the upper bound for position (2,0)
       {
-         ConstIterator pos( submatrix.upperBound( 2UL, 0UL ) );
+         ConstIterator pos( sm.upperBound( 2UL, 0UL ) );
 
-         if( pos != submatrix.end( 0UL ) ) {
+         if( pos != sm.end( 0UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Upper bound could not be determined\n"
                 << " Details:\n"
                 << "   Required position = (2,0)\n"
-                << "   Current submatrix:\n" << submatrix << "\n";
+                << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -6686,28 +6686,28 @@ void ClassTest::testIsDefault()
 
       // isDefault with default submatrix
       {
-         SMT submatrix = sub( mat_, 0UL, 0UL, 1UL, 4UL );
+         SMT sm = submatrix( mat_, 0UL, 0UL, 1UL, 4UL );
 
-         if( isDefault( submatrix ) != true ) {
+         if( isDefault( sm ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // isDefault with non-default submatrix
       {
-         SMT submatrix = sub( mat_, 1UL, 0UL, 1UL, 4UL );
+         SMT sm = submatrix( mat_, 1UL, 0UL, 1UL, 4UL );
 
-         if( isDefault( submatrix ) != false ) {
+         if( isDefault( sm ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -6725,28 +6725,28 @@ void ClassTest::testIsDefault()
 
       // isDefault with default submatrix
       {
-         TSMT submatrix = sub( tmat_, 0UL, 0UL, 4UL, 1UL );
+         TSMT sm = submatrix( tmat_, 0UL, 0UL, 4UL, 1UL );
 
-         if( isDefault( submatrix ) != true ) {
+         if( isDefault( sm ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // isDefault with non-default submatrix
       {
-         TSMT submatrix = sub( tmat_, 0UL, 1UL, 4UL, 1UL );
+         TSMT sm = submatrix( tmat_, 0UL, 1UL, 4UL, 1UL );
 
-         if( isDefault( submatrix ) != false ) {
+         if( isDefault( sm ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -6780,40 +6780,40 @@ void ClassTest::testIsNan()
 
       // isnan with empty 2x2 matrix
       {
-         SubmatrixType submatrix = sub( mat, 0UL, 2UL, 2UL, 2UL );
+         SubmatrixType sm = submatrix( mat, 0UL, 2UL, 2UL, 2UL );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 0UL );
-         checkNonZeros( submatrix, 0UL, 0UL );
-         checkNonZeros( submatrix, 1UL, 0UL );
+         checkRows    ( sm, 2UL );
+         checkColumns ( sm, 2UL );
+         checkNonZeros( sm, 0UL );
+         checkNonZeros( sm, 0UL, 0UL );
+         checkNonZeros( sm, 1UL, 0UL );
 
-         if( isnan( submatrix ) != false ) {
+         if( isnan( sm ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isnan evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // isnan with filled 2x3 matrix
       {
-         SubmatrixType submatrix = sub( mat, 2UL, 1UL, 2UL, 3UL );
+         SubmatrixType sm = submatrix( mat, 2UL, 1UL, 2UL, 3UL );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 3UL );
-         checkNonZeros( submatrix, 4UL );
-         checkNonZeros( submatrix, 0UL, 1UL );
-         checkNonZeros( submatrix, 1UL, 3UL );
+         checkRows    ( sm, 2UL );
+         checkColumns ( sm, 3UL );
+         checkNonZeros( sm, 4UL );
+         checkNonZeros( sm, 0UL, 1UL );
+         checkNonZeros( sm, 1UL, 3UL );
 
-         if( isnan( submatrix ) != false ) {
+         if( isnan( sm ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isnan evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -6834,40 +6834,40 @@ void ClassTest::testIsNan()
 
       // isnan with empty 2x2 matrix
       {
-         SubmatrixType submatrix = sub( mat, 2UL, 0UL, 2UL, 2UL );
+         SubmatrixType sm = submatrix( mat, 2UL, 0UL, 2UL, 2UL );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 0UL );
-         checkNonZeros( submatrix, 0UL, 0UL );
-         checkNonZeros( submatrix, 1UL, 0UL );
+         checkRows    ( sm, 2UL );
+         checkColumns ( sm, 2UL );
+         checkNonZeros( sm, 0UL );
+         checkNonZeros( sm, 0UL, 0UL );
+         checkNonZeros( sm, 1UL, 0UL );
 
-         if( isnan( submatrix ) != false ) {
+         if( isnan( sm ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isnan evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // isnan with filled 3x2 matrix
       {
-         SubmatrixType submatrix = sub( mat, 1UL, 2UL, 3UL, 2UL );
+         SubmatrixType sm = submatrix( mat, 1UL, 2UL, 3UL, 2UL );
 
-         checkRows    ( submatrix, 3UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 4UL );
-         checkNonZeros( submatrix, 0UL, 1UL );
-         checkNonZeros( submatrix, 1UL, 3UL );
+         checkRows    ( sm, 3UL );
+         checkColumns ( sm, 2UL );
+         checkNonZeros( sm, 4UL );
+         checkNonZeros( sm, 0UL, 1UL );
+         checkNonZeros( sm, 1UL, 3UL );
 
-         if( isnan( submatrix ) != false ) {
+         if( isnan( sm ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isnan evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -6900,83 +6900,83 @@ void ClassTest::testIsDiagonal()
 
       // Non-quadratic submatrix
       {
-         SMT submatrix = sub( mat_, 0UL, 0UL, 2UL, 3UL );
+         SMT sm = submatrix( mat_, 0UL, 0UL, 2UL, 3UL );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 3UL );
-         checkNonZeros( submatrix, 2UL );
-         checkNonZeros( submatrix, 0UL, 1UL );
-         checkNonZeros( submatrix, 1UL, 1UL );
+         checkRows    ( sm, 2UL );
+         checkColumns ( sm, 3UL );
+         checkNonZeros( sm, 2UL );
+         checkNonZeros( sm, 0UL, 1UL );
+         checkNonZeros( sm, 1UL, 1UL );
 
-         if( isDiagonal( submatrix ) != false ) {
+         if( isDiagonal( sm ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDiagonal evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Default initialized matrix
       {
-         SMT submatrix = sub( mat_, 0UL, 2UL, 2UL, 2UL );
+         SMT sm = submatrix( mat_, 0UL, 2UL, 2UL, 2UL );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 0UL );
-         checkNonZeros( submatrix, 0UL, 0UL );
-         checkNonZeros( submatrix, 1UL, 0UL );
+         checkRows    ( sm, 2UL );
+         checkColumns ( sm, 2UL );
+         checkNonZeros( sm, 0UL );
+         checkNonZeros( sm, 0UL, 0UL );
+         checkNonZeros( sm, 1UL, 0UL );
 
-         if( isDiagonal( submatrix ) != true ) {
+         if( isDiagonal( sm ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDiagonal evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Diagonal matrix
       {
-         SMT submatrix = sub( mat_, 0UL, 0UL, 3UL, 3UL );
+         SMT sm = submatrix( mat_, 0UL, 0UL, 3UL, 3UL );
 
-         checkRows    ( submatrix, 3UL );
-         checkColumns ( submatrix, 3UL );
-         checkNonZeros( submatrix, 3UL );
-         checkNonZeros( submatrix, 0UL, 1UL );
-         checkNonZeros( submatrix, 1UL, 1UL );
-         checkNonZeros( submatrix, 2UL, 1UL );
+         checkRows    ( sm, 3UL );
+         checkColumns ( sm, 3UL );
+         checkNonZeros( sm, 3UL );
+         checkNonZeros( sm, 0UL, 1UL );
+         checkNonZeros( sm, 1UL, 1UL );
+         checkNonZeros( sm, 2UL, 1UL );
 
-         if( isDiagonal( submatrix ) != true ) {
+         if( isDiagonal( sm ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDiagonal evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Non-diagonal matrix
       {
-         SMT submatrix = sub( mat_, 0UL, 0UL, 4UL, 4UL );
+         SMT sm = submatrix( mat_, 0UL, 0UL, 4UL, 4UL );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 4UL );
-         checkNonZeros( submatrix, 6UL );
-         checkNonZeros( submatrix, 0UL, 1UL );
-         checkNonZeros( submatrix, 1UL, 1UL );
-         checkNonZeros( submatrix, 2UL, 1UL );
-         checkNonZeros( submatrix, 3UL, 3UL );
+         checkRows    ( sm, 4UL );
+         checkColumns ( sm, 4UL );
+         checkNonZeros( sm, 6UL );
+         checkNonZeros( sm, 0UL, 1UL );
+         checkNonZeros( sm, 1UL, 1UL );
+         checkNonZeros( sm, 2UL, 1UL );
+         checkNonZeros( sm, 3UL, 3UL );
 
-         if( isDiagonal( submatrix ) != false ) {
+         if( isDiagonal( sm ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDiagonal evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -6996,83 +6996,83 @@ void ClassTest::testIsDiagonal()
 
       // Non-quadratic submatrix
       {
-         TSMT submatrix = sub( tmat_, 0UL, 0UL, 3UL, 2UL );
+         TSMT sm = submatrix( tmat_, 0UL, 0UL, 3UL, 2UL );
 
-         checkRows    ( submatrix, 3UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 2UL );
-         checkNonZeros( submatrix, 0UL, 1UL );
-         checkNonZeros( submatrix, 1UL, 1UL );
+         checkRows    ( sm, 3UL );
+         checkColumns ( sm, 2UL );
+         checkNonZeros( sm, 2UL );
+         checkNonZeros( sm, 0UL, 1UL );
+         checkNonZeros( sm, 1UL, 1UL );
 
-         if( isDiagonal( submatrix ) != false ) {
+         if( isDiagonal( sm ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDiagonal evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Default initialized matrix
       {
-         TSMT submatrix = sub( tmat_, 2UL, 0UL, 2UL, 2UL );
+         TSMT sm = submatrix( tmat_, 2UL, 0UL, 2UL, 2UL );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 0UL );
-         checkNonZeros( submatrix, 0UL, 0UL );
-         checkNonZeros( submatrix, 1UL, 0UL );
+         checkRows    ( sm, 2UL );
+         checkColumns ( sm, 2UL );
+         checkNonZeros( sm, 0UL );
+         checkNonZeros( sm, 0UL, 0UL );
+         checkNonZeros( sm, 1UL, 0UL );
 
-         if( isDiagonal( submatrix ) != true ) {
+         if( isDiagonal( sm ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDiagonal evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Diagonal matrix
       {
-         TSMT submatrix = sub( tmat_, 0UL, 0UL, 3UL, 3UL );
+         TSMT sm = submatrix( tmat_, 0UL, 0UL, 3UL, 3UL );
 
-         checkRows    ( submatrix, 3UL );
-         checkColumns ( submatrix, 3UL );
-         checkNonZeros( submatrix, 3UL );
-         checkNonZeros( submatrix, 0UL, 1UL );
-         checkNonZeros( submatrix, 1UL, 1UL );
-         checkNonZeros( submatrix, 2UL, 1UL );
+         checkRows    ( sm, 3UL );
+         checkColumns ( sm, 3UL );
+         checkNonZeros( sm, 3UL );
+         checkNonZeros( sm, 0UL, 1UL );
+         checkNonZeros( sm, 1UL, 1UL );
+         checkNonZeros( sm, 2UL, 1UL );
 
-         if( isDiagonal( submatrix ) != true ) {
+         if( isDiagonal( sm ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDiagonal evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Non-diagonal matrix
       {
-         TSMT submatrix = sub( tmat_, 0UL, 0UL, 4UL, 4UL );
+         TSMT sm = submatrix( tmat_, 0UL, 0UL, 4UL, 4UL );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 4UL );
-         checkNonZeros( submatrix, 6UL );
-         checkNonZeros( submatrix, 0UL, 1UL );
-         checkNonZeros( submatrix, 1UL, 1UL );
-         checkNonZeros( submatrix, 2UL, 1UL );
-         checkNonZeros( submatrix, 3UL, 3UL );
+         checkRows    ( sm, 4UL );
+         checkColumns ( sm, 4UL );
+         checkNonZeros( sm, 6UL );
+         checkNonZeros( sm, 0UL, 1UL );
+         checkNonZeros( sm, 1UL, 1UL );
+         checkNonZeros( sm, 2UL, 1UL );
+         checkNonZeros( sm, 3UL, 3UL );
 
-         if( isDiagonal( submatrix ) != false ) {
+         if( isDiagonal( sm ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDiagonal evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -7107,105 +7107,105 @@ void ClassTest::testIsSymmetric()
 
       // Non-quadratic matrix
       {
-         SMT submatrix = sub( mat_, 0UL, 0UL, 2UL, 3UL );
+         SMT sm = submatrix( mat_, 0UL, 0UL, 2UL, 3UL );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 3UL );
-         checkNonZeros( submatrix, 2UL );
-         checkNonZeros( submatrix, 0UL, 1UL );
-         checkNonZeros( submatrix, 1UL, 1UL );
+         checkRows    ( sm, 2UL );
+         checkColumns ( sm, 3UL );
+         checkNonZeros( sm, 2UL );
+         checkNonZeros( sm, 0UL, 1UL );
+         checkNonZeros( sm, 1UL, 1UL );
 
-         if( isSymmetric( submatrix ) != false ) {
+         if( isSymmetric( sm ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSymmetric evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Default initialized matrix
       {
-         SMT submatrix = sub( mat_, 0UL, 2UL, 2UL, 2UL );
+         SMT sm = submatrix( mat_, 0UL, 2UL, 2UL, 2UL );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 0UL );
-         checkNonZeros( submatrix, 0UL, 0UL );
-         checkNonZeros( submatrix, 1UL, 0UL );
+         checkRows    ( sm, 2UL );
+         checkColumns ( sm, 2UL );
+         checkNonZeros( sm, 0UL );
+         checkNonZeros( sm, 0UL, 0UL );
+         checkNonZeros( sm, 1UL, 0UL );
 
-         if( isSymmetric( submatrix ) != true ) {
+         if( isSymmetric( sm ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSymmetric evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Diagonal matrix
       {
-         SMT submatrix = sub( mat_, 0UL, 0UL, 3UL, 3UL );
+         SMT sm = submatrix( mat_, 0UL, 0UL, 3UL, 3UL );
 
-         checkRows    ( submatrix, 3UL );
-         checkColumns ( submatrix, 3UL );
-         checkNonZeros( submatrix, 3UL );
-         checkNonZeros( submatrix, 0UL, 1UL );
-         checkNonZeros( submatrix, 1UL, 1UL );
-         checkNonZeros( submatrix, 2UL, 1UL );
+         checkRows    ( sm, 3UL );
+         checkColumns ( sm, 3UL );
+         checkNonZeros( sm, 3UL );
+         checkNonZeros( sm, 0UL, 1UL );
+         checkNonZeros( sm, 1UL, 1UL );
+         checkNonZeros( sm, 2UL, 1UL );
 
-         if( isSymmetric( submatrix ) != true ) {
+         if( isSymmetric( sm ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSymmetric evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Non-symmetric matrix
       {
-         SMT submatrix = sub( mat_, 1UL, 0UL, 4UL, 4UL );
+         SMT sm = submatrix( mat_, 1UL, 0UL, 4UL, 4UL );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 4UL );
-         checkNonZeros( submatrix, 9UL );
-         checkNonZeros( submatrix, 0UL, 1UL );
-         checkNonZeros( submatrix, 1UL, 2UL );
-         checkNonZeros( submatrix, 2UL, 2UL );
-         checkNonZeros( submatrix, 3UL, 4UL );
+         checkRows    ( sm, 4UL );
+         checkColumns ( sm, 4UL );
+         checkNonZeros( sm, 9UL );
+         checkNonZeros( sm, 0UL, 1UL );
+         checkNonZeros( sm, 1UL, 2UL );
+         checkNonZeros( sm, 2UL, 2UL );
+         checkNonZeros( sm, 3UL, 4UL );
 
-         if( isSymmetric( submatrix ) != false ) {
+         if( isSymmetric( sm ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSymmetric evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Symmetric matrix
       {
-         SMT submatrix = sub( mat_, 0UL, 0UL, 4UL, 4UL );
+         SMT sm = submatrix( mat_, 0UL, 0UL, 4UL, 4UL );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 4UL );
-         checkNonZeros( submatrix, 6UL );
-         checkNonZeros( submatrix, 0UL, 1UL );
-         checkNonZeros( submatrix, 1UL, 1UL );
-         checkNonZeros( submatrix, 2UL, 2UL );
-         checkNonZeros( submatrix, 3UL, 2UL );
+         checkRows    ( sm, 4UL );
+         checkColumns ( sm, 4UL );
+         checkNonZeros( sm, 6UL );
+         checkNonZeros( sm, 0UL, 1UL );
+         checkNonZeros( sm, 1UL, 1UL );
+         checkNonZeros( sm, 2UL, 2UL );
+         checkNonZeros( sm, 3UL, 2UL );
 
-         if( isSymmetric( submatrix ) != true ) {
+         if( isSymmetric( sm ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSymmetric evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -7227,105 +7227,105 @@ void ClassTest::testIsSymmetric()
 
       // Non-quadratic matrix
       {
-         TSMT submatrix = sub( tmat_, 0UL, 0UL, 3UL, 2UL );
+         TSMT sm = submatrix( tmat_, 0UL, 0UL, 3UL, 2UL );
 
-         checkRows    ( submatrix, 3UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 2UL );
-         checkNonZeros( submatrix, 0UL, 1UL );
-         checkNonZeros( submatrix, 1UL, 1UL );
+         checkRows    ( sm, 3UL );
+         checkColumns ( sm, 2UL );
+         checkNonZeros( sm, 2UL );
+         checkNonZeros( sm, 0UL, 1UL );
+         checkNonZeros( sm, 1UL, 1UL );
 
-         if( isSymmetric( submatrix ) != false ) {
+         if( isSymmetric( sm ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSymmetric evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Default initialized matrix
       {
-         TSMT submatrix = sub( tmat_, 2UL, 0UL, 2UL, 2UL );
+         TSMT sm = submatrix( tmat_, 2UL, 0UL, 2UL, 2UL );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 0UL );
-         checkNonZeros( submatrix, 0UL, 0UL );
-         checkNonZeros( submatrix, 1UL, 0UL );
+         checkRows    ( sm, 2UL );
+         checkColumns ( sm, 2UL );
+         checkNonZeros( sm, 0UL );
+         checkNonZeros( sm, 0UL, 0UL );
+         checkNonZeros( sm, 1UL, 0UL );
 
-         if( isSymmetric( submatrix ) != true ) {
+         if( isSymmetric( sm ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSymmetric evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Diagonal matrix
       {
-         TSMT submatrix = sub( tmat_, 0UL, 0UL, 3UL, 3UL );
+         TSMT sm = submatrix( tmat_, 0UL, 0UL, 3UL, 3UL );
 
-         checkRows    ( submatrix, 3UL );
-         checkColumns ( submatrix, 3UL );
-         checkNonZeros( submatrix, 3UL );
-         checkNonZeros( submatrix, 0UL, 1UL );
-         checkNonZeros( submatrix, 1UL, 1UL );
-         checkNonZeros( submatrix, 2UL, 1UL );
+         checkRows    ( sm, 3UL );
+         checkColumns ( sm, 3UL );
+         checkNonZeros( sm, 3UL );
+         checkNonZeros( sm, 0UL, 1UL );
+         checkNonZeros( sm, 1UL, 1UL );
+         checkNonZeros( sm, 2UL, 1UL );
 
-         if( isSymmetric( submatrix ) != true ) {
+         if( isSymmetric( sm ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSymmetric evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Non-symmetric matrix
       {
-         TSMT submatrix = sub( tmat_, 0UL, 1UL, 4UL, 4UL );
+         TSMT sm = submatrix( tmat_, 0UL, 1UL, 4UL, 4UL );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 4UL );
-         checkNonZeros( submatrix, 9UL );
-         checkNonZeros( submatrix, 0UL, 1UL );
-         checkNonZeros( submatrix, 1UL, 2UL );
-         checkNonZeros( submatrix, 2UL, 2UL );
-         checkNonZeros( submatrix, 3UL, 4UL );
+         checkRows    ( sm, 4UL );
+         checkColumns ( sm, 4UL );
+         checkNonZeros( sm, 9UL );
+         checkNonZeros( sm, 0UL, 1UL );
+         checkNonZeros( sm, 1UL, 2UL );
+         checkNonZeros( sm, 2UL, 2UL );
+         checkNonZeros( sm, 3UL, 4UL );
 
-         if( isSymmetric( submatrix ) != false ) {
+         if( isSymmetric( sm ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSymmetric evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Symmetric matrix
       {
-         TSMT submatrix = sub( tmat_, 0UL, 0UL, 4UL, 4UL );
+         TSMT sm = submatrix( tmat_, 0UL, 0UL, 4UL, 4UL );
 
-         checkRows    ( submatrix, 4UL );
-         checkColumns ( submatrix, 4UL );
-         checkNonZeros( submatrix, 6UL );
-         checkNonZeros( submatrix, 0UL, 1UL );
-         checkNonZeros( submatrix, 1UL, 1UL );
-         checkNonZeros( submatrix, 2UL, 2UL );
-         checkNonZeros( submatrix, 3UL, 2UL );
+         checkRows    ( sm, 4UL );
+         checkColumns ( sm, 4UL );
+         checkNonZeros( sm, 6UL );
+         checkNonZeros( sm, 0UL, 1UL );
+         checkNonZeros( sm, 1UL, 1UL );
+         checkNonZeros( sm, 2UL, 2UL );
+         checkNonZeros( sm, 3UL, 2UL );
 
-         if( isSymmetric( submatrix ) != true ) {
+         if( isSymmetric( sm ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSymmetric evaluation\n"
                 << " Details:\n"
-                << "   Submatrix:\n" << submatrix << "\n";
+                << "   Submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -7356,13 +7356,13 @@ void ClassTest::testMinimum()
 
       // Attempt to find the minimum in an empty submatrix
       {
-         SMT submatrix = sub( mat_, 0UL, 2UL, 2UL, 2UL );
+         SMT sm = submatrix( mat_, 0UL, 2UL, 2UL, 2UL );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 0UL );
+         checkRows    ( sm, 2UL );
+         checkColumns ( sm, 2UL );
+         checkNonZeros( sm, 0UL );
 
-         const int minimum = min( submatrix );
+         const int minimum = min( sm );
 
          if( minimum != 0 ) {
             std::ostringstream oss;
@@ -7377,13 +7377,13 @@ void ClassTest::testMinimum()
 
       // Attempt to find the minimum in a partially filled submatrix
       {
-         SMT submatrix = sub( mat_, 1UL, 1UL, 2UL, 3UL );
+         SMT sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 3UL );
-         checkNonZeros( submatrix, 2UL );
+         checkRows    ( sm, 2UL );
+         checkColumns ( sm, 3UL );
+         checkNonZeros( sm, 2UL );
 
-         const int minimum = min( submatrix );
+         const int minimum = min( sm );
 
          if( minimum != -3 ) {
             std::ostringstream oss;
@@ -7398,13 +7398,13 @@ void ClassTest::testMinimum()
 
       // Attempt to find the minimum in a fully filled submatrix
       {
-         SMT submatrix = sub( mat_, 3UL, 1UL, 2UL, 3UL );
+         SMT sm = submatrix( mat_, 3UL, 1UL, 2UL, 3UL );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 3UL );
-         checkNonZeros( submatrix, 6UL );
+         checkRows    ( sm, 2UL );
+         checkColumns ( sm, 3UL );
+         checkNonZeros( sm, 6UL );
 
-         const int minimum = min( submatrix );
+         const int minimum = min( sm );
 
          if( minimum != -8 ) {
             std::ostringstream oss;
@@ -7430,13 +7430,13 @@ void ClassTest::testMinimum()
 
       // Attempt to find the minimum in an empty submatrix
       {
-         TSMT submatrix = sub( tmat_, 2UL, 0UL, 2UL, 2UL );
+         TSMT sm = submatrix( tmat_, 2UL, 0UL, 2UL, 2UL );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 0UL );
+         checkRows    ( sm, 2UL );
+         checkColumns ( sm, 2UL );
+         checkNonZeros( sm, 0UL );
 
-         const int minimum = min( submatrix );
+         const int minimum = min( sm );
 
          if( minimum != 0 ) {
             std::ostringstream oss;
@@ -7451,13 +7451,13 @@ void ClassTest::testMinimum()
 
       // Attempt to find the minimum in a partially filled submatrix
       {
-         TSMT submatrix = sub( tmat_, 1UL, 1UL, 3UL, 2UL );
+         TSMT sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
 
-         checkRows    ( submatrix, 3UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 2UL );
+         checkRows    ( sm, 3UL );
+         checkColumns ( sm, 2UL );
+         checkNonZeros( sm, 2UL );
 
-         const int minimum = min( submatrix );
+         const int minimum = min( sm );
 
          if( minimum != -3 ) {
             std::ostringstream oss;
@@ -7472,13 +7472,13 @@ void ClassTest::testMinimum()
 
       // Attempt to find the minimum in a fully filled submatrix
       {
-         TSMT submatrix = sub( tmat_, 1UL, 3UL, 3UL, 2UL );
+         TSMT sm = submatrix( tmat_, 1UL, 3UL, 3UL, 2UL );
 
-         checkRows    ( submatrix, 3UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 6UL );
+         checkRows    ( sm, 3UL );
+         checkColumns ( sm, 2UL );
+         checkNonZeros( sm, 6UL );
 
-         const int minimum = min( submatrix );
+         const int minimum = min( sm );
 
          if( minimum != -8 ) {
             std::ostringstream oss;
@@ -7517,13 +7517,13 @@ void ClassTest::testMaximum()
 
       // Attempt to find the maximum in an empty submatrix
       {
-         SMT submatrix = sub( mat_, 0UL, 2UL, 2UL, 2UL );
+         SMT sm = submatrix( mat_, 0UL, 2UL, 2UL, 2UL );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 0UL );
+         checkRows    ( sm, 2UL );
+         checkColumns ( sm, 2UL );
+         checkNonZeros( sm, 0UL );
 
-         const int maximum = max( submatrix );
+         const int maximum = max( sm );
 
          if( maximum != 0 ) {
             std::ostringstream oss;
@@ -7538,13 +7538,13 @@ void ClassTest::testMaximum()
 
       // Attempt to find the maximum in a partially filled submatrix
       {
-         SMT submatrix = sub( mat_, 1UL, 1UL, 2UL, 3UL );
+         SMT sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 3UL );
-         checkNonZeros( submatrix, 2UL );
+         checkRows    ( sm, 2UL );
+         checkColumns ( sm, 3UL );
+         checkNonZeros( sm, 2UL );
 
-         const int maximum = max( submatrix );
+         const int maximum = max( sm );
 
          if( maximum != 1 ) {
             std::ostringstream oss;
@@ -7559,13 +7559,13 @@ void ClassTest::testMaximum()
 
       // Attempt to find the maximum in a fully filled submatrix
       {
-         SMT submatrix = sub( mat_, 3UL, 1UL, 2UL, 3UL );
+         SMT sm = submatrix( mat_, 3UL, 1UL, 2UL, 3UL );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 3UL );
-         checkNonZeros( submatrix, 6UL );
+         checkRows    ( sm, 2UL );
+         checkColumns ( sm, 3UL );
+         checkNonZeros( sm, 6UL );
 
-         const int maximum = max( submatrix );
+         const int maximum = max( sm );
 
          if( maximum != 10 ) {
             std::ostringstream oss;
@@ -7591,13 +7591,13 @@ void ClassTest::testMaximum()
 
       // Attempt to find the maximum in an empty submatrix
       {
-         TSMT submatrix = sub( tmat_, 2UL, 0UL, 2UL, 2UL );
+         TSMT sm = submatrix( tmat_, 2UL, 0UL, 2UL, 2UL );
 
-         checkRows    ( submatrix, 2UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 0UL );
+         checkRows    ( sm, 2UL );
+         checkColumns ( sm, 2UL );
+         checkNonZeros( sm, 0UL );
 
-         const int maximum = max( submatrix );
+         const int maximum = max( sm );
 
          if( maximum != 0 ) {
             std::ostringstream oss;
@@ -7612,13 +7612,13 @@ void ClassTest::testMaximum()
 
       // Attempt to find the maximum in a partially filled submatrix
       {
-         TSMT submatrix = sub( tmat_, 1UL, 1UL, 3UL, 2UL );
+         TSMT sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
 
-         checkRows    ( submatrix, 3UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 2UL );
+         checkRows    ( sm, 3UL );
+         checkColumns ( sm, 2UL );
+         checkNonZeros( sm, 2UL );
 
-         const int maximum = max( submatrix );
+         const int maximum = max( sm );
 
          if( maximum != 1 ) {
             std::ostringstream oss;
@@ -7633,13 +7633,13 @@ void ClassTest::testMaximum()
 
       // Attempt to find the maximum in a fully filled submatrix
       {
-         TSMT submatrix = sub( tmat_, 1UL, 3UL, 3UL, 2UL );
+         TSMT sm = submatrix( tmat_, 1UL, 3UL, 3UL, 2UL );
 
-         checkRows    ( submatrix, 3UL );
-         checkColumns ( submatrix, 2UL );
-         checkNonZeros( submatrix, 6UL );
+         checkRows    ( sm, 3UL );
+         checkColumns ( sm, 2UL );
+         checkNonZeros( sm, 6UL );
 
-         const int maximum = max( submatrix );
+         const int maximum = max( sm );
 
          if( maximum != 10 ) {
             std::ostringstream oss;
