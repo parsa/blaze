@@ -1980,7 +1980,7 @@ inline typename EnableIf< IsMatVecMultExpr<VT>, typename SubvectorExprTrait<VT>:
    typename VT::LeftOperand  left ( (~sv).leftOperand()  );
    typename VT::RightOperand right( (~sv).rightOperand() );
 
-   return sub( left, index, 0UL, size, left.columns() ) * right;
+   return submatrix( left, index, 0UL, size, left.columns() ) * right;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2009,7 +2009,7 @@ inline typename EnableIf< IsTVecMatMultExpr<VT>, typename SubvectorExprTrait<VT>
    typename VT::LeftOperand  left ( (~sv).leftOperand()  );
    typename VT::RightOperand right( (~sv).rightOperand() );
 
-   return left * sub( right, 0UL, index, right.rows(), size );
+   return left * submatrix( right, 0UL, index, right.rows(), size );
 }
 /*! \endcond */
 //*************************************************************************************************
