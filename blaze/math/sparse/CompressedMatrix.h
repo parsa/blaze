@@ -1339,11 +1339,13 @@ inline void CompressedMatrix<Type,SO>::erase( size_t i, size_t j )
 //*************************************************************************************************
 /*!\brief Erasing an element from the sparse matrix.
 //
-// \param i The row index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
+// \param i The row/column index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
 // \param pos Iterator to the element to be erased.
 // \return Iterator to the element after the erased element.
 //
-// This function erases an element from the sparse matrix.
+// This function erases an element from the sparse matrix. In case the storage order is set to
+// \a rowMajor the function erases an element from row \a i, in case the storage flag is set to
+// \a columnMajor the function erases an element from column \a i.
 */
 template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
@@ -1364,12 +1366,14 @@ inline typename CompressedMatrix<Type,SO>::Iterator
 //*************************************************************************************************
 /*!\brief Erasing a range of elements from the sparse matrix.
 //
-// \param i The row index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
+// \param i The row/column index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
 // \param first Iterator to first element to be erased.
 // \param last Iterator just past the last element to be erased.
 // \return Iterator to the element after the erased element.
 //
-// This function erases a range of element from the sparse matrix.
+// This function erases a range of element from the sparse matrix. In case the storage order is
+// set to \a rowMajor the function erases a range of elements from row \a i, in case the storage
+// flag is set to \a columnMajor the function erases a range of elements from column \a i.
 */
 template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
@@ -1498,7 +1502,7 @@ inline void CompressedMatrix<Type,SO>::reserve( size_t nonzeros )
 /*!\brief Setting the minimum capacity of a specific row/column of the sparse matrix.
 //
 // \param i The row/column index of the new element \f$[0..M-1]\f$ or \f$[0..N-1]\f$.
-// \param nonzeros The new minimum capacity of the specified row.
+// \param nonzeros The new minimum capacity of the specified row/column.
 // \return void
 //
 // This function increases the capacity of row/column \a i of the sparse matrix to at least
@@ -3361,6 +3365,7 @@ typename CompressedMatrix<Type,true>::Iterator
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Erasing an element from the sparse matrix.
 //
 // \param i The row index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
@@ -3379,17 +3384,19 @@ inline void CompressedMatrix<Type,true>::erase( size_t i, size_t j )
    if( pos != end_[j] )
       end_[j] = std::copy( pos+1, end_[j], pos );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Erasing an element from the sparse matrix.
 //
 // \param j The column index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
 // \param pos Iterator to the element to be erased.
 // \return void
 //
-// This function erases an element from the sparse matrix.
+// This function erases an element from column \a j of the sparse matrix.
 */
 template< typename Type >  // Data type of the sparse matrix
 inline typename CompressedMatrix<Type,true>::Iterator
@@ -3403,10 +3410,12 @@ inline typename CompressedMatrix<Type,true>::Iterator
 
    return pos;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Erasing a range of elements from the sparse matrix.
 //
 // \param j The column index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
@@ -3414,7 +3423,7 @@ inline typename CompressedMatrix<Type,true>::Iterator
 // \param last Iterator just past the last element to be erased.
 // \return void
 //
-// This function erases a range of elements from the sparse matrix.
+// This function erases a range of elements from column \a j of the sparse matrix.
 */
 template< typename Type >  // Data type of the sparse matrix
 inline typename CompressedMatrix<Type,true>::Iterator
@@ -3430,6 +3439,7 @@ inline typename CompressedMatrix<Type,true>::Iterator
 
    return first;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
