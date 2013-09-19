@@ -105,13 +105,13 @@ namespace blaze {
 //
 // \n \section sparse_submatrix_setup Setup of Sparse Submatrices
 //
-// A view to a sparse submatrix can very conveniently be created via the \c sub() function. This
-// view can be treated as any other sparse matrix, i.e. it can be assigned to, it can be copied
-// from, and it can be used in arithmetic operations. The view can also be used on both sides of
-// an assignment: The submatrix can be either used as an alias to grant write access to a specific
-// submatrix of a sparse matrix primitive on the left-hand side of an assignment or to grant
-// read-access to a specific submatrix of a sparse matrix primitive or expression on the right-hand
-// side of an assignment. The following example demonstrates this in detail:
+// A view to a sparse submatrix can very conveniently be created via the \c submatrix() function.
+// This view can be treated as any other sparse matrix, i.e. it can be assigned to, it can be
+// copied from, and it can be used in arithmetic operations. The view can also be used on both
+// sides of an assignment: The submatrix can be either used as an alias to grant write access to
+// a specific submatrix of a sparse matrix primitive on the left-hand side of an assignment or
+// to grant read-access to a specific submatrix of a sparse matrix primitive or expression on
+// the right-hand side of an assignment. The following example demonstrates this in detail:
 
    \code
    typedef blaze::CompressedMatrix<double,blaze::rowMajor>  SparseMatrixType;
@@ -122,16 +122,16 @@ namespace blaze {
    // ... Resizing and initialization
 
    // Creating a sparse submatrix of size 8x4, starting in row 0 and column 2
-   blaze::SparseSubmatrix<SparseMatrixType> sm = sub( A, 0UL, 2UL, 8UL, 4UL );
+   blaze::SparseSubmatrix<SparseMatrixType> sm = submatrix( A, 0UL, 2UL, 8UL, 4UL );
 
    // Setting the submatrix of A to a 8x4 submatrix of B
-   sm = sub( B, 0UL, 0UL, 8UL, 4UL );
+   sm = submatrix( B, 0UL, 0UL, 8UL, 4UL );
 
    // Copying the dense matrix C into another 8x4 submatrix of A
-   sub( A, 8UL, 2UL, 8UL, 4UL ) = C;
+   submatrix( A, 8UL, 2UL, 8UL, 4UL ) = C;
 
    // Assigning part of the result of a matrix addition to the first submatrix
-   sm = sub( sub( B, 0UL, 0UL, 8UL, 4UL ) + C );
+   sm = submatrix( submatrix( B, 0UL, 0UL, 8UL, 4UL ) + C );
    \endcode
 
 // \n \section sparse_submatrix_element_access Element access
@@ -145,7 +145,7 @@ namespace blaze {
    // ... Resizing and initialization
 
    // Creating a 8x8 submatrix, starting from position (4,4)
-   blaze::SparseSubmatrix<MatrixType> sm = sub( A, 4UL, 4UL, 8UL, 8UL );
+   blaze::SparseSubmatrix<MatrixType> sm = submatrix( A, 4UL, 4UL, 8UL, 8UL );
 
    // Setting the element (0,0) of the submatrix, which corresponds to
    // the element at position (4,4) in matrix A
@@ -165,7 +165,7 @@ namespace blaze {
    // ... Resizing and initialization
 
    // Creating a reference to a specific submatrix of matrix A
-   SubmatrixType sm = sub( A, 16UL, 16UL, 64UL, 128UL );
+   SubmatrixType sm = submatrix( A, 16UL, 16UL, 64UL, 128UL );
 
    // Traversing the elements of the 0th row via iterators to non-const elements
    for( SubmatrixType::Iterator it=sm.begin(0); it!=sv.end(0); ++it ) {
@@ -194,7 +194,7 @@ namespace blaze {
    MatrixType A( 256UL, 512UL );  // Non-initialized matrix of size 256x512
 
    typedef blaze::SparseSubmatrix<MatrixType>  SubmatrixType;
-   SubmatrixType sm( sub( A, 10UL, 10UL, 16UL, 16UL ) );  // View to a 16x16 submatrix of A
+   SubmatrixType sm = submatrix( A, 10UL, 10UL, 16UL, 16UL );  // View to a 16x16 submatrix of A
 
    // The function call operator provides access to all possible elements of the sparse submatrix,
    // including the zero elements. In case the subscript operator is used to access an element
@@ -233,7 +233,7 @@ namespace blaze {
    // ... Resizing and initialization
 
    // Creating a view to the a 8x12 submatrix of matrix A
-   SubmatrixType sm = sub( A, 0UL, 0UL, 8UL, 12UL );
+   SubmatrixType sm = submatrix( A, 0UL, 0UL, 8UL, 12UL );
 
    sm.rows();      // Returns the number of rows of the submatrix
    sm.columns();   // Returns the number of columns of the submatrix
@@ -242,7 +242,7 @@ namespace blaze {
 
    sm.resize( 10UL, 8UL );  // Compilation error: Cannot resize a submatrix of a matrix
 
-   SubmatrixType sm2 = sub( A, 8UL, 0UL, 12UL, 8UL );
+   SubmatrixType sm2 = submatrix( A, 8UL, 0UL, 12UL, 8UL );
    swap( sm, sm2 );  // Compilation error: Swap operation not allowed
    \endcode
 
@@ -265,26 +265,26 @@ namespace blaze {
    // ... Resizing and initialization
 
    typedef SparseSubmatrix<SparseMatrixType>  SubmatrixType;
-   SubmatrixType sm( sub( S1, 0UL, 0UL, 8UL, 8UL ) );  // View on the 8x8 submatrix of matrix S1
-                                                       // starting from row 0 and column 0
+   SubmatrixType sm = submatrix( S1, 0UL, 0UL, 8UL, 8UL );  // View on the 8x8 submatrix of matrix S1
+                                                            // starting from row 0 and column 0
 
-   sub( S1, 0UL, 8UL, 8UL, 8UL ) = S2;  // Sparse matrix initialization of the 8x8 submatrix
-                                        // starting in row 0 and column 8
-   sm = D1;                             // Dense matrix initialization of the second 8x8 submatrix
+   submatrix( S1, 0UL, 8UL, 8UL, 8UL ) = S2;  // Sparse matrix initialization of the 8x8 submatrix
+                                              // starting in row 0 and column 8
+   sm = D1;                                   // Dense matrix initialization of the second 8x8 submatrix
 
-   S3 = sm + S2;                              // Sparse matrix/sparse matrix addition
-   D2 = D1  - sub( S1, 8UL, 0UL, 8UL, 8UL );  // Dense matrix/sparse matrix subtraction
-   S2 = sm * sub( S1, 8UL, 8UL, 8UL, 8UL );   // Sparse matrix/sparse matrix multiplication
+   S3 = sm + S2;                                    // Sparse matrix/sparse matrix addition
+   D2 = D1  - submatrix( S1, 8UL, 0UL, 8UL, 8UL );  // Dense matrix/sparse matrix subtraction
+   S2 = sm * submatrix( S1, 8UL, 8UL, 8UL, 8UL );   // Sparse matrix/sparse matrix multiplication
 
-   sub( S1, 8UL, 0UL, 8UL, 8UL ) *= 2.0;     // In-place scaling of a submatrix of S1
-   b = sub( S1, 8UL, 8UL, 8UL, 8UL ) * 2.0;  // Scaling of the a submatrix of S1
-   b = 2.0 * sm;                             // Scaling of the a submatrix of S1
+   submatrix( S1, 8UL, 0UL, 8UL, 8UL ) *= 2.0;     // In-place scaling of a submatrix of S1
+   b = submatrix( S1, 8UL, 8UL, 8UL, 8UL ) * 2.0;  // Scaling of the a submatrix of S1
+   b = 2.0 * sm;                                   // Scaling of the a submatrix of S1
 
-   sub( S1, 0UL, 8UL, 8UL, 8UL ) += S2;  // Addition assignment
-   sub( S1, 8UL, 0UL, 8UL, 8UL ) -= D1;  // Subtraction assignment
-   sub( S1, 8UL, 8UL, 8UL, 8UL ) *= sm;  // Multiplication assignment
+   submatrix( S1, 0UL, 8UL, 8UL, 8UL ) += S2;  // Addition assignment
+   submatrix( S1, 8UL, 0UL, 8UL, 8UL ) -= D1;  // Subtraction assignment
+   submatrix( S1, 8UL, 8UL, 8UL, 8UL ) *= sm;  // Multiplication assignment
 
-   a = sub( S1, 4UL, 4UL, 8UL, 8UL ) * b;  // Sparse matrix/dense vector multiplication
+   a = submatrix( S1, 4UL, 4UL, 8UL, 8UL ) * b;  // Sparse matrix/dense vector multiplication
    \endcode
 */
 template< typename MT                                 // Type of the sparse matrix
@@ -1778,7 +1778,7 @@ inline typename SparseSubmatrix<MT,SO>::ConstIterator
    typedef blaze::SparseSubmatrix<MatrixType>        SubmatrixType;
 
    MatrixType A( 42, 54 );
-   SubmatrixType B = sub( A, 10, 10, 4, 3 );
+   SubmatrixType B = submatrix( A, 10, 10, 4, 3 );
 
    B.reserve( 3 );       // Reserving enough space for 3 non-zero elements
    B.append( 0, 1, 1 );  // Appending the value 1 in row 0 with column index 1
@@ -2148,7 +2148,7 @@ inline void clear( SparseSubmatrix<MT,SO>& sm )
    \code
    blaze::CompressedMatrix<double,rowMajor> A;
    // ... Resizing and initialization
-   if( isDefault( sub( A, 12UL, 13UL, 22UL, 33UL ) ) ) { ... }
+   if( isDefault( submatrix( A, 12UL, 13UL, 22UL, 33UL ) ) ) { ... }
    \endcode
 */
 template< typename MT  // Type of the sparse matrix
@@ -2202,13 +2202,13 @@ inline bool isDefault( const SparseSubmatrix<MT,SO>& sm )
 
    Matrix A;
    // ... Resizing and initialization
-   blaze::SparseSubmatrix<Matrix> = sub( A, 3UL, 2UL, 4UL, 4UL );
+   blaze::SparseSubmatrix<Matrix> = submatrix( A, 3UL, 2UL, 4UL, 4UL );
    \endcode
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline typename DisableIf< Or< IsComputation<MT>, IsTransExpr<MT> >, SparseSubmatrix<MT> >::Type
-   sub( SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
+   submatrix( SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2240,13 +2240,13 @@ inline typename DisableIf< Or< IsComputation<MT>, IsTransExpr<MT> >, SparseSubma
 
    Matrix A;
    // ... Resizing and initialization
-   blaze::SparseSubmatrix<Matrix> = sub( A, 3UL, 2UL, 4UL, 4UL );
+   blaze::SparseSubmatrix<Matrix> = submatrix( A, 3UL, 2UL, 4UL, 4UL );
    \endcode
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline typename DisableIf< Or< IsComputation<MT>, IsTransExpr<MT> >, SparseSubmatrix<const MT> >::Type
-   sub( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
+   submatrix( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2281,11 +2281,12 @@ inline typename DisableIf< Or< IsComputation<MT>, IsTransExpr<MT> >, SparseSubma
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline typename EnableIf< IsMatMatAddExpr<MT>, typename SubmatrixExprTrait<MT>::Type >::Type
-   sub( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
+   submatrix( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return sub( (~sm).leftOperand(), row, column, m, n ) + sub( (~sm).rightOperand(), row, column, m, n );
+   return submatrix( (~sm).leftOperand() , row, column, m, n ) +
+          submatrix( (~sm).rightOperand(), row, column, m, n );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2309,11 +2310,12 @@ inline typename EnableIf< IsMatMatAddExpr<MT>, typename SubmatrixExprTrait<MT>::
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline typename EnableIf< IsMatMatSubExpr<MT>, typename SubmatrixExprTrait<MT>::Type >::Type
-   sub( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
+   submatrix( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return sub( (~sm).leftOperand(), row, column, m, n ) - sub( (~sm).rightOperand(), row, column, m, n );
+   return submatrix( (~sm).leftOperand() , row, column, m, n ) -
+          submatrix( (~sm).rightOperand(), row, column, m, n );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2337,14 +2339,14 @@ inline typename EnableIf< IsMatMatSubExpr<MT>, typename SubmatrixExprTrait<MT>::
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline typename EnableIf< IsMatMatMultExpr<MT>, typename SubmatrixExprTrait<MT>::Type >::Type
-   sub( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
+   submatrix( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
    typename MT::LeftOperand  left ( (~sm).leftOperand()  );
    typename MT::RightOperand right( (~sm).rightOperand() );
 
-   return sub( left, row, 0UL, m, left.columns() ) * sub( right, 0UL, column, right.rows(), n );
+   return submatrix( left, row, 0UL, m, left.columns() ) * submatrix( right, 0UL, column, right.rows(), n );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2368,11 +2370,11 @@ inline typename EnableIf< IsMatMatMultExpr<MT>, typename SubmatrixExprTrait<MT>:
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline typename EnableIf< IsVecTVecMultExpr<MT>, typename SubmatrixExprTrait<MT>::Type >::Type
-   sub( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
+   submatrix( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return sub( (~sm).leftOperand(), row, m ) * sub( (~sm).rightOperand(), column, n );
+   return subvector( (~sm).leftOperand(), row, m ) * subvector( (~sm).rightOperand(), column, n );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2396,11 +2398,11 @@ inline typename EnableIf< IsVecTVecMultExpr<MT>, typename SubmatrixExprTrait<MT>
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline typename EnableIf< IsMatScalarMultExpr<MT>, typename SubmatrixExprTrait<MT>::Type >::Type
-   sub( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
+   submatrix( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return sub( (~sm).leftOperand(), row, column, m, n ) * (~sm).rightOperand();
+   return submatrix( (~sm).leftOperand(), row, column, m, n ) * (~sm).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2424,11 +2426,11 @@ inline typename EnableIf< IsMatScalarMultExpr<MT>, typename SubmatrixExprTrait<M
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline typename EnableIf< IsMatScalarDivExpr<MT>, typename SubmatrixExprTrait<MT>::Type >::Type
-   sub( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
+   submatrix( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return sub( (~sm).leftOperand(), row, column, m, n ) / (~sm).rightOperand();
+   return submatrix( (~sm).leftOperand(), row, column, m, n ) / (~sm).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2452,11 +2454,11 @@ inline typename EnableIf< IsMatScalarDivExpr<MT>, typename SubmatrixExprTrait<MT
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline typename EnableIf< IsMatAbsExpr<MT>, typename SubmatrixExprTrait<MT>::Type >::Type
-   sub( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
+   submatrix( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return abs( sub( (~sm).operand(), row, column, m, n ) );
+   return abs( submatrix( (~sm).operand(), row, column, m, n ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2480,11 +2482,11 @@ inline typename EnableIf< IsMatAbsExpr<MT>, typename SubmatrixExprTrait<MT>::Typ
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline typename EnableIf< IsMatEvalExpr<MT>, typename SubmatrixExprTrait<MT>::Type >::Type
-   sub( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
+   submatrix( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( sub( (~sm).operand(), row, column, m, n ) );
+   return eval( submatrix( (~sm).operand(), row, column, m, n ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2508,11 +2510,11 @@ inline typename EnableIf< IsMatEvalExpr<MT>, typename SubmatrixExprTrait<MT>::Ty
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline typename EnableIf< IsMatTransExpr<MT>, typename SubmatrixExprTrait<MT>::Type >::Type
-   sub( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
+   submatrix( const SparseMatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( sub( (~sm).operand(), column, row, n, m ) );
+   return trans( submatrix( (~sm).operand(), column, row, n, m ) );
 }
 /*! \endcond */
 //*************************************************************************************************
