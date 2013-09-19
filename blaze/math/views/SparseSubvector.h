@@ -103,13 +103,13 @@ namespace blaze {
 //
 // \n \section sparse_subvector_setup Setup of Sparse Subvectors
 //
-// A view to a sparse subvector can very conveniently be created via the \c sub() function. This
-// view can be treated as any other sparse vector, i.e. it can be assigned to, it can be copied
-// from, and it can be used in arithmetic operations. The view can also be used on both sides of
-// an assignment: The subvector can be either used as an alias to grant write access to a specific
-// subvector of a sparse vector primitive on the left-hand side of an assignment or to grant
-// read-access to a specific subvector of a sparse vector primitive or expression on the right-hand
-// side of an assignment. The following example demonstrates this in detail:
+// A view to a sparse subvector can very conveniently be created via the \c subvector() function.
+// This view can be treated as any other sparse vector, i.e. it can be assigned to, it can be
+// copied from, and it can be used in arithmetic operations. The view can also be used on both
+// sides of an assignment: The subvector can be either used as an alias to grant write access to
+// a specific subvector of a sparse vector primitive on the left-hand side of an assignment or
+// to grant read-access to a specific subvector of a sparse vector primitive or expression on
+// the right-hand side of an assignment. The following example demonstrates this in detail:
 
    \code
    typedef blaze::DynamicVector<double,blaze::rowVector>     DenseVectorType;
@@ -122,17 +122,17 @@ namespace blaze {
    // ... Resizing and initialization
 
    // Setting the first ten elements of y to the 2nd row of matrix A
-   blaze::SparseSubvector<SparseVectorType> sv = sub( y, 0UL, 10UL );
+   blaze::SparseSubvector<SparseVectorType> sv = subvector( y, 0UL, 10UL );
    sv = row( A, 2UL );
 
    // Setting the second ten elements of y to x
-   sub( y, 10UL, 10UL ) = x;
+   subvector( y, 10UL, 10UL ) = x;
 
    // Setting the 3rd row of A to a subvector of y
-   row( A, 3UL ) = sub( y, 3UL, 10UL );
+   row( A, 3UL ) = subvector( y, 3UL, 10UL );
 
    // Setting y to a subvector of the result of the addition between x and the 1st row of A
-   y = sub( x + row( A, 1UL ), 2UL, 5UL )
+   y = subvector( x + row( A, 1UL ), 2UL, 5UL )
    \endcode
 
 // \n \section sparse_subvector_element_access Element access
@@ -146,7 +146,7 @@ namespace blaze {
    // ... Resizing and initialization
 
    // Creating an 8-dimensional subvector, starting from index 4
-   blaze::SparseSubvector<VectorType> sv = sub( v, 4UL, 8UL );
+   blaze::SparseSubvector<VectorType> sv = subvector( v, 4UL, 8UL );
 
    // Setting the 1st element of the subvector, which corresponds to
    // the element at index 5 in vector v
@@ -172,7 +172,7 @@ namespace blaze {
    // ... Resizing and initialization
 
    // Creating a reference to a specific subvector of vector v
-   SubvectorType sv = sub( v, 16UL, 64UL );
+   SubvectorType sv = subvector( v, 16UL, 64UL );
 
    for( SubvectorType::Iterator it=sv.begin(); it!=sv.end(); ++it ) {
       it->value() = ...;  // OK: Write access to the value of the non-zero element.
@@ -199,7 +199,7 @@ namespace blaze {
    VectorType v( 256UL );  // Non-initialized vector of size 256
 
    typedef blaze::SparseSubvector<VectorType>  SubvectorType;
-   SubvectorType sv( sub( v, 10UL, 60UL ) );  // View to the range [10..69] of v
+   SubvectorType sv( subvector( v, 10UL, 60UL ) );  // View to the range [10..69] of v
 
    // The subscript operator provides access to all possible elements of the sparse subvector,
    // including the zero elements. In case the subscript operator is used to access an element
@@ -236,7 +236,7 @@ namespace blaze {
    // ... Resizing and initialization
 
    // Creating a view to the range [5..15] of vector v
-   SubvectorType sv = sub( v, 5UL, 10UL );
+   SubvectorType sv = subvector( v, 5UL, 10UL );
 
    sv.size();          // Returns the number of elements in the subvector
    sv.capacity();      // Returns the capacity of the subvector
@@ -244,7 +244,7 @@ namespace blaze {
 
    sv.resize( 84UL );  // Compilation error: Cannot resize a subvector of a vector
 
-   SubvectorType sv2 = sub( v, 15UL, 10UL );
+   SubvectorType sv2 = subvector( v, 15UL, 10UL );
    swap( sv, sv2 );   // Compilation error: Swap operation not allowed
    \endcode
 
@@ -267,26 +267,26 @@ namespace blaze {
    SparseMatrixType A;
 
    typedef blaze::SparseSubvector<SparseVectorType>  SubvectorType;
-   SubvectorType sv( sub( s1,  0UL, 10UL ) );  // View on the range [0..9] of vector s1
+   SubvectorType sv( subvector( s1,  0UL, 10UL ) );  // View on the range [0..9] of vector s1
 
-   sv = s2;                     // Sparse vector initialization of the range [0..9]
-   sub( s1, 10UL, 10UL ) = d1;  // Dense vector initialization of the range [10..19]
+   sv = s2;                           // Sparse vector initialization of the range [0..9]
+   subvector( s1, 10UL, 10UL ) = d1;  // Dense vector initialization of the range [10..19]
 
-   s3 = sv + s2;                     // Sparse vector/sparse vector addition
-   d2 = d1 + sub( s1, 10UL, 10UL );  // Dense vector/sparse vector addition
-   s2 = sv * sub( s1, 20UL, 10UL );  // Component-wise vector multiplication
+   s3 = sv + s2;                           // Sparse vector/sparse vector addition
+   d2 = d1 + subvector( s1, 10UL, 10UL );  // Dense vector/sparse vector addition
+   s2 = sv * subvector( s1, 20UL, 10UL );  // Component-wise vector multiplication
 
-   sub( s1, 3UL, 4UL ) *= 2.0;     // In-place scaling of the range [3..6]
-   b = sub( s1, 7UL, 3UL ) * 2.0;  // Scaling of the range [7..9]
-   b = 2.0 * sub( s1, 7UL, 3UL );  // Scaling of the range [7..9]
+   subvector( s1, 3UL, 4UL ) *= 2.0;     // In-place scaling of the range [3..6]
+   b = subvector( s1, 7UL, 3UL ) * 2.0;  // Scaling of the range [7..9]
+   b = 2.0 * subvector( s1, 7UL, 3UL );  // Scaling of the range [7..9]
 
-   sub( s1, 0UL , 10UL ) += a;   // Addition assignment
-   sub( s1, 10UL, 10UL ) -= c;   // Subtraction assignment
-   sub( s1, 20UL, 10UL ) *= sv;  // Multiplication assignment
+   subvector( s1, 0UL , 10UL ) += a;   // Addition assignment
+   subvector( s1, 10UL, 10UL ) -= c;   // Subtraction assignment
+   subvector( s1, 20UL, 10UL ) *= sv;  // Multiplication assignment
 
-   double scalar = sub( s1, 5UL, 10UL ) * trans( d1 );  // Scalar/dot/inner product between two vectors
+   double scalar = subvector( s1, 5UL, 10UL ) * trans( d1 );  // Scalar/dot/inner product between two vectors
 
-   A = trans( d1 ) * sub( s1, 4UL, 16UL );  // Outer product between two vectors
+   A = trans( d1 ) * subvector( s1, 4UL, 16UL );  // Outer product between two vectors
    \endcode
 */
 template< typename VT                               // Type of the sparse vector
@@ -1774,7 +1774,7 @@ inline void clear( SparseSubvector<VT,TF>& sv )
    \code
    blaze::CompressedVector<double,rowVector> v;
    // ... Resizing and initialization
-   if( isDefault( sub( v, 10UL, 20UL ) ) ) { ... }
+   if( isDefault( subvector( v, 10UL, 20UL ) ) ) { ... }
    \endcode
 */
 template< typename VT  // Type of the sparse vector
@@ -1820,13 +1820,13 @@ inline bool isDefault( const SparseSubvector<VT,TF>& sv )
 
    Vector v;
    // ... Resizing and initialization
-   blaze::SparseSubvector<Vector> = sub( v, 4UL, 8UL );
+   blaze::SparseSubvector<Vector> = subvector( v, 4UL, 8UL );
    \endcode
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, SparseSubvector<VT> >::Type
-   sub( SparseVector<VT,TF>& sv, size_t index, size_t size )
+   subvector( SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1856,13 +1856,13 @@ inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, SparseSubve
 
    Vector v;
    // ... Resizing and initialization
-   blaze::SparseSubvector<Vector> = sub( v, 4UL, 8UL );
+   blaze::SparseSubvector<Vector> = subvector( v, 4UL, 8UL );
    \endcode
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, SparseSubvector<const VT> >::Type
-   sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
+   subvector( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1895,11 +1895,11 @@ inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, SparseSubve
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename EnableIf< IsVecVecAddExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
-   sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
+   subvector( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return sub( (~sv).leftOperand(), index, size ) + sub( (~sv).rightOperand(), index, size );
+   return subvector( (~sv).leftOperand(), index, size ) + subvector( (~sv).rightOperand(), index, size );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1921,11 +1921,11 @@ inline typename EnableIf< IsVecVecAddExpr<VT>, typename SubvectorExprTrait<VT>::
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename EnableIf< IsVecVecSubExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
-   sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
+   subvector( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return sub( (~sv).leftOperand(), index, size ) - sub( (~sv).rightOperand(), index, size );
+   return subvector( (~sv).leftOperand(), index, size ) - subvector( (~sv).rightOperand(), index, size );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1947,11 +1947,11 @@ inline typename EnableIf< IsVecVecSubExpr<VT>, typename SubvectorExprTrait<VT>::
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename EnableIf< IsVecVecMultExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
-   sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
+   subvector( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return sub( (~sv).leftOperand(), index, size ) * sub( (~sv).rightOperand(), index, size );
+   return subvector( (~sv).leftOperand(), index, size ) * subvector( (~sv).rightOperand(), index, size );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1973,7 +1973,7 @@ inline typename EnableIf< IsVecVecMultExpr<VT>, typename SubvectorExprTrait<VT>:
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename EnableIf< IsMatVecMultExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
-   sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
+   subvector( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2002,7 +2002,7 @@ inline typename EnableIf< IsMatVecMultExpr<VT>, typename SubvectorExprTrait<VT>:
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename EnableIf< IsTVecMatMultExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
-   sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
+   subvector( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2031,11 +2031,11 @@ inline typename EnableIf< IsTVecMatMultExpr<VT>, typename SubvectorExprTrait<VT>
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename EnableIf< IsVecScalarMultExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
-   sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
+   subvector( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return sub( (~sv).leftOperand(), index, size ) * (~sv).rightOperand();
+   return subvector( (~sv).leftOperand(), index, size ) * (~sv).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2057,11 +2057,11 @@ inline typename EnableIf< IsVecScalarMultExpr<VT>, typename SubvectorExprTrait<V
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename EnableIf< IsVecScalarDivExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
-   sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
+   subvector( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return sub( (~sv).leftOperand(), index, size ) / (~sv).rightOperand();
+   return subvector( (~sv).leftOperand(), index, size ) / (~sv).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2083,11 +2083,11 @@ inline typename EnableIf< IsVecScalarDivExpr<VT>, typename SubvectorExprTrait<VT
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename EnableIf< IsVecAbsExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
-   sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
+   subvector( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return abs( sub( (~sv).operand(), index, size ) );
+   return abs( subvector( (~sv).operand(), index, size ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2109,11 +2109,11 @@ inline typename EnableIf< IsVecAbsExpr<VT>, typename SubvectorExprTrait<VT>::Typ
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename EnableIf< IsVecEvalExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
-   sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
+   subvector( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( sub( (~sv).operand(), index, size ) );
+   return eval( subvector( (~sv).operand(), index, size ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2135,11 +2135,11 @@ inline typename EnableIf< IsVecEvalExpr<VT>, typename SubvectorExprTrait<VT>::Ty
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename EnableIf< IsVecTransExpr<VT>, typename SubvectorExprTrait<VT>::Type >::Type
-   sub( const SparseVector<VT,TF>& sv, size_t index, size_t size )
+   subvector( const SparseVector<VT,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( sub( (~sv).operand(), index, size ) );
+   return trans( subvector( (~sv).operand(), index, size ) );
 }
 /*! \endcond */
 //*************************************************************************************************
