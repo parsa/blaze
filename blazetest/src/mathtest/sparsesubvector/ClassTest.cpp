@@ -101,18 +101,18 @@ void ClassTest::testConstructors()
    for( size_t start=0UL; start<vec_.size(); ++start ) {
       for( size_t size=1UL; start+size<vec_.size(); ++size )
       {
-         SVT subvector = sub( vec_, start, size );
+         SVT sv = subvector( vec_, start, size );
 
          for( size_t i=0UL; i<size; ++i )
          {
-            if( subvector[i] != vec_[start+i] ) {
+            if( sv[i] != vec_[start+i] ) {
                std::ostringstream oss;
                oss << " Test: " << test_ << "\n"
                    << " Error: Setup of sparse subvector failed\n"
                    << " Details:\n"
                    << "   Start = " << start << "\n"
                    << "   Size  = " << size  << "\n"
-                   << "   Subvector:\n" << subvector << "\n"
+                   << "   Subvector:\n" << sv << "\n"
                    << "   Vector:\n" << vec_ << "\n";
                throw std::runtime_error( oss.str() );
             }
@@ -147,22 +147,22 @@ void ClassTest::testAssignment()
       vec[5] =  6;
       vec[6] = -8;
 
-      SVT subvector = sub( vec, 5UL, 3UL );
-      subvector = sub( vec_, 4UL, 3UL );
+      SVT sv = subvector( vec, 5UL, 3UL );
+      sv = subvector( vec_, 4UL, 3UL );
 
-      checkSize    ( subvector,  3UL );
-      checkNonZeros( subvector,  2UL );
-      checkSize    ( vec_     ,  8UL );
-      checkNonZeros( vec_     ,  4UL );
-      checkSize    ( vec      , 10UL );
-      checkNonZeros( vec      ,  2UL );
+      checkSize    ( sv  ,  3UL );
+      checkNonZeros( sv  ,  2UL );
+      checkSize    ( vec_,  8UL );
+      checkNonZeros( vec_,  4UL );
+      checkSize    ( vec , 10UL );
+      checkNonZeros( vec ,  2UL );
 
-      if( subvector[0] != -3 || subvector[1] != 0 || subvector[2] != 4 ) {
+      if( sv[0] != -3 || sv[1] != 0 || sv[2] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( -3 0 4 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -184,20 +184,20 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      SVT subvector = sub( vec_, 1UL, 3UL );
-      subvector = sub( vec_, 4UL, 3UL );
+      SVT sv = subvector( vec_, 1UL, 3UL );
+      sv = subvector( vec_, 4UL, 3UL );
 
-      checkSize    ( subvector, 3UL );
-      checkNonZeros( subvector, 2UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 4UL );
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 2UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 4UL );
 
-      if( subvector[0] != -3 || subvector[1] != 0 || subvector[2] != 4 ) {
+      if( sv[0] != -3 || sv[1] != 0 || sv[2] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( -3 0 4 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -224,26 +224,26 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      SVT subvector = sub( vec_, 3UL, 4UL );
+      SVT sv = subvector( vec_, 3UL, 4UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
       vec[1] = 8;
       vec[3] = 9;
 
-      subvector = vec;
+      sv = vec;
 
-      checkSize    ( subvector, 4UL );
-      checkNonZeros( subvector, 2UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 3UL );
+      checkSize    ( sv  , 4UL );
+      checkNonZeros( sv  , 2UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 3UL );
 
-      if( subvector != vec ||
-          subvector[0] != 0 || subvector[1] != 8 || subvector[2] != 0 || subvector[3] != 9 ) {
+      if( sv != vec ||
+          sv[0] != 0 || sv[1] != 8 || sv[2] != 0 || sv[3] != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 0 8 0 9 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -270,25 +270,25 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      SVT subvector = sub( vec_, 3UL, 4UL );
+      SVT sv = subvector( vec_, 3UL, 4UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[3] = 9;
 
-      subvector = vec;
+      sv = vec;
 
-      checkSize    ( subvector, 4UL );
-      checkNonZeros( subvector, 1UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 2UL );
+      checkSize    ( sv  , 4UL );
+      checkNonZeros( sv  , 1UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 2UL );
 
-      if( subvector != vec ||
-          subvector[0] != 0 || subvector[1] != 0 || subvector[2] != 0 || subvector[3] != 9 ) {
+      if( sv != vec ||
+          sv[0] != 0 || sv[1] != 0 || sv[2] != 0 || sv[3] != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 0 0 0 9 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -332,22 +332,22 @@ void ClassTest::testAddAssign()
       vec[5] =  6;
       vec[6] = -8;
 
-      SVT subvector = sub( vec, 5UL, 3UL );
-      subvector += sub( vec_, 4UL, 3UL );
+      SVT sv = subvector( vec, 5UL, 3UL );
+      sv += subvector( vec_, 4UL, 3UL );
 
-      checkSize    ( subvector,  3UL );
-      checkNonZeros( subvector,  3UL );
-      checkSize    ( vec_     ,  8UL );
-      checkNonZeros( vec_     ,  4UL );
-      checkSize    ( vec      , 10UL );
-      checkNonZeros( vec      ,  3UL );
+      checkSize    ( sv  ,  3UL );
+      checkNonZeros( sv  ,  3UL );
+      checkSize    ( vec_,  8UL );
+      checkNonZeros( vec_,  4UL );
+      checkSize    ( vec , 10UL );
+      checkNonZeros( vec ,  3UL );
 
-      if( subvector[0] != 3 || subvector[1] != -8 || subvector[2] != 4 ) {
+      if( sv[0] != 3 || sv[1] != -8 || sv[2] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 3 -8 4 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -369,20 +369,20 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      SVT subvector = sub( vec_, 1UL, 3UL );
-      subvector += sub( vec_, 3UL, 3UL );
+      SVT sv = subvector( vec_, 1UL, 3UL );
+      sv += subvector( vec_, 3UL, 3UL );
 
-      checkSize    ( subvector, 3UL );
-      checkNonZeros( subvector, 3UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 5UL );
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 3UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 5UL );
 
-      if( subvector[0] != -1 || subvector[1] != -3 || subvector[2] != -2 ) {
+      if( sv[0] != -1 || sv[1] != -3 || sv[2] != -2 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( -1 -3 -2 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -409,25 +409,25 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      SVT subvector( vec_, 1UL, 3UL );
+      SVT sv = subvector( vec_, 1UL, 3UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 3UL, 0 );
       vec[0] =  2;
       vec[1] = -4;
 
-      subvector += vec;
+      sv += vec;
 
-      checkSize    ( subvector, 3UL );
-      checkNonZeros( subvector, 3UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 5UL );
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 3UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 5UL );
 
-      if( subvector[0] != 3 || subvector[1] != -4 || subvector[2] != -2 ) {
+      if( sv[0] != 3 || sv[1] != -4 || sv[2] != -2 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 3 -4 -2 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -454,25 +454,25 @@ void ClassTest::testAddAssign()
 
       initialize();
 
-      SVT subvector( vec_, 1UL, 3UL );
+      SVT sv = subvector( vec_, 1UL, 3UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 3UL );
       vec[0] =  2;
       vec[1] = -4;
 
-      subvector += vec;
+      sv += vec;
 
-      checkSize    ( subvector, 3UL );
-      checkNonZeros( subvector, 3UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 5UL );
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 3UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 5UL );
 
-      if( subvector[0] != 3 || subvector[1] != -4 || subvector[2] != -2 ) {
+      if( sv[0] != 3 || sv[1] != -4 || sv[2] != -2 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 3 -4 -2 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -516,22 +516,22 @@ void ClassTest::testSubAssign()
       vec[5] =  6;
       vec[6] = -8;
 
-      SVT subvector = sub( vec, 5UL, 3UL );
-      subvector -= sub( vec_, 4UL, 3UL );
+      SVT sv = subvector( vec, 5UL, 3UL );
+      sv -= subvector( vec_, 4UL, 3UL );
 
-      checkSize    ( subvector,  3UL );
-      checkNonZeros( subvector,  3UL );
-      checkSize    ( vec_     ,  8UL );
-      checkNonZeros( vec_     ,  4UL );
-      checkSize    ( vec      , 10UL );
-      checkNonZeros( vec      ,  3UL );
+      checkSize    ( sv  ,  3UL );
+      checkNonZeros( sv  ,  3UL );
+      checkSize    ( vec_,  8UL );
+      checkNonZeros( vec_,  4UL );
+      checkSize    ( vec , 10UL );
+      checkNonZeros( vec ,  3UL );
 
-      if( subvector[0] != 9 || subvector[1] != -8 || subvector[2] != -4 ) {
+      if( sv[0] != 9 || sv[1] != -8 || sv[2] != -4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 9 -8 -4 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -553,20 +553,20 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      SVT subvector = sub( vec_, 1UL, 3UL );
-      subvector -= sub( vec_, 3UL, 3UL );
+      SVT sv = subvector( vec_, 1UL, 3UL );
+      sv -= subvector( vec_, 3UL, 3UL );
 
-      checkSize    ( subvector, 3UL );
-      checkNonZeros( subvector, 3UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 5UL );
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 3UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 5UL );
 
-      if( subvector[0] != 3 || subvector[1] != 3 || subvector[2] != -2 ) {
+      if( sv[0] != 3 || sv[1] != 3 || sv[2] != -2 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 3 3 -2 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -593,25 +593,25 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      SVT subvector( vec_, 1UL, 3UL );
+      SVT sv = subvector( vec_, 1UL, 3UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 3UL, 0 );
       vec[0] =  2;
       vec[1] = -4;
 
-      subvector -= vec;
+      sv -= vec;
 
-      checkSize    ( subvector, 3UL );
-      checkNonZeros( subvector, 3UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 5UL );
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 3UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 5UL );
 
-      if( subvector[0] != -1 || subvector[1] != 4 || subvector[2] != -2 ) {
+      if( sv[0] != -1 || sv[1] != 4 || sv[2] != -2 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( -1 4 -2 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -638,25 +638,25 @@ void ClassTest::testSubAssign()
 
       initialize();
 
-      SVT subvector( vec_, 1UL, 3UL );
+      SVT sv = subvector( vec_, 1UL, 3UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 3UL );
       vec[0] =  2;
       vec[1] = -4;
 
-      subvector -= vec;
+      sv -= vec;
 
-      checkSize    ( subvector, 3UL );
-      checkNonZeros( subvector, 3UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 5UL );
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 3UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 5UL );
 
-      if( subvector[0] != -1 || subvector[1] != 4 || subvector[2] != -2 ) {
+      if( sv[0] != -1 || sv[1] != 4 || sv[2] != -2 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( -1 4 -2 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -700,22 +700,22 @@ void ClassTest::testMultAssign()
       vec[5] =  6;
       vec[6] = -8;
 
-      SVT subvector = sub( vec, 5UL, 3UL );
-      subvector *= sub( vec_, 4UL, 3UL );
+      SVT sv = subvector( vec, 5UL, 3UL );
+      sv *= subvector( vec_, 4UL, 3UL );
 
-      checkSize    ( subvector,  3UL );
-      checkNonZeros( subvector,  1UL );
-      checkSize    ( vec_     ,  8UL );
-      checkNonZeros( vec_     ,  4UL );
-      checkSize    ( vec      , 10UL );
-      checkNonZeros( vec      ,  1UL );
+      checkSize    ( sv  ,  3UL );
+      checkNonZeros( sv  ,  1UL );
+      checkSize    ( vec_,  8UL );
+      checkNonZeros( vec_,  4UL );
+      checkSize    ( vec , 10UL );
+      checkNonZeros( vec ,  1UL );
 
-      if( subvector[0] != -18 || subvector[1] != 0 || subvector[2] != 0 ) {
+      if( sv[0] != -18 || sv[1] != 0 || sv[2] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( -18 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -737,20 +737,20 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      SVT subvector = sub( vec_, 1UL, 3UL );
-      subvector *= sub( vec_, 3UL, 3UL );
+      SVT sv = subvector( vec_, 1UL, 3UL );
+      sv *= subvector( vec_, 3UL, 3UL );
 
-      checkSize    ( subvector, 3UL );
-      checkNonZeros( subvector, 1UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 3UL );
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 1UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 3UL );
 
-      if( subvector[0] != -2 || subvector[1] != 0 || subvector[2] != 0 ) {
+      if( sv[0] != -2 || sv[1] != 0 || sv[2] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( -2 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -777,25 +777,25 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      SVT subvector( vec_, 1UL, 3UL );
+      SVT sv = subvector( vec_, 1UL, 3UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 3UL, 0 );
       vec[0] =  2;
       vec[1] = -4;
 
-      subvector *= vec;
+      sv *= vec;
 
-      checkSize    ( subvector, 3UL );
-      checkNonZeros( subvector, 2UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 4UL );
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 2UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 4UL );
 
-      if( subvector[0] != 2 || subvector[1] != 0 || subvector[2] != 0 ) {
+      if( sv[0] != 2 || sv[1] != 0 || sv[2] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 2 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -822,25 +822,25 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      SVT subvector( vec_, 1UL, 3UL );
+      SVT sv = subvector( vec_, 1UL, 3UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 3UL, 0 );
       vec[0] =  2;
       vec[1] = -4;
 
-      subvector *= vec;
+      sv *= vec;
 
-      checkSize    ( subvector, 3UL );
-      checkNonZeros( subvector, 1UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 3UL );
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 1UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 3UL );
 
-      if( subvector[0] != 2 || subvector[1] != 0 || subvector[2] != 0 ) {
+      if( sv[0] != 2 || sv[1] != 0 || sv[2] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 2 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -867,21 +867,21 @@ void ClassTest::testMultAssign()
 
       initialize();
 
-      SVT subvector = sub( vec_, 1UL, 3UL );
+      SVT sv = subvector( vec_, 1UL, 3UL );
 
-      subvector *= 3;
+      sv *= 3;
 
-      checkSize    ( subvector, 3UL );
-      checkNonZeros( subvector, 2UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 4UL );
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 2UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 4UL );
 
-      if( subvector[0] != 3 || subvector[1] != 0 || subvector[2] != -6 ) {
+      if( sv[0] != 3 || sv[1] != 0 || sv[2] != -6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 3 0 -6 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -921,21 +921,21 @@ void ClassTest::testDivAssign()
 
       initialize();
 
-      SVT subvector = sub( vec_, 1UL, 3UL );
+      SVT sv = subvector( vec_, 1UL, 3UL );
 
-      subvector /= 0.5;
+      sv /= 0.5;
 
-      checkSize    ( subvector, 3UL );
-      checkNonZeros( subvector, 2UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 4UL );
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 2UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 4UL );
 
-      if( subvector[0] != 2 || subvector[1] != 0 || subvector[2] != -4 ) {
+      if( sv[0] != 2 || sv[1] != 0 || sv[2] != -4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Division assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 2 0 -4 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -971,22 +971,22 @@ void ClassTest::testSubscript()
 
    initialize();
 
-   SVT subvector = sub( vec_, 1UL, 4UL );
+   SVT sv = subvector( vec_, 1UL, 4UL );
 
    // Writing the first element
-   subvector[1] = 9;
+   sv[1] = 9;
 
-   checkSize    ( subvector, 4UL );
-   checkNonZeros( subvector, 4UL );
-   checkSize    ( vec_     , 8UL );
-   checkNonZeros( vec_     , 5UL );
+   checkSize    ( sv  , 4UL );
+   checkNonZeros( sv  , 4UL );
+   checkSize    ( vec_, 8UL );
+   checkNonZeros( vec_, 5UL );
 
-   if( subvector[0] != 1 || subvector[1] != 9 || subvector[2] != -2 || subvector[3] != -3 ) {
+   if( sv[0] != 1 || sv[1] != 9 || sv[2] != -2 || sv[3] != -3 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Subscript operator failed\n"
           << " Details:\n"
-          << "   Result:\n" << subvector << "\n"
+          << "   Result:\n" << sv << "\n"
           << "   Expected result:\n( 1 9 -2 -3 )\n";
       throw std::runtime_error( oss.str() );
    }
@@ -1003,19 +1003,19 @@ void ClassTest::testSubscript()
    }
 
    // Writing the second element
-   subvector[2] = 0;
+   sv[2] = 0;
 
-   checkSize    ( subvector, 4UL );
-   checkNonZeros( subvector, 3UL );
-   checkSize    ( vec_     , 8UL );
-   checkNonZeros( vec_     , 4UL );
+   checkSize    ( sv  , 4UL );
+   checkNonZeros( sv  , 3UL );
+   checkSize    ( vec_, 8UL );
+   checkNonZeros( vec_, 4UL );
 
-   if( subvector[0] != 1 || subvector[1] != 9 || subvector[2] != 0 || subvector[3] != -3 ) {
+   if( sv[0] != 1 || sv[1] != 9 || sv[2] != 0 || sv[3] != -3 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Subscript operator failed\n"
           << " Details:\n"
-          << "   Result:\n" << subvector << "\n"
+          << "   Result:\n" << sv << "\n"
           << "   Expected result:\n( 1 9 0 0 )\n";
       throw std::runtime_error( oss.str() );
    }
@@ -1032,19 +1032,19 @@ void ClassTest::testSubscript()
    }
 
    // Writing the third element
-   subvector[3] = -8;
+   sv[3] = -8;
 
-   checkSize    ( subvector, 4UL );
-   checkNonZeros( subvector, 3UL );
-   checkSize    ( vec_     , 8UL );
-   checkNonZeros( vec_     , 4UL );
+   checkSize    ( sv  , 4UL );
+   checkNonZeros( sv  , 3UL );
+   checkSize    ( vec_, 8UL );
+   checkNonZeros( vec_, 4UL );
 
-   if( subvector[0] != 1 || subvector[1] != 9 || subvector[2] != 0 || subvector[3] != -8 ) {
+   if( sv[0] != 1 || sv[1] != 9 || sv[2] != 0 || sv[3] != -8 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Subscript operator failed\n"
           << " Details:\n"
-          << "   Result:\n" << subvector << "\n"
+          << "   Result:\n" << sv << "\n"
           << "   Expected result:\n( -2 9 0 -8 )\n";
       throw std::runtime_error( oss.str() );
    }
@@ -1080,8 +1080,8 @@ void ClassTest::testIterator()
    {
       test_ = "Iterator subtraction";
 
-      SVT subvector = sub( vec_, 0UL, 4UL );
-      const size_t number( subvector.end() - subvector.begin() );
+      SVT sv = subvector( vec_, 0UL, 4UL );
+      const size_t number( sv.end() - sv.begin() );
 
       if( number != 2UL ) {
          std::ostringstream oss;
@@ -1098,8 +1098,8 @@ void ClassTest::testIterator()
    {
       test_ = "Iterator subtraction";
 
-      SVT subvector = sub( vec_, 4UL, 4UL );
-      const size_t number( subvector.end() - subvector.begin() );
+      SVT sv = subvector( vec_, 4UL, 4UL );
+      const size_t number( sv.end() - sv.begin() );
 
       if( number != 2UL ) {
          std::ostringstream oss;
@@ -1116,8 +1116,8 @@ void ClassTest::testIterator()
    {
       test_ = "Read-only access via ConstIterator";
 
-      SVT subvector = sub( vec_, 1UL, 5UL );
-      SVT::ConstIterator it( subvector.cbegin() );
+      SVT sv = subvector( vec_, 1UL, 5UL );
+      SVT::ConstIterator it( sv.cbegin() );
 
       if( it->value() != 1 ) {
          std::ostringstream oss;
@@ -1155,7 +1155,7 @@ void ClassTest::testIterator()
 
       ++it;
 
-      if( it != subvector.cend() ) {
+      if( it != sv.cend() ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid iterator end\n";
@@ -1167,19 +1167,19 @@ void ClassTest::testIterator()
    {
       test_ = "Assignment via Iterator";
 
-      SVT subvector = sub( vec_, 2UL, 4UL );
+      SVT sv = subvector( vec_, 2UL, 4UL );
       int value = 6;
 
-      for( SVT::Iterator it=subvector.begin(); it!=subvector.end(); ++it ) {
+      for( SVT::Iterator it=sv.begin(); it!=sv.end(); ++it ) {
          *it = value++;
       }
 
-      if( subvector[0] != 0 || subvector[1] != 6 || subvector[2] != 7 || subvector[3] != 0 ) {
+      if( sv[0] != 0 || sv[1] != 6 || sv[2] != 7 || sv[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment via iterator failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 0 6 7 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1200,19 +1200,19 @@ void ClassTest::testIterator()
    {
       test_ = "Addition assignment via Iterator";
 
-      SVT subvector = sub( vec_, 2UL, 4UL );
+      SVT sv = subvector( vec_, 2UL, 4UL );
       int value = 2;
 
-      for( SVT::Iterator it=subvector.begin(); it!=subvector.end(); ++it ) {
+      for( SVT::Iterator it=sv.begin(); it!=sv.end(); ++it ) {
          *it += value++;
       }
 
-      if( subvector[0] != 0 || subvector[1] != 8 || subvector[2] != 10 || subvector[3] != 0 ) {
+      if( sv[0] != 0 || sv[1] != 8 || sv[2] != 10 || sv[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment via iterator failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 0 8 10 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1233,19 +1233,19 @@ void ClassTest::testIterator()
    {
       test_ = "Subtraction assignment via Iterator";
 
-      SVT subvector = sub( vec_, 2UL, 4UL );
+      SVT sv = subvector( vec_, 2UL, 4UL );
       int value = 2;
 
-      for( SVT::Iterator it=subvector.begin(); it!=subvector.end(); ++it ) {
+      for( SVT::Iterator it=sv.begin(); it!=sv.end(); ++it ) {
          *it -= value++;
       }
 
-      if( subvector[0] != 0 || subvector[1] != 6 || subvector[2] != 7 || subvector[3] != 0 ) {
+      if( sv[0] != 0 || sv[1] != 6 || sv[2] != 7 || sv[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment via iterator failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 0 8 10 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1266,19 +1266,19 @@ void ClassTest::testIterator()
    {
       test_ = "Multiplication assignment via Iterator";
 
-      SVT subvector = sub( vec_, 2UL, 4UL );
+      SVT sv = subvector( vec_, 2UL, 4UL );
       int value = 1;
 
-      for( SVT::Iterator it=subvector.begin(); it!=subvector.end(); ++it ) {
+      for( SVT::Iterator it=sv.begin(); it!=sv.end(); ++it ) {
          *it *= value++;
       }
 
-      if( subvector[0] != 0 || subvector[1] != 6 || subvector[2] != 14 || subvector[3] != 0 ) {
+      if( sv[0] != 0 || sv[1] != 6 || sv[2] != 14 || sv[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment via iterator failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 0 8 10 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1299,18 +1299,18 @@ void ClassTest::testIterator()
    {
       test_ = "Division assignment via Iterator";
 
-      SVT subvector = sub( vec_, 2UL, 4UL );
+      SVT sv = subvector( vec_, 2UL, 4UL );
 
-      for( SVT::Iterator it=subvector.begin(); it!=subvector.end(); ++it ) {
+      for( SVT::Iterator it=sv.begin(); it!=sv.end(); ++it ) {
          *it /= 2;
       }
 
-      if( subvector[0] != 0 || subvector[1] != 3 || subvector[2] != 7 || subvector[3] != 0 ) {
+      if( sv[0] != 0 || sv[1] != 3 || sv[2] != 7 || sv[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Division assignment via iterator failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 0 8 10 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1346,37 +1346,37 @@ void ClassTest::testNonZeros()
    initialize();
 
    // Initialization check
-   SVT subvector = sub( vec_, 0UL, 4UL );
+   SVT sv = subvector( vec_, 0UL, 4UL );
 
-   checkSize    ( subvector, 4UL );
-   checkNonZeros( subvector, 2UL );
-   checkSize    ( vec_     , 8UL );
-   checkNonZeros( vec_     , 4UL );
+   checkSize    ( sv  , 4UL );
+   checkNonZeros( sv  , 2UL );
+   checkSize    ( vec_, 8UL );
+   checkNonZeros( vec_, 4UL );
 
-   if( subvector[0] != 0 || subvector[1] != 1 || subvector[2] != 0 || subvector[3] != -2 ) {
+   if( sv[0] != 0 || sv[1] != 1 || sv[2] != 0 || sv[3] != -2 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Initialization failed\n"
           << " Details:\n"
-          << "   Result:\n" << subvector << "\n"
+          << "   Result:\n" << sv << "\n"
           << "   Expected result:\n( 0 1 0 -2 )\n";
       throw std::runtime_error( oss.str() );
    }
 
    // Changing the number of non-zeros via the sparse subvector
-   subvector[3] = 0;
+   sv[3] = 0;
 
-   checkSize    ( subvector, 4UL );
-   checkNonZeros( subvector, 1UL );
-   checkSize    ( vec_     , 8UL );
-   checkNonZeros( vec_     , 3UL );
+   checkSize    ( sv  , 4UL );
+   checkNonZeros( sv  , 1UL );
+   checkSize    ( vec_, 8UL );
+   checkNonZeros( vec_, 3UL );
 
-   if( subvector[0] != 0 || subvector[1] != 1 || subvector[2] != 0 || subvector[3] != 0 ) {
+   if( sv[0] != 0 || sv[1] != 1 || sv[2] != 0 || sv[3] != 0 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Subscript operator failed\n"
           << " Details:\n"
-          << "   Result:\n" << subvector << "\n"
+          << "   Result:\n" << sv << "\n"
           << "   Expected result:\n( 0 1 0 0 )\n";
       throw std::runtime_error( oss.str() );
    }
@@ -1384,17 +1384,17 @@ void ClassTest::testNonZeros()
    // Changing the number of non-zeros via the sparse vector
    vec_[2UL] = 5;
 
-   checkSize    ( subvector, 4UL );
-   checkNonZeros( subvector, 2UL );
-   checkSize    ( vec_     , 8UL );
-   checkNonZeros( vec_     , 4UL );
+   checkSize    ( sv  , 4UL );
+   checkNonZeros( sv  , 2UL );
+   checkSize    ( vec_, 8UL );
+   checkNonZeros( vec_, 4UL );
 
-   if( subvector[0] != 0 || subvector[1] != 1 || subvector[2] != 5 || subvector[3] != 0 ) {
+   if( sv[0] != 0 || sv[1] != 1 || sv[2] != 5 || sv[3] != 0 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Function call operator failed\n"
           << " Details:\n"
-          << "   Result:\n" << subvector << "\n"
+          << "   Result:\n" << sv << "\n"
           << "   Expected result:\n( 0 1 5 0 )\n";
       throw std::runtime_error( oss.str() );
    }
@@ -1419,20 +1419,20 @@ void ClassTest::testReset()
 
    // Resetting the range [0,3]
    {
-      SVT subvector = sub( vec_, 0UL, 4UL );
-      subvector.reset();
+      SVT sv = subvector( vec_, 0UL, 4UL );
+      sv.reset();
 
-      checkSize    ( subvector, 4UL );
-      checkNonZeros( subvector, 0UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 2UL );
+      checkSize    ( sv  , 4UL );
+      checkNonZeros( sv  , 0UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 2UL );
 
-      if( subvector[0] != 0 || subvector[1] != 0 || subvector[2] != 0 || subvector[3] != 0 ) {
+      if( sv[0] != 0 || sv[1] != 0 || sv[2] != 0 || sv[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Reset operation of range [0,3] failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 0 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1440,20 +1440,20 @@ void ClassTest::testReset()
 
    // Resetting the range [4,7]
    {
-      SVT subvector = sub( vec_, 4UL, 4UL );
-      subvector.reset();
+      SVT sv = subvector( vec_, 4UL, 4UL );
+      sv.reset();
 
-      checkSize    ( subvector, 4UL );
-      checkNonZeros( subvector, 0UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 0UL );
+      checkSize    ( sv  , 4UL );
+      checkNonZeros( sv  , 0UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 0UL );
 
-      if( subvector[0] != 0 || subvector[1] != 0 || subvector[2] != 0 || subvector[3] != 0 ) {
+      if( sv[0] != 0 || sv[1] != 0 || sv[2] != 0 || sv[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Reset operation of range [4,7] failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 0 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1477,43 +1477,43 @@ void ClassTest::testAppend()
 
    VT vec( 10UL );
 
-   SVT subvector = sub( vec, 2UL, 4UL );
-   subvector.reserve( 4UL );
+   SVT sv = subvector( vec, 2UL, 4UL );
+   sv.reserve( 4UL );
 
    // Appending one non-zero element
-   subvector.append( 0UL, 1 );
+   sv.append( 0UL, 1 );
 
-   checkSize    ( subvector, 4UL );
-   checkCapacity( subvector, 4UL );
-   checkNonZeros( subvector, 1UL );
-   checkNonZeros( vec      , 1UL );
+   checkSize    ( sv , 4UL );
+   checkCapacity( sv , 4UL );
+   checkNonZeros( sv , 1UL );
+   checkNonZeros( vec, 1UL );
 
-   if( subvector[0] != 1 ) {
+   if( sv[0] != 1 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Initialization failed\n"
           << " Details:\n"
-          << "   Result:\n" << subvector << "\n"
+          << "   Result:\n" << sv << "\n"
           << "   Expected result:\n( 0 0 1 0 0 0 0 0 0 0 )\n";
       throw std::runtime_error( oss.str() );
    }
 
    // Appending three more non-zero elements
-   subvector.append( 1UL, 2 );
-   subvector.append( 2UL, 3 );
-   subvector.append( 3UL, 4 );
+   sv.append( 1UL, 2 );
+   sv.append( 2UL, 3 );
+   sv.append( 3UL, 4 );
 
-   checkSize    ( subvector, 4UL );
-   checkCapacity( subvector, 4UL );
-   checkNonZeros( subvector, 4UL );
-   checkNonZeros( vec      , 4UL );
+   checkSize    ( sv , 4UL );
+   checkCapacity( sv , 4UL );
+   checkNonZeros( sv , 4UL );
+   checkNonZeros( vec, 4UL );
 
-   if( subvector[0] != 1 || subvector[1] != 2 || subvector[2] != 3 || subvector[3] != 4 ) {
+   if( sv[0] != 1 || sv[1] != 2 || sv[2] != 3 || sv[3] != 4 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Append operation failed\n"
           << " Details:\n"
-          << "   Result:\n" << subvector << "\n"
+          << "   Result:\n" << sv << "\n"
           << "   Expected result:\n( 0 0 1 2 3 4 0 0 0 )\n";
       throw std::runtime_error( oss.str() );
    }
@@ -1536,16 +1536,16 @@ void ClassTest::testInsert()
 
    initialize();
 
-   SVT subvector = sub( vec_, 0UL, 8UL );
+   SVT sv = subvector( vec_, 0UL, 8UL );
 
    // Inserting a non-zero element at the end of the subvector
    {
-      SVT::Iterator pos = subvector.insert( 7UL, 9 );
+      SVT::Iterator pos = sv.insert( 7UL, 9 );
 
-      checkSize    ( subvector, 8UL );
-      checkNonZeros( subvector, 5UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 5UL );
+      checkSize    ( sv  , 8UL );
+      checkNonZeros( sv  , 5UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 5UL );
 
       if( pos->value() != 9 || pos->index() != 7UL ) {
          std::ostringstream oss;
@@ -1559,13 +1559,13 @@ void ClassTest::testInsert()
          throw std::runtime_error( oss.str() );
       }
 
-      if( subvector[0] !=  0 || subvector[1] != 1 || subvector[2] != 0 || subvector[3] != -2 ||
-          subvector[4] != -3 || subvector[5] != 0 || subvector[6] != 4 || subvector[7] !=  9 ) {
+      if( sv[0] !=  0 || sv[1] != 1 || sv[2] != 0 || sv[3] != -2 ||
+          sv[4] != -3 || sv[5] != 0 || sv[6] != 4 || sv[7] !=  9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Inserting a non-zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 0 2 0 -2 -3 0 4 9 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1573,12 +1573,12 @@ void ClassTest::testInsert()
 
    // Inserting a non-zero element at the beginning of the subvector
    {
-      SVT::Iterator pos = subvector.insert( 0UL, 9 );
+      SVT::Iterator pos = sv.insert( 0UL, 9 );
 
-      checkSize    ( subvector, 8UL );
-      checkNonZeros( subvector, 6UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 6UL );
+      checkSize    ( sv  , 8UL );
+      checkNonZeros( sv  , 6UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 6UL );
 
       if( pos->value() != 9 || pos->index() != 0UL ) {
          std::ostringstream oss;
@@ -1592,13 +1592,13 @@ void ClassTest::testInsert()
          throw std::runtime_error( oss.str() );
       }
 
-      if( subvector[0] !=  9 || subvector[1] != 1 || subvector[2] != 0 || subvector[3] != -2 ||
-          subvector[4] != -3 || subvector[5] != 0 || subvector[6] != 4 || subvector[7] !=  9 ) {
+      if( sv[0] !=  9 || sv[1] != 1 || sv[2] != 0 || sv[3] != -2 ||
+          sv[4] != -3 || sv[5] != 0 || sv[6] != 4 || sv[7] !=  9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Inserting a non-zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 9 2 0 -2 -3 0 4 9 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1606,12 +1606,12 @@ void ClassTest::testInsert()
 
    // Inserting a non-zero element at the center of the subvector
    {
-      SVT::Iterator pos = subvector.insert( 2UL, 9 );
+      SVT::Iterator pos = sv.insert( 2UL, 9 );
 
-      checkSize    ( subvector, 8UL );
-      checkNonZeros( subvector, 7UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 7UL );
+      checkSize    ( sv  , 8UL );
+      checkNonZeros( sv  , 7UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 7UL );
 
       if( pos->value() != 9 || pos->index() != 2UL ) {
          std::ostringstream oss;
@@ -1625,13 +1625,13 @@ void ClassTest::testInsert()
          throw std::runtime_error( oss.str() );
       }
 
-      if( subvector[0] !=  9 || subvector[1] != 1 || subvector[2] != 9 || subvector[3] != -2 ||
-          subvector[4] != -3 || subvector[5] != 0 || subvector[6] != 4 || subvector[7] !=  9 ) {
+      if( sv[0] !=  9 || sv[1] != 1 || sv[2] != 9 || sv[3] != -2 ||
+          sv[4] != -3 || sv[5] != 0 || sv[6] != 4 || sv[7] !=  9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Inserting a non-zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 9 2 9 -2 -3 0 4 9 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1639,13 +1639,13 @@ void ClassTest::testInsert()
 
    // Trying to insert an already existing element
    try {
-      subvector.insert( 3UL, 9 );
+      sv.insert( 3UL, 9 );
 
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Inserting an existing element succeeded\n"
           << " Details:\n"
-          << "   Result:\n" << subvector << "\n"
+          << "   Result:\n" << sv << "\n"
           << "   Expected result:\n( 9 2 0 9 -3 0 4 9 )\n";
       throw std::runtime_error( oss.str() );
    }
@@ -1674,80 +1674,80 @@ void ClassTest::testErase()
 
       initialize();
 
-      SVT subvector = sub( vec_, 1UL, 6UL );
+      SVT sv = subvector( vec_, 1UL, 6UL );
 
       // Erasing the non-zero element at the end of the subvector
-      subvector.erase( 5UL );
+      sv.erase( 5UL );
 
-      checkSize    ( subvector, 6UL );
-      checkNonZeros( subvector, 3UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 3UL );
+      checkSize    ( sv  , 6UL );
+      checkNonZeros( sv  , 3UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 3UL );
 
-      if( subvector[0] !=  1 || subvector[1] != 0 || subvector[2] != -2 ||
-          subvector[3] != -3 || subvector[4] != 0 || subvector[5] !=  0 ) {
+      if( sv[0] !=  1 || sv[1] != 0 || sv[2] != -2 ||
+          sv[3] != -3 || sv[4] != 0 || sv[5] !=  0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Erasing a non-zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 1 0 -2 -3 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Erasing the non-zero element at the beginning of the subvector
-      subvector.erase( 0UL );
+      sv.erase( 0UL );
 
-      checkSize    ( subvector, 6UL );
-      checkNonZeros( subvector, 2UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 2UL );
+      checkSize    ( sv  , 6UL );
+      checkNonZeros( sv  , 2UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 2UL );
 
-      if( subvector[0] !=  0 || subvector[1] != 0 || subvector[2] != -2 ||
-          subvector[3] != -3 || subvector[4] != 0 || subvector[5] !=  0 ) {
+      if( sv[0] !=  0 || sv[1] != 0 || sv[2] != -2 ||
+          sv[3] != -3 || sv[4] != 0 || sv[5] !=  0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Erasing a non-zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 0 0 -2 -3 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Erasing the non-zero element at the beginning of the subvector
-      subvector.erase( 2UL );
+      sv.erase( 2UL );
 
-      checkSize    ( subvector, 6UL );
-      checkNonZeros( subvector, 1UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 1UL );
+      checkSize    ( sv  , 6UL );
+      checkNonZeros( sv  , 1UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 1UL );
 
-      if( subvector[0] !=  0 || subvector[1] != 0 || subvector[2] != 0 ||
-          subvector[3] != -3 || subvector[4] != 0 || subvector[5] != 0 ) {
+      if( sv[0] !=  0 || sv[1] != 0 || sv[2] != 0 ||
+          sv[3] != -3 || sv[4] != 0 || sv[5] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Erasing a non-zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 0 0 0 -3 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Trying to erase an already erased element
-      subvector.erase( 2UL );
+      sv.erase( 2UL );
 
-      checkSize    ( subvector, 6UL );
-      checkNonZeros( subvector, 1UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 1UL );
+      checkSize    ( sv  , 6UL );
+      checkNonZeros( sv  , 1UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 1UL );
 
-      if( subvector[0] !=  0 || subvector[1] != 0 || subvector[2] != 0 ||
-          subvector[3] != -3 || subvector[4] != 0 || subvector[5] != 0 ) {
+      if( sv[0] !=  0 || sv[1] != 0 || sv[2] != 0 ||
+          sv[3] != -3 || sv[4] != 0 || sv[5] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Erasing a zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 0 0 0 -3 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1763,18 +1763,18 @@ void ClassTest::testErase()
 
       initialize();
 
-      SVT subvector = sub( vec_, 1UL, 6UL );
+      SVT sv = subvector( vec_, 1UL, 6UL );
 
       // Erasing the non-zero element at the end of the subvector
       {
-         SVT::Iterator pos = subvector.erase( subvector.find( 5UL ) );
+         SVT::Iterator pos = sv.erase( sv.find( 5UL ) );
 
-         checkSize    ( subvector, 6UL );
-         checkNonZeros( subvector, 3UL );
-         checkSize    ( vec_     , 8UL );
-         checkNonZeros( vec_     , 3UL );
+         checkSize    ( sv  , 6UL );
+         checkNonZeros( sv  , 3UL );
+         checkSize    ( vec_, 8UL );
+         checkNonZeros( vec_, 3UL );
 
-         if( pos != subvector.end() ) {
+         if( pos != sv.end() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -1783,13 +1783,13 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( subvector[0] !=  1 || subvector[1] != 0 || subvector[2] != -2 ||
-             subvector[3] != -3 || subvector[4] != 0 || subvector[5] !=  0 ) {
+         if( sv[0] !=  1 || sv[1] != 0 || sv[2] != -2 ||
+             sv[3] != -3 || sv[4] != 0 || sv[5] !=  0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a non-zero element failed\n"
                 << " Details:\n"
-                << "   Result:\n" << subvector << "\n"
+                << "   Result:\n" << sv << "\n"
                 << "   Expected result:\n( 1 0 -2 -3 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -1797,12 +1797,12 @@ void ClassTest::testErase()
 
       // Erasing the non-zero element at the beginning of the subvector
       {
-         SVT::Iterator pos = subvector.erase( subvector.find( 0UL ) );
+         SVT::Iterator pos = sv.erase( sv.find( 0UL ) );
 
-         checkSize    ( subvector, 6UL );
-         checkNonZeros( subvector, 2UL );
-         checkSize    ( vec_     , 8UL );
-         checkNonZeros( vec_     , 2UL );
+         checkSize    ( sv  , 6UL );
+         checkNonZeros( sv  , 2UL );
+         checkSize    ( vec_, 8UL );
+         checkNonZeros( vec_, 2UL );
 
          if( pos->value() != -2 || pos->index() != 2 ) {
             std::ostringstream oss;
@@ -1816,13 +1816,13 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( subvector[0] !=  0 || subvector[1] != 0 || subvector[2] != -2 ||
-             subvector[3] != -3 || subvector[4] != 0 || subvector[5] !=  0 ) {
+         if( sv[0] !=  0 || sv[1] != 0 || sv[2] != -2 ||
+             sv[3] != -3 || sv[4] != 0 || sv[5] !=  0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a non-zero element failed\n"
                 << " Details:\n"
-                << "   Result:\n" << subvector << "\n"
+                << "   Result:\n" << sv << "\n"
                 << "   Expected result:\n( 0 0 -2 -3 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -1830,12 +1830,12 @@ void ClassTest::testErase()
 
       // Erasing the non-zero element at the beginning of the subvector
       {
-         SVT::Iterator pos = subvector.erase( subvector.find( 2UL ) );
+         SVT::Iterator pos = sv.erase( sv.find( 2UL ) );
 
-         checkSize    ( subvector, 6UL );
-         checkNonZeros( subvector, 1UL );
-         checkSize    ( vec_     , 8UL );
-         checkNonZeros( vec_     , 1UL );
+         checkSize    ( sv  , 6UL );
+         checkNonZeros( sv  , 1UL );
+         checkSize    ( vec_, 8UL );
+         checkNonZeros( vec_, 1UL );
 
          if( pos->value() != -3 || pos->index() != 3 ) {
             std::ostringstream oss;
@@ -1849,13 +1849,13 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( subvector[0] !=  0 || subvector[1] != 0 || subvector[2] != 0 ||
-             subvector[3] != -3 || subvector[4] != 0 || subvector[5] != 0 ) {
+         if( sv[0] !=  0 || sv[1] != 0 || sv[2] != 0 ||
+             sv[3] != -3 || sv[4] != 0 || sv[5] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a non-zero element failed\n"
                 << " Details:\n"
-                << "   Result:\n" << subvector << "\n"
+                << "   Result:\n" << sv << "\n"
                 << "   Expected result:\n( 0 0 0 -3 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -1863,14 +1863,14 @@ void ClassTest::testErase()
 
       // Trying to erase an already erased element
       {
-         SVT::Iterator pos = subvector.erase( subvector.find( 2UL ) );
+         SVT::Iterator pos = sv.erase( sv.find( 2UL ) );
 
-         checkSize    ( subvector, 6UL );
-         checkNonZeros( subvector, 1UL );
-         checkSize    ( vec_     , 8UL );
-         checkNonZeros( vec_     , 1UL );
+         checkSize    ( sv  , 6UL );
+         checkNonZeros( sv  , 1UL );
+         checkSize    ( vec_, 8UL );
+         checkNonZeros( vec_, 1UL );
 
-         if( pos != subvector.end() ) {
+         if( pos != sv.end() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -1879,13 +1879,13 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( subvector[0] !=  0 || subvector[1] != 0 || subvector[2] != 0 ||
-             subvector[3] != -3 || subvector[4] != 0 || subvector[5] != 0 ) {
+         if( sv[0] !=  0 || sv[1] != 0 || sv[2] != 0 ||
+             sv[3] != -3 || sv[4] != 0 || sv[5] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a zero element failed\n"
                 << " Details:\n"
-                << "   Result:\n" << subvector << "\n"
+                << "   Result:\n" << sv << "\n"
                 << "   Expected result:\n( 0 0 0 -3 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -1904,16 +1904,16 @@ void ClassTest::testErase()
       {
          initialize();
 
-         SVT subvector = sub( vec_, 0UL, 8UL );
+         SVT sv = subvector( vec_, 0UL, 8UL );
 
-         SVT::Iterator pos = subvector.erase( subvector.begin(), subvector.end() );
+         SVT::Iterator pos = sv.erase( sv.begin(), sv.end() );
 
-         checkSize    ( subvector, 8UL );
-         checkNonZeros( subvector, 0UL );
-         checkSize    ( vec_     , 8UL );
-         checkNonZeros( vec_     , 0UL );
+         checkSize    ( sv  , 8UL );
+         checkNonZeros( sv  , 0UL );
+         checkSize    ( vec_, 8UL );
+         checkNonZeros( vec_, 0UL );
 
-         if( pos != subvector.end() ) {
+         if( pos != sv.end() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -1922,13 +1922,13 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( subvector[0] != 0 || subvector[1] != 0 || subvector[2] != 0 || subvector[3] != 0 ||
-             subvector[4] != 0 || subvector[5] != 0 || subvector[6] != 0 || subvector[7] != 0 ) {
+         if( sv[0] != 0 || sv[1] != 0 || sv[2] != 0 || sv[3] != 0 ||
+             sv[4] != 0 || sv[5] != 0 || sv[6] != 0 || sv[7] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing the subvector failed\n"
                 << " Details:\n"
-                << "   Result:\n" << subvector << "\n"
+                << "   Result:\n" << sv << "\n"
                 << "   Expected result:\n( 0 0 0 0 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -1938,14 +1938,14 @@ void ClassTest::testErase()
       {
          initialize();
 
-         SVT subvector = sub( vec_, 0UL, 8UL );
+         SVT sv = subvector( vec_, 0UL, 8UL );
 
-         SVT::Iterator pos = subvector.erase( subvector.begin(), subvector.find( 4UL ) );
+         SVT::Iterator pos = sv.erase( sv.begin(), sv.find( 4UL ) );
 
-         checkSize    ( subvector, 8UL );
-         checkNonZeros( subvector, 2UL );
-         checkSize    ( vec_     , 8UL );
-         checkNonZeros( vec_     , 2UL );
+         checkSize    ( sv  , 8UL );
+         checkNonZeros( sv  , 2UL );
+         checkSize    ( vec_, 8UL );
+         checkNonZeros( vec_, 2UL );
 
          if( pos->value() != -3 || pos->index() != 4 ) {
             std::ostringstream oss;
@@ -1959,13 +1959,13 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( subvector[0] !=  0 || subvector[1] != 0 || subvector[2] != 0 || subvector[3] != 0 ||
-             subvector[4] != -3 || subvector[5] != 0 || subvector[6] != 4 || subvector[7] != 0 ) {
+         if( sv[0] !=  0 || sv[1] != 0 || sv[2] != 0 || sv[3] != 0 ||
+             sv[4] != -3 || sv[5] != 0 || sv[6] != 4 || sv[7] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a partial subvector failed\n"
                 << " Details:\n"
-                << "   Result:\n" << subvector << "\n"
+                << "   Result:\n" << sv << "\n"
                 << "   Expected result:\n( 0 0 0 0 -3 0 4 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -1975,16 +1975,16 @@ void ClassTest::testErase()
       {
          initialize();
 
-         SVT subvector = sub( vec_, 0UL, 8UL );
+         SVT sv = subvector( vec_, 0UL, 8UL );
 
-         SVT::Iterator pos = subvector.erase( subvector.find( 4UL ), subvector.end() );
+         SVT::Iterator pos = sv.erase( sv.find( 4UL ), sv.end() );
 
-         checkSize    ( subvector, 8UL );
-         checkNonZeros( subvector, 2UL );
-         checkSize    ( vec_     , 8UL );
-         checkNonZeros( vec_     , 2UL );
+         checkSize    ( sv  , 8UL );
+         checkNonZeros( sv  , 2UL );
+         checkSize    ( vec_, 8UL );
+         checkNonZeros( vec_, 2UL );
 
-         if( pos != subvector.end() ) {
+         if( pos != sv.end() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -1993,13 +1993,13 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( subvector[0] != 0 || subvector[1] != 1 || subvector[2] != 0 || subvector[3] != -2 ||
-             subvector[4] != 0 || subvector[5] != 0 || subvector[6] != 0 || subvector[7] !=  0 ) {
+         if( sv[0] != 0 || sv[1] != 1 || sv[2] != 0 || sv[3] != -2 ||
+             sv[4] != 0 || sv[5] != 0 || sv[6] != 0 || sv[7] !=  0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a partial subvector failed\n"
                 << " Details:\n"
-                << "   Result:\n" << subvector << "\n"
+                << "   Result:\n" << sv << "\n"
                 << "   Expected result:\n( 0 1 0 -2 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -2009,16 +2009,16 @@ void ClassTest::testErase()
       {
          initialize();
 
-         SVT subvector = sub( vec_, 0UL, 8UL );
+         SVT sv = subvector( vec_, 0UL, 8UL );
 
-         SVT::Iterator pos = subvector.erase( subvector.find( 1UL ), subvector.find( 1UL ) );
+         SVT::Iterator pos = sv.erase( sv.find( 1UL ), sv.find( 1UL ) );
 
-         checkSize    ( subvector, 8UL );
-         checkNonZeros( subvector, 4UL );
-         checkSize    ( vec_     , 8UL );
-         checkNonZeros( vec_     , 4UL );
+         checkSize    ( sv  , 8UL );
+         checkNonZeros( sv  , 4UL );
+         checkSize    ( vec_, 8UL );
+         checkNonZeros( vec_, 4UL );
 
-         if( pos != subvector.find( 1UL ) ) {
+         if( pos != sv.find( 1UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -2027,13 +2027,13 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( subvector[0] !=  0 || subvector[1] != 1 || subvector[2] != 0 || subvector[3] != -2 ||
-             subvector[4] != -3 || subvector[5] != 0 || subvector[6] != 4 || subvector[7] !=  0 ) {
+         if( sv[0] !=  0 || sv[1] != 1 || sv[2] != 0 || sv[3] != -2 ||
+             sv[4] != -3 || sv[5] != 0 || sv[6] != 4 || sv[7] !=  0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing an empty range failed\n"
                 << " Details:\n"
-                << "   Result:\n" << subvector << "\n"
+                << "   Result:\n" << sv << "\n"
                 << "   Expected result:\n( 0 1 0 -2 -3 0 4 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -2060,20 +2060,20 @@ void ClassTest::testScale()
 
    // Scaling the subvector in the range [1,4]
    {
-      SVT subvector = sub( vec_, 1UL, 4UL );
-      subvector.scale( 3 );
+      SVT sv = subvector( vec_, 1UL, 4UL );
+      sv.scale( 3 );
 
-      checkSize    ( subvector, 4UL );
-      checkNonZeros( subvector, 3UL );
-      checkSize    ( vec_     , 8UL );
-      checkNonZeros( vec_     , 4UL );
+      checkSize    ( sv  , 4UL );
+      checkNonZeros( sv  , 3UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 4UL );
 
-      if( subvector[0] != 3 || subvector[1] != 0 || subvector[2] != -6 || subvector[3] != -9 ) {
+      if( sv[0] != 3 || sv[1] != 0 || sv[2] != -6 || sv[3] != -9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Scale operation of range [1,4] failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 3 0 -6 -9 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2084,7 +2084,7 @@ void ClassTest::testScale()
          oss << " Test: " << test_ << "\n"
              << " Error: Scale operation of range [1,4] failed\n"
              << " Details:\n"
-             << "   Result:\n" << subvector << "\n"
+             << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 0 3 0 -6 -9 0 4 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2108,19 +2108,19 @@ void ClassTest::testFind()
 
    initialize();
 
-   SVT subvector = sub( vec_, 1UL, 5UL );
+   SVT sv = subvector( vec_, 1UL, 5UL );
 
    // Searching for the first element
    {
-      SVT::Iterator pos = subvector.find( 0UL );
+      SVT::Iterator pos = sv.find( 0UL );
 
-      if( pos == subvector.end() ) {
+      if( pos == sv.end() ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Element could not be found\n"
              << " Details:\n"
              << "   Required index = 0\n"
-             << "   Current subvector:\n" << subvector << "\n";
+             << "   Current subvector:\n" << sv << "\n";
          throw std::runtime_error( oss.str() );
       }
       else if( pos->index() != 0 || pos->value() != 1 ) {
@@ -2132,22 +2132,22 @@ void ClassTest::testFind()
              << "   Found index    = " << pos->index() << "\n"
              << "   Expected value = 1\n"
              << "   Value at index = " << pos->value() << "\n"
-             << "   Current subvector:\n" << subvector << "\n";
+             << "   Current subvector:\n" << sv << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
    // Searching for the second element
    {
-      SVT::Iterator pos = subvector.find( 2UL );
+      SVT::Iterator pos = sv.find( 2UL );
 
-      if( pos == subvector.end() ) {
+      if( pos == sv.end() ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Element could not be found\n"
              << " Details:\n"
              << "   Required index = 2\n"
-             << "   Current subvector:\n" << subvector << "\n";
+             << "   Current subvector:\n" << sv << "\n";
          throw std::runtime_error( oss.str() );
       }
       else if( pos->index() != 2 || pos->value() != -2 ) {
@@ -2159,22 +2159,22 @@ void ClassTest::testFind()
              << "   Found index    = " << pos->index() << "\n"
              << "   Expected value = -2\n"
              << "   Value at index = " << pos->value() << "\n"
-             << "   Current subvector:\n" << subvector << "\n";
+             << "   Current subvector:\n" << sv << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
    // Searching for a non-existing non-zero element
    {
-      SVT::Iterator pos = subvector.find( 1UL );
+      SVT::Iterator pos = sv.find( 1UL );
 
-      if( pos != subvector.end() ) {
+      if( pos != sv.end() ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Non-existing element could be found\n"
              << " Details:\n"
              << "   Required index = 1\n"
-             << "   Current subvector:\n" << subvector << "\n";
+             << "   Current subvector:\n" << sv << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2197,19 +2197,19 @@ void ClassTest::testLowerBound()
 
    initialize();
 
-   SVT subvector = sub( vec_, 0UL, 3UL );
+   SVT sv = subvector( vec_, 0UL, 3UL );
 
    // Determining the lower bound for index 0
    {
-      SVT::Iterator pos = subvector.lowerBound( 0UL );
+      SVT::Iterator pos = sv.lowerBound( 0UL );
 
-      if( pos == subvector.end() ) {
+      if( pos == sv.end() ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Lower bound could not be determined\n"
              << " Details:\n"
              << "   Required index = 0\n"
-             << "   Current subvector:\n" << subvector << "\n";
+             << "   Current subvector:\n" << sv << "\n";
          throw std::runtime_error( oss.str() );
       }
       else if( pos->index() != 1 || pos->value() != 1 ) {
@@ -2221,22 +2221,22 @@ void ClassTest::testLowerBound()
              << "   Found index    = " << pos->index() << "\n"
              << "   Expected value = 1\n"
              << "   Value at index = " << pos->value() << "\n"
-             << "   Current subvector:\n" << subvector << "\n";
+             << "   Current subvector:\n" << sv << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
    // Determining the lower bound for index 1
    {
-      SVT::Iterator pos = subvector.lowerBound( 1UL );
+      SVT::Iterator pos = sv.lowerBound( 1UL );
 
-      if( pos == subvector.end() ) {
+      if( pos == sv.end() ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Lower bound could not be determined\n"
              << " Details:\n"
              << "   Required index = 1\n"
-             << "   Current subvector:\n" << subvector << "\n";
+             << "   Current subvector:\n" << sv << "\n";
          throw std::runtime_error( oss.str() );
       }
       else if( pos->index() != 1 || pos->value() != 1 ) {
@@ -2248,22 +2248,22 @@ void ClassTest::testLowerBound()
              << "   Found index    = " << pos->index() << "\n"
              << "   Expected value = 1\n"
              << "   Value at index = " << pos->value() << "\n"
-             << "   Current subvector:\n" << subvector << "\n";
+             << "   Current subvector:\n" << sv << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
    // Determining the lower bound for index 2
    {
-      SVT::Iterator pos = subvector.lowerBound( 2UL );
+      SVT::Iterator pos = sv.lowerBound( 2UL );
 
-      if( pos != subvector.end() ) {
+      if( pos != sv.end() ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Lower bound could not be determined\n"
              << " Details:\n"
              << "   Required index = 2\n"
-             << "   Current subvector:\n" << subvector << "\n";
+             << "   Current subvector:\n" << sv << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2286,19 +2286,19 @@ void ClassTest::testUpperBound()
 
    initialize();
 
-   SVT subvector = sub( vec_, 0UL, 3UL );
+   SVT sv = subvector( vec_, 0UL, 3UL );
 
    // Determining the upper bound for index 0
    {
-      SVT::Iterator pos = subvector.upperBound( 0UL );
+      SVT::Iterator pos = sv.upperBound( 0UL );
 
-      if( pos == subvector.end() ) {
+      if( pos == sv.end() ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Upper bound could not be determined\n"
              << " Details:\n"
              << "   Required index = 0\n"
-             << "   Current subvector:\n" << subvector << "\n";
+             << "   Current subvector:\n" << sv << "\n";
          throw std::runtime_error( oss.str() );
       }
       else if( pos->index() != 1 || pos->value() != 1 ) {
@@ -2310,37 +2310,37 @@ void ClassTest::testUpperBound()
              << "   Found index    = " << pos->index() << "\n"
              << "   Expected value = 1\n"
              << "   Value at index = " << pos->value() << "\n"
-             << "   Current subvector:\n" << subvector << "\n";
+             << "   Current subvector:\n" << sv << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
    // Determining the upper bound for index 1
    {
-      SVT::Iterator pos = subvector.upperBound( 1UL );
+      SVT::Iterator pos = sv.upperBound( 1UL );
 
-      if( pos != subvector.end() ) {
+      if( pos != sv.end() ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Upper bound could not be determined\n"
              << " Details:\n"
              << "   Required index = 1\n"
-             << "   Current subvector:\n" << subvector << "\n";
+             << "   Current subvector:\n" << sv << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
    // Determining the upper bound for index 2
    {
-      SVT::Iterator pos = subvector.upperBound( 2UL );
+      SVT::Iterator pos = sv.upperBound( 2UL );
 
-      if( pos != subvector.end() ) {
+      if( pos != sv.end() ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Upper bound could not be determined\n"
              << " Details:\n"
              << "   Required index = 2\n"
-             << "   Current subvector:\n" << subvector << "\n";
+             << "   Current subvector:\n" << sv << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2366,28 +2366,28 @@ void ClassTest::testIsDefault()
    // isDefault with default vector
    {
       VT vec( 8UL );
-      SVT subvector( vec, 2UL, 5UL );
+      SVT sv = subvector( vec, 2UL, 5UL );
 
-      if( isDefault( subvector ) != true ) {
+      if( isDefault( sv ) != true ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid isDefault evaluation\n"
              << " Details:\n"
-             << "   Subvector:\n" << subvector << "\n";
+             << "   Subvector:\n" << sv << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
    // isDefault with non-default vector
    {
-      SVT subvector( vec_, 2UL, 5UL );
+      SVT sv = subvector( vec_, 2UL, 5UL );
 
-      if( isDefault( subvector ) != false ) {
+      if( isDefault( sv ) != false ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid isDefault evaluation\n"
              << " Details:\n"
-             << "   Subvector:\n" << subvector << "\n";
+             << "   Subvector:\n" << sv << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2419,51 +2419,51 @@ void ClassTest::testIsNan()
 
    // isnan with empty 3-dimensional subvector
    {
-      SubvectorType subvector = sub( vec, 5UL, 3UL );
+      SubvectorType sv = subvector( vec, 5UL, 3UL );
 
-      checkSize    ( subvector, 3UL );
-      checkNonZeros( subvector, 0UL );
+      checkSize    ( sv, 3UL );
+      checkNonZeros( sv, 0UL );
 
-      if( isnan( subvector ) != false ) {
+      if( isnan( sv ) != false ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid isnan evaluation\n"
              << " Details:\n"
-             << "   Subvector:\n" << subvector << "\n";
+             << "   Subvector:\n" << sv << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
    // isnan with partially filled 5-dimensional subvector
    {
-      SubvectorType subvector = sub( vec, 4UL, 5UL );
+      SubvectorType sv = subvector( vec, 4UL, 5UL );
 
-      checkSize    ( subvector, 5UL );
-      checkNonZeros( subvector, 2UL );
+      checkSize    ( sv, 5UL );
+      checkNonZeros( sv, 2UL );
 
-      if( isnan( subvector ) != false ) {
+      if( isnan( sv ) != false ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid isnan evaluation\n"
              << " Details:\n"
-             << "   Subvector:\n" << subvector << "\n";
+             << "   Subvector:\n" << sv << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
    // isnan with fully filled 3-dimensional subvector
    {
-      SubvectorType subvector = sub( vec, 2UL, 3UL );
+      SubvectorType sv = subvector( vec, 2UL, 3UL );
 
-      checkSize    ( subvector, 3UL );
-      checkNonZeros( subvector, 3UL );
+      checkSize    ( sv, 3UL );
+      checkNonZeros( sv, 3UL );
 
-      if( isnan( subvector ) != false ) {
+      if( isnan( sv ) != false ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid isnan evaluation\n"
              << " Details:\n"
-             << "   Subvector:\n" << subvector << "\n";
+             << "   Subvector:\n" << sv << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2488,7 +2488,7 @@ void ClassTest::testMinimum()
 
    // Computing the minimum of the in the range [0,2]
    {
-      const int minimum = min( sub( vec_, 0UL, 3UL ) );
+      const int minimum = min( subvector( vec_, 0UL, 3UL ) );
 
       if( minimum != 0 ) {
          std::ostringstream oss;
@@ -2503,7 +2503,7 @@ void ClassTest::testMinimum()
 
    // Computing the minimum of the in the range [2,4]
    {
-      const int minimum = min( sub( vec_, 2UL, 3UL ) );
+      const int minimum = min( subvector( vec_, 2UL, 3UL ) );
 
       if( minimum != -3 ) {
          std::ostringstream oss;
@@ -2518,7 +2518,7 @@ void ClassTest::testMinimum()
 
    // Computing the minimum of the in the range [4,6]
    {
-      const int minimum = min( sub( vec_, 4UL, 3UL ) );
+      const int minimum = min( subvector( vec_, 4UL, 3UL ) );
 
       if( minimum != -3 ) {
          std::ostringstream oss;
@@ -2533,7 +2533,7 @@ void ClassTest::testMinimum()
 
    // Computing the minimum of the in the range [6,7]
    {
-      const int minimum = min( sub( vec_, 6UL, 2UL ) );
+      const int minimum = min( subvector( vec_, 6UL, 2UL ) );
 
       if( minimum != 0 ) {
          std::ostringstream oss;
@@ -2566,7 +2566,7 @@ void ClassTest::testMaximum()
 
    // Computing the maximum of the in the range [0,2]
    {
-      const int maximum = max( sub( vec_, 0UL, 3UL ) );
+      const int maximum = max( subvector( vec_, 0UL, 3UL ) );
 
       if( maximum != 1 ) {
          std::ostringstream oss;
@@ -2581,7 +2581,7 @@ void ClassTest::testMaximum()
 
    // Computing the maximum of the in the range [2,4]
    {
-      const int maximum = max( sub( vec_, 2UL, 3UL ) );
+      const int maximum = max( subvector( vec_, 2UL, 3UL ) );
 
       if( maximum != 0 ) {
          std::ostringstream oss;
@@ -2596,7 +2596,7 @@ void ClassTest::testMaximum()
 
    // Computing the maximum of the in the range [4,6]
    {
-      const int maximum = max( sub( vec_, 4UL, 3UL ) );
+      const int maximum = max( subvector( vec_, 4UL, 3UL ) );
 
       if( maximum != 4 ) {
          std::ostringstream oss;
@@ -2611,7 +2611,7 @@ void ClassTest::testMaximum()
 
    // Computing the maximum of the in the range [6,7]
    {
-      const int maximum = max( sub( vec_, 6UL, 2UL ) );
+      const int maximum = max( subvector( vec_, 6UL, 2UL ) );
 
       if( maximum != 4 ) {
          std::ostringstream oss;
