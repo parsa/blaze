@@ -1036,9 +1036,9 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator*=( const Vector<
 
    typedef typename MultTrait<ResultType,typename VT2::ResultType>::Type  MultType;
 
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE   ( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( MultType   );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( MultType   );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( MultType, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType   );
 
    const MultType tmp( *this * (~rhs) );
    reset();
@@ -1596,9 +1596,9 @@ inline void SparseSubvector<VT,TF>::addAssign( const DenseVector<VT2,TF>& rhs )
 {
    typedef typename AddTrait<ResultType,typename VT2::ResultType>::Type  AddType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE    ( AddType );
-   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( AddType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( AddType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( AddType );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1627,9 +1627,9 @@ inline void SparseSubvector<VT,TF>::addAssign( const SparseVector<VT2,TF>& rhs )
 {
    typedef typename AddTrait<ResultType,typename VT2::ResultType>::Type  AddType;
 
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE   ( AddType );
-   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( AddType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( AddType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( AddType );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1656,15 +1656,15 @@ template< typename VT     // Type of the sparse vector
 template< typename VT2 >  // Type of the right-hand side dense vector
 inline void SparseSubvector<VT,TF>::subAssign( const DenseVector<VT2,TF>& rhs )
 {
-   typedef typename AddTrait<ResultType,typename VT2::ResultType>::Type  AddType;
+   typedef typename SubTrait<ResultType,typename VT2::ResultType>::Type  SubType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE    ( AddType );
-   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( AddType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( AddType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( SubType );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const AddType tmp( *this - (~rhs) );
+   const SubType tmp( *this - (~rhs) );
    reset();
    assign( tmp );
 }
@@ -1687,15 +1687,15 @@ template< typename VT     // Type of the sparse vector
 template< typename VT2 >  // Type of the right-hand side sparse vector
 inline void SparseSubvector<VT,TF>::subAssign( const SparseVector<VT2,TF>& rhs )
 {
-   typedef typename AddTrait<ResultType,typename VT2::ResultType>::Type  AddType;
+   typedef typename SubTrait<ResultType,typename VT2::ResultType>::Type  SubType;
 
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE   ( AddType );
-   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( AddType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( AddType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( SubType );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const AddType tmp( *this - (~rhs) );
+   const SubType tmp( *this - (~rhs) );
    reset();
    assign( tmp );
 }
