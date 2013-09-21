@@ -743,8 +743,7 @@ inline SparseSubmatrix<MT,SO>::SparseSubmatrix( MT& matrix, size_t row, size_t c
    , m_     ( m      )  // The number of rows of the submatrix
    , n_     ( n      )  // The number of columns of the submatrix
 {
-   if( m == 0UL || row    + m > matrix.rows() ||
-       n == 0UL || column + n > matrix.columns() )
+   if( ( row + m > matrix.rows() ) || ( column + n > matrix.columns() ) )
       throw std::invalid_argument( "Invalid submatrix specification" );
 }
 //*************************************************************************************************
@@ -2462,8 +2461,7 @@ inline SparseSubmatrix<MT,true>::SparseSubmatrix( MT& matrix, size_t row, size_t
    , m_     ( m      )  // The number of rows of the submatrix
    , n_     ( n      )  // The number of columns of the submatrix
 {
-   if( m == 0UL || row    + m > matrix.rows() ||
-       n == 0UL || column + n > matrix.columns() )
+   if( ( row + m > matrix.rows() ) || ( column + n > matrix.columns() ) )
       throw std::invalid_argument( "Invalid submatrix specification" );
 }
 /*! \endcond */

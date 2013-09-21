@@ -731,7 +731,7 @@ inline SparseSubvector<VT,TF>::SparseSubvector( VT& vector, size_t index, size_t
    , offset_( index  )  // The offset of the subvector within the sparse vector
    , size_  ( n      )  // The size of the subvector
 {
-   if( n == 0UL || index + n > vector.size() )
+   if( index + n > vector.size() )
       throw std::invalid_argument( "Invalid subvector specification" );
 }
 //*************************************************************************************************
