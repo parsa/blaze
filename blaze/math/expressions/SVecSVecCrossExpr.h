@@ -231,9 +231,7 @@ class SVecSVecCrossExpr : public DenseVector< SVecSVecCrossExpr<VT1,VT2>, false 
    // \return void
    //
    // This function implements the performance optimized assignment of a sparse vector-sparse
-   // vector cross product expression to a dense vector. Due to the explicit application of
-   // the SFINAE principle, this operator can only be selected by the compiler in case either
-   // of the two operands requires an intermediate evaluation.
+   // vector cross product expression to a dense vector.
    */
    template< typename VT >  // Type of the target dense vector
    friend inline void assign( DenseVector<VT,false>& lhs, const SVecSVecCrossExpr& rhs )
@@ -263,9 +261,7 @@ class SVecSVecCrossExpr : public DenseVector< SVecSVecCrossExpr<VT1,VT2>, false 
    // \return void
    //
    // This function implements the performance optimized assignment of a sparse vector-sparse
-   // vector cross product expression to a sparse vector. Due to the explicit application of
-   // the SFINAE principle, this operator can only be selected by the compiler in case either
-   // of the two operands requires an intermediate evaluation.
+   // vector cross product expression to a sparse vector.
    */
    template< typename VT >  // Type of the target sparse vector
    friend inline void assign( SparseVector<VT,false>& lhs, const SVecSVecCrossExpr& rhs )
@@ -295,9 +291,7 @@ class SVecSVecCrossExpr : public DenseVector< SVecSVecCrossExpr<VT1,VT2>, false 
    // \return void
    //
    // This function implements the performance optimized addition assignment of a sparse vector-
-   // sparse vector cross product expression to a dense vector. Due to the explicit application
-   // of the SFINAE principle, this operator can only be selected by the compiler in case either
-   // of the operands requires an intermediate evaluation.
+   // sparse vector cross product expression to a dense vector.
    */
    template< typename VT >  // Type of the target dense vector
    friend inline void addAssign( DenseVector<VT,false>& lhs, const SVecSVecCrossExpr& rhs )
@@ -331,9 +325,7 @@ class SVecSVecCrossExpr : public DenseVector< SVecSVecCrossExpr<VT1,VT2>, false 
    // \return void
    //
    // This function implements the performance optimized subtraction assignment of a sparse vector-
-   // sparse vector cross product expression to a dense vector. Due to the explicit application of
-   // the SFINAE principle, this operator can only be selected by the compiler in case either of
-   // the operands requires an intermediate evaluation.
+   // sparse vector cross product expression to a dense vector.
    */
    template< typename VT >  // Type of the target dense vector
    friend inline void subAssign( DenseVector<VT,false>& lhs, const SVecSVecCrossExpr& rhs )
@@ -367,9 +359,7 @@ class SVecSVecCrossExpr : public DenseVector< SVecSVecCrossExpr<VT1,VT2>, false 
    // \return void
    //
    // This function implements the performance optimized multiplication assignment of a sparse
-   // vector-sparse vector cross product expression to a dense vector. Due to the explicit
-   // application of the SFINAE principle, this operator can only be selected by the compiler
-   // in case either of the operands requires an intermediate evaluation.
+   // vector-sparse vector cross product expression to a dense vector.
    */
    template< typename VT >  // Type of the target dense vector
    friend inline void multAssign( DenseVector<VT,false>& lhs, const SVecSVecCrossExpr& rhs )
