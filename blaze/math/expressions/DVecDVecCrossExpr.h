@@ -150,7 +150,7 @@ class DVecDVecCrossExpr : public DenseVector< DVecDVecCrossExpr<VT1,VT2>, false 
    // \return The resulting value.
    */
    inline ReturnType operator[]( size_t index ) const {
-      BLAZE_INTERNAL_ASSERT( index < 2UL, "Invalid vector access index" );
+      BLAZE_INTERNAL_ASSERT( index < 3UL, "Invalid vector access index" );
 
       if( index == 0UL )
          return lhs_[1UL] * rhs_[2UL] - lhs_[2UL] * rhs_[1UL];
