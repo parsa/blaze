@@ -46,6 +46,7 @@
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
+#include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/math/typetraits/IsMatVecMultExpr.h>
@@ -295,6 +296,11 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
                       , private Expression
 {
  private:
+   //**Type definitions****************************************************************************
+   //! Composite data type of the dense vector expression.
+   typedef typename SelectType< IsExpression<VT>::value, VT, VT& >::Type  Operand;
+   //**********************************************************************************************
+
    //**********************************************************************************************
    //! Compilation switch for the non-const reference and iterator types.
    /*! The \a useConst compile time constant expression represents a compilation switch for
@@ -690,7 +696,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   VT&          vector_;  //!< The sparse vector containing the subvector.
+   Operand      vector_;  //!< The sparse vector containing the subvector.
    const size_t offset_;  //!< The offset of the subvector within the sparse vector.
    const size_t size_;    //!< The size of the subvector.
    //@}
