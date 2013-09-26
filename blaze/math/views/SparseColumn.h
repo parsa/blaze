@@ -339,6 +339,11 @@ class SparseColumn : public SparseVector< SparseColumn<MT,SO>, false >
                    , private Expression
 {
  private:
+   //**Type definitions****************************************************************************
+   //! Composite data type of the dense matrix expression.
+   typedef typename SelectType< IsExpression<MT>::value, MT, MT& >::Type  Operand;
+   //**********************************************************************************************
+
    //**********************************************************************************************
    //! Compilation switch for the non-const reference and iterator types.
    /*! The \a useConst compile time constant expression represents a compilation switch for
@@ -478,7 +483,7 @@ class SparseColumn : public SparseVector< SparseColumn<MT,SO>, false >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   MT&          matrix_;  //!< The sparse matrix containing the column.
+   Operand      matrix_;  //!< The sparse matrix containing the column.
    const size_t col_;     //!< The index of the column in the matrix.
    //@}
    //**********************************************************************************************
@@ -1575,6 +1580,11 @@ class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, fals
                              , private Expression
 {
  private:
+   //**Type definitions****************************************************************************
+   //! Composite data type of the dense matrix expression.
+   typedef typename SelectType< IsExpression<MT>::value, MT, MT& >::Type  Operand;
+   //**********************************************************************************************
+
    //**********************************************************************************************
    //! Compilation switch for the non-const reference and iterator types.
    /*! The \a useConst compile time constant expression represents a compilation switch for
@@ -2030,7 +2040,7 @@ class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, fals
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   MT&          matrix_;  //!< The sparse matrix containing the column.
+   Operand      matrix_;  //!< The sparse matrix containing the column.
    const size_t col_;     //!< The index of the column in the matrix.
    //@}
    //**********************************************************************************************
