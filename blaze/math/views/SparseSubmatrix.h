@@ -50,6 +50,7 @@
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
+#include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatAbsExpr.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
 #include <blaze/math/typetraits/IsMatMatAddExpr.h>
@@ -293,6 +294,11 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
                       , private Expression
 {
  private:
+   //**Type definitions****************************************************************************
+   //! Composite data type of the dense matrix expression.
+   typedef typename SelectType< IsExpression<MT>::value, MT, MT& >::Type  Operand;
+   //**********************************************************************************************
+
    //**********************************************************************************************
    //! Compilation switch for the non-const reference and iterator types.
    /*! The \a useConst compile time constant expression represents a compilation switch for
@@ -696,7 +702,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   MT&          matrix_;  //!< The sparse matrix containing the submatrix.
+   Operand      matrix_;  //!< The sparse matrix containing the submatrix.
    const size_t row_;     //!< The first row of the submatrix.
    const size_t column_;  //!< The first column of the submatrix.
    const size_t m_;       //!< The number of rows of the submatrix.
@@ -2010,6 +2016,11 @@ class SparseSubmatrix<MT,true> : public SparseMatrix< SparseSubmatrix<MT,true>, 
                                , private Expression
 {
  private:
+   //**Type definitions****************************************************************************
+   //! Composite data type of the dense matrix expression.
+   typedef typename SelectType< IsExpression<MT>::value, MT, MT& >::Type  Operand;
+   //**********************************************************************************************
+
    //**********************************************************************************************
    //! Compilation switch for the non-const reference and iterator types.
    /*! The \a useConst compile time constant expression represents a compilation switch for
@@ -2413,7 +2424,7 @@ class SparseSubmatrix<MT,true> : public SparseMatrix< SparseSubmatrix<MT,true>, 
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   MT&          matrix_;  //!< The sparse matrix containing the submatrix.
+   Operand      matrix_;  //!< The sparse matrix containing the submatrix.
    const size_t row_;     //!< The first row of the submatrix.
    const size_t column_;  //!< The first column of the submatrix.
    const size_t m_;       //!< The number of rows of the submatrix.
