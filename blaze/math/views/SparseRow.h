@@ -338,6 +338,11 @@ class SparseRow : public SparseVector< SparseRow<MT,SO>, true >
                 , private Expression
 {
  private:
+   //**Type definitions****************************************************************************
+   //! Composite data type of the dense matrix expression.
+   typedef typename SelectType< IsExpression<MT>::value, MT, MT& >::Type  Operand;
+   //**********************************************************************************************
+
    //**********************************************************************************************
    //! Compilation switch for the non-const reference and iterator types.
    /*! The \a useConst compile time constant expression represents a compilation switch for
@@ -477,7 +482,7 @@ class SparseRow : public SparseVector< SparseRow<MT,SO>, true >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   MT&          matrix_;  //!< The sparse matrix containing the row.
+   Operand      matrix_;  //!< The sparse matrix containing the row.
    const size_t row_;     //!< The index of the row in the matrix.
    //@}
    //**********************************************************************************************
@@ -1574,6 +1579,11 @@ class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
                           , private Expression
 {
  private:
+   //**Type definitions****************************************************************************
+   //! Composite data type of the dense matrix expression.
+   typedef typename SelectType< IsExpression<MT>::value, MT, MT& >::Type  Operand;
+   //**********************************************************************************************
+
    //**********************************************************************************************
    //! Compilation switch for the non-const reference and iterator types.
    /*! The \a useConst compile time constant expression represents a compilation switch for
@@ -2029,7 +2039,7 @@ class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   MT&          matrix_;  //!< The sparse matrix containing the row.
+   Operand      matrix_;  //!< The sparse matrix containing the row.
    const size_t row_;     //!< The index of the row in the matrix.
    //@}
    //**********************************************************************************************
