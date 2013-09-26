@@ -302,7 +302,11 @@ class DenseRow : public DenseVector< DenseRow<MT,SO>, true >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef IntrinsicTrait<typename MT::ElementType>  IT;  //!< Intrinsic trait for the row element type.
+   //! Composite data type of the dense matrix expression.
+   typedef typename SelectType< IsExpression<MT>::value, MT, MT& >::Type  Operand;
+
+   //! Intrinsic trait for the row element type.
+   typedef IntrinsicTrait<typename MT::ElementType>  IT;
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -511,7 +515,7 @@ class DenseRow : public DenseVector< DenseRow<MT,SO>, true >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   MT&          matrix_;  //!< The dense matrix containing the row.
+   Operand      matrix_;  //!< The dense matrix containing the row.
    const size_t row_;     //!< The index of the row in the matrix.
    //@}
    //**********************************************************************************************
@@ -1527,6 +1531,11 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
                          , private Expression
 {
  private:
+   //**Type definitions****************************************************************************
+   //! Composite data type of the dense matrix expression.
+   typedef typename SelectType< IsExpression<MT>::value, MT, MT& >::Type  Operand;
+   //**********************************************************************************************
+
    //**********************************************************************************************
    //! Compilation switch for the non-const reference and iterator types.
    /*! The \a useConst compile time constant expression represents a compilation switch for
@@ -1801,7 +1810,7 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   MT&          matrix_;  //!< The dense matrix containing the row.
+   Operand      matrix_;  //!< The dense matrix containing the row.
    const size_t row_;     //!< The index of the row in the matrix.
    //@}
    //**********************************************************************************************
