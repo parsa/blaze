@@ -303,7 +303,11 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO>, false >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef IntrinsicTrait<typename MT::ElementType>  IT;  //!< Intrinsic trait for the column element type.
+   //! Composite data type of the dense matrix expression.
+   typedef typename SelectType< IsExpression<MT>::value, MT, MT& >::Type  Operand;
+
+   //! Intrinsic trait for the column element type.
+   typedef IntrinsicTrait<typename MT::ElementType>  IT;
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -512,7 +516,7 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO>, false >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   MT&          matrix_;  //!< The dense matrix containing the column.
+   Operand      matrix_;  //!< The dense matrix containing the column.
    const size_t col_;     //!< The index of the column in the matrix.
    //@}
    //**********************************************************************************************
@@ -1528,6 +1532,11 @@ class DenseColumn<MT,false> : public DenseVector< DenseColumn<MT,false>, false >
                             , private Expression
 {
  private:
+   //**Type definitions****************************************************************************
+   //! Composite data type of the dense matrix expression.
+   typedef typename SelectType< IsExpression<MT>::value, MT, MT& >::Type  Operand;
+   //**********************************************************************************************
+
    //**********************************************************************************************
    //! Compilation switch for the non-const reference and iterator types.
    /*! The \a useConst compile time constant expression represents a compilation switch for
@@ -1802,7 +1811,7 @@ class DenseColumn<MT,false> : public DenseVector< DenseColumn<MT,false>, false >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   MT&          matrix_;  //!< The dense matrix containing the column.
+   Operand      matrix_;  //!< The dense matrix containing the column.
    const size_t col_;     //!< The index of the column in the matrix.
    //@}
    //**********************************************************************************************
