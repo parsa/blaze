@@ -1153,7 +1153,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline size_t SparseSubvector<VT,TF>::capacity() const
 {
-   return size_;
+   return nonZeros() + vector_.capacity() - vector_.nonZeros();
 }
 //*************************************************************************************************
 
@@ -1275,7 +1275,11 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 void SparseSubvector<VT,TF>::reserve( size_t n )
 {
-   return;
+   const size_t current( capacity() );
+
+   if( n > current ) {
+      vector_.reserve( vector_.capacity() + n - current );
+   }
 }
 //*************************************************************************************************
 
