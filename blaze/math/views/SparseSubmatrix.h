@@ -132,7 +132,7 @@ namespace blaze {
    submatrix( A, 8UL, 2UL, 8UL, 4UL ) = C;
 
    // Assigning part of the result of a matrix addition to the first submatrix
-   sm = submatrix( submatrix( B, 0UL, 0UL, 8UL, 4UL ) + C );
+   sm = submatrix( B + C, 0UL, 0UL, 8UL, 4UL );
    \endcode
 
 // \n \section sparse_submatrix_element_access Element access
@@ -169,7 +169,7 @@ namespace blaze {
    SubmatrixType sm = submatrix( A, 16UL, 16UL, 64UL, 128UL );
 
    // Traversing the elements of the 0th row via iterators to non-const elements
-   for( SubmatrixType::Iterator it=sm.begin(0); it!=sv.end(0); ++it ) {
+   for( SubmatrixType::Iterator it=sm.begin(0); it!=sm.end(0); ++it ) {
       it->value() = ...;  // OK: Write access to the value of the non-zero element.
       ... = it->value();  // OK: Read access to the value of the non-zero element.
       it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
@@ -277,9 +277,9 @@ namespace blaze {
    D2 = D1  - submatrix( S1, 8UL, 0UL, 8UL, 8UL );  // Dense matrix/sparse matrix subtraction
    S2 = sm * submatrix( S1, 8UL, 8UL, 8UL, 8UL );   // Sparse matrix/sparse matrix multiplication
 
-   submatrix( S1, 8UL, 0UL, 8UL, 8UL ) *= 2.0;     // In-place scaling of a submatrix of S1
-   b = submatrix( S1, 8UL, 8UL, 8UL, 8UL ) * 2.0;  // Scaling of the a submatrix of S1
-   b = 2.0 * sm;                                   // Scaling of the a submatrix of S1
+   submatrix( S1, 8UL, 0UL, 8UL, 8UL ) *= 2.0;      // In-place scaling of a submatrix of S1
+   S2 = submatrix( S1, 8UL, 8UL, 8UL, 8UL ) * 2.0;  // Scaling of the a submatrix of S1
+   S2 = 2.0 * sm;                                   // Scaling of the a submatrix of S1
 
    submatrix( S1, 0UL, 8UL, 8UL, 8UL ) += S2;  // Addition assignment
    submatrix( S1, 8UL, 0UL, 8UL, 8UL ) -= D1;  // Subtraction assignment

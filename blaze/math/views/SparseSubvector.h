@@ -268,7 +268,7 @@ namespace blaze {
    SparseMatrixType A;
 
    typedef blaze::SparseSubvector<SparseVectorType>  SubvectorType;
-   SubvectorType sv( subvector( s1,  0UL, 10UL ) );  // View on the range [0..9] of vector s1
+   SubvectorType sv( subvector( s1, 0UL, 10UL ) );  // View on the range [0..9] of vector s1
 
    sv = s2;                           // Sparse vector initialization of the range [0..9]
    subvector( s1, 10UL, 10UL ) = d1;  // Dense vector initialization of the range [10..19]
@@ -277,12 +277,12 @@ namespace blaze {
    d2 = d1 + subvector( s1, 10UL, 10UL );  // Dense vector/sparse vector addition
    s2 = sv * subvector( s1, 20UL, 10UL );  // Component-wise vector multiplication
 
-   subvector( s1, 3UL, 4UL ) *= 2.0;     // In-place scaling of the range [3..6]
-   b = subvector( s1, 7UL, 3UL ) * 2.0;  // Scaling of the range [7..9]
-   b = 2.0 * subvector( s1, 7UL, 3UL );  // Scaling of the range [7..9]
+   subvector( s1, 3UL, 4UL ) *= 2.0;      // In-place scaling of the range [3..6]
+   s2 = subvector( s1, 7UL, 3UL ) * 2.0;  // Scaling of the range [7..9]
+   s2 = 2.0 * subvector( s1, 7UL, 3UL );  // Scaling of the range [7..9]
 
-   subvector( s1, 0UL , 10UL ) += a;   // Addition assignment
-   subvector( s1, 10UL, 10UL ) -= c;   // Subtraction assignment
+   subvector( s1, 0UL , 10UL ) += s2;  // Addition assignment
+   subvector( s1, 10UL, 10UL ) -= d2;  // Subtraction assignment
    subvector( s1, 20UL, 10UL ) *= sv;  // Multiplication assignment
 
    double scalar = subvector( s1, 5UL, 10UL ) * trans( d1 );  // Scalar/dot/inner product between two vectors
@@ -1706,6 +1706,10 @@ inline void SparseSubvector<VT,TF>::subAssign( const SparseVector<VT2,TF>& rhs )
    assign( tmp );
 }
 //*************************************************************************************************
+
+
+
+
 
 
 
