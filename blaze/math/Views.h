@@ -29,6 +29,7 @@
 
 #include <blaze/math/views/DenseColumn.h>
 #include <blaze/math/views/DenseRow.h>
+#include <blaze/math/views/DenseSubmatrix.h>
 #include <blaze/math/views/DenseSubvector.h>
 #include <blaze/math/views/SparseColumn.h>
 #include <blaze/math/views/SparseRow.h>
