@@ -46,6 +46,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blazetest/system/MathTest.h>
@@ -134,6 +135,7 @@ class OperationTest
    template< typename T > void testScaledOperation   ( T scalar );
                           void testTransposeOperation();
                           void testAbsOperation      ();
+                          void testSubvectorOperation();
    //@}
    //**********************************************************************************************
 
@@ -265,6 +267,7 @@ OperationTest<MT,VT>::OperationTest( const Creator<MT>& creator1, const Creator<
    testScaledOperation( 1.1 );
    testTransposeOperation();
    testAbsOperation();
+   testSubvectorOperation();
 }
 //*************************************************************************************************
 
@@ -2708,6 +2711,340 @@ void OperationTest<MT,VT>::testAbsOperation()
             dres_   *= abs( eval( olhs_ ) * eval( rhs_ ) );
             sres_   *= abs( eval( olhs_ ) * eval( rhs_ ) );
             refres_ *= abs( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the subvector-wise sparse matrix/dense vector multiplication.
+//
+// \return void
+// \exception std::runtime_error Multiplication error detected.
+//
+// This function tests the subvector-wise matrix/vector multiplication with plain assignment,
+// addition assignment, subtraction assignment, and multiplication assignment. In case any
+// error resulting from the multiplication or the subsequent assignment is detected, a
+// \a std::runtime_error exception is thrown.
+*/
+template< typename MT    // Type of the left-hand side sparse matrix
+        , typename VT >  // Type of the right-hand side dense vector
+void OperationTest<MT,VT>::testSubvectorOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_SUBVECTOR_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_SUBVECTOR_OPERATION > 1 )
+   {
+      if( lhs_.rows() == 0UL )
+         return;
+
+
+      //=====================================================================================
+      // Subvector-wise multiplication
+      //=====================================================================================
+
+      // Subvector-wise multiplication with the given matrix/vector
+      {
+         test_  = "Subvector-wise multiplication with the given matrix/vector";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<lhs_.rows(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, lhs_.rows() - index );
+               subvector( dres_  , index, size ) = subvector( lhs_ * rhs_      , index, size );
+               subvector( sres_  , index, size ) = subvector( lhs_ * rhs_      , index, size );
+               subvector( refres_, index, size ) = subvector( reflhs_ * refrhs_, index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<olhs_.rows(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, olhs_.rows() - index );
+               subvector( dres_  , index, size ) = subvector( olhs_ * rhs_     , index, size );
+               subvector( sres_  , index, size ) = subvector( olhs_ * rhs_     , index, size );
+               subvector( refres_, index, size ) = subvector( reflhs_ * refrhs_, index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+      // Subvector-wise multiplication with evaluated matrix/vector
+      {
+         test_  = "Subvector-wise multiplication with evaluated matrix/vector";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<lhs_.rows(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, lhs_.rows() - index );
+               subvector( dres_  , index, size ) = subvector( eval( lhs_ ) * eval( rhs_ )      , index, size );
+               subvector( sres_  , index, size ) = subvector( eval( lhs_ ) * eval( rhs_ )      , index, size );
+               subvector( refres_, index, size ) = subvector( eval( reflhs_ ) * eval( refrhs_ ), index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<olhs_.rows(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, olhs_.rows() - index );
+               subvector( dres_  , index, size ) = subvector( eval( olhs_ ) * eval( rhs_ )     , index, size );
+               subvector( sres_  , index, size ) = subvector( eval( olhs_ ) * eval( rhs_ )     , index, size );
+               subvector( refres_, index, size ) = subvector( eval( reflhs_ ) * eval( refrhs_ ), index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Subvector-wise multiplication with addition assignment
+      //=====================================================================================
+
+      // Subvector-wise multiplication with addition assignment with the given matrix/vector
+      {
+         test_  = "Subvector-wise multiplication with addition assignment the given matrix/vector";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<lhs_.rows(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, lhs_.rows() - index );
+               subvector( dres_  , index, size ) += subvector( lhs_ * rhs_      , index, size );
+               subvector( sres_  , index, size ) += subvector( lhs_ * rhs_      , index, size );
+               subvector( refres_, index, size ) += subvector( reflhs_ * refrhs_, index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<olhs_.rows(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, olhs_.rows() - index );
+               subvector( dres_  , index, size ) += subvector( olhs_ * rhs_     , index, size );
+               subvector( sres_  , index, size ) += subvector( olhs_ * rhs_     , index, size );
+               subvector( refres_, index, size ) += subvector( reflhs_ * refrhs_, index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+      // Subvector-wise multiplication with addition assignment with evaluated matrix/vector
+      {
+         test_  = "Subvector-wise multiplication with addition assignment with evaluated matrix/vector";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<lhs_.rows(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, lhs_.rows() - index );
+               subvector( dres_  , index, size ) += subvector( eval( lhs_ ) * eval( rhs_ )      , index, size );
+               subvector( sres_  , index, size ) += subvector( eval( lhs_ ) * eval( rhs_ )      , index, size );
+               subvector( refres_, index, size ) += subvector( eval( reflhs_ ) * eval( refrhs_ ), index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<olhs_.rows(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, olhs_.rows() - index );
+               subvector( dres_  , index, size ) += subvector( eval( olhs_ ) * eval( rhs_ )     , index, size );
+               subvector( sres_  , index, size ) += subvector( eval( olhs_ ) * eval( rhs_ )     , index, size );
+               subvector( refres_, index, size ) += subvector( eval( reflhs_ ) * eval( refrhs_ ), index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Subvector-wise multiplication with subtraction assignment
+      //=====================================================================================
+
+      // Subvector-wise multiplication with addition assignment with the given matrix/vector
+      {
+         test_  = "Subvector-wise multiplication with subtraction assignment the given matrix/vector";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<lhs_.rows(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, lhs_.rows() - index );
+               subvector( dres_  , index, size ) -= subvector( lhs_ * rhs_      , index, size );
+               subvector( sres_  , index, size ) -= subvector( lhs_ * rhs_      , index, size );
+               subvector( refres_, index, size ) -= subvector( reflhs_ * refrhs_, index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<olhs_.rows(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, olhs_.rows() - index );
+               subvector( dres_  , index, size ) -= subvector( olhs_ * rhs_     , index, size );
+               subvector( sres_  , index, size ) -= subvector( olhs_ * rhs_     , index, size );
+               subvector( refres_, index, size ) -= subvector( reflhs_ * refrhs_, index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+      // Subvector-wise multiplication with subtraction assignment with evaluated matrix/vector
+      {
+         test_  = "Subvector-wise multiplication with subtraction assignment with evaluated matrix/vector";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<lhs_.rows(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, lhs_.rows() - index );
+               subvector( dres_  , index, size ) -= subvector( eval( lhs_ ) * eval( rhs_ )      , index, size );
+               subvector( sres_  , index, size ) -= subvector( eval( lhs_ ) * eval( rhs_ )      , index, size );
+               subvector( refres_, index, size ) -= subvector( eval( reflhs_ ) * eval( refrhs_ ), index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<olhs_.rows(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, olhs_.rows() - index );
+               subvector( dres_  , index, size ) -= subvector( eval( olhs_ ) * eval( rhs_ )     , index, size );
+               subvector( sres_  , index, size ) -= subvector( eval( olhs_ ) * eval( rhs_ )     , index, size );
+               subvector( refres_, index, size ) -= subvector( eval( reflhs_ ) * eval( refrhs_ ), index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Subvector-wise multiplication with multiplication assignment
+      //=====================================================================================
+
+      // Subvector-wise multiplication with addition assignment with the given matrix/vector
+      {
+         test_  = "Subvector-wise multiplication with multiplication assignment the given matrix/vector";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<lhs_.rows(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, lhs_.rows() - index );
+               subvector( dres_  , index, size ) *= subvector( lhs_ * rhs_      , index, size );
+               subvector( sres_  , index, size ) *= subvector( lhs_ * rhs_      , index, size );
+               subvector( refres_, index, size ) *= subvector( reflhs_ * refrhs_, index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<olhs_.rows(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, olhs_.rows() - index );
+               subvector( dres_  , index, size ) *= subvector( olhs_ * rhs_     , index, size );
+               subvector( sres_  , index, size ) *= subvector( olhs_ * rhs_     , index, size );
+               subvector( refres_, index, size ) *= subvector( reflhs_ * refrhs_, index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+      // Subvector-wise multiplication with multiplication assignment with evaluated matrix/vector
+      {
+         test_  = "Subvector-wise multiplication with multiplication assignment with evaluated matrix/vector";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<lhs_.rows(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, lhs_.rows() - index );
+               subvector( dres_  , index, size ) *= subvector( eval( lhs_ ) * eval( rhs_ )      , index, size );
+               subvector( sres_  , index, size ) *= subvector( eval( lhs_ ) * eval( rhs_ )      , index, size );
+               subvector( refres_, index, size ) *= subvector( eval( reflhs_ ) * eval( refrhs_ ), index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<olhs_.rows(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, olhs_.rows() - index );
+               subvector( dres_  , index, size ) *= subvector( eval( olhs_ ) * eval( rhs_ )     , index, size );
+               subvector( sres_  , index, size ) *= subvector( eval( olhs_ ) * eval( rhs_ )     , index, size );
+               subvector( refres_, index, size ) *= subvector( eval( reflhs_ ) * eval( refrhs_ ), index, size );
+            }
          }
          catch( std::exception& ex ) {
             convertException<TMT>( ex );

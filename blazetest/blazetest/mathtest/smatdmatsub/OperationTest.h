@@ -150,6 +150,7 @@ class OperationTest
    template< typename T > void testScaledOperation   ( T scalar );
                           void testTransposeOperation();
                           void testAbsOperation      ();
+                          void testSubmatrixOperation();
                           void testRowOperation      ();
                           void testColumnOperation   ();
    //@}
@@ -317,6 +318,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testScaledOperation( 1.1 );
    testTransposeOperation();
    testAbsOperation();
+   testSubmatrixOperation();
    testRowOperation();
    testColumnOperation();
 }
@@ -3587,6 +3589,562 @@ void OperationTest<MT1,MT2>::testAbsOperation()
             sres_   -= abs( eval( olhs_ ) + eval( orhs_ ) );
             osres_  -= abs( eval( olhs_ ) + eval( orhs_ ) );
             refres_ -= abs( eval( reflhs_ ) + eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the submatrix-wise sparse matrix/dense matrix subtraction.
+//
+// \return void
+// \exception std::runtime_error Subtraction error detected.
+//
+// This function tests the submatrix-wise matrix subtraction with plain assignment, addition
+// assignment, and subtraction assignment. In case any error resulting from the subtraction
+// or the subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testSubmatrixOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_SUBMATRIX_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_SUBMATRIX_OPERATION > 1 )
+   {
+      if( lhs_.rows() == 0UL || lhs_.columns() == 0UL )
+         return;
+
+
+      //=====================================================================================
+      // Submatrix-wise subtraction
+      //=====================================================================================
+
+      // Submatrix-wise subtraction with the given matrices
+      {
+         test_  = "Submatrix-wise subtraction with the given matrices";
+         error_ = "Failed subtraction operation";
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) = submatrix( lhs_ - rhs_      , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) = submatrix( lhs_ - rhs_      , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) = submatrix( lhs_ - rhs_      , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) = submatrix( lhs_ - rhs_      , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) = submatrix( reflhs_ - refrhs_, row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) = submatrix( lhs_ - orhs_     , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) = submatrix( lhs_ - orhs_     , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) = submatrix( lhs_ - orhs_     , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) = submatrix( lhs_ - orhs_     , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) = submatrix( reflhs_ - refrhs_, row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) = submatrix( olhs_ - rhs_     , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) = submatrix( olhs_ - rhs_     , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) = submatrix( olhs_ - rhs_     , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) = submatrix( olhs_ - rhs_     , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) = submatrix( reflhs_ - refrhs_, row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) = submatrix( olhs_ - orhs_    , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) = submatrix( olhs_ - orhs_    , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) = submatrix( olhs_ - orhs_    , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) = submatrix( olhs_ - orhs_    , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) = submatrix( reflhs_ - refrhs_, row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Submatrix-wise subtraction with evaluated matrices
+      {
+         test_  = "Submatrix-wise subtraction with evaluated matrices";
+         error_ = "Failed subtraction operation";
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) = submatrix( eval( lhs_ ) - eval( rhs_ )      , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) = submatrix( eval( lhs_ ) - eval( rhs_ )      , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) = submatrix( eval( lhs_ ) - eval( rhs_ )      , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) = submatrix( eval( lhs_ ) - eval( rhs_ )      , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) = submatrix( eval( reflhs_ ) - eval( refrhs_ ), row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) = submatrix( eval( lhs_ ) - eval( orhs_ )     , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) = submatrix( eval( lhs_ ) - eval( orhs_ )     , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) = submatrix( eval( lhs_ ) - eval( orhs_ )     , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) = submatrix( eval( lhs_ ) - eval( orhs_ )     , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) = submatrix( eval( reflhs_ ) - eval( refrhs_ ), row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) = submatrix( eval( olhs_ ) - eval( rhs_ )     , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) = submatrix( eval( olhs_ ) - eval( rhs_ )     , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) = submatrix( eval( olhs_ ) - eval( rhs_ )     , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) = submatrix( eval( olhs_ ) - eval( rhs_ )     , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) = submatrix( eval( reflhs_ ) - eval( refrhs_ ), row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) = submatrix( eval( olhs_ ) - eval( orhs_ )    , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) = submatrix( eval( olhs_ ) - eval( orhs_ )    , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) = submatrix( eval( olhs_ ) - eval( orhs_ )    , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) = submatrix( eval( olhs_ ) - eval( orhs_ )    , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) = submatrix( eval( reflhs_ ) - eval( refrhs_ ), row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Submatrix-wise subtraction with addition assignment
+      //=====================================================================================
+
+      // Submatrix-wise subtraction with addition assignment with the given matrices
+      {
+         test_  = "Submatrix-wise subtraction with addition assignment with the given matrices";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) += submatrix( lhs_ - rhs_      , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) += submatrix( lhs_ - rhs_      , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) += submatrix( lhs_ - rhs_      , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) += submatrix( lhs_ - rhs_      , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) += submatrix( reflhs_ - refrhs_, row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) += submatrix( lhs_ - orhs_     , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) += submatrix( lhs_ - orhs_     , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) += submatrix( lhs_ - orhs_     , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) += submatrix( lhs_ - orhs_     , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) += submatrix( reflhs_ - refrhs_, row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) += submatrix( olhs_ - rhs_     , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) += submatrix( olhs_ - rhs_     , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) += submatrix( olhs_ - rhs_     , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) += submatrix( olhs_ - rhs_     , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) += submatrix( reflhs_ - refrhs_, row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) += submatrix( olhs_ - orhs_    , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) += submatrix( olhs_ - orhs_    , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) += submatrix( olhs_ - orhs_    , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) += submatrix( olhs_ - orhs_    , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) += submatrix( reflhs_ - refrhs_, row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Submatrix-wise subtraction with addition assignment with evaluated matrices
+      {
+         test_  = "Submatrix-wise subtraction with addition assignment with evaluated matrices";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) += submatrix( eval( lhs_ ) - eval( rhs_ )      , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) += submatrix( eval( lhs_ ) - eval( rhs_ )      , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) += submatrix( eval( lhs_ ) - eval( rhs_ )      , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) += submatrix( eval( lhs_ ) - eval( rhs_ )      , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) += submatrix( eval( reflhs_ ) - eval( refrhs_ ), row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) += submatrix( eval( lhs_ ) - eval( orhs_ )     , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) += submatrix( eval( lhs_ ) - eval( orhs_ )     , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) += submatrix( eval( lhs_ ) - eval( orhs_ )     , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) += submatrix( eval( lhs_ ) - eval( orhs_ )     , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) += submatrix( eval( reflhs_ ) - eval( refrhs_ ), row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) += submatrix( eval( olhs_ ) - eval( rhs_ )     , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) += submatrix( eval( olhs_ ) - eval( rhs_ )     , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) += submatrix( eval( olhs_ ) - eval( rhs_ )     , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) += submatrix( eval( olhs_ ) - eval( rhs_ )     , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) += submatrix( eval( reflhs_ ) - eval( refrhs_ ), row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) += submatrix( eval( olhs_ ) - eval( orhs_ )    , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) += submatrix( eval( olhs_ ) - eval( orhs_ )    , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) += submatrix( eval( olhs_ ) - eval( orhs_ )    , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) += submatrix( eval( olhs_ ) - eval( orhs_ )    , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) += submatrix( eval( reflhs_ ) - eval( refrhs_ ), row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Submatrix-wise subtraction with subtraction assignment
+      //=====================================================================================
+
+      // Submatrix-wise subtraction with subtraction assignment with the given matrices
+      {
+         test_  = "Submatrix-wise subtraction with subtraction assignment with the given matrices";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) -= submatrix( lhs_ - rhs_      , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) -= submatrix( lhs_ - rhs_      , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) -= submatrix( lhs_ - rhs_      , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) -= submatrix( lhs_ - rhs_      , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) -= submatrix( reflhs_ - refrhs_, row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) -= submatrix( lhs_ - orhs_     , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) -= submatrix( lhs_ - orhs_     , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) -= submatrix( lhs_ - orhs_     , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) -= submatrix( lhs_ - orhs_     , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) -= submatrix( reflhs_ - refrhs_, row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) -= submatrix( olhs_ - rhs_     , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) -= submatrix( olhs_ - rhs_     , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) -= submatrix( olhs_ - rhs_     , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) -= submatrix( olhs_ - rhs_     , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) -= submatrix( reflhs_ - refrhs_, row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) -= submatrix( olhs_ - orhs_    , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) -= submatrix( olhs_ - orhs_    , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) -= submatrix( olhs_ - orhs_    , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) -= submatrix( olhs_ - orhs_    , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) -= submatrix( reflhs_ - refrhs_, row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Submatrix-wise subtraction with subtraction assignment with evaluated matrices
+      {
+         test_  = "Submatrix-wise subtraction with subtraction assignment with evaluated matrices";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) -= submatrix( eval( lhs_ ) - eval( rhs_ )      , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) -= submatrix( eval( lhs_ ) - eval( rhs_ )      , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) -= submatrix( eval( lhs_ ) - eval( rhs_ )      , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) -= submatrix( eval( lhs_ ) - eval( rhs_ )      , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) -= submatrix( eval( reflhs_ ) - eval( refrhs_ ), row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) -= submatrix( eval( lhs_ ) - eval( orhs_ )     , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) -= submatrix( eval( lhs_ ) - eval( orhs_ )     , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) -= submatrix( eval( lhs_ ) - eval( orhs_ )     , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) -= submatrix( eval( lhs_ ) - eval( orhs_ )     , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) -= submatrix( eval( reflhs_ ) - eval( refrhs_ ), row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) -= submatrix( eval( olhs_ ) - eval( rhs_ )     , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) -= submatrix( eval( olhs_ ) - eval( rhs_ )     , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) -= submatrix( eval( olhs_ ) - eval( rhs_ )     , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) -= submatrix( eval( olhs_ ) - eval( rhs_ )     , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) -= submatrix( eval( reflhs_ ) - eval( refrhs_ ), row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
+               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+                  submatrix( dres_  , row, column, m, n ) -= submatrix( eval( olhs_ ) - eval( orhs_ )    , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) -= submatrix( eval( olhs_ ) - eval( orhs_ )    , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) -= submatrix( eval( olhs_ ) - eval( orhs_ )    , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) -= submatrix( eval( olhs_ ) - eval( orhs_ )    , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) -= submatrix( eval( reflhs_ ) - eval( refrhs_ ), row, column, m, n );
+               }
+            }
          }
          catch( std::exception& ex ) {
             convertException<OMT1,OMT2>( ex );

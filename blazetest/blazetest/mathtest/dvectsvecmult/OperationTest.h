@@ -45,6 +45,7 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
+#include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blazetest/system/MathTest.h>
@@ -139,6 +140,7 @@ class OperationTest
    template< typename T > void testScaledOperation   ( T scalar );
                           void testTransposeOperation();
                           void testAbsOperation      ();
+                          void testSubmatrixOperation();
    //@}
    //**********************************************************************************************
 
@@ -286,6 +288,7 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testScaledOperation( 1.1 );
    testTransposeOperation();
    testAbsOperation();
+   testSubmatrixOperation();
 }
 //*************************************************************************************************
 
@@ -499,8 +502,8 @@ void OperationTest<VT1,VT2>::testElementAccess()
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the plain outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the addition or the subsequent
-// assignment is detected, a \a std::runtime_error exception is thrown.
+// and subtraction assignment. In case any error resulting from the multiplication or the
+// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
@@ -655,8 +658,8 @@ void OperationTest<VT1,VT2>::testBasicOperation()
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the negated outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the addition or the subsequent
-// assignment is detected, a \a std::runtime_error exception is thrown.
+// and subtraction assignment. In case any error resulting from the multiplication or the
+// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
@@ -812,8 +815,8 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the scaled outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the addition or the subsequent
-// assignment is detected, a \a std::runtime_error exception is thrown.
+// and subtraction assignment. In case any error resulting from the multiplication or the
+// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
@@ -1420,8 +1423,8 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the transpose outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the addition or the subsequent
-// assignment is detected, a \a std::runtime_error exception is thrown.
+// and subtraction assignment. In case any error resulting from the multiplication or the
+// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
@@ -1486,8 +1489,8 @@ void OperationTest<VT1,VT2>::testTransposeOperation()
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the abs outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the addition or the subsequent
-// assignment is detected, a \a std::runtime_error exception is thrown.
+// and subtraction assignment. In case any error resulting from the multiplication or the
+// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
@@ -1622,6 +1625,202 @@ void OperationTest<VT1,VT2>::testAbsOperation()
             sres_   -= abs( eval( lhs_ ) * eval( rhs_ ) );
             osres_  -= abs( eval( lhs_ ) * eval( rhs_ ) );
             refres_ -= abs( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the submatrix-wise dense vector/sparse vector outer product.
+//
+// \return void
+// \exception std::runtime_error Multiplication error detected.
+//
+// This function tests the submatrix-wise outer product with plain assignment, addition
+// assignment, and subtraction assignment. In case any error resulting from the multiplication
+// or the subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side sparse vector
+void OperationTest<VT1,VT2>::testSubmatrixOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_SUBMATRIX_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_SUBMATRIX_OPERATION > 1 )
+   {
+      if( lhs_.size() == 0UL || rhs_.size() == 0UL )
+         return;
+
+
+      //=====================================================================================
+      // Submatrix-wise multiplication
+      //=====================================================================================
+
+      // Submatrix-wise multiplication with the given vectors
+      {
+         test_  = "Submatrix-wise multiplication with the given vectors";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.size(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.size() - row );
+               for( size_t column=0UL, n=0UL; column<rhs_.size(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, rhs_.size() - column );
+                  submatrix( dres_  , row, column, m, n ) = submatrix( lhs_ * rhs_      , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) = submatrix( lhs_ * rhs_      , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) = submatrix( lhs_ * rhs_      , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) = submatrix( lhs_ * rhs_      , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) = submatrix( reflhs_ * refrhs_, row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Submatrix-wise multiplication with evaluated vectors
+      {
+         test_  = "Submatrix-wise multiplication with evaluated vectors";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.size(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.size() - row );
+               for( size_t column=0UL, n=0UL; column<rhs_.size(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, rhs_.size() - column );
+                  submatrix( dres_  , row, column, m, n ) = submatrix( eval( lhs_ ) * eval( rhs_ )      , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) = submatrix( eval( lhs_ ) * eval( rhs_ )      , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) = submatrix( eval( lhs_ ) * eval( rhs_ )      , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) = submatrix( eval( lhs_ ) * eval( rhs_ )      , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) = submatrix( eval( reflhs_ ) * eval( refrhs_ ), row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Submatrix-wise multiplication with addition assignment
+      //=====================================================================================
+
+      // Submatrix-wise multiplication with addition assignment with the given vectors
+      {
+         test_  = "Submatrix-wise multiplication with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.size(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.size() - row );
+               for( size_t column=0UL, n=0UL; column<rhs_.size(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, rhs_.size() - column );
+                  submatrix( dres_  , row, column, m, n ) += submatrix( lhs_ * rhs_      , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) += submatrix( lhs_ * rhs_      , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) += submatrix( lhs_ * rhs_      , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) += submatrix( lhs_ * rhs_      , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) += submatrix( reflhs_ * refrhs_, row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Submatrix-wise multiplication with addition assignment with evaluated vectors
+      {
+         test_  = "Submatrix-wise multiplication with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.size(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.size() - row );
+               for( size_t column=0UL, n=0UL; column<rhs_.size(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, rhs_.size() - column );
+                  submatrix( dres_  , row, column, m, n ) += submatrix( eval( lhs_ ) * eval( rhs_ )      , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) += submatrix( eval( lhs_ ) * eval( rhs_ )      , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) += submatrix( eval( lhs_ ) * eval( rhs_ )      , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) += submatrix( eval( lhs_ ) * eval( rhs_ )      , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) += submatrix( eval( reflhs_ ) * eval( refrhs_ ), row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Submatrix-wise multiplication with subtraction assignment
+      //=====================================================================================
+
+      // Submatrix-wise multiplication with subtraction assignment with the given vectors
+      {
+         test_  = "Submatrix-wise multiplication with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.size(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.size() - row );
+               for( size_t column=0UL, n=0UL; column<rhs_.size(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, rhs_.size() - column );
+                  submatrix( dres_  , row, column, m, n ) -= submatrix( lhs_ * rhs_      , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) -= submatrix( lhs_ * rhs_      , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) -= submatrix( lhs_ * rhs_      , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) -= submatrix( lhs_ * rhs_      , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) -= submatrix( reflhs_ * refrhs_, row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Submatrix-wise multiplication with subtraction assignment with evaluated vectors
+      {
+         test_  = "Submatrix-wise multiplication with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.size(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.size() - row );
+               for( size_t column=0UL, n=0UL; column<rhs_.size(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, rhs_.size() - column );
+                  submatrix( dres_  , row, column, m, n ) -= submatrix( eval( lhs_ ) * eval( rhs_ )      , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) -= submatrix( eval( lhs_ ) * eval( rhs_ )      , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) -= submatrix( eval( lhs_ ) * eval( rhs_ )      , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) -= submatrix( eval( lhs_ ) * eval( rhs_ )      , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) -= submatrix( eval( reflhs_ ) * eval( refrhs_ ), row, column, m, n );
+               }
+            }
          }
          catch( std::exception& ex ) {
             convertException( ex );

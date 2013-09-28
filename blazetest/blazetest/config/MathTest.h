@@ -156,6 +156,55 @@ typedef double  TypeB;
 
 
 //*************************************************************************************************
+/*!\brief Compilation switch for the subvector tests.
+//
+// This compilation switch triggers the subvector tests for all test scenarios. In case the
+// subvector tests are activated, all operations resulting in vectors are tested in combination
+// with a subvector operation. The following example gives an impression by means of the vector
+// addition:
+
+   \code
+   blaze::DynamicVector<double> a, b, c;
+   for( ... )
+      subvector( c, ... ) = subvector( a + b, ... );  // Subvector-wise vector addition
+   \endcode
+
+// The following settings are possible:
+//
+//   - 0: The subvector tests are not included in the compilation process and not executed
+//   - 1: The subvector tests are included in the compilation process, but not executed
+//   - 2: The subvector tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_SUBVECTOR_OPERATION 2
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Compilation switch for the submatrix tests.
+//
+// This compilation switch triggers the submatrix tests for all test scenarios. In case the
+// submatrix tests are activated, all operations resulting in matrices are tested in combination
+// with a submatrix operation. The following example gives an impression by means of the matrix
+// addition:
+
+   \code
+   blaze::DynamicMatrix<double> A, B, C;
+   for( ... )
+      for( ... )
+         submatrix( C, ... ) = submatrix( A + B, ... );  // Submatrix-wise matrix addition
+   \endcode
+
+// The following settings are possible:
+//
+//   - 0: The submatrix tests are not included in the compilation process and not executed
+//   - 1: The submatrix tests are included in the compilation process, but not executed
+//   - 2: The submatrix tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_SUBMATRIX_OPERATION 2
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Compilation switch for the row tests.
 //
 // This compilation switch triggers the row tests for all test scenarios. In case the row

@@ -44,6 +44,7 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsTransposeVector.h>
+#include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blazetest/system/MathTest.h>
@@ -137,6 +138,7 @@ class OperationTest
    template< typename T > void testScaledOperation   ( T scalar );
                           void testTransposeOperation();
                           void testAbsOperation      ();
+                          void testSubvectorOperation();
    //@}
    //**********************************************************************************************
 
@@ -272,6 +274,7 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testScaledOperation( 1.1 );
    testTransposeOperation();
    testAbsOperation();
+   testSubvectorOperation();
 }
 //*************************************************************************************************
 
@@ -2729,6 +2732,339 @@ void OperationTest<VT1,VT2>::testAbsOperation()
             tdres_   *= abs( eval( tlhs_ ) + eval( trhs_ ) );
             tsres_   *= abs( eval( tlhs_ ) + eval( trhs_ ) );
             trefres_ *= abs( eval( treflhs_ ) + eval( trefrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the subvector-wise dense vector/dense vector addition.
+//
+// \return void
+// \exception std::runtime_error Addition error detected.
+//
+// This function tests the subvector-wise vector addition with plain assignment, addition
+// assignment, and subtraction assignment. In case any error resulting from the addition or
+// the subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testSubvectorOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_SUBVECTOR_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_SUBVECTOR_OPERATION > 1 )
+   {
+      if( lhs_.size() == 0UL )
+         return;
+
+
+      //=====================================================================================
+      // Subvector-wise addition
+      //=====================================================================================
+
+      // Subvector-wise addition with the given vectors
+      {
+         test_  = "Subvector-wise addition with the given vectors";
+         error_ = "Failed addition operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<lhs_.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, lhs_.size() - index );
+               subvector( dres_  , index, size ) = subvector( lhs_ + rhs_      , index, size );
+               subvector( sres_  , index, size ) = subvector( lhs_ + rhs_      , index, size );
+               subvector( refres_, index, size ) = subvector( reflhs_ + refrhs_, index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, size=0UL; index<tlhs_.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, tlhs_.size() - index );
+               subvector( tdres_  , index, size ) = subvector( tlhs_ + trhs_      , index, size );
+               subvector( tsres_  , index, size ) = subvector( tlhs_ + trhs_      , index, size );
+               subvector( trefres_, index, size ) = subvector( treflhs_ + trefrhs_, index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+      // Subvector-wise addition with evaluated vectors
+      {
+         test_  = "Subvector-wise addition with evaluated vectors";
+         error_ = "Failed addition operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<lhs_.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, lhs_.size() - index );
+               subvector( dres_  , index, size ) = subvector( eval( lhs_ ) + eval( rhs_ )      , index, size );
+               subvector( sres_  , index, size ) = subvector( eval( lhs_ ) + eval( rhs_ )      , index, size );
+               subvector( refres_, index, size ) = subvector( eval( reflhs_ ) + eval( refrhs_ ), index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, size=0UL; index<tlhs_.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, tlhs_.size() - index );
+               subvector( tdres_  , index, size ) = subvector( eval( tlhs_ ) + eval( trhs_ )      , index, size );
+               subvector( tsres_  , index, size ) = subvector( eval( tlhs_ ) + eval( trhs_ )      , index, size );
+               subvector( trefres_, index, size ) = subvector( eval( treflhs_ ) + eval( trefrhs_ ), index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+
+      //=====================================================================================
+      // Subvector-wise addition with addition assignment
+      //=====================================================================================
+
+      // Subvector-wise addition with addition assignment with the given vectors
+      {
+         test_  = "Subvector-wise addition with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<lhs_.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, lhs_.size() - index );
+               subvector( dres_  , index, size ) += subvector( lhs_ + rhs_      , index, size );
+               subvector( sres_  , index, size ) += subvector( lhs_ + rhs_      , index, size );
+               subvector( refres_, index, size ) += subvector( reflhs_ + refrhs_, index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, size=0UL; index<tlhs_.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, tlhs_.size() - index );
+               subvector( tdres_  , index, size ) += subvector( tlhs_ + trhs_      , index, size );
+               subvector( tsres_  , index, size ) += subvector( tlhs_ + trhs_      , index, size );
+               subvector( trefres_, index, size ) += subvector( treflhs_ + trefrhs_, index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+      // Subvector-wise addition with addition assignment with evaluated vectors
+      {
+         test_  = "Subvector-wise addition with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<lhs_.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, lhs_.size() - index );
+               subvector( dres_  , index, size ) += subvector( eval( lhs_ ) + eval( rhs_ )      , index, size );
+               subvector( sres_  , index, size ) += subvector( eval( lhs_ ) + eval( rhs_ )      , index, size );
+               subvector( refres_, index, size ) += subvector( eval( reflhs_ ) + eval( refrhs_ ), index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, size=0UL; index<tlhs_.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, tlhs_.size() - index );
+               subvector( tdres_  , index, size ) += subvector( eval( tlhs_ ) + eval( trhs_ )      , index, size );
+               subvector( tsres_  , index, size ) += subvector( eval( tlhs_ ) + eval( trhs_ )      , index, size );
+               subvector( trefres_, index, size ) += subvector( eval( treflhs_ ) + eval( trefrhs_ ), index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+
+      //=====================================================================================
+      // Subvector-wise addition with subtraction assignment
+      //=====================================================================================
+
+      // Subvector-wise addition with subtraction assignment with the given vectors
+      {
+         test_  = "Subvector-wise addition with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<lhs_.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, lhs_.size() - index );
+               subvector( dres_  , index, size ) -= subvector( lhs_ + rhs_      , index, size );
+               subvector( sres_  , index, size ) -= subvector( lhs_ + rhs_      , index, size );
+               subvector( refres_, index, size ) -= subvector( reflhs_ + refrhs_, index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, size=0UL; index<tlhs_.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, tlhs_.size() - index );
+               subvector( tdres_  , index, size ) -= subvector( tlhs_ + trhs_      , index, size );
+               subvector( tsres_  , index, size ) -= subvector( tlhs_ + trhs_      , index, size );
+               subvector( trefres_, index, size ) -= subvector( treflhs_ + trefrhs_, index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+      // Subvector-wise addition with subtraction assignment with evaluated vectors
+      {
+         test_  = "Subvector-wise addition with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<lhs_.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, lhs_.size() - index );
+               subvector( dres_  , index, size ) -= subvector( eval( lhs_ ) + eval( rhs_ )      , index, size );
+               subvector( sres_  , index, size ) -= subvector( eval( lhs_ ) + eval( rhs_ )      , index, size );
+               subvector( refres_, index, size ) -= subvector( eval( reflhs_ ) + eval( refrhs_ ), index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, size=0UL; index<tlhs_.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, tlhs_.size() - index );
+               subvector( tdres_  , index, size ) -= subvector( eval( tlhs_ ) + eval( trhs_ )      , index, size );
+               subvector( tsres_  , index, size ) -= subvector( eval( tlhs_ ) + eval( trhs_ )      , index, size );
+               subvector( trefres_, index, size ) -= subvector( eval( treflhs_ ) + eval( trefrhs_ ), index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+
+      //=====================================================================================
+      // Subvector-wise addition with multiplication assignment
+      //=====================================================================================
+
+      // Subvector-wise addition with multiplication assignment with the given vectors
+      {
+         test_  = "Subvector-wise addition with multiplication assignment with the given vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<lhs_.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, lhs_.size() - index );
+               subvector( dres_  , index, size ) *= subvector( lhs_ + rhs_      , index, size );
+               subvector( sres_  , index, size ) *= subvector( lhs_ + rhs_      , index, size );
+               subvector( refres_, index, size ) *= subvector( reflhs_ + refrhs_, index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, size=0UL; index<tlhs_.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, tlhs_.size() - index );
+               subvector( tdres_  , index, size ) *= subvector( tlhs_ + trhs_      , index, size );
+               subvector( tsres_  , index, size ) *= subvector( tlhs_ + trhs_      , index, size );
+               subvector( trefres_, index, size ) *= subvector( treflhs_ + trefrhs_, index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+      // Subvector-wise addition with multiplication assignment with evaluated vectors
+      {
+         test_  = "Subvector-wise addition with multiplication assignment with evaluated vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<lhs_.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, lhs_.size() - index );
+               subvector( dres_  , index, size ) *= subvector( eval( lhs_ ) + eval( rhs_ )      , index, size );
+               subvector( sres_  , index, size ) *= subvector( eval( lhs_ ) + eval( rhs_ )      , index, size );
+               subvector( refres_, index, size ) *= subvector( eval( reflhs_ ) + eval( refrhs_ ), index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, size=0UL; index<tlhs_.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, tlhs_.size() - index );
+               subvector( tdres_  , index, size ) *= subvector( eval( tlhs_ ) + eval( trhs_ )      , index, size );
+               subvector( tsres_  , index, size ) *= subvector( eval( tlhs_ ) + eval( trhs_ )      , index, size );
+               subvector( trefres_, index, size ) *= subvector( eval( treflhs_ ) + eval( trefrhs_ ), index, size );
+            }
          }
          catch( std::exception& ex ) {
             convertException<TVT1,TVT2>( ex );
