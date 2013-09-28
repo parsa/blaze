@@ -22,7 +22,8 @@
 # Rules
 default: staticvector dynamicvector compressedvector \
          staticmatrix dynamicmatrix compressedmatrix \
-         sparsesubvector sparsesubmatrix\
+         densesubvector sparsesubvector \
+         densesubmatrix sparsesubmatrix \
          denserow densecolumn sparserow sparsecolumn \
          dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
          dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
@@ -67,10 +68,20 @@ compressedmatrix:
 	@echo "Building the CompressedMatrix tests..."
 	@$(MAKE) --no-print-directory -C ./compressedmatrix/
 
+densesubvector:
+	@echo
+	@echo "Building the DenseSubvector tests..."
+	@$(MAKE) --no-print-directory -C ./densesubvector/
+
 sparsesubvector:
 	@echo
 	@echo "Building the SparseSubvector tests..."
 	@$(MAKE) --no-print-directory -C ./sparsesubvector/
+
+densesubmatrix:
+	@echo
+	@echo "Building the DenseSubmatrix tests..."
+	@$(MAKE) --no-print-directory -C ./densesubmatrix/
 
 sparsesubmatrix:
 	@echo
@@ -334,7 +345,9 @@ clean:
 	@$(MAKE) --no-print-directory -C ./staticmatrix clean
 	@$(MAKE) --no-print-directory -C ./dynamicmatrix clean
 	@$(MAKE) --no-print-directory -C ./compressedmatrix clean
+	@$(MAKE) --no-print-directory -C ./densesubvector clean
 	@$(MAKE) --no-print-directory -C ./sparsesubvector clean
+	@$(MAKE) --no-print-directory -C ./densesubmatrix clean
 	@$(MAKE) --no-print-directory -C ./sparsesubmatrix clean
 	@$(MAKE) --no-print-directory -C ./denserow clean
 	@$(MAKE) --no-print-directory -C ./densecolumn clean
@@ -393,7 +406,8 @@ clean:
 .PHONY: default clean \
         staticvector dynamicvector compressedvector \
         staticmatrix dynamicmatrix compressedmatrix \
-        sparsesubvector sparsesubmatrix \
+        densesubvector sparsesubvector \
+        densesubmatrix sparsesubmatrix \
         denserow densecolumn sparserow sparsecolumn \
         dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
         dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
