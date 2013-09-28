@@ -141,6 +141,8 @@ class OperationTest
                           void testTransposeOperation();
                           void testAbsOperation      ();
                           void testSubmatrixOperation();
+                          void testRowOperation      ();
+                          void testColumnOperation   ();
    //@}
    //**********************************************************************************************
 
@@ -289,6 +291,8 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testTransposeOperation();
    testAbsOperation();
    testSubmatrixOperation();
+   testRowOperation();
+   testColumnOperation();
 }
 //*************************************************************************************************
 
@@ -499,10 +503,10 @@ void OperationTest<VT1,VT2>::testElementAccess()
 /*!\brief Testing the plain dense vector/sparse vector outer product.
 //
 // \return void
-// \exception std::runtime_error Multiplication error detected.
+// \exception std::runtime_error Outer product error detected.
 //
 // This function tests the plain outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the multiplication or the
+// and subtraction assignment. In case any error resulting from the outer product or the
 // subsequent assignment is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
@@ -513,12 +517,12 @@ void OperationTest<VT1,VT2>::testBasicOperation()
    if( BLAZETEST_MATHTEST_TEST_BASIC_OPERATION > 1 )
    {
       //=====================================================================================
-      // Multiplication
+      // Outer product
       //=====================================================================================
 
-      // Multiplication with the given vectors
+      // Outer product with the given vectors
       {
-         test_  = "Multiplication with the given vectors";
+         test_  = "Outer product with the given vectors";
          error_ = "Failed outer product operation";
 
          try {
@@ -536,9 +540,9 @@ void OperationTest<VT1,VT2>::testBasicOperation()
          checkResults();
       }
 
-      // Multiplication with evaluated vectors
+      // Outer product with evaluated vectors
       {
-         test_  = "Multiplication with evaluated vectors";
+         test_  = "Outer product with evaluated vectors";
          error_ = "Failed outer product operation";
 
          try {
@@ -655,10 +659,10 @@ void OperationTest<VT1,VT2>::testBasicOperation()
 /*!\brief Testing the negated dense vector/sparse vector outer product.
 //
 // \return void
-// \exception std::runtime_error Multiplication error detected.
+// \exception std::runtime_error Outer product error detected.
 //
 // This function tests the negated outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the multiplication or the
+// and subtraction assignment. In case any error resulting from the outer product or the
 // subsequent assignment is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
@@ -714,12 +718,12 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
 
 
       //=====================================================================================
-      // Negated multiplication with addition assignment
+      // Negated outer product with addition assignment
       //=====================================================================================
 
-      // Negated multiplication with addition assignment with the given vectors
+      // Negated outer product with addition assignment with the given vectors
       {
-         test_  = "Negated multiplication with addition assignment with the given vectors";
+         test_  = "Negated outer product with addition assignment with the given vectors";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -737,9 +741,9 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
          checkResults();
       }
 
-      // Negated multiplication with addition assignment with evaluated vectors
+      // Negated outer product with addition assignment with evaluated vectors
       {
-         test_  = "Negated multiplication with addition assignment with evaluated vectors";
+         test_  = "Negated outer product with addition assignment with evaluated vectors";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -759,12 +763,12 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
 
 
       //=====================================================================================
-      // Negated multiplication with subtraction assignment
+      // Negated outer product with subtraction assignment
       //=====================================================================================
 
-      // Negated multiplication with subtraction assignment with the given vectors
+      // Negated outer product with subtraction assignment with the given vectors
       {
-         test_  = "Negated multiplication with subtraction assignment with the given vectors";
+         test_  = "Negated outer product with subtraction assignment with the given vectors";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -782,9 +786,9 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
          checkResults();
       }
 
-      // Negated multiplication with subtraction assignment with evaluated vectors
+      // Negated outer product with subtraction assignment with evaluated vectors
       {
-         test_  = "Negated multiplication with subtraction assignment with evaluated vectors";
+         test_  = "Negated outer product with subtraction assignment with evaluated vectors";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -812,10 +816,10 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
 //
 // \param scalar The scalar value.
 // \return void
-// \exception std::runtime_error Multiplication error detected.
+// \exception std::runtime_error Outer product error detected.
 //
 // This function tests the scaled outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the multiplication or the
+// and subtraction assignment. In case any error resulting from the outer product or the
 // subsequent assignment is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
@@ -1143,12 +1147,12 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
 
       //=====================================================================================
-      // Scaled multiplication with addition assignment (s*OP)
+      // Scaled outer product with addition assignment (s*OP)
       //=====================================================================================
 
-      // Scaled multiplication with addition assignment with the given vectors
+      // Scaled outer product with addition assignment with the given vectors
       {
-         test_  = "Scaled multiplication with addition assignment with the given vectors (s*OP)";
+         test_  = "Scaled outer product with addition assignment with the given vectors (s*OP)";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -1166,9 +1170,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
          checkResults();
       }
 
-      // Scaled multiplication with addition assignment with evaluated vectors
+      // Scaled outer product with addition assignment with evaluated vectors
       {
-         test_  = "Scaled multiplication with addition assignment with evaluated vectors (s*OP)";
+         test_  = "Scaled outer product with addition assignment with evaluated vectors (s*OP)";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -1188,12 +1192,12 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
 
       //=====================================================================================
-      // Scaled multiplication with addition assignment (OP*s)
+      // Scaled outer product with addition assignment (OP*s)
       //=====================================================================================
 
-      // Scaled multiplication with addition assignment with the given vectors
+      // Scaled outer product with addition assignment with the given vectors
       {
-         test_  = "Scaled multiplication with addition assignment with the given vectors (OP*s)";
+         test_  = "Scaled outer product with addition assignment with the given vectors (OP*s)";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -1211,9 +1215,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
          checkResults();
       }
 
-      // Scaled multiplication with addition assignment with evaluated vectors
+      // Scaled outer product with addition assignment with evaluated vectors
       {
-         test_  = "Scaled multiplication with addition assignment with evaluated vectors (OP*s)";
+         test_  = "Scaled outer product with addition assignment with evaluated vectors (OP*s)";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -1233,12 +1237,12 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
 
       //=====================================================================================
-      // Scaled multiplication with addition assignment (OP/s)
+      // Scaled outer product with addition assignment (OP/s)
       //=====================================================================================
 
-      // Scaled multiplication with addition assignment with the given vectors
+      // Scaled outer product with addition assignment with the given vectors
       {
-         test_  = "Scaled multiplication with addition assignment with the given vectors (OP/s)";
+         test_  = "Scaled outer product with addition assignment with the given vectors (OP/s)";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -1256,9 +1260,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
          checkResults();
       }
 
-      // Scaled multiplication with addition assignment with evaluated vectors
+      // Scaled outer product with addition assignment with evaluated vectors
       {
-         test_  = "Scaled multiplication with addition assignment with evaluated vectors (OP/s)";
+         test_  = "Scaled outer product with addition assignment with evaluated vectors (OP/s)";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -1278,12 +1282,12 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
 
       //=====================================================================================
-      // Scaled multiplication with subtraction assignment (s*OP)
+      // Scaled outer product with subtraction assignment (s*OP)
       //=====================================================================================
 
-      // Scaled multiplication with subtraction assignment with the given vectors
+      // Scaled outer product with subtraction assignment with the given vectors
       {
-         test_  = "Scaled multiplication with subtraction assignment with the given vectors (s*OP)";
+         test_  = "Scaled outer product with subtraction assignment with the given vectors (s*OP)";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -1301,9 +1305,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
          checkResults();
       }
 
-      // Scaled multiplication with subtraction assignment with evaluated vectors
+      // Scaled outer product with subtraction assignment with evaluated vectors
       {
-         test_  = "Scaled multiplication with subtraction assignment with evaluated vectors (s*OP)";
+         test_  = "Scaled outer product with subtraction assignment with evaluated vectors (s*OP)";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -1323,12 +1327,12 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
 
       //=====================================================================================
-      // Scaled multiplication with subtraction assignment (OP*s)
+      // Scaled outer product with subtraction assignment (OP*s)
       //=====================================================================================
 
-      // Scaled multiplication with subtraction assignment with the given vectors
+      // Scaled outer product with subtraction assignment with the given vectors
       {
-         test_  = "Scaled multiplication with subtraction assignment with the given vectors (OP*s)";
+         test_  = "Scaled outer product with subtraction assignment with the given vectors (OP*s)";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -1346,9 +1350,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
          checkResults();
       }
 
-      // Scaled multiplication with subtraction assignment with evaluated vectors
+      // Scaled outer product with subtraction assignment with evaluated vectors
       {
-         test_  = "Scaled multiplication with subtraction assignment with evaluated vectors (OP*s)";
+         test_  = "Scaled outer product with subtraction assignment with evaluated vectors (OP*s)";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -1368,12 +1372,12 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
 
       //=====================================================================================
-      // Scaled multiplication with subtraction assignment (OP/s)
+      // Scaled outer product with subtraction assignment (OP/s)
       //=====================================================================================
 
-      // Scaled multiplication with subtraction assignment with the given vectors
+      // Scaled outer product with subtraction assignment with the given vectors
       {
-         test_  = "Scaled multiplication with subtraction assignment with the given vectors (OP/s)";
+         test_  = "Scaled outer product with subtraction assignment with the given vectors (OP/s)";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -1391,9 +1395,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
          checkResults();
       }
 
-      // Scaled multiplication with subtraction assignment with evaluated vectors
+      // Scaled outer product with subtraction assignment with evaluated vectors
       {
-         test_  = "Scaled multiplication with subtraction assignment with evaluated vectors (OP/s)";
+         test_  = "Scaled outer product with subtraction assignment with evaluated vectors (OP/s)";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -1420,10 +1424,10 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 /*!\brief Testing the transpose dense vector/sparse vector outer product.
 //
 // \return void
-// \exception std::runtime_error Multiplication error detected.
+// \exception std::runtime_error Outer product error detected.
 //
 // This function tests the transpose outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the multiplication or the
+// and subtraction assignment. In case any error resulting from the outer product or the
 // subsequent assignment is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
@@ -1486,10 +1490,10 @@ void OperationTest<VT1,VT2>::testTransposeOperation()
 /*!\brief Testing the abs dense vector/sparse vector outer product.
 //
 // \return void
-// \exception std::runtime_error Multiplication error detected.
+// \exception std::runtime_error Outer product error detected.
 //
 // This function tests the abs outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the multiplication or the
+// and subtraction assignment. In case any error resulting from the outer product or the
 // subsequent assignment is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
@@ -1545,12 +1549,12 @@ void OperationTest<VT1,VT2>::testAbsOperation()
 
 
       //=====================================================================================
-      // Abs multiplication with addition assignment
+      // Abs outer product with addition assignment
       //=====================================================================================
 
-      // Abs multiplication with addition assignment with the given vectors
+      // Abs outer product with addition assignment with the given vectors
       {
-         test_  = "Abs multiplication with addition assignment with the given vectors";
+         test_  = "Abs outer product with addition assignment with the given vectors";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -1568,9 +1572,9 @@ void OperationTest<VT1,VT2>::testAbsOperation()
          checkResults();
       }
 
-      // Abs multiplication with addition assignment with evaluated vectors
+      // Abs outer product with addition assignment with evaluated vectors
       {
-         test_  = "Abs multiplication with addition assignment with evaluated vectors";
+         test_  = "Abs outer product with addition assignment with evaluated vectors";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -1590,12 +1594,12 @@ void OperationTest<VT1,VT2>::testAbsOperation()
 
 
       //=====================================================================================
-      // Abs multiplication with subtraction assignment
+      // Abs outer product with subtraction assignment
       //=====================================================================================
 
-      // Abs multiplication with subtraction assignment with the given vectors
+      // Abs outer product with subtraction assignment with the given vectors
       {
-         test_  = "Abs multiplication with subtraction assignment with the given vectors";
+         test_  = "Abs outer product with subtraction assignment with the given vectors";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -1613,9 +1617,9 @@ void OperationTest<VT1,VT2>::testAbsOperation()
          checkResults();
       }
 
-      // Abs multiplication with subtraction assignment with evaluated vectors
+      // Abs outer product with subtraction assignment with evaluated vectors
       {
-         test_  = "Abs multiplication with subtraction assignment with evaluated vectors";
+         test_  = "Abs outer product with subtraction assignment with evaluated vectors";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -1642,10 +1646,10 @@ void OperationTest<VT1,VT2>::testAbsOperation()
 /*!\brief Testing the submatrix-wise dense vector/sparse vector outer product.
 //
 // \return void
-// \exception std::runtime_error Multiplication error detected.
+// \exception std::runtime_error Outer product error detected.
 //
 // This function tests the submatrix-wise outer product with plain assignment, addition
-// assignment, and subtraction assignment. In case any error resulting from the multiplication
+// assignment, and subtraction assignment. In case any error resulting from the outer product
 // or the subsequent assignment is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
@@ -1660,13 +1664,13 @@ void OperationTest<VT1,VT2>::testSubmatrixOperation()
 
 
       //=====================================================================================
-      // Submatrix-wise multiplication
+      // Submatrix-wise outer product
       //=====================================================================================
 
-      // Submatrix-wise multiplication with the given vectors
+      // Submatrix-wise outer product with the given vectors
       {
-         test_  = "Submatrix-wise multiplication with the given vectors";
-         error_ = "Failed multiplication operation";
+         test_  = "Submatrix-wise outer product with the given vectors";
+         error_ = "Failed outer product operation";
 
          try {
             initResults();
@@ -1689,10 +1693,10 @@ void OperationTest<VT1,VT2>::testSubmatrixOperation()
          checkResults();
       }
 
-      // Submatrix-wise multiplication with evaluated vectors
+      // Submatrix-wise outer product with evaluated vectors
       {
-         test_  = "Submatrix-wise multiplication with evaluated vectors";
-         error_ = "Failed multiplication operation";
+         test_  = "Submatrix-wise outer product with evaluated vectors";
+         error_ = "Failed outer product operation";
 
          try {
             initResults();
@@ -1717,12 +1721,12 @@ void OperationTest<VT1,VT2>::testSubmatrixOperation()
 
 
       //=====================================================================================
-      // Submatrix-wise multiplication with addition assignment
+      // Submatrix-wise outer product with addition assignment
       //=====================================================================================
 
-      // Submatrix-wise multiplication with addition assignment with the given vectors
+      // Submatrix-wise outer product with addition assignment with the given vectors
       {
-         test_  = "Submatrix-wise multiplication with addition assignment with the given vectors";
+         test_  = "Submatrix-wise outer product with addition assignment with the given vectors";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -1746,9 +1750,9 @@ void OperationTest<VT1,VT2>::testSubmatrixOperation()
          checkResults();
       }
 
-      // Submatrix-wise multiplication with addition assignment with evaluated vectors
+      // Submatrix-wise outer product with addition assignment with evaluated vectors
       {
-         test_  = "Submatrix-wise multiplication with addition assignment with evaluated vectors";
+         test_  = "Submatrix-wise outer product with addition assignment with evaluated vectors";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -1774,12 +1778,12 @@ void OperationTest<VT1,VT2>::testSubmatrixOperation()
 
 
       //=====================================================================================
-      // Submatrix-wise multiplication with subtraction assignment
+      // Submatrix-wise outer product with subtraction assignment
       //=====================================================================================
 
-      // Submatrix-wise multiplication with subtraction assignment with the given vectors
+      // Submatrix-wise outer product with subtraction assignment with the given vectors
       {
-         test_  = "Submatrix-wise multiplication with subtraction assignment with the given vectors";
+         test_  = "Submatrix-wise outer product with subtraction assignment with the given vectors";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -1803,9 +1807,9 @@ void OperationTest<VT1,VT2>::testSubmatrixOperation()
          checkResults();
       }
 
-      // Submatrix-wise multiplication with subtraction assignment with evaluated vectors
+      // Submatrix-wise outer product with subtraction assignment with evaluated vectors
       {
-         test_  = "Submatrix-wise multiplication with subtraction assignment with evaluated vectors";
+         test_  = "Submatrix-wise outer product with subtraction assignment with evaluated vectors";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -1820,6 +1824,342 @@ void OperationTest<VT1,VT2>::testSubmatrixOperation()
                   submatrix( osres_ , row, column, m, n ) -= submatrix( eval( lhs_ ) * eval( rhs_ )      , row, column, m, n );
                   submatrix( refres_, row, column, m, n ) -= submatrix( eval( reflhs_ ) * eval( refrhs_ ), row, column, m, n );
                }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the row-wise dense vector/sparse vector outer product.
+//
+// \return void
+// \exception std::runtime_error Outer product error detected.
+//
+// This function tests the row-wise outer product with plain assignment, addition assignment,
+// and subtraction assignment. In case any error resulting from the outer product or the
+// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testRowOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_ROW_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_ROW_OPERATION > 1 )
+   {
+      //=====================================================================================
+      // Row-wise outer product
+      //=====================================================================================
+
+      // Row-wise outer product with the given vectors
+      {
+         test_  = "Row-wise outer product with the given vectors";
+         error_ = "Failed outer product operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<lhs_.size(); ++i ) {
+               row( dres_  , i ) = row( lhs_ * rhs_, i );
+               row( odres_ , i ) = row( lhs_ * rhs_, i );
+               row( sres_  , i ) = row( lhs_ * rhs_, i );
+               row( osres_ , i ) = row( lhs_ * rhs_, i );
+               row( refres_, i ) = row( reflhs_ * refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Row-wise outer product with evaluated vectors
+      {
+         test_  = "Row-wise outer product with the given vectors";
+         error_ = "Failed outer product operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<lhs_.size(); ++i ) {
+               row( dres_  , i ) = row( eval( lhs_ ) * eval( rhs_ ), i );
+               row( odres_ , i ) = row( eval( lhs_ ) * eval( rhs_ ), i );
+               row( sres_  , i ) = row( eval( lhs_ ) * eval( rhs_ ), i );
+               row( osres_ , i ) = row( eval( lhs_ ) * eval( rhs_ ), i );
+               row( refres_, i ) = row( eval( reflhs_ ) * eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Row-wise outer product with addition assignment
+      //=====================================================================================
+
+      // Row-wise outer product with addition assignment with the given vectors
+      {
+         test_  = "Row-wise outer product with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<lhs_.size(); ++i ) {
+               row( dres_  , i ) += row( lhs_ * rhs_, i );
+               row( odres_ , i ) += row( lhs_ * rhs_, i );
+               row( sres_  , i ) += row( lhs_ * rhs_, i );
+               row( osres_ , i ) += row( lhs_ * rhs_, i );
+               row( refres_, i ) += row( reflhs_ * refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Row-wise outer product with addition assignment with evaluated vectors
+      {
+         test_  = "Row-wise outer product with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<lhs_.size(); ++i ) {
+               row( dres_  , i ) += row( eval( lhs_ ) * eval( rhs_ ), i );
+               row( odres_ , i ) += row( eval( lhs_ ) * eval( rhs_ ), i );
+               row( sres_  , i ) += row( eval( lhs_ ) * eval( rhs_ ), i );
+               row( osres_ , i ) += row( eval( lhs_ ) * eval( rhs_ ), i );
+               row( refres_, i ) += row( eval( reflhs_ ) * eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Row-wise outer product with subtraction assignment
+      //=====================================================================================
+
+      // Row-wise outer product with subtraction assignment with the given vectors
+      {
+         test_  = "Row-wise outer product with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<lhs_.size(); ++i ) {
+               row( dres_  , i ) -= row( lhs_ * rhs_, i );
+               row( odres_ , i ) -= row( lhs_ * rhs_, i );
+               row( sres_  , i ) -= row( lhs_ * rhs_, i );
+               row( osres_ , i ) -= row( lhs_ * rhs_, i );
+               row( refres_, i ) -= row( reflhs_ * refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Row-wise outer product with subtraction assignment with evaluated vectors
+      {
+         test_  = "Row-wise outer product with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<lhs_.size(); ++i ) {
+               row( dres_  , i ) -= row( eval( lhs_ ) * eval( rhs_ ), i );
+               row( odres_ , i ) -= row( eval( lhs_ ) * eval( rhs_ ), i );
+               row( sres_  , i ) -= row( eval( lhs_ ) * eval( rhs_ ), i );
+               row( osres_ , i ) -= row( eval( lhs_ ) * eval( rhs_ ), i );
+               row( refres_, i ) -= row( eval( reflhs_ ) * eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the column-wise dense vector/sparse vector outer product.
+//
+// \return void
+// \exception std::runtime_error Outer product error detected.
+//
+// This function tests the column-wise outer product with plain assignment, addition assignment,
+// and subtraction assignment. In case any error resulting from the outer product or the
+// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testColumnOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_COLUMN_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_COLUMN_OPERATION > 1 )
+   {
+      //=====================================================================================
+      // Column-wise outer product
+      //=====================================================================================
+
+      // Column-wise outer product with the given vectors
+      {
+         test_  = "Column-wise outer product with the given vectors";
+         error_ = "Failed outer product operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<rhs_.size(); ++i ) {
+               column( dres_  , i ) = column( lhs_ * rhs_, i );
+               column( odres_ , i ) = column( lhs_ * rhs_, i );
+               column( sres_  , i ) = column( lhs_ * rhs_, i );
+               column( osres_ , i ) = column( lhs_ * rhs_, i );
+               column( refres_, i ) = column( reflhs_ * refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Column-wise outer product with evaluated vectors
+      {
+         test_  = "Column-wise outer product with the given vectors";
+         error_ = "Failed outer product operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<rhs_.size(); ++i ) {
+               column( dres_  , i ) = column( eval( lhs_ ) * eval( rhs_ ), i );
+               column( odres_ , i ) = column( eval( lhs_ ) * eval( rhs_ ), i );
+               column( sres_  , i ) = column( eval( lhs_ ) * eval( rhs_ ), i );
+               column( osres_ , i ) = column( eval( lhs_ ) * eval( rhs_ ), i );
+               column( refres_, i ) = column( eval( reflhs_ ) * eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Column-wise outer product with addition assignment
+      //=====================================================================================
+
+      // Column-wise outer product with addition assignment with the given vectors
+      {
+         test_  = "Column-wise outer product with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<rhs_.size(); ++i ) {
+               column( dres_  , i ) += column( lhs_ * rhs_, i );
+               column( odres_ , i ) += column( lhs_ * rhs_, i );
+               column( sres_  , i ) += column( lhs_ * rhs_, i );
+               column( osres_ , i ) += column( lhs_ * rhs_, i );
+               column( refres_, i ) += column( reflhs_ * refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Column-wise outer product with addition assignment with evaluated vectors
+      {
+         test_  = "Column-wise outer product with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<rhs_.size(); ++i ) {
+               column( dres_  , i ) += column( eval( lhs_ ) * eval( rhs_ ), i );
+               column( odres_ , i ) += column( eval( lhs_ ) * eval( rhs_ ), i );
+               column( sres_  , i ) += column( eval( lhs_ ) * eval( rhs_ ), i );
+               column( osres_ , i ) += column( eval( lhs_ ) * eval( rhs_ ), i );
+               column( refres_, i ) += column( eval( reflhs_ ) * eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Column-wise outer product with subtraction assignment
+      //=====================================================================================
+
+      // Column-wise outer product with subtraction assignment with the given vectors
+      {
+         test_  = "Column-wise outer product with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<rhs_.size(); ++i ) {
+               column( dres_  , i ) -= column( lhs_ * rhs_, i );
+               column( odres_ , i ) -= column( lhs_ * rhs_, i );
+               column( sres_  , i ) -= column( lhs_ * rhs_, i );
+               column( osres_ , i ) -= column( lhs_ * rhs_, i );
+               column( refres_, i ) -= column( reflhs_ * refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Column-wise outer product with subtraction assignment with evaluated vectors
+      {
+         test_  = "Column-wise outer product with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<rhs_.size(); ++i ) {
+               column( dres_  , i ) -= column( eval( lhs_ ) * eval( rhs_ ), i );
+               column( odres_ , i ) -= column( eval( lhs_ ) * eval( rhs_ ), i );
+               column( sres_  , i ) -= column( eval( lhs_ ) * eval( rhs_ ), i );
+               column( osres_ , i ) -= column( eval( lhs_ ) * eval( rhs_ ), i );
+               column( refres_, i ) -= column( eval( reflhs_ ) * eval( refrhs_ ), i );
             }
          }
          catch( std::exception& ex ) {
