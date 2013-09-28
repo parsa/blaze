@@ -1237,7 +1237,7 @@ template< typename MT  // Type of the sparse matrix
 inline size_t SparseSubmatrix<MT,SO>::capacity( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
-   return columns();
+   return nonZeros( i ) + matrix_.capacity( row_+i ) - matrix_.nonZeros( row_+i );
 }
 //*************************************************************************************************
 
@@ -1448,7 +1448,11 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 void SparseSubmatrix<MT,SO>::reserve( size_t i, size_t nonzeros )
 {
-   return;
+   const size_t current( capacity( i ) );
+
+   if( nonzeros > current ) {
+      matrix_.reserve( row_+i, matrix_.capacity( row_+i ) + nonzeros - current );
+   }
 }
 //*************************************************************************************************
 
@@ -2944,7 +2948,7 @@ template< typename MT >  // Type of the sparse matrix
 inline size_t SparseSubmatrix<MT,true>::capacity( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
-   return rows();
+   return nonZeros( j ) + matrix_.capacity( column_+j ) - matrix_.nonZeros( column_+j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3146,7 +3150,11 @@ inline void SparseSubmatrix<MT,true>::reserve( size_t nonzeros )
 template< typename MT >  // Type of the sparse matrix
 void SparseSubmatrix<MT,true>::reserve( size_t j, size_t nonzeros )
 {
-   return;
+   const size_t current( capacity( j ) );
+
+   if( nonzeros > current ) {
+      matrix_.reserve( column_+j, matrix_.capacity( column_+j ) + nonzeros - current );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
