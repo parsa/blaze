@@ -1129,12 +1129,14 @@ inline size_t DynamicMatrix<Type,SO>::columns() const
 
 
 //*************************************************************************************************
-/*!\brief Returns the spacing between the beginning of two rows.
+/*!\brief Returns the spacing between the beginning of two rows/columns.
 //
-// \return The spacing between the beginning of two rows.
+// \return The spacing between the beginning of two rows/columns.
 //
-// This function returns the spacing between the beginning of two rows, i.e. the total number
-// of elements of a row.
+// This function returns the spacing between the beginning of two rows/columns, i.e. the
+// total number of elements of a row/column. In case the storage order is set to \a rowMajor
+// the function returns the spacing between two rows, in case the storage flag is set to
+// \a columnMajor the function returns the spacing between two columns.
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
