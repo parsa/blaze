@@ -331,22 +331,6 @@ class SMatTSMatAddExpr : public SparseMatrix< SMatTSMatAddExpr<MT1,MT2>, false >
 
          LeftIterator  l( A.begin(i) );
          RightIterator r( B.begin(i) );
-         size_t nonzeros( A.nonZeros(i) + B.nonZeros(i) );
-
-         for( ; l!=lend && r!=rend; ++l ) {
-            while( r->index() < l->index() && ++r != rend ) {}
-            if( r!=rend && l->index() == r->index() ) {
-               --nonzeros;
-               ++r;
-            }
-         }
-
-         BLAZE_INTERNAL_ASSERT( nonzeros <= A.columns(), "Invalid number of non-zero elements predicted" );
-
-         (~lhs).reserve( i, nonzeros );
-
-         l = A.begin(i);
-         r = B.begin(i);
 
          while( l != lend && r != rend )
          {
@@ -374,6 +358,8 @@ class SMatTSMatAddExpr : public SparseMatrix< SMatTSMatAddExpr<MT1,MT2>, false >
             (~lhs).append( i, r->index(), r->value() );
             ++r;
          }
+
+         (~lhs).finalize( i );
       }
    }
    /*! \endcond */
@@ -422,22 +408,6 @@ class SMatTSMatAddExpr : public SparseMatrix< SMatTSMatAddExpr<MT1,MT2>, false >
 
          LeftIterator  l( A.begin(j) );
          RightIterator r( B.begin(j) );
-         size_t nonzeros( A.nonZeros(j) + B.nonZeros(j) );
-
-         for( ; l!=lend && r!=rend; ++l ) {
-            while( r->index() < l->index() && ++r != rend ) {}
-            if( r!=rend && l->index() == r->index() ) {
-               --nonzeros;
-               ++r;
-            }
-         }
-
-         BLAZE_INTERNAL_ASSERT( nonzeros <= A.rows(), "Invalid number of non-zero elements predicted" );
-
-         (~lhs).reserve( j, nonzeros );
-
-         l = A.begin(j);
-         r = B.begin(j);
 
          while( l != lend && r != rend )
          {
@@ -465,6 +435,8 @@ class SMatTSMatAddExpr : public SparseMatrix< SMatTSMatAddExpr<MT1,MT2>, false >
             (~lhs).append( r->index(), j, r->value() );
             ++r;
          }
+
+         (~lhs).finalize( j );
       }
    }
    /*! \endcond */
