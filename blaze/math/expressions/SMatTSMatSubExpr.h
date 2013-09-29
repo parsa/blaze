@@ -324,6 +324,10 @@ class SMatTSMatSubExpr : public SparseMatrix< SMatTSMatSubExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
+      // Final memory allocation (based on the evaluated operands)
+      (~lhs).reserve( A.nonZeros() + B.nonZeros() );
+
+      // Performing the matrix subtraction
       for( size_t i=0UL; i<(~lhs).rows(); ++i )
       {
          const LeftIterator  lend( A.end(i) );
@@ -401,6 +405,10 @@ class SMatTSMatSubExpr : public SparseMatrix< SMatTSMatSubExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
+      // Final memory allocation (based on the evaluated operands)
+      (~lhs).reserve( A.nonZeros() + B.nonZeros() );
+
+      // Performing the matrix subtraction
       for( size_t j=0UL; j<(~lhs).columns(); ++j )
       {
          const LeftIterator  lend( A.end(j) );
