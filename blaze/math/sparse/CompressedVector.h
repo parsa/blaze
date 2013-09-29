@@ -1475,6 +1475,7 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline void CompressedVector<Type,TF>::assign( const DenseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
 
    size_t nonzeros( 0UL );
 
@@ -1512,6 +1513,7 @@ template< typename VT >  // Type of the right-hand side sparse vector
 inline void CompressedVector<Type,TF>::assign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
 
    // Using the following formulation instead of a std::copy function call of the form
    //

@@ -1390,6 +1390,7 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline void SparseColumn<MT,SO>::assign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
 
    size_t nonzeros( 0UL );
 
@@ -1421,6 +1422,7 @@ template< typename VT >  // Type of the right-hand side sparse vector
 inline void SparseColumn<MT,SO>::assign( const SparseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
 
    for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
       matrix_.append( element->index(), col_, element->value() );

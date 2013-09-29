@@ -2021,6 +2021,10 @@ template< typename MT    // Type of the right-hand side dense matrix
         , bool SO2 >     // Storage order of the right-hand side dense matrix
 inline void CompressedMatrix<Type,SO>::assign( const DenseMatrix<MT,SO2>& rhs )
 {
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
+
    size_t nonzeros( 0UL );
 
    for( size_t i=1UL; i<=m_; ++i )
@@ -2069,6 +2073,10 @@ template< typename Type  // Data type of the sparse matrix
 template< typename MT >  // Type of the right-hand side sparse matrix
 inline void CompressedMatrix<Type,SO>::assign( const SparseMatrix<MT,SO>& rhs )
 {
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
+
    for( size_t i=0UL; i<(~rhs).rows(); ++i ) {
       begin_[i+1UL] = end_[i] = std::copy( (~rhs).begin(i), (~rhs).end(i), begin_[i] );
    }
@@ -2092,6 +2100,10 @@ template< typename Type  // Data type of the sparse matrix
 template< typename MT >  // Type of the right-hand side sparse matrix
 inline void CompressedMatrix<Type,SO>::assign( const SparseMatrix<MT,!SO>& rhs )
 {
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
+
    typedef typename MT::ConstIterator  RhsIterator;
 
    // Counting the number of elements per row
@@ -4074,6 +4086,10 @@ template< typename MT      // Type of the right-hand side dense matrix
         , bool SO >        // Storage order of the right-hand side dense matrix
 inline void CompressedMatrix<Type,true>::assign( const DenseMatrix<MT,SO>& rhs )
 {
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
+
    size_t nonzeros( 0UL );
 
    for( size_t j=1UL; j<=n_; ++j )
@@ -4123,6 +4139,10 @@ template< typename Type >  // Data type of the sparse matrix
 template< typename MT >    // Type of the right-hand side sparse matrix
 inline void CompressedMatrix<Type,true>::assign( const SparseMatrix<MT,true>& rhs )
 {
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
+
    for( size_t j=0UL; j<(~rhs).columns(); ++j ) {
       begin_[j+1UL] = end_[j] = std::copy( (~rhs).begin(j), (~rhs).end(j), begin_[j] );
    }
@@ -4147,6 +4167,10 @@ template< typename Type >  // Data type of the sparse matrix
 template< typename MT >    // Type of the right-hand side sparse matrix
 inline void CompressedMatrix<Type,true>::assign( const SparseMatrix<MT,false>& rhs )
 {
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
+
    typedef typename MT::ConstIterator  RhsIterator;
 
    // Counting the number of elements per column
