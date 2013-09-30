@@ -84,7 +84,7 @@ bool CG::solve( const CMatMxN& A, const VecN& b, VecN& x )
    if( A.rows() != A.columns() )
       throw std::invalid_argument( "System matrix is not square" );
 
-   if( !A.isSymmetric() )
+   if( !isSymmetric( A ) )
       throw std::invalid_argument( "System matrix is not symmetric" );
 
    if( A.rows() != b.size() )
