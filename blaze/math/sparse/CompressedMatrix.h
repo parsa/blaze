@@ -307,6 +307,8 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
                                      void              resize ( size_t m, size_t n, bool preserve=true );
                               inline void              reserve( size_t nonzeros );
                                      void              reserve( size_t i, size_t nonzeros );
+                              inline void              trim   ();
+                              inline void              trim   ( size_t i );
                               inline CompressedMatrix& transpose();
    template< typename Other > inline CompressedMatrix& scale( Other scalar );
    template< typename Other > inline CompressedMatrix& scaleDiagonal( Other scalar );
@@ -1566,6 +1568,50 @@ void CompressedMatrix<Type,SO>::reserve( size_t i, size_t nonzeros )
 
 
 //*************************************************************************************************
+/*!\brief Removing all excessive capacity from all rows/columns.
+//
+// \return void
+//
+// The trim() function can be used to reverse the effect of all row/column-specific reserve()
+// calls. The function removes all excessive capacity from all rows (in case of a rowMajor
+// matrix) or columns (in case of a columnMajor matrix). Note that this function does not
+// remove the overall capacity but only reduces the capacity per row/column.
+*/
+template< typename Type  // Data type of the sparse matrix
+        , bool SO >      // Storage order
+void CompressedMatrix<Type,SO>::trim()
+{
+   for( size_t i=0UL; i<m_; ++i )
+      trim( i );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Removing all excessive capacity of a specific row/column of the sparse matrix.
+//
+// \param i The index of the row/column to be trimmed (\f$[0..M-1]\f$ or \f$[0..N-1]\f$).
+// \return void
+//
+// This function can be used to reverse the effect of a row/column-specific reserve() call.
+// It removes all excessive capacity from the specified row (in case of a rowMajor matrix)
+// or column (in case of a columnMajor matrix). The excessive capacity is assigned to the
+// subsequent row/column.
+*/
+template< typename Type  // Data type of the sparse matrix
+        , bool SO >      // Storage order
+void CompressedMatrix<Type,SO>::trim( size_t i )
+{
+   BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
+
+   if( i < ( m_ - 1UL ) )
+      end_[i+1] = std::copy( begin_[i+1], end_[i+1], end_[i] );
+   begin_[i+1] = end_[i];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Transposing the matrix.
 //
 // \return Reference to the transposed matrix.
@@ -2377,6 +2423,8 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
                                      void              resize ( size_t m, size_t n, bool preserve=true );
                               inline void              reserve( size_t nonzeros );
                                      void              reserve( size_t j, size_t nonzeros );
+                              inline void              trim   ();
+                              inline void              trim   ( size_t j );
                               inline CompressedMatrix& transpose();
    template< typename Other > inline CompressedMatrix& scale( Other scalar );
    template< typename Other > inline CompressedMatrix& scaleDiagonal( Other scalar );
@@ -3621,6 +3669,50 @@ void CompressedMatrix<Type,true>::reserve( size_t j, size_t nonzeros )
          end_  [k] += additional;
       }
    }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removing all excessive capacity from all columns.
+//
+// \return void
+//
+// The trim() function can be used to reverse the effect of all column-specific reserve() calls
+// It removes all excessive capacity from all columns. Note that this function does not remove
+// the overall capacity but only reduces the capacity per column.
+*/
+template< typename Type >  // Data type of the sparse matrix
+void CompressedMatrix<Type,true>::trim()
+{
+   for( size_t j=0UL; j<n_; ++j )
+      trim( j );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removing all excessive capacity of a specific column of the sparse matrix.
+//
+// \param j The index of the column to be trimmed (\f$[0..N-1]\f$).
+// \return void
+//
+// This function can be used to reverse the effect of a column-specific reserve() call. It
+// removes all excessive capacity from the specified column. The excessive capacity is assigned
+// to the subsequent column.
+*/
+template< typename Type >  // Data type of the sparse matrix
+void CompressedMatrix<Type,true>::trim( size_t j )
+{
+   BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
+
+   if( j < ( n_ - 1UL ) )
+      end_[j+1] = std::copy( begin_[j+1], end_[j+1], end_[j] );
+   begin_[j+1] = end_[j];
 }
 /*! \endcond */
 //*************************************************************************************************
