@@ -68,6 +68,7 @@ ClassTest::ClassTest()
    testErase();
    testResize();
    testReserve();
+   testTrim();
    testTranspose();
    testScale();
    testSwap();
@@ -4762,6 +4763,47 @@ void ClassTest::testReserve()
       checkNonZeros( mat,  0UL );
    }
 
+   {
+      test_ = "Row-major CompressedMatrix::reserve( size_t )";
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 4UL );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 4UL );
+      checkNonZeros( mat, 0UL );
+
+      // Increasing the capacity of the 2nd row
+      mat.reserve( 2UL, 10UL );
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 10UL );
+      checkCapacity( mat,  0UL,  0UL );
+      checkCapacity( mat,  1UL,  0UL );
+      checkCapacity( mat,  2UL, 10UL );
+
+      // Increasing the capacity of the 0th row
+      mat.reserve( 0UL, 20UL );
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 30UL );
+      checkCapacity( mat,  0UL, 20UL );
+      checkCapacity( mat,  1UL,  0UL );
+      checkCapacity( mat,  2UL, 10UL );
+
+      // Increasing the capacity of the 1st row
+      mat.reserve( 1UL, 15UL );
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL, 20UL );
+      checkCapacity( mat,  1UL, 15UL );
+      checkCapacity( mat,  2UL, 10UL );
+   }
+
 
    //=====================================================================================
    // Column-major matrix tests
@@ -4792,6 +4834,242 @@ void ClassTest::testReserve()
       checkColumns ( mat,  0UL );
       checkCapacity( mat, 20UL );
       checkNonZeros( mat,  0UL );
+   }
+
+   {
+      test_ = "Column-major CompressedMatrix::reserve( size_t )";
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 3UL );
+
+      checkRows    ( mat, 4UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 0UL );
+
+      // Increasing the capacity of the 2nd column
+      mat.reserve( 2UL, 10UL );
+
+      checkRows    ( mat,  4UL );
+      checkColumns ( mat,  3UL );
+      checkCapacity( mat, 10UL );
+      checkCapacity( mat,  0UL,  0UL );
+      checkCapacity( mat,  1UL,  0UL );
+      checkCapacity( mat,  2UL, 10UL );
+
+      // Increasing the capacity of the 0th column
+      mat.reserve( 0UL, 20UL );
+
+      checkRows    ( mat,  4UL );
+      checkColumns ( mat,  3UL );
+      checkCapacity( mat, 30UL );
+      checkCapacity( mat,  0UL, 20UL );
+      checkCapacity( mat,  1UL,  0UL );
+      checkCapacity( mat,  2UL, 10UL );
+
+      // Increasing the capacity of the 1st column
+      mat.reserve( 1UL, 15UL );
+
+      checkRows    ( mat,  4UL );
+      checkColumns ( mat,  3UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL, 20UL );
+      checkCapacity( mat,  1UL, 15UL );
+      checkCapacity( mat,  2UL, 10UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the trim member functions of CompressedMatrix.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the trim member functions of CompressedMatrix. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testTrim()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CompressedMatrix::trim()";
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 4UL );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 4UL );
+      checkNonZeros( mat, 0UL );
+
+      // Increasing the row capacity of the matrix
+      mat.reserve( 0UL, 10UL );
+      mat.reserve( 1UL, 15UL );
+      mat.reserve( 2UL, 20UL );
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL, 10UL );
+      checkCapacity( mat,  1UL, 15UL );
+      checkCapacity( mat,  2UL, 20UL );
+
+      // Trimming the matrix
+      mat.trim();
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL, 0UL );
+      checkCapacity( mat,  1UL, 0UL );
+      checkCapacity( mat,  2UL, 0UL );
+   }
+
+   {
+      test_ = "Row-major CompressedMatrix::trim( size_t )";
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 4UL );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 4UL );
+      checkNonZeros( mat, 0UL );
+
+      // Increasing the row capacity of the matrix
+      mat.reserve( 0UL, 10UL );
+      mat.reserve( 1UL, 15UL );
+      mat.reserve( 2UL, 20UL );
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL, 10UL );
+      checkCapacity( mat,  1UL, 15UL );
+      checkCapacity( mat,  2UL, 20UL );
+
+      // Trimming the 0th row
+      mat.trim( 0UL );
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL,  0UL );
+      checkCapacity( mat,  1UL, 25UL );
+      checkCapacity( mat,  2UL, 20UL );
+
+      // Trimming the 1st row
+      mat.trim( 1UL );
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL,  0UL );
+      checkCapacity( mat,  1UL,  0UL );
+      checkCapacity( mat,  2UL, 45UL );
+
+      // Trimming the 2nd row
+      mat.trim( 2UL );
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL, 0UL );
+      checkCapacity( mat,  1UL, 0UL );
+      checkCapacity( mat,  2UL, 0UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CompressedMatrix::trim()";
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 3UL );
+
+      checkRows    ( mat, 4UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 0UL );
+
+      // Increasing the column capacity of the matrix
+      mat.reserve( 0UL, 10UL );
+      mat.reserve( 1UL, 15UL );
+      mat.reserve( 2UL, 20UL );
+
+      checkRows    ( mat,  4UL );
+      checkColumns ( mat,  3UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL, 10UL );
+      checkCapacity( mat,  1UL, 15UL );
+      checkCapacity( mat,  2UL, 20UL );
+
+      // Trimming the matrix
+      mat.trim();
+
+      checkRows    ( mat,  4UL );
+      checkColumns ( mat,  3UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL, 0UL );
+      checkCapacity( mat,  1UL, 0UL );
+      checkCapacity( mat,  2UL, 0UL );
+   }
+
+   {
+      test_ = "Column-major CompressedMatrix::trim( size_t )";
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 3UL );
+
+      checkRows    ( mat, 4UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 0UL );
+
+      // Increasing the column capacity of the matrix
+      mat.reserve( 0UL, 10UL );
+      mat.reserve( 1UL, 15UL );
+      mat.reserve( 2UL, 20UL );
+
+      checkRows    ( mat,  4UL );
+      checkColumns ( mat,  3UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL, 10UL );
+      checkCapacity( mat,  1UL, 15UL );
+      checkCapacity( mat,  2UL, 20UL );
+
+      // Trimming the 0th column
+      mat.trim( 0UL );
+
+      checkRows    ( mat,  4UL );
+      checkColumns ( mat,  3UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL,  0UL );
+      checkCapacity( mat,  1UL, 25UL );
+      checkCapacity( mat,  2UL, 20UL );
+
+      // Trimming the 1st column
+      mat.trim( 1UL );
+
+      checkRows    ( mat,  4UL );
+      checkColumns ( mat,  3UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL,  0UL );
+      checkCapacity( mat,  1UL,  0UL );
+      checkCapacity( mat,  2UL, 45UL );
+
+      // Trimming the 2nd column
+      mat.trim( 2UL );
+
+      checkRows    ( mat,  4UL );
+      checkColumns ( mat,  3UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL, 0UL );
+      checkCapacity( mat,  1UL, 0UL );
+      checkCapacity( mat,  2UL, 0UL );
    }
 }
 //*************************************************************************************************

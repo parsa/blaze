@@ -89,6 +89,7 @@ class ClassTest
    void testErase       ();
    void testResize      ();
    void testReserve     ();
+   void testTrim        ();
    void testTranspose   ();
    void testScale       ();
    void testSwap        ();
@@ -110,6 +111,9 @@ class ClassTest
 
    template< typename Type >
    void checkCapacity( const Type& matrix, size_t minCapacity ) const;
+
+   template< typename Type >
+   void checkCapacity( const Type& matrix, size_t index, size_t minCapacity ) const;
 
    template< typename Type >
    void checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const;
@@ -229,6 +233,36 @@ void ClassTest::checkCapacity( const Type& matrix, size_t minCapacity ) const
           << " Error: Invalid capacity detected\n"
           << " Details:\n"
           << "   Capacity                 : " << matrix.capacity() << "\n"
+          << "   Expected minimum capacity: " << minCapacity << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checking the capacity of a specific row/column of the given compressed matrix.
+//
+// \param matrix The compressed matrix to be checked.
+// \param index The row/column to be checked.
+// \param minCapacity The expected minimum capacity of the specified row/column.
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function checks the capacity of a specific row/column of the given compressed matrix.
+// In case the actual capacity is smaller than the given expected minimum capacity, a
+// \a std::runtime_error exception is thrown.
+*/
+template< typename Type >  // Type of the compressed matrix
+void ClassTest::checkCapacity( const Type& matrix, size_t index, size_t minCapacity ) const
+{
+   if( matrix.capacity( index ) < minCapacity ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Invalid capacity detected in "
+          << ( blaze::IsRowMajorMatrix<Type>::value ? "row " : "column " ) << index << "\n"
+          << " Details:\n"
+          << "   Capacity                 : " << matrix.capacity( index ) << "\n"
           << "   Expected minimum capacity: " << minCapacity << "\n";
       throw std::runtime_error( oss.str() );
    }
