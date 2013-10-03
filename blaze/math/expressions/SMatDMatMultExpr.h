@@ -515,7 +515,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
             ++element;
 
             for( size_t j=0UL; j<N; j+=IT::size ) {
-               store( &(~C)(i,j), load( &(~C)(i,j) ) + v1 * B.get(i1,j) + v2 * B.get(i2,j) + v3 * B.get(i3,j) + v4 * B.get(i4,j) );
+               store( &(~C)(i,j), (~C).get(i,j) + v1 * B.get(i1,j) + v2 * B.get(i2,j) + v3 * B.get(i3,j) + v4 * B.get(i4,j) );
             }
          }
 
@@ -524,7 +524,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
             const IntrinsicType v1( set( element->value() ) );
 
             for( size_t j=0UL; j<N; j+=IT::size ) {
-               store( &(~C)(i,j), load( &(~C)(i,j) ) + v1 * B.get(i1,j) );
+               store( &(~C)(i,j), (~C).get(i,j) + v1 * B.get(i1,j) );
             }
          }
       }
@@ -837,7 +837,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
             ++element;
 
             for( size_t j=0UL; j<N; j+=IT::size ) {
-               store( &(~C)(i,j), load( &(~C)(i,j) ) + v1 * B.get(i1,j) + v2 * B.get(i2,j) + v3 * B.get(i3,j) + v4 * B.get(i4,j) );
+               store( &(~C)(i,j), (~C).get(i,j) + v1 * B.get(i1,j) + v2 * B.get(i2,j) + v3 * B.get(i3,j) + v4 * B.get(i4,j) );
             }
          }
 
@@ -846,7 +846,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
             const IntrinsicType v1( set( element->value() ) );
 
             for( size_t j=0UL; j<N; j+=IT::size ) {
-               store( &(~C)(i,j), load( &(~C)(i,j) ) + v1 * B.get(i1,j) );
+               store( &(~C)(i,j), (~C).get(i,j) + v1 * B.get(i1,j) );
             }
          }
       }
@@ -1107,7 +1107,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
             ++element;
 
             for( size_t j=0UL; j<N; j+=IT::size ) {
-               store( &(~C)(i,j), load( &(~C)(i,j) ) - v1 * B.get(i1,j) - v2 * B.get(i2,j) - v3 * B.get(i3,j) - v4 * B.get(i4,j) );
+               store( &(~C)(i,j), (~C).get(i,j) - v1 * B.get(i1,j) - v2 * B.get(i2,j) - v3 * B.get(i3,j) - v4 * B.get(i4,j) );
             }
          }
 
@@ -1116,7 +1116,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
             const IntrinsicType v1( set( element->value() ) );
 
             for( size_t j=0UL; j<N; j+=IT::size ) {
-               store( &(~C)(i,j), load( &(~C)(i,j) ) - v1 * B.get(i1,j) );
+               store( &(~C)(i,j), (~C).get(i,j) - v1 * B.get(i1,j) );
             }
          }
       }

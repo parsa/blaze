@@ -1280,13 +1280,13 @@ inline typename EnableIf< typename DenseRow<MT,SO>::BLAZE_TEMPLATE VectorizedAdd
    const size_t jend( columns & size_t(-IT::size*4) );
 
    for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
-      store( &matrix_(row_,j             ), load( &matrix_(row_,j             ) ) + (~rhs).get(j             ) );
-      store( &matrix_(row_,j+IT::size    ), load( &matrix_(row_,j+IT::size    ) ) + (~rhs).get(j+IT::size    ) );
-      store( &matrix_(row_,j+IT::size*2UL), load( &matrix_(row_,j+IT::size*2UL) ) + (~rhs).get(j+IT::size*2UL) );
-      store( &matrix_(row_,j+IT::size*3UL), load( &matrix_(row_,j+IT::size*3UL) ) + (~rhs).get(j+IT::size*3UL) );
+      store( &matrix_(row_,j             ), matrix_.get(row_,j             ) + (~rhs).get(j             ) );
+      store( &matrix_(row_,j+IT::size    ), matrix_.get(row_,j+IT::size    ) + (~rhs).get(j+IT::size    ) );
+      store( &matrix_(row_,j+IT::size*2UL), matrix_.get(row_,j+IT::size*2UL) + (~rhs).get(j+IT::size*2UL) );
+      store( &matrix_(row_,j+IT::size*3UL), matrix_.get(row_,j+IT::size*3UL) + (~rhs).get(j+IT::size*3UL) );
    }
    for( size_t j=jend; j<columns; j+=IT::size ) {
-      store( &matrix_(row_,j), load( &matrix_(row_,j) ) + (~rhs).get(j) );
+      store( &matrix_(row_,j), matrix_.get(row_,j) + (~rhs).get(j) );
    }
 }
 //*************************************************************************************************
@@ -1373,13 +1373,13 @@ inline typename EnableIf< typename DenseRow<MT,SO>::BLAZE_TEMPLATE VectorizedSub
    const size_t jend( columns & size_t(-IT::size*4) );
 
    for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
-      store( &matrix_(row_,j             ), load( &matrix_(row_,j             ) ) - (~rhs).get(j             ) );
-      store( &matrix_(row_,j+IT::size    ), load( &matrix_(row_,j+IT::size    ) ) - (~rhs).get(j+IT::size    ) );
-      store( &matrix_(row_,j+IT::size*2UL), load( &matrix_(row_,j+IT::size*2UL) ) - (~rhs).get(j+IT::size*2UL) );
-      store( &matrix_(row_,j+IT::size*3UL), load( &matrix_(row_,j+IT::size*3UL) ) - (~rhs).get(j+IT::size*3UL) );
+      store( &matrix_(row_,j             ), matrix_.get(row_,j             ) - (~rhs).get(j             ) );
+      store( &matrix_(row_,j+IT::size    ), matrix_.get(row_,j+IT::size    ) - (~rhs).get(j+IT::size    ) );
+      store( &matrix_(row_,j+IT::size*2UL), matrix_.get(row_,j+IT::size*2UL) - (~rhs).get(j+IT::size*2UL) );
+      store( &matrix_(row_,j+IT::size*3UL), matrix_.get(row_,j+IT::size*3UL) - (~rhs).get(j+IT::size*3UL) );
    }
    for( size_t j=jend; j<columns; j+=IT::size ) {
-      store( &matrix_(row_,j), load( &matrix_(row_,j) ) - (~rhs).get(j) );
+      store( &matrix_(row_,j), matrix_.get(row_,j) - (~rhs).get(j) );
    }
 }
 //*************************************************************************************************
@@ -1466,13 +1466,13 @@ inline typename EnableIf< typename DenseRow<MT,SO>::BLAZE_TEMPLATE VectorizedMul
    const size_t jend( columns & size_t(-IT::size*4) );
 
    for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
-      store( &matrix_(row_,j             ), load( &matrix_(row_,j             ) ) * (~rhs).get(j             ) );
-      store( &matrix_(row_,j+IT::size    ), load( &matrix_(row_,j+IT::size    ) ) * (~rhs).get(j+IT::size    ) );
-      store( &matrix_(row_,j+IT::size*2UL), load( &matrix_(row_,j+IT::size*2UL) ) * (~rhs).get(j+IT::size*2UL) );
-      store( &matrix_(row_,j+IT::size*3UL), load( &matrix_(row_,j+IT::size*3UL) ) * (~rhs).get(j+IT::size*3UL) );
+      store( &matrix_(row_,j             ), matrix_.get(row_,j             ) * (~rhs).get(j             ) );
+      store( &matrix_(row_,j+IT::size    ), matrix_.get(row_,j+IT::size    ) * (~rhs).get(j+IT::size    ) );
+      store( &matrix_(row_,j+IT::size*2UL), matrix_.get(row_,j+IT::size*2UL) * (~rhs).get(j+IT::size*2UL) );
+      store( &matrix_(row_,j+IT::size*3UL), matrix_.get(row_,j+IT::size*3UL) * (~rhs).get(j+IT::size*3UL) );
    }
    for( size_t j=jend; j<columns; j+=IT::size ) {
-      store( &matrix_(row_,j), load( &matrix_(row_,j) ) * (~rhs).get(j) );
+      store( &matrix_(row_,j), matrix_.get(row_,j) * (~rhs).get(j) );
    }
 }
 //*************************************************************************************************

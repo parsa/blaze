@@ -801,7 +801,7 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
          const IntrinsicType x1( set( element->value() ) );
 
          for( size_t j=0UL; j<(~A).columns(); j+=IT::size ) {
-            store( &(~A)(element->index(),j), load( &(~A)(element->index(),j) ) + x1 * y.get(j) );
+            store( &(~A)(element->index(),j), (~A).get(element->index(),j) + x1 * y.get(j) );
          }
       }
    }
@@ -962,7 +962,7 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
          const IntrinsicType x1( set( element->value() ) );
 
          for( size_t j=0UL; j<(~A).columns(); j+=IT::size ) {
-            store( &(~A)(element->index(),j), load( &(~A)(element->index(),j) ) - x1 * y.get(j) );
+            store( &(~A)(element->index(),j), (~A).get(element->index(),j) - x1 * y.get(j) );
          }
       }
    }

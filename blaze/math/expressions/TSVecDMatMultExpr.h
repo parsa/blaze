@@ -534,7 +534,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
          ++element;
 
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            store( &y[j], load( &y[j] ) + v1 * A.get(i1,j) + v2 * A.get(i2,j) + v3 * A.get(i3,j) + v4 * A.get(i4,j) );
+            store( &y[j], y.get(j) + v1 * A.get(i1,j) + v2 * A.get(i2,j) + v3 * A.get(i3,j) + v4 * A.get(i4,j) );
          }
       }
       for( ; element!=end; ++element )
@@ -543,7 +543,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
          const IntrinsicType v1( set( element->value() ) );
 
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            store( &y[j], load( &y[j] ) + v1 * A.get(i1,j) );
+            store( &y[j], y.get(j) + v1 * A.get(i1,j) );
          }
       }
    }
@@ -766,7 +766,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
          ++element;
 
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            store( &y[j], load( &y[j] ) + v1 * A.get(i1,j) + v2 * A.get(i2,j) + v3 * A.get(i3,j) + v4 * A.get(i4,j) );
+            store( &y[j], y.get(j) + v1 * A.get(i1,j) + v2 * A.get(i2,j) + v3 * A.get(i3,j) + v4 * A.get(i4,j) );
          }
       }
       for( ; element!=end; ++element )
@@ -775,7 +775,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
          const IntrinsicType v1( set( element->value() ) );
 
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            store( &y[j], load( &y[j] ) + v1 * A.get(i1,j) );
+            store( &y[j], y.get(j) + v1 * A.get(i1,j) );
          }
       }
    }
@@ -975,7 +975,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
          ++element;
 
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            store( &y[j], load( &y[j] ) - v1 * A.get(i1,j) - v2 * A.get(i2,j) - v3 * A.get(i3,j) - v4 * A.get(i4,j) );
+            store( &y[j], y.get(j) - v1 * A.get(i1,j) - v2 * A.get(i2,j) - v3 * A.get(i3,j) - v4 * A.get(i4,j) );
          }
       }
       for( ; element!=x.end(); ++element )
@@ -984,7 +984,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
          const IntrinsicType v1( set( element->value() ) );
 
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            store( &y[j], load( &y[j] ) - v1 * A.get(i1,j) );
+            store( &y[j], y.get(j) - v1 * A.get(i1,j) );
          }
       }
    }

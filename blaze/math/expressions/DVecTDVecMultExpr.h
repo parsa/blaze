@@ -659,7 +659,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
          const IntrinsicType x1( set( x[i] ) );
 
          for( size_t j=0UL; j<n; j+=IT::size ) {
-            store( &(~A)(i,j), load( &(~A)(i,j) ) + x1 * y.get(j) );
+            store( &(~A)(i,j), (~A).get(i,j) + x1 * y.get(j) );
          }
       }
    }
@@ -769,7 +769,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
          const IntrinsicType y1( set( y[j] ) );
 
          for( size_t i=0UL; i<m; i+=IT::size ) {
-            store( &(~A)(i,j), load( &(~A)(i,j) ) + x.get(i) * y1 );
+            store( &(~A)(i,j), (~A).get(i,j) + x.get(i) * y1 );
          }
       }
    }
@@ -886,7 +886,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
          const IntrinsicType x1( set( x[i] ) );
 
          for( size_t j=0UL; j<n; j+=IT::size ) {
-            store( &(~A)(i,j), load( &(~A)(i,j) ) - x1 * y.get(j) );
+            store( &(~A)(i,j), (~A).get(i,j) - x1 * y.get(j) );
          }
       }
    }
@@ -996,7 +996,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
          const IntrinsicType y1( set( y[j] ) );
 
          for( size_t i=0UL; i<m; i+=IT::size ) {
-            store( &(~A)(i,j), load( &(~A)(i,j) ) - x.get(i) * y1 );
+            store( &(~A)(i,j), (~A).get(i,j) - x.get(i) * y1 );
          }
       }
    }

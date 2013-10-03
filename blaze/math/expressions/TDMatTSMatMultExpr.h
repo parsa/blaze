@@ -587,7 +587,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
             ++element;
 
             for( size_t i=0UL; i<M; i+=IT::size ) {
-               store( &(~C)(i,j), load( &(~C)(i,j) ) + A.get(i,j1) * v1 + A.get(i,j2) * v2 + A.get(i,j3) * v3 + A.get(i,j4) * v4 );
+               store( &(~C)(i,j), (~C).get(i,j) + A.get(i,j1) * v1 + A.get(i,j2) * v2 + A.get(i,j3) * v3 + A.get(i,j4) * v4 );
             }
          }
 
@@ -596,7 +596,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
             const IntrinsicType v1( set( element->value() ) );
 
             for( size_t i=0UL; i<M; i+=IT::size ) {
-               store( &(~C)(i,j), load( &(~C)(i,j) ) + A.get(i,j1) * v1 );
+               store( &(~C)(i,j), (~C).get(i,j) + A.get(i,j1) * v1 );
             }
          }
       }
@@ -889,7 +889,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
             ++element;
 
             for( size_t i=0UL; i<M; i+=IT::size ) {
-               store( &(~C)(i,j), load( &(~C)(i,j) ) + A.get(i,j1) * v1 + A.get(i,j2) * v2 + A.get(i,j3) * v3 + A.get(i,j4) * v4 );
+               store( &(~C)(i,j), (~C).get(i,j) + A.get(i,j1) * v1 + A.get(i,j2) * v2 + A.get(i,j3) * v3 + A.get(i,j4) * v4 );
             }
          }
 
@@ -898,7 +898,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
             const IntrinsicType v1( set( element->value() ) );
 
             for( size_t i=0UL; i<M; i+=IT::size ) {
-               store( &(~C)(i,j), load( &(~C)(i,j) ) + A.get(i,j1) * v1 );
+               store( &(~C)(i,j), (~C).get(i,j) + A.get(i,j1) * v1 );
             }
          }
       }
@@ -1159,7 +1159,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
             ++element;
 
             for( size_t i=0UL; i<M; i+=IT::size ) {
-               store( &(~C)(i,j), load( &(~C)(i,j) ) - A.get(i,j1) * v1 - A.get(i,j2) * v2 - A.get(i,j3) * v3 - A.get(i,j4) * v4 );
+               store( &(~C)(i,j), (~C).get(i,j) - A.get(i,j1) * v1 - A.get(i,j2) * v2 - A.get(i,j3) * v3 - A.get(i,j4) * v4 );
             }
          }
 
@@ -1168,7 +1168,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
             const IntrinsicType v1( set( element->value() ) );
 
             for( size_t i=0UL; i<M; i+=IT::size ) {
-               store( &(~C)(i,j), load( &(~C)(i,j) ) - A.get(i,j1) * v1 );
+               store( &(~C)(i,j), (~C).get(i,j) - A.get(i,j1) * v1 );
             }
          }
       }
