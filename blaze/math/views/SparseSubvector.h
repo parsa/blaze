@@ -290,6 +290,28 @@ namespace blaze {
 
    A = trans( d1 ) * subvector( s1, 4UL, 16UL );  // Outer product between two vectors
    \endcode
+
+// \n \section sparse_subvector_on_sparse_subvector Subvectors on Subvectors
+//
+// It is also possible to create a subvector view on another subvector. In this context it is
+// important to remember that the type returned by the \c subvector() function is the same type
+// as the type of the given subvector, since the view on a subvector is just another view on the
+// underlying sparse vector:
+
+   \code
+   typedef blaze::CompressedVector<double,blaze::rowVector>  VectorType;
+   typedef blaze::SparseSubvector<VectorType>                SubvectorType;
+
+   VectorType s1;
+
+   // ... Resizing and initialization
+
+   // Creating a subvector view on the sparse vector s1
+   SubvectorType sv1 = subvector( s1, 5UL, 10UL );
+
+   // Creating a subvector view on the sparse subvector sv1
+   SubvectorType sv2 = subvector( sv1, 1UL, 5UL );
+   \endcode
 */
 template< typename VT                               // Type of the sparse vector
         , bool TF = IsTransposeVector<VT>::value >  // Transpose flag
@@ -704,6 +726,13 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
    //@}
    //**********************************************************************************************
 
+   //**Friend declarations*************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   template< typename VT2, bool TF2 >
+   friend SparseSubvector<VT2,TF2> subvector( const SparseSubvector<VT2,TF2>& sv, size_t index, size_t size );
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE  ( VT );
@@ -712,6 +741,8 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
    /*! \endcond */
    //**********************************************************************************************
+
+
 };
 //*************************************************************************************************
 
@@ -1942,6 +1973,32 @@ inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, SparseSubve
 //  GLOBAL RESTRUCTURING OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of another sparse subvector.
+// \ingroup views
+//
+// \param sv The constant sparse subvector.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
+// \return View on the specified subvector of the other sparse subvector.
+//
+// This function returns an expression representing the specified subvector of the given
+// sparse subvector.
+*/
+template< typename VT  // Type of the sparse subvector
+        , bool TF >    // Transpose flag
+inline SparseSubvector<VT,TF>
+   subvector( const SparseSubvector<VT,TF>& sv, size_t index, size_t size )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SparseSubvector<VT,TF>( sv.vector_, sv.offset_ + index, size );
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

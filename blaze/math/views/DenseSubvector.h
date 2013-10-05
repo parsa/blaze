@@ -253,6 +253,28 @@ namespace blaze {
 
    A = trans( s1 ) * subvector( d1, 4UL, 16UL );  // Outer product between two vectors
    \endcode
+
+// \n \section dense_subvector_on_dense_subvector Subvectors on Subvectors
+//
+// It is also possible to create a subvector view on another subvector. In this context it is
+// important to remember that the type returned by the \c subvector() function is the same type
+// as the type of the given subvector, since the view on a subvector is just another view on the
+// underlying dense vector:
+
+   \code
+   typedef blaze::DynamicVector<double,blaze::rowVector>  VectorType;
+   typedef blaze::DenseSubvector<VectorType>              SubvectorType;
+
+   VectorType d1;
+
+   // ... Resizing and initialization
+
+   // Creating a subvector view on the dense vector d1
+   SubvectorType sv1 = subvector( d1, 5UL, 10UL );
+
+   // Creating a subvector view on the dense subvector sv1
+   SubvectorType sv2 = subvector( sv1, 1UL, 5UL );
+   \endcode
 */
 template< typename VT                               // Type of the dense vector
         , bool TF = IsTransposeVector<VT>::value >  // Transpose flag
@@ -393,6 +415,13 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
    const size_t offset_;  //!< The offset of the subvector within the dense vector.
    const size_t size_;    //!< The size of the subvector.
    //@}
+   //**********************************************************************************************
+
+   //**Friend declarations*************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   template< typename VT2, bool TF2 >
+   friend DenseSubvector<VT2,TF2> subvector( const DenseSubvector<VT2,TF2>& dv, size_t index, size_t size );
+   /*! \endcond */
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -1396,6 +1425,32 @@ inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, DenseSubvec
 //  GLOBAL RESTRUCTURING OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of another dense subvector.
+// \ingroup views
+//
+// \param dv The constant dense subvector.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
+// \return View on the specified subvector of the other dense subvector.
+//
+// This function returns an expression representing the specified subvector of the given
+// dense subvector.
+*/
+template< typename VT  // Type of the dense subvector
+        , bool TF >    // Transpose flag
+inline DenseSubvector<VT,TF>
+   subvector( const DenseSubvector<VT,TF>& dv, size_t index, size_t size )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DenseSubvector<VT,TF>( dv.vector_, dv.offset_ + index, size );
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

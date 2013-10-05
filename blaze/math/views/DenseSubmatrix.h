@@ -252,6 +252,28 @@ namespace blaze {
 
    a = submatrix( D1, 4UL, 4UL, 8UL, 8UL ) * b;  // Dense matrix/sparse vector multiplication
    \endcode
+
+// \n \section dense_submatrix_on_dense_submatrix Submatrix on Submatrix
+//
+// It is also possible to create a submatrix view on another submatrix. In this context it is
+// important to remember that the type returned by the \c submatrix() function is the same type
+// as the type of the given submatrix, since the view on a submatrix is just another view on the
+// underlying dense matrix:
+
+   \code
+   typedef blaze::DynamicMatrix<double,blaze::rowMajor>  MatrixType;
+   typedef blaze::DenseSubmatrix<MatrixType>             SubmatrixType;
+
+   MatrixType D1;
+
+   // ... Resizing and initialization
+
+   // Creating a submatrix view on the dense matrix D1
+   SubmatrixType sm1 = submatrix( D1, 4UL, 4UL, 8UL, 16UL );
+
+   // Creating a submatrix view on the dense submatrix sm1
+   SubmatrixType sm2 = submatrix( sm1, 1UL, 1UL, 4UL, 8UL );
+   \endcode
 */
 template< typename MT                                 // Type of the dense matrix
         , bool SO = IsColumnMajorMatrix<MT>::value >  // Storage order
@@ -403,6 +425,14 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
    const size_t m_;       //!< The number of rows of the submatrix.
    const size_t n_;       //!< The number of columns of the submatrix.
    //@}
+   //**********************************************************************************************
+
+   //**Friend declarations*************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   template< typename MT2, bool SO2 >
+   friend DenseSubmatrix<MT2,SO2>
+      submatrix( const DenseSubmatrix<MT2,SO2>& dm, size_t row, size_t column, size_t m, size_t n );
+   /*! \endcond */
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -1705,6 +1735,14 @@ class DenseSubmatrix<MT,true> : public DenseMatrix< DenseSubmatrix<MT,true>, tru
    const size_t m_;       //!< The number of rows of the submatrix.
    const size_t n_;       //!< The number of columns of the submatrix.
    //@}
+   //**********************************************************************************************
+
+   //**Friend declarations*************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   template< typename MT2, bool SO2 >
+   friend DenseSubmatrix<MT2,SO2>
+      submatrix( const DenseSubmatrix<MT2,SO2>& dm, size_t row, size_t column, size_t m, size_t n );
+   /*! \endcond */
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -3022,6 +3060,34 @@ inline typename DisableIf< Or< IsComputation<MT>, IsTransExpr<MT> >, DenseSubmat
 //  GLOBAL RESTRUCTURING OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of another dense submatrix.
+// \ingroup views
+//
+// \param dm The constant dense submatrix
+// \param row The index of the first row of the submatrix.
+// \param column The index of the first column of the submatrix.
+// \param m The number of rows of the submatrix.
+// \param n The number of columns of the submatrix.
+// \return View on the specified submatrix of the other dense submatrix.
+//
+// This function returns an expression representing the specified submatrix of the given
+// dense submatrix.
+*/
+template< typename MT  // Type of the dense submatrix
+        , bool SO >    // Storage order
+inline DenseSubmatrix<MT,SO>
+   submatrix( const DenseSubmatrix<MT,SO>& dm, size_t row, size_t column, size_t m, size_t n )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DenseSubmatrix<MT,SO>( dm.matrix_, dm.row_ + row, dm.column_ + column, m, n );
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

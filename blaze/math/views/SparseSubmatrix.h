@@ -288,6 +288,28 @@ namespace blaze {
 
    a = submatrix( S1, 4UL, 4UL, 8UL, 8UL ) * b;  // Sparse matrix/dense vector multiplication
    \endcode
+
+// \n \section sparse_submatrix_on_sparse_submatrix Submatrix on Submatrix
+//
+// It is also possible to create a submatrix view on another submatrix. In this context it is
+// important to remember that the type returned by the \c submatrix() function is the same type
+// as the type of the given submatrix, since the view on a submatrix is just another view on the
+// underlying sparse matrix:
+
+   \code
+   typedef blaze::CompressedMatrix<double,blaze::rowMajor>  MatrixType;
+   typedef blaze::SparseSubmatrix<MatrixType>               SubmatrixType;
+
+   MatrixType S1;
+
+   // ... Resizing and initialization
+
+   // Creating a submatrix view on the sparse matrix S1
+   SubmatrixType sm1 = submatrix( S1, 4UL, 4UL, 8UL, 16UL );
+
+   // Creating a submatrix view on the sparse submatrix sm1
+   SubmatrixType sm2 = submatrix( sm1, 1UL, 1UL, 4UL, 8UL );
+   \endcode
 */
 template< typename MT                                 // Type of the sparse matrix
         , bool SO = IsColumnMajorMatrix<MT>::value >  // Storage order
@@ -709,6 +731,14 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
    const size_t m_;       //!< The number of rows of the submatrix.
    const size_t n_;       //!< The number of columns of the submatrix.
    //@}
+   //**********************************************************************************************
+
+   //**Friend declarations*************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   template< typename MT2, bool SO2 >
+   friend SparseSubmatrix<MT2,SO2>
+      submatrix( const SparseSubmatrix<MT2,SO2>& sm, size_t row, size_t column, size_t m, size_t n );
+   /*! \endcond */
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -2464,6 +2494,14 @@ class SparseSubmatrix<MT,true> : public SparseMatrix< SparseSubmatrix<MT,true>, 
    //@}
    //**********************************************************************************************
 
+   //**Friend declarations*************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   template< typename MT2, bool SO2 >
+   friend SparseSubmatrix<MT2,SO2>
+      submatrix( const SparseSubmatrix<MT2,SO2>& sm, size_t row, size_t column, size_t m, size_t n );
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE      ( MT );
@@ -3959,6 +3997,34 @@ inline typename DisableIf< Or< IsComputation<MT>, IsTransExpr<MT> >, SparseSubma
 //  GLOBAL RESTRUCTURING OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of another sparse submatrix.
+// \ingroup views
+//
+// \param sm The constant sparse submatrix
+// \param row The index of the first row of the submatrix.
+// \param column The index of the first column of the submatrix.
+// \param m The number of rows of the submatrix.
+// \param n The number of columns of the submatrix.
+// \return View on the specified submatrix of the other sparse submatrix.
+//
+// This function returns an expression representing the specified submatrix of the given
+// sparse submatrix.
+*/
+template< typename MT  // Type of the sparse submatrix
+        , bool SO >    // Storage order
+inline SparseSubmatrix<MT,SO>
+   submatrix( const SparseSubmatrix<MT,SO>& sm, size_t row, size_t column, size_t m, size_t n )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SparseSubmatrix<MT,SO>( sm.matrix_, sm.row_ + row, sm.column_ + column, m, n );
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
