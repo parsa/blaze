@@ -1252,10 +1252,10 @@ namespace blaze {}
    \code
    blaze::StaticMatrix<int,2UL,2UL,rowMajor> M1;
    blaze::StaticMatrix<int,2UL,2UL,columnMajor> M2;
-   blaze::DynamicMatrix<double,3UL,1UL> M3;
+   blaze::DynamicMatrix<double> M3;
 
-   int    array1[4] = { 1, 2, 3, 4 };
-   double array2[3] = { 3.1, 6.4, -0.9 };
+   int array1[2][2] = { { 1, 2 }, { 3, 4 } };
+   double array2[3][2] = { { 3.1, 6.4 }, { -0.9, -1.2 }, { 4.8, 0.6 } };
 
    M1 = array1;
    M2 = array1;
@@ -1272,6 +1272,15 @@ namespace blaze {}
                           M2 = \left(\begin{array}{*{2}{c}}
                           1 & 3 \\
                           2 & 4 \\
+                          \end{array}\right)\f$
+
+// Also note that the dimensions of the static array have to match the size of a StaticMatrix,
+// whereas a DynamicMatrix is resized according to the array dimensions:
+
+                          \f$ M1 = \left(\begin{array}{*{2}{c}}
+                           3.1 &  6.4 \\
+                          -0.9 & -1.2 \\
+                           4.8 &  0.6 \\
                           \end{array}\right)\f$
 
 // \n \subsection matrix_operations_copy_assignment Copy Assignment
