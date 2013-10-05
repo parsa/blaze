@@ -1705,7 +1705,6 @@ inline size_t CompressedMatrix<Type,SO>::extendCapacity() const
 {
    size_t nonzeros( 2UL*capacity()+1UL );
    nonzeros = blaze::max( nonzeros, 7UL   );
-   nonzeros = blaze::min( nonzeros, m_*n_ );
 
    BLAZE_INTERNAL_ASSERT( nonzeros > capacity(), "Invalid capacity value" );
 
@@ -3816,7 +3815,6 @@ inline size_t CompressedMatrix<Type,true>::extendCapacity() const
 {
    size_t nonzeros( 2UL*capacity()+1UL );
    nonzeros = blaze::max( nonzeros, 7UL );
-   nonzeros = blaze::min( nonzeros, m_*n_ );
 
    BLAZE_INTERNAL_ASSERT( nonzeros > capacity(), "Invalid capacity value" );
 
