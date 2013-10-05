@@ -61,6 +61,7 @@
 #include <blaze/math/typetraits/IsMatTransExpr.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/typetraits/IsVecTVecMultExpr.h>
+#include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
@@ -627,7 +628,8 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
    /*!\name Assignment operators */
    //@{
                                       inline SparseSubmatrix& operator= ( const SparseSubmatrix& rhs );
-   template< typename MT2, bool SO2 > inline SparseSubmatrix& operator= ( const Matrix<MT2,SO2>& rhs );
+   template< typename MT2, bool SO2 > inline SparseSubmatrix& operator= ( const DenseMatrix<MT2,SO2>&  rhs );
+   template< typename MT2, bool SO2 > inline SparseSubmatrix& operator= ( const SparseMatrix<MT2,SO2>& rhs );
    template< typename MT2, bool SO2 > inline SparseSubmatrix& operator+=( const Matrix<MT2,SO2>& rhs );
    template< typename MT2, bool SO2 > inline SparseSubmatrix& operator-=( const Matrix<MT2,SO2>& rhs );
    template< typename MT2, bool SO2 > inline SparseSubmatrix& operator*=( const Matrix<MT2,SO2>& rhs );
@@ -690,7 +692,6 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
    template< typename Other > inline bool isAliased( const Other* alias ) const;
    template< typename MT2, bool SO2 > inline void assign   ( const DenseMatrix<MT2,SO2>&  rhs );
    template< typename MT2 >           inline void assign   ( const SparseMatrix<MT2,SO>&  rhs );
-   template< typename MT2 >           inline void assign   ( const SparseMatrix<MT2,!SO>& rhs );
    template< typename MT2, bool SO2 > inline void addAssign( const DenseMatrix<MT2,SO2>&  rhs );
    template< typename MT2, bool SO2 > inline void addAssign( const SparseMatrix<MT2,SO2>& rhs );
    template< typename MT2, bool SO2 > inline void subAssign( const DenseMatrix<MT2,SO2>&  rhs );
@@ -963,13 +964,13 @@ inline SparseSubmatrix<MT,SO>& SparseSubmatrix<MT,SO>::operator=( const SparseSu
    if( rows() != rhs.rows() || columns() != rhs.columns() )
       throw std::invalid_argument( "Submatrix sizes do not match" );
 
+   reset();
+
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
-      reset();
       assign( *this, tmp );
    }
    else {
-      reset();
       assign( *this, rhs );
    }
 
@@ -979,35 +980,79 @@ inline SparseSubmatrix<MT,SO>& SparseSubmatrix<MT,SO>::operator=( const SparseSu
 
 
 //*************************************************************************************************
-/*!\brief Assignment operator for different matrices.
+/*!\brief Assignment operator for dense matrices.
 //
-// \param rhs Matrix to be assigned.
+// \param rhs Dense matrix to be assigned.
 // \return Reference to the assigned submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
 //
-// The sparse submatrix is initialized as a copy of the given matrix. In case the current
+// The sparse submatrix is initialized as a copy of the given dense matrix. In case the current
 // sizes of the two matrices don't match, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT   // Type of the sparse matrix
         , bool SO >     // Storage order
-template< typename MT2  // Type of the right-hand side matrix
-        , bool SO2 >    // Storage order of the right-hand side matrix
-inline SparseSubmatrix<MT,SO>& SparseSubmatrix<MT,SO>::operator=( const Matrix<MT2,SO2>& rhs )
+template< typename MT2  // Type of the right-hand side dense matrix
+        , bool SO2 >    // Storage order of the right-hand side dense matrix
+inline SparseSubmatrix<MT,SO>& SparseSubmatrix<MT,SO>::operator=( const DenseMatrix<MT2,SO2>& rhs )
 {
    using blaze::assign;
 
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( typename MT2::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
+   reset();
+
+   if( RequiresEvaluation<MT2>::value || (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
-      reset();
       assign( *this, tmp );
    }
    else {
-      reset();
+      assign( *this, ~rhs );
+   }
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Assignment operator for different sparse matrices.
+//
+// \param rhs Sparse matrix to be assigned.
+// \return Reference to the assigned submatrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// The sparse submatrix is initialized as a copy of the given sparse matrix. In case the current
+// sizes of the two matrices don't match, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT   // Type of the sparse matrix
+        , bool SO >     // Storage order
+template< typename MT2  // Type of the right-hand side sparse matrix
+        , bool SO2 >    // Storage order of the right-hand side sparse matrix
+inline SparseSubmatrix<MT,SO>& SparseSubmatrix<MT,SO>::operator=( const SparseMatrix<MT2,SO2>& rhs )
+{
+   using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
+      throw std::invalid_argument( "Matrix sizes do not match" );
+
+   reset();
+
+   if( IsColumnMajorMatrix<MT2>::value ) {
+      const typename MT2::OppositeType tmp( ~rhs );
+      assign( *this, tmp );
+   }
+   else if( RequiresEvaluation<MT2>::value || (~rhs).canAlias( &matrix_ ) ) {
+      const typename MT2::ResultType tmp( ~rhs );
+      assign( *this, tmp );
+   }
+   else {
       assign( *this, ~rhs );
    }
 
@@ -1216,7 +1261,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline size_t SparseSubmatrix<MT,SO>::capacity() const
 {
-   return rows() * columns();
+   return nonZeros() + matrix_.capacity() - matrix_.nonZeros();
 }
 //*************************************************************************************************
 
@@ -1449,9 +1494,10 @@ template< typename MT  // Type of the sparse matrix
 void SparseSubmatrix<MT,SO>::reserve( size_t i, size_t nonzeros )
 {
    const size_t current( capacity( i ) );
+   const size_t index  ( row_ + i );
 
    if( nonzeros > current ) {
-      matrix_.reserve( row_+i, matrix_.capacity( row_+i ) + nonzeros - current );
+      matrix_.reserve( index, matrix_.capacity( index ) + nonzeros - current );
    }
 }
 //*************************************************************************************************
@@ -1706,8 +1752,12 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline void SparseSubmatrix<MT,SO>::append( size_t i, size_t j, const ElementType& value, bool check )
 {
-   if( !check || !isDefault( value ) )
+   if( column_ + n_ == matrix_.columns() ) {
+      matrix_.append( row_ + i, column_ + j, value, check );
+   }
+   else if( !check || !isDefault( value ) ) {
       matrix_.insert( row_ + i, column_ + j, value );
+   }
 }
 //*************************************************************************************************
 
@@ -1729,7 +1779,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline void SparseSubmatrix<MT,SO>::finalize( size_t i )
 {
-   return;
+   matrix_.trim( row_ + i );
 }
 //*************************************************************************************************
 
@@ -1802,10 +1852,13 @@ inline void SparseSubmatrix<MT,SO>::assign( const DenseMatrix<MT2,SO2>& rhs )
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
+   reserve( 0UL, rows() * columns() );
+
    for( size_t i=0UL; i<rows(); ++i ) {
       for( size_t j=0UL; j<columns(); ++j ) {
          append( i, j, (~rhs)(i,j), true );
       }
+      finalize( i );
    }
 }
 //*************************************************************************************************
@@ -1830,38 +1883,13 @@ inline void SparseSubmatrix<MT,SO>::assign( const SparseMatrix<MT2,SO>& rhs )
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
+   reserve( 0UL, (~rhs).nonZeros() );
+
    for( size_t i=0UL; i<(~rhs).rows(); ++i ) {
       for( typename MT2::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
          append( i, element->index(), element->value(), true );
       }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Default implementation of the assignment of a column-major sparse matrix.
-//
-// \param rhs The right-hand side sparse matrix to be assigned.
-// \return void
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT     // Type of the sparse matrix
-        , bool SO >       // Storage order
-template< typename MT2 >  // Type of the right-hand side sparse matrix
-inline void SparseSubmatrix<MT,SO>::assign( const SparseMatrix<MT2,!SO>& rhs )
-{
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
-
-   for( size_t j=0UL; j<(~rhs).columns(); ++j ) {
-      for( typename MT2::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
-         append( element->index(), j, element->value(), true );
-      }
+      finalize( i );
    }
 }
 //*************************************************************************************************
@@ -2353,7 +2381,8 @@ class SparseSubmatrix<MT,true> : public SparseMatrix< SparseSubmatrix<MT,true>, 
    /*!\name Assignment operators */
    //@{
                                       inline SparseSubmatrix& operator= ( const SparseSubmatrix& rhs );
-   template< typename MT2, bool SO > inline SparseSubmatrix& operator= ( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO > inline SparseSubmatrix& operator= ( const DenseMatrix<MT2,SO>&  rhs );
+   template< typename MT2, bool SO > inline SparseSubmatrix& operator= ( const SparseMatrix<MT2,SO>& rhs );
    template< typename MT2, bool SO > inline SparseSubmatrix& operator+=( const Matrix<MT2,SO>& rhs );
    template< typename MT2, bool SO > inline SparseSubmatrix& operator-=( const Matrix<MT2,SO>& rhs );
    template< typename MT2, bool SO > inline SparseSubmatrix& operator*=( const Matrix<MT2,SO>& rhs );
@@ -2416,7 +2445,6 @@ class SparseSubmatrix<MT,true> : public SparseMatrix< SparseSubmatrix<MT,true>, 
    template< typename Other > inline bool isAliased( const Other* alias ) const;
    template< typename MT2, bool SO > inline void assign   ( const DenseMatrix<MT2,SO>&     rhs );
    template< typename MT2 >          inline void assign   ( const SparseMatrix<MT2,true>&  rhs );
-   template< typename MT2 >          inline void assign   ( const SparseMatrix<MT2,false>& rhs );
    template< typename MT2, bool SO > inline void addAssign( const DenseMatrix<MT2,SO>&     rhs );
    template< typename MT2, bool SO > inline void addAssign( const SparseMatrix<MT2,SO>&    rhs );
    template< typename MT2, bool SO > inline void subAssign( const DenseMatrix<MT2,SO>&     rhs );
@@ -2669,13 +2697,13 @@ inline SparseSubmatrix<MT,true>& SparseSubmatrix<MT,true>::operator=( const Spar
    if( rows() != rhs.rows() || columns() != rhs.columns() )
       throw std::invalid_argument( "Submatrix sizes do not match" );
 
+   reset();
+
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
-      reset();
       assign( *this, tmp );
    }
    else {
-      reset();
       assign( *this, rhs );
    }
 
@@ -2687,19 +2715,19 @@ inline SparseSubmatrix<MT,true>& SparseSubmatrix<MT,true>::operator=( const Spar
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Assignment operator for different matrices.
+/*!\brief Assignment operator for dense matrices.
 //
-// \param rhs Matrix to be assigned.
+// \param rhs Dense matrix to be assigned.
 // \return Reference to the assigned submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
 //
-// The sparse submatrix is initialized as a copy of the given matrix. In case the current
+// The sparse submatrix is initialized as a copy of the given dense matrix. In case the current
 // sizes of the two matrices don't match, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the sparse matrix
-template< typename MT2   // Type of the right-hand side matrix
-        , bool SO >      // Storage order of the right-hand side matrix
-inline SparseSubmatrix<MT,true>& SparseSubmatrix<MT,true>::operator=( const Matrix<MT2,SO>& rhs )
+template< typename MT2   // Type of the right-hand side dense matrix
+        , bool SO >      // Storage order of the right-hand side dense matrix
+inline SparseSubmatrix<MT,true>& SparseSubmatrix<MT,true>::operator=( const DenseMatrix<MT2,SO>& rhs )
 {
    using blaze::assign;
 
@@ -2708,13 +2736,56 @@ inline SparseSubmatrix<MT,true>& SparseSubmatrix<MT,true>::operator=( const Matr
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
+   reset();
+
+   if( RequiresEvaluation<MT2>::value || (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
-      reset();
       assign( *this, tmp );
    }
    else {
-      reset();
+      assign( *this, ~rhs );
+   }
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Assignment operator for different sparse matrices.
+//
+// \param rhs Sparse matrix to be assigned.
+// \return Reference to the assigned submatrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// The sparse submatrix is initialized as a copy of the given sparse matrix. In case the current
+// sizes of the two matrices don't match, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the sparse matrix
+template< typename MT2   // Type of the right-hand side sparse matrix
+        , bool SO >      // Storage order of the right-hand side sparse matrix
+inline SparseSubmatrix<MT,true>& SparseSubmatrix<MT,true>::operator=( const SparseMatrix<MT2,SO>& rhs )
+{
+   using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
+      throw std::invalid_argument( "Matrix sizes do not match" );
+
+   reset();
+
+   if( IsRowMajorMatrix<MT2>::value ) {
+      const typename MT2::OppositeType tmp( ~rhs );
+      assign( *this, tmp );
+   }
+   else if( RequiresEvaluation<MT2>::value || (~rhs).canAlias( &matrix_ ) ) {
+      const typename MT2::ResultType tmp( ~rhs );
+      assign( *this, tmp );
+   }
+   else {
       assign( *this, ~rhs );
    }
 
@@ -2931,7 +3002,7 @@ inline size_t SparseSubmatrix<MT,true>::columns() const
 template< typename MT >  // Type of the sparse matrix
 inline size_t SparseSubmatrix<MT,true>::capacity() const
 {
-   return rows() * columns();
+   return nonZeros() + matrix_.capacity() - matrix_.nonZeros();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3151,9 +3222,10 @@ template< typename MT >  // Type of the sparse matrix
 void SparseSubmatrix<MT,true>::reserve( size_t j, size_t nonzeros )
 {
    const size_t current( capacity( j ) );
+   const size_t index  ( column_ + j );
 
    if( nonzeros > current ) {
-      matrix_.reserve( column_+j, matrix_.capacity( column_+j ) + nonzeros - current );
+      matrix_.reserve( index, matrix_.capacity( index ) + nonzeros - current );
    }
 }
 /*! \endcond */
@@ -3416,8 +3488,12 @@ inline typename SparseSubmatrix<MT,true>::ConstIterator
 template< typename MT >  // Type of the sparse matrix
 inline void SparseSubmatrix<MT,true>::append( size_t i, size_t j, const ElementType& value, bool check )
 {
-   if( !check || !isDefault( value ) )
+   if( row_ + m_ == matrix_.rows() ) {
+      matrix_.append( row_ + i, column_ + j, value, check );
+   }
+   else if( !check || !isDefault( value ) ) {
       matrix_.insert( row_ + i, column_ + j, value );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3440,7 +3516,7 @@ inline void SparseSubmatrix<MT,true>::append( size_t i, size_t j, const ElementT
 template< typename MT >  // Type of the sparse matrix
 inline void SparseSubmatrix<MT,true>::finalize( size_t j )
 {
-   return;
+   matrix_.trim( column_ + j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3516,10 +3592,13 @@ inline void SparseSubmatrix<MT,true>::assign( const DenseMatrix<MT2,SO>& rhs )
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
+   reserve( 0UL, rows() * columns() );
+
    for( size_t j=0UL; j<columns(); ++j ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          append( i, j, (~rhs)(i,j), true );
       }
+      finalize( j );
    }
 }
 /*! \endcond */
@@ -3545,39 +3624,13 @@ inline void SparseSubmatrix<MT,true>::assign( const SparseMatrix<MT2,true>& rhs 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
+   reserve( 0UL, (~rhs).nonZeros() );
+
    for( size_t j=0UL; j<(~rhs).columns(); ++j ) {
       for( typename MT2::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
          append( element->index(), j, element->value(), true );
       }
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the assignment of a row-major sparse matrix.
-//
-// \param rhs The right-hand side sparse matrix to be assigned.
-// \return void
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT >   // Type of the sparse matrix
-template< typename MT2 >  // Type of the right-hand side sparse matrix
-inline void SparseSubmatrix<MT,true>::assign( const SparseMatrix<MT2,false>& rhs )
-{
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
-
-   for( size_t i=0UL; i<(~rhs).rows(); ++i ) {
-      for( typename MT2::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
-         append( i, element->index(), element->value(), true );
-      }
+      finalize( j );
    }
 }
 /*! \endcond */
