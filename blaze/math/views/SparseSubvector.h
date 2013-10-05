@@ -59,6 +59,7 @@
 #include <blaze/math/typetraits/IsVecVecAddExpr.h>
 #include <blaze/math/typetraits/IsVecVecMultExpr.h>
 #include <blaze/math/typetraits/IsVecVecSubExpr.h>
+#include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
@@ -628,7 +629,8 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
    /*!\name Assignment operators */
    //@{
                             inline SparseSubvector& operator= ( const SparseSubvector& rhs );
-   template< typename VT2 > inline SparseSubvector& operator= ( const Vector<VT2,TF>& rhs );
+   template< typename VT2 > inline SparseSubvector& operator= ( const DenseVector<VT2,TF>&  rhs );
+   template< typename VT2 > inline SparseSubvector& operator= ( const SparseVector<VT2,TF>& rhs );
    template< typename VT2 > inline SparseSubvector& operator+=( const Vector<VT2,TF>& rhs );
    template< typename VT2 > inline SparseSubvector& operator-=( const Vector<VT2,TF>& rhs );
    template< typename VT2 > inline SparseSubvector& operator*=( const Vector<VT2,TF>& rhs );
@@ -914,13 +916,13 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator=( const SparseSu
    if( size() != rhs.size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
+   reset();
+
    if( rhs.canAlias( &vector_ ) ) {
       const ResultType tmp( rhs );
-      reset();
       assign( *this, tmp );
    }
    else {
-      reset();
       assign( *this, rhs );
    }
 
@@ -930,9 +932,9 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator=( const SparseSu
 
 
 //*************************************************************************************************
-/*!\brief Assignment operator for different vectors.
+/*!\brief Assignment operator for dense vectors.
 //
-// \param rhs Vector to be assigned.
+// \param rhs Dense vector to be assigned.
 // \return Reference to the assigned subvector.
 // \exception std::invalid_argument Vector sizes do not match.
 //
@@ -941,24 +943,64 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator=( const SparseSu
 */
 template< typename VT     // Type of the sparse vector
         , bool TF >       // Transpose flag
-template< typename VT2 >  // Type of the right-hand side vector
-inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator=( const Vector<VT2,TF>& rhs )
+template< typename VT2 >  // Type of the right-hand side dense vector
+inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator=( const DenseVector<VT2,TF>& rhs )
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT::ResultType, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( typename VT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
 
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   if( (~rhs).canAlias( &vector_ ) ) {
+   reset();
+
+   if( RequiresEvaluation<VT2>::value || (~rhs).canAlias( &vector_ ) ) {
       const typename VT2::ResultType tmp( ~rhs );
-      reset();
       assign( *this, tmp );
    }
    else {
-      reset();
+      assign( *this, ~rhs );
+   }
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Assignment operator for different sparse vectors.
+//
+// \param rhs Sparse vector to be assigned.
+// \return Reference to the assigned subvector.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename VT     // Type of the sparse vector
+        , bool TF >       // Transpose flag
+template< typename VT2 >  // Type of the right-hand side sparse vector
+inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator=( const SparseVector<VT2,TF>& rhs )
+{
+   using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( typename VT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
+
+   if( size() != (~rhs).size() )
+      throw std::invalid_argument( "Vector sizes do not match" );
+
+   reset();
+
+   if( RequiresEvaluation<VT2>::value || (~rhs).canAlias( &vector_ ) ) {
+      const typename VT2::ResultType tmp( ~rhs );
+      assign( *this, tmp );
+   }
+   else {
       assign( *this, ~rhs );
    }
 
@@ -1484,7 +1526,9 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline void SparseSubvector<VT,TF>::append( size_t index, const ElementType& value, bool check )
 {
-   if( !check || !isDefault( value ) )
+   if( offset_ + size_ == vector_.size() )
+      vector_.append( offset_ + index, value, check );
+   else if( !check || !isDefault( value ) )
       vector_.insert( offset_ + index, value );
 }
 //*************************************************************************************************
@@ -1555,6 +1599,9 @@ template< typename VT2 >  // Type of the right-hand side dense vector
 inline void SparseSubvector<VT,TF>::assign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
+
+   reserve( (~rhs).size() );
 
    for( size_t i=0UL; i<size(); ++i ) {
       append( i, (~rhs)[i], true );
@@ -1580,9 +1627,12 @@ template< typename VT2 >  // Type of the right-hand side sparse vector
 inline void SparseSubvector<VT,TF>::assign( const SparseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
+
+   reserve( (~rhs).nonZeros() );
 
    for( typename VT2::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
-      append( element->index(), element->value() );
+      append( element->index(), element->value(), true );
    }
 }
 //*************************************************************************************************
