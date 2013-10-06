@@ -947,13 +947,13 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator=( const SparseSu
    if( size() != rhs.size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   reset();
-
    if( rhs.canAlias( &vector_ ) ) {
       const ResultType tmp( rhs );
+      reset();
       assign( *this, tmp );
    }
    else {
+      reset();
       assign( *this, rhs );
    }
 
@@ -986,13 +986,13 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator=( const DenseVec
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   reset();
-
    if( RequiresEvaluation<VT2>::value || (~rhs).canAlias( &vector_ ) ) {
       const typename VT2::ResultType tmp( ~rhs );
+      reset();
       assign( *this, tmp );
    }
    else {
+      reset();
       assign( *this, ~rhs );
    }
 
@@ -1025,13 +1025,13 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator=( const SparseVe
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   reset();
-
    if( RequiresEvaluation<VT2>::value || (~rhs).canAlias( &vector_ ) ) {
       const typename VT2::ResultType tmp( ~rhs );
+      reset();
       assign( *this, tmp );
    }
    else {
+      reset();
       assign( *this, ~rhs );
    }
 
