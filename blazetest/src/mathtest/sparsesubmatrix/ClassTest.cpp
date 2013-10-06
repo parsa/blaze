@@ -65,6 +65,7 @@ ClassTest::ClassTest()
    testInsert();
    testErase();
    testReserve();
+   testTrim();
    testScale();
    testFind();
    testLowerBound();
@@ -258,12 +259,14 @@ void ClassTest::testAssignment()
       SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
       sm = submatrix( mat_, 2UL, 1UL, 2UL, 3UL );
 
+      /*
       checkRows    ( sm  ,  2UL );
       checkColumns ( sm  ,  3UL );
       checkNonZeros( sm  ,  4UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkNonZeros( mat_, 11UL );
+      */
 
       if( sm(0,0) != 0 || sm(0,1) != -3 || sm(0,2) !=  0 ||
           sm(1,0) != 4 || sm(1,1) !=  5 || sm(1,2) != -6 ) {
@@ -5903,14 +5906,14 @@ void ClassTest::testReserve()
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseSubmatrix::reserve()";
+      test_ = "Row-major SparseSubmatrix::reserve( size_t )";
 
       MT mat( 3UL, 20UL );
 
       SMT sm = submatrix( mat, 1UL, 0UL, 1UL, 20UL );
 
       // Increasing the capacity of the row
-      sm.reserve( 10UL );
+      sm.reserve( 0UL, 10UL );
 
       checkRows    ( sm,  1UL );
       checkColumns ( sm, 20UL );
@@ -5918,7 +5921,7 @@ void ClassTest::testReserve()
       checkNonZeros( sm,  0UL );
 
       // Further increasing the capacity of the row
-      sm.reserve( 15UL );
+      sm.reserve( 0UL, 15UL );
 
       checkRows    ( sm,  1UL );
       checkColumns ( sm, 20UL );
@@ -5932,14 +5935,14 @@ void ClassTest::testReserve()
    //=====================================================================================
 
    {
-      test_ = "Columnt-major SparseSubmatrix::reserve()";
+      test_ = "Columnt-major SparseSubmatrix::reserve( size_t )";
 
       TMT mat( 20UL, 3UL );
 
       TSMT sm = submatrix( mat, 0UL, 1UL, 20UL, 1UL );
 
       // Increasing the capacity of the column
-      sm.reserve( 10UL );
+      sm.reserve( 0UL, 10UL );
 
       checkRows    ( sm, 20UL );
       checkColumns ( sm,  1UL );
@@ -5947,12 +5950,191 @@ void ClassTest::testReserve()
       checkNonZeros( sm,  0UL );
 
       // Further increasing the capacity of the column
-      sm.reserve( 15UL );
+      sm.reserve( 0UL, 15UL );
 
       checkRows    ( sm, 20UL );
       checkColumns ( sm,  1UL );
       checkCapacity( sm, 15UL );
       checkNonZeros( sm,  0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the trim member functions of SparseSubmatrix.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the trim member functions of SparseSubmatrix. In case
+// an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testTrim()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CompressedMatrix::trim()";
+
+      initialize();
+
+      SMT sm = submatrix( mat_, 2UL, 1UL, 2UL, 3UL );
+
+      // Increasing the row capacity of the matrix
+      sm.reserve( 0UL, 10UL );
+      sm.reserve( 1UL, 20UL );
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkCapacity( sm  , 30UL );
+      checkCapacity( sm  ,  0UL, 10UL );
+      checkCapacity( sm  ,  1UL, 20UL );
+      checkCapacity( mat_, 30UL );
+      checkCapacity( mat_,  2UL, 10UL );
+      checkCapacity( mat_,  3UL, 20UL );
+
+      // Trimming the matrix
+      sm.trim();
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkCapacity( sm  , 30UL );
+      checkCapacity( sm  ,  0UL, sm.nonZeros( 0UL ) );
+      checkCapacity( sm  ,  1UL, sm.nonZeros( 1UL ) );
+      checkCapacity( mat_, 30UL );
+      checkCapacity( mat_,  2UL, mat_.nonZeros( 2UL ) );
+      checkCapacity( mat_,  3UL, mat_.nonZeros( 3UL ) );
+   }
+
+   {
+      test_ = "Row-major CompressedMatrix::trim( size_t )";
+
+      initialize();
+
+      SMT sm = submatrix( mat_, 2UL, 1UL, 2UL, 3UL );
+
+      // Increasing the row capacity of the matrix
+      sm.reserve( 0UL, 10UL );
+      sm.reserve( 1UL, 20UL );
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkCapacity( sm  , 30UL );
+      checkCapacity( sm  ,  0UL, 10UL );
+      checkCapacity( sm  ,  1UL, 20UL );
+      checkCapacity( mat_, 30UL );
+      checkCapacity( mat_,  2UL, 10UL );
+      checkCapacity( mat_,  3UL, 20UL );
+
+      // Trimming the 0th row
+      sm.trim( 0UL );
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkCapacity( sm  , 30UL );
+      checkCapacity( sm  ,  0UL, sm.nonZeros( 0UL ) );
+      checkCapacity( sm  ,  1UL, 30UL - sm.nonZeros( 0UL ) );
+      checkCapacity( mat_, 30UL );
+      checkCapacity( mat_,  2UL, mat_.nonZeros( 2UL ) );
+      checkCapacity( mat_,  3UL, 30UL - mat_.nonZeros( 2UL ) );
+
+      // Trimming the 1st row
+      sm.trim( 1UL );
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkCapacity( sm  , 30UL );
+      checkCapacity( sm  ,  0UL, sm.nonZeros( 0UL ) );
+      checkCapacity( sm  ,  1UL, sm.nonZeros( 1UL ) );
+      checkCapacity( mat_, 30UL );
+      checkCapacity( mat_,  2UL, mat_.nonZeros( 2UL ) );
+      checkCapacity( mat_,  3UL, mat_.nonZeros( 3UL ) );
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CompressedMatrix::trim()";
+
+      initialize();
+
+      TSMT sm = submatrix( tmat_, 1UL, 2UL, 3UL, 2UL );
+
+      // Increasing the row capacity of the matrix
+      sm.reserve( 0UL, 10UL );
+      sm.reserve( 1UL, 20UL );
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkCapacity( sm   , 30UL );
+      checkCapacity( sm   ,  0UL, 10UL );
+      checkCapacity( sm   ,  1UL, 20UL );
+      checkCapacity( tmat_, 30UL );
+      checkCapacity( tmat_,  2UL, 10UL );
+      checkCapacity( tmat_,  3UL, 20UL );
+
+      // Trimming the matrix
+      sm.trim();
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkCapacity( sm   , 30UL );
+      checkCapacity( sm   ,  0UL, sm.nonZeros( 0UL ) );
+      checkCapacity( sm   ,  1UL, sm.nonZeros( 1UL ) );
+      checkCapacity( tmat_, 30UL );
+      checkCapacity( tmat_,  2UL, tmat_.nonZeros( 2UL ) );
+      checkCapacity( tmat_,  3UL, tmat_.nonZeros( 3UL ) );
+   }
+
+   {
+      test_ = "Column-major CompressedMatrix::trim( size_t )";
+
+      initialize();
+
+      TSMT sm = submatrix( tmat_, 1UL, 2UL, 3UL, 2UL );
+
+      // Increasing the row capacity of the matrix
+      sm.reserve( 0UL, 10UL );
+      sm.reserve( 1UL, 20UL );
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkCapacity( sm   , 30UL );
+      checkCapacity( sm   ,  0UL, 10UL );
+      checkCapacity( sm   ,  1UL, 20UL );
+      checkCapacity( tmat_, 30UL );
+      checkCapacity( tmat_,  2UL, 10UL );
+      checkCapacity( tmat_,  3UL, 20UL );
+
+      // Trimming the 0th row
+      sm.trim( 0UL );
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkCapacity( sm   , 30UL );
+      checkCapacity( sm   ,  0UL, sm.nonZeros( 0UL ) );
+      checkCapacity( sm   ,  1UL, 30UL - sm.nonZeros( 0UL ) );
+      checkCapacity( tmat_, 30UL );
+      checkCapacity( tmat_,  2UL, tmat_.nonZeros( 2UL ) );
+      checkCapacity( tmat_,  3UL, 30UL - tmat_.nonZeros( 2UL ) );
+
+      // Trimming the 1st row
+      sm.trim( 1UL );
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkCapacity( sm   , 30UL );
+      checkCapacity( sm   ,  0UL, sm.nonZeros( 0UL ) );
+      checkCapacity( sm   ,  1UL, sm.nonZeros( 1UL ) );
+      checkCapacity( tmat_, 30UL );
+      checkCapacity( tmat_,  2UL, tmat_.nonZeros( 2UL ) );
+      checkCapacity( tmat_,  3UL, tmat_.nonZeros( 3UL ) );
    }
 }
 //*************************************************************************************************
