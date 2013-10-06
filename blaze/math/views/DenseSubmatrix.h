@@ -3359,7 +3359,7 @@ inline typename EnableIf< IsMatTransExpr<MT>, typename SubmatrixExprTrait<MT>::T
 template< typename MT, bool SO >
 struct SubmatrixTrait< DenseSubmatrix<MT,SO> >
 {
-   typedef typename SubvectorTrait< typename DenseSubmatrix<MT,SO>::ResultType >::Type  Type;
+   typedef typename SubmatrixTrait< typename DenseSubmatrix<MT,SO>::ResultType >::Type  Type;
 };
 /*! \endcond */
 //*************************************************************************************************

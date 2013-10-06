@@ -4377,7 +4377,7 @@ inline typename EnableIf< IsMatTransExpr<MT>, typename SubmatrixExprTrait<MT>::T
 template< typename MT, bool SO >
 struct SubmatrixTrait< SparseSubmatrix<MT,SO> >
 {
-   typedef typename SubvectorTrait< typename SparseSubmatrix<MT,SO>::ResultType >::Type  Type;
+   typedef typename SubmatrixTrait< typename SparseSubmatrix<MT,SO>::ResultType >::Type  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
