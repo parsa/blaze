@@ -56,6 +56,7 @@
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsVecTVecMultExpr.h>
+#include <blaze/system/CacheSize.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/DisableIf.h>
