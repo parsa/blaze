@@ -678,12 +678,14 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
                               inline size_t           nonZeros( size_t i ) const;
                               inline void             reset();
                               inline void             reset( size_t i );
-                                     Iterator         insert ( size_t i, size_t j, const ElementType& value );
-                              inline void             erase  ( size_t i, size_t j );
-                              inline Iterator         erase  ( size_t i, Iterator pos );
-                              inline Iterator         erase  ( size_t i, Iterator first, Iterator last );
+                                     Iterator         insert( size_t i, size_t j, const ElementType& value );
+                              inline void             erase( size_t i, size_t j );
+                              inline Iterator         erase( size_t i, Iterator pos );
+                              inline Iterator         erase( size_t i, Iterator first, Iterator last );
                               inline void             reserve( size_t nonzeros );
                                      void             reserve( size_t i, size_t nonzeros );
+                              inline void             trim();
+                              inline void             trim( size_t i );
    template< typename Other > inline SparseSubmatrix& scale( Other scalar );
    //@}
    //**********************************************************************************************
@@ -1527,6 +1529,47 @@ void SparseSubmatrix<MT,SO>::reserve( size_t i, size_t nonzeros )
    if( nonzeros > current ) {
       matrix_.reserve( index, matrix_.capacity( index ) + nonzeros - current );
    }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Removing all excessive capacity from all rows/columns.
+//
+// \return void
+//
+// The trim() function can be used to reverse the effect of all row/column-specific reserve()
+// calls. The function removes all excessive capacity from all rows (in case of a rowMajor
+// matrix) or columns (in case of a columnMajor matrix). Note that this function does not
+// remove the overall capacity but only reduces the capacity per row/column.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+void SparseSubmatrix<MT,SO>::trim()
+{
+   for( size_t i=0UL; i<rows(); ++i )
+      trim( i );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Removing all excessive capacity of a specific row/column of the sparse matrix.
+//
+// \param i The index of the row/column to be trimmed (\f$[0..M-1]\f$ or \f$[0..N-1]\f$).
+// \return void
+//
+// This function can be used to reverse the effect of a row/column-specific reserve() call.
+// It removes all excessive capacity from the specified row (in case of a rowMajor matrix)
+// or column (in case of a columnMajor matrix). The excessive capacity is assigned to the
+// subsequent row/column.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+void SparseSubmatrix<MT,SO>::trim( size_t i )
+{
+   BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
+   matrix_.trim( row_ + i );
 }
 //*************************************************************************************************
 
@@ -2478,12 +2521,14 @@ class SparseSubmatrix<MT,true> : public SparseMatrix< SparseSubmatrix<MT,true>, 
                               inline size_t           nonZeros( size_t i ) const;
                               inline void             reset();
                               inline void             reset( size_t i );
-                                     Iterator         insert ( size_t i, size_t j, const ElementType& value );
-                              inline void             erase  ( size_t i, size_t j );
-                              inline Iterator         erase  ( size_t i, Iterator pos );
-                              inline Iterator         erase  ( size_t i, Iterator first, Iterator last );
+                                     Iterator         insert( size_t i, size_t j, const ElementType& value );
+                              inline void             erase( size_t i, size_t j );
+                              inline Iterator         erase( size_t i, Iterator pos );
+                              inline Iterator         erase( size_t i, Iterator first, Iterator last );
                               inline void             reserve( size_t nonzeros );
                                      void             reserve( size_t i, size_t nonzeros );
+                              inline void             trim();
+                              inline void             trim( size_t j );
    template< typename Other > inline SparseSubmatrix& scale( Other scalar );
    //@}
    //**********************************************************************************************
@@ -3303,6 +3348,47 @@ void SparseSubmatrix<MT,true>::reserve( size_t j, size_t nonzeros )
    if( nonzeros > current ) {
       matrix_.reserve( index, matrix_.capacity( index ) + nonzeros - current );
    }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removing all excessive capacity from all columns.
+//
+// \return void
+//
+// The trim() function can be used to reverse the effect of all column-specific reserve() calls
+// It removes all excessive capacity from all columns. Note that this function does not remove
+// the overall capacity but only reduces the capacity per column.
+*/
+template< typename MT >  // Type of the sparse matrix
+void SparseSubmatrix<MT,true>::trim()
+{
+   for( size_t j=0UL; j<columns(); ++j )
+      trim( j );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removing all excessive capacity of a specific column of the sparse matrix.
+//
+// \param j The index of the column to be trimmed (\f$[0..N-1]\f$).
+// \return void
+//
+// This function can be used to reverse the effect of a column-specific reserve() call. It
+// removes all excessive capacity from the specified column. The excessive capacity is assigned
+// to the subsequent column.
+*/
+template< typename MT >  // Type of the sparse matrix
+void SparseSubmatrix<MT,true>::trim( size_t j )
+{
+   BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
+   matrix_.trim( column_ + j );
 }
 /*! \endcond */
 //*************************************************************************************************
