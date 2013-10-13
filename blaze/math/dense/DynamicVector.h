@@ -28,8 +28,6 @@
 //*************************************************************************************************
 
 #include <algorithm>
-#include <fstream>
-#include <ostream>
 #include <stdexcept>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/Forward.h>
@@ -248,14 +246,6 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
                               inline void           reserve( size_t n );
    template< typename Other > inline DynamicVector& scale( Other scalar );
                               inline void           swap( DynamicVector& v ) /* throw() */;
-   //@}
-   //**********************************************************************************************
-
-   //**Read/Write functions************************************************************************
-   /*!\name Read/Write functions */
-   //@{
-   void read ( const char* file );
-   void write( const char* file, std::streamsize prec=6 ) const;
    //@}
    //**********************************************************************************************
 
@@ -1241,107 +1231,6 @@ inline size_t DynamicVector<Type,TF>::adjustCapacity( size_t minCapacity ) const
    if( IsNumeric<Type>::value )
       return minCapacity + ( IT::size - ( minCapacity % IT::size ) ) % IT::size;
    else return minCapacity;
-}
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  READ/WRITE FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Reading the vector from a file.
-//
-// \param file The name of the input file.
-// \return void
-// \exception std::runtime_error Input error.
-//
-// This function reads a vector from the specified file \a file. The file has to contain the
-// vector data in the following format:
-
-   \code
-   #size
-   v[0]
-   v[1]
-   v[2]
-   ...
-   \endcode
-
-// where \f$ v[i], i \in [0..N-1], \f$ specifies the vector elements. In case the output file
-// could not be opened or an input error occured, a \a std::runtime_error is thrown.
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-void DynamicVector<Type,TF>::read( const char* file )
-{
-   std::ifstream in( file, std::ifstream::in );
-   if( !in.is_open() ) {
-      throw std::runtime_error( "File could not be opened!" );
-   }
-
-   size_t vsize(0UL);
-   if( !(in >> vsize) || vsize == 0UL ) {
-      throw std::runtime_error( "Vector size could not be extracted!" );
-   }
-
-   DynamicVector tmp( vsize );
-
-   for( size_t i=0UL; i<vsize; ++i ) {
-      if( !(in >> tmp.v_[i]) ) {
-         throw std::runtime_error( "Error during vector extraction!" );
-      }
-   }
-
-   swap( tmp );
-
-   in.close();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Writing the vector to a file.
-//
-// \param file The name of the output file.
-// \param prec The number of non-zero digits displayed in the output file.
-// \return void
-// \exception std::runtime_error Output error.
-//
-// This function writes the vector to the specified file \a file using the following format:
-
-   \code
-   #size
-   v[0]
-   v[1]
-   v[2]
-   ...
-   \endcode
-
-// where \f$ v[i], i \in [0..N-1], \f$ specifies the vector elements. In case the output file
-// could not be opened, a \a std::runtime_error is thrown.
-//
-// \b Note: All previous data is replaced by the vector data!
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-void DynamicVector<Type,TF>::write( const char* file, std::streamsize prec ) const
-{
-   std::ofstream out( file, std::ofstream::out | std::ostream::trunc );
-   if( !out.is_open() ) {
-      throw std::runtime_error( "File could not be opened!" );
-   }
-
-   out << size_ << "\n";
-
-   out.precision( prec );
-   for( size_t i=0UL; i<size_; ++i )
-      out << v_[i] << "\n";
-
-   out.close();
 }
 //*************************************************************************************************
 
