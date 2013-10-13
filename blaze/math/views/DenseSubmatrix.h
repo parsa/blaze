@@ -39,6 +39,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/Forward.h>
+#include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -70,10 +71,12 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/SelectType.h>
+#include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -284,6 +287,9 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
    typedef typename SelectType< IsExpression<MT>::value, MT, MT& >::Type  Operand;
+
+   //! Intrinsic trait for the matrix element type.
+   typedef IntrinsicTrait<typename MT::ElementType>  IT;
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -304,6 +310,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
    typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename MT::ElementType            ElementType;    //!< Type of the submatrix elements.
+   typedef typename IT::Type                   IntrinsicType;  //!< Intrinsic type of the subvector elements.
    typedef typename MT::ReturnType             ReturnType;     //!< Return type for expression template evaluations
    typedef const DenseSubmatrix&               CompositeType;  //!< Data type for composite expression templates.
 
@@ -328,7 +335,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = 0 };
+   enum { vectorizable = MT::vectorizable };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -395,23 +402,90 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
    //@}
    //**********************************************************************************************
 
+ private:
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   template< typename MT2 >
+   struct VectorizedAssign {
+      enum { value = vectorizable && MT2::vectorizable &&
+                     IsSame<ElementType,typename MT2::ElementType>::value };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   template< typename MT2 >
+   struct VectorizedAddAssign {
+      enum { value = vectorizable && MT2::vectorizable &&
+                     IsSame<ElementType,typename MT2::ElementType>::value &&
+                     IntrinsicTrait<ElementType>::addition };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   template< typename MT2 >
+   struct VectorizedSubAssign {
+      enum { value = vectorizable && MT2::vectorizable &&
+                     IsSame<ElementType,typename MT2::ElementType>::value &&
+                     IntrinsicTrait<ElementType>::subtraction };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+ public:
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
-   template< typename MT2 >   inline void assign   ( const DenseMatrix<MT2,SO>&   rhs );
-   template< typename MT2 >   inline void assign   ( const DenseMatrix<MT2,!SO>&  rhs );
-   template< typename MT2 >   inline void assign   ( const SparseMatrix<MT2,SO>&  rhs );
-   template< typename MT2 >   inline void assign   ( const SparseMatrix<MT2,!SO>& rhs );
-   template< typename MT2 >   inline void addAssign( const DenseMatrix<MT2,SO>&   rhs );
-   template< typename MT2 >   inline void addAssign( const DenseMatrix<MT2,!SO>&  rhs );
-   template< typename MT2 >   inline void addAssign( const SparseMatrix<MT2,SO>&  rhs );
-   template< typename MT2 >   inline void addAssign( const SparseMatrix<MT2,!SO>& rhs );
-   template< typename MT2 >   inline void subAssign( const DenseMatrix<MT2,SO>&   rhs );
-   template< typename MT2 >   inline void subAssign( const DenseMatrix<MT2,!SO>&  rhs );
-   template< typename MT2 >   inline void subAssign( const SparseMatrix<MT2,SO>&  rhs );
-   template< typename MT2 >   inline void subAssign( const SparseMatrix<MT2,!SO>& rhs );
+
+   inline IntrinsicType get   ( size_t i, size_t j ) const;
+   inline IntrinsicType loadu ( size_t i, size_t j ) const;
+   inline void          store ( size_t i, size_t j, const IntrinsicType& value );
+   inline void          storeu( size_t i, size_t j, const IntrinsicType& value );
+   inline void          stream( size_t i, size_t j, const IntrinsicType& value );
+
+   template< typename MT2 >
+   inline typename DisableIf< VectorizedAssign<MT2> >::Type
+      assign( const DenseMatrix<MT2,SO>& rhs );
+
+   template< typename MT2 >
+   inline typename EnableIf< VectorizedAssign<MT2> >::Type
+      assign( const DenseMatrix<MT2,SO>& rhs );
+
+   template< typename MT2 > inline void assign( const DenseMatrix<MT2,!SO>&  rhs );
+   template< typename MT2 > inline void assign( const SparseMatrix<MT2,SO>&  rhs );
+   template< typename MT2 > inline void assign( const SparseMatrix<MT2,!SO>& rhs );
+
+   template< typename MT2 >
+   inline typename DisableIf< VectorizedAddAssign<MT2> >::Type
+      addAssign( const DenseMatrix<MT2,SO>& rhs );
+
+   template< typename MT2 >
+   inline typename EnableIf< VectorizedAddAssign<MT2> >::Type
+      addAssign( const DenseMatrix<MT2,SO>& rhs );
+
+   template< typename MT2 > inline void addAssign( const DenseMatrix<MT2,!SO>&  rhs );
+   template< typename MT2 > inline void addAssign( const SparseMatrix<MT2,SO>&  rhs );
+   template< typename MT2 > inline void addAssign( const SparseMatrix<MT2,!SO>& rhs );
+
+   template< typename MT2 >
+   inline typename DisableIf< VectorizedSubAssign<MT2> >::Type
+      subAssign( const DenseMatrix<MT2,SO>& rhs );
+
+   template< typename MT2 >
+   inline typename EnableIf< VectorizedSubAssign<MT2> >::Type
+      subAssign( const DenseMatrix<MT2,SO>& rhs );
+
+   template< typename MT2 > inline void subAssign( const DenseMatrix<MT2,!SO>&  rhs );
+   template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,SO>&  rhs );
+   template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,!SO>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -419,11 +493,27 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   Operand      matrix_;  //!< The dense matrix containing the submatrix.
-   const size_t row_;     //!< The first row of the submatrix.
-   const size_t column_;  //!< The first column of the submatrix.
-   const size_t m_;       //!< The number of rows of the submatrix.
-   const size_t n_;       //!< The number of columns of the submatrix.
+   Operand      matrix_;   //!< The dense matrix containing the submatrix.
+   const size_t row_;      //!< The first row of the submatrix.
+   const size_t column_;   //!< The first column of the submatrix.
+   const size_t m_;        //!< The number of rows of the submatrix.
+   const size_t n_;        //!< The number of columns of the submatrix.
+   const size_t rest_;     //!< The number of remaining elements in an unaligned intrinsic operation.
+   const size_t final_;    //!< The final index for unaligned intrinsic operations.
+                           /*!< In case the submatrix is not fully aligned and the submatrix is
+                                involved in a vectorized operation, the final index indicates at
+                                which index a special treatment for the remaining elements is
+                                required. */
+   const bool   aligned_;  //!< Memory alignment flag.
+                           /*!< The alignment flag indicates whether the submatrix is fully aligned.
+                                In case the submatrix is fully aligned, no special handling has to
+                                be used for the last elements of the submatrix in a vectorized
+                                operation. In order to be aligned, the following conditions must
+                                hold for the submatrix:
+                                 - The first element of each row/column must be aligned
+                                 - The submatrix must be at the end of the given matrix or
+                                 - The number of rows/columns of the submatrix must be a multiple
+                                   of the number of values per intrinsic element. */
    //@}
    //**********************************************************************************************
 
@@ -468,11 +558,15 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline DenseSubmatrix<MT,SO>::DenseSubmatrix( MT& matrix, size_t row, size_t column, size_t m, size_t n )
-   : matrix_( matrix )  // The dense matrix containing the submatrix
-   , row_   ( row    )  // The first row of the submatrix
-   , column_( column )  // The first column of the submatrix
-   , m_     ( m      )  // The number of rows of the submatrix
-   , n_     ( n      )  // The number of columns of the submatrix
+   : matrix_ ( matrix       )  // The dense matrix containing the submatrix
+   , row_    ( row          )  // The first row of the submatrix
+   , column_ ( column       )  // The first column of the submatrix
+   , m_      ( m            )  // The number of rows of the submatrix
+   , n_      ( n            )  // The number of columns of the submatrix
+   , rest_   ( n % IT::size )  // The number of remaining elements in an unaligned intrinsic operation
+   , final_  ( n - rest_    )  // The final index for unaligned intrinsic operations
+   , aligned_( ( column % IT::size == 0UL ) &&
+               ( column + n == matrix.columns() || n % IT::size == 0UL ) )
 {
    if( ( row + m > matrix.rows() ) || ( column + n > matrix.columns() ) )
       throw std::invalid_argument( "Invalid submatrix specification" );
@@ -1198,6 +1292,162 @@ inline bool DenseSubmatrix<MT,SO>::isAliased( const Other* alias ) const
 
 
 //*************************************************************************************************
+/*!\brief Aligned load of an intrinsic element of the submatrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \return The loaded intrinsic element.
+//
+// This function performs an aligned load of a specific intrinsic element of the dense
+// submatrix. The row index must be smaller than the number of rows and the column index
+// must be smaller than the number of columns. Additionally, the column index (in case of
+// a row-major matrix) or the row index (in case of a column-major matrix) must be a multiple
+// of the number of values inside the intrinsic element. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline typename DenseSubmatrix<MT,SO>::IntrinsicType
+   DenseSubmatrix<MT,SO>::get( size_t i, size_t j ) const
+{
+   return loadu( i, j );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Unaligned load of an intrinsic element of the submatrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \return The loaded intrinsic element.
+//
+// This function performs an unaligned load of a specific intrinsic element of the dense
+// submatrix. The row index must be smaller than the number of rows and the column index
+// must be smaller than the number of columns. Additionally, the column index (in case of
+// a row-major matrix) or the row index (in case of a column-major matrix) must be a multiple
+// of the number of values inside the intrinsic element. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline typename DenseSubmatrix<MT,SO>::IntrinsicType
+   DenseSubmatrix<MT,SO>::loadu( size_t i, size_t j ) const
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
+
+   if( aligned_ || j != final_ ) {
+      return matrix_.loadu( row_+i, column_+j );
+   }
+   else {
+      IntrinsicType value;
+      for( size_t k=0UL; k<rest_; ++k )
+         value[k] = matrix_(row_+i,column_+j+k);
+      return value;
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Aligned store of an intrinsic element of the submatrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an aligned store of a specific intrinsic element of the dense submatrix.
+// The row index must be smaller than the number of rows and the column index must be smaller than
+// the number of columns. Additionally, the column index (in case of a row-major matrix) or the
+// row index (in case of a column-major matrix) must be a multiple of the number of values inside
+// the intrinsic element. This function must \b NOT be called explicitly! It is used internally
+// for the performance optimized evaluation of expression templates. Calling this function
+// explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline void DenseSubmatrix<MT,SO>::store( size_t i, size_t j, const IntrinsicType& value )
+{
+   storeu( i, j, value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Unaligned store of an intrinsic element of the submatrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an unaligned store of a specific intrinsic element of the dense
+// submatrix. The row index must be smaller than the number of rows and the column index must
+// be smaller than the number of columns. Additionally, the column index (in case of a row-major
+// matrix) or the row index (in case of a column-major matrix) must be a multiple of the number
+// of values inside the intrinsic element. This function must \b NOT be called explicitly! It
+// is used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline void DenseSubmatrix<MT,SO>::storeu( size_t i, size_t j, const IntrinsicType& value )
+{
+   using blaze::storeu;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
+
+   if( aligned_ || j != final_ ) {
+      matrix_.storeu( row_+i, column_+j, value );
+   }
+   else {
+      for( size_t k=0UL; k<rest_; ++k )
+         matrix_(row_+i,column_+j+k) = value[k];
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Aligned, non-temporal store of an intrinsic element of the submatrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an aligned, non-temporal store of a specific intrinsic element of
+// the dense submatrix. The row index must be smaller than the number of rows and the column
+// index must be smaller than the number of columns. Additionally, the column index (in case
+// of a row-major matrix) or the row index (in case of a column-major matrix) must be a multiple
+// of the number of values inside the intrinsic element. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline void DenseSubmatrix<MT,SO>::stream( size_t i, size_t j, const IntrinsicType& value )
+{
+   storeu( i, j, value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Default implementation of the assignment of a row-major dense matrix.
 //
 // \param rhs The right-hand side dense matrix to be assigned.
@@ -1211,7 +1461,8 @@ inline bool DenseSubmatrix<MT,SO>::isAliased( const Other* alias ) const
 template< typename MT     // Type of the dense matrix
         , bool SO >       // Storage order
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline void DenseSubmatrix<MT,SO>::assign( const DenseMatrix<MT2,SO>& rhs )
+inline typename DisableIf< typename DenseSubmatrix<MT,SO>::BLAZE_TEMPLATE VectorizedAssign<MT2> >::Type
+   DenseSubmatrix<MT,SO>::assign( const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -1226,6 +1477,55 @@ inline void DenseSubmatrix<MT,SO>::assign( const DenseMatrix<MT2,SO>& rhs )
       }
       if( jend < n_ ) {
          matrix_(row_+i,column_+jend) = (~rhs)(i,jend);
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Intrinsic optimized implementation of the assignment of a row-major dense matrix.
+//
+// \param rhs The right-hand side dense matrix to be assigned.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT     // Type of the dense matrix
+        , bool SO >       // Storage order
+template< typename MT2 >  // Type of the right-hand side dense matrix
+inline typename EnableIf< typename DenseSubmatrix<MT,SO>::BLAZE_TEMPLATE VectorizedAssign<MT2> >::Type
+   DenseSubmatrix<MT,SO>::assign( const DenseMatrix<MT2,SO>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   if( aligned_ && m_*n_ > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( &matrix_ ) )
+   {
+      for( size_t i=0UL; i<m_; ++i )
+         for( size_t j=0UL; j<n_; j+=IT::size )
+            matrix_.stream( row_+i, column_+j, (~rhs).get(i,j) );
+   }
+   else
+   {
+      const size_t jend( n_ & size_t(-IT::size*4) );
+      BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jend, "Invalid end calculation" );
+
+      for( size_t i=0UL; i<m_; ++i ) {
+         for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
+            matrix_.storeu( row_+i, column_+j             , (~rhs).get(i,j             ) );
+            matrix_.storeu( row_+i, column_+j+IT::size    , (~rhs).get(i,j+IT::size    ) );
+            matrix_.storeu( row_+i, column_+j+IT::size*2UL, (~rhs).get(i,j+IT::size*2UL) );
+            matrix_.storeu( row_+i, column_+j+IT::size*3UL, (~rhs).get(i,j+IT::size*3UL) );
+         }
+         for( size_t j=jend; j<n_; j+=IT::size ) {
+            storeu( i, j, (~rhs).get(i,j) );
+         }
       }
    }
 }
@@ -1334,7 +1634,8 @@ inline void DenseSubmatrix<MT,SO>::assign( const SparseMatrix<MT2,!SO>& rhs )
 template< typename MT     // Type of the dense matrix
         , bool SO >       // Storage order
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline void DenseSubmatrix<MT,SO>::addAssign( const DenseMatrix<MT2,SO>& rhs )
+inline typename DisableIf< typename DenseSubmatrix<MT,SO>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >::Type
+   DenseSubmatrix<MT,SO>::addAssign( const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -1349,6 +1650,46 @@ inline void DenseSubmatrix<MT,SO>::addAssign( const DenseMatrix<MT2,SO>& rhs )
       }
       if( jend < n_ ) {
          matrix_(row_+i,column_+jend) += (~rhs)(i,jend);
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Intrinsic optimized implementation of the addition assignment of a row-major dense matrix.
+//
+// \param rhs The right-hand side dense matrix to be added.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT     // Type of the dense matrix
+        , bool SO >       // Storage order
+template< typename MT2 >  // Type of the right-hand side dense matrix
+inline typename EnableIf< typename DenseSubmatrix<MT,SO>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >::Type
+   DenseSubmatrix<MT,SO>::addAssign( const DenseMatrix<MT2,SO>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   const size_t jend( n_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jend, "Invalid end calculation" );
+
+   for( size_t i=0UL; i<m_; ++i ) {
+      for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
+         matrix_.storeu( row_+i, column_+j             , get(i,j             ) + (~rhs).get(i,j             ) );
+         matrix_.storeu( row_+i, column_+j+IT::size    , get(i,j+IT::size    ) + (~rhs).get(i,j+IT::size    ) );
+         matrix_.storeu( row_+i, column_+j+IT::size*2UL, get(i,j+IT::size*2UL) + (~rhs).get(i,j+IT::size*2UL) );
+         matrix_.storeu( row_+i, column_+j+IT::size*3UL, get(i,j+IT::size*3UL) + (~rhs).get(i,j+IT::size*3UL) );
+      }
+      for( size_t j=jend; j<n_; j+=IT::size ) {
+         storeu( i, j, get(i,j) + (~rhs).get(i,j) );
       }
    }
 }
@@ -1457,7 +1798,8 @@ inline void DenseSubmatrix<MT,SO>::addAssign( const SparseMatrix<MT2,!SO>& rhs )
 template< typename MT     // Type of the dense matrix
         , bool SO >       // Storage order
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline void DenseSubmatrix<MT,SO>::subAssign( const DenseMatrix<MT2,SO>& rhs )
+inline typename DisableIf< typename DenseSubmatrix<MT,SO>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >::Type
+   DenseSubmatrix<MT,SO>::subAssign( const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -1472,6 +1814,46 @@ inline void DenseSubmatrix<MT,SO>::subAssign( const DenseMatrix<MT2,SO>& rhs )
       }
       if( jend < n_ ) {
          matrix_(row_+i,column_+jend) -= (~rhs)(i,jend);
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Intrinsic optimized implementation of the subtraction assignment of a row-major dense matrix.
+//
+// \param rhs The right-hand side dense matrix to be subtracted.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT     // Type of the dense matrix
+        , bool SO >       // Storage order
+template< typename MT2 >  // Type of the right-hand side dense matrix
+inline typename EnableIf< typename DenseSubmatrix<MT,SO>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >::Type
+   DenseSubmatrix<MT,SO>::subAssign( const DenseMatrix<MT2,SO>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   const size_t jend( n_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jend, "Invalid end calculation" );
+
+   for( size_t i=0UL; i<m_; ++i ) {
+      for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
+         matrix_.storeu( row_+i, column_+j             , get(i,j             ) - (~rhs).get(i,j             ) );
+         matrix_.storeu( row_+i, column_+j+IT::size    , get(i,j+IT::size    ) - (~rhs).get(i,j+IT::size    ) );
+         matrix_.storeu( row_+i, column_+j+IT::size*2UL, get(i,j+IT::size*2UL) - (~rhs).get(i,j+IT::size*2UL) );
+         matrix_.storeu( row_+i, column_+j+IT::size*3UL, get(i,j+IT::size*3UL) - (~rhs).get(i,j+IT::size*3UL) );
+      }
+      for( size_t j=jend; j<n_; j+=IT::size ) {
+         storeu( i, j, get(i,j) - (~rhs).get(i,j) );
       }
    }
 }
@@ -1594,6 +1976,9 @@ class DenseSubmatrix<MT,true> : public DenseMatrix< DenseSubmatrix<MT,true>, tru
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
    typedef typename SelectType< IsExpression<MT>::value, MT, MT& >::Type  Operand;
+
+   //! Intrinsic trait for the matrix element type.
+   typedef IntrinsicTrait<typename MT::ElementType>  IT;
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -1614,6 +1999,7 @@ class DenseSubmatrix<MT,true> : public DenseMatrix< DenseSubmatrix<MT,true>, tru
    typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename MT::ElementType            ElementType;    //!< Type of the submatrix elements.
+   typedef typename IT::Type                   IntrinsicType;  //!< Intrinsic type of the subvector elements.
    typedef typename MT::ReturnType             ReturnType;     //!< Return type for expression template evaluations
    typedef const DenseSubmatrix&               CompositeType;  //!< Data type for composite expression templates.
 
@@ -1638,7 +2024,7 @@ class DenseSubmatrix<MT,true> : public DenseMatrix< DenseSubmatrix<MT,true>, tru
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = 0 };
+   enum { vectorizable = MT::vectorizable };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -1705,23 +2091,90 @@ class DenseSubmatrix<MT,true> : public DenseMatrix< DenseSubmatrix<MT,true>, tru
    //@}
    //**********************************************************************************************
 
+ private:
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   template< typename MT2 >
+   struct VectorizedAssign {
+      enum { value = vectorizable && MT2::vectorizable &&
+                     IsSame<ElementType,typename MT2::ElementType>::value };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   template< typename MT2 >
+   struct VectorizedAddAssign {
+      enum { value = vectorizable && MT2::vectorizable &&
+                     IsSame<ElementType,typename MT2::ElementType>::value &&
+                     IntrinsicTrait<ElementType>::addition };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   template< typename MT2 >
+   struct VectorizedSubAssign {
+      enum { value = vectorizable && MT2::vectorizable &&
+                     IsSame<ElementType,typename MT2::ElementType>::value &&
+                     IntrinsicTrait<ElementType>::subtraction };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+ public:
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
-   template< typename MT2 >   inline void assign   ( const DenseMatrix<MT2,true>&   rhs );
-   template< typename MT2 >   inline void assign   ( const DenseMatrix<MT2,false>&  rhs );
-   template< typename MT2 >   inline void assign   ( const SparseMatrix<MT2,true>&  rhs );
-   template< typename MT2 >   inline void assign   ( const SparseMatrix<MT2,false>& rhs );
-   template< typename MT2 >   inline void addAssign( const DenseMatrix<MT2,true>&   rhs );
-   template< typename MT2 >   inline void addAssign( const DenseMatrix<MT2,false>&  rhs );
-   template< typename MT2 >   inline void addAssign( const SparseMatrix<MT2,true>&  rhs );
-   template< typename MT2 >   inline void addAssign( const SparseMatrix<MT2,false>& rhs );
-   template< typename MT2 >   inline void subAssign( const DenseMatrix<MT2,true>&   rhs );
-   template< typename MT2 >   inline void subAssign( const DenseMatrix<MT2,false>&  rhs );
-   template< typename MT2 >   inline void subAssign( const SparseMatrix<MT2,true>&  rhs );
-   template< typename MT2 >   inline void subAssign( const SparseMatrix<MT2,false>& rhs );
+
+   inline IntrinsicType get   ( size_t i, size_t j ) const;
+   inline IntrinsicType loadu ( size_t i, size_t j ) const;
+   inline void          store ( size_t i, size_t j, const IntrinsicType& value );
+   inline void          storeu( size_t i, size_t j, const IntrinsicType& value );
+   inline void          stream( size_t i, size_t j, const IntrinsicType& value );
+
+   template< typename MT2 >
+   inline typename DisableIf< VectorizedAssign<MT2> >::Type
+      assign( const DenseMatrix<MT2,true>& rhs );
+
+   template< typename MT2 >
+   inline typename EnableIf< VectorizedAssign<MT2> >::Type
+      assign( const DenseMatrix<MT2,true>& rhs );
+
+   template< typename MT2 > inline void assign( const DenseMatrix<MT2,false>&  rhs );
+   template< typename MT2 > inline void assign( const SparseMatrix<MT2,true>&  rhs );
+   template< typename MT2 > inline void assign( const SparseMatrix<MT2,false>& rhs );
+
+   template< typename MT2 >
+   inline typename DisableIf< VectorizedAddAssign<MT2> >::Type
+      addAssign( const DenseMatrix<MT2,true>& rhs );
+
+   template< typename MT2 >
+   inline typename EnableIf< VectorizedAddAssign<MT2> >::Type
+      addAssign( const DenseMatrix<MT2,true>& rhs );
+
+   template< typename MT2 > inline void addAssign( const DenseMatrix<MT2,false>&  rhs );
+   template< typename MT2 > inline void addAssign( const SparseMatrix<MT2,true>&  rhs );
+   template< typename MT2 > inline void addAssign( const SparseMatrix<MT2,false>& rhs );
+
+   template< typename MT2 >
+   inline typename DisableIf< VectorizedSubAssign<MT2> >::Type
+      subAssign( const DenseMatrix<MT2,true>& rhs );
+
+   template< typename MT2 >
+   inline typename EnableIf< VectorizedSubAssign<MT2> >::Type
+      subAssign( const DenseMatrix<MT2,true>& rhs );
+
+   template< typename MT2 > inline void subAssign( const DenseMatrix<MT2,false>&  rhs );
+   template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,true>&  rhs );
+   template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,false>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -1729,11 +2182,27 @@ class DenseSubmatrix<MT,true> : public DenseMatrix< DenseSubmatrix<MT,true>, tru
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   Operand      matrix_;  //!< The dense matrix containing the submatrix.
-   const size_t row_;     //!< The first row of the submatrix.
-   const size_t column_;  //!< The first column of the submatrix.
-   const size_t m_;       //!< The number of rows of the submatrix.
-   const size_t n_;       //!< The number of columns of the submatrix.
+   Operand      matrix_;   //!< The dense matrix containing the submatrix.
+   const size_t row_;      //!< The first row of the submatrix.
+   const size_t column_;   //!< The first column of the submatrix.
+   const size_t m_;        //!< The number of rows of the submatrix.
+   const size_t n_;        //!< The number of columns of the submatrix.
+   const size_t rest_;     //!< The number of remaining elements in an unaligned intrinsic operation.
+   const size_t final_;    //!< The final index for unaligned intrinsic operations.
+                           /*!< In case the submatrix is not fully aligned and the submatrix is
+                                involved in a vectorized operation, the final index indicates at
+                                which index a special treatment for the remaining elements is
+                                required. */
+   const bool   aligned_;  //!< Memory alignment flag.
+                           /*!< The alignment flag indicates whether the submatrix is fully aligned.
+                                In case the submatrix is fully aligned, no special handling has to
+                                be used for the last elements of the submatrix in a vectorized
+                                operation. In order to be aligned, the following conditions must
+                                hold for the submatrix:
+                                 - The first element of each row/column must be aligned
+                                 - The submatrix must be at the end of the given matrix or
+                                 - The number of rows/columns of the submatrix must be a multiple
+                                   of the number of values per intrinsic element. */
    //@}
    //**********************************************************************************************
 
@@ -1779,11 +2248,15 @@ class DenseSubmatrix<MT,true> : public DenseMatrix< DenseSubmatrix<MT,true>, tru
 */
 template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,true>::DenseSubmatrix( MT& matrix, size_t row, size_t column, size_t m, size_t n )
-   : matrix_( matrix )  // The dense matrix containing the submatrix
-   , row_   ( row    )  // The first row of the submatrix
-   , column_( column )  // The first column of the submatrix
-   , m_     ( m      )  // The number of rows of the submatrix
-   , n_     ( n      )  // The number of columns of the submatrix
+   : matrix_ ( matrix       )  // The dense matrix containing the submatrix
+   , row_    ( row          )  // The first row of the submatrix
+   , column_ ( column       )  // The first column of the submatrix
+   , m_      ( m            )  // The number of rows of the submatrix
+   , n_      ( n            )  // The number of columns of the submatrix
+   , rest_   ( m % IT::size )  // The number of remaining elements in an unaligned intrinsic operation
+   , final_  ( m - rest_    )  // The final index for unaligned intrinsic operations
+   , aligned_( ( row % IT::size == 0UL ) &&
+               ( row + m == matrix.rows() || m % IT::size == 0UL ) )
 {
    if( ( row + m > matrix.rows() ) || ( column + n > matrix.columns() ) )
       throw std::invalid_argument( "Invalid submatrix specification" );
@@ -1843,6 +2316,7 @@ inline typename DenseSubmatrix<MT,true>::ConstReference
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Low-level data access to the submatrix elements.
 //
 // \return Pointer to the internal element storage.
@@ -1852,10 +2326,12 @@ inline typename DenseSubmatrix<MT,true>::Pointer DenseSubmatrix<MT,true>::data()
 {
    return matrix_.data() + row_ + column_*spacing();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Low-level data access to the submatrix elements.
 //
 // \return Pointer to the internal element storage.
@@ -1865,6 +2341,7 @@ inline typename DenseSubmatrix<MT,true>::ConstPointer DenseSubmatrix<MT,true>::d
 {
    return matrix_.data() + row_ + column_*spacing();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -2487,6 +2964,163 @@ inline bool DenseSubmatrix<MT,true>::isAliased( const Other* alias ) const
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Aligned load of an intrinsic element of the submatrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \return The loaded intrinsic element.
+//
+// This function performs an aligned load of a specific intrinsic element of the dense
+// submatrix. The row index must be smaller than the number of rows and the column index
+// must be smaller than the number of columns. Additionally, the row index must be a
+// multiple of the number of values inside the intrinsic element. This function must
+// \b NOT be called explicitly! It is used internally for the performance optimized
+// evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename DenseSubmatrix<MT,true>::IntrinsicType
+   DenseSubmatrix<MT,true>::get( size_t i, size_t j ) const
+{
+   return loadu( i, j );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Aligned load of an intrinsic element of the submatrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \return The loaded intrinsic element.
+//
+// This function performs an aligned load of a specific intrinsic element of the dense
+// submatrix. The row index must be smaller than the number of rows and the column index
+// must be smaller than the number of columns. Additionally, the row index must be a
+// multiple of the number of values inside the intrinsic element. This function must
+// \b NOT be called explicitly! It is used internally for the performance optimized
+// evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename DenseSubmatrix<MT,true>::IntrinsicType
+   DenseSubmatrix<MT,true>::loadu( size_t i, size_t j ) const
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+
+   if( aligned_ || i != final_ ) {
+      return matrix_.loadu( row_+i, column_+j );
+   }
+   else {
+      IntrinsicType value;
+      for( size_t k=0UL; k<rest_; ++k )
+         value[k] = matrix_(row_+i+k,column_+j);
+      return value;
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Aligned store of an intrinsic element of the submatrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an aligned store of a specific intrinsic element of the dense submatrix.
+// The row index must be smaller than the number of rows and the column index must be smaller than
+// the number of columns. Additionally, the row index must be a multiple of the number of values
+// inside the intrinsic element. This function must \b NOT be called explicitly! It is used
+// internally for the performance optimized evaluation of expression templates. Calling this
+// function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename MT >  // Type of the dense matrix
+inline void DenseSubmatrix<MT,true>::store( size_t i, size_t j, const IntrinsicType& value )
+{
+   storeu( i, j, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Unaligned store of an intrinsic element of the submatrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an unaligned store of a specific intrinsic element of the dense
+// submatrix. The row index must be smaller than the number of rows and the column index must
+// be smaller than the number of columns. Additionally, the row index must be a multiple of
+// the number of values inside the intrinsic element. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
+*/
+template< typename MT >  // Type of the dense matrix
+inline void DenseSubmatrix<MT,true>::storeu( size_t i, size_t j, const IntrinsicType& value )
+{
+   using blaze::storeu;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+
+   if( aligned_ || i != final_ ) {
+      matrix_.storeu( row_+i, column_+j, value );
+   }
+   else {
+      for( size_t k=0UL; k<rest_; ++k )
+         matrix_(row_+i+k,column_+j) = value[k];
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Aligned, non-temporal store of an intrinsic element of the submatrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an aligned, non-temporal store of a specific intrinsic element of
+// the dense submatrix. The row index must be smaller than the number of rows and the column
+// index must be smaller than the number of columns. Additionally, the row index must be a
+// multiple of the number of values inside the intrinsic element. This function must \b NOT
+// be called explicitly! It is used internally for the performance optimized evaluation of
+// expression templates. Calling this function explicitly might result in erroneous results
+// and/or in compilation errors.
+*/
+template< typename MT >  // Type of the dense matrix
+inline void DenseSubmatrix<MT,true>::stream( size_t i, size_t j, const IntrinsicType& value )
+{
+   storeu( i, j, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the assignment of a column-major dense matrix.
 //
 // \param rhs The right-hand side dense matrix to be assigned.
@@ -2499,7 +3133,8 @@ inline bool DenseSubmatrix<MT,true>::isAliased( const Other* alias ) const
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline void DenseSubmatrix<MT,true>::assign( const DenseMatrix<MT2,true>& rhs )
+inline typename DisableIf< typename DenseSubmatrix<MT,true>::BLAZE_TEMPLATE VectorizedAssign<MT2> >::Type
+   DenseSubmatrix<MT,true>::assign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -2514,6 +3149,56 @@ inline void DenseSubmatrix<MT,true>::assign( const DenseMatrix<MT2,true>& rhs )
       }
       if( iend < m_ ) {
          matrix_(row_+iend,column_+j) = (~rhs)(iend,j);
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Intrinsic optimized implementation of the assignment of a column-major dense matrix.
+//
+// \param rhs The right-hand side dense matrix to be assigned.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >   // Type of the dense matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
+inline typename EnableIf< typename DenseSubmatrix<MT,true>::BLAZE_TEMPLATE VectorizedAssign<MT2> >::Type
+   DenseSubmatrix<MT,true>::assign( const DenseMatrix<MT2,true>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   if( aligned_ && m_*n_ > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( &matrix_ ) )
+   {
+      for( size_t j=0UL; j<n_; ++j )
+         for( size_t i=0UL; i<m_; i+=IT::size )
+            matrix_.stream( row_+i, column_+j, (~rhs).get(i,j) );
+   }
+   else
+   {
+      const size_t iend( m_ & size_t(-IT::size*4) );
+      BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
+
+      for( size_t j=0UL; j<n_; ++j ) {
+         for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
+            matrix_.storeu( row_+i             , column_+j, (~rhs).get(i             ,j) );
+            matrix_.storeu( row_+i+IT::size    , column_+j, (~rhs).get(i+IT::size    ,j) );
+            matrix_.storeu( row_+i+IT::size*2UL, column_+j, (~rhs).get(i+IT::size*2UL,j) );
+            matrix_.storeu( row_+i+IT::size*3UL, column_+j, (~rhs).get(i+IT::size*3UL,j) );
+         }
+         for( size_t i=iend; i<m_; i+=IT::size ) {
+            storeu( i, j, (~rhs).get(i,j) );
+         }
       }
    }
 }
@@ -2626,7 +3311,8 @@ inline void DenseSubmatrix<MT,true>::assign( const SparseMatrix<MT2,false>& rhs 
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline void DenseSubmatrix<MT,true>::addAssign( const DenseMatrix<MT2,true>& rhs )
+inline typename DisableIf< typename DenseSubmatrix<MT,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >::Type
+   DenseSubmatrix<MT,true>::addAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -2641,6 +3327,47 @@ inline void DenseSubmatrix<MT,true>::addAssign( const DenseMatrix<MT2,true>& rhs
       }
       if( iend < m_ ) {
          matrix_(row_+iend,column_+j) += (~rhs)(iend,j);
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Intrinsic optimized implementation of the addition assignment of a column-major dense matrix.
+//
+// \param rhs The right-hand side dense matrix to be added.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >   // Type of the dense matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
+inline typename EnableIf< typename DenseSubmatrix<MT,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >::Type
+   DenseSubmatrix<MT,true>::addAssign( const DenseMatrix<MT2,true>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   const size_t iend( m_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
+
+   for( size_t j=0UL; j<n_; ++j ) {
+      for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
+         matrix_.storeu( row_+i             , column_+j, get(i             ,j) + (~rhs).get(i             ,j) );
+         matrix_.storeu( row_+i+IT::size    , column_+j, get(i+IT::size    ,j) + (~rhs).get(i+IT::size    ,j) );
+         matrix_.storeu( row_+i+IT::size*2UL, column_+j, get(i+IT::size*2UL,j) + (~rhs).get(i+IT::size*2UL,j) );
+         matrix_.storeu( row_+i+IT::size*3UL, column_+j, get(i+IT::size*3UL,j) + (~rhs).get(i+IT::size*3UL,j) );
+      }
+      for( size_t i=iend; i<m_; i+=IT::size ) {
+         storeu( i, j, get(i,j) + (~rhs).get(i,j) );
       }
    }
 }
@@ -2753,7 +3480,8 @@ inline void DenseSubmatrix<MT,true>::addAssign( const SparseMatrix<MT2,false>& r
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline void DenseSubmatrix<MT,true>::subAssign( const DenseMatrix<MT2,true>& rhs )
+inline typename DisableIf< typename DenseSubmatrix<MT,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >::Type
+   DenseSubmatrix<MT,true>::subAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -2768,6 +3496,47 @@ inline void DenseSubmatrix<MT,true>::subAssign( const DenseMatrix<MT2,true>& rhs
       }
       if( iend < m_ ) {
          matrix_(row_+iend,column_+j) -= (~rhs)(iend,j);
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Intrinsic optimized implementation of the subtraction assignment of a column-major dense matrix.
+//
+// \param rhs The right-hand side dense matrix to be subtracted.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >   // Type of the dense matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
+inline typename EnableIf< typename DenseSubmatrix<MT,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >::Type
+   DenseSubmatrix<MT,true>::subAssign( const DenseMatrix<MT2,true>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   const size_t iend( m_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
+
+   for( size_t j=0UL; j<n_; ++j ) {
+      for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
+         matrix_.storeu( row_+i             , column_+j, get(i             ,j) - (~rhs).get(i             ,j) );
+         matrix_.storeu( row_+i+IT::size    , column_+j, get(i+IT::size    ,j) - (~rhs).get(i+IT::size    ,j) );
+         matrix_.storeu( row_+i+IT::size*2UL, column_+j, get(i+IT::size*2UL,j) - (~rhs).get(i+IT::size*2UL,j) );
+         matrix_.storeu( row_+i+IT::size*3UL, column_+j, get(i+IT::size*3UL,j) - (~rhs).get(i+IT::size*3UL,j) );
+      }
+      for( size_t i=iend; i<m_; i+=IT::size ) {
+         storeu( i, j, get(i,j) - (~rhs).get(i,j) );
       }
    }
 }
