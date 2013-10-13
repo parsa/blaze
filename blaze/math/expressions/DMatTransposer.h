@@ -53,15 +53,21 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
 {
+ private:
+   //**Type definitions****************************************************************************
+   typedef IntrinsicTrait<typename MT::ElementType>  IT;  //!< Intrinsic trait for the vector element type.
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
-   typedef DMatTransposer<MT,SO>        This;           //!< Type of this DMatTransposer instance.
-   typedef typename MT::TransposeType   ResultType;     //!< Result type for expression template evaluations.
-   typedef typename MT::OppositeType    OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename MT::ResultType      TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType     ElementType;    //!< Resulting element type.
-   typedef typename MT::ReturnType      ReturnType;     //!< Return type for expression template evaluations.
-   typedef const This&                  CompositeType;  //!< Data type for composite expression templates.
+   typedef DMatTransposer<MT,SO>        This;            //!< Type of this DMatTransposer instance.
+   typedef typename MT::TransposeType   ResultType;      //!< Result type for expression template evaluations.
+   typedef typename MT::OppositeType    OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
+   typedef typename MT::ResultType      TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef typename MT::ElementType     ElementType;     //!< Type of the matrix elements.
+   typedef typename IT::Type            IntrinsicType;   //!< Intrinsic type of the matrix elements.
+   typedef typename MT::ReturnType      ReturnType;      //!< Return type for expression template evaluations.
+   typedef const This&                  CompositeType;   //!< Data type for composite expression templates.
    typedef typename MT::Reference       Reference;       //!< Reference to a non-constant matrix value.
    typedef typename MT::ConstReference  ConstReference;  //!< Reference to a constant matrix value.
    //**********************************************************************************************
@@ -171,6 +177,60 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    inline bool isAliased( const Other* alias ) const
    {
       return dm_.isAliased( alias );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Aligned store of an intrinsic element of the matrix.
+   //
+   // \param i Access index for the row. The index has to be in the range [0..M-1].
+   // \param j Access index for the column. The index has to be in the range [0..N-1].
+   // \param value The intrinsic element to be stored.
+   // \return void
+   //
+   // This function must \b NOT be called explicitly! It is used internally for the performance
+   // optimized evaluation of expression templates. Calling this function explicitly might result
+   // in erroneous results and/or in compilation errors.
+   */
+   inline void store( size_t i, size_t j, const IntrinsicType& value )
+   {
+      dm_.store( j, i, value );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Unaligned store of an intrinsic element of the matrix.
+   //
+   // \param i Access index for the row. The index has to be in the range [0..M-1].
+   // \param j Access index for the column. The index has to be in the range [0..N-1].
+   // \param value The intrinsic element to be stored.
+   // \return void
+   //
+   // This function must \b NOT be called explicitly! It is used internally for the performance
+   // optimized evaluation of expression templates. Calling this function explicitly might result
+   // in erroneous results and/or in compilation errors.
+   */
+   inline void storeu( size_t i, size_t j, const IntrinsicType& value )
+   {
+      dm_.storeu( j, i, value );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Aligned, non-temporal store of an intrinsic element of the matrix.
+   //
+   // \param i Access index for the row. The index has to be in the range [0..M-1].
+   // \param j Access index for the column. The index has to be in the range [0..N-1].
+   // \param value The intrinsic element to be stored.
+   // \return void
+   //
+   // This function must \b NOT be called explicitly! It is used internally for the performance
+   // optimized evaluation of expression templates. Calling this function explicitly might result
+   // in erroneous results and/or in compilation errors.
+   */
+   inline void stream( size_t i, size_t j, const IntrinsicType& value )
+   {
+      dm_.stream( j, i, value );
    }
    //**********************************************************************************************
 
@@ -595,13 +655,19 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
 template< typename MT >  // Type of the dense matrix
 class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, true >
 {
+ private:
+   //**Type definitions****************************************************************************
+   typedef IntrinsicTrait<typename MT::ElementType>  IT;  //!< Intrinsic trait for the vector element type.
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    typedef DMatTransposer<MT,true>      This;            //!< Type of this DMatTransposer instance.
    typedef typename MT::TransposeType   ResultType;      //!< Result type for expression template evaluations.
    typedef typename MT::OppositeType    OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
    typedef typename MT::ResultType      TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType     ElementType;     //!< Resulting element type.
+   typedef typename MT::ElementType     ElementType;     //!< Type of the matrix elements.
+   typedef typename IT::Type            IntrinsicType;   //!< Intrinsic type of the matrix elements.
    typedef typename MT::ReturnType      ReturnType;      //!< Return type for expression template evaluations.
    typedef const This&                  CompositeType;   //!< Data type for composite expression templates.
    typedef typename MT::Reference       Reference;       //!< Reference to a non-constant matrix value.
@@ -700,6 +766,60 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    inline bool isAliased( const Other* alias ) const
    {
       return dm_.isAliased( alias );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Aligned store of an intrinsic element of the matrix.
+   //
+   // \param i Access index for the row. The index has to be in the range [0..M-1].
+   // \param j Access index for the column. The index has to be in the range [0..N-1].
+   // \param value The intrinsic element to be stored.
+   // \return void
+   //
+   // This function must \b NOT be called explicitly! It is used internally for the performance
+   // optimized evaluation of expression templates. Calling this function explicitly might result
+   // in erroneous results and/or in compilation errors.
+   */
+   inline void store( size_t i, size_t j, const IntrinsicType& value )
+   {
+      dm_.store( j, i, value );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Unaligned store of an intrinsic element of the matrix.
+   //
+   // \param i Access index for the row. The index has to be in the range [0..M-1].
+   // \param j Access index for the column. The index has to be in the range [0..N-1].
+   // \param value The intrinsic element to be stored.
+   // \return void
+   //
+   // This function must \b NOT be called explicitly! It is used internally for the performance
+   // optimized evaluation of expression templates. Calling this function explicitly might result
+   // in erroneous results and/or in compilation errors.
+   */
+   inline void storeu( size_t i, size_t j, const IntrinsicType& value )
+   {
+      dm_.storeu( j, i, value );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Aligned, non-temporal store of an intrinsic element of the matrix.
+   //
+   // \param i Access index for the row. The index has to be in the range [0..M-1].
+   // \param j Access index for the column. The index has to be in the range [0..N-1].
+   // \param value The intrinsic element to be stored.
+   // \return void
+   //
+   // This function must \b NOT be called explicitly! It is used internally for the performance
+   // optimized evaluation of expression templates. Calling this function explicitly might result
+   // in erroneous results and/or in compilation errors.
+   */
+   inline void stream( size_t i, size_t j, const IntrinsicType& value )
+   {
+      dm_.stream( j, i, value );
    }
    //**********************************************************************************************
 

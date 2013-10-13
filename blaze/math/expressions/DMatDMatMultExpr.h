@@ -450,12 +450,12 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
-      const size_t N( B.spacing() );
+      const size_t N( B.columns() );
       const size_t K( A.columns() );
 
       size_t j( 0UL );
 
-      for( ; (j+IT::size*8UL) <= N; j+=IT::size*8UL ) {
+      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
          for( size_t i=0UL; i<M; ++i ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             for( size_t k=0UL; k<K; ++k ) {
@@ -469,17 +469,17 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                xmm7 = xmm7 + a1 * B.get(k,j+IT::size*6UL);
                xmm8 = xmm8 + a1 * B.get(k,j+IT::size*7UL);
             }
-            store( &(~C)(i,j             ), xmm1 );
-            store( &(~C)(i,j+IT::size    ), xmm2 );
-            store( &(~C)(i,j+IT::size*2UL), xmm3 );
-            store( &(~C)(i,j+IT::size*3UL), xmm4 );
-            store( &(~C)(i,j+IT::size*4UL), xmm5 );
-            store( &(~C)(i,j+IT::size*5UL), xmm6 );
-            store( &(~C)(i,j+IT::size*6UL), xmm7 );
-            store( &(~C)(i,j+IT::size*7UL), xmm8 );
+            (~C).store( i, j             , xmm1 );
+            (~C).store( i, j+IT::size    , xmm2 );
+            (~C).store( i, j+IT::size*2UL, xmm3 );
+            (~C).store( i, j+IT::size*3UL, xmm4 );
+            (~C).store( i, j+IT::size*4UL, xmm5 );
+            (~C).store( i, j+IT::size*5UL, xmm6 );
+            (~C).store( i, j+IT::size*6UL, xmm7 );
+            (~C).store( i, j+IT::size*7UL, xmm8 );
          }
       }
-      for( ; (j+IT::size*4UL) <= N; j+=IT::size*4UL ) {
+      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL ) {
          size_t i( 0UL );
          for( ; (i+2UL) <= M; i+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
@@ -499,14 +499,14 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                xmm7 = xmm7 + a2 * b3;
                xmm8 = xmm8 + a2 * b4;
             }
-            store( &(~C)(i    ,j             ), xmm1 );
-            store( &(~C)(i    ,j+IT::size    ), xmm2 );
-            store( &(~C)(i    ,j+IT::size*2UL), xmm3 );
-            store( &(~C)(i    ,j+IT::size*3UL), xmm4 );
-            store( &(~C)(i+1UL,j             ), xmm5 );
-            store( &(~C)(i+1UL,j+IT::size    ), xmm6 );
-            store( &(~C)(i+1UL,j+IT::size*2UL), xmm7 );
-            store( &(~C)(i+1UL,j+IT::size*3UL), xmm8 );
+            (~C).store( i    , j             , xmm1 );
+            (~C).store( i    , j+IT::size    , xmm2 );
+            (~C).store( i    , j+IT::size*2UL, xmm3 );
+            (~C).store( i    , j+IT::size*3UL, xmm4 );
+            (~C).store( i+1UL, j             , xmm5 );
+            (~C).store( i+1UL, j+IT::size    , xmm6 );
+            (~C).store( i+1UL, j+IT::size*2UL, xmm7 );
+            (~C).store( i+1UL, j+IT::size*3UL, xmm8 );
          }
          if( i < M ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
@@ -517,13 +517,13 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                xmm3 = xmm3 + a1 * B.get(k,j+IT::size*2UL);
                xmm4 = xmm4 + a1 * B.get(k,j+IT::size*3UL);
             }
-            store( &(~C)(i,j             ), xmm1 );
-            store( &(~C)(i,j+IT::size    ), xmm2 );
-            store( &(~C)(i,j+IT::size*2UL), xmm3 );
-            store( &(~C)(i,j+IT::size*3UL), xmm4 );
+            (~C).store( i, j             , xmm1 );
+            (~C).store( i, j+IT::size    , xmm2 );
+            (~C).store( i, j+IT::size*2UL, xmm3 );
+            (~C).store( i, j+IT::size*3UL, xmm4 );
          }
       }
-      for( ; (j+IT::size*2UL) <= N; j+=IT::size*2UL ) {
+      for( ; (j+IT::size) < N; j+=IT::size*2UL ) {
          size_t i( 0UL );
          for( ; (i+2UL) <= M; i+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
@@ -537,10 +537,10 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                xmm3 = xmm3 + a2 * b1;
                xmm4 = xmm4 + a2 * b2;
             }
-            store( &(~C)(i    ,j         ), xmm1 );
-            store( &(~C)(i    ,j+IT::size), xmm2 );
-            store( &(~C)(i+1UL,j         ), xmm3 );
-            store( &(~C)(i+1UL,j+IT::size), xmm4 );
+            (~C).store( i    , j         , xmm1 );
+            (~C).store( i    , j+IT::size, xmm2 );
+            (~C).store( i+1UL, j         , xmm3 );
+            (~C).store( i+1UL, j+IT::size, xmm4 );
          }
          if( i < M ) {
             IntrinsicType xmm1, xmm2;
@@ -549,8 +549,8 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                xmm1 = xmm1 + a1 * B.get(k,j         );
                xmm2 = xmm2 + a1 * B.get(k,j+IT::size);
             }
-            store( &(~C)(i,j         ), xmm1 );
-            store( &(~C)(i,j+IT::size), xmm2 );
+            (~C).store( i, j         , xmm1 );
+            (~C).store( i, j+IT::size, xmm2 );
          }
       }
       if( j < N ) {
@@ -562,15 +562,15 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                xmm1 = xmm1 + set( A(i    ,k) ) * b1;
                xmm2 = xmm2 + set( A(i+1UL,k) ) * b1;
             }
-            store( &(~C)(i    ,j), xmm1 );
-            store( &(~C)(i+1UL,j), xmm2 );
+            (~C).store( i    , j, xmm1 );
+            (~C).store( i+1UL, j, xmm2 );
          }
          if( i < M ) {
             IntrinsicType xmm1;
             for( size_t k=0UL; k<K; ++k ) {
                xmm1 = xmm1 + set( A(i,k) ) * B.get(k,j);
             }
-            store( &(~C)(i,j), xmm1 );
+            (~C).store( i, j, xmm1 );
          }
       }
    }
@@ -971,12 +971,12 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
-      const size_t N( B.spacing() );
+      const size_t N( B.columns() );
       const size_t K( A.columns() );
 
       size_t j( 0UL );
 
-      for( ; (j+IT::size*8UL) <= N; j+=IT::size*8UL ) {
+      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
          for( size_t i=0UL; i<M; ++i ) {
             IntrinsicType xmm1( (~C).get(i,j             ) );
             IntrinsicType xmm2( (~C).get(i,j+IT::size    ) );
@@ -997,17 +997,17 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                xmm7 = xmm7 + a1 * B.get(k,j+IT::size*6UL);
                xmm8 = xmm8 + a1 * B.get(k,j+IT::size*7UL);
             }
-            store( &(~C)(i,j             ), xmm1 );
-            store( &(~C)(i,j+IT::size    ), xmm2 );
-            store( &(~C)(i,j+IT::size*2UL), xmm3 );
-            store( &(~C)(i,j+IT::size*3UL), xmm4 );
-            store( &(~C)(i,j+IT::size*4UL), xmm5 );
-            store( &(~C)(i,j+IT::size*5UL), xmm6 );
-            store( &(~C)(i,j+IT::size*6UL), xmm7 );
-            store( &(~C)(i,j+IT::size*7UL), xmm8 );
+            (~C).store( i, j             , xmm1 );
+            (~C).store( i, j+IT::size    , xmm2 );
+            (~C).store( i, j+IT::size*2UL, xmm3 );
+            (~C).store( i, j+IT::size*3UL, xmm4 );
+            (~C).store( i, j+IT::size*4UL, xmm5 );
+            (~C).store( i, j+IT::size*5UL, xmm6 );
+            (~C).store( i, j+IT::size*6UL, xmm7 );
+            (~C).store( i, j+IT::size*7UL, xmm8 );
          }
       }
-      for( ; (j+IT::size*4UL) <= N; j+=IT::size*4UL ) {
+      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL ) {
          size_t i( 0UL );
          for( ; (i+2UL) <= M; i+=2UL ) {
             IntrinsicType xmm1( (~C).get(i    ,j             ) );
@@ -1034,14 +1034,14 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                xmm7 = xmm7 + a2 * b3;
                xmm8 = xmm8 + a2 * b4;
             }
-            store( &(~C)(i    ,j             ), xmm1 );
-            store( &(~C)(i    ,j+IT::size    ), xmm2 );
-            store( &(~C)(i    ,j+IT::size*2UL), xmm3 );
-            store( &(~C)(i    ,j+IT::size*3UL), xmm4 );
-            store( &(~C)(i+1UL,j             ), xmm5 );
-            store( &(~C)(i+1UL,j+IT::size    ), xmm6 );
-            store( &(~C)(i+1UL,j+IT::size*2UL), xmm7 );
-            store( &(~C)(i+1UL,j+IT::size*3UL), xmm8 );
+            (~C).store( i    , j             , xmm1 );
+            (~C).store( i    , j+IT::size    , xmm2 );
+            (~C).store( i    , j+IT::size*2UL, xmm3 );
+            (~C).store( i    , j+IT::size*3UL, xmm4 );
+            (~C).store( i+1UL, j             , xmm5 );
+            (~C).store( i+1UL, j+IT::size    , xmm6 );
+            (~C).store( i+1UL, j+IT::size*2UL, xmm7 );
+            (~C).store( i+1UL, j+IT::size*3UL, xmm8 );
          }
          if( i < M ) {
             IntrinsicType xmm1( (~C).get(i,j             ) );
@@ -1055,13 +1055,13 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                xmm3 = xmm3 + a1 * B.get(k,j+IT::size*2UL);
                xmm4 = xmm4 + a1 * B.get(k,j+IT::size*3UL);
             }
-            store( &(~C)(i,j             ), xmm1 );
-            store( &(~C)(i,j+IT::size    ), xmm2 );
-            store( &(~C)(i,j+IT::size*2UL), xmm3 );
-            store( &(~C)(i,j+IT::size*3UL), xmm4 );
+            (~C).store( i, j             , xmm1 );
+            (~C).store( i, j+IT::size    , xmm2 );
+            (~C).store( i, j+IT::size*2UL, xmm3 );
+            (~C).store( i, j+IT::size*3UL, xmm4 );
          }
       }
-      for( ; (j+IT::size*2UL) <= N; j+=IT::size*2UL ) {
+      for( ; (j+IT::size) < N; j+=IT::size*2UL ) {
          size_t i( 0UL );
          for( ; (i+2UL) <= M; i+=2UL ) {
             IntrinsicType xmm1( (~C).get(i    ,j         ) );
@@ -1078,10 +1078,10 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                xmm3 = xmm3 + a2 * b1;
                xmm4 = xmm4 + a2 * b2;
             }
-            store( &(~C)(i    ,j         ), xmm1 );
-            store( &(~C)(i    ,j+IT::size), xmm2 );
-            store( &(~C)(i+1UL,j         ), xmm3 );
-            store( &(~C)(i+1UL,j+IT::size), xmm4 );
+            (~C).store( i    , j         , xmm1 );
+            (~C).store( i    , j+IT::size, xmm2 );
+            (~C).store( i+1UL, j         , xmm3 );
+            (~C).store( i+1UL, j+IT::size, xmm4 );
          }
          if( i < M ) {
             IntrinsicType xmm1( (~C).get(i,j         ) );
@@ -1091,8 +1091,8 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                xmm1 = xmm1 + a1 * B.get(k,j         );
                xmm2 = xmm2 + a1 * B.get(k,j+IT::size);
             }
-            store( &(~C)(i,j         ), xmm1 );
-            store( &(~C)(i,j+IT::size), xmm2 );
+            (~C).store( i, j         , xmm1 );
+            (~C).store( i, j+IT::size, xmm2 );
          }
       }
       if( j < N ) {
@@ -1105,15 +1105,15 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                xmm1 = xmm1 + set( A(i    ,k) ) * b1;
                xmm2 = xmm2 + set( A(i+1UL,k) ) * b1;
             }
-            store( &(~C)(i    ,j), xmm1 );
-            store( &(~C)(i+1UL,j), xmm2 );
+            (~C).store( i    , j, xmm1 );
+            (~C).store( i+1UL, j, xmm2 );
          }
          if( i < M ) {
             IntrinsicType xmm1( (~C).get(i,j) );
             for( size_t k=0UL; k<K; ++k ) {
                xmm1 = xmm1 + set( A(i,k) ) * B.get(k,j);
             }
-            store( &(~C)(i,j), xmm1 );
+            (~C).store( i, j, xmm1 );
          }
       }
    }
@@ -1483,12 +1483,12 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
-      const size_t N( B.spacing() );
+      const size_t N( B.columns() );
       const size_t K( A.columns() );
 
       size_t j( 0UL );
 
-      for( ; (j+IT::size*8UL) <= N; j+=IT::size*8UL ) {
+      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
          for( size_t i=0UL; i<M; ++i ) {
             IntrinsicType xmm1( (~C).get(i,j             ) );
             IntrinsicType xmm2( (~C).get(i,j+IT::size    ) );
@@ -1509,17 +1509,17 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                xmm7 = xmm7 - a1 * B.get(k,j+IT::size*6UL);
                xmm8 = xmm8 - a1 * B.get(k,j+IT::size*7UL);
             }
-            store( &(~C)(i,j             ), xmm1 );
-            store( &(~C)(i,j+IT::size    ), xmm2 );
-            store( &(~C)(i,j+IT::size*2UL), xmm3 );
-            store( &(~C)(i,j+IT::size*3UL), xmm4 );
-            store( &(~C)(i,j+IT::size*4UL), xmm5 );
-            store( &(~C)(i,j+IT::size*5UL), xmm6 );
-            store( &(~C)(i,j+IT::size*6UL), xmm7 );
-            store( &(~C)(i,j+IT::size*7UL), xmm8 );
+            (~C).store( i, j             , xmm1 );
+            (~C).store( i, j+IT::size    , xmm2 );
+            (~C).store( i, j+IT::size*2UL, xmm3 );
+            (~C).store( i, j+IT::size*3UL, xmm4 );
+            (~C).store( i, j+IT::size*4UL, xmm5 );
+            (~C).store( i, j+IT::size*5UL, xmm6 );
+            (~C).store( i, j+IT::size*6UL, xmm7 );
+            (~C).store( i, j+IT::size*7UL, xmm8 );
          }
       }
-      for( ; (j+IT::size*4UL) <= N; j+=IT::size*4UL ) {
+      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL ) {
          size_t i( 0UL );
          for( ; (i+2UL) <= M; i+=2UL ) {
             IntrinsicType xmm1( (~C).get(i    ,j             ) );
@@ -1546,14 +1546,14 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                xmm7 = xmm7 - a2 * b3;
                xmm8 = xmm8 - a2 * b4;
             }
-            store( &(~C)(i    ,j             ), xmm1 );
-            store( &(~C)(i    ,j+IT::size    ), xmm2 );
-            store( &(~C)(i    ,j+IT::size*2UL), xmm3 );
-            store( &(~C)(i    ,j+IT::size*3UL), xmm4 );
-            store( &(~C)(i+1UL,j             ), xmm5 );
-            store( &(~C)(i+1UL,j+IT::size    ), xmm6 );
-            store( &(~C)(i+1UL,j+IT::size*2UL), xmm7 );
-            store( &(~C)(i+1UL,j+IT::size*3UL), xmm8 );
+            (~C).store( i    , j             , xmm1 );
+            (~C).store( i    , j+IT::size    , xmm2 );
+            (~C).store( i    , j+IT::size*2UL, xmm3 );
+            (~C).store( i    , j+IT::size*3UL, xmm4 );
+            (~C).store( i+1UL, j             , xmm5 );
+            (~C).store( i+1UL, j+IT::size    , xmm6 );
+            (~C).store( i+1UL, j+IT::size*2UL, xmm7 );
+            (~C).store( i+1UL, j+IT::size*3UL, xmm8 );
          }
          if( i < M ) {
             IntrinsicType xmm1( (~C).get(i,j             ) );
@@ -1567,13 +1567,13 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                xmm3 = xmm3 - a1 * B.get(k,j+IT::size*2UL);
                xmm4 = xmm4 - a1 * B.get(k,j+IT::size*3UL);
             }
-            store( &(~C)(i,j             ), xmm1 );
-            store( &(~C)(i,j+IT::size    ), xmm2 );
-            store( &(~C)(i,j+IT::size*2UL), xmm3 );
-            store( &(~C)(i,j+IT::size*3UL), xmm4 );
+            (~C).store( i, j             , xmm1 );
+            (~C).store( i, j+IT::size    , xmm2 );
+            (~C).store( i, j+IT::size*2UL, xmm3 );
+            (~C).store( i, j+IT::size*3UL, xmm4 );
          }
       }
-      for( ; (j+IT::size*2UL) <= N; j+=IT::size*2UL ) {
+      for( ; (j+IT::size) < N; j+=IT::size*2UL ) {
          size_t i( 0UL );
          for( ; (i+2UL) <= M; i+=2UL ) {
             IntrinsicType xmm1( (~C).get(i    ,j         ) );
@@ -1590,10 +1590,10 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                xmm3 = xmm3 - a2 * b1;
                xmm4 = xmm4 - a2 * b2;
             }
-            store( &(~C)(i    ,j         ), xmm1 );
-            store( &(~C)(i    ,j+IT::size), xmm2 );
-            store( &(~C)(i+1UL,j         ), xmm3 );
-            store( &(~C)(i+1UL,j+IT::size), xmm4 );
+            (~C).store( i    , j         , xmm1 );
+            (~C).store( i    , j+IT::size, xmm2 );
+            (~C).store( i+1UL, j         , xmm3 );
+            (~C).store( i+1UL, j+IT::size, xmm4 );
          }
          if( i < M ) {
             IntrinsicType xmm1( (~C).get(i,j         ) );
@@ -1603,8 +1603,8 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                xmm1 = xmm1 - a1 * B.get(k,j         );
                xmm2 = xmm2 - a1 * B.get(k,j+IT::size);
             }
-            store( &(~C)(i,j         ), xmm1 );
-            store( &(~C)(i,j+IT::size), xmm2 );
+            (~C).store( i, j         , xmm1 );
+            (~C).store( i, j+IT::size, xmm2 );
          }
       }
       if( j < N ) {
@@ -1617,15 +1617,15 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                xmm1 = xmm1 - set( A(i    ,k) ) * b1;
                xmm2 = xmm2 - set( A(i+1UL,k) ) * b1;
             }
-            store( &(~C)(i    ,j), xmm1 );
-            store( &(~C)(i+1UL,j), xmm2 );
+            (~C).store( i    , j, xmm1 );
+            (~C).store( i+1UL, j, xmm2 );
          }
          if( i < M ) {
             IntrinsicType xmm1( (~C).get(i,j) );
             for( size_t k=0UL; k<K; ++k ) {
                xmm1 = xmm1 - set( A(i,k) ) * B.get(k,j);
             }
-            store( &(~C)(i,j), xmm1 );
+            (~C).store( i, j, xmm1 );
          }
       }
    }
@@ -2260,14 +2260,14 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
-      const size_t N( B.spacing() );
+      const size_t N( B.columns() );
       const size_t K( A.columns() );
 
       const IntrinsicType factor( set( scalar ) );
 
       size_t j( 0UL );
 
-      for( ; (j+IT::size*8UL) <= N; j+=IT::size*8UL ) {
+      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
          for( size_t i=0UL; i<M; ++i ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             for( size_t k=0UL; k<K; ++k ) {
@@ -2281,17 +2281,17 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                xmm7 = xmm7 + a1 * B.get(k,j+IT::size*6UL);
                xmm8 = xmm8 + a1 * B.get(k,j+IT::size*7UL);
             }
-            store( &(~C)(i,j             ), xmm1 * factor );
-            store( &(~C)(i,j+IT::size    ), xmm2 * factor );
-            store( &(~C)(i,j+IT::size*2UL), xmm3 * factor );
-            store( &(~C)(i,j+IT::size*3UL), xmm4 * factor );
-            store( &(~C)(i,j+IT::size*4UL), xmm5 * factor );
-            store( &(~C)(i,j+IT::size*5UL), xmm6 * factor );
-            store( &(~C)(i,j+IT::size*6UL), xmm7 * factor );
-            store( &(~C)(i,j+IT::size*7UL), xmm8 * factor );
+            (~C).store( i, j             , xmm1 * factor );
+            (~C).store( i, j+IT::size    , xmm2 * factor );
+            (~C).store( i, j+IT::size*2UL, xmm3 * factor );
+            (~C).store( i, j+IT::size*3UL, xmm4 * factor );
+            (~C).store( i, j+IT::size*4UL, xmm5 * factor );
+            (~C).store( i, j+IT::size*5UL, xmm6 * factor );
+            (~C).store( i, j+IT::size*6UL, xmm7 * factor );
+            (~C).store( i, j+IT::size*7UL, xmm8 * factor );
          }
       }
-      for( ; (j+IT::size*4UL) <= N; j+=IT::size*4UL ) {
+      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL ) {
          size_t i( 0UL );
          for( ; (i+2UL) <= M; i+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
@@ -2311,14 +2311,14 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                xmm7 = xmm7 + a2 * b3;
                xmm8 = xmm8 + a2 * b4;
             }
-            store( &(~C)(i    ,j             ), xmm1 * factor );
-            store( &(~C)(i    ,j+IT::size    ), xmm2 * factor );
-            store( &(~C)(i    ,j+IT::size*2UL), xmm3 * factor );
-            store( &(~C)(i    ,j+IT::size*3UL), xmm4 * factor );
-            store( &(~C)(i+1UL,j             ), xmm5 * factor );
-            store( &(~C)(i+1UL,j+IT::size    ), xmm6 * factor );
-            store( &(~C)(i+1UL,j+IT::size*2UL), xmm7 * factor );
-            store( &(~C)(i+1UL,j+IT::size*3UL), xmm8 * factor );
+            (~C).store( i    , j             , xmm1 * factor );
+            (~C).store( i    , j+IT::size    , xmm2 * factor );
+            (~C).store( i    , j+IT::size*2UL, xmm3 * factor );
+            (~C).store( i    , j+IT::size*3UL, xmm4 * factor );
+            (~C).store( i+1UL, j             , xmm5 * factor );
+            (~C).store( i+1UL, j+IT::size    , xmm6 * factor );
+            (~C).store( i+1UL, j+IT::size*2UL, xmm7 * factor );
+            (~C).store( i+1UL, j+IT::size*3UL, xmm8 * factor );
          }
          if( i < M ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
@@ -2329,13 +2329,13 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                xmm3 = xmm3 + a1 * B.get(k,j+IT::size*2UL);
                xmm4 = xmm4 + a1 * B.get(k,j+IT::size*3UL);
             }
-            store( &(~C)(i,j             ), xmm1 * factor );
-            store( &(~C)(i,j+IT::size    ), xmm2 * factor );
-            store( &(~C)(i,j+IT::size*2UL), xmm3 * factor );
-            store( &(~C)(i,j+IT::size*3UL), xmm4 * factor );
+            (~C).store( i, j             , xmm1 * factor );
+            (~C).store( i, j+IT::size    , xmm2 * factor );
+            (~C).store( i, j+IT::size*2UL, xmm3 * factor );
+            (~C).store( i, j+IT::size*3UL, xmm4 * factor );
          }
       }
-      for( ; (j+IT::size*2UL) <= N; j+=IT::size*2UL ) {
+      for( ; (j+IT::size) < N; j+=IT::size*2UL ) {
          size_t i( 0UL );
          for( ; (i+2UL) <= M; i+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
@@ -2349,10 +2349,10 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                xmm3 = xmm3 + a2 * b1;
                xmm4 = xmm4 + a2 * b2;
             }
-            store( &(~C)(i    ,j         ), xmm1 * factor );
-            store( &(~C)(i    ,j+IT::size), xmm2 * factor );
-            store( &(~C)(i+1UL,j         ), xmm3 * factor );
-            store( &(~C)(i+1UL,j+IT::size), xmm4 * factor );
+            (~C).store( i    , j         , xmm1 * factor );
+            (~C).store( i    , j+IT::size, xmm2 * factor );
+            (~C).store( i+1UL, j         , xmm3 * factor );
+            (~C).store( i+1UL, j+IT::size, xmm4 * factor );
          }
          if( i < M ) {
             IntrinsicType xmm1, xmm2;
@@ -2361,8 +2361,8 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                xmm1 = xmm1 + a1 * B.get(k,j         );
                xmm2 = xmm2 + a1 * B.get(k,j+IT::size);
             }
-            store( &(~C)(i,j         ), xmm1 * factor );
-            store( &(~C)(i,j+IT::size), xmm2 * factor );
+            (~C).store( i, j         , xmm1 * factor );
+            (~C).store( i, j+IT::size, xmm2 * factor );
          }
       }
       if( j < N ) {
@@ -2374,15 +2374,15 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                xmm1 = xmm1 + set( A(i    ,k) ) * b1;
                xmm2 = xmm2 + set( A(i+1UL,k) ) * b1;
             }
-            store( &(~C)(i    ,j), xmm1 * factor );
-            store( &(~C)(i+1UL,j), xmm2 * factor );
+            (~C).store( i    , j, xmm1 * factor );
+            (~C).store( i+1UL, j, xmm2 * factor );
          }
          if( i < M ) {
             IntrinsicType xmm1;
             for( size_t k=0UL; k<K; ++k ) {
                xmm1 = xmm1 + set( A(i,k) ) * B.get(k,j);
             }
-            store( &(~C)(i,j), xmm1 * factor );
+            (~C).store( i, j, xmm1 * factor );
          }
       }
    }
@@ -2767,14 +2767,14 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
-      const size_t N( B.spacing() );
+      const size_t N( B.columns() );
       const size_t K( A.columns() );
 
       const IntrinsicType factor( set( scalar ) );
 
       size_t j( 0UL );
 
-      for( ; (j+IT::size*8UL) <= N; j+=IT::size*8UL ) {
+      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
          for( size_t i=0UL; i<M; ++i ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             for( size_t k=0UL; k<K; ++k ) {
@@ -2788,17 +2788,17 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                xmm7 = xmm7 + a1 * B.get(k,j+IT::size*6UL);
                xmm8 = xmm8 + a1 * B.get(k,j+IT::size*7UL);
             }
-            store( &(~C)(i,j             ), (~C).get(i,j             ) + xmm1 * factor );
-            store( &(~C)(i,j+IT::size    ), (~C).get(i,j+IT::size    ) + xmm2 * factor );
-            store( &(~C)(i,j+IT::size*2UL), (~C).get(i,j+IT::size*2UL) + xmm3 * factor );
-            store( &(~C)(i,j+IT::size*3UL), (~C).get(i,j+IT::size*3UL) + xmm4 * factor );
-            store( &(~C)(i,j+IT::size*4UL), (~C).get(i,j+IT::size*4UL) + xmm5 * factor );
-            store( &(~C)(i,j+IT::size*5UL), (~C).get(i,j+IT::size*5UL) + xmm6 * factor );
-            store( &(~C)(i,j+IT::size*6UL), (~C).get(i,j+IT::size*6UL) + xmm7 * factor );
-            store( &(~C)(i,j+IT::size*7UL), (~C).get(i,j+IT::size*7UL) + xmm8 * factor );
+            (~C).store( i, j             , (~C).get(i,j             ) + xmm1 * factor );
+            (~C).store( i, j+IT::size    , (~C).get(i,j+IT::size    ) + xmm2 * factor );
+            (~C).store( i, j+IT::size*2UL, (~C).get(i,j+IT::size*2UL) + xmm3 * factor );
+            (~C).store( i, j+IT::size*3UL, (~C).get(i,j+IT::size*3UL) + xmm4 * factor );
+            (~C).store( i, j+IT::size*4UL, (~C).get(i,j+IT::size*4UL) + xmm5 * factor );
+            (~C).store( i, j+IT::size*5UL, (~C).get(i,j+IT::size*5UL) + xmm6 * factor );
+            (~C).store( i, j+IT::size*6UL, (~C).get(i,j+IT::size*6UL) + xmm7 * factor );
+            (~C).store( i, j+IT::size*7UL, (~C).get(i,j+IT::size*7UL) + xmm8 * factor );
          }
       }
-      for( ; (j+IT::size*4UL) <= N; j+=IT::size*4UL ) {
+      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL ) {
          size_t i( 0UL );
          for( ; (i+2UL) <= M; i+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
@@ -2818,14 +2818,14 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                xmm7 = xmm7 + a2 * b3;
                xmm8 = xmm8 + a2 * b4;
             }
-            store( &(~C)(i    ,j             ), (~C).get(i    ,j             ) + xmm1 * factor );
-            store( &(~C)(i    ,j+IT::size    ), (~C).get(i    ,j+IT::size    ) + xmm2 * factor );
-            store( &(~C)(i    ,j+IT::size*2UL), (~C).get(i    ,j+IT::size*2UL) + xmm3 * factor );
-            store( &(~C)(i    ,j+IT::size*3UL), (~C).get(i    ,j+IT::size*3UL) + xmm4 * factor );
-            store( &(~C)(i+1UL,j             ), (~C).get(i+1UL,j             ) + xmm5 * factor );
-            store( &(~C)(i+1UL,j+IT::size    ), (~C).get(i+1UL,j+IT::size    ) + xmm6 * factor );
-            store( &(~C)(i+1UL,j+IT::size*2UL), (~C).get(i+1UL,j+IT::size*2UL) + xmm7 * factor );
-            store( &(~C)(i+1UL,j+IT::size*3UL), (~C).get(i+1UL,j+IT::size*3UL) + xmm8 * factor );
+            (~C).store( i    , j             , (~C).get(i    ,j             ) + xmm1 * factor );
+            (~C).store( i    , j+IT::size    , (~C).get(i    ,j+IT::size    ) + xmm2 * factor );
+            (~C).store( i    , j+IT::size*2UL, (~C).get(i    ,j+IT::size*2UL) + xmm3 * factor );
+            (~C).store( i    , j+IT::size*3UL, (~C).get(i    ,j+IT::size*3UL) + xmm4 * factor );
+            (~C).store( i+1UL, j             , (~C).get(i+1UL,j             ) + xmm5 * factor );
+            (~C).store( i+1UL, j+IT::size    , (~C).get(i+1UL,j+IT::size    ) + xmm6 * factor );
+            (~C).store( i+1UL, j+IT::size*2UL, (~C).get(i+1UL,j+IT::size*2UL) + xmm7 * factor );
+            (~C).store( i+1UL, j+IT::size*3UL, (~C).get(i+1UL,j+IT::size*3UL) + xmm8 * factor );
          }
          if( i < M ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
@@ -2836,13 +2836,13 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                xmm3 = xmm3 + a1 * B.get(k,j+IT::size*2UL);
                xmm4 = xmm4 + a1 * B.get(k,j+IT::size*3UL);
             }
-            store( &(~C)(i,j             ), (~C).get(i,j             ) + xmm1 * factor );
-            store( &(~C)(i,j+IT::size    ), (~C).get(i,j+IT::size    ) + xmm2 * factor );
-            store( &(~C)(i,j+IT::size*2UL), (~C).get(i,j+IT::size*2UL) + xmm3 * factor );
-            store( &(~C)(i,j+IT::size*3UL), (~C).get(i,j+IT::size*3UL) + xmm4 * factor );
+            (~C).store( i, j             , (~C).get(i,j             ) + xmm1 * factor );
+            (~C).store( i, j+IT::size    , (~C).get(i,j+IT::size    ) + xmm2 * factor );
+            (~C).store( i, j+IT::size*2UL, (~C).get(i,j+IT::size*2UL) + xmm3 * factor );
+            (~C).store( i, j+IT::size*3UL, (~C).get(i,j+IT::size*3UL) + xmm4 * factor );
          }
       }
-      for( ; (j+IT::size*2UL) <= N; j+=IT::size*2UL ) {
+      for( ; (j+IT::size) < N; j+=IT::size*2UL ) {
          size_t i( 0UL );
          for( ; (i+2UL) <= M; i+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
@@ -2856,10 +2856,10 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                xmm3 = xmm3 + a2 * b1;
                xmm4 = xmm4 + a2 * b2;
             }
-            store( &(~C)(i    ,j         ), (~C).get(i    ,j         ) + xmm1 * factor );
-            store( &(~C)(i    ,j+IT::size), (~C).get(i    ,j+IT::size) + xmm2 * factor );
-            store( &(~C)(i+1UL,j         ), (~C).get(i+1UL,j         ) + xmm3 * factor );
-            store( &(~C)(i+1UL,j+IT::size), (~C).get(i+1UL,j+IT::size) + xmm4 * factor );
+            (~C).store( i    , j         , (~C).get(i    ,j         ) + xmm1 * factor );
+            (~C).store( i    , j+IT::size, (~C).get(i    ,j+IT::size) + xmm2 * factor );
+            (~C).store( i+1UL, j         , (~C).get(i+1UL,j         ) + xmm3 * factor );
+            (~C).store( i+1UL, j+IT::size, (~C).get(i+1UL,j+IT::size) + xmm4 * factor );
          }
          if( i < M ) {
             IntrinsicType xmm1, xmm2;
@@ -2868,8 +2868,8 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                xmm1 = xmm1 + a1 * B.get(k,j         );
                xmm2 = xmm2 + a1 * B.get(k,j+IT::size);
             }
-            store( &(~C)(i,j         ), (~C).get(i,j         ) + xmm1 * factor );
-            store( &(~C)(i,j+IT::size), (~C).get(i,j+IT::size) + xmm2 * factor );
+            (~C).store( i, j         , (~C).get(i,j         ) + xmm1 * factor );
+            (~C).store( i, j+IT::size, (~C).get(i,j+IT::size) + xmm2 * factor );
          }
       }
       if( j < N ) {
@@ -2881,15 +2881,15 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                xmm1 = xmm1 + set( A(i    ,k) ) * b1;
                xmm2 = xmm2 + set( A(i+1UL,k) ) * b1;
             }
-            store( &(~C)(i    ,j), (~C).get(i    ,j) + xmm1 * factor );
-            store( &(~C)(i+1UL,j), (~C).get(i+1UL,j) + xmm2 * factor );
+            (~C).store( i    , j, (~C).get(i    ,j) + xmm1 * factor );
+            (~C).store( i+1UL, j, (~C).get(i+1UL,j) + xmm2 * factor );
          }
          if( i < M ) {
             IntrinsicType xmm1;
             for( size_t k=0UL; k<K; ++k ) {
                xmm1 = xmm1 + set( A(i,k) ) * B.get(k,j);
             }
-            store( &(~C)(i,j), (~C).get(i,j) + xmm1 * factor );
+            (~C).store( i, j, (~C).get(i,j) + xmm1 * factor );
          }
       }
    }
@@ -3244,14 +3244,14 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
-      const size_t N( B.spacing() );
+      const size_t N( B.columns() );
       const size_t K( A.columns() );
 
       const IntrinsicType factor( set( scalar ) );
 
       size_t j( 0UL );
 
-      for( ; (j+IT::size*8UL) <= N; j+=IT::size*8UL ) {
+      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
          for( size_t i=0UL; i<M; ++i ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             for( size_t k=0UL; k<K; ++k ) {
@@ -3265,17 +3265,17 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                xmm7 = xmm7 + a1 * B.get(k,j+IT::size*6UL);
                xmm8 = xmm8 + a1 * B.get(k,j+IT::size*7UL);
             }
-            store( &(~C)(i,j             ), (~C).get(i,j             ) - xmm1 * factor );
-            store( &(~C)(i,j+IT::size    ), (~C).get(i,j+IT::size    ) - xmm2 * factor );
-            store( &(~C)(i,j+IT::size*2UL), (~C).get(i,j+IT::size*2UL) - xmm3 * factor );
-            store( &(~C)(i,j+IT::size*3UL), (~C).get(i,j+IT::size*3UL) - xmm4 * factor );
-            store( &(~C)(i,j+IT::size*4UL), (~C).get(i,j+IT::size*4UL) - xmm5 * factor );
-            store( &(~C)(i,j+IT::size*5UL), (~C).get(i,j+IT::size*5UL) - xmm6 * factor );
-            store( &(~C)(i,j+IT::size*6UL), (~C).get(i,j+IT::size*6UL) - xmm7 * factor );
-            store( &(~C)(i,j+IT::size*7UL), (~C).get(i,j+IT::size*7UL) - xmm8 * factor );
+            (~C).store( i, j             , (~C).get(i,j             ) - xmm1 * factor );
+            (~C).store( i, j+IT::size    , (~C).get(i,j+IT::size    ) - xmm2 * factor );
+            (~C).store( i, j+IT::size*2UL, (~C).get(i,j+IT::size*2UL) - xmm3 * factor );
+            (~C).store( i, j+IT::size*3UL, (~C).get(i,j+IT::size*3UL) - xmm4 * factor );
+            (~C).store( i, j+IT::size*4UL, (~C).get(i,j+IT::size*4UL) - xmm5 * factor );
+            (~C).store( i, j+IT::size*5UL, (~C).get(i,j+IT::size*5UL) - xmm6 * factor );
+            (~C).store( i, j+IT::size*6UL, (~C).get(i,j+IT::size*6UL) - xmm7 * factor );
+            (~C).store( i, j+IT::size*7UL, (~C).get(i,j+IT::size*7UL) - xmm8 * factor );
          }
       }
-      for( ; (j+IT::size*4UL) <= N; j+=IT::size*4UL ) {
+      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL ) {
          size_t i( 0UL );
          for( ; (i+2UL) <= M; i+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
@@ -3295,14 +3295,14 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                xmm7 = xmm7 + a2 * b3;
                xmm8 = xmm8 + a2 * b4;
             }
-            store( &(~C)(i    ,j             ), (~C).get(i    ,j             ) - xmm1 * factor );
-            store( &(~C)(i    ,j+IT::size    ), (~C).get(i    ,j+IT::size    ) - xmm2 * factor );
-            store( &(~C)(i    ,j+IT::size*2UL), (~C).get(i    ,j+IT::size*2UL) - xmm3 * factor );
-            store( &(~C)(i    ,j+IT::size*3UL), (~C).get(i    ,j+IT::size*3UL) - xmm4 * factor );
-            store( &(~C)(i+1UL,j             ), (~C).get(i+1UL,j             ) - xmm5 * factor );
-            store( &(~C)(i+1UL,j+IT::size    ), (~C).get(i+1UL,j+IT::size    ) - xmm6 * factor );
-            store( &(~C)(i+1UL,j+IT::size*2UL), (~C).get(i+1UL,j+IT::size*2UL) - xmm7 * factor );
-            store( &(~C)(i+1UL,j+IT::size*3UL), (~C).get(i+1UL,j+IT::size*3UL) - xmm8 * factor );
+            (~C).store( i    , j             , (~C).get(i    ,j             ) - xmm1 * factor );
+            (~C).store( i    , j+IT::size    , (~C).get(i    ,j+IT::size    ) - xmm2 * factor );
+            (~C).store( i    , j+IT::size*2UL, (~C).get(i    ,j+IT::size*2UL) - xmm3 * factor );
+            (~C).store( i    , j+IT::size*3UL, (~C).get(i    ,j+IT::size*3UL) - xmm4 * factor );
+            (~C).store( i+1UL, j             , (~C).get(i+1UL,j             ) - xmm5 * factor );
+            (~C).store( i+1UL, j+IT::size    , (~C).get(i+1UL,j+IT::size    ) - xmm6 * factor );
+            (~C).store( i+1UL, j+IT::size*2UL, (~C).get(i+1UL,j+IT::size*2UL) - xmm7 * factor );
+            (~C).store( i+1UL, j+IT::size*3UL, (~C).get(i+1UL,j+IT::size*3UL) - xmm8 * factor );
          }
          if( i < M ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
@@ -3313,13 +3313,13 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                xmm3 = xmm3 + a1 * B.get(k,j+IT::size*2UL);
                xmm4 = xmm4 + a1 * B.get(k,j+IT::size*3UL);
             }
-            store( &(~C)(i,j             ), (~C).get(i,j             ) - xmm1 * factor );
-            store( &(~C)(i,j+IT::size    ), (~C).get(i,j+IT::size    ) - xmm2 * factor );
-            store( &(~C)(i,j+IT::size*2UL), (~C).get(i,j+IT::size*2UL) - xmm3 * factor );
-            store( &(~C)(i,j+IT::size*3UL), (~C).get(i,j+IT::size*3UL) - xmm4 * factor );
+            (~C).store( i, j             , (~C).get(i,j             ) - xmm1 * factor );
+            (~C).store( i, j+IT::size    , (~C).get(i,j+IT::size    ) - xmm2 * factor );
+            (~C).store( i, j+IT::size*2UL, (~C).get(i,j+IT::size*2UL) - xmm3 * factor );
+            (~C).store( i, j+IT::size*3UL, (~C).get(i,j+IT::size*3UL) - xmm4 * factor );
          }
       }
-      for( ; (j+IT::size*2UL) <= N; j+=IT::size*2UL ) {
+      for( ; (j+IT::size) < N; j+=IT::size*2UL ) {
          size_t i( 0UL );
          for( ; (i+2UL) <= M; i+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
@@ -3333,10 +3333,10 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                xmm3 = xmm3 + a2 * b1;
                xmm4 = xmm4 + a2 * b2;
             }
-            store( &(~C)(i    ,j         ), (~C).get(i    ,j         ) - xmm1 * factor );
-            store( &(~C)(i    ,j+IT::size), (~C).get(i    ,j+IT::size) - xmm2 * factor );
-            store( &(~C)(i+1UL,j         ), (~C).get(i+1UL,j         ) - xmm3 * factor );
-            store( &(~C)(i+1UL,j+IT::size), (~C).get(i+1UL,j+IT::size) - xmm4 * factor );
+            (~C).store( i    , j         , (~C).get(i    ,j         ) - xmm1 * factor );
+            (~C).store( i    , j+IT::size, (~C).get(i    ,j+IT::size) - xmm2 * factor );
+            (~C).store( i+1UL, j         , (~C).get(i+1UL,j         ) - xmm3 * factor );
+            (~C).store( i+1UL, j+IT::size, (~C).get(i+1UL,j+IT::size) - xmm4 * factor );
          }
          if( i < M ) {
             IntrinsicType xmm1, xmm2;
@@ -3345,8 +3345,8 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                xmm1 = xmm1 + a1 * B.get(k,j         );
                xmm2 = xmm2 + a1 * B.get(k,j+IT::size);
             }
-            store( &(~C)(i,j         ), (~C).get(i,j         ) - xmm1 * factor );
-            store( &(~C)(i,j+IT::size), (~C).get(i,j+IT::size) - xmm2 * factor );
+            (~C).store( i, j         , (~C).get(i,j         ) - xmm1 * factor );
+            (~C).store( i, j+IT::size, (~C).get(i,j+IT::size) - xmm2 * factor );
          }
       }
       if( j < N ) {
@@ -3358,15 +3358,15 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                xmm1 = xmm1 + set( A(i    ,k) ) * b1;
                xmm2 = xmm2 + set( A(i+1UL,k) ) * b1;
             }
-            store( &(~C)(i    ,j), (~C).get(i    ,j) - xmm1 * factor );
-            store( &(~C)(i+1UL,j), (~C).get(i+1UL,j) - xmm2 * factor );
+            (~C).store( i    , j, (~C).get(i    ,j) - xmm1 * factor );
+            (~C).store( i+1UL, j, (~C).get(i+1UL,j) - xmm2 * factor );
          }
          if( i < M ) {
             IntrinsicType xmm1;
             for( size_t k=0UL; k<K; ++k ) {
                xmm1 = xmm1 + set( A(i,k) ) * B.get(k,j);
             }
-            store( &(~C)(i,j), (~C).get(i,j) - xmm1 * factor );
+            (~C).store( i, j, (~C).get(i,j) - xmm1 * factor );
          }
       }
    }

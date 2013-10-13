@@ -31,6 +31,7 @@
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/DenseVector.h>
+#include <blaze/math/intrinsics/IntrinsicTrait.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Types.h>
 
@@ -53,12 +54,18 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
 {
+ private:
+   //**Type definitions****************************************************************************
+   typedef IntrinsicTrait<typename VT::ElementType>  IT;  //!< Intrinsic trait for the vector element type.
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    typedef DVecTransposer<VT,TF>        This;            //!< Type of this DVecTransposer instance.
    typedef typename VT::TransposeType   ResultType;      //!< Result type for expression template evaluations.
    typedef typename VT::ResultType      TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef typename VT::ElementType     ElementType;     //!< Resulting element type.
+   typedef typename VT::ElementType     ElementType;     //!< Type of the vector elements.
+   typedef typename IT::Type            IntrinsicType;   //!< Intrinsic type of the vector elements.
    typedef typename VT::ReturnType      ReturnType;      //!< Return type for expression template evaluations.
    typedef const This&                  CompositeType;   //!< Data type for composite expression templates.
    typedef typename VT::Reference       Reference;       //!< Reference to a non-constant matrix value.
@@ -148,6 +155,66 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    inline bool isAliased( const Other* alias ) const
    {
       return dv_.isAliased( alias );
+   }
+   //**********************************************************************************************
+
+   //**Store function******************************************************************************
+   /*!\brief Aligned store of an intrinsic element of the vector.
+   //
+   // \param index Access index. The index must be smaller than the number of vector elements.
+   // \param value The intrinsic element to be stored.
+   // \return void
+   //
+   // This function performs an aligned store of a specific intrinsic element of the dense vector.
+   // The index must be smaller than the number of vector elements and it must be a multiple of
+   // the number of values inside the intrinsic element. This function must \b NOT be called
+   // explicitly! It is used internally for the performance optimized evaluation of expression
+   // templates. Calling this function explicitly might result in erroneous results and/or in
+   // compilation errors.
+   */
+   inline void store( size_t index, const IntrinsicType& value )
+   {
+      dv_.store( index, value );
+   }
+   //**********************************************************************************************
+
+   //**Storeu function*****************************************************************************
+   /*!\brief Unaligned store of an intrinsic element of the vector.
+   //
+   // \param index Access index. The index must be smaller than the number of vector elements.
+   // \param value The intrinsic element to be stored.
+   // \return void
+   //
+   // This function performs an unaligned store of a specific intrinsic element of the dense
+   // vector. The index must be smaller than the number of vector elements and it must be a
+   // multiple of the number of values inside the intrinsic element. This function must \b NOT
+   // be called explicitly! It is used internally for the performance optimized evaluation of
+   // expression templates. Calling this function explicitly might result in erroneous results
+   // and/or in compilation errors.
+   */
+   inline void storeu( size_t index, const IntrinsicType& value )
+   {
+      dv_.storeu( index, value );
+   }
+   //**********************************************************************************************
+
+   //**Stream function*****************************************************************************
+   /*!\brief Aligned, non-temporal store of an intrinsic element of the vector.
+   //
+   // \param index Access index. The index must be smaller than the number of vector elements.
+   // \param value The intrinsic element to be stored.
+   // \return void
+   //
+   // This function performs an aligned, non-temporal store of a specific intrinsic element of
+   // the dense vector. The index must be smaller than the number of vector elements and it must
+   // be a multiple of the number of values inside the intrinsic element. This function must
+   // \b NOT be called explicitly! It is used internally for the performance optimized evaluation
+   // of expression templates. Calling this function explicitly might result in erroneous results
+   // and/or in compilation errors.
+   */
+   inline void stream( size_t index, const IntrinsicType& value )
+   {
+      dv_.stream( index, value );
    }
    //**********************************************************************************************
 
