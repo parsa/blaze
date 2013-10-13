@@ -1397,7 +1397,7 @@ inline bool DynamicVector<Type,TF>::isAliased( const Other* alias ) const
 //*************************************************************************************************
 /*!\brief Aligned load of an intrinsic element of the vector.
 //
-// \param index Access index. The index must be smaller than the number of subvector elements.
+// \param index Access index. The index must be smaller than the number of vector elements.
 // \return The loaded intrinsic element.
 //
 // This function performs an aligned load of a specific intrinsic element of the dense vector.
@@ -1426,7 +1426,7 @@ inline typename DynamicVector<Type,TF>::IntrinsicType
 //*************************************************************************************************
 /*!\brief Unaligned load of an intrinsic element of the vector.
 //
-// \param index Access index. The index must be smaller than the number of subvector elements.
+// \param index Access index. The index must be smaller than the number of vector elements.
 // \return The loaded intrinsic element.
 //
 // This function performs an unaligned load of a specific intrinsic element of the dense vector.
