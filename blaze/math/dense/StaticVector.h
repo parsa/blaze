@@ -305,9 +305,14 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool          canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool          isAliased( const Other* alias ) const;
-                              inline IntrinsicType get      ( size_t index ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const;
+   template< typename Other > inline bool isAliased( const Other* alias ) const;
+
+   inline IntrinsicType get   ( size_t index ) const;
+   inline IntrinsicType loadu ( size_t index ) const;
+   inline void          store ( size_t index, const IntrinsicType& value );
+   inline void          storeu( size_t index, const IntrinsicType& value );
+   inline void          stream( size_t index, const IntrinsicType& value );
 
    template< typename VT >
    inline typename DisableIf< VectorizedAssign<VT> >::Type
@@ -1342,19 +1347,21 @@ inline bool StaticVector<Type,N,TF>::isAliased( const Other* alias ) const
 
 
 //*************************************************************************************************
-/*!\brief Access to the intrinsic elements of the vector.
+/*!\brief Aligned load of an intrinsic element of the vector.
 //
-// \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
-// \return Reference to the accessed values.
+// \param index Access index. The index must be smaller than the number of vector elements.
+// \return The loaded intrinsic element.
 //
-// This function offers a direct access to the intrinsic elements of the vector. It must \b NOT
-// be called explicitly! It is used internally for the performance optimized evaluation of
-// expression templates. Calling this function explicitly might result in erroneous results
-// and/or in compilation errors.
+// This function performs an aligned load of a specific intrinsic element of the dense vector.
+// The index must be smaller than the number of vector elements and it must be a multiple of
+// the number of values inside the intrinsic element. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
 */
-template< typename Type     // Data type of the vector
-        , size_t N          // Number of elements
-        , bool TF >         // Transpose flag
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
 inline typename StaticVector<Type,N,TF>::IntrinsicType
    StaticVector<Type,N,TF>::get( size_t index ) const
 {
@@ -1365,6 +1372,132 @@ inline typename StaticVector<Type,N,TF>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
 
    return load( &v_[index] );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Unaligned load of an intrinsic element of the vector.
+//
+// \param index Access index. The index must be smaller than the number of vector elements.
+// \return The loaded intrinsic element.
+//
+// This function performs an unaligned load of a specific intrinsic element of the dense vector.
+// The index must be smaller than the number of vector elements and it must be a multiple of
+// the number of values inside the intrinsic element. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline typename StaticVector<Type,N,TF>::IntrinsicType
+   StaticVector<Type,N,TF>::loadu( size_t index ) const
+{
+   using blaze::loadu;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( index            <  N  , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= NN , "Invalid vector access index" );
+
+   return loadu( &v_[index] );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Aligned store of an intrinsic element of the vector.
+//
+// \param index Access index. The index must be smaller than the number of vector elements.
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an aligned store of a specific intrinsic element of the dense vector.
+// The index must be smaller than the number of vector elements and it must be a multiple of
+// the number of values inside the intrinsic element. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline void StaticVector<Type,N,TF>::store( size_t index, const IntrinsicType& value )
+{
+   using blaze::store;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( index            <  N  , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= NN , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
+
+   store( &v_[index], value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Unaligned store of an intrinsic element of the vector.
+//
+// \param index Access index. The index must be smaller than the number of vector elements.
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an unaligned store of a specific intrinsic element of the dense vector.
+// The index must be smaller than the number of vector elements and it must be a multiple of the
+// number of values inside the intrinsic element. This function must \b NOT be called explicitly!
+// It is used internally for the performance optimized evaluation of expression templates.
+// Calling this function explicitly might result in erroneous results and/or in compilation
+// errors.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline void StaticVector<Type,N,TF>::storeu( size_t index, const IntrinsicType& value )
+{
+   using blaze::storeu;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( index            <  N , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= NN, "Invalid vector access index" );
+
+   storeu( &v_[index], value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Aligned, non-temporal store of an intrinsic element of the vector.
+//
+// \param index Access index. The index must be smaller than the number of vector elements.
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an aligned, non-temporal store of a specific intrinsic element of
+// the dense vector. The index must be smaller than the number of vector elements and it must
+// be a multiple of the number of values inside the intrinsic element. This function must
+// \b NOT be called explicitly! It is used internally for the performance optimized evaluation
+// of expression templates. Calling this function explicitly might result in erroneous results
+// and/or in compilation errors.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline void StaticVector<Type,N,TF>::stream( size_t index, const IntrinsicType& value )
+{
+   using blaze::stream;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( index            <  N  , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= NN , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
+
+   stream( &v_[index], value );
 }
 //*************************************************************************************************
 
@@ -1413,6 +1546,8 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAssign<VT> >::Type
    StaticVector<Type,N,TF>::assign( const DenseVector<VT,TF>& rhs )
 {
+   using blaze::store;
+
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -1493,6 +1628,8 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >::Type
    StaticVector<Type,N,TF>::addAssign( const DenseVector<VT,TF>& rhs )
 {
+   using blaze::store;
+
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -1573,6 +1710,8 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >::Type
    StaticVector<Type,N,TF>::subAssign( const DenseVector<VT,TF>& rhs )
 {
+   using blaze::store;
+
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -1653,6 +1792,8 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >::Type
    StaticVector<Type,N,TF>::multAssign( const DenseVector<VT,TF>& rhs )
 {
+   using blaze::store;
+
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
