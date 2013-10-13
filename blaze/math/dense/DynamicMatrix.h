@@ -174,8 +174,8 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    typedef DynamicMatrix<Type,!SO>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
    typedef DynamicMatrix<Type,!SO>  TransposeType;   //!< Transpose type for expression template evaluations.
    typedef Type                     ElementType;     //!< Type of the matrix elements.
-   typedef const Type&              ReturnType;      //!< Return type for expression template evaluations.
    typedef typename IT::Type        IntrinsicType;   //!< Intrinsic type of the matrix elements.
+   typedef const Type&              ReturnType;      //!< Return type for expression template evaluations.
    typedef const This&              CompositeType;   //!< Data type for composite expression templates.
    typedef Type&                    Reference;       //!< Reference to a non-constant matrix value.
    typedef const Type&              ConstReference;  //!< Reference to a constant matrix value.
@@ -316,9 +316,14 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool          canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool          isAliased( const Other* alias ) const;
-                              inline IntrinsicType get      ( size_t i, size_t j ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const;
+   template< typename Other > inline bool isAliased( const Other* alias ) const;
+
+   inline IntrinsicType get   ( size_t i, size_t j ) const;
+   inline IntrinsicType loadu ( size_t i, size_t j ) const;
+   inline void          store ( size_t i, size_t j, const IntrinsicType& value );
+   inline void          storeu( size_t i, size_t j, const IntrinsicType& value );
+   inline void          stream( size_t i, size_t j, const IntrinsicType& value );
 
    template< typename MT >
    inline typename DisableIf< VectorizedAssign<MT> >::Type
@@ -1552,19 +1557,22 @@ inline bool DynamicMatrix<Type,SO>::isAliased( const Other* alias ) const
 
 
 //*************************************************************************************************
-/*!\brief Access to the intrinsic elements of the matrix.
+/*!\brief Aligned load of an intrinsic element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
 // \param j Access index for the column. The index has to be in the range [0..N-1].
-// \return Reference to the accessed values.
+// \return The loaded intrinsic element.
 //
-// This function offers a direct access to the intrinsic elements of the matrix. It must \b NOT
-// be called explicitly! It is used internally for the performance optimized evaluation of
-// expression templates. Calling this function explicitly might result in erroneous results
-// and/or in compilation errors.
+// This function performs an aligned load of a specific intrinsic element of the dense matrix.
+// The row index must be smaller than the number of rows and the column index must be smaller
+// than the number of columns. Additionally, the column index (in case of a row-major matrix)
+// or the row index (in case of a column-major matrix) must be a multiple of the number of
+// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
+// used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename Type     // Data type of the matrix
-        , bool SO >         // Storage order
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
 inline typename DynamicMatrix<Type,SO>::IntrinsicType
    DynamicMatrix<Type,SO>::get( size_t i, size_t j ) const
 {
@@ -1576,6 +1584,140 @@ inline typename DynamicMatrix<Type,SO>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
    return load( &v_[i*nn_+j] );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Unaligned load of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \return The loaded intrinsic element.
+//
+// This function performs an unaligned load of a specific intrinsic element of the dense matrix.
+// The row index must be smaller than the number of rows and the column index must be smaller
+// than the number of columns. Additionally, the column index (in case of a row-major matrix)
+// or the row index (in case of a column-major matrix) must be a multiple of the number of
+// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
+// used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline typename DynamicMatrix<Type,SO>::IntrinsicType
+   DynamicMatrix<Type,SO>::loadu( size_t i, size_t j ) const
+{
+   using blaze::loadu;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j + IT::size <= nn_, "Invalid column access index" );
+
+   return loadu( &v_[i*nn_+j] );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Aligned store of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an aligned store of a specific intrinsic element of the dense matrix.
+// The row index must be smaller than the number of rows and the column index must be smaller
+// than the number of columns. Additionally, the column index (in case of a row-major matrix)
+// or the row index (in case of a column-major matrix) must be a multiple of the number of
+// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
+// used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline void DynamicMatrix<Type,SO>::store( size_t i, size_t j, const IntrinsicType& value )
+{
+   using blaze::store;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j + IT::size <= nn_, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
+
+   store( &v_[i*nn_+j], value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Unaligned store of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an unaligned store of a specific intrinsic element of the dense matrix.
+// The row index must be smaller than the number of rows and the column index must be smaller
+// than the number of columns. Additionally, the column index (in case of a row-major matrix)
+// or the row index (in case of a column-major matrix) must be a multiple of the number of
+// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
+// used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline void DynamicMatrix<Type,SO>::storeu( size_t i, size_t j, const IntrinsicType& value )
+{
+   using blaze::storeu;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j + IT::size <= nn_, "Invalid column access index" );
+
+   storeu( &v_[i*nn_+j], value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Aligned, non-temporal store of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an aligned, non-temporal store of a specific intrinsic element of the
+// dense matrix. The row index must be smaller than the number of rows and the column index must
+// be smaller than the number of columns. Additionally, the column index (in case of a row-major
+// matrix) or the row index (in case of a column-major matrix) must be a multiple of the number
+// of values inside the intrinsic element. This function must \b NOT be called explicitly! It
+// is used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline void DynamicMatrix<Type,SO>::stream( size_t i, size_t j, const IntrinsicType& value )
+{
+   using blaze::stream;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j + IT::size <= nn_, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
+
+   stream( &v_[i*nn_+j], value );
 }
 //*************************************************************************************************
 
@@ -1600,8 +1742,8 @@ inline typename DisableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vecto
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == ( n_ & size_t(-2) ), "Invalid end calculation" );
    const size_t jend( n_ & size_t(-2) );
+   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == jend, "Invalid end calculation" );
 
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<jend; j+=2UL ) {
@@ -1633,6 +1775,9 @@ template< typename MT >  // Type of the right-hand side dense matrix
 inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedAssign<MT> >::Type
    DynamicMatrix<Type,SO>::assign( const DenseMatrix<MT,SO>& rhs )
 {
+   using blaze::store;
+   using blaze::stream;
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -1646,8 +1791,8 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
    }
    else
    {
-      BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == ( n_ & size_t(-IT::size*4) ), "Invalid end calculation" );
       const size_t jend( n_ & size_t(-IT::size*4) );
+      BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jend, "Invalid end calculation" );
 
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
@@ -1773,8 +1918,8 @@ inline typename DisableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vecto
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == ( n_ & size_t(-2) ), "Invalid end calculation" );
    const size_t jend( n_ & size_t(-2) );
+   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == jend, "Invalid end calculation" );
 
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<jend; j+=2UL ) {
@@ -1806,13 +1951,15 @@ template< typename MT >  // Type of the right-hand side dense matrix
 inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >::Type
    DynamicMatrix<Type,SO>::addAssign( const DenseMatrix<MT,SO>& rhs )
 {
+   using blaze::store;
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == ( n_ & size_t(-IT::size*4) ), "Invalid end calculation" );
    const size_t jend( n_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jend, "Invalid end calculation" );
 
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
@@ -1937,8 +2084,8 @@ inline typename DisableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vecto
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == ( n_ & size_t(-2) ), "Invalid end calculation" );
    const size_t jend( n_ & size_t(-2) );
+   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == jend, "Invalid end calculation" );
 
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<jend; j+=2UL ) {
@@ -1970,13 +2117,15 @@ template< typename MT >  // Type of the right-hand side dense matrix
 inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >::Type
    DynamicMatrix<Type,SO>::subAssign( const DenseMatrix<MT,SO>& rhs )
 {
+   using blaze::store;
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == ( n_ & size_t(-IT::size*4) ), "Invalid end calculation" );
    const size_t jend( n_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jend, "Invalid end calculation" );
 
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
@@ -2116,8 +2265,8 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    typedef DynamicMatrix<Type,false>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
    typedef DynamicMatrix<Type,false>  TransposeType;   //!< Transpose type for expression template evaluations.
    typedef Type                       ElementType;     //!< Type of the matrix elements.
-   typedef const Type&                ReturnType;      //!< Return type for expression template evaluations.
    typedef typename IT::Type          IntrinsicType;   //!< Intrinsic type of the matrix elements.
+   typedef const Type&                ReturnType;      //!< Return type for expression template evaluations.
    typedef const This&                CompositeType;   //!< Data type for composite expression templates.
    typedef Type&                      Reference;       //!< Reference to a non-constant matrix value.
    typedef const Type&                ConstReference;  //!< Reference to a constant matrix value.
@@ -2252,9 +2401,14 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool          canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool          isAliased( const Other* alias ) const;
-                              inline IntrinsicType get      ( size_t i, size_t j ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const;
+   template< typename Other > inline bool isAliased( const Other* alias ) const;
+
+   inline IntrinsicType get   ( size_t i, size_t j ) const;
+   inline IntrinsicType loadu ( size_t i, size_t j ) const;
+   inline void          store ( size_t i, size_t j, const IntrinsicType& value );
+   inline void          storeu( size_t i, size_t j, const IntrinsicType& value );
+   inline void          stream( size_t i, size_t j, const IntrinsicType& value );
 
    template< typename MT >
    inline typename DisableIf< VectorizedAssign<MT> >::Type
@@ -3498,16 +3652,18 @@ inline bool DynamicMatrix<Type,true>::isAliased( const Other* alias ) const
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Access to the intrinsic elements of the matrix.
+/*!\brief Aligned load of an intrinsic element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
 // \param j Access index for the column. The index has to be in the range [0..N-1].
-// \return Reference to the accessed values.
+// \return The loaded intrinsic element.
 //
-// This function offers a direct access to the intrinsic elements of the matrix. It must \b NOT
-// be called explicitly! It is used internally for the performance optimized evaluation of
-// expression templates. Calling this function explicitly might result in erroneous results
-// and/or in compilation errors.
+// This function performs an aligned load of a specific intrinsic element of the dense matrix.
+// The row index must be smaller than the number of rows and the column index must be smaller
+// than the number of columns. Additionally, the row index must be a multiple of the number of
+// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
+// used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename Type >  // Data type of the matrix
 inline typename DynamicMatrix<Type,true>::IntrinsicType
@@ -3521,6 +3677,141 @@ inline typename DynamicMatrix<Type,true>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
 
    return load( &v_[i+j*mm_] );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Unaligned load of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \return The loaded intrinsic element.
+//
+// This function performs an unaligned load of a specific intrinsic element of the dense matrix.
+// The row index must be smaller than the number of rows and the column index must be smaller
+// than the number of columns. Additionally, the row index must be a multiple of the number of
+// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
+// used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename Type >  // Data type of the matrix
+inline typename DynamicMatrix<Type,true>::IntrinsicType
+   DynamicMatrix<Type,true>::loadu( size_t i, size_t j ) const
+{
+   using blaze::loadu;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= mm_, "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
+
+   return loadu( &v_[i+j*mm_] );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Aligned store of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an aligned store of a specific intrinsic element of the dense matrix.
+// The row index must be smaller than the number of rows and the column index must be smaller
+// than the number of columns. Additionally, the row index must be a multiple of the number of
+// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
+// used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename Type >  // Data type of the matrix
+inline void DynamicMatrix<Type,true>::store( size_t i, size_t j, const IntrinsicType& value )
+{
+   using blaze::store;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= mm_, "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
+
+   store( &v_[i+j*mm_], value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Unaligned store of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an unaligned store of a specific intrinsic element of the dense matrix.
+// The row index must be smaller than the number of rows and the column index must be smaller
+// than the number of columns. Additionally, the row index must be a multiple of the number of
+// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
+// used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename Type >  // Data type of the matrix
+inline void DynamicMatrix<Type,true>::storeu( size_t i, size_t j, const IntrinsicType& value )
+{
+   using blaze::storeu;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= mm_, "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
+
+   storeu( &v_[i+j*mm_], value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Aligned, non-temporal store of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an aligned, non-temporal store of a specific intrinsic element of the
+// dense matrix. // The row index must be smaller than the number of rows and the column index
+// must be smaller than the number of columns. Additionally, the row index must be a multiple
+// of the number of values inside the intrinsic element. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
+*/
+template< typename Type >  // Data type of the matrix
+inline void DynamicMatrix<Type,true>::stream( size_t i, size_t j, const IntrinsicType& value )
+{
+   using blaze::stream;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= mm_, "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
+
+   stream( &v_[i+j*mm_], value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3546,8 +3837,8 @@ inline typename DisableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vec
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % 2UL ) ) == ( m_ & size_t(-2) ), "Invalid end calculation" );
    const size_t iend( m_ & size_t(-2) );
+   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % 2UL ) ) == iend, "Invalid end calculation" );
 
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<iend; i+=2UL ) {
@@ -3580,6 +3871,9 @@ template< typename MT >    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedAssign<MT> >::Type
    DynamicMatrix<Type,true>::assign( const DenseMatrix<MT,true>& rhs )
 {
+   using blaze::store;
+   using blaze::stream;
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -3593,8 +3887,8 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
    }
    else
    {
-      BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == ( m_ & size_t(-IT::size*4) ), "Invalid end calculation" );
       const size_t iend( m_ & size_t(-IT::size*4) );
+      BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
 
       for( size_t j=0UL; j<n_; ++j ) {
          for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
@@ -3718,8 +4012,8 @@ inline typename DisableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vec
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % 2UL ) ) == ( m_ & size_t(-2) ), "Invalid end calculation" );
    const size_t iend( m_ & size_t(-2) );
+   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % 2UL ) ) == iend, "Invalid end calculation" );
 
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<iend; i+=2UL ) {
@@ -3737,7 +4031,7 @@ inline typename DisableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vec
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Intrinsic optimizd implementation of the addition assignment of a column-major dense matrix.
+/*!\brief Intrinsic optimized implementation of the addition assignment of a column-major dense matrix.
 //
 // \param rhs The right-hand side dense matrix to be added.
 // \return void
@@ -3752,13 +4046,15 @@ template< typename MT >    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >::Type
    DynamicMatrix<Type,true>::addAssign( const DenseMatrix<MT,true>& rhs )
 {
+   using blaze::store;
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == ( m_ & size_t(-IT::size*4) ), "Invalid end calculation" );
    const size_t iend( m_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
 
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
@@ -3881,8 +4177,8 @@ inline typename DisableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vec
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % 2UL ) ) == ( m_ & size_t(-2) ), "Invalid end calculation" );
    const size_t iend( m_ & size_t(-2) );
+   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % 2UL ) ) == iend, "Invalid end calculation" );
 
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<iend; i+=2UL ) {
@@ -3916,13 +4212,15 @@ template< typename MT >    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >::Type
    DynamicMatrix<Type,true>::subAssign( const DenseMatrix<MT,true>& rhs )
 {
+   using blaze::store;
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == ( m_ & size_t(-IT::size*4) ), "Invalid end calculation" );
    const size_t iend( m_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
 
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {

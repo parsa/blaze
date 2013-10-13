@@ -333,9 +333,14 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool          canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool          isAliased( const Other* alias ) const;
-                              inline IntrinsicType get      ( size_t i, size_t j ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const;
+   template< typename Other > inline bool isAliased( const Other* alias ) const;
+
+   inline IntrinsicType get   ( size_t i, size_t j ) const;
+   inline IntrinsicType loadu ( size_t i, size_t j ) const;
+   inline void          store ( size_t i, size_t j, const IntrinsicType& value );
+   inline void          storeu( size_t i, size_t j, const IntrinsicType& value );
+   inline void          stream( size_t i, size_t j, const IntrinsicType& value );
 
    template< typename MT, bool SO2 >
    inline typename DisableIf< VectorizedAssign<MT> >::Type
@@ -2040,16 +2045,19 @@ inline bool StaticMatrix<Type,M,N,SO>::isAliased( const Other* alias ) const
 
 
 //*************************************************************************************************
-/*!\brief Access to the intrinsic elements of the matrix.
+/*!\brief Aligned load of an intrinsic element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
 // \param j Access index for the column. The index has to be in the range [0..N-1].
-// \return Reference to the accessed values.
+// \return The loaded intrinsic element.
 //
-// This function offers a direct access to the intrinsic elements of the matrix. It must \b NOT
-// be called explicitly! It is used internally for the performance optimized evaluation of
-// expression templates. Calling this function explicitly might result in erroneous results
-// and/or in compilation errors.
+// This function performs an aligned load of a specific intrinsic element of the dense matrix.
+// The row index must be smaller than the number of rows and the column index must be smaller
+// than the number of columns. Additionally, the column index (in case of a row-major matrix)
+// or the row index (in case of a column-major matrix) must be a multiple of the number of
+// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
+// used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -2066,6 +2074,148 @@ inline typename StaticMatrix<Type,M,N,SO>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
    return load( &v_[i*NN+j] );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Unaligned load of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \return The loaded intrinsic element.
+//
+// This function performs an unaligned load of a specific intrinsic element of the dense matrix.
+// The row index must be smaller than the number of rows and the column index must be smaller
+// than the number of columns. Additionally, the column index (in case of a row-major matrix)
+// or the row index (in case of a column-major matrix) must be a multiple of the number of
+// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
+// used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline typename StaticMatrix<Type,M,N,SO>::IntrinsicType
+   StaticMatrix<Type,M,N,SO>::loadu( size_t i, size_t j ) const
+{
+   using blaze::loadu;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( i            <  M  , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j            <  N  , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j + IT::size <= NN , "Invalid column access index" );
+
+   return loadu( &v_[i*NN+j] );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Aligned store of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an aligned store of a specific intrinsic element of the dense matrix.
+// The row index must be smaller than the number of rows and the column index must be smaller
+// than the number of columns. Additionally, the column index (in case of a row-major matrix)
+// or the row index (in case of a column-major matrix) must be a multiple of the number of
+// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
+// used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline void StaticMatrix<Type,M,N,SO>::store( size_t i, size_t j, const IntrinsicType& value )
+{
+   using blaze::store;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( i            <  M  , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j            <  N  , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j + IT::size <= NN , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
+
+   store( &v_[i*NN+j], value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Unaligned store of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an unaligned store of a specific intrinsic element of the dense matrix.
+// The row index must be smaller than the number of rows and the column index must be smaller
+// than the number of columns. Additionally, the column index (in case of a row-major matrix)
+// or the row index (in case of a column-major matrix) must be a multiple of the number of
+// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
+// used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline void StaticMatrix<Type,M,N,SO>::storeu( size_t i, size_t j, const IntrinsicType& value )
+{
+   using blaze::storeu;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( i            <  M , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j            <  N , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j + IT::size <= NN, "Invalid column access index" );
+
+   storeu( &v_[i*NN+j], value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Aligned, non-temporal store of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an aligned, non-temporal store of a specific intrinsic element of the
+// dense matrix. The row index must be smaller than the number of rows and the column index must
+// be smaller than the number of columns. Additionally, the column index (in case of a row-major
+// matrix) or the row index (in case of a column-major matrix) must be a multiple of the number
+// of values inside the intrinsic element. This function must \b NOT be called explicitly! It
+// is used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline void StaticMatrix<Type,M,N,SO>::stream( size_t i, size_t j, const IntrinsicType& value )
+{
+   using blaze::stream;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( i            <  M  , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j            <  N  , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j + IT::size <= NN , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
+
+   stream( &v_[i*NN+j], value );
 }
 //*************************************************************************************************
 
@@ -2121,6 +2271,8 @@ template< typename MT    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedAssign<MT> >::Type
    StaticMatrix<Type,M,N,SO>::assign( const DenseMatrix<MT,SO2>& rhs )
 {
+   using blaze::store;
+
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2243,6 +2395,8 @@ template< typename MT    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >::Type
    StaticMatrix<Type,M,N,SO>::addAssign( const DenseMatrix<MT,SO2>& rhs )
 {
+   using blaze::store;
+
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2365,6 +2519,8 @@ template< typename MT    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >::Type
    StaticMatrix<Type,M,N,SO>::subAssign( const DenseMatrix<MT,SO2>& rhs )
 {
+   using blaze::store;
+
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2622,9 +2778,14 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool          canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool          isAliased( const Other* alias ) const;
-                              inline IntrinsicType get      ( size_t i, size_t j ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const;
+   template< typename Other > inline bool isAliased( const Other* alias ) const;
+
+   inline IntrinsicType get   ( size_t i, size_t j ) const;
+   inline IntrinsicType loadu ( size_t i, size_t j ) const;
+   inline void          store ( size_t i, size_t j, const IntrinsicType& value );
+   inline void          storeu( size_t i, size_t j, const IntrinsicType& value );
+   inline void          stream( size_t i, size_t j, const IntrinsicType& value );
 
    template< typename MT, bool SO >
    inline typename DisableIf< VectorizedAssign<MT> >::Type
@@ -4333,16 +4494,18 @@ inline bool StaticMatrix<Type,M,N,true>::isAliased( const Other* alias ) const
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Access to the intrinsic elements of the matrix.
+/*!\brief Aligned load of an intrinsic element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
 // \param j Access index for the column. The index has to be in the range [0..N-1].
-// \return Reference to the accessed values.
+// \return The loaded intrinsic element.
 //
-// This function offers a direct access to the intrinsic elements of the matrix. It must \b NOT
-// be called explicitly! It is used internally for the performance optimized evaluation of
-// expression templates. Calling this function explicitly might result in erroneous results
-// and/or in compilation errors.
+// This function performs an aligned load of a specific intrinsic element of the dense matrix.
+// The row index must be smaller than the number of rows and the column index must be smaller
+// than the number of columns. Additionally, the row index must be a multiple of the number of
+// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
+// used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -4358,6 +4521,149 @@ inline typename StaticMatrix<Type,M,N,true>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( j            <  N  , "Invalid column access index" );
 
    return load( &v_[i+j*MM] );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Unaligned load of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \return The loaded intrinsic element.
+//
+// This function performs an unaligned load of a specific intrinsic element of the dense matrix.
+// The row index must be smaller than the number of rows and the column index must be smaller
+// than the number of columns. Additionally, the row index must be a multiple of the number of
+// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
+// used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline typename StaticMatrix<Type,M,N,true>::IntrinsicType
+   StaticMatrix<Type,M,N,true>::loadu( size_t i, size_t j ) const
+{
+   using blaze::loadu;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( i            <  M  , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= MM , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j            <  N  , "Invalid column access index" );
+
+   return loadu( &v_[i+j*MM] );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Aligned store of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an aligned store of a specific intrinsic element of the dense matrix.
+// The row index must be smaller than the number of rows and the column index must be smaller
+// than the number of columns. Additionally, the row index must be a multiple of the number of
+// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
+// used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline void StaticMatrix<Type,M,N,true>::store( size_t i, size_t j, const IntrinsicType& value )
+{
+   using blaze::store;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( i            <  M  , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= MM , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j            <  N  , "Invalid column access index" );
+
+   store( &v_[i+j*MM], value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Unaligned store of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an unaligned store of a specific intrinsic element of the dense matrix.
+// The row index must be smaller than the number of rows and the column index must be smaller
+// than the number of columns. Additionally, the row index must be a multiple of the number of
+// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
+// used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline void StaticMatrix<Type,M,N,true>::storeu( size_t i, size_t j, const IntrinsicType& value )
+{
+   using blaze::storeu;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( i            <  M , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= MM, "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j            <  N , "Invalid column access index" );
+
+   storeu( &v_[i+j*MM], value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Aligned, non-temporal store of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an aligned, non-temporal store of a specific intrinsic element of the
+// dense matrix. // The row index must be smaller than the number of rows and the column index
+// must be smaller than the number of columns. Additionally, the row index must be a multiple
+// of the number of values inside the intrinsic element. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline void StaticMatrix<Type,M,N,true>::stream( size_t i, size_t j, const IntrinsicType& value )
+{
+   using blaze::stream;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( i            <  M  , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= MM , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j            <  N  , "Invalid column access index" );
+
+   stream( &v_[i+j*MM], value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4415,6 +4721,8 @@ template< typename MT    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE VectorizedAssign<MT> >::Type
    StaticMatrix<Type,M,N,true>::assign( const DenseMatrix<MT,SO>& rhs )
 {
+   using blaze::store;
+
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -4541,6 +4849,8 @@ template< typename MT    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >::Type
    StaticMatrix<Type,M,N,true>::addAssign( const DenseMatrix<MT,SO>& rhs )
 {
+   using blaze::store;
+
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -4667,6 +4977,8 @@ template< typename MT    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >::Type
    StaticMatrix<Type,M,N,true>::subAssign( const DenseMatrix<MT,SO>& rhs )
 {
+   using blaze::store;
+
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
