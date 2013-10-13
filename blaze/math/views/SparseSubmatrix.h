@@ -360,6 +360,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
    {
     public:
       //**Type definitions*************************************************************************
+      //! Return type of the value member function.
       typedef typename SelectType< ConstFlag, const ElementType&, ElementType& >::Type  ReferenceType;
       //*******************************************************************************************
 
@@ -378,7 +379,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
       //**Assignment operator**********************************************************************
       /*!\brief Assignment to the accessed sparse submatrix element.
       //
-      // \param value The new value of the sparse submatrix element.
+      // \param v The new value of the sparse submatrix element.
       // \return Reference to the sparse submatrix element.
       */
       template< typename T > inline SubmatrixElement& operator=( const T& v ) {
@@ -390,7 +391,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
       //**Addition assignment operator*************************************************************
       /*!\brief Addition assignment to the accessed sparse submatrix element.
       //
-      // \param value The right-hand side value for the addition.
+      // \param v The right-hand side value for the addition.
       // \return Reference to the sparse submatrix element.
       */
       template< typename T > inline SubmatrixElement& operator+=( const T& v ) {
@@ -402,7 +403,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
       //**Subtraction assignment operator**********************************************************
       /*!\brief Subtraction assignment to the accessed sparse submatrix element.
       //
-      // \param value The right-hand side value for the subtraction.
+      // \param v The right-hand side value for the subtraction.
       // \return Reference to the sparse submatrix element.
       */
       template< typename T > inline SubmatrixElement& operator-=( const T& v ) {
@@ -414,7 +415,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
       //**Multiplication assignment operator*******************************************************
       /*!\brief Multiplication assignment to the accessed sparse submatrix element.
       //
-      // \param value The right-hand side value for the multiplication.
+      // \param v The right-hand side value for the multiplication.
       // \return Reference to the sparse submatrix element.
       */
       template< typename T > inline SubmatrixElement& operator*=( const T& v ) {
@@ -426,7 +427,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
       //**Division assignment operator*************************************************************
       /*!\brief Division assignment to the accessed sparse submatrix element.
       //
-      // \param value The right-hand side value for the division.
+      // \param v The right-hand side value for the division.
       // \return Reference to the sparse submatrix element.
       */
       template< typename T > inline SubmatrixElement& operator/=( const T& v ) {

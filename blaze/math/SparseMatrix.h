@@ -482,7 +482,7 @@ const typename MT::ElementType min( const SparseMatrix<MT,SO>& sm )
 /*!\brief Returns the largest element of the sparse matrix.
 // \ingroup sparse_matrix
 //
-// \param dm The given sparse matrix.
+// \param sm The given sparse matrix.
 // \return The largest sparse matrix element.
 //
 // This function returns the largest element of the given sparse matrix. This function can
