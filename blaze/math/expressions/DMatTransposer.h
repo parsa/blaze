@@ -154,7 +154,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    }
    //**********************************************************************************************
 
-   //**********************************************************************************************
+   //**CanAliased function*************************************************************************
    /*!\brief Returns whether the matrix can alias with the given address \a alias.
    //
    // \param alias The alias to be checked.
@@ -167,7 +167,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    }
    //**********************************************************************************************
 
-   //**********************************************************************************************
+   //**IsAliased function**************************************************************************
    /*!\brief Returns whether the matrix is aliased with the given address \a alias.
    //
    // \param alias The alias to be checked.
@@ -180,7 +180,41 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    }
    //**********************************************************************************************
 
+   //**Get function********************************************************************************
+   /*!\brief Aligned load of an intrinsic element of the matrix.
+   //
+   // \param i Access index for the row. The index has to be in the range [0..M-1].
+   // \param j Access index for the column. The index has to be in the range [0..N-1].
+   // \return The loaded intrinsic element.
+   //
+   // This function must \b NOT be called explicitly! It is used internally for the performance
+   // optimized evaluation of expression templates. Calling this function explicitly might result
+   // in erroneous results and/or in compilation errors.
+   */
+   inline IntrinsicType get( size_t i, size_t j ) const
+   {
+      return dm_.get( j, i );
+   }
    //**********************************************************************************************
+
+   //**Loadu function******************************************************************************
+   /*!\brief Unaligned load of an intrinsic element of the matrix.
+   //
+   // \param i Access index for the row. The index has to be in the range [0..M-1].
+   // \param j Access index for the column. The index has to be in the range [0..N-1].
+   // \return The loaded intrinsic element.
+   //
+   // This function must \b NOT be called explicitly! It is used internally for the performance
+   // optimized evaluation of expression templates. Calling this function explicitly might result
+   // in erroneous results and/or in compilation errors.
+   */
+   inline IntrinsicType loadu( size_t i, size_t j ) const
+   {
+      return dm_.loadu( j, i );
+   }
+   //**********************************************************************************************
+
+   //**Store function******************************************************************************
    /*!\brief Aligned store of an intrinsic element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -198,7 +232,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    }
    //**********************************************************************************************
 
-   //**********************************************************************************************
+   //**Storeu function*****************************************************************************
    /*!\brief Unaligned store of an intrinsic element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -216,7 +250,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    }
    //**********************************************************************************************
 
-   //**********************************************************************************************
+   //**Stream function*****************************************************************************
    /*!\brief Aligned, non-temporal store of an intrinsic element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -756,7 +790,20 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    }
    //**********************************************************************************************
 
+   //**CanAliased function*************************************************************************
+   /*!\brief Returns whether the matrix can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the alias corresponds to this matrix, \a false if not.
+   */
+   template< typename Other >  // Data type of the foreign expression
+   inline bool canAlias( const Other* alias ) const
+   {
+      return dm_.canAlias( alias );
+   }
    //**********************************************************************************************
+
+   //**IsAliased function**************************************************************************
    /*!\brief Returns whether the matrix is aliased with the given address \a alias.
    //
    // \param alias The alias to be checked.
@@ -769,7 +816,41 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    }
    //**********************************************************************************************
 
+   //**Get function********************************************************************************
+   /*!\brief Aligned load of an intrinsic element of the matrix.
+   //
+   // \param i Access index for the row. The index has to be in the range [0..M-1].
+   // \param j Access index for the column. The index has to be in the range [0..N-1].
+   // \return The loaded intrinsic element.
+   //
+   // This function must \b NOT be called explicitly! It is used internally for the performance
+   // optimized evaluation of expression templates. Calling this function explicitly might result
+   // in erroneous results and/or in compilation errors.
+   */
+   inline IntrinsicType get( size_t i, size_t j ) const
+   {
+      return dm_.get( j, i );
+   }
    //**********************************************************************************************
+
+   //**Loadu function******************************************************************************
+   /*!\brief Unaligned load of an intrinsic element of the matrix.
+   //
+   // \param i Access index for the row. The index has to be in the range [0..M-1].
+   // \param j Access index for the column. The index has to be in the range [0..N-1].
+   // \return The loaded intrinsic element.
+   //
+   // This function must \b NOT be called explicitly! It is used internally for the performance
+   // optimized evaluation of expression templates. Calling this function explicitly might result
+   // in erroneous results and/or in compilation errors.
+   */
+   inline IntrinsicType loadu( size_t i, size_t j ) const
+   {
+      return dm_.loadu( j, i );
+   }
+   //**********************************************************************************************
+
+   //**Store function******************************************************************************
    /*!\brief Aligned store of an intrinsic element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -787,7 +868,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    }
    //**********************************************************************************************
 
-   //**********************************************************************************************
+   //**Storeu function*****************************************************************************
    /*!\brief Unaligned store of an intrinsic element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -805,7 +886,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    }
    //**********************************************************************************************
 
-   //**********************************************************************************************
+   //**Stream function*****************************************************************************
    /*!\brief Aligned, non-temporal store of an intrinsic element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
