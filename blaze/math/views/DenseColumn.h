@@ -467,9 +467,14 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO>, false >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool          canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool          isAliased( const Other* alias ) const;
-                              inline IntrinsicType get      ( size_t index ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const;
+   template< typename Other > inline bool isAliased( const Other* alias ) const;
+
+   inline IntrinsicType get   ( size_t index ) const;
+   inline IntrinsicType loadu ( size_t index ) const;
+   inline void          store ( size_t index, const IntrinsicType& value );
+   inline void          storeu( size_t index, const IntrinsicType& value );
+   inline void          stream( size_t index, const IntrinsicType& value );
 
    template< typename VT >
    inline typename DisableIf< VectorizedAssign<VT> >::Type
@@ -1104,21 +1109,109 @@ inline bool DenseColumn<MT,SO>::isAliased( const Other* alias ) const
 
 
 //*************************************************************************************************
-/*!\brief Access to the intrinsic elements of the dense column.
+/*!\brief Aligned load of an intrinsic element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
-// \return Reference to the accessed values.
+// \return The loaded intrinsic element.
 //
-// This function offers a direct access to the intrinsic elements of the column. It must \b NOT
-// be called explicitly! It is used internally for the performance optimized evaluation of
-// expression templates. Calling this function explicitly might result in erroneous results
-// and/or in compilation errors.
+// This function performs an aligned load of a specific intrinsic element of the dense column.
+// The index must be smaller than the number of matrix rows. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline typename DenseColumn<MT,SO>::IntrinsicType DenseColumn<MT,SO>::get( size_t index ) const
 {
    return matrix_.get( index, col_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Unaligned load of an intrinsic element of the dense column.
+//
+// \param index Access index. The index must be smaller than the number of matrix rows.
+// \return The loaded intrinsic element.
+//
+// This function performs an unaligned load of a specific intrinsic element of the dense column.
+// The index must be smaller than the number of matrix rows. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline typename DenseColumn<MT,SO>::IntrinsicType DenseColumn<MT,SO>::loadu( size_t index ) const
+{
+   return matrix_.loadu( index, col_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Aligned store of an intrinsic element of the dense column.
+//
+// \param index Access index. The index must be smaller than the number of matrix rows.
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an aligned store a specific intrinsic element of the dense column.
+// The index must be smaller than the number of matrix rows. This function must \b NOT be
+// called explicitly! It is used internally for the performance optimized evaluation of
+// expression templates. Calling this function explicitly might result in erroneous results
+// and/or in compilation errors.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline void DenseColumn<MT,SO>::store( size_t index, const IntrinsicType& value )
+{
+   matrix_.store( index, col_, value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Unaligned store of an intrinsic element of the dense column.
+//
+// \param index Access index. The index must be smaller than the number of matrix rows.
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an unaligned store a specific intrinsic element of the dense column.
+// The index must be smaller than the number of matrix rows. This function must \b NOT be
+// called explicitly! It is used internally for the performance optimized evaluation of
+// expression templates. Calling this function explicitly might result in erroneous results
+// and/or in compilation errors.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline void DenseColumn<MT,SO>::storeu( size_t index, const IntrinsicType& value )
+{
+   matrix_.storeu( index, col_, value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Aligned, non-temporal store of an intrinsic element of the dense column.
+//
+// \param index Access index. The index must be smaller than the number of matrix rows.
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an aligned, non-temporal store a specific intrinsic element of the
+// dense column. The index must be smaller than the number of matrix rows. This function must
+// \b NOT be called explicitly! It is used internally for the performance optimized evaluation
+// of expression templates. Calling this function explicitly might result in erroneous results
+// and/or in compilation errors.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline void DenseColumn<MT,SO>::stream( size_t index, const IntrinsicType& value )
+{
+   matrix_.stream( index, col_, value );
 }
 //*************************************************************************************************
 
@@ -1179,7 +1272,7 @@ inline typename EnableIf< typename DenseColumn<MT,SO>::BLAZE_TEMPLATE Vectorized
    if( rows > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( this ) )
    {
       for( size_t i=0UL; i<rows; i+=IT::size ) {
-         stream( &matrix_(i,col_), (~rhs).get(i) );
+         matrix_.stream( i, col_, (~rhs).get(i) );
       }
    }
    else
@@ -1188,13 +1281,13 @@ inline typename EnableIf< typename DenseColumn<MT,SO>::BLAZE_TEMPLATE Vectorized
       const size_t iend( rows & size_t(-IT::size*4) );
 
       for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-         store( &matrix_(i             ,col_), (~rhs).get(i             ) );
-         store( &matrix_(i+IT::size    ,col_), (~rhs).get(i+IT::size    ) );
-         store( &matrix_(i+IT::size*2UL,col_), (~rhs).get(i+IT::size*2UL) );
-         store( &matrix_(i+IT::size*3UL,col_), (~rhs).get(i+IT::size*3UL) );
+         matrix_.store( i             , col_, (~rhs).get(i             ) );
+         matrix_.store( i+IT::size    , col_, (~rhs).get(i+IT::size    ) );
+         matrix_.store( i+IT::size*2UL, col_, (~rhs).get(i+IT::size*2UL) );
+         matrix_.store( i+IT::size*3UL, col_, (~rhs).get(i+IT::size*3UL) );
       }
       for( size_t i=iend; i<rows; i+=IT::size ) {
-         store( &matrix_(i,col_), (~rhs).get(i) );
+         matrix_.store( i, col_, (~rhs).get(i) );
       }
    }
 }
@@ -1282,13 +1375,13 @@ inline typename EnableIf< typename DenseColumn<MT,SO>::BLAZE_TEMPLATE Vectorized
    const size_t iend( rows & size_t(-IT::size*4) );
 
    for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-      store( &matrix_(i             ,col_), matrix_.get(i             ,col_) + (~rhs).get(i             ) );
-      store( &matrix_(i+IT::size    ,col_), matrix_.get(i+IT::size    ,col_) + (~rhs).get(i+IT::size    ) );
-      store( &matrix_(i+IT::size*2UL,col_), matrix_.get(i+IT::size*2UL,col_) + (~rhs).get(i+IT::size*2UL) );
-      store( &matrix_(i+IT::size*3UL,col_), matrix_.get(i+IT::size*3UL,col_) + (~rhs).get(i+IT::size*3UL) );
+      matrix_.store( i             , col_, matrix_.get(i             ,col_) + (~rhs).get(i             ) );
+      matrix_.store( i+IT::size    , col_, matrix_.get(i+IT::size    ,col_) + (~rhs).get(i+IT::size    ) );
+      matrix_.store( i+IT::size*2UL, col_, matrix_.get(i+IT::size*2UL,col_) + (~rhs).get(i+IT::size*2UL) );
+      matrix_.store( i+IT::size*3UL, col_, matrix_.get(i+IT::size*3UL,col_) + (~rhs).get(i+IT::size*3UL) );
    }
    for( size_t i=iend; i<rows; i+=IT::size ) {
-      store( &matrix_(i,col_), matrix_.get(i,col_) + (~rhs).get(i) );
+      matrix_.store( i, col_, matrix_.get(i,col_) + (~rhs).get(i) );
    }
 }
 //*************************************************************************************************
@@ -1375,13 +1468,13 @@ inline typename EnableIf< typename DenseColumn<MT,SO>::BLAZE_TEMPLATE Vectorized
    const size_t iend( rows & size_t(-IT::size*4) );
 
    for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-      store( &matrix_(i             ,col_), matrix_.get(i             ,col_) - (~rhs).get(i             ) );
-      store( &matrix_(i+IT::size    ,col_), matrix_.get(i+IT::size    ,col_) - (~rhs).get(i+IT::size    ) );
-      store( &matrix_(i+IT::size*2UL,col_), matrix_.get(i+IT::size*2UL,col_) - (~rhs).get(i+IT::size*2UL) );
-      store( &matrix_(i+IT::size*3UL,col_), matrix_.get(i+IT::size*3UL,col_) - (~rhs).get(i+IT::size*3UL) );
+      matrix_.store( i             , col_, matrix_.get(i             ,col_) - (~rhs).get(i             ) );
+      matrix_.store( i+IT::size    , col_, matrix_.get(i+IT::size    ,col_) - (~rhs).get(i+IT::size    ) );
+      matrix_.store( i+IT::size*2UL, col_, matrix_.get(i+IT::size*2UL,col_) - (~rhs).get(i+IT::size*2UL) );
+      matrix_.store( i+IT::size*3UL, col_, matrix_.get(i+IT::size*3UL,col_) - (~rhs).get(i+IT::size*3UL) );
    }
    for( size_t i=iend; i<rows; i+=IT::size ) {
-      store( &matrix_(i,col_), matrix_.get(i,col_) - (~rhs).get(i) );
+      matrix_.store( i, col_, matrix_.get(i,col_) - (~rhs).get(i) );
    }
 }
 //*************************************************************************************************
@@ -1468,13 +1561,13 @@ inline typename EnableIf< typename DenseColumn<MT,SO>::BLAZE_TEMPLATE Vectorized
    const size_t iend( rows & size_t(-IT::size*4) );
 
    for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-      store( &matrix_(i             ,col_), matrix_.get(i             ,col_) * (~rhs).get(i             ) );
-      store( &matrix_(i+IT::size    ,col_), matrix_.get(i+IT::size    ,col_) * (~rhs).get(i+IT::size    ) );
-      store( &matrix_(i+IT::size*2UL,col_), matrix_.get(i+IT::size*2UL,col_) * (~rhs).get(i+IT::size*2UL) );
-      store( &matrix_(i+IT::size*3UL,col_), matrix_.get(i+IT::size*3UL,col_) * (~rhs).get(i+IT::size*3UL) );
+      matrix_.store( i             , col_, matrix_.get(i             ,col_) * (~rhs).get(i             ) );
+      matrix_.store( i+IT::size    , col_, matrix_.get(i+IT::size    ,col_) * (~rhs).get(i+IT::size    ) );
+      matrix_.store( i+IT::size*2UL, col_, matrix_.get(i+IT::size*2UL,col_) * (~rhs).get(i+IT::size*2UL) );
+      matrix_.store( i+IT::size*3UL, col_, matrix_.get(i+IT::size*3UL,col_) * (~rhs).get(i+IT::size*3UL) );
    }
    for( size_t i=iend; i<rows; i+=IT::size ) {
-      store( &matrix_(i,col_), matrix_.get(i,col_) * (~rhs).get(i) );
+      matrix_.store( i, col_, matrix_.get(i,col_) * (~rhs).get(i) );
    }
 }
 //*************************************************************************************************
