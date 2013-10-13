@@ -132,7 +132,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    }
    //**********************************************************************************************
 
-   //**IsAliased function**************************************************************************
+   //**CanAliased function*************************************************************************
    /*!\brief Returns whether the vector can alias with the given address \a alias.
    //
    // \param alias The alias to be checked.
@@ -158,6 +158,38 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    }
    //**********************************************************************************************
 
+   //**Get function********************************************************************************
+   /*!\brief Aligned load of an intrinsic element of the vector.
+   //
+   // \param index Access index. The index must be smaller than the number of vector elements.
+   // \return The loaded intrinsic element.
+   //
+   // This function must \b NOT be called explicitly! It is used internally for the performance
+   // optimized evaluation of expression templates. Calling this function explicitly might result
+   // in erroneous results and/or in compilation errors.
+   */
+   inline IntrinsicType get( size_t index ) const
+   {
+      return dv_.get( index );
+   }
+   //**********************************************************************************************
+
+   //**Loadu function******************************************************************************
+   /*!\brief Unaligned load of an intrinsic element of the vector.
+   //
+   // \param index Access index. The index must be smaller than the number of vector elements.
+   // \return The loaded intrinsic element.
+   //
+   // This function must \b NOT be called explicitly! It is used internally for the performance
+   // optimized evaluation of expression templates. Calling this function explicitly might result
+   // in erroneous results and/or in compilation errors.
+   */
+   inline IntrinsicType loadu( size_t index ) const
+   {
+      return dv_.loadu( index );
+   }
+   //**********************************************************************************************
+
    //**Store function******************************************************************************
    /*!\brief Aligned store of an intrinsic element of the vector.
    //
@@ -165,12 +197,9 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    // \param value The intrinsic element to be stored.
    // \return void
    //
-   // This function performs an aligned store of a specific intrinsic element of the dense vector.
-   // The index must be smaller than the number of vector elements and it must be a multiple of
-   // the number of values inside the intrinsic element. This function must \b NOT be called
-   // explicitly! It is used internally for the performance optimized evaluation of expression
-   // templates. Calling this function explicitly might result in erroneous results and/or in
-   // compilation errors.
+   // This function must \b NOT be called explicitly! It is used internally for the performance
+   // optimized evaluation of expression templates. Calling this function explicitly might result
+   // in erroneous results and/or in compilation errors.
    */
    inline void store( size_t index, const IntrinsicType& value )
    {
@@ -185,12 +214,9 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    // \param value The intrinsic element to be stored.
    // \return void
    //
-   // This function performs an unaligned store of a specific intrinsic element of the dense
-   // vector. The index must be smaller than the number of vector elements and it must be a
-   // multiple of the number of values inside the intrinsic element. This function must \b NOT
-   // be called explicitly! It is used internally for the performance optimized evaluation of
-   // expression templates. Calling this function explicitly might result in erroneous results
-   // and/or in compilation errors.
+   // This function must \b NOT be called explicitly! It is used internally for the performance
+   // optimized evaluation of expression templates. Calling this function explicitly might result
+   // in erroneous results and/or in compilation errors.
    */
    inline void storeu( size_t index, const IntrinsicType& value )
    {
@@ -205,12 +231,9 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    // \param value The intrinsic element to be stored.
    // \return void
    //
-   // This function performs an aligned, non-temporal store of a specific intrinsic element of
-   // the dense vector. The index must be smaller than the number of vector elements and it must
-   // be a multiple of the number of values inside the intrinsic element. This function must
-   // \b NOT be called explicitly! It is used internally for the performance optimized evaluation
-   // of expression templates. Calling this function explicitly might result in erroneous results
-   // and/or in compilation errors.
+   // This function must \b NOT be called explicitly! It is used internally for the performance
+   // optimized evaluation of expression templates. Calling this function explicitly might result
+   // in erroneous results and/or in compilation errors.
    */
    inline void stream( size_t index, const IntrinsicType& value )
    {
