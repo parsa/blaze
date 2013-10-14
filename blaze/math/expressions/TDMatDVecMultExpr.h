@@ -1243,12 +1243,12 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
          }
          y.store( i             , xmm1 );
          y.store( i+IT::size    , xmm2 );
-         y.store( i+IT::size+2UL, xmm3 );
-         y.store( i+IT::size+3UL, xmm4 );
-         y.store( i+IT::size+4UL, xmm5 );
-         y.store( i+IT::size+5UL, xmm6 );
-         y.store( i+IT::size+6UL, xmm7 );
-         y.store( i+IT::size+7UL, xmm8 );
+         y.store( i+IT::size*2UL, xmm3 );
+         y.store( i+IT::size*3UL, xmm4 );
+         y.store( i+IT::size*4UL, xmm5 );
+         y.store( i+IT::size*5UL, xmm6 );
+         y.store( i+IT::size*6UL, xmm7 );
+         y.store( i+IT::size*7UL, xmm8 );
       }
       for( ; (i+IT::size*3UL) < M; i+=IT::size*4UL ) {
          IntrinsicType xmm1( y.get(i             ) );
@@ -1264,8 +1264,8 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
          }
          y.store( i             , xmm1 );
          y.store( i+IT::size    , xmm2 );
-         y.store( i+IT::size+2UL, xmm3 );
-         y.store( i+IT::size+3UL, xmm4 );
+         y.store( i+IT::size*2UL, xmm3 );
+         y.store( i+IT::size*3UL, xmm4 );
       }
       for( ; (i+IT::size*2UL) < M; i+=IT::size*3UL ) {
          IntrinsicType xmm1( y.get(i             ) );
@@ -1279,7 +1279,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
          }
          y.store( i             , xmm1 );
          y.store( i+IT::size    , xmm2 );
-         y.store( i+IT::size+2UL, xmm3 );
+         y.store( i+IT::size*2UL, xmm3 );
       }
       for( ; (i+IT::size) < M; i+=IT::size*2UL ) {
          IntrinsicType xmm1( y.get(i         ) );
