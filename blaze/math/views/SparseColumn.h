@@ -195,7 +195,7 @@ namespace blaze {
 
 // \n \section sparse_column_element_insertion Element Insertion
 //
-// Inserting/accessing elements in a sparse row can be done by several alternative functions.
+// Inserting/accessing elements in a sparse column can be done by several alternative functions.
 // The following example demonstrates all options:
 
    \code
