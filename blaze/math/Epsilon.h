@@ -633,6 +633,18 @@ inline bool operator>( const Epsilon& lhs, const T& rhs );
 
 template< typename T >
 inline bool operator>( const T& lhs, const Epsilon& rhs );
+
+template< typename T >
+inline bool operator<=( const Epsilon& lhs, const T& rhs );
+
+template< typename T >
+inline bool operator<=( const T& lhs, const Epsilon& rhs );
+
+template< typename T >
+inline bool operator>=( const Epsilon& lhs, const T& rhs );
+
+template< typename T >
+inline bool operator>=( const T& lhs, const Epsilon& rhs );
 //@}
 //*************************************************************************************************
 
