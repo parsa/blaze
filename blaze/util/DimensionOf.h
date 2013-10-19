@@ -29,6 +29,7 @@
 
 #include <blaze/util/Byte.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -78,6 +79,7 @@ struct Array {
 template< typename T, unsigned int N >
 inline size_t dimensionof( T(&a)[N] )
 {
+   UNUSED_PARAMETER( a );
    return sizeof( Array<N> );
 }
 //*************************************************************************************************
