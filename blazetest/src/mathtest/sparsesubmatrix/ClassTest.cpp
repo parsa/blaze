@@ -5906,6 +5906,30 @@ void ClassTest::testReserve()
    //=====================================================================================
 
    {
+      test_ = "Row-major SparseSubmatrix::reserve()";
+
+      MT mat( 3UL, 20UL );
+
+      SMT sm = submatrix( mat, 1UL, 0UL, 1UL, 20UL );
+
+      // Increasing the capacity of the matrix
+      sm.reserve( 10UL );
+
+      checkRows    ( sm,  1UL );
+      checkColumns ( sm, 20UL );
+      checkCapacity( sm, 10UL );
+      checkNonZeros( sm,  0UL );
+
+      // Further increasing the capacity of the matrix
+      sm.reserve( 20UL );
+
+      checkRows    ( sm,  1UL );
+      checkColumns ( sm, 20UL );
+      checkCapacity( sm, 20UL );
+      checkNonZeros( sm,  0UL );
+   }
+
+   {
       test_ = "Row-major SparseSubmatrix::reserve( size_t )";
 
       MT mat( 3UL, 20UL );
@@ -5933,6 +5957,30 @@ void ClassTest::testReserve()
    //=====================================================================================
    // Column-major submatrix tests
    //=====================================================================================
+
+   {
+      test_ = "Column-major SparseSubmatrix::reserve()";
+
+      TMT mat( 3UL, 20UL );
+
+      TSMT sm = submatrix( mat, 1UL, 0UL, 1UL, 20UL );
+
+      // Increasing the capacity of the matrix
+      sm.reserve( 10UL );
+
+      checkRows    ( sm,  1UL );
+      checkColumns ( sm, 20UL );
+      checkCapacity( sm, 10UL );
+      checkNonZeros( sm,  0UL );
+
+      // Further increasing the capacity of the matrix
+      sm.reserve( 20UL );
+
+      checkRows    ( sm,  1UL );
+      checkColumns ( sm, 20UL );
+      checkCapacity( sm, 20UL );
+      checkNonZeros( sm,  0UL );
+   }
 
    {
       test_ = "Columnt-major SparseSubmatrix::reserve( size_t )";
