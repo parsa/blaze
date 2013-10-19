@@ -1500,7 +1500,11 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline void SparseSubmatrix<MT,SO>::reserve( size_t nonzeros )
 {
-   return;
+   const size_t current( capacity() );
+
+   if( nonzeros > current ) {
+      matrix_.reserve( matrix_.capacity() + nonzeros - current );
+   }
 }
 //*************************************************************************************************
 
@@ -3322,7 +3326,11 @@ inline typename SparseSubmatrix<MT,true>::Iterator
 template< typename MT >  // Type of the sparse matrix
 inline void SparseSubmatrix<MT,true>::reserve( size_t nonzeros )
 {
-   return;
+   const size_t current( capacity() );
+
+   if( nonzeros > current ) {
+      matrix_.reserve( matrix_.capacity() + nonzeros - current );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
