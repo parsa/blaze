@@ -362,6 +362,386 @@ inline void VectorAccessProxy<VT>::set( ConstReference value ) const
 }
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  GLOBAL OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\name VectorAccessProxy operators */
+//@{
+template< typename VT1, typename VT2 >
+inline bool operator==( const VectorAccessProxy<VT1>& lhs, const VectorAccessProxy<VT2>& rhs );
+
+template< typename VT, typename T >
+inline bool operator==( const VectorAccessProxy<VT>& lhs, const T& rhs );
+
+template< typename T, typename VT >
+inline bool operator==( const T& lhs, const VectorAccessProxy<VT>& rhs );
+
+template< typename VT1, typename VT2 >
+inline bool operator!=( const VectorAccessProxy<VT1>& lhs, const VectorAccessProxy<VT2>& rhs );
+
+template< typename VT, typename T >
+inline bool operator!=( const VectorAccessProxy<VT>& lhs, const T& rhs );
+
+template< typename T, typename VT >
+inline bool operator!=( const T& lhs, const VectorAccessProxy<VT>& rhs );
+
+template< typename VT1, typename VT2 >
+inline bool operator<( const VectorAccessProxy<VT1>& lhs, const VectorAccessProxy<VT2>& rhs );
+
+template< typename VT, typename T >
+inline bool operator<( const VectorAccessProxy<VT>& lhs, const T& rhs );
+
+template< typename T, typename VT >
+inline bool operator<( const T& lhs, const VectorAccessProxy<VT>& rhs );
+
+template< typename VT1, typename VT2 >
+inline bool operator>( const VectorAccessProxy<VT1>& lhs, const VectorAccessProxy<VT2>& rhs );
+
+template< typename VT, typename T >
+inline bool operator>( const VectorAccessProxy<VT>& lhs, const T& rhs );
+
+template< typename T, typename VT >
+inline bool operator>( const T& lhs, const VectorAccessProxy<VT>& rhs );
+
+template< typename VT1, typename VT2 >
+inline bool operator<=( const VectorAccessProxy<VT1>& lhs, const VectorAccessProxy<VT2>& rhs );
+
+template< typename VT, typename T >
+inline bool operator<=( const VectorAccessProxy<VT>& lhs, const T& rhs );
+
+template< typename T, typename VT >
+inline bool operator<=( const T& lhs, const VectorAccessProxy<VT>& rhs );
+
+template< typename VT1, typename VT2 >
+inline bool operator>=( const VectorAccessProxy<VT1>& lhs, const VectorAccessProxy<VT2>& rhs );
+
+template< typename VT, typename T >
+inline bool operator>=( const VectorAccessProxy<VT>& lhs, const T& rhs );
+
+template< typename T, typename VT >
+inline bool operator>=( const T& lhs, const VectorAccessProxy<VT>& rhs );
+//@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Equality comparison between two VectorAccessProxy objects.
+// \ingroup math
+//
+// \param lhs The left-hand side VectorAccessProxy object.
+// \param rhs The right-hand side VectorAccessProxy object.
+// \return \a true if both referenced values are equal, \a false if they are not.
+*/
+template< typename VT1, typename VT2 >
+inline bool operator==( const VectorAccessProxy<VT1>& lhs, const VectorAccessProxy<VT2>& rhs )
+{
+   typedef typename VectorAccessProxy<VT1>::Reference  LhsReference;
+   typedef typename VectorAccessProxy<VT2>::Reference  RhsReference;
+   return ( static_cast<LhsReference>( lhs ) == static_cast<RhsReference>( rhs ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Equality comparison between a VectorAccessProxy object and an object of different type.
+// \ingroup math
+//
+// \param lhs The left-hand side VectorAccessProxy object.
+// \param rhs The right-hand side object of other type.
+// \return \a true if the referenced value and the other object are equal, \a false if they are not.
+*/
+template< typename VT, typename T >
+inline bool operator==( const VectorAccessProxy<VT>& lhs, const T& rhs )
+{
+   typedef typename VectorAccessProxy<VT>::Reference  Reference;
+   return ( static_cast<Reference>( lhs ) == rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Equality comparison between an object of different type and a VectorAccessProxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side VectorAccessProxy object.
+// \return \a true if the other object and the referenced value are equal, \a false if they are not.
+*/
+template< typename T, typename VT >
+inline bool operator==( const T& lhs, const VectorAccessProxy<VT>& rhs )
+{
+   typedef typename VectorAccessProxy<VT>::Reference  Reference;
+   return ( lhs == static_cast<Reference>( rhs ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Inequality comparison between two VectorAccessProxy objects.
+// \ingroup math
+//
+// \param lhs The left-hand side VectorAccessProxy object.
+// \param rhs The right-hand side VectorAccessProxy object.
+// \return \a true if both referenced values are not equal, \a false if they are.
+*/
+template< typename VT1, typename VT2 >
+inline bool operator!=( const VectorAccessProxy<VT1>& lhs, const VectorAccessProxy<VT2>& rhs )
+{
+   typedef typename VectorAccessProxy<VT1>::Reference  LhsReference;
+   typedef typename VectorAccessProxy<VT2>::Reference  RhsReference;
+   return ( static_cast<LhsReference>( lhs ) != static_cast<RhsReference>( rhs ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Inequality comparison between a VectorAccessProxy object and an object of different type.
+// \ingroup math
+//
+// \param lhs The left-hand side VectorAccessProxy object.
+// \param rhs The right-hand side object of other type.
+// \return \a true if the referenced value and the other object are not equal, \a false if they are.
+*/
+template< typename VT, typename T >
+inline bool operator!=( const VectorAccessProxy<VT>& lhs, const T& rhs )
+{
+   typedef typename VectorAccessProxy<VT>::Reference  Reference;
+   return ( static_cast<Reference>( lhs ) != rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Inquality comparison between an object of different type and a VectorAccessProxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side VectorAccessProxy object.
+// \return \a true if the other object and the referenced value are not equal, \a false if they are.
+*/
+template< typename T, typename VT >
+inline bool operator!=( const T& lhs, const VectorAccessProxy<VT>& rhs )
+{
+   typedef typename VectorAccessProxy<VT>::Reference  Reference;
+   return ( lhs != static_cast<Reference>( rhs ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Less-than comparison between two VectorAccessProxy objects.
+// \ingroup math
+//
+// \param lhs The left-hand side VectorAccessProxy object.
+// \param rhs The right-hand side VectorAccessProxy object.
+// \return \a true if the left-hand side referenced value is smaller, \a false if not.
+*/
+template< typename VT1, typename VT2 >
+inline bool operator<( const VectorAccessProxy<VT1>& lhs, const VectorAccessProxy<VT2>& rhs )
+{
+   typedef typename VectorAccessProxy<VT1>::Reference  LhsReference;
+   typedef typename VectorAccessProxy<VT2>::Reference  RhsReference;
+   return ( static_cast<LhsReference>( lhs ) < static_cast<RhsReference>( rhs ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Less-than comparison between a VectorAccessProxy object and an object of different type.
+// \ingroup math
+//
+// \param lhs The left-hand side VectorAccessProxy object.
+// \param rhs The right-hand side object of other type.
+// \return \a true if the left-hand side referenced value is smaller, \a false if not.
+*/
+template< typename VT, typename T >
+inline bool operator<( const VectorAccessProxy<VT>& lhs, const T& rhs )
+{
+   typedef typename VectorAccessProxy<VT>::Reference  Reference;
+   return ( static_cast<Reference>( lhs ) < rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Less-than comparison between an object of different type and a VectorAccessProxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side VectorAccessProxy object.
+// \return \a true if the left-hand side other object is smaller, \a false if not.
+*/
+template< typename T, typename VT >
+inline bool operator<( const T& lhs, const VectorAccessProxy<VT>& rhs )
+{
+   typedef typename VectorAccessProxy<VT>::Reference  Reference;
+   return ( lhs < static_cast<Reference>( rhs ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Greater-than comparison between two VectorAccessProxy objects.
+// \ingroup math
+//
+// \param lhs The left-hand side VectorAccessProxy object.
+// \param rhs The right-hand side VectorAccessProxy object.
+// \return \a true if the left-hand side referenced value is greater, \a false if not.
+*/
+template< typename VT1, typename VT2 >
+inline bool operator>( const VectorAccessProxy<VT1>& lhs, const VectorAccessProxy<VT2>& rhs )
+{
+   typedef typename VectorAccessProxy<VT1>::Reference  LhsReference;
+   typedef typename VectorAccessProxy<VT2>::Reference  RhsReference;
+   return ( static_cast<LhsReference>( lhs ) > static_cast<RhsReference>( rhs ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Greater-than comparison between a VectorAccessProxy object and an object of different type.
+// \ingroup math
+//
+// \param lhs The left-hand side VectorAccessProxy object.
+// \param rhs The right-hand side object of other type.
+// \return \a true if the left-hand side referenced value is greater, \a false if not.
+*/
+template< typename VT, typename T >
+inline bool operator>( const VectorAccessProxy<VT>& lhs, const T& rhs )
+{
+   typedef typename VectorAccessProxy<VT>::Reference  Reference;
+   return ( static_cast<Reference>( lhs ) > rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Greater-than comparison between an object of different type and a VectorAccessProxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side VectorAccessProxy object.
+// \return \a true if the left-hand side other object is greater, \a false if not.
+*/
+template< typename T, typename VT >
+inline bool operator>( const T& lhs, const VectorAccessProxy<VT>& rhs )
+{
+   typedef typename VectorAccessProxy<VT>::Reference  Reference;
+   return ( lhs > static_cast<Reference>( rhs ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Less-or-equal-than comparison between two VectorAccessProxy objects.
+// \ingroup math
+//
+// \param lhs The left-hand side VectorAccessProxy object.
+// \param rhs The right-hand side VectorAccessProxy object.
+// \return \a true if the left-hand side referenced value is smaller or equal, \a false if not.
+*/
+template< typename VT1, typename VT2 >
+inline bool operator<=( const VectorAccessProxy<VT1>& lhs, const VectorAccessProxy<VT2>& rhs )
+{
+   typedef typename VectorAccessProxy<VT1>::Reference  LhsReference;
+   typedef typename VectorAccessProxy<VT2>::Reference  RhsReference;
+   return ( static_cast<LhsReference>( lhs ) <= static_cast<RhsReference>( rhs ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Less-or-equal-than comparison between a VectorAccessProxy object and an object of different type.
+// \ingroup math
+//
+// \param lhs The left-hand side VectorAccessProxy object.
+// \param rhs The right-hand side object of other type.
+// \return \a true if the left-hand side referenced value is smaller or equal, \a false if not.
+*/
+template< typename VT, typename T >
+inline bool operator<=( const VectorAccessProxy<VT>& lhs, const T& rhs )
+{
+   typedef typename VectorAccessProxy<VT>::Reference  Reference;
+   return ( static_cast<Reference>( lhs ) <= rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Less-or-equal-than comparison between an object of different type and a VectorAccessProxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side VectorAccessProxy object.
+// \return \a true if the left-hand side other object is smaller or equal, \a false if not.
+*/
+template< typename T, typename VT >
+inline bool operator<=( const T& lhs, const VectorAccessProxy<VT>& rhs )
+{
+   typedef typename VectorAccessProxy<VT>::Reference  Reference;
+   return ( lhs <= static_cast<Reference>( rhs ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Greater-or-equal-than comparison between two VectorAccessProxy objects.
+// \ingroup math
+//
+// \param lhs The left-hand side VectorAccessProxy object.
+// \param rhs The right-hand side VectorAccessProxy object.
+// \return \a true if the left-hand side referenced value is greater or equal, \a false if not.
+*/
+template< typename VT1, typename VT2 >
+inline bool operator>=( const VectorAccessProxy<VT1>& lhs, const VectorAccessProxy<VT2>& rhs )
+{
+   typedef typename VectorAccessProxy<VT1>::Reference  LhsReference;
+   typedef typename VectorAccessProxy<VT2>::Reference  RhsReference;
+   return ( static_cast<LhsReference>( lhs ) >= static_cast<RhsReference>( rhs ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Greater-or-equal-than comparison between a VectorAccessProxy object and an object of different type.
+// \ingroup math
+//
+// \param lhs The left-hand side VectorAccessProxy object.
+// \param rhs The right-hand side object of other type.
+// \return \a true if the left-hand side referenced value is greater or equal, \a false if not.
+*/
+template< typename VT, typename T >
+inline bool operator>=( const VectorAccessProxy<VT>& lhs, const T& rhs )
+{
+   typedef typename VectorAccessProxy<VT>::Reference  Reference;
+   return ( static_cast<Reference>( lhs ) >= rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Greater-or-equal-than comparison between an object of different type and a VectorAccessProxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side VectorAccessProxy object.
+// \return \a true if the left-hand side other object is greater or equal, \a false if not.
+*/
+template< typename T, typename VT >
+inline bool operator>=( const T& lhs, const VectorAccessProxy<VT>& rhs )
+{
+   typedef typename VectorAccessProxy<VT>::Reference  Reference;
+   return ( lhs >= static_cast<Reference>( rhs ) );
+}
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
