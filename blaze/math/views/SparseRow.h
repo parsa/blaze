@@ -73,6 +73,7 @@
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -1391,8 +1392,6 @@ inline void SparseRow<MT,SO>::assign( const DenseVector<VT,true>& rhs )
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
 
-   size_t nonzeros( 0UL );
-
    for( size_t j=0UL; j<size(); ++j )
    {
       if( matrix_.nonZeros( row_ ) == matrix_.capacity( row_ ) )
@@ -2640,6 +2639,7 @@ inline typename SparseRow<MT,false>::Iterator SparseRow<MT,false>::erase( Iterat
 template< typename MT >  // Type of the sparse matrix
 void SparseRow<MT,false>::reserve( size_t n )
 {
+   UNUSED_PARAMETER( n );
    return;
 }
 /*! \endcond */
