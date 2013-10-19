@@ -470,7 +470,7 @@ void VectorSerializer::deserializeHeader( Archive& archive, const VT& vec )
    else if( version_ != 1UL ) {
       throw std::runtime_error( "Invalid version detected" );
    }
-   else if( ( type_ & 1U ) != 0U || type_ & (~3U) != 0U ) {
+   else if( ( type_ & 1U ) != 0U || ( type_ & (~3U) ) != 0U ) {
       throw std::runtime_error( "Invalid vector type detected" );
    }
    else if( elementType_ != TypeValueMapping<ET>::value ) {
