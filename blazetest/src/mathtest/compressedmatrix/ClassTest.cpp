@@ -5270,8 +5270,6 @@ void ClassTest::testScale()
       checkNonZeros( mat, 0UL, 1UL );
       checkNonZeros( mat, 1UL, 1UL );
 
-      // TODO
-      /*
       if( mat(0,0) != complex<float>( 3.0F, 0.0F ) || mat(0,1) != complex<float>( 6.0F, 0.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -5281,7 +5279,6 @@ void ClassTest::testScale()
              << "   Expected result:\n( (3,0) (0,0)\n(0,0) (6,0) )\n";
          throw std::runtime_error( oss.str() );
       }
-      */
    }
 
 
@@ -5371,8 +5368,6 @@ void ClassTest::testScale()
       checkNonZeros( mat, 0UL, 1UL );
       checkNonZeros( mat, 1UL, 1UL );
 
-      // TODO
-      /*
       if( mat(0,0) != complex<float>( 3.0F, 0.0F ) || mat(0,1) != complex<float>( 6.0F, 0.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -5382,7 +5377,6 @@ void ClassTest::testScale()
              << "   Expected result:\n( (3,0) (0,0)\n(0,0) (6,0) )\n";
          throw std::runtime_error( oss.str() );
       }
-      */
    }
 }
 //*************************************************************************************************

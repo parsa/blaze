@@ -1744,9 +1744,7 @@ void ClassTest::testScale()
       checkCapacity( vec, 2UL );
       checkNonZeros( vec, 2UL );
 
-      // TODO
-      /*
-      else if( vec[0] != complex<float>( 3.0F, 0.0F ) || vec[1] != complex<float>( 6.0F, 0.0F ) ) {
+      if( vec[0] != complex<float>( 3.0F, 0.0F ) || vec[1] != complex<float>( 6.0F, 0.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"
@@ -1755,7 +1753,6 @@ void ClassTest::testScale()
              << "   Expected result:\n( (3,0) (6,0) )\n";
          throw std::runtime_error( oss.str() );
       }
-      */
    }
 }
 //*************************************************************************************************
