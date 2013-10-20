@@ -497,6 +497,15 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
       typedef DifferenceType    difference_type;    //!< Difference between two iterators.
       //*******************************************************************************************
 
+      //**Default constructor**********************************************************************
+      /*!\brief Default constructor for the SubvectorIterator class.
+      */
+      inline SubvectorIterator()
+         : pos_   ()  // Iterator to the current sparse element
+         , offset_()  // The offset of the subvector within the sparse vector
+      {}
+      //*******************************************************************************************
+
       //**Constructor******************************************************************************
       /*!\brief Constructor for the SubvectorIterator class.
       //
