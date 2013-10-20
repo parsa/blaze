@@ -497,6 +497,15 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
       typedef DifferenceType    difference_type;    //!< Difference between two iterators.
       //*******************************************************************************************
 
+      //**Default constructor**********************************************************************
+      /*!\brief Default constructor for the SubmatrixIterator class.
+      */
+      inline SubmatrixIterator()
+         : pos_   ()  // Iterator to the current sparse element
+         , offset_()  // The offset of the according row/column of the sparse matrix
+      {}
+      //*******************************************************************************************
+
       //**Constructor******************************************************************************
       /*!\brief Constructor for the SubmatrixIterator class.
       //
@@ -2342,6 +2351,15 @@ class SparseSubmatrix<MT,true> : public SparseMatrix< SparseSubmatrix<MT,true>, 
       typedef PointerType       pointer;            //!< Pointer return type.
       typedef ReferenceType     reference;          //!< Reference return type.
       typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      //*******************************************************************************************
+
+      //**Default constructor**********************************************************************
+      /*!\brief Default constructor for the SubmatrixIterator class.
+      */
+      inline SubmatrixIterator()
+         : pos_   ()  // Iterator to the current sparse element
+         , offset_()  // The offset of the according row/column of the sparse matrix
+      {}
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
