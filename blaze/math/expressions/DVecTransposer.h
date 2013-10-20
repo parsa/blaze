@@ -168,9 +168,9 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   inline IntrinsicType get( size_t index ) const
+   inline IntrinsicType load( size_t index ) const
    {
-      return dv_.get( index );
+      return dv_.load( index );
    }
    //**********************************************************************************************
 

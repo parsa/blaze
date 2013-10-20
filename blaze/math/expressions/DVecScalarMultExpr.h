@@ -188,11 +188,11 @@ class DVecScalarMultExpr : public DenseVector< DVecScalarMultExpr<VT,ST,TF>, TF 
    // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed values.
    */
-   inline IntrinsicType get( size_t index ) const {
+   inline IntrinsicType load( size_t index ) const {
       typedef IntrinsicTrait<ElementType>  IT;
       BLAZE_INTERNAL_ASSERT( index < vector_.size() , "Invalid vector access index" );
       BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
-      const IntrinsicType xmm1( vector_.get( index ) );
+      const IntrinsicType xmm1( vector_.load( index ) );
       const IntrinsicType xmm2( set( scalar_ ) );
       return xmm1 * xmm2;
    }

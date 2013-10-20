@@ -470,7 +470,7 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO>, false >
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
-   inline IntrinsicType get   ( size_t index ) const;
+   inline IntrinsicType load  ( size_t index ) const;
    inline IntrinsicType loadu ( size_t index ) const;
    inline void          store ( size_t index, const IntrinsicType& value );
    inline void          storeu( size_t index, const IntrinsicType& value );
@@ -1122,9 +1122,9 @@ inline bool DenseColumn<MT,SO>::isAliased( const Other* alias ) const
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline typename DenseColumn<MT,SO>::IntrinsicType DenseColumn<MT,SO>::get( size_t index ) const
+inline typename DenseColumn<MT,SO>::IntrinsicType DenseColumn<MT,SO>::load( size_t index ) const
 {
-   return matrix_.get( index, col_ );
+   return matrix_.load( index, col_ );
 }
 //*************************************************************************************************
 
@@ -1272,7 +1272,7 @@ inline typename EnableIf< typename DenseColumn<MT,SO>::BLAZE_TEMPLATE Vectorized
    if( rows > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( this ) )
    {
       for( size_t i=0UL; i<rows; i+=IT::size ) {
-         matrix_.stream( i, col_, (~rhs).get(i) );
+         matrix_.stream( i, col_, (~rhs).load(i) );
       }
    }
    else
@@ -1281,13 +1281,13 @@ inline typename EnableIf< typename DenseColumn<MT,SO>::BLAZE_TEMPLATE Vectorized
       const size_t iend( rows & size_t(-IT::size*4) );
 
       for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-         matrix_.store( i             , col_, (~rhs).get(i             ) );
-         matrix_.store( i+IT::size    , col_, (~rhs).get(i+IT::size    ) );
-         matrix_.store( i+IT::size*2UL, col_, (~rhs).get(i+IT::size*2UL) );
-         matrix_.store( i+IT::size*3UL, col_, (~rhs).get(i+IT::size*3UL) );
+         matrix_.store( i             , col_, (~rhs).load(i             ) );
+         matrix_.store( i+IT::size    , col_, (~rhs).load(i+IT::size    ) );
+         matrix_.store( i+IT::size*2UL, col_, (~rhs).load(i+IT::size*2UL) );
+         matrix_.store( i+IT::size*3UL, col_, (~rhs).load(i+IT::size*3UL) );
       }
       for( size_t i=iend; i<rows; i+=IT::size ) {
-         matrix_.store( i, col_, (~rhs).get(i) );
+         matrix_.store( i, col_, (~rhs).load(i) );
       }
    }
 }
@@ -1375,13 +1375,13 @@ inline typename EnableIf< typename DenseColumn<MT,SO>::BLAZE_TEMPLATE Vectorized
    const size_t iend( rows & size_t(-IT::size*4) );
 
    for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-      matrix_.store( i             , col_, matrix_.get(i             ,col_) + (~rhs).get(i             ) );
-      matrix_.store( i+IT::size    , col_, matrix_.get(i+IT::size    ,col_) + (~rhs).get(i+IT::size    ) );
-      matrix_.store( i+IT::size*2UL, col_, matrix_.get(i+IT::size*2UL,col_) + (~rhs).get(i+IT::size*2UL) );
-      matrix_.store( i+IT::size*3UL, col_, matrix_.get(i+IT::size*3UL,col_) + (~rhs).get(i+IT::size*3UL) );
+      matrix_.store( i             , col_, matrix_.load(i             ,col_) + (~rhs).load(i             ) );
+      matrix_.store( i+IT::size    , col_, matrix_.load(i+IT::size    ,col_) + (~rhs).load(i+IT::size    ) );
+      matrix_.store( i+IT::size*2UL, col_, matrix_.load(i+IT::size*2UL,col_) + (~rhs).load(i+IT::size*2UL) );
+      matrix_.store( i+IT::size*3UL, col_, matrix_.load(i+IT::size*3UL,col_) + (~rhs).load(i+IT::size*3UL) );
    }
    for( size_t i=iend; i<rows; i+=IT::size ) {
-      matrix_.store( i, col_, matrix_.get(i,col_) + (~rhs).get(i) );
+      matrix_.store( i, col_, matrix_.load(i,col_) + (~rhs).load(i) );
    }
 }
 //*************************************************************************************************
@@ -1468,13 +1468,13 @@ inline typename EnableIf< typename DenseColumn<MT,SO>::BLAZE_TEMPLATE Vectorized
    const size_t iend( rows & size_t(-IT::size*4) );
 
    for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-      matrix_.store( i             , col_, matrix_.get(i             ,col_) - (~rhs).get(i             ) );
-      matrix_.store( i+IT::size    , col_, matrix_.get(i+IT::size    ,col_) - (~rhs).get(i+IT::size    ) );
-      matrix_.store( i+IT::size*2UL, col_, matrix_.get(i+IT::size*2UL,col_) - (~rhs).get(i+IT::size*2UL) );
-      matrix_.store( i+IT::size*3UL, col_, matrix_.get(i+IT::size*3UL,col_) - (~rhs).get(i+IT::size*3UL) );
+      matrix_.store( i             , col_, matrix_.load(i             ,col_) - (~rhs).load(i             ) );
+      matrix_.store( i+IT::size    , col_, matrix_.load(i+IT::size    ,col_) - (~rhs).load(i+IT::size    ) );
+      matrix_.store( i+IT::size*2UL, col_, matrix_.load(i+IT::size*2UL,col_) - (~rhs).load(i+IT::size*2UL) );
+      matrix_.store( i+IT::size*3UL, col_, matrix_.load(i+IT::size*3UL,col_) - (~rhs).load(i+IT::size*3UL) );
    }
    for( size_t i=iend; i<rows; i+=IT::size ) {
-      matrix_.store( i, col_, matrix_.get(i,col_) - (~rhs).get(i) );
+      matrix_.store( i, col_, matrix_.load(i,col_) - (~rhs).load(i) );
    }
 }
 //*************************************************************************************************
@@ -1561,13 +1561,13 @@ inline typename EnableIf< typename DenseColumn<MT,SO>::BLAZE_TEMPLATE Vectorized
    const size_t iend( rows & size_t(-IT::size*4) );
 
    for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-      matrix_.store( i             , col_, matrix_.get(i             ,col_) * (~rhs).get(i             ) );
-      matrix_.store( i+IT::size    , col_, matrix_.get(i+IT::size    ,col_) * (~rhs).get(i+IT::size    ) );
-      matrix_.store( i+IT::size*2UL, col_, matrix_.get(i+IT::size*2UL,col_) * (~rhs).get(i+IT::size*2UL) );
-      matrix_.store( i+IT::size*3UL, col_, matrix_.get(i+IT::size*3UL,col_) * (~rhs).get(i+IT::size*3UL) );
+      matrix_.store( i             , col_, matrix_.load(i             ,col_) * (~rhs).load(i             ) );
+      matrix_.store( i+IT::size    , col_, matrix_.load(i+IT::size    ,col_) * (~rhs).load(i+IT::size    ) );
+      matrix_.store( i+IT::size*2UL, col_, matrix_.load(i+IT::size*2UL,col_) * (~rhs).load(i+IT::size*2UL) );
+      matrix_.store( i+IT::size*3UL, col_, matrix_.load(i+IT::size*3UL,col_) * (~rhs).load(i+IT::size*3UL) );
    }
    for( size_t i=iend; i<rows; i+=IT::size ) {
-      matrix_.store( i, col_, matrix_.get(i,col_) * (~rhs).get(i) );
+      matrix_.store( i, col_, matrix_.load(i,col_) * (~rhs).load(i) );
    }
 }
 //*************************************************************************************************

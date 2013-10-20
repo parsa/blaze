@@ -319,7 +319,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
-   inline IntrinsicType get   ( size_t i, size_t j ) const;
+   inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
    inline void          store ( size_t i, size_t j, const IntrinsicType& value );
    inline void          storeu( size_t i, size_t j, const IntrinsicType& value );
@@ -1574,8 +1574,10 @@ inline bool DynamicMatrix<Type,SO>::isAliased( const Other* alias ) const
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline typename DynamicMatrix<Type,SO>::IntrinsicType
-   DynamicMatrix<Type,SO>::get( size_t i, size_t j ) const
+   DynamicMatrix<Type,SO>::load( size_t i, size_t j ) const
 {
+   using blaze::load;
+
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
@@ -1787,7 +1789,7 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
    {
       for( size_t i=0UL; i<m_; ++i )
          for( size_t j=0UL; j<n_; j+=IT::size )
-            stream( &v_[i*nn_+j], (~rhs).get(i,j) );
+            stream( &v_[i*nn_+j], (~rhs).load(i,j) );
    }
    else
    {
@@ -1796,13 +1798,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
 
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
-            store( &v_[i*nn_+j             ], (~rhs).get(i,j             ) );
-            store( &v_[i*nn_+j+IT::size    ], (~rhs).get(i,j+IT::size    ) );
-            store( &v_[i*nn_+j+IT::size*2UL], (~rhs).get(i,j+IT::size*2UL) );
-            store( &v_[i*nn_+j+IT::size*3UL], (~rhs).get(i,j+IT::size*3UL) );
+            store( &v_[i*nn_+j             ], (~rhs).load(i,j             ) );
+            store( &v_[i*nn_+j+IT::size    ], (~rhs).load(i,j+IT::size    ) );
+            store( &v_[i*nn_+j+IT::size*2UL], (~rhs).load(i,j+IT::size*2UL) );
+            store( &v_[i*nn_+j+IT::size*3UL], (~rhs).load(i,j+IT::size*3UL) );
          }
          for( size_t j=jend; j<n_; j+=IT::size ) {
-            store( &v_[i*nn_+j], (~rhs).get(i,j) );
+            store( &v_[i*nn_+j], (~rhs).load(i,j) );
          }
       }
    }
@@ -1963,13 +1965,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
 
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
-         store( &v_[i*nn_+j             ], load( &v_[i*nn_+j             ] ) + (~rhs).get(i,j             ) );
-         store( &v_[i*nn_+j+IT::size    ], load( &v_[i*nn_+j+IT::size    ] ) + (~rhs).get(i,j+IT::size    ) );
-         store( &v_[i*nn_+j+IT::size*2UL], load( &v_[i*nn_+j+IT::size*2UL] ) + (~rhs).get(i,j+IT::size*2UL) );
-         store( &v_[i*nn_+j+IT::size*3UL], load( &v_[i*nn_+j+IT::size*3UL] ) + (~rhs).get(i,j+IT::size*3UL) );
+         store( &v_[i*nn_+j             ], load( &v_[i*nn_+j             ] ) + (~rhs).load(i,j             ) );
+         store( &v_[i*nn_+j+IT::size    ], load( &v_[i*nn_+j+IT::size    ] ) + (~rhs).load(i,j+IT::size    ) );
+         store( &v_[i*nn_+j+IT::size*2UL], load( &v_[i*nn_+j+IT::size*2UL] ) + (~rhs).load(i,j+IT::size*2UL) );
+         store( &v_[i*nn_+j+IT::size*3UL], load( &v_[i*nn_+j+IT::size*3UL] ) + (~rhs).load(i,j+IT::size*3UL) );
       }
       for( size_t j=jend; j<n_; j+=IT::size ) {
-         store( &v_[i*nn_+j], load( &v_[i*nn_+j] ) + (~rhs).get(i,j) );
+         store( &v_[i*nn_+j], load( &v_[i*nn_+j] ) + (~rhs).load(i,j) );
       }
    }
 }
@@ -2129,13 +2131,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
 
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
-         store( &v_[i*nn_+j             ], load( &v_[i*nn_+j             ] ) - (~rhs).get(i,j             ) );
-         store( &v_[i*nn_+j+IT::size    ], load( &v_[i*nn_+j+IT::size    ] ) - (~rhs).get(i,j+IT::size    ) );
-         store( &v_[i*nn_+j+IT::size*2UL], load( &v_[i*nn_+j+IT::size*2UL] ) - (~rhs).get(i,j+IT::size*2UL) );
-         store( &v_[i*nn_+j+IT::size*3UL], load( &v_[i*nn_+j+IT::size*3UL] ) - (~rhs).get(i,j+IT::size*3UL) );
+         store( &v_[i*nn_+j             ], load( &v_[i*nn_+j             ] ) - (~rhs).load(i,j             ) );
+         store( &v_[i*nn_+j+IT::size    ], load( &v_[i*nn_+j+IT::size    ] ) - (~rhs).load(i,j+IT::size    ) );
+         store( &v_[i*nn_+j+IT::size*2UL], load( &v_[i*nn_+j+IT::size*2UL] ) - (~rhs).load(i,j+IT::size*2UL) );
+         store( &v_[i*nn_+j+IT::size*3UL], load( &v_[i*nn_+j+IT::size*3UL] ) - (~rhs).load(i,j+IT::size*3UL) );
       }
       for( size_t j=jend; j<n_; j+=IT::size ) {
-         store( &v_[i*nn_+j], load( &v_[i*nn_+j] ) - (~rhs).get(i,j) );
+         store( &v_[i*nn_+j], load( &v_[i*nn_+j] ) - (~rhs).load(i,j) );
       }
    }
 }
@@ -2404,7 +2406,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
-   inline IntrinsicType get   ( size_t i, size_t j ) const;
+   inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
    inline void          store ( size_t i, size_t j, const IntrinsicType& value );
    inline void          storeu( size_t i, size_t j, const IntrinsicType& value );
@@ -3667,8 +3669,10 @@ inline bool DynamicMatrix<Type,true>::isAliased( const Other* alias ) const
 */
 template< typename Type >  // Data type of the matrix
 inline typename DynamicMatrix<Type,true>::IntrinsicType
-   DynamicMatrix<Type,true>::get( size_t i, size_t j ) const
+   DynamicMatrix<Type,true>::load( size_t i, size_t j ) const
 {
+   using blaze::load;
+
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
@@ -3883,7 +3887,7 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
    {
       for( size_t j=0UL; j<n_; ++j )
          for( size_t i=0UL; i<m_; i+=IT::size )
-            stream( &v_[i+j*mm_], (~rhs).get(i,j) );
+            stream( &v_[i+j*mm_], (~rhs).load(i,j) );
    }
    else
    {
@@ -3892,13 +3896,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
 
       for( size_t j=0UL; j<n_; ++j ) {
          for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-            store( &v_[i+j*mm_             ], (~rhs).get(i             ,j) );
-            store( &v_[i+j*mm_+IT::size    ], (~rhs).get(i+IT::size    ,j) );
-            store( &v_[i+j*mm_+IT::size*2UL], (~rhs).get(i+IT::size*2UL,j) );
-            store( &v_[i+j*mm_+IT::size*3UL], (~rhs).get(i+IT::size*3UL,j) );
+            store( &v_[i+j*mm_             ], (~rhs).load(i             ,j) );
+            store( &v_[i+j*mm_+IT::size    ], (~rhs).load(i+IT::size    ,j) );
+            store( &v_[i+j*mm_+IT::size*2UL], (~rhs).load(i+IT::size*2UL,j) );
+            store( &v_[i+j*mm_+IT::size*3UL], (~rhs).load(i+IT::size*3UL,j) );
          }
          for( size_t i=iend; i<m_; i+=IT::size ) {
-            store( &v_[i+j*mm_], (~rhs).get(i,j) );
+            store( &v_[i+j*mm_], (~rhs).load(i,j) );
          }
       }
    }
@@ -4058,13 +4062,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
 
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-         store( &v_[i+j*mm_             ], load( &v_[i+j*mm_             ] ) + (~rhs).get(i             ,j) );
-         store( &v_[i+j*mm_+IT::size    ], load( &v_[i+j*mm_+IT::size    ] ) + (~rhs).get(i+IT::size    ,j) );
-         store( &v_[i+j*mm_+IT::size*2UL], load( &v_[i+j*mm_+IT::size*2UL] ) + (~rhs).get(i+IT::size*2UL,j) );
-         store( &v_[i+j*mm_+IT::size*3UL], load( &v_[i+j*mm_+IT::size*3UL] ) + (~rhs).get(i+IT::size*3UL,j) );
+         store( &v_[i+j*mm_             ], load( &v_[i+j*mm_             ] ) + (~rhs).load(i             ,j) );
+         store( &v_[i+j*mm_+IT::size    ], load( &v_[i+j*mm_+IT::size    ] ) + (~rhs).load(i+IT::size    ,j) );
+         store( &v_[i+j*mm_+IT::size*2UL], load( &v_[i+j*mm_+IT::size*2UL] ) + (~rhs).load(i+IT::size*2UL,j) );
+         store( &v_[i+j*mm_+IT::size*3UL], load( &v_[i+j*mm_+IT::size*3UL] ) + (~rhs).load(i+IT::size*3UL,j) );
       }
       for( size_t i=iend; i<m_; i+=IT::size ) {
-         store( &v_[i+j*mm_], load( &v_[i+j*mm_] ) + (~rhs).get(i,j) );
+         store( &v_[i+j*mm_], load( &v_[i+j*mm_] ) + (~rhs).load(i,j) );
       }
    }
 }
@@ -4224,13 +4228,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
 
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-         store( &v_[i+j*mm_             ], load( &v_[i+j*mm_             ] ) - (~rhs).get(i             ,j) );
-         store( &v_[i+j*mm_+IT::size    ], load( &v_[i+j*mm_+IT::size    ] ) - (~rhs).get(i+IT::size    ,j) );
-         store( &v_[i+j*mm_+IT::size*2UL], load( &v_[i+j*mm_+IT::size*2UL] ) - (~rhs).get(i+IT::size*2UL,j) );
-         store( &v_[i+j*mm_+IT::size*3UL], load( &v_[i+j*mm_+IT::size*3UL] ) - (~rhs).get(i+IT::size*3UL,j) );
+         store( &v_[i+j*mm_             ], load( &v_[i+j*mm_             ] ) - (~rhs).load(i             ,j) );
+         store( &v_[i+j*mm_+IT::size    ], load( &v_[i+j*mm_+IT::size    ] ) - (~rhs).load(i+IT::size    ,j) );
+         store( &v_[i+j*mm_+IT::size*2UL], load( &v_[i+j*mm_+IT::size*2UL] ) - (~rhs).load(i+IT::size*2UL,j) );
+         store( &v_[i+j*mm_+IT::size*3UL], load( &v_[i+j*mm_+IT::size*3UL] ) - (~rhs).load(i+IT::size*3UL,j) );
       }
       for( size_t i=iend; i<m_; i+=IT::size ) {
-         store( &v_[i+j*mm_], load( &v_[i+j*mm_] ) - (~rhs).get(i,j) );
+         store( &v_[i+j*mm_], load( &v_[i+j*mm_] ) - (~rhs).load(i,j) );
       }
    }
 }

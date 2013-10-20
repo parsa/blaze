@@ -453,7 +453,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
-   inline IntrinsicType get   ( size_t index ) const;
+   inline IntrinsicType load  ( size_t index ) const;
    inline IntrinsicType loadu ( size_t index ) const;
    inline void          store ( size_t index, const IntrinsicType& value );
    inline void          storeu( size_t index, const IntrinsicType& value );
@@ -1160,7 +1160,7 @@ inline bool DenseSubvector<VT,TF>::isAliased( const Other* alias ) const
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline typename DenseSubvector<VT,TF>::IntrinsicType
-   DenseSubvector<VT,TF>::get( size_t index ) const
+   DenseSubvector<VT,TF>::load( size_t index ) const
 {
    return loadu( index );
 }
@@ -1338,7 +1338,7 @@ inline typename EnableIf< typename DenseSubvector<VT,TF>::BLAZE_TEMPLATE Vectori
    if( aligned_ && ( size_ > ( cacheSize/( sizeof(ElementType) * 3UL ) ) ) && !(~rhs).isAliased( &vector_ ) )
    {
       for( size_t i=0UL; i<size(); i+=IT::size ) {
-         vector_.stream( offset_+i, (~rhs).get(i) );
+         vector_.stream( offset_+i, (~rhs).load(i) );
       }
    }
    else
@@ -1347,13 +1347,13 @@ inline typename EnableIf< typename DenseSubvector<VT,TF>::BLAZE_TEMPLATE Vectori
       BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
 
       for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-         vector_.storeu( offset_+i             , (~rhs).get(i             ) );
-         vector_.storeu( offset_+i+IT::size    , (~rhs).get(i+IT::size    ) );
-         vector_.storeu( offset_+i+IT::size*2UL, (~rhs).get(i+IT::size*2UL) );
-         vector_.storeu( offset_+i+IT::size*3UL, (~rhs).get(i+IT::size*3UL) );
+         vector_.storeu( offset_+i             , (~rhs).load(i             ) );
+         vector_.storeu( offset_+i+IT::size    , (~rhs).load(i+IT::size    ) );
+         vector_.storeu( offset_+i+IT::size*2UL, (~rhs).load(i+IT::size*2UL) );
+         vector_.storeu( offset_+i+IT::size*3UL, (~rhs).load(i+IT::size*3UL) );
       }
       for( size_t i=iend; i<size_; i+=IT::size ) {
-         storeu( i, (~rhs).get(i) );
+         storeu( i, (~rhs).load(i) );
       }
    }
 }
@@ -1440,13 +1440,13 @@ inline typename EnableIf< typename DenseSubvector<VT,TF>::BLAZE_TEMPLATE Vectori
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
 
    for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-      vector_.storeu( offset_+i             , get(i             ) + (~rhs).get(i             ) );
-      vector_.storeu( offset_+i+IT::size    , get(i+IT::size    ) + (~rhs).get(i+IT::size    ) );
-      vector_.storeu( offset_+i+IT::size*2UL, get(i+IT::size*2UL) + (~rhs).get(i+IT::size*2UL) );
-      vector_.storeu( offset_+i+IT::size*3UL, get(i+IT::size*3UL) + (~rhs).get(i+IT::size*3UL) );
+      vector_.storeu( offset_+i             , load(i             ) + (~rhs).load(i             ) );
+      vector_.storeu( offset_+i+IT::size    , load(i+IT::size    ) + (~rhs).load(i+IT::size    ) );
+      vector_.storeu( offset_+i+IT::size*2UL, load(i+IT::size*2UL) + (~rhs).load(i+IT::size*2UL) );
+      vector_.storeu( offset_+i+IT::size*3UL, load(i+IT::size*3UL) + (~rhs).load(i+IT::size*3UL) );
    }
    for( size_t i=iend; i<size_; i+=IT::size ) {
-      storeu( i, get(i) + (~rhs).get(i) );
+      storeu( i, load(i) + (~rhs).load(i) );
    }
 }
 //*************************************************************************************************
@@ -1532,13 +1532,13 @@ inline typename EnableIf< typename DenseSubvector<VT,TF>::BLAZE_TEMPLATE Vectori
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
 
    for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-      vector_.storeu( offset_+i             , get(i             ) - (~rhs).get(i             ) );
-      vector_.storeu( offset_+i+IT::size    , get(i+IT::size    ) - (~rhs).get(i+IT::size    ) );
-      vector_.storeu( offset_+i+IT::size*2UL, get(i+IT::size*2UL) - (~rhs).get(i+IT::size*2UL) );
-      vector_.storeu( offset_+i+IT::size*3UL, get(i+IT::size*3UL) - (~rhs).get(i+IT::size*3UL) );
+      vector_.storeu( offset_+i             , load(i             ) - (~rhs).load(i             ) );
+      vector_.storeu( offset_+i+IT::size    , load(i+IT::size    ) - (~rhs).load(i+IT::size    ) );
+      vector_.storeu( offset_+i+IT::size*2UL, load(i+IT::size*2UL) - (~rhs).load(i+IT::size*2UL) );
+      vector_.storeu( offset_+i+IT::size*3UL, load(i+IT::size*3UL) - (~rhs).load(i+IT::size*3UL) );
    }
    for( size_t i=iend; i<size_; i+=IT::size ) {
-      storeu( i, get(i) - (~rhs).get(i) );
+      storeu( i, load(i) - (~rhs).load(i) );
    }
 }
 //*************************************************************************************************
@@ -1624,13 +1624,13 @@ inline typename EnableIf< typename DenseSubvector<VT,TF>::BLAZE_TEMPLATE Vectori
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
 
    for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-      vector_.storeu( offset_+i             , get(i             ) * (~rhs).get(i             ) );
-      vector_.storeu( offset_+i+IT::size    , get(i+IT::size    ) * (~rhs).get(i+IT::size    ) );
-      vector_.storeu( offset_+i+IT::size*2UL, get(i+IT::size*2UL) * (~rhs).get(i+IT::size*2UL) );
-      vector_.storeu( offset_+i+IT::size*3UL, get(i+IT::size*3UL) * (~rhs).get(i+IT::size*3UL) );
+      vector_.storeu( offset_+i             , load(i             ) * (~rhs).load(i             ) );
+      vector_.storeu( offset_+i+IT::size    , load(i+IT::size    ) * (~rhs).load(i+IT::size    ) );
+      vector_.storeu( offset_+i+IT::size*2UL, load(i+IT::size*2UL) * (~rhs).load(i+IT::size*2UL) );
+      vector_.storeu( offset_+i+IT::size*3UL, load(i+IT::size*3UL) * (~rhs).load(i+IT::size*3UL) );
    }
    for( size_t i=iend; i<size_; i+=IT::size ) {
-      storeu( i, get(i) * (~rhs).get(i) );
+      storeu( i, load(i) * (~rhs).load(i) );
    }
 }
 //*************************************************************************************************

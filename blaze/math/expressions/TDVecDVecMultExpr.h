@@ -200,10 +200,10 @@ inline typename EnableIf< TDVecDVecMultExprHelper<T1,T2>,
    const size_t end( N - N % (IT::size*4UL) );
 
    for( size_t i=0UL; i<end; i+=IT::size*4UL ) {
-      xmm1 = xmm1 + ( left.get(i             ) * right.get(i             ) );
-      xmm2 = xmm2 + ( left.get(i+IT::size    ) * right.get(i+IT::size    ) );
-      xmm3 = xmm3 + ( left.get(i+IT::size*2UL) * right.get(i+IT::size*2UL) );
-      xmm4 = xmm4 + ( left.get(i+IT::size*3UL) * right.get(i+IT::size*3UL) );
+      xmm1 = xmm1 + ( left.load(i             ) * right.load(i             ) );
+      xmm2 = xmm2 + ( left.load(i+IT::size    ) * right.load(i+IT::size    ) );
+      xmm3 = xmm3 + ( left.load(i+IT::size*2UL) * right.load(i+IT::size*2UL) );
+      xmm4 = xmm4 + ( left.load(i+IT::size*3UL) * right.load(i+IT::size*3UL) );
    }
 
    MultType array[IT::size];

@@ -308,7 +308,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
-   inline IntrinsicType get   ( size_t index ) const;
+   inline IntrinsicType load  ( size_t index ) const;
    inline IntrinsicType loadu ( size_t index ) const;
    inline void          store ( size_t index, const IntrinsicType& value );
    inline void          storeu( size_t index, const IntrinsicType& value );
@@ -1363,8 +1363,10 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 inline typename StaticVector<Type,N,TF>::IntrinsicType
-   StaticVector<Type,N,TF>::get( size_t index ) const
+   StaticVector<Type,N,TF>::load( size_t index ) const
 {
+   using blaze::load;
+
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( index            <  N  , "Invalid vector access index" );
@@ -1553,7 +1555,7 @@ inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    for( size_t i=0UL; i<N; i+=IT::size ) {
-      store( v_+i, (~rhs).get(i) );
+      store( v_+i, (~rhs).load(i) );
    }
 }
 //*************************************************************************************************
@@ -1635,7 +1637,7 @@ inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    for( size_t i=0UL; i<N; i+=IT::size ) {
-      store( v_+i, load( v_+i ) + (~rhs).get(i) );
+      store( v_+i, load( v_+i ) + (~rhs).load(i) );
    }
 }
 //*************************************************************************************************
@@ -1717,7 +1719,7 @@ inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    for( size_t i=0UL; i<N; i+=IT::size ) {
-      store( v_+i, load( v_+i ) - (~rhs).get(i) );
+      store( v_+i, load( v_+i ) - (~rhs).load(i) );
    }
 }
 //*************************************************************************************************
@@ -1799,7 +1801,7 @@ inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    for( size_t i=0UL; i<N; i+=IT::size ) {
-      store( v_+i, load( v_+i ) * (~rhs).get(i) );
+      store( v_+i, load( v_+i ) * (~rhs).load(i) );
    }
 }
 //*************************************************************************************************

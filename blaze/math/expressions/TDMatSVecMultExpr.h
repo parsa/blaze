@@ -503,7 +503,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          ++element;
 
          for( size_t i=0UL; i<M; i+=IT::size ) {
-            y.store( i, A.get(i,j1) * v1 + A.get(i,j2) * v2 + A.get(i,j3) * v3 + A.get(i,j4) * v4 );
+            y.store( i, A.load(i,j1) * v1 + A.load(i,j2) * v2 + A.load(i,j3) * v3 + A.load(i,j4) * v4 );
          }
       }
       else
@@ -513,7 +513,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          ++element;
 
          for( size_t i=0UL; i<M; i+=IT::size ) {
-            y.store( i, A.get(i,j1) * v1 );
+            y.store( i, A.load(i,j1) * v1 );
          }
       }
 
@@ -533,7 +533,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          ++element;
 
          for( size_t i=0UL; i<M; i+=IT::size ) {
-            y.store( i, y.get(i) + A.get(i,j1) * v1 + A.get(i,j2) * v2 + A.get(i,j3) * v3 + A.get(i,j4) * v4 );
+            y.store( i, y.load(i) + A.load(i,j1) * v1 + A.load(i,j2) * v2 + A.load(i,j3) * v3 + A.load(i,j4) * v4 );
          }
       }
       for( ; element!=end; ++element )
@@ -542,7 +542,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          const IntrinsicType v1( set( element->value() ) );
 
          for( size_t i=0UL; i<M; i+=IT::size ) {
-            y.store( i, y.get(i) + A.get(i,j1) * v1 );
+            y.store( i, y.load(i) + A.load(i,j1) * v1 );
          }
       }
    }
@@ -770,7 +770,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          ++element;
 
          for( size_t i=0UL; i<M; i+=IT::size ) {
-            y.store( i, y.get(i) + A.get(i,j1) * v1 + A.get(i,j2) * v2 + A.get(i,j3) * v3 + A.get(i,j4) * v4 );
+            y.store( i, y.load(i) + A.load(i,j1) * v1 + A.load(i,j2) * v2 + A.load(i,j3) * v3 + A.load(i,j4) * v4 );
          }
       }
       for( ; element!=end; ++element )
@@ -779,7 +779,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          const IntrinsicType v1( set( element->value() ) );
 
          for( size_t i=0UL; i<M; i+=IT::size ) {
-            y.store( i, y.get(i) + A.get(i,j1) * v1 );
+            y.store( i, y.load(i) + A.load(i,j1) * v1 );
          }
       }
    }
@@ -982,7 +982,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          ++element;
 
          for( size_t i=0UL; i<M; i+=IT::size ) {
-            y.store( i, y.get(i) - A.get(i,j1) * v1 - A.get(i,j2) * v2 - A.get(i,j3) * v3 - A.get(i,j4) * v4 );
+            y.store( i, y.load(i) - A.load(i,j1) * v1 - A.load(i,j2) * v2 - A.load(i,j3) * v3 - A.load(i,j4) * v4 );
          }
       }
       for( ; element!=end; ++element )
@@ -991,7 +991,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          const IntrinsicType v1( set( element->value() ) );
 
          for( size_t i=0UL; i<M; i+=IT::size ) {
-            y.store( i, y.get(i) - A.get(i,j1) * v1 );
+            y.store( i, y.load(i) - A.load(i,j1) * v1 );
          }
       }
    }

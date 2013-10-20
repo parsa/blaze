@@ -459,12 +459,12 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          for( ; (j+4UL) <= N; j+=4UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
-               const IntrinsicType b3( B.get(k,j+2UL) );
-               const IntrinsicType b4( B.get(k,j+3UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
+               const IntrinsicType b3( B.load(k,j+2UL) );
+               const IntrinsicType b4( B.load(k,j+3UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a1 * b3;
@@ -486,10 +486,10 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a2 * b1;
@@ -503,9 +503,9 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType b1( B.get(k,j) );
-               xmm1 = xmm1 + A.get(i    ,k) * b1;
-               xmm2 = xmm2 + A.get(i+1UL,k) * b1;
+               const IntrinsicType b1( B.load(k,j) );
+               xmm1 = xmm1 + A.load(i    ,k) * b1;
+               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
             }
             (~C)(i    ,j) = sum( xmm1 );
             (~C)(i+1UL,j) = sum( xmm2 );
@@ -516,11 +516,11 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          for( ; (j+4UL) <= N; j+=4UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i,k) );
-               xmm1 = xmm1 + a1 * B.get(k,j    );
-               xmm2 = xmm2 + a1 * B.get(k,j+1UL);
-               xmm3 = xmm3 + a1 * B.get(k,j+2UL);
-               xmm4 = xmm4 + a1 * B.get(k,j+3UL);
+               const IntrinsicType a1( A.load(i,k) );
+               xmm1 = xmm1 + a1 * B.load(k,j    );
+               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
+               xmm3 = xmm3 + a1 * B.load(k,j+2UL);
+               xmm4 = xmm4 + a1 * B.load(k,j+3UL);
             }
             (~C)(i,j    ) = sum( xmm1 );
             (~C)(i,j+1UL) = sum( xmm2 );
@@ -530,9 +530,9 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i,k) );
-               xmm1 = xmm1 + a1 * B.get(k,j    );
-               xmm2 = xmm2 + a1 * B.get(k,j+1UL);
+               const IntrinsicType a1( A.load(i,k) );
+               xmm1 = xmm1 + a1 * B.load(k,j    );
+               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
             }
             (~C)(i,j    ) = sum( xmm1 );
             (~C)(i,j+1UL) = sum( xmm2 );
@@ -540,7 +540,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               xmm1 = xmm1 + A.get(i,k) * B.get(k,j);
+               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
             }
             (~C)(i,j) = sum( xmm1 );
          }
@@ -582,12 +582,12 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType a3( A.get(i+2UL,k) );
-               const IntrinsicType a4( A.get(i+3UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType a3( A.load(i+2UL,k) );
+               const IntrinsicType a4( A.load(i+3UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a2 * b1;
@@ -609,11 +609,11 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          if( j < N ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType b1( B.get(k,j) );
-               xmm1 = xmm1 + A.get(i    ,k) * b1;
-               xmm2 = xmm2 + A.get(i+1UL,k) * b1;
-               xmm3 = xmm3 + A.get(i+2UL,k) * b1;
-               xmm4 = xmm4 + A.get(i+3UL,k) * b1;
+               const IntrinsicType b1( B.load(k,j) );
+               xmm1 = xmm1 + A.load(i    ,k) * b1;
+               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
+               xmm3 = xmm3 + A.load(i+2UL,k) * b1;
+               xmm4 = xmm4 + A.load(i+3UL,k) * b1;
             }
             (~C)(i    ,j) = sum( xmm1 );
             (~C)(i+1UL,j) = sum( xmm2 );
@@ -626,10 +626,10 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a2 * b1;
@@ -643,9 +643,9 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType b1( B.get(k,j) );
-               xmm1 = xmm1 + A.get(i    ,k) * b1;
-               xmm2 = xmm2 + A.get(i+1UL,k) * b1;
+               const IntrinsicType b1( B.load(k,j) );
+               xmm1 = xmm1 + A.load(i    ,k) * b1;
+               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
             }
             (~C)(i    ,j) = sum( xmm1 );
             (~C)(i+1UL,j) = sum( xmm2 );
@@ -656,9 +656,9 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i,k) );
-               xmm1 = xmm1 + a1 * B.get(k,j    );
-               xmm2 = xmm2 + a1 * B.get(k,j+1UL);
+               const IntrinsicType a1( A.load(i,k) );
+               xmm1 = xmm1 + a1 * B.load(k,j    );
+               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
             }
             (~C)(i,j    ) = sum( xmm1 );
             (~C)(i,j+1UL) = sum( xmm2 );
@@ -666,7 +666,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               xmm1 = xmm1 + A.get(i,k) * B.get(k,j);
+               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
             }
             (~C)(i,j) = sum( xmm1 );
          }
@@ -1037,12 +1037,12 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          for( ; (j+4UL) <= N; j+=4UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
-               const IntrinsicType b3( B.get(k,j+2UL) );
-               const IntrinsicType b4( B.get(k,j+3UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
+               const IntrinsicType b3( B.load(k,j+2UL) );
+               const IntrinsicType b4( B.load(k,j+3UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a1 * b3;
@@ -1064,10 +1064,10 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a2 * b1;
@@ -1081,9 +1081,9 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType b1( B.get(k,j) );
-               xmm1 = xmm1 + A.get(i    ,k) * b1;
-               xmm2 = xmm2 + A.get(i+1UL,k) * b1;
+               const IntrinsicType b1( B.load(k,j) );
+               xmm1 = xmm1 + A.load(i    ,k) * b1;
+               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
             }
             (~C)(i    ,j) += sum( xmm1 );
             (~C)(i+1UL,j) += sum( xmm2 );
@@ -1094,11 +1094,11 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          for( ; (j+4UL) <= N; j+=4UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i,k) );
-               xmm1 = xmm1 + a1 * B.get(k,j    );
-               xmm2 = xmm2 + a1 * B.get(k,j+1UL);
-               xmm3 = xmm3 + a1 * B.get(k,j+2UL);
-               xmm4 = xmm4 + a1 * B.get(k,j+3UL);
+               const IntrinsicType a1( A.load(i,k) );
+               xmm1 = xmm1 + a1 * B.load(k,j    );
+               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
+               xmm3 = xmm3 + a1 * B.load(k,j+2UL);
+               xmm4 = xmm4 + a1 * B.load(k,j+3UL);
             }
             (~C)(i,j    ) += sum( xmm1 );
             (~C)(i,j+1UL) += sum( xmm2 );
@@ -1108,9 +1108,9 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i,k) );
-               xmm1 = xmm1 + a1 * B.get(k,j    );
-               xmm2 = xmm2 + a1 * B.get(k,j+1UL);
+               const IntrinsicType a1( A.load(i,k) );
+               xmm1 = xmm1 + a1 * B.load(k,j    );
+               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
             }
             (~C)(i,j    ) += sum( xmm1 );
             (~C)(i,j+1UL) += sum( xmm2 );
@@ -1118,7 +1118,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               xmm1 = xmm1 + A.get(i,k) * B.get(k,j);
+               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
             }
             (~C)(i,j) += sum( xmm1 );
          }
@@ -1160,12 +1160,12 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType a3( A.get(i+2UL,k) );
-               const IntrinsicType a4( A.get(i+3UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType a3( A.load(i+2UL,k) );
+               const IntrinsicType a4( A.load(i+3UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a2 * b1;
@@ -1187,11 +1187,11 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          if( j < N ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType b1( B.get(k,j) );
-               xmm1 = xmm1 + A.get(i    ,k) * b1;
-               xmm2 = xmm2 + A.get(i+1UL,k) * b1;
-               xmm3 = xmm3 + A.get(i+2UL,k) * b1;
-               xmm4 = xmm4 + A.get(i+3UL,k) * b1;
+               const IntrinsicType b1( B.load(k,j) );
+               xmm1 = xmm1 + A.load(i    ,k) * b1;
+               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
+               xmm3 = xmm3 + A.load(i+2UL,k) * b1;
+               xmm4 = xmm4 + A.load(i+3UL,k) * b1;
             }
             (~C)(i    ,j) += sum( xmm1 );
             (~C)(i+1UL,j) += sum( xmm2 );
@@ -1204,10 +1204,10 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a2 * b1;
@@ -1221,9 +1221,9 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType b1( B.get(k,j) );
-               xmm1 = xmm1 + A.get(i    ,k) * b1;
-               xmm2 = xmm2 + A.get(i+1UL,k) * b1;
+               const IntrinsicType b1( B.load(k,j) );
+               xmm1 = xmm1 + A.load(i    ,k) * b1;
+               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
             }
             (~C)(i    ,j) += sum( xmm1 );
             (~C)(i+1UL,j) += sum( xmm2 );
@@ -1234,9 +1234,9 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i,k) );
-               xmm1 = xmm1 + a1 * B.get(k,j    );
-               xmm2 = xmm2 + a1 * B.get(k,j+1UL);
+               const IntrinsicType a1( A.load(i,k) );
+               xmm1 = xmm1 + a1 * B.load(k,j    );
+               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
             }
             (~C)(i,j    ) += sum( xmm1 );
             (~C)(i,j+1UL) += sum( xmm2 );
@@ -1244,7 +1244,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               xmm1 = xmm1 + A.get(i,k) * B.get(k,j);
+               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
             }
             (~C)(i,j) += sum( xmm1 );
          }
@@ -1583,12 +1583,12 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          for( ; (j+4UL) <= N; j+=4UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
-               const IntrinsicType b3( B.get(k,j+2UL) );
-               const IntrinsicType b4( B.get(k,j+3UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
+               const IntrinsicType b3( B.load(k,j+2UL) );
+               const IntrinsicType b4( B.load(k,j+3UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a1 * b3;
@@ -1610,10 +1610,10 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a2 * b1;
@@ -1627,9 +1627,9 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType b1( B.get(k,j) );
-               xmm1 = xmm1 + A.get(i    ,k) * b1;
-               xmm2 = xmm2 + A.get(i+1UL,k) * b1;
+               const IntrinsicType b1( B.load(k,j) );
+               xmm1 = xmm1 + A.load(i    ,k) * b1;
+               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
             }
             (~C)(i    ,j) -= sum( xmm1 );
             (~C)(i+1UL,j) -= sum( xmm2 );
@@ -1640,11 +1640,11 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          for( ; (j+4UL) <= N; j+=4UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i,k) );
-               xmm1 = xmm1 + a1 * B.get(k,j    );
-               xmm2 = xmm2 + a1 * B.get(k,j+1UL);
-               xmm3 = xmm3 + a1 * B.get(k,j+2UL);
-               xmm4 = xmm4 + a1 * B.get(k,j+3UL);
+               const IntrinsicType a1( A.load(i,k) );
+               xmm1 = xmm1 + a1 * B.load(k,j    );
+               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
+               xmm3 = xmm3 + a1 * B.load(k,j+2UL);
+               xmm4 = xmm4 + a1 * B.load(k,j+3UL);
             }
             (~C)(i,j    ) -= sum( xmm1 );
             (~C)(i,j+1UL) -= sum( xmm2 );
@@ -1654,9 +1654,9 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i,k) );
-               xmm1 = xmm1 + a1 * B.get(k,j    );
-               xmm2 = xmm2 + a1 * B.get(k,j+1UL);
+               const IntrinsicType a1( A.load(i,k) );
+               xmm1 = xmm1 + a1 * B.load(k,j    );
+               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
             }
             (~C)(i,j    ) -= sum( xmm1 );
             (~C)(i,j+1UL) -= sum( xmm2 );
@@ -1664,7 +1664,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               xmm1 = xmm1 + A.get(i,k) * B.get(k,j);
+               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
             }
             (~C)(i,j) -= sum( xmm1 );
          }
@@ -1706,12 +1706,12 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType a3( A.get(i+2UL,k) );
-               const IntrinsicType a4( A.get(i+3UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType a3( A.load(i+2UL,k) );
+               const IntrinsicType a4( A.load(i+3UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a2 * b1;
@@ -1733,11 +1733,11 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          if( j < N ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType b1( B.get(k,j) );
-               xmm1 = xmm1 + A.get(i    ,k) * b1;
-               xmm2 = xmm2 + A.get(i+1UL,k) * b1;
-               xmm3 = xmm3 + A.get(i+2UL,k) * b1;
-               xmm4 = xmm4 + A.get(i+3UL,k) * b1;
+               const IntrinsicType b1( B.load(k,j) );
+               xmm1 = xmm1 + A.load(i    ,k) * b1;
+               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
+               xmm3 = xmm3 + A.load(i+2UL,k) * b1;
+               xmm4 = xmm4 + A.load(i+3UL,k) * b1;
             }
             (~C)(i    ,j) -= sum( xmm1 );
             (~C)(i+1UL,j) -= sum( xmm2 );
@@ -1750,10 +1750,10 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a2 * b1;
@@ -1767,9 +1767,9 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType b1( B.get(k,j) );
-               xmm1 = xmm1 + A.get(i    ,k) * b1;
-               xmm2 = xmm2 + A.get(i+1UL,k) * b1;
+               const IntrinsicType b1( B.load(k,j) );
+               xmm1 = xmm1 + A.load(i    ,k) * b1;
+               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
             }
             (~C)(i    ,j) -= sum( xmm1 );
             (~C)(i+1UL,j) -= sum( xmm2 );
@@ -1780,9 +1780,9 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i,k) );
-               xmm1 = xmm1 + a1 * B.get(k,j    );
-               xmm2 = xmm2 + a1 * B.get(k,j+1UL);
+               const IntrinsicType a1( A.load(i,k) );
+               xmm1 = xmm1 + a1 * B.load(k,j    );
+               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
             }
             (~C)(i,j    ) -= sum( xmm1 );
             (~C)(i,j+1UL) -= sum( xmm2 );
@@ -1790,7 +1790,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               xmm1 = xmm1 + A.get(i,k) * B.get(k,j);
+               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
             }
             (~C)(i,j) -= sum( xmm1 );
          }
@@ -2390,12 +2390,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (j+4UL) <= N; j+=4UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
-               const IntrinsicType b3( B.get(k,j+2UL) );
-               const IntrinsicType b4( B.get(k,j+3UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
+               const IntrinsicType b3( B.load(k,j+2UL) );
+               const IntrinsicType b4( B.load(k,j+3UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a1 * b3;
@@ -2417,10 +2417,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a2 * b1;
@@ -2434,9 +2434,9 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType b1( B.get(k,j) );
-               xmm1 = xmm1 + A.get(i    ,k) * b1;
-               xmm2 = xmm2 + A.get(i+1UL,k) * b1;
+               const IntrinsicType b1( B.load(k,j) );
+               xmm1 = xmm1 + A.load(i    ,k) * b1;
+               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
             }
             (~C)(i    ,j) = sum( xmm1 ) * scalar;
             (~C)(i+1UL,j) = sum( xmm2 ) * scalar;
@@ -2447,11 +2447,11 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (j+4UL) <= N; j+=4UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i,k) );
-               xmm1 = xmm1 + a1 * B.get(k,j    );
-               xmm2 = xmm2 + a1 * B.get(k,j+1UL);
-               xmm3 = xmm3 + a1 * B.get(k,j+2UL);
-               xmm4 = xmm4 + a1 * B.get(k,j+3UL);
+               const IntrinsicType a1( A.load(i,k) );
+               xmm1 = xmm1 + a1 * B.load(k,j    );
+               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
+               xmm3 = xmm3 + a1 * B.load(k,j+2UL);
+               xmm4 = xmm4 + a1 * B.load(k,j+3UL);
             }
             (~C)(i,j    ) = sum( xmm1 ) * scalar;
             (~C)(i,j+1UL) = sum( xmm2 ) * scalar;
@@ -2461,9 +2461,9 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i,k) );
-               xmm1 = xmm1 + a1 * B.get(k,j    );
-               xmm2 = xmm2 + a1 * B.get(k,j+1UL);
+               const IntrinsicType a1( A.load(i,k) );
+               xmm1 = xmm1 + a1 * B.load(k,j    );
+               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
             }
             (~C)(i,j    ) = sum( xmm1 ) * scalar;
             (~C)(i,j+1UL) = sum( xmm2 ) * scalar;
@@ -2471,7 +2471,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               xmm1 = xmm1 + A.get(i,k) * B.get(k,j);
+               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
             }
             (~C)(i,j) = sum( xmm1 ) * scalar;
          }
@@ -2513,12 +2513,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType a3( A.get(i+2UL,k) );
-               const IntrinsicType a4( A.get(i+3UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType a3( A.load(i+2UL,k) );
+               const IntrinsicType a4( A.load(i+3UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a2 * b1;
@@ -2540,11 +2540,11 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          if( j < N ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType b1( B.get(k,j) );
-               xmm1 = xmm1 + A.get(i    ,k) * b1;
-               xmm2 = xmm2 + A.get(i+1UL,k) * b1;
-               xmm3 = xmm3 + A.get(i+2UL,k) * b1;
-               xmm4 = xmm4 + A.get(i+3UL,k) * b1;
+               const IntrinsicType b1( B.load(k,j) );
+               xmm1 = xmm1 + A.load(i    ,k) * b1;
+               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
+               xmm3 = xmm3 + A.load(i+2UL,k) * b1;
+               xmm4 = xmm4 + A.load(i+3UL,k) * b1;
             }
             (~C)(i    ,j) = sum( xmm1 ) * scalar;
             (~C)(i+1UL,j) = sum( xmm2 ) * scalar;
@@ -2557,10 +2557,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a2 * b1;
@@ -2574,9 +2574,9 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType b1( B.get(k,j) );
-               xmm1 = xmm1 + A.get(i    ,k) * b1;
-               xmm2 = xmm2 + A.get(i+1UL,k) * b1;
+               const IntrinsicType b1( B.load(k,j) );
+               xmm1 = xmm1 + A.load(i    ,k) * b1;
+               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
             }
             (~C)(i    ,j) = sum( xmm1 ) * scalar;
             (~C)(i+1UL,j) = sum( xmm2 ) * scalar;
@@ -2587,9 +2587,9 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i,k) );
-               xmm1 = xmm1 + a1 * B.get(k,j    );
-               xmm2 = xmm2 + a1 * B.get(k,j+1UL);
+               const IntrinsicType a1( A.load(i,k) );
+               xmm1 = xmm1 + a1 * B.load(k,j    );
+               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
             }
             (~C)(i,j    ) = sum( xmm1 ) * scalar;
             (~C)(i,j+1UL) = sum( xmm2 ) * scalar;
@@ -2597,7 +2597,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               xmm1 = xmm1 + A.get(i,k) * B.get(k,j);
+               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
             }
             (~C)(i,j) = sum( xmm1 ) * scalar;
          }
@@ -2952,12 +2952,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (j+4UL) <= N; j+=4UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
-               const IntrinsicType b3( B.get(k,j+2UL) );
-               const IntrinsicType b4( B.get(k,j+3UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
+               const IntrinsicType b3( B.load(k,j+2UL) );
+               const IntrinsicType b4( B.load(k,j+3UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a1 * b3;
@@ -2979,10 +2979,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a2 * b1;
@@ -2996,9 +2996,9 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType b1( B.get(k,j) );
-               xmm1 = xmm1 + A.get(i    ,k) * b1;
-               xmm2 = xmm2 + A.get(i+1UL,k) * b1;
+               const IntrinsicType b1( B.load(k,j) );
+               xmm1 = xmm1 + A.load(i    ,k) * b1;
+               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
             }
             (~C)(i    ,j) += sum( xmm1 ) * scalar;
             (~C)(i+1UL,j) += sum( xmm2 ) * scalar;
@@ -3009,11 +3009,11 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (j+4UL) <= N; j+=4UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i,k) );
-               xmm1 = xmm1 + a1 * B.get(k,j    );
-               xmm2 = xmm2 + a1 * B.get(k,j+1UL);
-               xmm3 = xmm3 + a1 * B.get(k,j+2UL);
-               xmm4 = xmm4 + a1 * B.get(k,j+3UL);
+               const IntrinsicType a1( A.load(i,k) );
+               xmm1 = xmm1 + a1 * B.load(k,j    );
+               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
+               xmm3 = xmm3 + a1 * B.load(k,j+2UL);
+               xmm4 = xmm4 + a1 * B.load(k,j+3UL);
             }
             (~C)(i,j    ) += sum( xmm1 ) * scalar;
             (~C)(i,j+1UL) += sum( xmm2 ) * scalar;
@@ -3023,9 +3023,9 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i,k) );
-               xmm1 = xmm1 + a1 * B.get(k,j    );
-               xmm2 = xmm2 + a1 * B.get(k,j+1UL);
+               const IntrinsicType a1( A.load(i,k) );
+               xmm1 = xmm1 + a1 * B.load(k,j    );
+               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
             }
             (~C)(i,j    ) += sum( xmm1 ) * scalar;
             (~C)(i,j+1UL) += sum( xmm2 ) * scalar;
@@ -3033,7 +3033,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               xmm1 = xmm1 + A.get(i,k) * B.get(k,j);
+               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
             }
             (~C)(i,j) += sum( xmm1 ) * scalar;
          }
@@ -3075,12 +3075,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType a3( A.get(i+2UL,k) );
-               const IntrinsicType a4( A.get(i+3UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType a3( A.load(i+2UL,k) );
+               const IntrinsicType a4( A.load(i+3UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a2 * b1;
@@ -3102,11 +3102,11 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          if( j < N ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType b1( B.get(k,j) );
-               xmm1 = xmm1 + A.get(i    ,k) * b1;
-               xmm2 = xmm2 + A.get(i+1UL,k) * b1;
-               xmm3 = xmm3 + A.get(i+2UL,k) * b1;
-               xmm4 = xmm4 + A.get(i+3UL,k) * b1;
+               const IntrinsicType b1( B.load(k,j) );
+               xmm1 = xmm1 + A.load(i    ,k) * b1;
+               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
+               xmm3 = xmm3 + A.load(i+2UL,k) * b1;
+               xmm4 = xmm4 + A.load(i+3UL,k) * b1;
             }
             (~C)(i    ,j) += sum( xmm1 ) * scalar;
             (~C)(i+1UL,j) += sum( xmm2 ) * scalar;
@@ -3119,10 +3119,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a2 * b1;
@@ -3136,9 +3136,9 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType b1( B.get(k,j) );
-               xmm1 = xmm1 + A.get(i    ,k) * b1;
-               xmm2 = xmm2 + A.get(i+1UL,k) * b1;
+               const IntrinsicType b1( B.load(k,j) );
+               xmm1 = xmm1 + A.load(i    ,k) * b1;
+               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
             }
             (~C)(i    ,j) += sum( xmm1 ) * scalar;
             (~C)(i+1UL,j) += sum( xmm2 ) * scalar;
@@ -3149,9 +3149,9 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i,k) );
-               xmm1 = xmm1 + a1 * B.get(k,j    );
-               xmm2 = xmm2 + a1 * B.get(k,j+1UL);
+               const IntrinsicType a1( A.load(i,k) );
+               xmm1 = xmm1 + a1 * B.load(k,j    );
+               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
             }
             (~C)(i,j    ) += sum( xmm1 ) * scalar;
             (~C)(i,j+1UL) += sum( xmm2 ) * scalar;
@@ -3159,7 +3159,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               xmm1 = xmm1 + A.get(i,k) * B.get(k,j);
+               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
             }
             (~C)(i,j) += sum( xmm1 ) * scalar;
          }
@@ -3483,12 +3483,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (j+4UL) <= N; j+=4UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
-               const IntrinsicType b3( B.get(k,j+2UL) );
-               const IntrinsicType b4( B.get(k,j+3UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
+               const IntrinsicType b3( B.load(k,j+2UL) );
+               const IntrinsicType b4( B.load(k,j+3UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a1 * b3;
@@ -3510,10 +3510,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a2 * b1;
@@ -3527,9 +3527,9 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType b1( B.get(k,j) );
-               xmm1 = xmm1 + A.get(i    ,k) * b1;
-               xmm2 = xmm2 + A.get(i+1UL,k) * b1;
+               const IntrinsicType b1( B.load(k,j) );
+               xmm1 = xmm1 + A.load(i    ,k) * b1;
+               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
             }
             (~C)(i    ,j) -= sum( xmm1 ) * scalar;
             (~C)(i+1UL,j) -= sum( xmm2 ) * scalar;
@@ -3540,11 +3540,11 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (j+4UL) <= N; j+=4UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i,k) );
-               xmm1 = xmm1 + a1 * B.get(k,j    );
-               xmm2 = xmm2 + a1 * B.get(k,j+1UL);
-               xmm3 = xmm3 + a1 * B.get(k,j+2UL);
-               xmm4 = xmm4 + a1 * B.get(k,j+3UL);
+               const IntrinsicType a1( A.load(i,k) );
+               xmm1 = xmm1 + a1 * B.load(k,j    );
+               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
+               xmm3 = xmm3 + a1 * B.load(k,j+2UL);
+               xmm4 = xmm4 + a1 * B.load(k,j+3UL);
             }
             (~C)(i,j    ) -= sum( xmm1 ) * scalar;
             (~C)(i,j+1UL) -= sum( xmm2 ) * scalar;
@@ -3554,9 +3554,9 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i,k) );
-               xmm1 = xmm1 + a1 * B.get(k,j    );
-               xmm2 = xmm2 + a1 * B.get(k,j+1UL);
+               const IntrinsicType a1( A.load(i,k) );
+               xmm1 = xmm1 + a1 * B.load(k,j    );
+               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
             }
             (~C)(i,j    ) -= sum( xmm1 ) * scalar;
             (~C)(i,j+1UL) -= sum( xmm2 ) * scalar;
@@ -3564,7 +3564,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               xmm1 = xmm1 + A.get(i,k) * B.get(k,j);
+               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
             }
             (~C)(i,j) -= sum( xmm1 ) * scalar;
          }
@@ -3606,12 +3606,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType a3( A.get(i+2UL,k) );
-               const IntrinsicType a4( A.get(i+3UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType a3( A.load(i+2UL,k) );
+               const IntrinsicType a4( A.load(i+3UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a2 * b1;
@@ -3633,11 +3633,11 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          if( j < N ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType b1( B.get(k,j) );
-               xmm1 = xmm1 + A.get(i    ,k) * b1;
-               xmm2 = xmm2 + A.get(i+1UL,k) * b1;
-               xmm3 = xmm3 + A.get(i+2UL,k) * b1;
-               xmm4 = xmm4 + A.get(i+3UL,k) * b1;
+               const IntrinsicType b1( B.load(k,j) );
+               xmm1 = xmm1 + A.load(i    ,k) * b1;
+               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
+               xmm3 = xmm3 + A.load(i+2UL,k) * b1;
+               xmm4 = xmm4 + A.load(i+3UL,k) * b1;
             }
             (~C)(i    ,j) -= sum( xmm1 ) * scalar;
             (~C)(i+1UL,j) -= sum( xmm2 ) * scalar;
@@ -3650,10 +3650,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i    ,k) );
-               const IntrinsicType a2( A.get(i+1UL,k) );
-               const IntrinsicType b1( B.get(k,j    ) );
-               const IntrinsicType b2( B.get(k,j+1UL) );
+               const IntrinsicType a1( A.load(i    ,k) );
+               const IntrinsicType a2( A.load(i+1UL,k) );
+               const IntrinsicType b1( B.load(k,j    ) );
+               const IntrinsicType b2( B.load(k,j+1UL) );
                xmm1 = xmm1 + a1 * b1;
                xmm2 = xmm2 + a1 * b2;
                xmm3 = xmm3 + a2 * b1;
@@ -3667,9 +3667,9 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType b1( B.get(k,j) );
-               xmm1 = xmm1 + A.get(i    ,k) * b1;
-               xmm2 = xmm2 + A.get(i+1UL,k) * b1;
+               const IntrinsicType b1( B.load(k,j) );
+               xmm1 = xmm1 + A.load(i    ,k) * b1;
+               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
             }
             (~C)(i    ,j) -= sum( xmm1 ) * scalar;
             (~C)(i+1UL,j) -= sum( xmm2 ) * scalar;
@@ -3680,9 +3680,9 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (j+2UL) <= N; j+=2UL ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               const IntrinsicType a1( A.get(i,k) );
-               xmm1 = xmm1 + a1 * B.get(k,j    );
-               xmm2 = xmm2 + a1 * B.get(k,j+1UL);
+               const IntrinsicType a1( A.load(i,k) );
+               xmm1 = xmm1 + a1 * B.load(k,j    );
+               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
             }
             (~C)(i,j    ) -= sum( xmm1 ) * scalar;
             (~C)(i,j+1UL) -= sum( xmm2 ) * scalar;
@@ -3690,7 +3690,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
          if( j < N ) {
             IntrinsicType xmm1, xmm2;
             for( size_t k=0UL; k<K; k+=IT::size ) {
-               xmm1 = xmm1 + A.get(i,k) * B.get(k,j);
+               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
             }
             (~C)(i,j) -= sum( xmm1 ) * scalar;
          }

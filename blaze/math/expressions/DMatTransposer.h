@@ -191,9 +191,9 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   inline IntrinsicType get( size_t i, size_t j ) const
+   inline IntrinsicType load( size_t i, size_t j ) const
    {
-      return dm_.get( j, i );
+      return dm_.load( j, i );
    }
    //**********************************************************************************************
 
@@ -827,9 +827,9 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   inline IntrinsicType get( size_t i, size_t j ) const
+   inline IntrinsicType load( size_t i, size_t j ) const
    {
-      return dm_.get( j, i );
+      return dm_.load( j, i );
    }
    //**********************************************************************************************
 

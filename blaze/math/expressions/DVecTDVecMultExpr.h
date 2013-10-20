@@ -215,13 +215,13 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed values.
    */
-   inline IntrinsicType get( size_t i, size_t j ) const {
+   inline IntrinsicType load( size_t i, size_t j ) const {
       typedef IntrinsicTrait<ElementType>  IT;
       BLAZE_INTERNAL_ASSERT( i < lhs_.size()    , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < rhs_.size()    , "Invalid column access index" );
       BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
       const IntrinsicType xmm1( set( lhs_[i] ) );
-      const IntrinsicType xmm2( rhs_.get( j ) );
+      const IntrinsicType xmm2( rhs_.load( j ) );
       return xmm1 * xmm2;
    }
    //**********************************************************************************************
@@ -401,7 +401,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
          const IntrinsicType x1( set( x[i] ) );
 
          for( size_t j=0UL; j<n; j+=IT::size ) {
-            (~A).store( i, j, x1 * y.get(j) );
+            (~A).store( i, j, x1 * y.load(j) );
          }
       }
    }
@@ -510,7 +510,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
          const IntrinsicType y1( set( y[j] ) );
 
          for( size_t i=0UL; i<m; i+=IT::size ) {
-            (~A).store( i, j, x.get(i) * y1 );
+            (~A).store( i, j, x.load(i) * y1 );
          }
       }
    }
@@ -659,7 +659,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
          const IntrinsicType x1( set( x[i] ) );
 
          for( size_t j=0UL; j<n; j+=IT::size ) {
-            (~A).store( i, j, (~A).get(i,j) + x1 * y.get(j) );
+            (~A).store( i, j, (~A).load(i,j) + x1 * y.load(j) );
          }
       }
    }
@@ -769,7 +769,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
          const IntrinsicType y1( set( y[j] ) );
 
          for( size_t i=0UL; i<m; i+=IT::size ) {
-            (~A).store( i, j, (~A).get(i,j) + x.get(i) * y1 );
+            (~A).store( i, j, (~A).load(i,j) + x.load(i) * y1 );
          }
       }
    }
@@ -886,7 +886,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
          const IntrinsicType x1( set( x[i] ) );
 
          for( size_t j=0UL; j<n; j+=IT::size ) {
-            (~A).store( i, j, (~A).get(i,j) - x1 * y.get(j) );
+            (~A).store( i, j, (~A).load(i,j) - x1 * y.load(j) );
          }
       }
    }
@@ -996,7 +996,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
          const IntrinsicType y1( set( y[j] ) );
 
          for( size_t i=0UL; i<m; i+=IT::size ) {
-            (~A).store( i, j, (~A).get(i,j) - x.get(i) * y1 );
+            (~A).store( i, j, (~A).load(i,j) - x.load(i) * y1 );
          }
       }
    }

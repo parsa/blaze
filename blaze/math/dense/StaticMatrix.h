@@ -336,7 +336,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
-   inline IntrinsicType get   ( size_t i, size_t j ) const;
+   inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
    inline void          store ( size_t i, size_t j, const IntrinsicType& value );
    inline void          storeu( size_t i, size_t j, const IntrinsicType& value );
@@ -2064,8 +2064,10 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename StaticMatrix<Type,M,N,SO>::IntrinsicType
-   StaticMatrix<Type,M,N,SO>::get( size_t i, size_t j ) const
+   StaticMatrix<Type,M,N,SO>::load( size_t i, size_t j ) const
 {
+   using blaze::load;
+
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( i            <  M  , "Invalid row access index"    );
@@ -2279,7 +2281,7 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Vec
 
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; j+=IT::size ) {
-         store( &v_[i*NN+j], (~rhs).get(i,j) );
+         store( &v_[i*NN+j], (~rhs).load(i,j) );
       }
    }
 }
@@ -2403,7 +2405,7 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Vec
 
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; j+=IT::size ) {
-         store( &v_[i*NN+j], load( &v_[i*NN+j] ) + (~rhs).get(i,j) );
+         store( &v_[i*NN+j], load( &v_[i*NN+j] ) + (~rhs).load(i,j) );
       }
    }
 }
@@ -2527,7 +2529,7 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Vec
 
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; j+=IT::size ) {
-         store( &v_[i*NN+j], load( &v_[i*NN+j] ) - (~rhs).get(i,j) );
+         store( &v_[i*NN+j], load( &v_[i*NN+j] ) - (~rhs).load(i,j) );
       }
    }
 }
@@ -2781,7 +2783,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
-   inline IntrinsicType get   ( size_t i, size_t j ) const;
+   inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
    inline void          store ( size_t i, size_t j, const IntrinsicType& value );
    inline void          storeu( size_t i, size_t j, const IntrinsicType& value );
@@ -4511,8 +4513,10 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename StaticMatrix<Type,M,N,true>::IntrinsicType
-   StaticMatrix<Type,M,N,true>::get( size_t i, size_t j ) const
+   StaticMatrix<Type,M,N,true>::load( size_t i, size_t j ) const
 {
+   using blaze::load;
+
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( i            <  M  , "Invalid row access index"    );
@@ -4729,7 +4733,7 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE V
 
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; i+=IT::size ) {
-         store( &v_[i+j*MM], (~rhs).get(i,j) );
+         store( &v_[i+j*MM], (~rhs).load(i,j) );
       }
    }
 }
@@ -4857,7 +4861,7 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE V
 
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; i+=IT::size ) {
-         store( &v_[i+j*MM], load( &v_[i+j*MM] ) + (~rhs).get(i,j) );
+         store( &v_[i+j*MM], load( &v_[i+j*MM] ) + (~rhs).load(i,j) );
       }
    }
 }
@@ -4985,7 +4989,7 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE V
 
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; i+=IT::size ) {
-         store( &v_[i+j*MM], load( &v_[i+j*MM] ) - (~rhs).get(i,j) );
+         store( &v_[i+j*MM], load( &v_[i+j*MM] ) - (~rhs).load(i,j) );
       }
    }
 }

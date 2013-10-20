@@ -189,13 +189,13 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed values.
    */
-   inline IntrinsicType get( size_t i, size_t j ) const {
+   inline IntrinsicType load( size_t i, size_t j ) const {
       typedef IntrinsicTrait<ElementType>  IT;
       BLAZE_INTERNAL_ASSERT( i < matrix_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < matrix_.columns(), "Invalid column access index" );
       BLAZE_INTERNAL_ASSERT( !SO || ( i % IT::size == 0UL ), "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( SO  || ( j % IT::size == 0UL ), "Invalid column access index" );
-      const IntrinsicType xmm1( matrix_.get(i,j) );
+      const IntrinsicType xmm1( matrix_.load(i,j) );
       const IntrinsicType xmm2( set( scalar_ ) );
       return xmm1 * xmm2;
    }

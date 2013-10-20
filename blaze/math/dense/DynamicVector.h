@@ -304,7 +304,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
-   inline IntrinsicType get   ( size_t index ) const;
+   inline IntrinsicType load  ( size_t index ) const;
    inline IntrinsicType loadu ( size_t index ) const;
    inline void          store ( size_t index, const IntrinsicType& value );
    inline void          storeu( size_t index, const IntrinsicType& value );
@@ -1299,8 +1299,10 @@ inline bool DynamicVector<Type,TF>::isAliased( const Other* alias ) const
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline typename DynamicVector<Type,TF>::IntrinsicType
-   DynamicVector<Type,TF>::get( size_t index ) const
+   DynamicVector<Type,TF>::load( size_t index ) const
 {
+   using blaze::load;
+
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( index            <  size_    , "Invalid vector access index" );
@@ -1491,7 +1493,7 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
    if( size_ > ( cacheSize/( sizeof(Type) * 3UL ) ) && !(~rhs).isAliased( this ) )
    {
       for( size_t i=0UL; i<size_; i+=IT::size ) {
-         stream( v_+i, (~rhs).get(i) );
+         stream( v_+i, (~rhs).load(i) );
       }
    }
    else
@@ -1500,13 +1502,13 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
       const size_t iend( size_ & size_t(-IT::size*4) );
 
       for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-         store( v_+i             , (~rhs).get(i             ) );
-         store( v_+i+IT::size    , (~rhs).get(i+IT::size    ) );
-         store( v_+i+IT::size*2UL, (~rhs).get(i+IT::size*2UL) );
-         store( v_+i+IT::size*3UL, (~rhs).get(i+IT::size*3UL) );
+         store( v_+i             , (~rhs).load(i             ) );
+         store( v_+i+IT::size    , (~rhs).load(i+IT::size    ) );
+         store( v_+i+IT::size*2UL, (~rhs).load(i+IT::size*2UL) );
+         store( v_+i+IT::size*3UL, (~rhs).load(i+IT::size*3UL) );
       }
       for( size_t i=iend; i<size_; i+=IT::size ) {
-         store( v_+i, (~rhs).get(i) );
+         store( v_+i, (~rhs).load(i) );
       }
    }
 }
@@ -1594,13 +1596,13 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
    const size_t iend( size_ & size_t(-IT::size*4) );
 
    for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-      store( v_+i             , load(v_+i             ) + (~rhs).get(i             ) );
-      store( v_+i+IT::size    , load(v_+i+IT::size    ) + (~rhs).get(i+IT::size    ) );
-      store( v_+i+IT::size*2UL, load(v_+i+IT::size*2UL) + (~rhs).get(i+IT::size*2UL) );
-      store( v_+i+IT::size*3UL, load(v_+i+IT::size*3UL) + (~rhs).get(i+IT::size*3UL) );
+      store( v_+i             , load(v_+i             ) + (~rhs).load(i             ) );
+      store( v_+i+IT::size    , load(v_+i+IT::size    ) + (~rhs).load(i+IT::size    ) );
+      store( v_+i+IT::size*2UL, load(v_+i+IT::size*2UL) + (~rhs).load(i+IT::size*2UL) );
+      store( v_+i+IT::size*3UL, load(v_+i+IT::size*3UL) + (~rhs).load(i+IT::size*3UL) );
    }
    for( size_t i=iend; i<size_; i+=IT::size ) {
-      store( v_+i, load(v_+i) + (~rhs).get(i) );
+      store( v_+i, load(v_+i) + (~rhs).load(i) );
    }
 }
 //*************************************************************************************************
@@ -1687,13 +1689,13 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
    const size_t iend( size_ & size_t(-IT::size*4) );
 
    for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-      store( v_+i             , load(v_+i             ) - (~rhs).get(i             ) );
-      store( v_+i+IT::size    , load(v_+i+IT::size    ) - (~rhs).get(i+IT::size    ) );
-      store( v_+i+IT::size*2UL, load(v_+i+IT::size*2UL) - (~rhs).get(i+IT::size*2UL) );
-      store( v_+i+IT::size*3UL, load(v_+i+IT::size*3UL) - (~rhs).get(i+IT::size*3UL) );
+      store( v_+i             , load(v_+i             ) - (~rhs).load(i             ) );
+      store( v_+i+IT::size    , load(v_+i+IT::size    ) - (~rhs).load(i+IT::size    ) );
+      store( v_+i+IT::size*2UL, load(v_+i+IT::size*2UL) - (~rhs).load(i+IT::size*2UL) );
+      store( v_+i+IT::size*3UL, load(v_+i+IT::size*3UL) - (~rhs).load(i+IT::size*3UL) );
    }
    for( size_t i=iend; i<size_; i+=IT::size ) {
-      store( v_+i, load(v_+i) - (~rhs).get(i) );
+      store( v_+i, load(v_+i) - (~rhs).load(i) );
    }
 }
 //*************************************************************************************************
@@ -1780,13 +1782,13 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
    const size_t iend( size_ & size_t(-IT::size*4) );
 
    for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-      store( v_+i             , load(v_+i             ) * (~rhs).get(i             ) );
-      store( v_+i+IT::size    , load(v_+i+IT::size    ) * (~rhs).get(i+IT::size    ) );
-      store( v_+i+IT::size*2UL, load(v_+i+IT::size*2UL) * (~rhs).get(i+IT::size*2UL) );
-      store( v_+i+IT::size*3UL, load(v_+i+IT::size*3UL) * (~rhs).get(i+IT::size*3UL) );
+      store( v_+i             , load(v_+i             ) * (~rhs).load(i             ) );
+      store( v_+i+IT::size    , load(v_+i+IT::size    ) * (~rhs).load(i+IT::size    ) );
+      store( v_+i+IT::size*2UL, load(v_+i+IT::size*2UL) * (~rhs).load(i+IT::size*2UL) );
+      store( v_+i+IT::size*3UL, load(v_+i+IT::size*3UL) * (~rhs).load(i+IT::size*3UL) );
    }
    for( size_t i=iend; i<size_; i+=IT::size ) {
-      store( v_+i, load(v_+i) * (~rhs).get(i) );
+      store( v_+i, load(v_+i) * (~rhs).load(i) );
    }
 }
 //*************************************************************************************************

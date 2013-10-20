@@ -445,7 +445,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
-   inline IntrinsicType get   ( size_t i, size_t j ) const;
+   inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
    inline void          store ( size_t i, size_t j, const IntrinsicType& value );
    inline void          storeu( size_t i, size_t j, const IntrinsicType& value );
@@ -1310,7 +1310,7 @@ inline bool DenseSubmatrix<MT,SO>::isAliased( const Other* alias ) const
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline typename DenseSubmatrix<MT,SO>::IntrinsicType
-   DenseSubmatrix<MT,SO>::get( size_t i, size_t j ) const
+   DenseSubmatrix<MT,SO>::load( size_t i, size_t j ) const
 {
    return loadu( i, j );
 }
@@ -1509,7 +1509,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,SO>::BLAZE_TEMPLATE Vectori
    {
       for( size_t i=0UL; i<m_; ++i )
          for( size_t j=0UL; j<n_; j+=IT::size )
-            matrix_.stream( row_+i, column_+j, (~rhs).get(i,j) );
+            matrix_.stream( row_+i, column_+j, (~rhs).load(i,j) );
    }
    else
    {
@@ -1518,13 +1518,13 @@ inline typename EnableIf< typename DenseSubmatrix<MT,SO>::BLAZE_TEMPLATE Vectori
 
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
-            matrix_.storeu( row_+i, column_+j             , (~rhs).get(i,j             ) );
-            matrix_.storeu( row_+i, column_+j+IT::size    , (~rhs).get(i,j+IT::size    ) );
-            matrix_.storeu( row_+i, column_+j+IT::size*2UL, (~rhs).get(i,j+IT::size*2UL) );
-            matrix_.storeu( row_+i, column_+j+IT::size*3UL, (~rhs).get(i,j+IT::size*3UL) );
+            matrix_.storeu( row_+i, column_+j             , (~rhs).load(i,j             ) );
+            matrix_.storeu( row_+i, column_+j+IT::size    , (~rhs).load(i,j+IT::size    ) );
+            matrix_.storeu( row_+i, column_+j+IT::size*2UL, (~rhs).load(i,j+IT::size*2UL) );
+            matrix_.storeu( row_+i, column_+j+IT::size*3UL, (~rhs).load(i,j+IT::size*3UL) );
          }
          for( size_t j=jend; j<n_; j+=IT::size ) {
-            storeu( i, j, (~rhs).get(i,j) );
+            storeu( i, j, (~rhs).load(i,j) );
          }
       }
    }
@@ -1683,13 +1683,13 @@ inline typename EnableIf< typename DenseSubmatrix<MT,SO>::BLAZE_TEMPLATE Vectori
 
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
-         matrix_.storeu( row_+i, column_+j             , get(i,j             ) + (~rhs).get(i,j             ) );
-         matrix_.storeu( row_+i, column_+j+IT::size    , get(i,j+IT::size    ) + (~rhs).get(i,j+IT::size    ) );
-         matrix_.storeu( row_+i, column_+j+IT::size*2UL, get(i,j+IT::size*2UL) + (~rhs).get(i,j+IT::size*2UL) );
-         matrix_.storeu( row_+i, column_+j+IT::size*3UL, get(i,j+IT::size*3UL) + (~rhs).get(i,j+IT::size*3UL) );
+         matrix_.storeu( row_+i, column_+j             , load(i,j             ) + (~rhs).load(i,j             ) );
+         matrix_.storeu( row_+i, column_+j+IT::size    , load(i,j+IT::size    ) + (~rhs).load(i,j+IT::size    ) );
+         matrix_.storeu( row_+i, column_+j+IT::size*2UL, load(i,j+IT::size*2UL) + (~rhs).load(i,j+IT::size*2UL) );
+         matrix_.storeu( row_+i, column_+j+IT::size*3UL, load(i,j+IT::size*3UL) + (~rhs).load(i,j+IT::size*3UL) );
       }
       for( size_t j=jend; j<n_; j+=IT::size ) {
-         storeu( i, j, get(i,j) + (~rhs).get(i,j) );
+         storeu( i, j, load(i,j) + (~rhs).load(i,j) );
       }
    }
 }
@@ -1847,13 +1847,13 @@ inline typename EnableIf< typename DenseSubmatrix<MT,SO>::BLAZE_TEMPLATE Vectori
 
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
-         matrix_.storeu( row_+i, column_+j             , get(i,j             ) - (~rhs).get(i,j             ) );
-         matrix_.storeu( row_+i, column_+j+IT::size    , get(i,j+IT::size    ) - (~rhs).get(i,j+IT::size    ) );
-         matrix_.storeu( row_+i, column_+j+IT::size*2UL, get(i,j+IT::size*2UL) - (~rhs).get(i,j+IT::size*2UL) );
-         matrix_.storeu( row_+i, column_+j+IT::size*3UL, get(i,j+IT::size*3UL) - (~rhs).get(i,j+IT::size*3UL) );
+         matrix_.storeu( row_+i, column_+j             , load(i,j             ) - (~rhs).load(i,j             ) );
+         matrix_.storeu( row_+i, column_+j+IT::size    , load(i,j+IT::size    ) - (~rhs).load(i,j+IT::size    ) );
+         matrix_.storeu( row_+i, column_+j+IT::size*2UL, load(i,j+IT::size*2UL) - (~rhs).load(i,j+IT::size*2UL) );
+         matrix_.storeu( row_+i, column_+j+IT::size*3UL, load(i,j+IT::size*3UL) - (~rhs).load(i,j+IT::size*3UL) );
       }
       for( size_t j=jend; j<n_; j+=IT::size ) {
-         storeu( i, j, get(i,j) - (~rhs).get(i,j) );
+         storeu( i, j, load(i,j) - (~rhs).load(i,j) );
       }
    }
 }
@@ -2134,7 +2134,7 @@ class DenseSubmatrix<MT,true> : public DenseMatrix< DenseSubmatrix<MT,true>, tru
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
-   inline IntrinsicType get   ( size_t i, size_t j ) const;
+   inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
    inline void          store ( size_t i, size_t j, const IntrinsicType& value );
    inline void          storeu( size_t i, size_t j, const IntrinsicType& value );
@@ -2980,7 +2980,7 @@ inline bool DenseSubmatrix<MT,true>::isAliased( const Other* alias ) const
 */
 template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,true>::IntrinsicType
-   DenseSubmatrix<MT,true>::get( size_t i, size_t j ) const
+   DenseSubmatrix<MT,true>::load( size_t i, size_t j ) const
 {
    return loadu( i, j );
 }
@@ -3182,7 +3182,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,true>::BLAZE_TEMPLATE Vecto
    {
       for( size_t j=0UL; j<n_; ++j )
          for( size_t i=0UL; i<m_; i+=IT::size )
-            matrix_.stream( row_+i, column_+j, (~rhs).get(i,j) );
+            matrix_.stream( row_+i, column_+j, (~rhs).load(i,j) );
    }
    else
    {
@@ -3191,13 +3191,13 @@ inline typename EnableIf< typename DenseSubmatrix<MT,true>::BLAZE_TEMPLATE Vecto
 
       for( size_t j=0UL; j<n_; ++j ) {
          for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-            matrix_.storeu( row_+i             , column_+j, (~rhs).get(i             ,j) );
-            matrix_.storeu( row_+i+IT::size    , column_+j, (~rhs).get(i+IT::size    ,j) );
-            matrix_.storeu( row_+i+IT::size*2UL, column_+j, (~rhs).get(i+IT::size*2UL,j) );
-            matrix_.storeu( row_+i+IT::size*3UL, column_+j, (~rhs).get(i+IT::size*3UL,j) );
+            matrix_.storeu( row_+i             , column_+j, (~rhs).load(i             ,j) );
+            matrix_.storeu( row_+i+IT::size    , column_+j, (~rhs).load(i+IT::size    ,j) );
+            matrix_.storeu( row_+i+IT::size*2UL, column_+j, (~rhs).load(i+IT::size*2UL,j) );
+            matrix_.storeu( row_+i+IT::size*3UL, column_+j, (~rhs).load(i+IT::size*3UL,j) );
          }
          for( size_t i=iend; i<m_; i+=IT::size ) {
-            storeu( i, j, (~rhs).get(i,j) );
+            storeu( i, j, (~rhs).load(i,j) );
          }
       }
    }
@@ -3361,13 +3361,13 @@ inline typename EnableIf< typename DenseSubmatrix<MT,true>::BLAZE_TEMPLATE Vecto
 
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-         matrix_.storeu( row_+i             , column_+j, get(i             ,j) + (~rhs).get(i             ,j) );
-         matrix_.storeu( row_+i+IT::size    , column_+j, get(i+IT::size    ,j) + (~rhs).get(i+IT::size    ,j) );
-         matrix_.storeu( row_+i+IT::size*2UL, column_+j, get(i+IT::size*2UL,j) + (~rhs).get(i+IT::size*2UL,j) );
-         matrix_.storeu( row_+i+IT::size*3UL, column_+j, get(i+IT::size*3UL,j) + (~rhs).get(i+IT::size*3UL,j) );
+         matrix_.storeu( row_+i             , column_+j, load(i             ,j) + (~rhs).load(i             ,j) );
+         matrix_.storeu( row_+i+IT::size    , column_+j, load(i+IT::size    ,j) + (~rhs).load(i+IT::size    ,j) );
+         matrix_.storeu( row_+i+IT::size*2UL, column_+j, load(i+IT::size*2UL,j) + (~rhs).load(i+IT::size*2UL,j) );
+         matrix_.storeu( row_+i+IT::size*3UL, column_+j, load(i+IT::size*3UL,j) + (~rhs).load(i+IT::size*3UL,j) );
       }
       for( size_t i=iend; i<m_; i+=IT::size ) {
-         storeu( i, j, get(i,j) + (~rhs).get(i,j) );
+         storeu( i, j, load(i,j) + (~rhs).load(i,j) );
       }
    }
 }
@@ -3530,13 +3530,13 @@ inline typename EnableIf< typename DenseSubmatrix<MT,true>::BLAZE_TEMPLATE Vecto
 
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-         matrix_.storeu( row_+i             , column_+j, get(i             ,j) - (~rhs).get(i             ,j) );
-         matrix_.storeu( row_+i+IT::size    , column_+j, get(i+IT::size    ,j) - (~rhs).get(i+IT::size    ,j) );
-         matrix_.storeu( row_+i+IT::size*2UL, column_+j, get(i+IT::size*2UL,j) - (~rhs).get(i+IT::size*2UL,j) );
-         matrix_.storeu( row_+i+IT::size*3UL, column_+j, get(i+IT::size*3UL,j) - (~rhs).get(i+IT::size*3UL,j) );
+         matrix_.storeu( row_+i             , column_+j, load(i             ,j) - (~rhs).load(i             ,j) );
+         matrix_.storeu( row_+i+IT::size    , column_+j, load(i+IT::size    ,j) - (~rhs).load(i+IT::size    ,j) );
+         matrix_.storeu( row_+i+IT::size*2UL, column_+j, load(i+IT::size*2UL,j) - (~rhs).load(i+IT::size*2UL,j) );
+         matrix_.storeu( row_+i+IT::size*3UL, column_+j, load(i+IT::size*3UL,j) - (~rhs).load(i+IT::size*3UL,j) );
       }
       for( size_t i=iend; i<m_; i+=IT::size ) {
-         storeu( i, j, get(i,j) - (~rhs).get(i,j) );
+         storeu( i, j, load(i,j) - (~rhs).load(i,j) );
       }
    }
 }

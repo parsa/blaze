@@ -179,12 +179,12 @@ class DVecDVecAddExpr : public DenseVector< DVecDVecAddExpr<VT1,VT2,TF>, TF >
    // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed values.
    */
-   inline IntrinsicType get( size_t index ) const {
+   inline IntrinsicType load( size_t index ) const {
       typedef IntrinsicTrait<ElementType>  IT;
       BLAZE_INTERNAL_ASSERT( index < lhs_.size()    , "Invalid vector access index" );
       BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
-      const IntrinsicType xmm1( lhs_.get( index ) );
-      const IntrinsicType xmm2( rhs_.get( index ) );
+      const IntrinsicType xmm1( lhs_.load( index ) );
+      const IntrinsicType xmm2( rhs_.load( index ) );
       return xmm1 + xmm2;
    }
    //**********************************************************************************************

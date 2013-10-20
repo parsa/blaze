@@ -436,15 +436,15 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       for( ; (i+8UL) <= M; i+=8UL ) {
          IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
-            xmm3 = xmm3 + A.get(i+2UL,j) * x1;
-            xmm4 = xmm4 + A.get(i+3UL,j) * x1;
-            xmm5 = xmm5 + A.get(i+4UL,j) * x1;
-            xmm6 = xmm6 + A.get(i+5UL,j) * x1;
-            xmm7 = xmm7 + A.get(i+6UL,j) * x1;
-            xmm8 = xmm8 + A.get(i+7UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
+            xmm3 = xmm3 + A.load(i+2UL,j) * x1;
+            xmm4 = xmm4 + A.load(i+3UL,j) * x1;
+            xmm5 = xmm5 + A.load(i+4UL,j) * x1;
+            xmm6 = xmm6 + A.load(i+5UL,j) * x1;
+            xmm7 = xmm7 + A.load(i+6UL,j) * x1;
+            xmm8 = xmm8 + A.load(i+7UL,j) * x1;
          }
          y[i    ] = sum( xmm1 );
          y[i+1UL] = sum( xmm2 );
@@ -458,11 +458,11 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       for( ; (i+4UL) <= M; i+=4UL ) {
          IntrinsicType xmm1, xmm2, xmm3, xmm4;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
-            xmm3 = xmm3 + A.get(i+2UL,j) * x1;
-            xmm4 = xmm4 + A.get(i+3UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
+            xmm3 = xmm3 + A.load(i+2UL,j) * x1;
+            xmm4 = xmm4 + A.load(i+3UL,j) * x1;
          }
          y[i    ] = sum( xmm1 );
          y[i+1UL] = sum( xmm2 );
@@ -472,10 +472,10 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       for( ; (i+3UL) <= M; i+=3UL ) {
          IntrinsicType xmm1, xmm2, xmm3;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
-            xmm3 = xmm3 + A.get(i+2UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
+            xmm3 = xmm3 + A.load(i+2UL,j) * x1;
          }
          y[i    ] = sum( xmm1 );
          y[i+1UL] = sum( xmm2 );
@@ -484,9 +484,9 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       for( ; (i+2UL) <= M; i+=2UL ) {
          IntrinsicType xmm1, xmm2;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
          }
          y[i    ] = sum( xmm1 );
          y[i+1UL] = sum( xmm2 );
@@ -494,7 +494,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       if( i < M ) {
          IntrinsicType xmm1;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            xmm1 = xmm1 + A.get(i,j) * x.get(j);
+            xmm1 = xmm1 + A.load(i,j) * x.load(j);
          }
          y[i] = sum( xmm1 );
       }
@@ -813,15 +813,15 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       for( ; (i+8UL) <= M; i+=8UL ) {
          IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
-            xmm3 = xmm3 + A.get(i+2UL,j) * x1;
-            xmm4 = xmm4 + A.get(i+3UL,j) * x1;
-            xmm5 = xmm5 + A.get(i+4UL,j) * x1;
-            xmm6 = xmm6 + A.get(i+5UL,j) * x1;
-            xmm7 = xmm7 + A.get(i+6UL,j) * x1;
-            xmm8 = xmm8 + A.get(i+7UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
+            xmm3 = xmm3 + A.load(i+2UL,j) * x1;
+            xmm4 = xmm4 + A.load(i+3UL,j) * x1;
+            xmm5 = xmm5 + A.load(i+4UL,j) * x1;
+            xmm6 = xmm6 + A.load(i+5UL,j) * x1;
+            xmm7 = xmm7 + A.load(i+6UL,j) * x1;
+            xmm8 = xmm8 + A.load(i+7UL,j) * x1;
          }
          y[i    ] += sum( xmm1 );
          y[i+1UL] += sum( xmm2 );
@@ -835,11 +835,11 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       for( ; (i+4UL) <= M; i+=4UL ) {
          IntrinsicType xmm1, xmm2, xmm3, xmm4;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
-            xmm3 = xmm3 + A.get(i+2UL,j) * x1;
-            xmm4 = xmm4 + A.get(i+3UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
+            xmm3 = xmm3 + A.load(i+2UL,j) * x1;
+            xmm4 = xmm4 + A.load(i+3UL,j) * x1;
          }
          y[i    ] += sum( xmm1 );
          y[i+1UL] += sum( xmm2 );
@@ -849,10 +849,10 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       for( ; (i+3UL) <= M; i+=3UL ) {
          IntrinsicType xmm1, xmm2, xmm3;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
-            xmm3 = xmm3 + A.get(i+2UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
+            xmm3 = xmm3 + A.load(i+2UL,j) * x1;
          }
          y[i    ] += sum( xmm1 );
          y[i+1UL] += sum( xmm2 );
@@ -861,9 +861,9 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       for( ; (i+2UL) <= M; i+=2UL ) {
          IntrinsicType xmm1, xmm2;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
          }
          y[i    ] += sum( xmm1 );
          y[i+1UL] += sum( xmm2 );
@@ -871,7 +871,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       if( i < M ) {
          IntrinsicType xmm1;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            xmm1 = xmm1 + A.get(i,j) * x.get(j);
+            xmm1 = xmm1 + A.load(i,j) * x.load(j);
          }
          y[i] += sum( xmm1 );
       }
@@ -1165,15 +1165,15 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       for( ; (i+8UL) <= M; i+=8UL ) {
          IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
-            xmm3 = xmm3 + A.get(i+2UL,j) * x1;
-            xmm4 = xmm4 + A.get(i+3UL,j) * x1;
-            xmm5 = xmm5 + A.get(i+4UL,j) * x1;
-            xmm6 = xmm6 + A.get(i+5UL,j) * x1;
-            xmm7 = xmm7 + A.get(i+6UL,j) * x1;
-            xmm8 = xmm8 + A.get(i+7UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
+            xmm3 = xmm3 + A.load(i+2UL,j) * x1;
+            xmm4 = xmm4 + A.load(i+3UL,j) * x1;
+            xmm5 = xmm5 + A.load(i+4UL,j) * x1;
+            xmm6 = xmm6 + A.load(i+5UL,j) * x1;
+            xmm7 = xmm7 + A.load(i+6UL,j) * x1;
+            xmm8 = xmm8 + A.load(i+7UL,j) * x1;
          }
          y[i    ] -= sum( xmm1 );
          y[i+1UL] -= sum( xmm2 );
@@ -1187,11 +1187,11 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       for( ; (i+4UL) <= M; i+=4UL ) {
          IntrinsicType xmm1, xmm2, xmm3, xmm4;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
-            xmm3 = xmm3 + A.get(i+2UL,j) * x1;
-            xmm4 = xmm4 + A.get(i+3UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
+            xmm3 = xmm3 + A.load(i+2UL,j) * x1;
+            xmm4 = xmm4 + A.load(i+3UL,j) * x1;
          }
          y[i    ] -= sum( xmm1 );
          y[i+1UL] -= sum( xmm2 );
@@ -1201,10 +1201,10 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       for( ; (i+3UL) <= M; i+=3UL ) {
          IntrinsicType xmm1, xmm2, xmm3;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
-            xmm3 = xmm3 + A.get(i+2UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
+            xmm3 = xmm3 + A.load(i+2UL,j) * x1;
          }
          y[i    ] -= sum( xmm1 );
          y[i+1UL] -= sum( xmm2 );
@@ -1213,9 +1213,9 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       for( ; (i+2UL) <= M; i+=2UL ) {
          IntrinsicType xmm1, xmm2;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
          }
          y[i    ] -= sum( xmm1 );
          y[i+1UL] -= sum( xmm2 );
@@ -1223,7 +1223,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       if( i < M ) {
          IntrinsicType xmm1;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            xmm1 = xmm1 + A.get(i,j) * x.get(j);
+            xmm1 = xmm1 + A.load(i,j) * x.load(j);
          }
          y[i] -= sum( xmm1 );
       }
@@ -1812,15 +1812,15 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       for( ; (i+8UL) <= M; i+=8UL ) {
          IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
-            xmm3 = xmm3 + A.get(i+2UL,j) * x1;
-            xmm4 = xmm4 + A.get(i+3UL,j) * x1;
-            xmm5 = xmm5 + A.get(i+4UL,j) * x1;
-            xmm6 = xmm6 + A.get(i+5UL,j) * x1;
-            xmm7 = xmm7 + A.get(i+6UL,j) * x1;
-            xmm8 = xmm8 + A.get(i+7UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
+            xmm3 = xmm3 + A.load(i+2UL,j) * x1;
+            xmm4 = xmm4 + A.load(i+3UL,j) * x1;
+            xmm5 = xmm5 + A.load(i+4UL,j) * x1;
+            xmm6 = xmm6 + A.load(i+5UL,j) * x1;
+            xmm7 = xmm7 + A.load(i+6UL,j) * x1;
+            xmm8 = xmm8 + A.load(i+7UL,j) * x1;
          }
          y[i    ] = sum( xmm1 ) * scalar;
          y[i+1UL] = sum( xmm2 ) * scalar;
@@ -1834,11 +1834,11 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       for( ; (i+4UL) <= M; i+=4UL ) {
          IntrinsicType xmm1, xmm2, xmm3, xmm4;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
-            xmm3 = xmm3 + A.get(i+2UL,j) * x1;
-            xmm4 = xmm4 + A.get(i+3UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
+            xmm3 = xmm3 + A.load(i+2UL,j) * x1;
+            xmm4 = xmm4 + A.load(i+3UL,j) * x1;
          }
          y[i    ] = sum( xmm1 ) * scalar;
          y[i+1UL] = sum( xmm2 ) * scalar;
@@ -1848,10 +1848,10 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       for( ; (i+3UL) <= M; i+=3UL ) {
          IntrinsicType xmm1, xmm2, xmm3;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
-            xmm3 = xmm3 + A.get(i+2UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
+            xmm3 = xmm3 + A.load(i+2UL,j) * x1;
          }
          y[i    ] = sum( xmm1 ) * scalar;
          y[i+1UL] = sum( xmm2 ) * scalar;
@@ -1860,9 +1860,9 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       for( ; (i+2UL) <= M; i+=2UL ) {
          IntrinsicType xmm1, xmm2;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
          }
          y[i    ] = sum( xmm1 ) * scalar;
          y[i+1UL] = sum( xmm2 ) * scalar;
@@ -1870,7 +1870,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       if( i < M ) {
          IntrinsicType xmm1;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            xmm1 = xmm1 + A.get(i,j) * x.get(j);
+            xmm1 = xmm1 + A.load(i,j) * x.load(j);
          }
          y[i] = sum( xmm1 ) * scalar;
       }
@@ -2189,15 +2189,15 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       for( ; (i+8UL) <= M; i+=8UL ) {
          IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
-            xmm3 = xmm3 + A.get(i+2UL,j) * x1;
-            xmm4 = xmm4 + A.get(i+3UL,j) * x1;
-            xmm5 = xmm5 + A.get(i+4UL,j) * x1;
-            xmm6 = xmm6 + A.get(i+5UL,j) * x1;
-            xmm7 = xmm7 + A.get(i+6UL,j) * x1;
-            xmm8 = xmm8 + A.get(i+7UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
+            xmm3 = xmm3 + A.load(i+2UL,j) * x1;
+            xmm4 = xmm4 + A.load(i+3UL,j) * x1;
+            xmm5 = xmm5 + A.load(i+4UL,j) * x1;
+            xmm6 = xmm6 + A.load(i+5UL,j) * x1;
+            xmm7 = xmm7 + A.load(i+6UL,j) * x1;
+            xmm8 = xmm8 + A.load(i+7UL,j) * x1;
          }
          y[i    ] += sum( xmm1 ) * scalar;
          y[i+1UL] += sum( xmm2 ) * scalar;
@@ -2211,11 +2211,11 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       for( ; (i+4UL) <= M; i+=4UL ) {
          IntrinsicType xmm1, xmm2, xmm3, xmm4;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
-            xmm3 = xmm3 + A.get(i+2UL,j) * x1;
-            xmm4 = xmm4 + A.get(i+3UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
+            xmm3 = xmm3 + A.load(i+2UL,j) * x1;
+            xmm4 = xmm4 + A.load(i+3UL,j) * x1;
          }
          y[i    ] += sum( xmm1 ) * scalar;
          y[i+1UL] += sum( xmm2 ) * scalar;
@@ -2225,10 +2225,10 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       for( ; (i+3UL) <= M; i+=3UL ) {
          IntrinsicType xmm1, xmm2, xmm3;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
-            xmm3 = xmm3 + A.get(i+2UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
+            xmm3 = xmm3 + A.load(i+2UL,j) * x1;
          }
          y[i    ] += sum( xmm1 ) * scalar;
          y[i+1UL] += sum( xmm2 ) * scalar;
@@ -2237,9 +2237,9 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       for( ; (i+2UL) <= M; i+=2UL ) {
          IntrinsicType xmm1, xmm2;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
          }
          y[i    ] += sum( xmm1 ) * scalar;
          y[i+1UL] += sum( xmm2 ) * scalar;
@@ -2247,7 +2247,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       if( i < M ) {
          IntrinsicType xmm1;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            xmm1 = xmm1 + A.get(i,j) * x.get(j);
+            xmm1 = xmm1 + A.load(i,j) * x.load(j);
          }
          y[i] += sum( xmm1 ) * scalar;
       }
@@ -2543,15 +2543,15 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       for( ; (i+8UL) <= M; i+=8UL ) {
          IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
-            xmm3 = xmm3 + A.get(i+2UL,j) * x1;
-            xmm4 = xmm4 + A.get(i+3UL,j) * x1;
-            xmm5 = xmm5 + A.get(i+4UL,j) * x1;
-            xmm6 = xmm6 + A.get(i+5UL,j) * x1;
-            xmm7 = xmm7 + A.get(i+6UL,j) * x1;
-            xmm8 = xmm8 + A.get(i+7UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
+            xmm3 = xmm3 + A.load(i+2UL,j) * x1;
+            xmm4 = xmm4 + A.load(i+3UL,j) * x1;
+            xmm5 = xmm5 + A.load(i+4UL,j) * x1;
+            xmm6 = xmm6 + A.load(i+5UL,j) * x1;
+            xmm7 = xmm7 + A.load(i+6UL,j) * x1;
+            xmm8 = xmm8 + A.load(i+7UL,j) * x1;
          }
          y[i    ] -= sum( xmm1 ) * scalar;
          y[i+1UL] -= sum( xmm2 ) * scalar;
@@ -2565,11 +2565,11 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       for( ; (i+4UL) <= M; i+=4UL ) {
          IntrinsicType xmm1, xmm2, xmm3, xmm4;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
-            xmm3 = xmm3 + A.get(i+2UL,j) * x1;
-            xmm4 = xmm4 + A.get(i+3UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
+            xmm3 = xmm3 + A.load(i+2UL,j) * x1;
+            xmm4 = xmm4 + A.load(i+3UL,j) * x1;
          }
          y[i    ] -= sum( xmm1 ) * scalar;
          y[i+1UL] -= sum( xmm2 ) * scalar;
@@ -2579,10 +2579,10 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       for( ; (i+3UL) <= M; i+=3UL ) {
          IntrinsicType xmm1, xmm2, xmm3;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
-            xmm3 = xmm3 + A.get(i+2UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
+            xmm3 = xmm3 + A.load(i+2UL,j) * x1;
          }
          y[i    ] -= sum( xmm1 ) * scalar;
          y[i+1UL] -= sum( xmm2 ) * scalar;
@@ -2591,9 +2591,9 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       for( ; (i+2UL) <= M; i+=2UL ) {
          IntrinsicType xmm1, xmm2;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            const IntrinsicType x1( x.get(j) );
-            xmm1 = xmm1 + A.get(i    ,j) * x1;
-            xmm2 = xmm2 + A.get(i+1UL,j) * x1;
+            const IntrinsicType x1( x.load(j) );
+            xmm1 = xmm1 + A.load(i    ,j) * x1;
+            xmm2 = xmm2 + A.load(i+1UL,j) * x1;
          }
          y[i    ] -= sum( xmm1 ) * scalar;
          y[i+1UL] -= sum( xmm2 ) * scalar;
@@ -2601,7 +2601,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       if( i < M ) {
          IntrinsicType xmm1;
          for( size_t j=0UL; j<N; j+=IT::size ) {
-            xmm1 = xmm1 + A.get(i,j) * x.get(j);
+            xmm1 = xmm1 + A.load(i,j) * x.load(j);
          }
          y[i] -= sum( xmm1 ) * scalar;
       }
