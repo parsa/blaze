@@ -98,6 +98,9 @@ class ClassTest
    void testIsSymmetric ();
    void testMinimum     ();
    void testMaximum     ();
+   void testSubmatrix   ();
+   void testRow         ();
+   void testColumn      ();
 
    template< typename Type >
    void checkRows( const Type& matrix, size_t expectedRows ) const;

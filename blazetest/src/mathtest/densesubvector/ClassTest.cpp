@@ -65,6 +65,7 @@ ClassTest::ClassTest()
    testIsNan();
    testMinimum();
    testMaximum();
+   testSubvector();
 }
 //*************************************************************************************************
 
@@ -1832,6 +1833,47 @@ void ClassTest::testMaximum()
              << "   Expected result: 4\n";
          throw std::runtime_error( oss.str() );
       }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the subvector function with the DenseSubvector class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the subvector function used with the DenseSubvector class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testSubvector()
+{
+   test_ = "subvector() function";
+
+   initialize();
+
+   SVT sv1 = subvector( vec_, 1UL, 6UL );
+   SVT sv2 = subvector( sv1 , 1UL, 4UL );
+
+   if( sv2[1] != -2 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator access failed\n"
+          << " Details:\n"
+          << "   Result: " << sv2[1] << "\n"
+          << "   Expected result: -2\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   if( *sv2.begin() != 0 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Iterator access failed\n"
+          << " Details:\n"
+          << "   Result: " << *sv2.begin() << "\n"
+          << "   Expected result: 0\n";
+      throw std::runtime_error( oss.str() );
    }
 }
 //*************************************************************************************************

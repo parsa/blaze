@@ -76,20 +76,21 @@ class ClassTest
    /*!\name Test functions */
    //@{
    void testConstructors();
-   void testAssignment  ();
-   void testAddAssign   ();
-   void testSubAssign   ();
-   void testMultAssign  ();
-   void testDivAssign   ();
-   void testSubscript   ();
-   void testIterator    ();
-   void testNonZeros    ();
-   void testReset       ();
-   void testScale       ();
-   void testIsDefault   ();
-   void testIsNan       ();
-   void testMinimum     ();
-   void testMaximum     ();
+   void testAssignment();
+   void testAddAssign();
+   void testSubAssign();
+   void testMultAssign();
+   void testDivAssign();
+   void testSubscript();
+   void testIterator();
+   void testNonZeros();
+   void testReset();
+   void testScale();
+   void testIsDefault();
+   void testIsNan();
+   void testMinimum();
+   void testMaximum();
+   void testSubvector();
 
    template< typename Type >
    void checkSize( const Type& row, size_t expectedSize ) const;

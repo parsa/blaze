@@ -27,6 +27,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/DynamicMatrix.h>
+#include <blaze/math/Views.h>
 #include <blazetest/mathtest/sparsesubmatrix/ClassTest.h>
 
 
@@ -76,6 +77,9 @@ ClassTest::ClassTest()
    testIsSymmetric();
    testMinimum();
    testMaximum();
+   testSubmatrix();
+   testRow();
+   testColumn();
 }
 //*************************************************************************************************
 
@@ -7001,7 +7005,7 @@ void ClassTest::testIsNan()
    //=====================================================================================
 
    {
-      test_ = "Row-major isnan()";
+      test_ = "Row-major isnan() function";
 
       typedef blaze::CompressedMatrix<float,blaze::rowMajor>  MatrixType;
       typedef blaze::SparseSubmatrix<MatrixType>              SubmatrixType;
@@ -7055,7 +7059,7 @@ void ClassTest::testIsNan()
    //=====================================================================================
 
    {
-      test_ = "Column-major isnan()";
+      test_ = "Column-major isnan() function";
 
       typedef blaze::CompressedMatrix<float,blaze::columnMajor>  MatrixType;
       typedef blaze::SparseSubmatrix<MatrixType>                 SubmatrixType;
@@ -7122,7 +7126,7 @@ void ClassTest::testIsDiagonal()
    //=====================================================================================
 
    {
-      test_ = "Row-major isDiagonal()";
+      test_ = "Row-major isDiagonal() function";
 
       initialize();
       mat_(0,0) = 11;
@@ -7218,7 +7222,7 @@ void ClassTest::testIsDiagonal()
    //=====================================================================================
 
    {
-      test_ = "Column-major isDiagonal()";
+      test_ = "Column-major isDiagonal() function";
 
       initialize();
       tmat_(0,0) = 11;
@@ -7327,7 +7331,7 @@ void ClassTest::testIsSymmetric()
    //=====================================================================================
 
    {
-      test_ = "Row-major isSymmetric()";
+      test_ = "Row-major isSymmetric() function";
 
       initialize();
       mat_(0,0) = 11;
@@ -7447,7 +7451,7 @@ void ClassTest::testIsSymmetric()
    //=====================================================================================
 
    {
-      test_ = "Column-major isSymmetric()";
+      test_ = "Column-major isSymmetric() function";
 
       initialize();
       tmat_(0,0) = 11;
@@ -7580,7 +7584,7 @@ void ClassTest::testMinimum()
    //=====================================================================================
 
    {
-      test_ = "Row-major min()";
+      test_ = "Row-major min() function";
 
       initialize();
 
@@ -7654,7 +7658,7 @@ void ClassTest::testMinimum()
    //=====================================================================================
 
    {
-      test_ = "Column-major min()";
+      test_ = "Column-major min() function";
 
       initialize();
 
@@ -7741,7 +7745,7 @@ void ClassTest::testMaximum()
    //=====================================================================================
 
    {
-      test_ = "Row-major max()";
+      test_ = "Row-major max() function";
 
       initialize();
 
@@ -7815,7 +7819,7 @@ void ClassTest::testMaximum()
    //=====================================================================================
 
    {
-      test_ = "Column-major max()";
+      test_ = "Column-major max() function";
 
       initialize();
 
@@ -7880,6 +7884,257 @@ void ClassTest::testMaximum()
                 << "   Expected result: 10\n";
             throw std::runtime_error( oss.str() );
          }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the submatrix function with the SparseSubmatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the submatrix function with the SparseSubmatrix class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testSubmatrix()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major submatrix() function";
+
+      initialize();
+
+      SMT sm1 = submatrix( mat_, 1UL, 1UL, 4UL, 3UL );
+      SMT sm2 = submatrix( sm1 , 1UL, 1UL, 3UL, 2UL );
+
+      if( sm2(1,1) != -6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator access failed\n"
+             << " Details:\n"
+             << "   Result: " << sm2(1,1) << "\n"
+             << "   Expected result: -6\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( sm2.begin(1UL)->value() != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Iterator access failed\n"
+             << " Details:\n"
+             << "   Result: " << sm2.begin(1UL)->value() << "\n"
+             << "   Expected result: 5\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major submatrix() function";
+
+      initialize();
+
+      TSMT sm1 = submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
+      TSMT sm2 = submatrix( sm1  , 1UL, 1UL, 2UL, 3UL );
+
+      if( sm2(1,1) != -6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator access failed\n"
+             << " Details:\n"
+             << "   Result: " << sm2(1,1) << "\n"
+             << "   Expected result: -6\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( sm2.begin(1UL)->value() != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Iterator access failed\n"
+             << " Details:\n"
+             << "   Result: " << sm2.begin(1UL)->value() << "\n"
+             << "   Expected result: 5\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the row function with the SparseSubmatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the row function with the SparseSubmatrix class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testRow()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major row() function";
+
+      initialize();
+
+      typedef blaze::SparseRow<SMT>  RowType;
+
+      SMT sm1 = submatrix( mat_, 1UL, 1UL, 4UL, 3UL );
+      RowType row1 = row( sm1, 1UL );
+
+      if( row1[1] != -3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator access failed\n"
+             << " Details:\n"
+             << "   Result: " << row1[1] << "\n"
+             << "   Expected result: -3\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( row1.begin()->value() != -3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Iterator access failed\n"
+             << " Details:\n"
+             << "   Result: " << row1.begin()->value() << "\n"
+             << "   Expected result: -3\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major row() function";
+
+      initialize();
+
+      typedef blaze::SparseRow<TSMT>  RowType;
+
+      TSMT sm1 = submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
+      RowType row1 = row( sm1, 1UL );
+
+      if( row1[1] != -3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator access failed\n"
+             << " Details:\n"
+             << "   Result: " << row1[1] << "\n"
+             << "   Expected result: -3\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( row1.begin()->value() != -3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Iterator access failed\n"
+             << " Details:\n"
+             << "   Result: " << row1.begin()->value() << "\n"
+             << "   Expected result: -3\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the column function with the SparseSubmatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the column function with the SparseSubmatrix class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testColumn()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major column() function";
+
+      initialize();
+
+      typedef blaze::SparseColumn<SMT>  ColumnType;
+
+      SMT sm1 = submatrix( mat_, 1UL, 1UL, 4UL, 3UL );
+      ColumnType col1 = column( sm1, 1UL );
+
+      if( col1[1] != -3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator access failed\n"
+             << " Details:\n"
+             << "   Result: " << col1[1] << "\n"
+             << "   Expected result: -3\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( col1.begin()->value() != -3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Iterator access failed\n"
+             << " Details:\n"
+             << "   Result: " << col1.begin()->value() << "\n"
+             << "   Expected result: -3\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major column() function";
+
+      initialize();
+
+      typedef blaze::SparseColumn<TSMT>  ColumnType;
+
+      TSMT sm1 = submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
+      ColumnType col1 = column( sm1, 1UL );
+
+      if( col1[1] != -3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator access failed\n"
+             << " Details:\n"
+             << "   Result: " << col1[1] << "\n"
+             << "   Expected result: -3\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( col1.begin()->value() != -3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Iterator access failed\n"
+             << " Details:\n"
+             << "   Result: " << col1.begin()->value() << "\n"
+             << "   Expected result: -3\n";
+         throw std::runtime_error( oss.str() );
       }
    }
 }

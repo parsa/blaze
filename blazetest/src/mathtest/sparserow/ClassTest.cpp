@@ -28,6 +28,7 @@
 #include <iostream>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/DynamicVector.h>
+#include <blaze/math/Views.h>
 #include <blazetest/mathtest/sparserow/ClassTest.h>
 
 
@@ -74,6 +75,7 @@ ClassTest::ClassTest()
    testIsNan();
    testMinimum();
    testMaximum();
+   testSubvector();
 }
 //*************************************************************************************************
 
@@ -5559,6 +5561,91 @@ void ClassTest::testMaximum()
                 << "   Expected result: 10\n";
             throw std::runtime_error( oss.str() );
          }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the subvector function with the SparseRow class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the subvector function used with the SparseRow class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testSubvector()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major subvector() function";
+
+      initialize();
+
+      typedef blaze::SparseSubvector<RT>  SubvectorType;
+
+      RT row1 = row( mat_, 1UL );
+      SubvectorType sv = subvector( row1, 0UL, 4UL );
+
+      if( sv[1] != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator access failed\n"
+             << " Details:\n"
+             << "   Result: " << sv[1] << "\n"
+             << "   Expected result: 1\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( sv.begin()->value() != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Iterator access failed\n"
+             << " Details:\n"
+             << "   Result: " << sv.begin()->value() << "\n"
+             << "   Expected result: 1\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major subvector() function";
+
+      initialize();
+
+      typedef blaze::SparseSubvector<TRT>  SubvectorType;
+
+      TRT row1 = row( tmat_, 1UL );
+      SubvectorType sv = subvector( row1, 0UL, 4UL );
+
+      if( sv[1] != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator access failed\n"
+             << " Details:\n"
+             << "   Result: " << sv[1] << "\n"
+             << "   Expected result: 1\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( sv.begin()->value() != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Iterator access failed\n"
+             << " Details:\n"
+             << "   Result: " << sv.begin()->value() << "\n"
+             << "   Expected result: 1\n";
+         throw std::runtime_error( oss.str() );
       }
    }
 }
