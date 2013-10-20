@@ -1850,6 +1850,7 @@ template< typename Type  // Data type of the sparse matrix
 inline typename CompressedMatrix<Type,SO>::ConstIterator
    CompressedMatrix<Type,SO>::lowerBound( size_t i, size_t j ) const
 {
+   BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    return std::lower_bound( begin_[i], end_[i], j, FindIndex() );
 }
 //*************************************************************************************************
@@ -1900,6 +1901,7 @@ template< typename Type  // Data type of the sparse matrix
 inline typename CompressedMatrix<Type,SO>::ConstIterator
    CompressedMatrix<Type,SO>::upperBound( size_t i, size_t j ) const
 {
+   BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    return std::upper_bound( begin_[i], end_[i], j, FindIndex() );
 }
 //*************************************************************************************************
@@ -3959,6 +3961,7 @@ template< typename Type >  // Data type of the sparse matrix
 inline typename CompressedMatrix<Type,true>::ConstIterator
    CompressedMatrix<Type,true>::lowerBound( size_t i, size_t j ) const
 {
+   BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    return std::lower_bound( begin_[j], end_[j], i, FindIndex() );
 }
 /*! \endcond */
@@ -4007,6 +4010,7 @@ template< typename Type >  // Data type of the sparse matrix
 inline typename CompressedMatrix<Type,true>::ConstIterator
    CompressedMatrix<Type,true>::upperBound( size_t i, size_t j ) const
 {
+   BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    return std::upper_bound( begin_[j], end_[j], i, FindIndex() );
 }
 /*! \endcond */
