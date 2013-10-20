@@ -1680,11 +1680,11 @@ class DenseColumn<MT,false> : public DenseVector< DenseColumn<MT,false>, false >
       //! Return type for the access to the value of a dense element.
       typedef typename SelectType< returnConst, typename MT::ConstReference, typename MT::Reference >::Type  Reference;
 
-      typedef std::forward_iterator_tag   IteratorCategory;  //!< The iterator category.
-      typedef RemoveReference<Reference>  ValueType;         //!< Type of the underlying elements.
-      typedef ValueType*                  PointerType;       //!< Pointer return type.
-      typedef Reference                   ReferenceType;     //!< Reference return type.
-      typedef ptrdiff_t                   DifferenceType;    //!< Difference between two iterators.
+      typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
+      typedef RemoveReference<Reference>       ValueType;         //!< Type of the underlying elements.
+      typedef ValueType*                       PointerType;       //!< Pointer return type.
+      typedef Reference                        ReferenceType;     //!< Reference return type.
+      typedef ptrdiff_t                        DifferenceType;    //!< Difference between two iterators.
 
       // STL iterator requirements
       typedef IteratorCategory  iterator_category;  //!< The iterator category.
@@ -1721,6 +1721,30 @@ class DenseColumn<MT,false> : public DenseVector< DenseColumn<MT,false>, false >
       {}
       //*******************************************************************************************
 
+      //**Addition assignment operator*************************************************************
+      /*!\brief Addition assignment operator.
+      //
+      // \param inc The increment of the iterator.
+      // \return The incremented iterator.
+      */
+      inline ColumnIterator& operator+=( size_t inc ) {
+         row_ += inc;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Subtraction assignment operator**********************************************************
+      /*!\brief Subtraction assignment operator.
+      //
+      // \param dec The decrement of the iterator.
+      // \return The decremented iterator.
+      */
+      inline ColumnIterator& operator-=( size_t dec ) {
+         row_ -= dec;
+         return *this;
+      }
+      //*******************************************************************************************
+
       //**Prefix increment operator****************************************************************
       /*!\brief Pre-increment operator.
       //
@@ -1741,6 +1765,40 @@ class DenseColumn<MT,false> : public DenseVector< DenseColumn<MT,false>, false >
          const ColumnIterator tmp( *this );
          ++(*this);
          return tmp;
+      }
+      //*******************************************************************************************
+
+      //**Prefix decrement operator****************************************************************
+      /*!\brief Pre-decrement operator.
+      //
+      // \return Reference to the decremented iterator.
+      */
+      inline ColumnIterator& operator--() {
+         --row_;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Postfix decrement operator***************************************************************
+      /*!\brief Post-decrement operator.
+      //
+      // \return The previous position of the iterator.
+      */
+      inline const ColumnIterator operator--( int ) {
+         const ColumnIterator tmp( *this );
+         --(*this);
+         return tmp;
+      }
+      //*******************************************************************************************
+
+      //**Subscript operator***********************************************************************
+      /*!\brief Direct access to the dense column elements.
+      //
+      // \param index Access index.
+      // \return Reference to the accessed value.
+      */
+      inline ReferenceType operator[]( size_t index ) const {
+         return matrix_(row_+index,column_);
       }
       //*******************************************************************************************
 
@@ -1788,6 +1846,54 @@ class DenseColumn<MT,false> : public DenseVector< DenseColumn<MT,false>, false >
       }
       //*******************************************************************************************
 
+      //**Less-than operator***********************************************************************
+      /*!\brief Less-than comparison between two ColumnIterator objects.
+      //
+      // \param rhs The right-hand side column iterator.
+      // \return \a true if the left-hand side iterator is smaller, \a false if not.
+      */
+      template< typename MatrixType2 >
+      inline bool operator<( const ColumnIterator<MatrixType2>& rhs ) const {
+         return ( &matrix_ == &rhs.matrix_ ) && ( row_ < rhs.row_ ) && ( column_ == rhs.column_ );
+      }
+      //*******************************************************************************************
+
+      //**Greater-than operator********************************************************************
+      /*!\brief Greater-than comparison between two ColumnIterator objects.
+      //
+      // \param rhs The right-hand side column iterator.
+      // \return \a true if the left-hand side iterator is greater, \a false if not.
+      */
+      template< typename MatrixType2 >
+      inline bool operator>( const ColumnIterator<MatrixType2>& rhs ) const {
+         return ( &matrix_ == &rhs.matrix_ ) && ( row_ > rhs.row_ ) && ( column_ == rhs.column_ );
+      }
+      //*******************************************************************************************
+
+      //**Less-or-equal-than operator**************************************************************
+      /*!\brief Less-than comparison between two ColumnIterator objects.
+      //
+      // \param rhs The right-hand side column iterator.
+      // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
+      */
+      template< typename MatrixType2 >
+      inline bool operator<=( const ColumnIterator<MatrixType2>& rhs ) const {
+         return ( &matrix_ == &rhs.matrix_ ) && ( row_ <= rhs.row_ ) && ( column_ == rhs.column_ );
+      }
+      //*******************************************************************************************
+
+      //**Greater-or-equal-than operator***********************************************************
+      /*!\brief Greater-than comparison between two ColumnIterator objects.
+      //
+      // \param rhs The right-hand side column iterator.
+      // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
+      */
+      template< typename MatrixType2 >
+      inline bool operator>=( const ColumnIterator<MatrixType2>& rhs ) const {
+         return ( &matrix_ == &rhs.matrix_ ) && ( row_ >= rhs.row_ ) && ( column_ == rhs.column_ );
+      }
+      //*******************************************************************************************
+
       //**Subtraction operator*********************************************************************
       /*!\brief Calculating the number of elements between two column iterators.
       //
@@ -1796,6 +1902,54 @@ class DenseColumn<MT,false> : public DenseVector< DenseColumn<MT,false>, false >
       */
       inline DifferenceType operator-( const ColumnIterator& rhs ) const {
          return row_ - rhs.row_;
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between a ColumnIterator and an integral value.
+      //
+      // \param it The iterator to be incremented.
+      // \param inc The number of elements the iterator is incremented.
+      // \return The incremented iterator.
+      */
+      friend inline const ColumnIterator operator+( const ColumnIterator& it, size_t inc ) {
+         return ColumnIterator( it.matrix_, it.row_+inc, it.column_ );
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between an integral value and a ColumnIterator.
+      //
+      // \param inc The number of elements the iterator is incremented.
+      // \param it The iterator to be incremented.
+      // \return The incremented iterator.
+      */
+      friend inline const ColumnIterator operator+( size_t inc, const ColumnIterator& it ) {
+         return ColumnIterator( it.matrix_, it.row_+inc, it.column_ );
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Subtraction between a ColumnIterator and an integral value.
+      //
+      // \param it The iterator to be decremented.
+      // \param inc The number of elements the iterator is decremented.
+      // \return The decremented iterator.
+      */
+      friend inline const ColumnIterator operator-( const ColumnIterator& it, size_t dec ) {
+         return ColumnIterator( it.matrix_, it.row_-dec, it.column_ );
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Subtraction between an integral value and a ColumnIterator.
+      //
+      // \param inc The number of elements the iterator is decremented.
+      // \param it The iterator to be decremented.
+      // \return The decremented iterator.
+      */
+      friend inline const ColumnIterator operator-( size_t dec, const ColumnIterator& it ) {
+         return ColumnIterator( it.matrix_, it.row_-dec, it.column_ );
       }
       //*******************************************************************************************
 
