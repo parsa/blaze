@@ -2397,6 +2397,7 @@ template< typename MT    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >::Type
    StaticMatrix<Type,M,N,SO>::addAssign( const DenseMatrix<MT,SO2>& rhs )
 {
+   using blaze::load;
    using blaze::store;
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
@@ -2521,6 +2522,7 @@ template< typename MT    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >::Type
    StaticMatrix<Type,M,N,SO>::subAssign( const DenseMatrix<MT,SO2>& rhs )
 {
+   using blaze::load;
    using blaze::store;
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
@@ -4853,6 +4855,7 @@ template< typename MT    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >::Type
    StaticMatrix<Type,M,N,true>::addAssign( const DenseMatrix<MT,SO>& rhs )
 {
+   using blaze::load;
    using blaze::store;
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
@@ -4981,6 +4984,7 @@ template< typename MT    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >::Type
    StaticMatrix<Type,M,N,true>::subAssign( const DenseMatrix<MT,SO>& rhs )
 {
+   using blaze::load;
    using blaze::store;
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );

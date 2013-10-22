@@ -1953,6 +1953,7 @@ template< typename MT >  // Type of the right-hand side dense matrix
 inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >::Type
    DynamicMatrix<Type,SO>::addAssign( const DenseMatrix<MT,SO>& rhs )
 {
+   using blaze::load;
    using blaze::store;
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -2119,6 +2120,7 @@ template< typename MT >  // Type of the right-hand side dense matrix
 inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >::Type
    DynamicMatrix<Type,SO>::subAssign( const DenseMatrix<MT,SO>& rhs )
 {
+   using blaze::load;
    using blaze::store;
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -4050,6 +4052,7 @@ template< typename MT >    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >::Type
    DynamicMatrix<Type,true>::addAssign( const DenseMatrix<MT,true>& rhs )
 {
+   using blaze::load;
    using blaze::store;
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -4216,6 +4219,7 @@ template< typename MT >    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >::Type
    DynamicMatrix<Type,true>::subAssign( const DenseMatrix<MT,true>& rhs )
 {
+   using blaze::load;
    using blaze::store;
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );

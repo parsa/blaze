@@ -1630,6 +1630,7 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >::Type
    StaticVector<Type,N,TF>::addAssign( const DenseVector<VT,TF>& rhs )
 {
+   using blaze::load;
    using blaze::store;
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
@@ -1712,6 +1713,7 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >::Type
    StaticVector<Type,N,TF>::subAssign( const DenseVector<VT,TF>& rhs )
 {
+   using blaze::load;
    using blaze::store;
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
@@ -1794,6 +1796,7 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >::Type
    StaticVector<Type,N,TF>::multAssign( const DenseVector<VT,TF>& rhs )
 {
+   using blaze::load;
    using blaze::store;
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );

@@ -1586,6 +1586,7 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >::Type
    DynamicVector<Type,TF>::addAssign( const DenseVector<VT,TF>& rhs )
 {
+   using blaze::load;
    using blaze::store;
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
@@ -1679,6 +1680,7 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >::Type
    DynamicVector<Type,TF>::subAssign( const DenseVector<VT,TF>& rhs )
 {
+   using blaze::load;
    using blaze::store;
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
@@ -1772,6 +1774,7 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >::Type
    DynamicVector<Type,TF>::multAssign( const DenseVector<VT,TF>& rhs )
 {
+   using blaze::load;
    using blaze::store;
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
