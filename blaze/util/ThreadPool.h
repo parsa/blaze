@@ -30,14 +30,11 @@
 #include <boost/bind.hpp>
 #include <boost/thread/condition.hpp>
 #include <boost/thread/mutex.hpp>
-#include <boost/type_traits.hpp>
-#include <boost/utility/result_of.hpp>
 #include <blaze/util/NonCopyable.h>
 #include <blaze/util/PtrVector.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Thread.h>
-#include <blaze/util/threadpool/FuncWrapper.h>
-#include <blaze/util/threadpool/TaskID.h>
+#include <blaze/util/threadpool/Task.h>
 #include <blaze/util/threadpool/TaskQueue.h>
 #include <blaze/util/Types.h>
 
@@ -401,15 +398,8 @@ inline size_t ThreadPool::ready() const
 template< typename Callable >  // Task type
 void ThreadPool::schedule( Callable func )
 {
-   BLAZE_STATIC_ASSERT( boost::function_traits<Callable()>::arity == 0 );
-   BLAZE_STATIC_ASSERT( boost::is_void< typename boost::result_of<Callable()>::type >::value );
-
-   using threadpool::TaskID;
-   using threadpool::FuncWrapper;
-
    Lock lock( mutex_ );
-   TaskID task( new FuncWrapper<Callable>( func ) );
-   taskqueue_.push( task );
+   taskqueue_.push( func );
    waitForTask_.notify_one();
 }
 //*************************************************************************************************
@@ -429,15 +419,8 @@ template< typename Callable  // Type of the function/functor
         , typename A1 >      // Type of the first argument
 void ThreadPool::schedule( Callable func, A1 a1 )
 {
-   BLAZE_STATIC_ASSERT( boost::function_traits<Callable()>::arity == 1 );
-   BLAZE_STATIC_ASSERT( boost::is_void< typename boost::result_of<Callable()>::type >::value );
-
-   using threadpool::TaskID;
-   using threadpool::FuncWrapper;
-
    Lock lock( mutex_ );
-   TaskID task( new FuncWrapper<Callable>( boost::bind( func, a1 ) ) );
-   taskqueue_.push( task );
+   taskqueue_.push( boost::bind<void>( func, a1 ) );
    waitForTask_.notify_one();
 }
 //*************************************************************************************************
@@ -459,15 +442,8 @@ template< typename Callable  // Type of the function/functor
         , typename A2 >      // Type of the second argument
 void ThreadPool::schedule( Callable func, A1 a1, A2 a2 )
 {
-   BLAZE_STATIC_ASSERT( boost::function_traits<Callable()>::arity == 2 );
-   BLAZE_STATIC_ASSERT( boost::is_void< typename boost::result_of<Callable()>::type >::value );
-
-   using threadpool::TaskID;
-   using threadpool::FuncWrapper;
-
    Lock lock( mutex_ );
-   TaskID task( new FuncWrapper<Callable>( boost::bind( func, a1, a2 ) ) );
-   taskqueue_.push( task );
+   taskqueue_.push( boost::bind<void>( func, a1, a2 ) );
    waitForTask_.notify_one();
 }
 //*************************************************************************************************
@@ -491,15 +467,8 @@ template< typename Callable  // Type of the function/functor
         , typename A3 >      // Type of the third argument
 void ThreadPool::schedule( Callable func, A1 a1, A2 a2, A3 a3 )
 {
-   BLAZE_STATIC_ASSERT( boost::function_traits<Callable()>::arity == 3 );
-   BLAZE_STATIC_ASSERT( boost::is_void< typename boost::result_of<Callable()>::type >::value );
-
-   using threadpool::TaskID;
-   using threadpool::FuncWrapper;
-
    Lock lock( mutex_ );
-   TaskID task( new FuncWrapper<Callable>( boost::bind( func, a1, a2, a3 ) ) );
-   taskqueue_.push( task );
+   taskqueue_.push( boost::bind<void>( func, a1, a2, a3 ) );
    waitForTask_.notify_one();
 }
 //*************************************************************************************************
@@ -525,15 +494,8 @@ template< typename Callable  // Type of the function/functor
         , typename A4 >      // Type of the fourth argument
 void ThreadPool::schedule( Callable func, A1 a1, A2 a2, A3 a3, A4 a4 )
 {
-   BLAZE_STATIC_ASSERT( boost::function_traits<Callable()>::arity == 4 );
-   BLAZE_STATIC_ASSERT( boost::is_void< typename boost::result_of<Callable()>::type >::value );
-
-   using threadpool::TaskID;
-   using threadpool::FuncWrapper;
-
    Lock lock( mutex_ );
-   TaskID task( new FuncWrapper<Callable>( boost::bind( func, a1, a2, a3, a4 ) ) );
-   taskqueue_.push( task );
+   taskqueue_.push( boost::bind<void>( func, a1, a2, a3, a4 ) );
    waitForTask_.notify_one();
 }
 //*************************************************************************************************
@@ -561,15 +523,8 @@ template< typename Callable  // Type of the function/functor
         , typename A5 >      // Type of the fifth argument
 void ThreadPool::schedule( Callable func, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 )
 {
-   BLAZE_STATIC_ASSERT( boost::function_traits<Callable()>::arity == 5 );
-   BLAZE_STATIC_ASSERT( boost::is_void< typename boost::result_of<Callable()>::type >::value );
-
-   using threadpool::TaskID;
-   using threadpool::FuncWrapper;
-
    Lock lock( mutex_ );
-   TaskID task( new FuncWrapper<Callable>( boost::bind( func, a1, a2, a3, a4, a5 ) ) );
-   taskqueue_.push( task );
+   taskqueue_.push( boost::bind<void>( func, a1, a2, a3, a4, a5 ) );
    waitForTask_.notify_one();
 }
 //*************************************************************************************************

@@ -31,7 +31,7 @@ endif
 
 
 # Setting the source, object and dependency files
-SRC = $(wildcard ./*.cpp ./logging/*.cpp ./threadpool/*.cpp)
+SRC = $(wildcard ./*.cpp ./logging/*.cpp)
 OBJ = $(SRC:.cpp=.o)
 DEP = $(SRC:.cpp=.d)
 

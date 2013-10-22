@@ -237,7 +237,7 @@ void ThreadPool::createThread()
 */
 bool ThreadPool::executeTask()
 {
-   boost::scoped_ptr<threadpool::Task> task( 0 );
+   threadpool::Task task;
 
    // Acquiring a scheduled task
    {
@@ -258,11 +258,11 @@ bool ThreadPool::executeTask()
       }
 
       BLAZE_INTERNAL_ASSERT( !taskqueue_.isEmpty(), "Empty task queue detected" );
-      task.reset( taskqueue_.pop() );
+      task = taskqueue_.pop();
    }
 
    // Executing the task
-   task->run();
+   task();
 
    return true;
 }

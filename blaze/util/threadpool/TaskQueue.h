@@ -27,12 +27,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <algorithm>
 #include <deque>
-#include <blaze/util/policies/PtrDelete.h>
 #include <blaze/util/threadpool/Task.h>
-#include <blaze/util/threadpool/TaskID.h>
-#include <blaze/util/UniquePtr.h>
 
 
 namespace blaze {
@@ -56,7 +52,7 @@ class TaskQueue
 {
  private:
    //**Type definitions****************************************************************************
-   typedef std::deque<Task*>  Tasks;  //!< FIFO container for tasks.
+   typedef std::deque<Task>  Tasks;  //!< FIFO container for tasks.
    //**********************************************************************************************
 
  public:
@@ -90,9 +86,9 @@ class TaskQueue
    //**Element functions***************************************************************************
    /*!\name Element functions */
    //@{
-   inline void   push ( TaskID task );
-   inline TaskID pop  ();
-   inline void   clear();
+   inline void push ( Task task );
+   inline Task pop  ();
+   inline void clear();
    //@}
    //**********************************************************************************************
 
@@ -213,11 +209,9 @@ inline bool TaskQueue::isEmpty() const
 //
 // This function adds the given task to the end of the task queue. It runs in constant time.
 */
-inline void TaskQueue::push( TaskID task )
+inline void TaskQueue::push( Task task )
 {
-   UniquePtr<Task> ptr( task );
    tasks_.push_back( task );
-   ptr.release();
 }
 //*************************************************************************************************
 
@@ -227,9 +221,9 @@ inline void TaskQueue::push( TaskID task )
 //
 // \return The first task in the task queue.
 */
-inline TaskID TaskQueue::pop()
+inline Task TaskQueue::pop()
 {
-   TaskID task( tasks_.front() );
+   const Task task( tasks_.front() );
    tasks_.pop_front();
    return task;
 }
@@ -243,7 +237,6 @@ inline TaskID TaskQueue::pop()
 */
 inline void TaskQueue::clear()
 {
-   std::for_each( tasks_.begin(), tasks_.end(), PtrDelete() );
    tasks_.clear();
 }
 //*************************************************************************************************
