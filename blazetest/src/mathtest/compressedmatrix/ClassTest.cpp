@@ -5270,7 +5270,7 @@ void ClassTest::testScale()
       checkNonZeros( mat, 0UL, 1UL );
       checkNonZeros( mat, 1UL, 1UL );
 
-      if( mat(0,0) != complex<float>( 3.0F, 0.0F ) || mat(0,1) != complex<float>( 6.0F, 0.0F ) ) {
+      if( mat(0,0) != complex<float>( 3.0F, 0.0F ) || mat(1,1) != complex<float>( 6.0F, 0.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"
@@ -5368,7 +5368,7 @@ void ClassTest::testScale()
       checkNonZeros( mat, 0UL, 1UL );
       checkNonZeros( mat, 1UL, 1UL );
 
-      if( mat(0,0) != complex<float>( 3.0F, 0.0F ) || mat(0,1) != complex<float>( 6.0F, 0.0F ) ) {
+      if( mat(0,0) != complex<float>( 3.0F, 0.0F ) || mat(1,1) != complex<float>( 6.0F, 0.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"
