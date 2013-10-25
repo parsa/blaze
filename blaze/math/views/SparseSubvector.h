@@ -354,14 +354,25 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
    //**SubvectorElement class definition***********************************************************
    /*!\brief Access proxy for a specific element of the sparse subvector.
    */
-   template< typename IteratorType  // Type of the sparse vector iterator
-           , bool ConstFlag >       // Constness flag
+   template< typename VectorType      // Type of the sparse vector
+           , typename IteratorType >  // Type of the sparse vector iterator
    class SubvectorElement
    {
+    private:
+      //*******************************************************************************************
+      //! Compilation switch for the return type of the value member function.
+      /*! The \a returnConst compile time constant expression represents a compilation switch for
+          the return type of the value member function. In case the given vector type \a VectorType
+          is const qualified, \a returnConst will be set to 1 and the value member function will
+          return a reference to const. Otherwise \a returnConst will be set to 0 and the value
+          member function will offer write access to the sparse vector elements. */
+      enum { returnConst = IsConst<VectorType>::value };
+      //*******************************************************************************************
+
     public:
       //**Type definitions*************************************************************************
       //! Return type of the value member function.
-      typedef typename SelectType< ConstFlag, const ElementType&, ElementType& >::Type  ReferenceType;
+      typedef typename SelectType< returnConst, const ElementType&, ElementType& >::Type  ReferenceType;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -477,17 +488,17 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
    //**SubvectorIterator class definition**********************************************************
    /*!\brief Iterator over the elements of the sparse subvector.
    */
-   template< typename IteratorType  // Type of the sparse vector iterator
-           , bool ConstFlag >       // Constness flag
+   template< typename VectorType      // Type of the sparse vector
+           , typename IteratorType >  // Type of the sparse vector iterator
    class SubvectorIterator
    {
     public:
       //**Type definitions*************************************************************************
-      typedef std::forward_iterator_tag                 IteratorCategory;  //!< The iterator category.
-      typedef SubvectorElement<IteratorType,ConstFlag>  ValueType;         //!< Type of the underlying elements.
-      typedef ValueType                                 PointerType;       //!< Pointer return type.
-      typedef ValueType                                 ReferenceType;     //!< Reference return type.
-      typedef ptrdiff_t                                 DifferenceType;    //!< Difference between two iterators.
+      typedef std::forward_iterator_tag                  IteratorCategory;  //!< The iterator category.
+      typedef SubvectorElement<VectorType,IteratorType>  ValueType;         //!< Type of the underlying elements.
+      typedef ValueType                                  PointerType;       //!< Pointer return type.
+      typedef ValueType                                  ReferenceType;     //!< Reference return type.
+      typedef ptrdiff_t                                  DifferenceType;    //!< Difference between two iterators.
 
       // STL iterator requirements
       typedef IteratorCategory  iterator_category;  //!< The iterator category.
@@ -523,8 +534,8 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
       //
       // \param it The subvector iterator to be copied.
       */
-      template< typename IteratorType2, bool ConstFlag2 >
-      inline SubvectorIterator( const SubvectorIterator<IteratorType2,ConstFlag2>& it )
+      template< typename VectorType2, typename IteratorType2 >
+      inline SubvectorIterator( const SubvectorIterator<VectorType2,IteratorType2>& it )
          : pos_   ( it.pos_    )  // Iterator to the current sparse element.
          , offset_( it.offset_ )  // The offset of the subvector within the sparse vector
       {}
@@ -579,8 +590,8 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
       // \param rhs The right-hand side subvector iterator.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
-      template< typename IteratorType2, bool ConstFlag2 >
-      inline bool operator==( const SubvectorIterator<IteratorType2,ConstFlag2>& rhs ) const {
+      template< typename VectorType2, typename IteratorType2 >
+      inline bool operator==( const SubvectorIterator<VectorType2,IteratorType2>& rhs ) const {
          return pos_ == rhs.pos_;
       }
       //*******************************************************************************************
@@ -591,8 +602,8 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
       // \param rhs The right-hand side subvector iterator.
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
-      template< typename IteratorType2, bool ConstFlag2 >
-      inline bool operator!=( const SubvectorIterator<IteratorType2,ConstFlag2>& rhs ) const {
+      template< typename VectorType2, typename IteratorType2 >
+      inline bool operator!=( const SubvectorIterator<VectorType2,IteratorType2>& rhs ) const {
          return !( *this == rhs );
       }
       //*******************************************************************************************
@@ -616,7 +627,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
 
       //**Friend declarations**********************************************************************
       /*! \cond BLAZE_INTERNAL */
-      template< typename IteratorType2, bool ConstFlag2 > friend class SubvectorIterator;
+      template< typename VectorType2, typename IteratorType2 > friend class SubvectorIterator;
       template< typename VT2, bool TF2 > friend class SparseSubvector;
       /*! \endcond */
       //*******************************************************************************************
@@ -625,10 +636,10 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   typedef SubvectorIterator<typename VT::ConstIterator,true>  ConstIterator;
+   typedef SubvectorIterator<const VT,typename VT::ConstIterator>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename SelectType< useConst, ConstIterator, SubvectorIterator<typename VT::Iterator,false> >::Type  Iterator;
+   typedef typename SelectType< useConst, ConstIterator, SubvectorIterator<VT,typename VT::Iterator> >::Type  Iterator;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
