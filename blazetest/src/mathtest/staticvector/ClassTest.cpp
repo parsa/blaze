@@ -490,7 +490,7 @@ void ClassTest::testAssignment()
       vec1[0] = 1;
       vec1[2] = 2;
       vec1[3] = 3;
-      blaze::DynamicVector<int,blaze::rowVector> vec2;
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec2;
       vec2 = vec1;
 
       checkSize    ( vec2, 5UL );
