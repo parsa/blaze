@@ -354,14 +354,25 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
    //**SubmatrixElement class definition***********************************************************
    /*!\brief Access proxy for a specific element of the sparse submatrix.
    */
-   template< typename IteratorType  // Type of the sparse matrix iterator
-           , bool ConstFlag >       // Constness flag
+   template< typename MatrixType      // Type of the sparse matrix
+           , typename IteratorType >  // Type of the sparse matrix iterator
    class SubmatrixElement
    {
+    private:
+      //*******************************************************************************************
+      //! Compilation switch for the return type of the value member function.
+      /*! The \a returnConst compile time constant expression represents a compilation switch for
+          the return type of the value member function. In case the given matrix type \a MatrixType
+          is const qualified, \a returnConst will be set to 1 and the value member function will
+          return a reference to const. Otherwise \a returnConst will be set to 0 and the value
+          member function will offer write access to the sparse matrix elements. */
+      enum { returnConst = IsConst<MatrixType>::value };
+      //*******************************************************************************************
+
     public:
       //**Type definitions*************************************************************************
       //! Return type of the value member function.
-      typedef typename SelectType< ConstFlag, const ElementType&, ElementType& >::Type  ReferenceType;
+      typedef typename SelectType< returnConst, const ElementType&, ElementType& >::Type  ReferenceType;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -477,17 +488,17 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
    //**SubmatrixIterator class definition**********************************************************
    /*!\brief Iterator over the elements of the sparse submatrix.
    */
-   template< typename IteratorType  // Type of the sparse matrix iterator
-           , bool ConstFlag >       // Constness flag
+   template< typename MatrixType      // Type of the sparse matrix
+           , typename IteratorType >  // Type of the sparse matrix iterator
    class SubmatrixIterator
    {
     public:
       //**Type definitions*************************************************************************
-      typedef std::forward_iterator_tag                 IteratorCategory;  //!< The iterator category.
-      typedef SubmatrixElement<IteratorType,ConstFlag>  ValueType;         //!< Type of the underlying elements.
-      typedef ValueType                                 PointerType;       //!< Pointer return type.
-      typedef ValueType                                 ReferenceType;     //!< Reference return type.
-      typedef ptrdiff_t                                 DifferenceType;    //!< Difference between two iterators.
+      typedef std::forward_iterator_tag                  IteratorCategory;  //!< The iterator category.
+      typedef SubmatrixElement<MatrixType,IteratorType>  ValueType;         //!< Type of the underlying elements.
+      typedef ValueType                                  PointerType;       //!< Pointer return type.
+      typedef ValueType                                  ReferenceType;     //!< Reference return type.
+      typedef ptrdiff_t                                  DifferenceType;    //!< Difference between two iterators.
 
       // STL iterator requirements
       typedef IteratorCategory  iterator_category;  //!< The iterator category.
@@ -523,8 +534,8 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
       //
       // \param it The submatrix iterator to be copied.
       */
-      template< typename IteratorType2, bool ConstFlag2 >
-      inline SubmatrixIterator( const SubmatrixIterator<IteratorType2,ConstFlag2>& it )
+      template< typename MatrixType2, typename IteratorType2 >
+      inline SubmatrixIterator( const SubmatrixIterator<MatrixType2,IteratorType2>& it )
          : pos_   ( it.pos_    )  // Iterator to the current sparse element.
          , offset_( it.offset_ )  // The offset of the according row/column of the sparse matrix
       {}
@@ -579,8 +590,8 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
       // \param rhs The right-hand side submatrix iterator.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
-      template< typename IteratorType2, bool ConstFlag2 >
-      inline bool operator==( const SubmatrixIterator<IteratorType2,ConstFlag2>& rhs ) const {
+      template< typename MatrixType2, typename IteratorType2 >
+      inline bool operator==( const SubmatrixIterator<MatrixType2,IteratorType2>& rhs ) const {
          return pos_ == rhs.pos_;
       }
       //*******************************************************************************************
@@ -591,8 +602,8 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
       // \param rhs The right-hand side submatrix iterator.
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
-      template< typename IteratorType2, bool ConstFlag2 >
-      inline bool operator!=( const SubmatrixIterator<IteratorType2,ConstFlag2>& rhs ) const {
+      template< typename MatrixType2, typename IteratorType2 >
+      inline bool operator!=( const SubmatrixIterator<MatrixType2,IteratorType2>& rhs ) const {
          return !( *this == rhs );
       }
       //*******************************************************************************************
@@ -616,7 +627,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
 
       //**Friend declarations**********************************************************************
       /*! \cond BLAZE_INTERNAL */
-      template< typename IteratorType2, bool ConstFlag2 > friend class SubmatrixIterator;
+      template< typename MatrixType2, typename IteratorType2 > friend class SubmatrixIterator;
       template< typename MT2, bool SO2 > friend class SparseSubmatrix;
       /*! \endcond */
       //*******************************************************************************************
@@ -625,10 +636,10 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   typedef SubmatrixIterator<typename MT::ConstIterator,true>  ConstIterator;
+   typedef SubmatrixIterator<const MT,typename MT::ConstIterator>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename SelectType< useConst, ConstIterator, SubmatrixIterator<typename MT::Iterator,false> >::Type  Iterator;
+   typedef typename SelectType< useConst, ConstIterator, SubmatrixIterator<MT,typename MT::Iterator> >::Type  Iterator;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -2211,13 +2222,24 @@ class SparseSubmatrix<MT,true> : public SparseMatrix< SparseSubmatrix<MT,true>, 
    //**SubmatrixElement class definition***********************************************************
    /*!\brief Access proxy for a specific element of the sparse submatrix.
    */
-   template< typename IteratorType  // Type of the sparse matrix iterator
-           , bool ConstFlag >       // Constness flag
+   template< typename MatrixType      // Type of the sparse matrix
+           , typename IteratorType >  // Type of the sparse matrix iterator
    class SubmatrixElement
    {
+    private:
+      //*******************************************************************************************
+      //! Compilation switch for the return type of the value member function.
+      /*! The \a returnConst compile time constant expression represents a compilation switch for
+          the return type of the value member function. In case the given matrix type \a MatrixType
+          is const qualified, \a returnConst will be set to 1 and the value member function will
+          return a reference to const. Otherwise \a returnConst will be set to 0 and the value
+          member function will offer write access to the sparse matrix elements. */
+      enum { returnConst = IsConst<MatrixType>::value };
+      //*******************************************************************************************
+
     public:
       //**Type definitions*************************************************************************
-      typedef typename SelectType< ConstFlag, const ElementType&, ElementType& >::Type  ReferenceType;
+      typedef typename SelectType< returnConst, const ElementType&, ElementType& >::Type  ReferenceType;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -2333,17 +2355,17 @@ class SparseSubmatrix<MT,true> : public SparseMatrix< SparseSubmatrix<MT,true>, 
    //**SubmatrixIterator class definition**********************************************************
    /*!\brief Iterator over the elements of the sparse submatrix.
    */
-   template< typename IteratorType  // Type of the sparse matrix iterator
-           , bool ConstFlag >       // Constness flag
+   template< typename MatrixType      // Type of the sparse matrix
+           , typename IteratorType >  // Type of the sparse matrix iterator
    class SubmatrixIterator
    {
     public:
       //**Type definitions*************************************************************************
-      typedef std::forward_iterator_tag                 IteratorCategory;  //!< The iterator category.
-      typedef SubmatrixElement<IteratorType,ConstFlag>  ValueType;         //!< Type of the underlying elements.
-      typedef ValueType                                 PointerType;       //!< Pointer return type.
-      typedef ValueType                                 ReferenceType;     //!< Reference return type.
-      typedef ptrdiff_t                                 DifferenceType;    //!< Difference between two iterators.
+      typedef std::forward_iterator_tag                  IteratorCategory;  //!< The iterator category.
+      typedef SubmatrixElement<MatrixType,IteratorType>  ValueType;         //!< Type of the underlying elements.
+      typedef ValueType                                  PointerType;       //!< Pointer return type.
+      typedef ValueType                                  ReferenceType;     //!< Reference return type.
+      typedef ptrdiff_t                                  DifferenceType;    //!< Difference between two iterators.
 
       // STL iterator requirements
       typedef IteratorCategory  iterator_category;  //!< The iterator category.
@@ -2379,8 +2401,8 @@ class SparseSubmatrix<MT,true> : public SparseMatrix< SparseSubmatrix<MT,true>, 
       //
       // \param it The submatrix iterator to be copied.
       */
-      template< typename IteratorType2, bool ConstFlag2 >
-      inline SubmatrixIterator( const SubmatrixIterator<IteratorType2,ConstFlag2>& it )
+      template< typename MatrixType2, typename IteratorType2 >
+      inline SubmatrixIterator( const SubmatrixIterator<MatrixType2,IteratorType2>& it )
          : pos_   ( it.pos_    )  // Iterator to the current sparse element.
          , offset_( it.offset_ )  // The offset of the according row/column of the sparse matrix
       {}
@@ -2435,8 +2457,8 @@ class SparseSubmatrix<MT,true> : public SparseMatrix< SparseSubmatrix<MT,true>, 
       // \param rhs The right-hand side submatrix iterator.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
-      template< typename IteratorType2, bool ConstFlag2 >
-      inline bool operator==( const SubmatrixIterator<IteratorType2,ConstFlag2>& rhs ) const {
+      template< typename MatrixType2, typename IteratorType2 >
+      inline bool operator==( const SubmatrixIterator<MatrixType2,IteratorType2>& rhs ) const {
          return pos_ == rhs.pos_;
       }
       //*******************************************************************************************
@@ -2447,8 +2469,8 @@ class SparseSubmatrix<MT,true> : public SparseMatrix< SparseSubmatrix<MT,true>, 
       // \param rhs The right-hand side submatrix iterator.
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
-      template< typename IteratorType2, bool ConstFlag2 >
-      inline bool operator!=( const SubmatrixIterator<IteratorType2,ConstFlag2>& rhs ) const {
+      template< typename MatrixType2, typename IteratorType2 >
+      inline bool operator!=( const SubmatrixIterator<MatrixType2,IteratorType2>& rhs ) const {
          return !( *this == rhs );
       }
       //*******************************************************************************************
@@ -2472,7 +2494,7 @@ class SparseSubmatrix<MT,true> : public SparseMatrix< SparseSubmatrix<MT,true>, 
 
       //**Friend declarations**********************************************************************
       /*! \cond BLAZE_INTERNAL */
-      template< typename IteratorType2, bool ConstFlag2 > friend class SubmatrixIterator;
+      template< typename MatrixType2, typename IteratorType2 > friend class SubmatrixIterator;
       template< typename MT2, bool SO2 > friend class SparseSubmatrix;
       /*! \endcond */
       //*******************************************************************************************
@@ -2481,10 +2503,10 @@ class SparseSubmatrix<MT,true> : public SparseMatrix< SparseSubmatrix<MT,true>, 
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   typedef SubmatrixIterator<typename MT::ConstIterator,true>  ConstIterator;
+   typedef SubmatrixIterator<const MT,typename MT::ConstIterator>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename SelectType< useConst, ConstIterator, SubmatrixIterator<typename MT::Iterator,false> >::Type  Iterator;
+   typedef typename SelectType< useConst, ConstIterator, SubmatrixIterator<MT,typename MT::Iterator> >::Type  Iterator;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
