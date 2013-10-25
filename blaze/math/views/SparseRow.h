@@ -1752,17 +1752,6 @@ class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
            , typename IteratorType >  // Type of the sparse matrix iterator
    class RowIterator
    {
-    private:
-      //*******************************************************************************************
-      //! Compilation switch for the return type of the value member function.
-      /*! The \a returnConst compile time constant expression represents a compilation switch for
-          the return type of the value member function. In case the given matrix type \a MatrixType
-          is const qualified, \a returnConst will be set to 1 and the value member function will
-          return a reference to const. Otherwise \a returnConst will be set to 0 and the value
-          member function will offer write access to the sparse matrix elements. */
-      enum { returnConst = IsConst<MatrixType>::value };
-      //*******************************************************************************************
-
     public:
       //**Type definitions*************************************************************************
       typedef std::forward_iterator_tag            IteratorCategory;  //!< The iterator category.
