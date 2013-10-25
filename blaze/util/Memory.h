@@ -99,7 +99,7 @@ T* allocate( size_t size )
 template< typename T >
 void deallocate( T* address )
 {
-   if( IsVectorizable<T>::value ) {
+   if( IsVectorizable<T>::value && address != NULL ) {
 #if defined(_MSC_VER)
       _aligned_free( address );
 #else
