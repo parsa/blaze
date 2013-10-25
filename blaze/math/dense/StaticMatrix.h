@@ -49,6 +49,7 @@
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/system/StorageOrder.h>
+#include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/AlignedStorage.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
@@ -426,7 +427,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix()
 {
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<M*NN; ++i )
@@ -447,7 +448,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& init )
 {
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; ++j )
@@ -475,7 +476,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const StaticMatrix& m )
 {
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    for( size_t i=0UL; i<M*NN; ++i )
       v_[i] = m.v_[i];
@@ -496,7 +497,7 @@ template< typename Other  // Data type of the foreign matrix
         , bool SO2 >      // Storage order of the foreign matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const StaticMatrix<Other,M,N,SO2>& m )
 {
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; ++j )
@@ -531,7 +532,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Matrix<MT,SO2>& m )
 {
    using blaze::assign;
 
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    if( (~m).rows() != M || (~m).columns() != N )
       throw std::invalid_argument( "Invalid setup of static matrix" );
@@ -572,7 +573,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2 )
 {
    BLAZE_STATIC_ASSERT( M*N == 2UL );
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    // Initialization of a 1x2 matrix
    if( M == 1UL ) {
@@ -621,7 +622,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3 )
 {
    BLAZE_STATIC_ASSERT( M*N == 3UL );
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    // Initialization of a 1x3 matrix
    if( M == 1UL ) {
@@ -676,7 +677,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2,
                                                 const Type& v3, const Type& v4 )
 {
    BLAZE_STATIC_ASSERT( M*N == 4UL );
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    // Initialization of a 1x4 matrix
    if( M == 1UL ) {
@@ -740,7 +741,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
                                                 const Type& v4, const Type& v5 )
 {
    BLAZE_STATIC_ASSERT( M*N == 5UL );
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    // Initialization of a 1x5 matrix
    if( M == 1UL ) {
@@ -802,7 +803,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
                                                 const Type& v4, const Type& v5, const Type& v6 )
 {
    BLAZE_STATIC_ASSERT( M*N == 6UL );
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    // Initialization of a 1x6 matrix
    if( M == 1UL ) {
@@ -885,7 +886,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
                                                 const Type& v7 )
 {
    BLAZE_STATIC_ASSERT( M*N == 7UL );
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    // Initialization of a 1x7 matrix
    if( M == 1UL ) {
@@ -953,7 +954,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
                                                 const Type& v7, const Type& v8 )
 {
    BLAZE_STATIC_ASSERT( M*N == 8UL );
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    // Initialization of a 1x8 matrix
    if( M == 1UL ) {
@@ -1049,7 +1050,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
                                                 const Type& v7, const Type& v8, const Type& v9 )
 {
    BLAZE_STATIC_ASSERT( M*N == 9UL );
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    // Initialization of a 1x9 matrix
    if( M == 1UL ) {
@@ -1138,7 +1139,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
                                                 const Type& v10 )
 {
    BLAZE_STATIC_ASSERT( M*N == 10UL );
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    // Initialization of a 1x10 matrix
    if( M == 1UL ) {

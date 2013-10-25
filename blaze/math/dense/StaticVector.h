@@ -45,6 +45,7 @@
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/system/TransposeFlag.h>
+#include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/AlignedStorage.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
@@ -401,7 +402,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline StaticVector<Type,N,TF>::StaticVector()
 {
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<NN; ++i )
@@ -421,7 +422,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline StaticVector<Type,N,TF>::StaticVector( const Type& init )
 {
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    for( size_t i=0UL; i<N; ++i )
       v_[i] = init;
@@ -446,7 +447,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline StaticVector<Type,N,TF>::StaticVector( const StaticVector& v )
 {
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    for( size_t i=0UL; i<NN; ++i )
       v_[i] = v.v_[i];
@@ -465,7 +466,7 @@ template< typename Type     // Data type of the vector
 template< typename Other >  // Data type of the foreign vector
 inline StaticVector<Type,N,TF>::StaticVector( const StaticVector<Other,N,TF>& v )
 {
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    for( size_t i=0UL; i<N; ++i )
       v_[i] = v[i];
@@ -496,7 +497,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Vector<VT,TF>& v )
 {
    using blaze::assign;
 
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    if( (~v).size() != N )
       throw std::invalid_argument( "Invalid setup of static vector" );
@@ -531,7 +532,7 @@ template< typename Type  // Data type of the vector
 template< typename Other >  // Data type of the initialization array
 inline StaticVector<Type,N,TF>::StaticVector( const Other (&rhs)[N] )
 {
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    for( size_t i=0UL; i<N; ++i )
       v_[i] = rhs[i];
@@ -562,7 +563,7 @@ template< typename Type  // Data type of the vector
 inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2 )
 {
    BLAZE_STATIC_ASSERT( N == 2UL );
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    v_[0] = v1;
    v_[1] = v2;
@@ -594,7 +595,7 @@ template< typename Type  // Data type of the vector
 inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, const Type& v3 )
 {
    BLAZE_STATIC_ASSERT( N == 3UL );
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    v_[0] = v1;
    v_[1] = v2;
@@ -629,7 +630,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2,
                                               const Type& v3, const Type& v4 )
 {
    BLAZE_STATIC_ASSERT( N == 4UL );
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    v_[0] = v1;
    v_[1] = v2;
@@ -666,7 +667,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, co
                                               const Type& v4, const Type& v5 )
 {
    BLAZE_STATIC_ASSERT( N == 5UL );
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    v_[0] = v1;
    v_[1] = v2;
@@ -705,7 +706,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, co
                                               const Type& v4, const Type& v5, const Type& v6 )
 {
    BLAZE_STATIC_ASSERT( N == 6UL );
-   BLAZE_INTERNAL_ASSERT( !( reinterpret_cast<size_t>( v_ ) % IT::alignment ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    v_[0] = v1;
    v_[1] = v2;
