@@ -137,6 +137,30 @@ struct BLAZE_ALIGN( 64UL ) AlignedStorageHelper<64UL>
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of AlignedStorage for 128-byte alignment.
+// \ingroup intrinsics
+*/
+template<>
+struct BLAZE_ALIGN( 128UL ) AlignedStorageHelper<128UL>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of AlignedStorage for 256-byte alignment.
+// \ingroup intrinsics
+*/
+template<>
+struct BLAZE_ALIGN( 256UL ) AlignedStorageHelper<256UL>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief POD data type with a fixed alignment.
 // \ingroup intrinsics
 //
@@ -158,6 +182,12 @@ struct BLAZE_ALIGN( 64UL ) AlignedStorageHelper<64UL>
       T v_[N];
    };
    \endcode
+
+// Note that since AlignedStorage is designed as a base class proper alignment is depending on
+// the compiler's capacity to perform an empty base class optimization (EBO) and to transfer the
+// base class's alignment restriction to the deriving class. Currently, the only observed problem
+// in this context is that the Clang 4.1 compiler omits this optimization for optimization level
+// below \c -O2.
 */
 template< typename T >
 class AlignedStorage : private AlignedStorageHelper< AlignmentTrait<T>::value >
