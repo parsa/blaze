@@ -1,0 +1,13 @@
+*.d
+*.o
+ComplexFloat
+ComplexDouble
+Double
+Float
+Int
+Long
+Short
+UnsignedInt
+UnsignedLong
+UnsignedShort
+

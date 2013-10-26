@@ -20,7 +20,8 @@
 
 
 # Rules
-default: staticvector dynamicvector compressedvector \
+default: intrinsics \
+         staticvector dynamicvector compressedvector \
          staticmatrix dynamicmatrix compressedmatrix \
          densesubvector sparsesubvector \
          densesubmatrix sparsesubmatrix \
@@ -37,6 +38,11 @@ default: staticvector dynamicvector compressedvector \
          dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
          dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
          vectorserializer matrixserializer
+
+intrinsics:
+	@echo
+	@echo "Building the intrinsics operation tests..."
+	@$(MAKE) --no-print-directory -C ./intrinsics/
 
 staticvector:
 	@echo
@@ -339,6 +345,7 @@ matrixserializer:
 	@$(MAKE) --no-print-directory -C ./matrixserializer/
 
 clean:
+	@$(MAKE) --no-print-directory -C ./intrinsics clean
 	@$(MAKE) --no-print-directory -C ./staticvector clean
 	@$(MAKE) --no-print-directory -C ./dynamicvector clean
 	@$(MAKE) --no-print-directory -C ./compressedvector clean
@@ -404,6 +411,7 @@ clean:
 
 # Setting the independent commands
 .PHONY: default clean \
+        intrinsics \
         staticvector dynamicvector compressedvector \
         staticmatrix dynamicmatrix compressedmatrix \
         densesubvector sparsesubvector \
