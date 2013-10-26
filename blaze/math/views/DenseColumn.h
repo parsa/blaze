@@ -95,7 +95,7 @@ namespace blaze {
    class DenseColumn;
    \endcode
 
-//  - MT: specifies the type of the dense matrix primitive. DenseColumn can be used with any
+//  - MT: specifies the type of the dense matrix primitive. DenseColumn can be used with every
 //        dense matrix primitive, but does not work with any matrix expression type.
 //  - SO: specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the dense matrix.
 //        This template parameter doesn't have to be explicitly defined, but is automatically
@@ -104,10 +104,10 @@ namespace blaze {
 //
 // \n \section dense_column_setup Setup of Dense Columns
 //
-// A reference to a dense column can very conveniently be created via the \c column() function.
+// A reference to a dense column can be created very conveniently via the \c column() function.
 // This reference can be treated as any other column vector, i.e. it can be assigned to, it can
 // be copied from, and it can be used in arithmetic operations. The reference can also be used
-// on both sides of an assignment: The column can be either used as an alias to grant write access
+// on both sides of an assignment: The column can either be used as an alias to grant write access
 // to a specific column of a matrix primitive on the left-hand side of an assignment or to grant
 // read-access to a specific column of a matrix primitive or expression on the right-hand side of
 // an assignment. The following example demonstrates this in detail:

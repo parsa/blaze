@@ -94,7 +94,7 @@ namespace blaze {
    class DenseRow;
    \endcode
 
-//  - MT: specifies the type of the dense matrix primitive. DenseRow can be used with any dense
+//  - MT: specifies the type of the dense matrix primitive. DenseRow can be used with every dense
 //        matrix primitive, but does not work with any matrix expression type.
 //  - SO: specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the dense matrix.
 //        This template parameter doesn't have to be explicitly defined, but is automatically
@@ -103,10 +103,10 @@ namespace blaze {
 //
 // \n \section dense_row_setup Setup of Dense Rows
 //
-// A reference to a dense row can very conveniently be created via the \c row() function. This
+// A reference to a dense row can be created very conveniently via the \c row() function. This
 // reference can be treated as any other row vector, i.e. it can be assigned to, it can be
 // copied from, and it can be used in arithmetic operations. The reference can also be used on
-// both sides of an assignment: The row can be either used as an alias to grant write access to a
+// both sides of an assignment: The row can either be used as an alias to grant write access to a
 // specific row of a matrix primitive on the left-hand side of an assignment or to grant read-access
 // to a specific row of a matrix primitive or expression on the right-hand side of an assignment.
 // The following example demonstrates this in detail:

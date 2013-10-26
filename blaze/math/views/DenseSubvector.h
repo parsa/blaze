@@ -88,10 +88,10 @@ namespace blaze {
 /*!\defgroup dense_subvector Dense Subvector
 // \ingroup views
 */
-/*!\brief View to a specific subvector of a dense vector.
+/*!\brief View on a specific subvector of a dense vector.
 // \ingroup dense_subvector
 //
-// The DenseSubvector template represents a view to a specific subvector of a dense vector
+// The DenseSubvector template represents a view on a specific subvector of a dense vector
 // primitive. The type of the dense vector is specified via the first template parameter:
 
    \code
@@ -99,7 +99,7 @@ namespace blaze {
    class DenseSubvector;
    \endcode
 
-//  - VT: specifies the type of the dense vector primitive. DenseSubvector can be used with any
+//  - VT: specifies the type of the dense vector primitive. DenseSubvector can be used with every
 //        dense vector primitive or view, but does not work with any vector expression type.
 //  - TF: specifies whether the vector is a row vector (\a blaze::rowVector) or a column
 //        vector (\a blaze::columnVector). This template parameter doesn't have to be explicitly
@@ -108,10 +108,10 @@ namespace blaze {
 //
 // \n \section dense_subvector_setup Setup of Dense Subvectors
 //
-// A view to a dense subvector can very conveniently be created via the \c subvector() function.
+// A view on a dense subvector can be created very conveniently via the \c subvector() function.
 // This view can be treated as any other dense vector, i.e. it can be assigned to, it can be
 // copied from, and it can be used in arithmetic operations. The view can also be used on both
-// sides of an assignment: The subvector can be either used as an alias to grant write access to
+// sides of an assignment: The subvector can either be used as an alias to grant write access to
 // a specific subvector of a dense vector primitive on the left-hand side of an assignment or
 // to grant read-access to a specific subvector of a dense vector primitive or expression on
 // the right-hand side of an assignment. The following example demonstrates this in detail:
@@ -194,7 +194,7 @@ namespace blaze {
 //
 // The current number of subvector elements can be obtained via the \c size() function, the
 // current capacity via the \c capacity() function, and the number of non-zero elements via
-// the \c nonZeros() function. However, since subvector are views to a specific subvector of
+// the \c nonZeros() function. However, since subvector are views on a specific subvector of
 // a vector, several operations are not possible on views, such as resizing and swapping:
 
    \code
@@ -204,7 +204,7 @@ namespace blaze {
    VectorType v( 42UL );
    // ... Resizing and initialization
 
-   // Creating a view to the range [5..15] of vector v
+   // Creating a view on the range [5..15] of vector v
    SubvectorType sv = subvector( v, 5UL, 10UL );
 
    sv.size();          // Returns the number of elements in the subvector

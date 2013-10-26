@@ -91,10 +91,10 @@ namespace blaze {
 /*!\defgroup dense_submatrix Dense Submatrix
 // \ingroup views
 */
-/*!\brief View to a specific submatrix of a dense matrix.
+/*!\brief View on a specific submatrix of a dense matrix.
 // \ingroup dense_submatrix
 //
-// The DenseSubmatrix template represents a view to a specific submatrix of a dense matrix
+// The DenseSubmatrix template represents a view on a specific submatrix of a dense matrix
 // primitive. The type of the dense matrix is specified via the first template parameter:
 
    \code
@@ -102,7 +102,7 @@ namespace blaze {
    class DenseSubmatrix;
    \endcode
 
-//  - MT: specifies the type of the dense matrix primitive. DenseSubmatrix can be used with any
+//  - MT: specifies the type of the dense matrix primitive. DenseSubmatrix can be used with every
 //        dense matrix primitive, but does not work with any matrix expression type.
 //  - SO: specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the dense matrix.
 //        This template parameter doesn't have to be explicitly defined, but is automatically
@@ -111,10 +111,10 @@ namespace blaze {
 //
 // \n \section dense_submatrix_setup Setup of Dense Submatrices
 //
-// A view to a dense submatrix can very conveniently be created via the \c submatrix() function.
+// A view on a dense submatrix can be created very conveniently via the \c submatrix() function.
 // This view can be treated as any other dense matrix, i.e. it can be assigned to, it can be
 // copied from, and it can be used in arithmetic operations. The view can also be used on both
-// sides of an assignment: The submatrix can be either used as an alias to grant write access to
+// sides of an assignment: The submatrix can either be used as an alias to grant write access to
 // a specific submatrix of a dense matrix primitive on the left-hand side of an assignment or
 // to grant read-access to a specific submatrix of a dense matrix primitive or expression on
 // the right-hand side of an assignment. The following example demonstrates this in detail:
@@ -191,7 +191,7 @@ namespace blaze {
 // The current size of the matrix, i.e. the number of rows or columns can be obtained via the
 // \c row() and \c column() functions, the current total capacity via the \c capacity() function,
 // and the number of non-zero elements via the \c nonZeros() function. However, since submatrices
-// are views to a specific submatrix of a matrix, several operations are not possible on views,
+// are views on a specific submatrix of a matrix, several operations are not possible on views,
 // such as resizing and swapping:
 
    \code
@@ -201,7 +201,7 @@ namespace blaze {
    MatrixType A;
    // ... Resizing and initialization
 
-   // Creating a view to the a 8x12 submatrix of matrix A
+   // Creating a view on the a 8x12 submatrix of matrix A
    SubmatrixType sm = submatrix( A, 0UL, 0UL, 8UL, 12UL );
 
    sm.rows();      // Returns the number of rows of the submatrix

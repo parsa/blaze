@@ -88,10 +88,10 @@ namespace blaze {
 /*!\defgroup sparse_submatrix Sparse Submatrix
 // \ingroup views
 */
-/*!\brief View to a specific submatrix of a sparse matrix.
+/*!\brief View on a specific submatrix of a sparse matrix.
 // \ingroup sparse_submatrix
 //
-// The SparseSubmatrix template represents a view to a specific submatrix of a sparse matrix
+// The SparseSubmatrix template represents a view on a specific submatrix of a sparse matrix
 // primitive. The type of the sparse matrix is specified via the first template parameter:
 
    \code
@@ -99,8 +99,8 @@ namespace blaze {
    class SparseSubmatrix;
    \endcode
 
-//  - MT: specifies the type of the sparse matrix primitive. SparseSubmatrix can be used with any
-//        sparse matrix primitive, but does not work with any matrix expression type.
+//  - MT: specifies the type of the sparse matrix primitive. SparseSubmatrix can be used with
+//        every sparse matrix primitive, but does not work with any matrix expression type.
 //  - SO: specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the sparse matrix.
 //        This template parameter doesn't have to be explicitly defined, but is automatically
 //        derived from the first template parameter.
@@ -108,10 +108,10 @@ namespace blaze {
 //
 // \n \section sparse_submatrix_setup Setup of Sparse Submatrices
 //
-// A view to a sparse submatrix can very conveniently be created via the \c submatrix() function.
+// A view on a sparse submatrix can be created very conveniently via the \c submatrix() function.
 // This view can be treated as any other sparse matrix, i.e. it can be assigned to, it can be
 // copied from, and it can be used in arithmetic operations. The view can also be used on both
-// sides of an assignment: The submatrix can be either used as an alias to grant write access to
+// sides of an assignment: The submatrix can either be used as an alias to grant write access to
 // a specific submatrix of a sparse matrix primitive on the left-hand side of an assignment or
 // to grant read-access to a specific submatrix of a sparse matrix primitive or expression on
 // the right-hand side of an assignment. The following example demonstrates this in detail:
@@ -197,7 +197,7 @@ namespace blaze {
    MatrixType A( 256UL, 512UL );  // Non-initialized matrix of size 256x512
 
    typedef blaze::SparseSubmatrix<MatrixType>  SubmatrixType;
-   SubmatrixType sm = submatrix( A, 10UL, 10UL, 16UL, 16UL );  // View to a 16x16 submatrix of A
+   SubmatrixType sm = submatrix( A, 10UL, 10UL, 16UL, 16UL );  // View on a 16x16 submatrix of A
 
    // The function call operator provides access to all possible elements of the sparse submatrix,
    // including the zero elements. In case the subscript operator is used to access an element
@@ -209,8 +209,8 @@ namespace blaze {
    // it inserts the element only in case the element is not already contained in the submatrix.
    sm.insert( 2UL, 6UL, 3.7 );
 
-   // As well as in the case of sparse matrices, elements can also be inserted via the \c append()
-   // function. Also in case of submatrices, \c append() requires that the appended element's
+   // Just as in the case of sparse matrices, elements can also be inserted via the \c append()
+   // function. In case of submatrices, \c append() also requires that the appended element's
    // index is strictly larger than the currently largest non-zero index in the according row
    // or column of the submatrix and that the according row's or column's capacity is large enough
    // to hold the new element. Note however that due to the nature of a submatrix, which may be an
@@ -225,7 +225,7 @@ namespace blaze {
 // The current size of the matrix, i.e. the number of rows or columns can be obtained via the
 // \c row() and \c column() functions, the current total capacity via the \c capacity() function,
 // and the number of non-zero elements via the \c nonZeros() function. However, since submatrices
-// are views to a specific submatrix of a matrix, several operations are not possible on views,
+// are views on a specific submatrix of a matrix, several operations are not possible on views,
 // such as resizing and swapping:
 
    \code
@@ -235,7 +235,7 @@ namespace blaze {
    MatrixType A;
    // ... Resizing and initialization
 
-   // Creating a view to the a 8x12 submatrix of matrix A
+   // Creating a view on the a 8x12 submatrix of matrix A
    SubmatrixType sm = submatrix( A, 0UL, 0UL, 8UL, 12UL );
 
    sm.rows();      // Returns the number of rows of the submatrix

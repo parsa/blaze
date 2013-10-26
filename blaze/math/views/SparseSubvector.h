@@ -85,10 +85,10 @@ namespace blaze {
 /*!\defgroup sparse_subvector Sparse Subvector
 // \ingroup views
 */
-/*!\brief View to a specific subvector of a sparse vector.
+/*!\brief View on a specific subvector of a sparse vector.
 // \ingroup sparse_subvector
 //
-// The SparseSubvector template represents a view to a specific subvector of a sparse vector
+// The SparseSubvector template represents a view on a specific subvector of a sparse vector
 // primitive. The type of the sparse vector is specified via the first template parameter:
 
    \code
@@ -96,8 +96,8 @@ namespace blaze {
    class SparseSubvector;
    \endcode
 
-//  - VT: specifies the type of the sparse vector primitive. SparseSubvector can be used with any
-//        sparse vector primitive or view, but does not work with any vector expression type.
+//  - VT: specifies the type of the sparse vector primitive. SparseSubvector can be used with
+//        every sparse vector primitive or view, but does not work with any vector expression type.
 //  - TF: specifies whether the vector is a row vector (\a blaze::rowVector) or a column
 //        vector (\a blaze::columnVector). This template parameter doesn't have to be explicitly
 //        defined, but is automatically derived from the first template parameter.
@@ -105,10 +105,10 @@ namespace blaze {
 //
 // \n \section sparse_subvector_setup Setup of Sparse Subvectors
 //
-// A view to a sparse subvector can very conveniently be created via the \c subvector() function.
+// A view on a sparse subvector can be created very conveniently via the \c subvector() function.
 // This view can be treated as any other sparse vector, i.e. it can be assigned to, it can be
 // copied from, and it can be used in arithmetic operations. The view can also be used on both
-// sides of an assignment: The subvector can be either used as an alias to grant write access to
+// sides of an assignment: The subvector can either be used as an alias to grant write access to
 // a specific subvector of a sparse vector primitive on the left-hand side of an assignment or
 // to grant read-access to a specific subvector of a sparse vector primitive or expression on
 // the right-hand side of an assignment. The following example demonstrates this in detail:
@@ -201,7 +201,7 @@ namespace blaze {
    VectorType v( 256UL );  // Non-initialized vector of size 256
 
    typedef blaze::SparseSubvector<VectorType>  SubvectorType;
-   SubvectorType sv( subvector( v, 10UL, 60UL ) );  // View to the range [10..69] of v
+   SubvectorType sv( subvector( v, 10UL, 60UL ) );  // View on the range [10..69] of v
 
    // The subscript operator provides access to all possible elements of the sparse subvector,
    // including the zero elements. In case the subscript operator is used to access an element
@@ -213,8 +213,8 @@ namespace blaze {
    // it inserts the element only in case the element is not already contained in the subvector.
    sv.insert( 50UL, 3.7 );
 
-   // As well as in the case of vectors, elements can also be inserted via the append() function.
-   // Also in case of subvectors, append() requires that the appended element's index is strictly
+   // Just as in case of vectors, elements can also be inserted via the append() function. In
+   // case of subvectors, append() also requires that the appended element's index is strictly
    // larger than the currently largest non-zero index of the subvector and that the subvector's
    // capacity is large enough to hold the new element. Note however that due to the nature of
    // a subvector, which may be an alias to the middle of a sparse vector, the append() function
@@ -227,7 +227,7 @@ namespace blaze {
 //
 // The current number of subvector elements can be obtained via the \c size() function, the
 // current capacity via the \c capacity() function, and the number of non-zero elements via
-// the \c nonZeros() function. However, since subvector are views to a specific subvector of
+// the \c nonZeros() function. However, since subvector are views on a specific subvector of
 // a vector, several operations are not possible on views, such as resizing and swapping:
 
    \code
@@ -237,7 +237,7 @@ namespace blaze {
    VectorType v( 42UL );
    // ... Resizing and initialization
 
-   // Creating a view to the range [5..15] of vector v
+   // Creating a view on the range [5..15] of vector v
    SubvectorType sv = subvector( v, 5UL, 10UL );
 
    sv.size();          // Returns the number of elements in the subvector
