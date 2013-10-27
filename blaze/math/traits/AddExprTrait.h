@@ -81,7 +81,7 @@ namespace blaze {
 //
 // Via this type trait it is possible to evaluate the return type of an addition expression
 // between scalars, vectors, and matrices. Given the two types \a T1 and \a T2, which must
-// be either scalar, vector, or matrix types, the nested type \a Type corresponds to the
+// either be scalar, vector, or matrix types, the nested type \a Type corresponds to the
 // resulting return type. In case the types of \a T1 or \a T2 don't fit or if the two types
 // cannot be added, the resulting data type \a Type is set to \a INVALID_TYPE.
 */

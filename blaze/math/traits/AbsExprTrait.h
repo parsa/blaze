@@ -64,7 +64,7 @@ namespace blaze {
 // \ingroup math_traits
 //
 // Via this type trait it is possible to evaluate the return type of an absolute value expression.
-// Given the type \a T, which must be either a scalar, vector, or matrix type, the nested type
+// Given the type \a T, which must either be a scalar, vector, or matrix type, the nested type
 // \a Type corresponds to the resulting return type. In case the type of \a T doesn't fit or if
 // no absolute value operation exists for the type, the resulting data type \a Type is set to
 // \a INVALID_TYPE.

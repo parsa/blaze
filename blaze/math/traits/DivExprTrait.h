@@ -65,7 +65,7 @@ namespace blaze {
 //
 // Via this type trait it is possible to evaluate the return type of a division expression
 // between scalars, vectors, and matrices. Given the two types \a T1 and \a T2, where \a T1 must
-// be either a scalar, vector, or matrix type and \a T2 which must be a scalar type, the nested
+// either be a scalar, vector, or matrix type and \a T2 which must be a scalar type, the nested
 // type \a Type corresponds to the resulting return type. In case \a T1 or \a T2 don't fit or if
 // the two types cannot be divided, the resulting data type \a Type is set to \a INVALID_TYPE.
 */

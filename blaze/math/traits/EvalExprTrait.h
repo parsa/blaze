@@ -64,7 +64,7 @@ namespace blaze {
 // \ingroup math_traits
 //
 // Via this type trait it is possible to evaluate the return type of an evaluation expression.
-// Given the type \a T, which must be either a vector or matrix type, the nested type \a Type
+// Given the type \a T, which must either be a vector or matrix type, the nested type \a Type
 // corresponds to the resulting return type. In case the type of \a T doesn't fit or if no
 // evaluation operation exists for the type, the resulting data type \a Type is set to
 // \a INVALID_TYPE.
