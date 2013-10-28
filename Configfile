@@ -34,7 +34,8 @@ CXX="g++"
 # on the selected compiler it is recommended to use at least the following selection of
 # compilation flags:
 #   g++/clang: -Werror -Wall -Wextra -Wshadow -Woverloaded-virtual -ansi -O3
-#   icpc     : -Werror -Wshadow -w1 -ansi
+#   icpc     : -Werror -Wshadow -w1 -ansi -O3
+# Note that for the Clang compiler an optimization level of at least -O2 is required!
 # In addition to these general flags, it is possible to specify additional architecture
 # specific flags. In order to achieve maximum performance, it is recommended to specify
 # the available architecture specific instruction set (for instance, -mavx for the GNU
