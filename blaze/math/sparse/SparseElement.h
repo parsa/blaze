@@ -23,6 +23,16 @@
 #define _BLAZE_MATH_SPARSE_SPARSEELEMENT_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/util/constraints/Const.h>
+#include <blaze/util/constraints/Pointer.h>
+#include <blaze/util/constraints/Reference.h>
+#include <blaze/util/constraints/Volatile.h>
+
+
 namespace blaze {
 
 //=================================================================================================
@@ -93,6 +103,15 @@ class SparseElement
    //**Friend declarations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename Other > friend class SparseElement;
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Compile time checks*************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE  ( Type );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE( Type );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST         ( Type );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE      ( Type );
    /*! \endcond */
    //**********************************************************************************************
 };
