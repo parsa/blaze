@@ -49,6 +49,7 @@
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/Square.h>
 #include <blaze/math/traits/CMathTrait.h>
 #include <blaze/math/TransposeFlag.h>
