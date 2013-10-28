@@ -626,6 +626,10 @@ inline typename DenseSubmatrix<MT,SO>::ConstReference
 /*!\brief Low-level data access to the submatrix elements.
 //
 // \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the dense submatrix. Note that
+// you can NOT assume that all matrix elements lie adjacent to each other! The dense submatrix
+// may use techniques such as padding to improve the alignment of the data.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
@@ -640,6 +644,10 @@ inline typename DenseSubmatrix<MT,SO>::Pointer DenseSubmatrix<MT,SO>::data()
 /*!\brief Low-level data access to the submatrix elements.
 //
 // \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the dense submatrix. Note that
+// you can NOT assume that all matrix elements lie adjacent to each other! The dense submatrix
+// may use techniques such as padding to improve the alignment of the data.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
@@ -2320,6 +2328,10 @@ inline typename DenseSubmatrix<MT,true>::ConstReference
 /*!\brief Low-level data access to the submatrix elements.
 //
 // \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the dense submatrix. Note that
+// you can NOT assume that all matrix elements lie adjacent to each other! The dense submatrix
+// may use techniques such as padding to improve the alignment of the data.
 */
 template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,true>::Pointer DenseSubmatrix<MT,true>::data()
@@ -2335,6 +2347,10 @@ inline typename DenseSubmatrix<MT,true>::Pointer DenseSubmatrix<MT,true>::data()
 /*!\brief Low-level data access to the submatrix elements.
 //
 // \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the dense submatrix. Note that
+// you can NOT assume that all matrix elements lie adjacent to each other! The dense submatrix
+// may use techniques such as padding to improve the alignment of the data.
 */
 template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,true>::ConstPointer DenseSubmatrix<MT,true>::data() const

@@ -610,6 +610,8 @@ inline typename DenseColumn<MT,SO>::ConstReference DenseColumn<MT,SO>::operator[
 /*!\brief Low-level data access to the column elements.
 //
 // \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the dense column.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
@@ -624,6 +626,8 @@ inline typename DenseColumn<MT,SO>::Pointer DenseColumn<MT,SO>::data()
 /*!\brief Low-level data access to the column elements.
 //
 // \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the dense column.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order

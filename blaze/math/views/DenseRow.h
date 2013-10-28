@@ -609,6 +609,8 @@ inline typename DenseRow<MT,SO>::ConstReference DenseRow<MT,SO>::operator[]( siz
 /*!\brief Low-level data access to the row elements.
 //
 // \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the dense row.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
@@ -623,6 +625,8 @@ inline typename DenseRow<MT,SO>::Pointer DenseRow<MT,SO>::data()
 /*!\brief Low-level data access to the row elements.
 //
 // \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the dense row.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order

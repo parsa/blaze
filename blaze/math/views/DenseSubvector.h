@@ -625,6 +625,8 @@ inline typename DenseSubvector<VT,TF>::ConstReference
 /*!\brief Low-level data access to the subvector elements.
 //
 // \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the dense subvector.
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
@@ -639,6 +641,8 @@ inline typename DenseSubvector<VT,TF>::Pointer DenseSubvector<VT,TF>::data()
 /*!\brief Low-level data access to the subvector elements.
 //
 // \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the dense subvector.
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag

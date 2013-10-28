@@ -774,6 +774,8 @@ inline typename StaticVector<Type,N,TF>::ConstReference
 /*!\brief Low-level data access to the vector elements.
 //
 // \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the static vector.
 */
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
@@ -789,6 +791,8 @@ inline Type* StaticVector<Type,N,TF>::data()
 /*!\brief Low-level data access to the vector elements.
 //
 // \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the static vector.
 */
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements

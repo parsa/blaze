@@ -1260,6 +1260,10 @@ inline typename StaticMatrix<Type,M,N,SO>::ConstReference
 /*!\brief Low-level data access to the matrix elements.
 //
 // \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the static matrix. Note that you
+// can NOT assume that all matrix elements lie adjacent to each other! The dynamic matrix may
+// use techniques such as padding to improve the alignment of the data.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -1276,6 +1280,10 @@ inline Type* StaticMatrix<Type,M,N,SO>::data()
 /*!\brief Low-level data access to the matrix elements.
 //
 // \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the static matrix. Note that you
+// can NOT assume that all matrix elements lie adjacent to each other! The dynamic matrix may
+// use techniques such as padding to improve the alignment of the data.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -1293,6 +1301,8 @@ inline const Type* StaticMatrix<Type,M,N,SO>::data() const
 //
 // \param i The row/column index.
 // \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage for the elements in row/column \a i.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -1311,6 +1321,8 @@ inline Type* StaticMatrix<Type,M,N,SO>::data( size_t i )
 //
 // \param i The row/column index.
 // \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage for the elements in row/column \a i.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -3719,6 +3731,10 @@ inline typename StaticMatrix<Type,M,N,true>::ConstReference
 /*!\brief Low-level data access to the matrix elements.
 //
 // \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the static matrix. Note that you
+// can NOT assume that all matrix elements lie adjacent to each other! The dynamic matrix may
+// use techniques such as padding to improve the alignment of the data.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -3736,6 +3752,10 @@ inline Type* StaticMatrix<Type,M,N,true>::data()
 /*!\brief Low-level data access to the matrix elements.
 //
 // \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the static matrix. Note that you
+// can NOT assume that all matrix elements lie adjacent to each other! The dynamic matrix may
+// use techniques such as padding to improve the alignment of the data.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -3754,6 +3774,8 @@ inline const Type* StaticMatrix<Type,M,N,true>::data() const
 //
 // \param j The column index.
 // \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage for the elements in column \a j.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -3773,6 +3795,8 @@ inline Type* StaticMatrix<Type,M,N,true>::data( size_t j )
 //
 // \param j The column index.
 // \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage for the elements in column \a j
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows

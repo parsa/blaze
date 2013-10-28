@@ -606,6 +606,8 @@ inline typename DynamicVector<Type,TF>::ConstReference
 /*!\brief Low-level data access to the vector elements.
 //
 // \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the dynamic vector.
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
@@ -620,6 +622,8 @@ inline Type* DynamicVector<Type,TF>::data()
 /*!\brief Low-level data access to the vector elements.
 //
 // \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the dynamic vector.
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
