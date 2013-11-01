@@ -37,7 +37,7 @@
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/sparse/MatrixAccessProxy.h>
-#include <blaze/math/sparse/SparseElement.h>
+#include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -184,12 +184,12 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef SparseElement<Type>  ElementBase;  //!< Base class for the sparse matrix element.
+   typedef ValueIndexPair<Type>  ElementBase;  //!< Base class for the sparse matrix element.
    //**********************************************************************************************
 
    //**Private class Element***********************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Index-value-pair for the CompressedMatrix class.
+   /*!\brief Value-index-pair for the CompressedMatrix class.
    */
    struct Element : public ElementBase
    {
@@ -2301,12 +2301,12 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
 {
  private:
    //**Type definitions****************************************************************************
-   typedef SparseElement<Type>  ElementBase;  //!< Base class for the sparse matrix element.
+   typedef ValueIndexPair<Type>  ElementBase;  //!< Base class for the sparse matrix element.
    //**********************************************************************************************
 
    //**Private class Element***********************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Index-value-pair for the CompressedMatrix class.
+   /*!\brief Value-index-pair for the CompressedMatrix class.
    */
    struct Element : public ElementBase
    {

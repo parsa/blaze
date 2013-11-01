@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/sparse/SparseElement.h
-//  \brief Header file for the SparseElement class
+//  \file blaze/math/sparse/ValueIndexPair.h
+//  \brief Header file for the ValueIndexPair class
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -19,8 +19,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SPARSE_SPARSEELEMENT_H_
-#define _BLAZE_MATH_SPARSE_SPARSEELEMENT_H_
+#ifndef _BLAZE_MATH_SPARSE_VALUEINDEXPAIR_H_
+#define _BLAZE_MATH_SPARSE_VALUEINDEXPAIR_H_
 
 
 //*************************************************************************************************
@@ -42,24 +42,24 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Index-value-pair for the sparse vectors and matrices.
+/*!\brief Index-value-pair for sparse vectors and matrices.
 // \ingroup math
 //
-// The SparseElement class represents a single index-value-pair of a sparse vector or sparse
+// The ValueIndexPair class represents a single index-value-pair of a sparse vector or sparse
 // matrix.
 */
-template< typename Type >  // Type of the data element
-class SparseElement
+template< typename Type >  // Type of the value element
+class ValueIndexPair
 {
  public:
    //**Type definitions****************************************************************************
-   typedef Type    ValueType;  //!< The value type of the sparse element.
-   typedef size_t  IndexType;  //!< The index type of the sparse element.
+   typedef Type    ValueType;  //!< The value type of the value-index-pair.
+   typedef size_t  IndexType;  //!< The index type of the value-index-pair.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
-   inline SparseElement();
-   inline SparseElement( const Type& v, size_t i );
+   inline ValueIndexPair();
+   inline ValueIndexPair( const Type& v, size_t i );
    // No explicitly declared copy constructor.
    //**********************************************************************************************
 
@@ -71,13 +71,13 @@ class SparseElement
    /*!\name Operators */
    //@{
    // No explicitly declared copy assignment operator.
-   template< typename Other > SparseElement& operator=( const Other& rhs );
+   template< typename Other > ValueIndexPair& operator=( const Other& rhs );
 
-   inline SparseElement& operator= ( const Type& v );
-   inline SparseElement& operator+=( const Type& v );
-   inline SparseElement& operator-=( const Type& v );
-   inline SparseElement& operator*=( const Type& v );
-   inline SparseElement& operator/=( const Type& v );
+   inline ValueIndexPair& operator= ( const Type& v );
+   inline ValueIndexPair& operator+=( const Type& v );
+   inline ValueIndexPair& operator-=( const Type& v );
+   inline ValueIndexPair& operator*=( const Type& v );
+   inline ValueIndexPair& operator/=( const Type& v );
    //@}
    //**********************************************************************************************
 
@@ -94,15 +94,15 @@ class SparseElement
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   Type   value_;  //!< Value of the sparse element.
-   size_t index_;  //!< Index of the sparse element.
+   Type   value_;  //!< Value of the value-index-pair.
+   size_t index_;  //!< Index of the value-index-pair.
    //@}
    //**********************************************************************************************
 
  private:
    //**Friend declarations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   template< typename Other > friend class SparseElement;
+   template< typename Other > friend class ValueIndexPair;
    /*! \endcond */
    //**********************************************************************************************
 
@@ -127,26 +127,26 @@ class SparseElement
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Default constructor for sparse elements.
+/*!\brief Default constructor for value-index-pairs.
 */
-template< typename Type >  // Data type of the sparse element
-inline SparseElement<Type>::SparseElement()
-   : value_()  // Value of the sparse element
-   , index_()  // Index of the sparse element
+template< typename Type >  // Type of the value element
+inline ValueIndexPair<Type>::ValueIndexPair()
+   : value_()  // Value of the value-index-pair
+   , index_()  // Index of the value-index-pair
 {}
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Constructor for a direct initialization of sparse elements.
+/*!\brief Constructor for a direct initialization of value-index-pairs.
 //
-// \param v The value of the sparse element.
-// \param i The index of the sparse element.
+// \param v The value of the value-index-pair.
+// \param i The index of the value-index-pair.
 */
-template< typename Type >  // Data type of the sparse element
-inline SparseElement<Type>::SparseElement( const Type& v, size_t i )
-   : value_( v )  // Value of the sparse element
-   , index_( i )  // Index of the sparse element
+template< typename Type >  // Type of the value element
+inline ValueIndexPair<Type>::ValueIndexPair( const Type& v, size_t i )
+   : value_( v )  // Value of the value-index-pair
+   , index_( i )  // Index of the value-index-pair
 {}
 //*************************************************************************************************
 
@@ -160,18 +160,18 @@ inline SparseElement<Type>::SparseElement( const Type& v, size_t i )
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Assignment operator for different sparse element types.
+/*!\brief Assignment operator for different value-index-pair types.
 //
-// \param rhs Sparse element to be copied.
-// \return Reference to the assigned sparse element.
+// \param rhs Value-index-pair to be copied.
+// \return Reference to the assigned value-index-pair.
 //
-// This assignment operator enables the assignment of other sparse element types. The given
-// \a Other data type qualifies as sparse element type in case it provides a value() and an
+// This assignment operator enables the assignment of other value-index-pair types. The given
+// \a Other data type qualifies as value-index-pair type in case it provides a value() and an
 // index() member function.
 */
-template< typename Type >   // Data type of the sparse element
-template< typename Other >  // Data type of the right-hand side sparse element
-inline SparseElement<Type>& SparseElement<Type>::operator=( const Other& rhs )
+template< typename Type >   // Type of the value element
+template< typename Other >  // Data type of the right-hand side value-index-pair
+inline ValueIndexPair<Type>& ValueIndexPair<Type>::operator=( const Other& rhs )
 {
    value_ = rhs.value();
    index_ = rhs.index();
@@ -181,13 +181,13 @@ inline SparseElement<Type>& SparseElement<Type>::operator=( const Other& rhs )
 
 
 //*************************************************************************************************
-/*!\brief Assignment to the value of the sparse element.
+/*!\brief Assignment to the value of the value-index-pair.
 //
-// \param v The new sparse element value.
-// \return Reference to the assigned sparse element.
+// \param v The new value-index-pair value.
+// \return Reference to the assigned value-index-pair.
 */
-template< typename Type >  // Data type of the sparse element
-inline SparseElement<Type>& SparseElement<Type>::operator=( const Type& v )
+template< typename Type >  // Type of the value element
+inline ValueIndexPair<Type>& ValueIndexPair<Type>::operator=( const Type& v )
 {
    value_ = v;
    return *this;
@@ -196,13 +196,13 @@ inline SparseElement<Type>& SparseElement<Type>::operator=( const Type& v )
 
 
 //*************************************************************************************************
-/*!\brief Addition assignment to the value of the sparse element.
+/*!\brief Addition assignment to the value of the value-index-pair.
 //
-// \param v The right-hand side value to be added to the sparse element value.
-// \return Reference to the assigned sparse element.
+// \param v The right-hand side value to be added to the value-index-pair value.
+// \return Reference to the assigned value-index-pair.
 */
-template< typename Type >  // Data type of the sparse element
-inline SparseElement<Type>& SparseElement<Type>::operator+=( const Type& v )
+template< typename Type >  // Type of the value element
+inline ValueIndexPair<Type>& ValueIndexPair<Type>::operator+=( const Type& v )
 {
    value_ += v;
    return *this;
@@ -211,13 +211,13 @@ inline SparseElement<Type>& SparseElement<Type>::operator+=( const Type& v )
 
 
 //*************************************************************************************************
-/*!\brief Subtraction assignment to the value of the sparse element.
+/*!\brief Subtraction assignment to the value of the value-index-pair.
 //
-// \param v The right-hand side value to be subtracted from the sparse element value.
-// \return Reference to the assigned sparse element.
+// \param v The right-hand side value to be subtracted from the value-index-pair value.
+// \return Reference to the assigned value-index-pair.
 */
-template< typename Type >  // Data type of the sparse element
-inline SparseElement<Type>& SparseElement<Type>::operator-=( const Type& v )
+template< typename Type >  // Type of the value element
+inline ValueIndexPair<Type>& ValueIndexPair<Type>::operator-=( const Type& v )
 {
    value_ -= v;
    return *this;
@@ -226,13 +226,13 @@ inline SparseElement<Type>& SparseElement<Type>::operator-=( const Type& v )
 
 
 //*************************************************************************************************
-/*!\brief Multiplication assignment to the value of the sparse element.
+/*!\brief Multiplication assignment to the value of the value-index-pair.
 //
 // \param v The right-hand side value for the multiplication.
-// \return Reference to the assigned sparse element.
+// \return Reference to the assigned value-index-pair.
 */
-template< typename Type >  // Data type of the sparse element
-inline SparseElement<Type>& SparseElement<Type>::operator*=( const Type& v )
+template< typename Type >  // Type of the value element
+inline ValueIndexPair<Type>& ValueIndexPair<Type>::operator*=( const Type& v )
 {
    value_ *= v;
    return *this;
@@ -241,13 +241,13 @@ inline SparseElement<Type>& SparseElement<Type>::operator*=( const Type& v )
 
 
 //*************************************************************************************************
-/*!\brief Division assignment to the value of the sparse element.
+/*!\brief Division assignment to the value of the value-index-pair.
 //
 // \param v The right-hand side value for the division
-// \return Reference to the assigned sparse element.
+// \return Reference to the assigned value-index-pair.
 */
-template< typename Type >  // Data type of the sparse element
-inline SparseElement<Type>& SparseElement<Type>::operator/=( const Type& v )
+template< typename Type >  // Type of the value element
+inline ValueIndexPair<Type>& ValueIndexPair<Type>::operator/=( const Type& v )
 {
    value_ /= v;
    return *this;
@@ -264,12 +264,12 @@ inline SparseElement<Type>& SparseElement<Type>::operator/=( const Type& v )
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Access to the current value of the sparse element.
+/*!\brief Access to the current value of the value-index-pair.
 //
-// \return The current value of the sparse element.
+// \return The current value of the value-index-pair.
 */
-template< typename Type >  // Data type of the sparse element
-inline Type& SparseElement<Type>::value()
+template< typename Type >  // Type of the value element
+inline Type& ValueIndexPair<Type>::value()
 {
    return value_;
 }
@@ -277,12 +277,12 @@ inline Type& SparseElement<Type>::value()
 
 
 //*************************************************************************************************
-/*!\brief Access to the current value of the sparse element.
+/*!\brief Access to the current value of the value-index-pair.
 //
-// \return The current value of the sparse element.
+// \return The current value of the value-index-pair.
 */
-template< typename Type >  // Data type of the sparse element
-inline const Type& SparseElement<Type>::value() const
+template< typename Type >  // Type of the value element
+inline const Type& ValueIndexPair<Type>::value() const
 {
    return value_;
 }
@@ -290,12 +290,12 @@ inline const Type& SparseElement<Type>::value() const
 
 
 //*************************************************************************************************
-/*!\brief Access to the current index of the sparse element.
+/*!\brief Access to the current index of the value-index-pair.
 //
-// \return The current index of the sparse element.
+// \return The current index of the value-index-pair.
 */
-template< typename Type >  // Data type of the sparse element
-inline size_t SparseElement<Type>::index() const
+template< typename Type >  // Type of the value element
+inline size_t ValueIndexPair<Type>::index() const
 {
    return index_;
 }

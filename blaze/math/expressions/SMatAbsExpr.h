@@ -35,7 +35,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatAbsExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
-#include <blaze/math/sparse/SparseElement.h>
+#include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/AbsExprTrait.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
@@ -139,7 +139,7 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
     public:
       //**Type definitions*************************************************************************
       //! Element type of the sparse matrix expression.
-      typedef SparseElement<ElementType>  Element;
+      typedef ValueIndexPair<ElementType>  Element;
 
       //! Iterator type of the sparse matrix expression.
       typedef typename RemoveReference<Operand>::Type::ConstIterator  IteratorType;

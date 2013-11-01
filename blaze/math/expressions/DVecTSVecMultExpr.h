@@ -38,7 +38,7 @@
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/sparse/SparseElement.h>
+#include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -188,7 +188,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
     public:
       //**Type definitions*************************************************************************
       //! Element type of the sparse matrix expression.
-      typedef SparseElement<ElementType>  Element;
+      typedef ValueIndexPair<ElementType>  Element;
 
       //! Element type of the dense vector expression
       typedef ET1  LeftElement;

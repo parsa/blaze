@@ -34,7 +34,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/VecScalarDivExpr.h>
-#include <blaze/math/sparse/SparseElement.h>
+#include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/DivExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
@@ -152,7 +152,7 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
     public:
       //**Type definitions*************************************************************************
       //! Element type of the sparse vector expression.
-      typedef SparseElement<ElementType>  Element;
+      typedef ValueIndexPair<ElementType>  Element;
 
       //! Iterator type of the sparse vector expression.
       typedef typename RemoveReference<LeftOperand>::Type::ConstIterator  IteratorType;

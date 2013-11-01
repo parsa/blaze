@@ -36,7 +36,7 @@
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/sparse/SparseElement.h>
+#include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/sparse/VectorAccessProxy.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
@@ -167,12 +167,12 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef SparseElement<Type>  ElementBase;  //!< Base class for the compressed vector element.
+   typedef ValueIndexPair<Type>  ElementBase;  //!< Base class for the compressed vector element.
    //**********************************************************************************************
 
    //**Private class Element***********************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Index-value-pair for the CompressedVector class.
+   /*!\brief Value-index-pair for the CompressedVector class.
    */
    struct Element : public ElementBase
    {

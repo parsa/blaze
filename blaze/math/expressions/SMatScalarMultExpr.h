@@ -34,7 +34,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatScalarMultExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
-#include <blaze/math/sparse/SparseElement.h>
+#include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/DivExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -158,7 +158,7 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
     public:
       //**Type definitions*************************************************************************
       //! Element type of the sparse matrix expression.
-      typedef SparseElement<ElementType>  Element;
+      typedef ValueIndexPair<ElementType>  Element;
 
       //! Iterator type of the sparse matrix expression.
       typedef typename RemoveReference<LeftOperand>::Type::ConstIterator  IteratorType;
