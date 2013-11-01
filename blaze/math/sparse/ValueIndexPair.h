@@ -27,10 +27,14 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/sparse/SparseElement.h>
+#include <blaze/math/typetraits/IsSparseElement.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
+#include <blaze/util/DisableIf.h>
+#include <blaze/util/EnableIf.h>
 
 
 namespace blaze {
@@ -49,7 +53,7 @@ namespace blaze {
 // matrix.
 */
 template< typename Type >  // Type of the value element
-class ValueIndexPair
+class ValueIndexPair : private SparseElement
 {
  public:
    //**Type definitions****************************************************************************
@@ -71,13 +75,19 @@ class ValueIndexPair
    /*!\name Operators */
    //@{
    // No explicitly declared copy assignment operator.
-   template< typename Other > ValueIndexPair& operator=( const Other& rhs );
 
-   inline ValueIndexPair& operator= ( const Type& v );
-   inline ValueIndexPair& operator+=( const Type& v );
-   inline ValueIndexPair& operator-=( const Type& v );
-   inline ValueIndexPair& operator*=( const Type& v );
-   inline ValueIndexPair& operator/=( const Type& v );
+   template< typename Other >
+   inline typename EnableIf< IsSparseElement<Other>, ValueIndexPair& >::Type
+      operator=( const Other& rhs );
+
+   template< typename Other >
+   inline typename DisableIf< IsSparseElement<Other>, ValueIndexPair& >::Type
+      operator= ( const Other& v );
+
+   template< typename Other > inline ValueIndexPair& operator+=( const Other& v );
+   template< typename Other > inline ValueIndexPair& operator-=( const Other& v );
+   template< typename Other > inline ValueIndexPair& operator*=( const Other& v );
+   template< typename Other > inline ValueIndexPair& operator/=( const Other& v );
    //@}
    //**********************************************************************************************
 
@@ -171,7 +181,8 @@ inline ValueIndexPair<Type>::ValueIndexPair( const Type& v, size_t i )
 */
 template< typename Type >   // Type of the value element
 template< typename Other >  // Data type of the right-hand side value-index-pair
-inline ValueIndexPair<Type>& ValueIndexPair<Type>::operator=( const Other& rhs )
+inline typename EnableIf< IsSparseElement<Other>, ValueIndexPair<Type>& >::Type
+   ValueIndexPair<Type>::operator=( const Other& rhs )
 {
    value_ = rhs.value();
    index_ = rhs.index();
@@ -186,8 +197,10 @@ inline ValueIndexPair<Type>& ValueIndexPair<Type>::operator=( const Other& rhs )
 // \param v The new value-index-pair value.
 // \return Reference to the assigned value-index-pair.
 */
-template< typename Type >  // Type of the value element
-inline ValueIndexPair<Type>& ValueIndexPair<Type>::operator=( const Type& v )
+template< typename Type >   // Type of the value element
+template< typename Other >  // Data type of the right-hand side value
+inline typename DisableIf< IsSparseElement<Other>, ValueIndexPair<Type>& >::Type
+   ValueIndexPair<Type>::operator=( const Other& v )
 {
    value_ = v;
    return *this;
@@ -201,8 +214,9 @@ inline ValueIndexPair<Type>& ValueIndexPair<Type>::operator=( const Type& v )
 // \param v The right-hand side value to be added to the value-index-pair value.
 // \return Reference to the assigned value-index-pair.
 */
-template< typename Type >  // Type of the value element
-inline ValueIndexPair<Type>& ValueIndexPair<Type>::operator+=( const Type& v )
+template< typename Type >   // Type of the value element
+template< typename Other >  // Data type of the right-hand side value
+inline ValueIndexPair<Type>& ValueIndexPair<Type>::operator+=( const Other& v )
 {
    value_ += v;
    return *this;
@@ -216,8 +230,9 @@ inline ValueIndexPair<Type>& ValueIndexPair<Type>::operator+=( const Type& v )
 // \param v The right-hand side value to be subtracted from the value-index-pair value.
 // \return Reference to the assigned value-index-pair.
 */
-template< typename Type >  // Type of the value element
-inline ValueIndexPair<Type>& ValueIndexPair<Type>::operator-=( const Type& v )
+template< typename Type >   // Type of the value element
+template< typename Other >  // Data type of the right-hand side value
+inline ValueIndexPair<Type>& ValueIndexPair<Type>::operator-=( const Other& v )
 {
    value_ -= v;
    return *this;
@@ -231,8 +246,9 @@ inline ValueIndexPair<Type>& ValueIndexPair<Type>::operator-=( const Type& v )
 // \param v The right-hand side value for the multiplication.
 // \return Reference to the assigned value-index-pair.
 */
-template< typename Type >  // Type of the value element
-inline ValueIndexPair<Type>& ValueIndexPair<Type>::operator*=( const Type& v )
+template< typename Type >   // Type of the value element
+template< typename Other >  // Data type of the right-hand side value
+inline ValueIndexPair<Type>& ValueIndexPair<Type>::operator*=( const Other& v )
 {
    value_ *= v;
    return *this;
@@ -246,8 +262,9 @@ inline ValueIndexPair<Type>& ValueIndexPair<Type>::operator*=( const Type& v )
 // \param v The right-hand side value for the division
 // \return Reference to the assigned value-index-pair.
 */
-template< typename Type >  // Type of the value element
-inline ValueIndexPair<Type>& ValueIndexPair<Type>::operator/=( const Type& v )
+template< typename Type >   // Type of the value element
+template< typename Other >  // Data type of the right-hand side value
+inline ValueIndexPair<Type>& ValueIndexPair<Type>::operator/=( const Other& v )
 {
    value_ /= v;
    return *this;

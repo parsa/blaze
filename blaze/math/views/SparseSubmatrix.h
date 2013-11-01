@@ -41,6 +41,7 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -356,7 +357,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
    */
    template< typename MatrixType      // Type of the sparse matrix
            , typename IteratorType >  // Type of the sparse matrix iterator
-   class SubmatrixElement
+   class SubmatrixElement : private SparseElement
    {
     private:
       //*******************************************************************************************
@@ -2224,7 +2225,7 @@ class SparseSubmatrix<MT,true> : public SparseMatrix< SparseSubmatrix<MT,true>, 
    */
    template< typename MatrixType      // Type of the sparse matrix
            , typename IteratorType >  // Type of the sparse matrix iterator
-   class SubmatrixElement
+   class SubmatrixElement : private SparseElement
    {
     private:
       //*******************************************************************************************

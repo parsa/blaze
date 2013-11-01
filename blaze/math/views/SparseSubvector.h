@@ -39,6 +39,7 @@
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -356,7 +357,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
    */
    template< typename VectorType      // Type of the sparse vector
            , typename IteratorType >  // Type of the sparse vector iterator
-   class SubvectorElement
+   class SubvectorElement : private SparseElement
    {
     private:
       //*******************************************************************************************
