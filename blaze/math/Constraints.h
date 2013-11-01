@@ -48,6 +48,7 @@
 #include <blaze/math/constraints/MatVecMultExpr.h>
 #include <blaze/math/constraints/MultExpr.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/SparseElement.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/StorageOrder.h>
