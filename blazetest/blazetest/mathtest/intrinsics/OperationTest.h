@@ -71,7 +71,8 @@ class OperationTest : private blaze::NonCopyable
    //**********************************************************************************************
 
    //**********************************************************************************************
-   static const size_t SIZE = 255 + IT::size;  //!< Number of numeric values in each array.
+   static const size_t N  = 256;           //!< Number of numeric values to be worked on.
+   static const size_t NN = N + IT::size;  //!< Total number of numeric values in each array.
    //**********************************************************************************************
 
  public:
@@ -109,8 +110,8 @@ class OperationTest : private blaze::NonCopyable
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   T* a_;  //!< The first aligned array of size SIZE.
-   T* b_;  //!< The second aligned array of size SIZE.
+   T* a_;  //!< The first aligned array of size NN.
+   T* b_;  //!< The second aligned array of size NN.
 
    std::string test_;  //!< Label of the currently performed test.
    //@}
@@ -140,8 +141,8 @@ class OperationTest : private blaze::NonCopyable
 */
 template< typename T >  // Data type of the intrinsic test
 OperationTest<T>::OperationTest()
-   : a_    ( blaze::allocate<T>( SIZE ) )  // The first aligned array of size SIZE
-   , b_    ( blaze::allocate<T>( SIZE ) )  // The second aligned array of size SIZE
+   : a_    ( blaze::allocate<T>( NN ) )  // The first aligned array of size NN
+   , b_    ( blaze::allocate<T>( NN ) )  // The second aligned array of size NN
    , test_ ()                              // Label of the currently performed test
 {
    testStore();
@@ -181,7 +182,7 @@ void OperationTest<T>::testStore()
 
    initialize();
 
-   for( size_t i=0UL; i<SIZE; i+=IT::size ) {
+   for( size_t i=0UL; i<N; i+=IT::size ) {
       store( b_+i, load( a_+i ) );
    }
 
@@ -210,7 +211,7 @@ void OperationTest<T>::testStream()
 
    initialize();
 
-   for( size_t i=0UL; i<SIZE; i+=IT::size ) {
+   for( size_t i=0UL; i<N; i+=IT::size ) {
       stream( b_+i, load( a_+i ) );
    }
 
@@ -238,7 +239,7 @@ void OperationTest<T>::testStoreu( size_t offset )
 
    initialize();
 
-   for( size_t i=0UL; i<SIZE; i+=IT::size ) {
+   for( size_t i=0UL; i<N; i+=IT::size ) {
       storeu( b_+offset+i, loadu( a_+offset+i ) );
    }
 
@@ -269,7 +270,7 @@ void OperationTest<T>::testStoreu( size_t offset )
 template< typename T >  // Data type of the intrinsic test
 void OperationTest<T>::compare( const T* a, const T* b ) const
 {
-   for( size_t i=0UL; i<256UL; ++i ) {
+   for( size_t i=0UL; i<N; ++i ) {
       if( a[i] != b[i] ) {
          std::ostringstream oss;
          oss.precision( 20 );
@@ -306,7 +307,7 @@ void OperationTest<T>::initialize()
 {
    using blaze::randomize;
 
-   for( size_t i=0UL; i<SIZE; ++i ) {
+   for( size_t i=0UL; i<NN; ++i ) {
       randomize( a_[i] );
       randomize( b_[i] );
    }
