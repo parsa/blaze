@@ -189,7 +189,7 @@ namespace blaze {
 // \n \section dense_submatrix_common_operations Common Operations
 //
 // The current size of the matrix, i.e. the number of rows or columns can be obtained via the
-// \c row() and \c column() functions, the current total capacity via the \c capacity() function,
+// \c rows() and \c columns() functions, the current total capacity via the \c capacity() function,
 // and the number of non-zero elements via the \c nonZeros() function. However, since submatrices
 // are views on a specific submatrix of a matrix, several operations are not possible on views,
 // such as resizing and swapping:
