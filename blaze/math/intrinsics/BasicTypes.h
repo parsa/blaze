@@ -288,7 +288,15 @@ struct sse_double_t {
 // \ingroup intrinsics
 */
 /*! \cond BLAZE_INTERNAL */
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+struct sse_cfloat_t {
+   inline sse_cfloat_t() : value( _mm512_setzero_ps() ) {}
+   inline sse_cfloat_t( __m512 v ) : value( v ) {}
+   inline complex<float>&       operator[]( size_t i )       { return reinterpret_cast<complex<float>*      >( &value )[i]; }
+   inline const complex<float>& operator[]( size_t i ) const { return reinterpret_cast<const complex<float>*>( &value )[i]; }
+   __m512 value;  // Contains 8 32-bit single precision complex values
+};
+#elif BLAZE_AVX_MODE
 struct sse_cfloat_t {
    inline sse_cfloat_t() : value( _mm256_setzero_ps() ) {}
    inline sse_cfloat_t( __m256 v ) : value( v ) {}
@@ -323,7 +331,15 @@ struct sse_cfloat_t {
 // \ingroup intrinsics
 */
 /*! \cond BLAZE_INTERNAL */
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+struct sse_cdouble_t {
+   inline sse_cdouble_t() : value( _mm512_setzero_pd() ) {}
+   inline sse_cdouble_t( __m512d v ) : value( v ) {}
+   inline complex<double>&       operator[]( size_t i )       { return reinterpret_cast<complex<double>*      >( &value )[i]; }
+   inline const complex<double>& operator[]( size_t i ) const { return reinterpret_cast<const complex<double>*>( &value )[i]; }
+   __m512d value;  // Contains 4 64-bit double precision complex value
+};
+#elif BLAZE_AVX_MODE
 struct sse_cdouble_t {
    inline sse_cdouble_t() : value( _mm256_setzero_pd() ) {}
    inline sse_cdouble_t( __m256d v ) : value( v ) {}

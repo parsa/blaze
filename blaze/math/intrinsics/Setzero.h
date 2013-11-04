@@ -176,7 +176,9 @@ inline void setzero( sse_double_t& value )
 */
 inline void setzero( sse_cfloat_t& value )
 {
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   value.value = _mm512_setzero_ps();
+#elif BLAZE_AVX_MODE
    value.value = _mm256_setzero_ps();
 #elif BLAZE_SSE_MODE
    value.value = _mm_setzero_ps();
@@ -196,7 +198,9 @@ inline void setzero( sse_cfloat_t& value )
 */
 inline void setzero( sse_cdouble_t& value )
 {
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   value.value = _mm512_setzero_pd();
+#elif BLAZE_AVX_MODE
    value.value = _mm256_setzero_pd();
 #elif BLAZE_SSE2_MODE
    value.value = _mm_setzero_pd();

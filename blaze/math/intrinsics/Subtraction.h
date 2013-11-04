@@ -201,7 +201,12 @@ inline sse_double_t operator-( const sse_double_t& a, const sse_double_t& b )
 // \param b The right-hand side operand.
 // \return The result of the subtraction.
 */
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+inline sse_cfloat_t operator-( const sse_cfloat_t& a, const sse_cfloat_t& b )
+{
+   return _mm512_sub_ps( a.value, b.value );
+}
+#elif BLAZE_AVX_MODE
 inline sse_cfloat_t operator-( const sse_cfloat_t& a, const sse_cfloat_t& b )
 {
    return _mm256_sub_ps( a.value, b.value );
@@ -224,7 +229,12 @@ inline sse_cfloat_t operator-( const sse_cfloat_t& a, const sse_cfloat_t& b )
 // \param b The right-hand side operand.
 // \return The result of the subtraction.
 */
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+inline sse_cdouble_t operator-( const sse_cdouble_t& a, const sse_cdouble_t& b )
+{
+   return _mm512_sub_pd( a.value, b.value );
+}
+#elif BLAZE_AVX_MODE
 inline sse_cdouble_t operator-( const sse_cdouble_t& a, const sse_cdouble_t& b )
 {
    return _mm256_sub_pd( a.value, b.value );

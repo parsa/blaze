@@ -280,7 +280,12 @@ inline sse_cfloat_t loadu( const complex<float>* address )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   __m512 v1 = _mm512_setzero_ps();
+   v1 = _mm512_loadunpacklo_ps( v1, reinterpret_cast<const float*>( address     ) );
+   v1 = _mm512_loadunpackhi_ps( v1, reinterpret_cast<const float*>( address+8UL ) );
+   return v1;
+#elif BLAZE_AVX_MODE
    return _mm256_loadu_ps( reinterpret_cast<const float*>( address ) );
 #elif BLAZE_SSE_MODE
    return _mm_loadu_ps( reinterpret_cast<const float*>( address ) );
@@ -305,7 +310,12 @@ inline sse_cdouble_t loadu( const complex<double>* address )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   __m512d v1 = _mm512_setzero_pd();
+   v1 = _mm512_loadunpacklo_pd( v1, reinterpret_cast<const double*>( address     ) );
+   v1 = _mm512_loadunpackhi_pd( v1, reinterpret_cast<const double*>( address+4UL ) );
+   return v1;
+#elif BLAZE_AVX_MODE
    return _mm256_loadu_pd( reinterpret_cast<const double*>( address ) );
 #elif BLAZE_SSE2_MODE
    return _mm_loadu_pd( reinterpret_cast<const double*>( address ) );

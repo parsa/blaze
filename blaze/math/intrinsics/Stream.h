@@ -272,7 +272,9 @@ inline void stream( complex<float>* address, const sse_cfloat_t& value )
    BLAZE_STATIC_ASSERT  ( sizeof( complex<float> ) == 2UL*sizeof( float ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   _mm512_storenr_ps( reinterpret_cast<float*>( address ), value.value );
+#elif BLAZE_AVX_MODE
    _mm256_stream_ps( reinterpret_cast<float*>( address ), value.value );
 #elif BLAZE_SSE_MODE
    _mm_stream_ps( reinterpret_cast<float*>( address ), value.value );
@@ -296,7 +298,9 @@ inline void stream( complex<double>* address, const sse_cdouble_t& value )
    BLAZE_STATIC_ASSERT  ( sizeof( complex<double> ) == 2UL*sizeof( double ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   _mm512_storenr_pd( reinterpret_cast<double*>( address ), value.value );
+#elif BLAZE_AVX_MODE
    _mm256_stream_pd( reinterpret_cast<double*>( address ), value.value );
 #elif BLAZE_SSE2_MODE
    _mm_stream_pd( reinterpret_cast<double*>( address ), value.value );

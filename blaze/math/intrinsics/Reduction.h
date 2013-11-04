@@ -162,7 +162,9 @@ inline double sum( const sse_double_t& a )
 */
 inline complex<float> sum( const sse_cfloat_t& a )
 {
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   return complex<float>( a[0] + a[1] + a[2] + a[3] + a[4] + a[5] + a[6] + a[7] );
+#elif BLAZE_AVX_MODE
    return complex<float>( a[0] + a[1] + a[2] + a[3] );
 #elif BLAZE_SSE_MODE
    return complex<float>( a[0] + a[1] );
@@ -182,7 +184,9 @@ inline complex<float> sum( const sse_cfloat_t& a )
 */
 inline complex<double> sum( const sse_cdouble_t& a )
 {
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   return complex<double>( a[0] + a[1] + a[2] + a[3] );
+#elif BLAZE_AVX_MODE
    return complex<double>( a[0] + a[1] );
 #elif BLAZE_SSE2_MODE
    return a[0];

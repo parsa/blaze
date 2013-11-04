@@ -253,7 +253,12 @@ inline sse_double_t set( double value )
 */
 inline sse_cfloat_t set( const complex<float>& value )
 {
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   return _mm512_set_ps( value.imag(), value.real(), value.imag(), value.real(),
+                         value.imag(), value.real(), value.imag(), value.real(),
+                         value.imag(), value.real(), value.imag(), value.real(),
+                         value.imag(), value.real(), value.imag(), value.real() );
+#elif BLAZE_AVX_MODE
    return _mm256_set_ps( value.imag(), value.real(), value.imag(), value.real(),
                          value.imag(), value.real(), value.imag(), value.real() );
 #elif BLAZE_SSE_MODE
@@ -275,7 +280,10 @@ inline sse_cfloat_t set( const complex<float>& value )
 */
 inline sse_cdouble_t set( const complex<double>& value )
 {
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   return _mm512_set_pd( value.imag(), value.real(), value.imag(), value.real(),
+                         value.imag(), value.real(), value.imag(), value.real() );
+#elif BLAZE_AVX_MODE
    return _mm256_set_pd( value.imag(), value.real(), value.imag(), value.real() );
 #elif BLAZE_SSE2_MODE
    return _mm_set_pd( value.imag(), value.real() );

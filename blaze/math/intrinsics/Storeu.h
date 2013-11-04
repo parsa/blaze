@@ -221,7 +221,7 @@ inline typename EnableIf< IsIntegral<T> >::Type
 inline void storeu( float* address, const sse_float_t& value )
 {
 #if BLAZE_MIC_MODE
-   _mm512_packstorelo_ps( address, value.value );
+   _mm512_packstorelo_ps( address     , value.value );
    _mm512_packstorehi_ps( address+16UL, value.value );
 #elif BLAZE_AVX_MODE
    _mm256_storeu_ps( address, value.value );
@@ -248,7 +248,7 @@ inline void storeu( float* address, const sse_float_t& value )
 inline void storeu( double* address, const sse_double_t& value )
 {
 #if BLAZE_MIC_MODE
-   _mm512_packstorelo_pd( address, value.value );
+   _mm512_packstorelo_pd( address    , value.value );
    _mm512_packstorehi_pd( address+8UL, value.value );
 #elif BLAZE_AVX_MODE
    _mm256_storeu_pd( address, value.value );
@@ -276,7 +276,10 @@ inline void storeu( complex<float>* address, const sse_cfloat_t& value )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   _mm512_packstorelo_ps( reinterpret_cast<float*>( address     ), value.value );
+   _mm512_packstorehi_ps( reinterpret_cast<float*>( address+8UL ), value.value );
+#elif BLAZE_AVX_MODE
    _mm256_storeu_ps( reinterpret_cast<float*>( address ), value.value );
 #elif BLAZE_SSE_MODE
    _mm_storeu_ps( reinterpret_cast<float*>( address ), value.value );
@@ -302,7 +305,10 @@ inline void storeu( complex<double>* address, const sse_cdouble_t& value )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   _mm512_packstorelo_pd( reinterpret_cast<double*>( address     ), value.value );
+   _mm512_packstorehi_pd( reinterpret_cast<double*>( address+4UL ), value.value );
+#elif BLAZE_AVX_MODE
    _mm256_storeu_pd( reinterpret_cast<double*>( address ), value.value );
 #elif BLAZE_SSE2_MODE
    _mm_storeu_pd( reinterpret_cast<double*>( address ), value.value );

@@ -58,7 +58,9 @@ struct IsVectorizableHelper
    enum { value = ( BLAZE_SSE_MODE  && ( IsFloat<T>::value  || IsSame<complex<float>,T>::value  ) ) ||
                   ( BLAZE_SSE2_MODE && ( IsDouble<T>::value || IsSame<complex<double>,T>::value ) ) ||
                   ( BLAZE_SSE2_MODE && ( IsIntegral<T>::value && sizeof(T) >= 2UL ) ) ||
-                  ( BLAZE_MIC_MODE  && ( ( IsIntegral<T>::value && sizeof(T) >= 4UL ) || IsFloat<T>::value || IsDouble<T>::value ) ) };
+                  ( BLAZE_MIC_MODE  && ( IsIntegral<T>::value && sizeof(T) >= 4UL ) ) ||
+                  ( BLAZE_MIC_MODE  && ( IsFloat<T>::value  || IsSame<complex<float>,T>::value  ) ) ||
+                  ( BLAZE_MIC_MODE  && ( IsDouble<T>::value || IsSame<complex<double>,T>::value ) ) };
    typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
    //**********************************************************************************************
 };

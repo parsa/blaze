@@ -285,7 +285,9 @@ inline sse_cfloat_t load( const complex<float>* address )
    BLAZE_STATIC_ASSERT  ( sizeof( complex<float> ) == 2UL*sizeof( float ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   return _mm512_load_ps( reinterpret_cast<const float*>( address ) );
+#elif BLAZE_AVX_MODE
    return _mm256_load_ps( reinterpret_cast<const float*>( address ) );
 #elif BLAZE_SSE_MODE
    return _mm_load_ps( reinterpret_cast<const float*>( address ) );
@@ -312,7 +314,9 @@ inline sse_cdouble_t load( const complex<double>* address )
    BLAZE_STATIC_ASSERT  ( sizeof( complex<double> ) == 2UL*sizeof( double ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+   return _mm512_load_pd( reinterpret_cast<const double*>( address ) );
+#elif BLAZE_AVX_MODE
    return _mm256_load_pd( reinterpret_cast<const double*>( address ) );
 #elif BLAZE_SSE2_MODE
    return _mm_load_pd( reinterpret_cast<const double*>( address ) );

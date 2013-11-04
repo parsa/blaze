@@ -452,7 +452,20 @@ struct IntrinsicTraitBase<double>
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<float>'.
 // \ingroup intrinsics
 */
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+template<>
+struct IntrinsicTraitBase< complex<float> >
+{
+   typedef sse_cfloat_t  Type;
+   enum { size           = ( 64UL / sizeof(complex<float>) ),
+          alignment      = AlignmentTrait< complex<float> >::value,
+          addition       = 1,
+          subtraction    = 1,
+          multiplication = 0 };
+
+   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+};
+#elif BLAZE_AVX_MODE
 template<>
 struct IntrinsicTraitBase< complex<float> >
 {
@@ -488,7 +501,20 @@ struct IntrinsicTraitBase< complex<float> >
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<double>'.
 // \ingroup intrinsics
 */
-#if BLAZE_AVX_MODE
+#if BLAZE_MIC_MODE
+template<>
+struct IntrinsicTraitBase< complex<double> >
+{
+   typedef sse_cdouble_t  Type;
+   enum { size           = ( 64UL / sizeof(complex<double>) ),
+          alignment      = AlignmentTrait< complex<double> >::value,
+          addition       = 1,
+          subtraction    = 1,
+          multiplication = 0 };
+
+   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+};
+#elif BLAZE_AVX_MODE
 template<>
 struct IntrinsicTraitBase< complex<double> >
 {
