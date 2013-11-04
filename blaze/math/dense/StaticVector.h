@@ -96,7 +96,7 @@ namespace blaze {
 //  - TF  : specifies whether the vector is a row vector (\a blaze::rowVector) or a column
 //          vector (\a blaze::columnVector). The default value is \a blaze::columnVector.
 //
-// These contiguously stored elements can be direclty accessed with the subscript operator. The
+// These contiguously stored elements can be directly accessed with the subscript operator. The
 // numbering of the vector elements is
 
                              \f[\left(\begin{array}{*{4}{c}}
@@ -113,7 +113,7 @@ namespace blaze {
    using blaze::CompressedVector;
    using blaze::StaticMatrix;
 
-   StaticVector<double,2UL> a,  // Default initialized 2D vectors
+   StaticVector<double,2UL> a;  // Default initialized 2D vector
    a[0] = 1.0;                  // Initialization of the first element
    a[1] = 2.0;                  // Initialization of the second element
 
@@ -123,7 +123,7 @@ namespace blaze {
    StaticMatrix<double,2UL,2UL> A;          // Default constructed static row-major matrix
 
    d = a + b;  // Vector addition between vectors of equal element type
-   d = a - c;  // Vector subtraction between vector of different element type
+   d = a - c;  // Vector subtraction between a dense and sparse vector with different element types
    d = a * b;  // Component-wise vector multiplication
 
    a *= 2.0;      // In-place scaling of vector
@@ -222,7 +222,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-                              inline StaticVector& operator= ( Type rhs );
+                              inline StaticVector& operator= ( const Type& rhs );
                               inline StaticVector& operator= ( const StaticVector& rhs );
    template< typename Other > inline StaticVector& operator= ( const StaticVector<Other,N,TF>& rhs );
    template< typename VT >    inline StaticVector& operator= ( const Vector<VT,TF>& rhs );
@@ -525,9 +525,9 @@ inline StaticVector<Type,N,TF>::StaticVector( const Vector<VT,TF>& v )
 
 // The vector is initialized with the given values. Missing values are initialized with zero.
 */
-template< typename Type  // Data type of the vector
-        , size_t N       // Number of elements
-        , bool TF >      // Transpose flag
+template< typename Type     // Data type of the vector
+        , size_t N          // Number of elements
+        , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the initialization array
 inline StaticVector<Type,N,TF>::StaticVector( const Other (&rhs)[N] )
 {
@@ -911,7 +911,7 @@ inline typename StaticVector<Type,N,TF>::ConstIterator StaticVector<Type,N,TF>::
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( Type rhs )
+inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( const Type& rhs )
 {
    for( size_t i=0UL; i<N; ++i )
       v_[i] = rhs;
@@ -1023,9 +1023,9 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( const Vector
 
 // The vector is initialized with the given values. Missing values are initialized with zero.
 */
-template< typename Type  // Data type of the vector
-        , size_t N       // Number of elements
-        , bool TF >      // Transpose flag
+template< typename Type     // Data type of the vector
+        , size_t N          // Number of elements
+        , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the initialization array
 inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( const Other (&rhs)[N] )
 {
@@ -2013,7 +2013,7 @@ inline const StaticVector<Type,3UL,TF> perp( const StaticVector<Type,3UL,TF>& v 
 
 
 //*************************************************************************************************
-/*!\brief Swapping the contents of two 2D vectors.
+/*!\brief Swapping the contents of two static vectors.
 // \ingroup static_vector
 //
 // \param a The first vector to be swapped.
