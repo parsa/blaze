@@ -120,7 +120,7 @@ struct Loadu<T,4UL>
    static inline Type loadu( const T* address )
    {
 #if BLAZE_MIC_MODE
-      __m512i v1;
+      __m512i v1 = _mm512_setzero_epi32();
       v1 = _mm512_loadunpacklo_epi32( v1, address );
       v1 = _mm512_loadunpackhi_epi32( v1, address+16UL );
       return v1;
@@ -160,7 +160,7 @@ struct Loadu<T,8UL>
    static inline Type loadu( const T* address )
    {
 #if BLAZE_MIC_MODE
-      __m512i v1;
+      __m512i v1 = _mm512_setzero_epi32();
       v1 = _mm512_loadunpacklo_epi64( v1, address );
       v1 = _mm512_loadunpackhi_epi64( v1, address+8UL );
       return v1;
@@ -223,7 +223,7 @@ inline typename EnableIf< IsIntegral<T>, Loadu<T,sizeof(T)> >::Type::Type
 inline sse_float_t loadu( const float* address )
 {
 #if BLAZE_MIC_MODE
-   __m512 v1;
+   __m512 v1 = _mm512_setzero_ps();
    v1 = _mm512_loadunpacklo_ps( v1, address );
    v1 = _mm512_loadunpackhi_ps( v1, address+16UL );
    return v1;
@@ -251,7 +251,7 @@ inline sse_float_t loadu( const float* address )
 inline sse_double_t loadu( const double* address )
 {
 #if BLAZE_MIC_MODE
-   __m512d v1;
+   __m512d v1 = _mm512_setzero_pd();
    v1 = _mm512_loadunpacklo_pd( v1, address );
    v1 = _mm512_loadunpackhi_pd( v1, address+8UL );
    return v1;
