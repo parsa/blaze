@@ -478,57 +478,75 @@ namespace blaze {}
 // <hr>
 //
 // The blaze::StaticVector class template is the representation of a fixed-size vector with
-// statically allocated elements of arbitrary type. The type of the elements, the number of
-// elements, and the transpose flag of the vector can be specified via the three template
-// parameters:
+// statically allocated elements of arbitrary type. It can be included via the header file
+
+   \code
+   #include <blaze/math/StaticVector.h>
+   \endcode
+
+// The type of the elements, the number of elements, and the transpose flag of the vector can
+// be specified via the three template parameters:
 
    \code
    template< typename Type, size_t N, bool TF >
    class StaticVector;
    \endcode
 
-//  - Type: specifies the type of the vector elements. StaticVector can be used with any
-//          non-cv-qualified, non-reference, non-pointer element type.
-//  - N   : specifies the total number of vector elements. It is expected that StaticVector is
-//          only used for tiny and small vectors.
-//  - TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
-//          vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
+//  - \c Type: specifies the type of the vector elements. StaticVector can be used with any
+//             non-cv-qualified, non-reference, non-pointer element type.
+//  - \c N   : specifies the total number of vector elements. It is expected that StaticVector is
+//             only used for tiny and small vectors.
+//  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
+//             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
 //
 //
 // \n \section vector_types_dynamic_vector DynamicVector
 // <hr>
 //
 // The blaze::DynamicVector class template is the representation of an arbitrary sized vector
-// with dynamically allocated elements of arbitrary type. The type of the elements and the
-// transpose flag of the vector can be specified via the two template parameters:
+// with dynamically allocated elements of arbitrary type. It can be included via the header file
+
+   \code
+   #include <blaze/math/DynamicVector.h>
+   \endcode
+
+// The type of the elements and the transpose flag of the vector can be specified via the two
+// template parameters:
 
    \code
    template< typename Type, bool TF >
    class DynamicVector;
    \endcode
 
-//  - Type: specifies the type of the vector elements. DynamicVector can be used with any
-//          non-cv-qualified, non-reference, non-pointer element type.
-//  - TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
-//          vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
+//  - \c Type: specifies the type of the vector elements. DynamicVector can be used with any
+//             non-cv-qualified, non-reference, non-pointer element type.
+//  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
+//             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
 //
 //
 // \n \section vector_types_compressed_vector CompressedVector
 // <hr>
 //
 // The blaze::CompressedVector class is the representation of an arbitrarily sized sparse
-// vector, which stores only non-zero elements of arbitrary type. The type of the elements
-// and the transpose flag of the vector can be specified via the two template parameters:
+// vector, which stores only non-zero elements of arbitrary type. It can be included via the
+// header file
+
+   \code
+   #include <blaze/math/CompressedVector.h>
+   \endcode
+
+// The type of the elements and the transpose flag of the vector can be specified via the two
+// template parameters:
 
    \code
    template< typename Type, bool TF >
    class CompressedVector;
    \endcode
 
-//  - Type: specifies the type of the vector elements. CompressedVector can be used with any
-//          non-cv-qualified, non-reference, non-pointer element type.
-//  - TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
-//          vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
+//  - \c Type: specifies the type of the vector elements. CompressedVector can be used with any
+//             non-cv-qualified, non-reference, non-pointer element type.
+//  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
+//             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
 //
 //
 // \n <center> Previous: \ref getting_started &nbsp; &nbsp; Next: \ref vector_operations </center>
@@ -1060,58 +1078,77 @@ namespace blaze {}
 // <hr>
 //
 // The blaze::StaticMatrix class template is the representation of a fixed-size matrix with
-// statically allocated elements of arbitrary type. The type of the elements, the number of
-// rows and columns, and the storage order of the matrix can be specified via the four template
-// parameters:
+// statically allocated elements of arbitrary type. It can be included via the header file
+
+   \code
+   #include <blaze/math/StaticMatrix.h>
+   \endcode
+
+// The type of the elements, the number of rows and columns, and the storage order of the matrix
+// can be specified via the four template parameters:
 
    \code
    template< typename Type, size_t M, size_t N, bool SO >
    class StaticMatrix;
    \endcode
 
-//  - Type: specifies the type of the matrix elements. StaticMatrix can be used with any
-//          non-cv-qualified, non-reference element type.
-//  - M   : specifies the total number of rows of the matrix.
-//  - N   : specifies the total number of columns of the matrix. Note that it is expected
-//          that StaticMatrix is only used for tiny and small matrices.
-//  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
-//          The default value is blaze::rowMajor.
+//  - \c Type: specifies the type of the matrix elements. StaticMatrix can be used with any
+//             non-cv-qualified, non-reference element type.
+//  - \c M   : specifies the total number of rows of the matrix.
+//  - \c N   : specifies the total number of columns of the matrix. Note that it is expected
+//             that StaticMatrix is only used for tiny and small matrices.
+//  - \c SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
+//             The default value is blaze::rowMajor.
 //
 //
 // \n \section matrix_types_dynamic_matrix DynamicMatrix
 // <hr>
 //
 // The blaze::DynamicMatrix class template is the representation of an arbitrary sized matrix
-// with \f$ M \cdot N \f$ dynamically allocated elements of arbitrary type. The type of the
-// elements and the storage order of the matrix can be specified via the two template parameters:
+// with \f$ M \cdot N \f$ dynamically allocated elements of arbitrary type. It can be included
+// via the header file
+
+   \code
+   #include <blaze/math/DynamicMatrix.h>
+   \endcode
+
+// The type of the elements and the storage order of the matrix can be specified via the two
+// template parameters:
 
    \code
    template< typename Type, bool SO >
    class DynamicMatrix;
    \endcode
 
-//  - Type: specifies the type of the matrix elements. DynamicMatrix can be used with any
-//          non-cv-qualified, non-reference element type.
-//  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
-//          The default value is blaze::rowMajor.
+//  - \c Type: specifies the type of the matrix elements. DynamicMatrix can be used with any
+//             non-cv-qualified, non-reference element type.
+//  - \c SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
+//             The default value is blaze::rowMajor.
 //
 //
 // \n \section matrix_types_compressed_matrix CompressedMatrix
 // <hr>
 //
 // The blaze::CompressedMatrix class template is the representation of an arbitrary sized sparse
-// matrix with \f$ M \cdot N \f$ dynamically allocated elements of arbitrary type. The type of the
-// elements and the storage order of the matrix can be specified via the two template parameters:
+// matrix with \f$ M \cdot N \f$ dynamically allocated elements of arbitrary type. It can be
+// included via the header file
+
+   \code
+   #include <blaze/math/CompressedMatrix.h>
+   \endcode
+
+// The type of the elements and the storage order of the matrix can be specified via the two
+// template parameters:
 
    \code
    template< typename Type, bool SO >
    class CompressedMatrix;
    \endcode
 
-//  - Type: specifies the type of the matrix elements. CompressedMatrix can be used with
-//          any non-cv-qualified, non-reference, non-pointer element type.
-//  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
-//          The default value is blaze::rowMajor.
+//  - \c Type: specifies the type of the matrix elements. CompressedMatrix can be used with
+//             any non-cv-qualified, non-reference, non-pointer element type.
+//  - \c SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
+//             The default value is blaze::rowMajor.
 //
 //
 // \n <center> Previous: \ref vector_operations &nbsp; &nbsp; Next: \ref matrix_operations </center>
@@ -1691,8 +1728,14 @@ namespace blaze {}
 // \n \section views_dense_subvector DenseSubvector
 // <hr>
 //
-// The DenseSubvector template represents a view on a specific subvector of a dense vector
-// primitive. The type of the dense vector is specified via the template parameter:
+// The blaze::DenseSubvector template represents a view on a specific subvector of a dense vector
+// primitive. It can be included via the header file
+
+   \code
+   #include <blaze/math/DenseSubvector.h>
+   \endcode
+
+// The type of the dense vector is specified via the template parameter:
 
    \code
    template< typename VT >
@@ -1706,8 +1749,14 @@ namespace blaze {}
 // \n \section views_sparse_subvector SparseSubvector
 // <hr>
 //
-// The SparseSubvector template represents a view on a specific subvector of a sparse vector
-// primitive. The type of the sparse vector is specified via the template parameter:
+// The blaze::SparseSubvector template represents a view on a specific subvector of a sparse
+// vector primitive. It can be included via the header file
+
+   \code
+   #include <blaze/math/SparseSubvector.h>
+   \endcode
+
+// The type of the sparse vector is specified via the template parameter:
 
    \code
    template< typename VT >
@@ -2016,8 +2065,14 @@ namespace blaze {}
 // \n \section views_dense_submatrix DenseSubmatrix
 // <hr>
 //
-// The DenseSubmatrix template represents a view on a specific submatrix of a dense matrix
-// primitive. The type of the dense matrix is specified via the template parameter:
+// The blaze::DenseSubmatrix template represents a view on a specific submatrix of a dense matrix
+// primitive. It can be included via the header file
+
+   \code
+   #include <blaze/math/DenseSubmatrix.h>
+   \endcode
+
+// The type of the dense matrix is specified via the template parameter:
 
    \code
    template< typename MT >
@@ -2031,8 +2086,14 @@ namespace blaze {}
 // \n \section views_sparse_submatrix SparseSubmatrix
 // <hr>
 //
-// The SparseSubmatrix template represents a view on a specific submatrix of a sparse matrix
-// primitive. The type of the sparse matrix is specified via the template parameter:
+// The blaze::SparseSubmatrix template represents a view on a specific submatrix of a sparse
+// matrix primitive. It can be included via the header file
+
+   \code
+   #include <blaze/math/SparseSubmatrix.h>
+   \endcode
+
+// The type of the sparse matrix is specified via the template parameter:
 
    \code
    template< typename MT >
@@ -2082,7 +2143,7 @@ namespace blaze {}
 // <hr>
 //
 // The current size of the matrix, i.e. the number of rows or columns can be obtained via the
-// \c row() and \c column() functions, the current total capacity via the \c capacity() function,
+// \c rows() and \c columns() functions, the current total capacity via the \c capacity() function,
 // and the number of non-zero elements via the \c nonZeros() function. However, since submatrices
 // are views on a specific submatrix of a matrix, several operations are not possible on views,
 // such as resizing and swapping:
@@ -2333,7 +2394,13 @@ namespace blaze {}
 // <hr>
 //
 // The blaze::DenseRow class template represents a reference to a specific row of a dense matrix
-// primitive. The type of the dense matrix is specified via template parameter:
+// primitive. It can be included via the header file
+
+   \code
+   #include <blaze/math/DenseRow.h>
+   \endcode
+
+// The type of the dense matrix is specified via template parameter:
 
    \code
    template< typename MT >
@@ -2348,7 +2415,13 @@ namespace blaze {}
 // <hr>
 //
 // The blaze::SparseRow class template represents a reference to a specific row of a sparse matrix
-// primitive. The type of the sparse matrix is specified via template parameter:
+// primitive. It can be included via the header file
+
+   \code
+   #include <blaze/math/SparseRow.h>
+   \endcode
+
+// The type of the sparse matrix is specified via template parameter:
 
    \code
    template< typename MT >
@@ -2638,7 +2711,13 @@ namespace blaze {}
 // <hr>
 //
 // The blaze::DenseColumn class template represents a reference to a specific column of a dense
-// matrix primitive. The type of the dense matrix is specified via template parameter:
+// matrix primitive. It can be included via the header file
+
+   \code
+   #include <blaze/math/DenseColumn.h>
+   \endcode
+
+// The type of the dense matrix is specified via template parameter:
 
    \code
    template< typename MT >
@@ -2653,7 +2732,13 @@ namespace blaze {}
 // <hr>
 //
 // The blaze::SparseColumn class template represents a reference to a specific column of a sparse
-// matrix primitive. The type of the sparse matrix is specified via template parameter:
+// matrix primitive. It can be included via the header file
+
+   \code
+   #include <blaze/math/SparseColumn.h>
+   \endcode
+
+// The type of the sparse matrix is specified via template parameter:
 
    \code
    template< typename MT >
