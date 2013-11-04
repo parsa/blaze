@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/dense/DynamicVector.h
-//  \brief Header file for the implementation of an arbitrary sized vector
+//  \brief Header file for the implementation of an arbitrarily sized vector
 //
 //  Copyright (C) 2011 Klaus Iglberger - All Rights Reserved
 //
@@ -177,7 +177,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    //@{
                            explicit inline DynamicVector();
                            explicit inline DynamicVector( size_t n );
-                           explicit inline DynamicVector( size_t n, Type init );
+                           explicit inline DynamicVector( size_t n, const Type& init );
                                     inline DynamicVector( const DynamicVector& v );
    template< typename VT >          inline DynamicVector( const Vector<VT,TF>& v );
 
@@ -215,7 +215,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    template< typename Other, size_t N >
    inline DynamicVector& operator=( const Other (&rhs)[N] );
 
-                           inline DynamicVector& operator= ( Type rhs );
+                           inline DynamicVector& operator= ( const Type& rhs );
                            inline DynamicVector& operator= ( const DynamicVector& rhs );
    template< typename VT > inline DynamicVector& operator= ( const Vector<VT,TF>& rhs );
    template< typename VT > inline DynamicVector& operator+=( const Vector<VT,TF>& rhs );
@@ -439,7 +439,7 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n )
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline DynamicVector<Type,TF>::DynamicVector( size_t n, Type init )
+inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Type& init )
    : size_    ( n )                            // The current size/dimension of the vector
    , capacity_( adjustCapacity( n ) )          // The maximum capacity of the vector
    , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
@@ -767,7 +767,7 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const Other (&
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( Type rhs )
+inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const Type& rhs )
 {
    for( size_t i=0UL; i<size_; ++i )
       v_[i] = rhs;
@@ -1060,7 +1060,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline void DynamicVector<Type,TF>::clear()
 {
-   size_ = 0UL;
+   resize( 0UL, false );
 }
 //*************************************************************************************************
 
