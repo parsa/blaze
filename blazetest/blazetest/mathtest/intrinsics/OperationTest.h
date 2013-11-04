@@ -143,7 +143,7 @@ template< typename T >  // Data type of the intrinsic test
 OperationTest<T>::OperationTest()
    : a_    ( blaze::allocate<T>( NN ) )  // The first aligned array of size NN
    , b_    ( blaze::allocate<T>( NN ) )  // The second aligned array of size NN
-   , test_ ()                              // Label of the currently performed test
+   , test_ ()                            // Label of the currently performed test
 {
    testStore();
    testStream();
