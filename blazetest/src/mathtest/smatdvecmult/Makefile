@@ -38,57 +38,57 @@ default: $(BIN)
 
 # Build rules
 MCaV2a: MCaV2a.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaV2b: MCaV2b.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaV3a: MCaV3a.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaV3b: MCaV3b.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaV4a: MCaV4a.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaV4b: MCaV4b.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaV5a: MCaV5a.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaV5b: MCaV5b.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaV6a: MCaV6a.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaV6b: MCaV6b.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaVDa: MCaVDa.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaVDb: MCaVDb.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 MCbV2a: MCbV2a.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCbV2b: MCbV2b.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCbV3a: MCbV3a.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCbV3b: MCbV3b.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCbV4a: MCbV4a.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCbV4b: MCbV4b.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCbV5a: MCbV5a.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCbV5b: MCbV5b.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCbV6a: MCbV6a.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCbV6b: MCbV6b.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCbVDa: MCbVDa.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCbVDb: MCbVDb.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 AliasingTest: AliasingTest.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 
 # Cleanup

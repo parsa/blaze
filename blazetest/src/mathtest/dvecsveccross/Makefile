@@ -38,25 +38,25 @@ default: $(BIN)
 
 # Build rules
 V3aVCa: V3aVCa.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 V3aVCb: V3aVCb.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 V3bVCa: V3bVCa.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 V3bVCb: V3bVCb.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 VDaVCa: VDaVCa.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDaVCb: VDaVCb.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDbVCa: VDbVCa.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDbVCb: VDbVCb.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 AliasingTest: AliasingTest.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 
 # Cleanup

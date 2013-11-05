@@ -38,13 +38,13 @@ default: $(BIN)
 
 # Build rules
 VCaVCa: VCaVCa.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCaVCb: VCaVCb.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbVCa: VCbVCa.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbVCb: VCbVCb.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 
 # Cleanup

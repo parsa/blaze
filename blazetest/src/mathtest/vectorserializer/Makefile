@@ -38,7 +38,7 @@ default: $(BIN)
 
 # Build rules
 ClassTest: ClassTest.o
-	@$(CXX) -o $@ $< $(LIBRARIES)
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 
 # Cleanup
