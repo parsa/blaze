@@ -33,14 +33,14 @@ CXX="g++"
 # This setting specifies the compilation flags used to build the Blaze library. Depending
 # on the selected compiler it is recommended to use at least the following selection of
 # compilation flags:
-#   g++/clang: -Werror -Wall -Wextra -Wshadow -Woverloaded-virtual -ansi -O3
-#   icpc     : -Werror -Wshadow -w1 -ansi -O3
+#   g++/clang: -Werror -Wall -Wextra -Wshadow -Woverloaded-virtual -ansi -O3 -DNDEBUG
+#   icpc     : -Werror -Wshadow -w1 -ansi -O3 -DNDEBUG
 # Note that for the Clang compiler an optimization level of at least -O2 is required!
 # In addition to these general flags, it is possible to specify additional architecture
 # specific flags. In order to achieve maximum performance, it is recommended to specify
 # the available architecture specific instruction set (for instance, -mavx for the GNU
 # C++ compiler to active the AVX instruction set).
-CXXFLAGS="-Werror -Wall -Wextra -Wshadow -Woverloaded-virtual -ansi -O3"
+CXXFLAGS="-Werror -Wall -Wextra -Wshadow -Woverloaded-virtual -ansi -O3 -DNDEBUG"
 
 # Library configuration
 # This selection configures which libraries are created during the compilation process.
