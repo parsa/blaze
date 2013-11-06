@@ -2923,6 +2923,8 @@ inline DenseSubmatrix<MT,true>& DenseSubmatrix<MT,true>::scale( Other scalar )
    for( size_t j=column_; j<jend; ++j )
       for( size_t i=row_; i<iend; ++i )
          matrix_(i,j) *= scalar;
+
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
