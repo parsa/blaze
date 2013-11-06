@@ -193,7 +193,15 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
    */
    struct Element : public ElementBase
    {
-      using ElementBase::operator=;
+      // This operator is required due to a bug in all versions of the the MSVC compiler.
+      // A simple 'using ElementBase::operator=;' statement results in ambiguity problems.
+      template< typename Other >
+      inline Element& operator=( const Other& rhs )
+      {
+         ElementBase::operator=( rhs );
+         return *this;
+      }
+
       friend class CompressedMatrix;
    };
    /*! \endcond */
@@ -2310,7 +2318,15 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
    */
    struct Element : public ElementBase
    {
-      using ElementBase::operator=;
+      // This operator is required due to a bug in all versions of the the MSVC compiler.
+      // A simple 'using ElementBase::operator=;' statement results in ambiguity problems.
+      template< typename Other >
+      inline Element& operator=( const Other& rhs )
+      {
+         ElementBase::operator=( rhs );
+         return *this;
+      }
+
       friend class CompressedMatrix;
    };
    /*! \endcond */

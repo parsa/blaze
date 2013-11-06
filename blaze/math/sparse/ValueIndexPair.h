@@ -82,7 +82,7 @@ class ValueIndexPair : private SparseElement
 
    template< typename Other >
    inline typename DisableIf< IsSparseElement<Other>, ValueIndexPair& >::Type
-      operator= ( const Other& v );
+      operator=( const Other& v );
 
    template< typename Other > inline ValueIndexPair& operator+=( const Other& v );
    template< typename Other > inline ValueIndexPair& operator-=( const Other& v );
