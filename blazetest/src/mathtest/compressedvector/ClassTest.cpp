@@ -2315,7 +2315,7 @@ void ClassTest::testIsDefault()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isnan function with the CompressedVector class template.
+/*!\brief Test of the 2 function with the CompressedVector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
@@ -2331,7 +2331,7 @@ void ClassTest::testIsNan()
    {
       blaze::CompressedVector<float,blaze::rowVector> vec;
 
-      if( isnan( vec ) != false ) {
+      if( blaze::isnan( vec ) != false ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid isnan evaluation\n"
@@ -2345,7 +2345,7 @@ void ClassTest::testIsNan()
    {
       blaze::CompressedVector<float,blaze::rowVector> vec( 9UL );
 
-      if( isnan( vec ) != false ) {
+      if( blaze::isnan( vec ) != false ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid isnan evaluation\n"
@@ -2363,7 +2363,7 @@ void ClassTest::testIsNan()
       vec[6] =  3.0F;
       vec[8] =  4.0F;
 
-      if( isnan( vec ) != false ) {
+      if( blaze::isnan( vec ) != false ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid isnan evaluation\n"

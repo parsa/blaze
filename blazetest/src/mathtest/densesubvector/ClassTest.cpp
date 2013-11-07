@@ -1635,7 +1635,7 @@ void ClassTest::testIsNan()
       checkSize    ( sv, 3UL );
       checkNonZeros( sv, 0UL );
 
-      if( isnan( sv ) != false ) {
+      if( blaze::isnan( sv ) != false ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid isnan evaluation\n"
@@ -1652,7 +1652,7 @@ void ClassTest::testIsNan()
       checkSize    ( sv, 5UL );
       checkNonZeros( sv, 2UL );
 
-      if( isnan( sv ) != false ) {
+      if( blaze::isnan( sv ) != false ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid isnan evaluation\n"
@@ -1669,7 +1669,7 @@ void ClassTest::testIsNan()
       checkSize    ( sv, 3UL );
       checkNonZeros( sv, 3UL );
 
-      if( isnan( sv ) != false ) {
+      if( blaze::isnan( sv ) != false ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid isnan evaluation\n"

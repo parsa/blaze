@@ -1183,7 +1183,7 @@ void ClassTest::testIsNan()
    {
       blaze::StaticVector<float,9UL,blaze::rowVector> vec;
 
-      if( isnan( vec ) != false ) {
+      if( blaze::isnan( vec ) != false ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid isnan evaluation\n"
@@ -1201,7 +1201,7 @@ void ClassTest::testIsNan()
       vec[6] =  3.0F;
       vec[8] =  4.0F;
 
-      if( isnan( vec ) != false ) {
+      if( blaze::isnan( vec ) != false ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid isnan evaluation\n"

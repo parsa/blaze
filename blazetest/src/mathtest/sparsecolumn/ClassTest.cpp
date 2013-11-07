@@ -4988,7 +4988,7 @@ void ClassTest::testIsNan()
          checkSize    ( col0, 4UL );
          checkNonZeros( col0, 0UL );
 
-         if( isnan( col0 ) != false ) {
+         if( blaze::isnan( col0 ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isnan evaluation\n"
@@ -5005,7 +5005,7 @@ void ClassTest::testIsNan()
          checkSize    ( col2, 4UL );
          checkNonZeros( col2, 2UL );
 
-         if( isnan( col2 ) != false ) {
+         if( blaze::isnan( col2 ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isnan evaluation\n"
@@ -5022,7 +5022,7 @@ void ClassTest::testIsNan()
          checkSize    ( col4, 4UL );
          checkNonZeros( col4, 4UL );
 
-         if( isnan( col4 ) != false ) {
+         if( blaze::isnan( col4 ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isnan evaluation\n"
@@ -5057,7 +5057,7 @@ void ClassTest::testIsNan()
          checkSize    ( col0, 4UL );
          checkNonZeros( col0, 0UL );
 
-         if( isnan( col0 ) != false ) {
+         if( blaze::isnan( col0 ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isnan evaluation\n"
@@ -5074,7 +5074,7 @@ void ClassTest::testIsNan()
          checkSize    ( col2, 4UL );
          checkNonZeros( col2, 2UL );
 
-         if( isnan( col2 ) != false ) {
+         if( blaze::isnan( col2 ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isnan evaluation\n"
@@ -5091,7 +5091,7 @@ void ClassTest::testIsNan()
          checkSize    ( col4, 4UL );
          checkNonZeros( col4, 4UL );
 
-         if( isnan( col4 ) != false ) {
+         if( blaze::isnan( col4 ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isnan evaluation\n"

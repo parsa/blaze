@@ -4020,7 +4020,7 @@ void ClassTest::testIsNan()
          checkColumns ( mat, 5UL );
          checkNonZeros( mat, 0UL );
 
-         if( isnan( mat ) != false ) {
+         if( blaze::isnan( mat ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isnan evaluation\n"
@@ -4042,7 +4042,7 @@ void ClassTest::testIsNan()
          checkColumns ( mat, 2UL );
          checkNonZeros( mat, 4UL );
 
-         if( isnan( mat ) != false ) {
+         if( blaze::isnan( mat ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isnan evaluation\n"
@@ -4069,7 +4069,7 @@ void ClassTest::testIsNan()
          checkColumns ( mat, 5UL );
          checkNonZeros( mat, 0UL );
 
-         if( isnan( mat ) != false ) {
+         if( blaze::isnan( mat ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isnan evaluation\n"
@@ -4091,7 +4091,7 @@ void ClassTest::testIsNan()
          checkColumns ( mat, 2UL );
          checkNonZeros( mat, 4UL );
 
-         if( isnan( mat ) != false ) {
+         if( blaze::isnan( mat ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isnan evaluation\n"
