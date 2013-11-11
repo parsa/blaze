@@ -1297,9 +1297,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline void DynamicMatrix<Type,SO>::clear()
 {
-   m_  = 0UL;
-   n_  = 0UL;
-   nn_ = 0UL;
+   resize( 0UL, 0UL, false );
 }
 //*************************************************************************************************
 
@@ -1357,28 +1355,21 @@ void DynamicMatrix<Type,SO>::resize( size_t m, size_t n, bool preserve )
          for( size_t j=0UL; j<min_n; ++j )
             v[i*nn+j] = v_[i*nn_+j];
 
-      if( IsNumeric<Type>::value ) {
-         for( size_t i=0UL; i<m; ++i )
-            for( size_t j=n; j<nn; ++j )
-               v[i*nn+j] = Type();
-      }
-
       std::swap( v_, v );
       deallocate( v );
       capacity_ = m*nn;
    }
    else if( m*nn > capacity_ ) {
       Type* BLAZE_RESTRICT v = allocate<Type>( m*nn );
-
-      if( IsNumeric<Type>::value ) {
-         for( size_t i=0UL; i<m; ++i )
-            for( size_t j=n; j<nn; ++j )
-               v[i*nn+j] = Type();
-      }
-
       std::swap( v_, v );
       deallocate( v );
       capacity_ = m*nn;
+   }
+
+   if( IsNumeric<Type>::value ) {
+      for( size_t i=0UL; i<m; ++i )
+         for( size_t j=n; j<nn; ++j )
+            v_[i*nn+j] = Type();
    }
 
    m_  = m;
@@ -3397,9 +3388,7 @@ inline void DynamicMatrix<Type,true>::reset( size_t j )
 template< typename Type >  // Data type of the matrix
 inline void DynamicMatrix<Type,true>::clear()
 {
-   m_  = 0UL;
-   mm_ = 0UL;
-   n_  = 0UL;
+   resize( 0UL, 0UL, false );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3458,28 +3447,21 @@ void DynamicMatrix<Type,true>::resize( size_t m, size_t n, bool preserve )
          for( size_t i=0UL; i<min_m; ++i )
             v[i+j*mm] = v_[i+j*mm_];
 
-      if( IsNumeric<Type>::value ) {
-         for( size_t j=0UL; j<n; ++j )
-            for( size_t i=m; i<mm; ++i )
-               v[i+j*mm] = Type();
-      }
-
       std::swap( v_, v );
       deallocate( v );
       capacity_ = mm*n;
    }
    else if( mm*n > capacity_ ) {
       Type* BLAZE_RESTRICT v = allocate<Type>( mm*n );
-
-      if( IsNumeric<Type>::value ) {
-         for( size_t j=0UL; j<n; ++j )
-            for( size_t i=m; i<mm; ++i )
-               v[i+j*mm] = Type();
-      }
-
       std::swap( v_, v );
       deallocate( v );
       capacity_ = mm*n;
+   }
+
+   if( IsNumeric<Type>::value ) {
+      for( size_t j=0UL; j<n; ++j )
+         for( size_t i=m; i<mm; ++i )
+            v_[i+j*mm] = Type();
    }
 
    m_  = m;
