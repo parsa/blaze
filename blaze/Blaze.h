@@ -1034,6 +1034,25 @@ namespace blaze {}
 
 // Note that both functions can only be used for vectors with built-in or complex element type!
 //
+// \n \section vector_operators_abs Absolute Values
+// <hr>
+//
+// The \c abs() function can be used to compute the absolute values of each element of a vector.
+// For instance, the following computation
+
+   \code
+   blaze::StaticVector<int,3UL,rowVector> a( -1, 2, -3 );
+   blaze::StaticVector<int,3UL,rowVector> b( abs( a ) );
+   \endcode
+
+// results in the vector
+
+                          \f$ b = \left(\begin{array}{*{1}{c}}
+                          1 \\
+                          2 \\
+                          3 \\
+                          \end{array}\right)\f$
+
 // \n \section vector_operations_normalize Normalize
 // <hr>
 //
@@ -1701,6 +1720,24 @@ namespace blaze {}
    M1 = trans( M2 );   // Assigning the transpose of M2 (i.e. a row-major matrix) to M1
    M1 += trans( M2 );  // Addition assignment of two row-major matrices
    \endcode
+
+// \n \section matrix_operators_abs Absolute Values
+// <hr>
+//
+// The \c abs() function can be used to compute the absolute values of each element of a matrix.
+// For instance, the following computation
+
+   \code
+   blaze::StaticMatrix<int,2UL,3UL,rowMajor> A( -1, 2, -3, 4, -5, 6 );
+   blaze::StaticMatrix<int,2UL,3UL,rowMajor> B( abs( A ) );
+   \endcode
+
+// results in the matrix
+
+                          \f$ B = \left(\begin{array}{*{3}{c}}
+                          1 & 2 & 3 \\
+                          4 & 5 & 6 \\
+                          \end{array}\right)\f$
 
 // \n \section matrix_operations_swap Swap
 //
