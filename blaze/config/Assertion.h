@@ -32,7 +32,7 @@
 //  - Deactivated: \b 0
 //  - Activated  : \b 1
 */
-#define BLAZE_INTERNAL_ASSERTION 1
+#define BLAZE_INTERNAL_ASSERTION 0
 //*************************************************************************************************
 
 
@@ -48,5 +48,5 @@
 //  - Deactivated: \b 0
 //  - Activated  : \b 1
 */
-#define BLAZE_USER_ASSERTION 1
+#define BLAZE_USER_ASSERTION 0
 //*************************************************************************************************
