@@ -1501,8 +1501,8 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
    }
    else
    {
-      BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ( size_ & size_t(-IT::size*4) ), "Invalid end calculation" );
       const size_t iend( size_ & size_t(-IT::size*4) );
+      BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
 
       for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
          store( v_+i             , (~rhs).load(i             ) );
@@ -1596,8 +1596,8 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ( size_ & size_t(-IT::size*4) ), "Invalid end calculation" );
    const size_t iend( size_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
 
    for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
       store( v_+i             , load(v_+i             ) + (~rhs).load(i             ) );
@@ -1690,8 +1690,8 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ( size_ & size_t(-IT::size*4) ), "Invalid end calculation" );
    const size_t iend( size_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
 
    for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
       store( v_+i             , load(v_+i             ) - (~rhs).load(i             ) );
@@ -1784,8 +1784,8 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ( size_ & size_t(-IT::size*4) ), "Invalid end calculation" );
    const size_t iend( size_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
 
    for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
       store( v_+i             , load(v_+i             ) * (~rhs).load(i             ) );
