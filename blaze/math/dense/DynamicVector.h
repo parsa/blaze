@@ -1312,7 +1312,7 @@ inline typename DynamicVector<Type,TF>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL      , "Invalid vector access index" );
 
-   return load( &v_[index] );
+   return load( v_+index );
 }
 //*************************************************************************************************
 
@@ -1342,7 +1342,7 @@ inline typename DynamicVector<Type,TF>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( index            <  size_    , "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_, "Invalid vector access index" );
 
-   return loadu( &v_[index] );
+   return loadu( v_+index );
 }
 //*************************************************************************************************
 
@@ -1373,7 +1373,7 @@ inline void DynamicVector<Type,TF>::store( size_t index, const IntrinsicType& va
    BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL      , "Invalid vector access index" );
 
-   store( &v_[index], value );
+   store( v_+index, value );
 }
 //*************************************************************************************************
 
@@ -1403,7 +1403,7 @@ inline void DynamicVector<Type,TF>::storeu( size_t index, const IntrinsicType& v
    BLAZE_INTERNAL_ASSERT( index            <  size_    , "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_, "Invalid vector access index" );
 
-   storeu( &v_[index], value );
+   storeu( v_+index, value );
 }
 //*************************************************************************************************
 
@@ -1434,7 +1434,7 @@ inline void DynamicVector<Type,TF>::stream( size_t index, const IntrinsicType& v
    BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL      , "Invalid vector access index" );
 
-   stream( &v_[index], value );
+   stream( v_+index, value );
 }
 //*************************************************************************************************
 

@@ -1587,7 +1587,7 @@ inline typename DynamicMatrix<Type,SO>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( j + IT::size <= nn_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
-   return load( &v_[i*nn_+j] );
+   return load( v_+i*nn_+j );
 }
 //*************************************************************************************************
 
@@ -1620,7 +1620,7 @@ inline typename DynamicMatrix<Type,SO>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + IT::size <= nn_, "Invalid column access index" );
 
-   return loadu( &v_[i*nn_+j] );
+   return loadu( v_+i*nn_+j );
 }
 //*************************************************************************************************
 
@@ -1654,7 +1654,7 @@ inline void DynamicMatrix<Type,SO>::store( size_t i, size_t j, const IntrinsicTy
    BLAZE_INTERNAL_ASSERT( j + IT::size <= nn_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
-   store( &v_[i*nn_+j], value );
+   store( v_+i*nn_+j, value );
 }
 //*************************************************************************************************
 
@@ -1687,7 +1687,7 @@ inline void DynamicMatrix<Type,SO>::storeu( size_t i, size_t j, const IntrinsicT
    BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + IT::size <= nn_, "Invalid column access index" );
 
-   storeu( &v_[i*nn_+j], value );
+   storeu( v_+i*nn_+j, value );
 }
 //*************************************************************************************************
 
@@ -1721,7 +1721,7 @@ inline void DynamicMatrix<Type,SO>::stream( size_t i, size_t j, const IntrinsicT
    BLAZE_INTERNAL_ASSERT( j + IT::size <= nn_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
-   stream( &v_[i*nn_+j], value );
+   stream( v_+i*nn_+j, value );
 }
 //*************************************************************************************************
 
@@ -1791,7 +1791,7 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
    {
       for( size_t i=0UL; i<m_; ++i )
          for( size_t j=0UL; j<n_; j+=IT::size )
-            stream( &v_[i*nn_+j], (~rhs).load(i,j) );
+            stream( v_+i*nn_+j, (~rhs).load(i,j) );
    }
    else
    {
@@ -1800,13 +1800,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
 
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
-            store( &v_[i*nn_+j             ], (~rhs).load(i,j             ) );
-            store( &v_[i*nn_+j+IT::size    ], (~rhs).load(i,j+IT::size    ) );
-            store( &v_[i*nn_+j+IT::size*2UL], (~rhs).load(i,j+IT::size*2UL) );
-            store( &v_[i*nn_+j+IT::size*3UL], (~rhs).load(i,j+IT::size*3UL) );
+            store( v_+i*nn_+j             , (~rhs).load(i,j             ) );
+            store( v_+i*nn_+j+IT::size    , (~rhs).load(i,j+IT::size    ) );
+            store( v_+i*nn_+j+IT::size*2UL, (~rhs).load(i,j+IT::size*2UL) );
+            store( v_+i*nn_+j+IT::size*3UL, (~rhs).load(i,j+IT::size*3UL) );
          }
          for( size_t j=jend; j<n_; j+=IT::size ) {
-            store( &v_[i*nn_+j], (~rhs).load(i,j) );
+            store( v_+i*nn_+j, (~rhs).load(i,j) );
          }
       }
    }
@@ -1968,13 +1968,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
 
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
-         store( &v_[i*nn_+j             ], load( &v_[i*nn_+j             ] ) + (~rhs).load(i,j             ) );
-         store( &v_[i*nn_+j+IT::size    ], load( &v_[i*nn_+j+IT::size    ] ) + (~rhs).load(i,j+IT::size    ) );
-         store( &v_[i*nn_+j+IT::size*2UL], load( &v_[i*nn_+j+IT::size*2UL] ) + (~rhs).load(i,j+IT::size*2UL) );
-         store( &v_[i*nn_+j+IT::size*3UL], load( &v_[i*nn_+j+IT::size*3UL] ) + (~rhs).load(i,j+IT::size*3UL) );
+         store( v_+i*nn_+j             , load( v_+i*nn_+j              ) + (~rhs).load(i,j             ) );
+         store( v_+i*nn_+j+IT::size    , load( v_+i*nn_+j+IT::size     ) + (~rhs).load(i,j+IT::size    ) );
+         store( v_+i*nn_+j+IT::size*2UL, load( v_+i*nn_+j+IT::size*2UL ) + (~rhs).load(i,j+IT::size*2UL) );
+         store( v_+i*nn_+j+IT::size*3UL, load( v_+i*nn_+j+IT::size*3UL ) + (~rhs).load(i,j+IT::size*3UL) );
       }
       for( size_t j=jend; j<n_; j+=IT::size ) {
-         store( &v_[i*nn_+j], load( &v_[i*nn_+j] ) + (~rhs).load(i,j) );
+         store( v_+i*nn_+j, load( v_+i*nn_+j ) + (~rhs).load(i,j) );
       }
    }
 }
@@ -2135,13 +2135,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
 
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
-         store( &v_[i*nn_+j             ], load( &v_[i*nn_+j             ] ) - (~rhs).load(i,j             ) );
-         store( &v_[i*nn_+j+IT::size    ], load( &v_[i*nn_+j+IT::size    ] ) - (~rhs).load(i,j+IT::size    ) );
-         store( &v_[i*nn_+j+IT::size*2UL], load( &v_[i*nn_+j+IT::size*2UL] ) - (~rhs).load(i,j+IT::size*2UL) );
-         store( &v_[i*nn_+j+IT::size*3UL], load( &v_[i*nn_+j+IT::size*3UL] ) - (~rhs).load(i,j+IT::size*3UL) );
+         store( v_+i*nn_+j             , load( v_+i*nn_+j              ) - (~rhs).load(i,j             ) );
+         store( v_+i*nn_+j+IT::size    , load( v_+i*nn_+j+IT::size     ) - (~rhs).load(i,j+IT::size    ) );
+         store( v_+i*nn_+j+IT::size*2UL, load( v_+i*nn_+j+IT::size*2UL ) - (~rhs).load(i,j+IT::size*2UL) );
+         store( v_+i*nn_+j+IT::size*3UL, load( v_+i*nn_+j+IT::size*3UL ) - (~rhs).load(i,j+IT::size*3UL) );
       }
       for( size_t j=jend; j<n_; j+=IT::size ) {
-         store( &v_[i*nn_+j], load( &v_[i*nn_+j] ) - (~rhs).load(i,j) );
+         store( v_+i*nn_+j, load( v_+i*nn_+j ) - (~rhs).load(i,j) );
       }
    }
 }
@@ -3687,7 +3687,7 @@ inline typename DynamicMatrix<Type,true>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
 
-   return load( &v_[i+j*mm_] );
+   return load( v_+i+j*mm_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3720,7 +3720,7 @@ inline typename DynamicMatrix<Type,true>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( i + IT::size <= mm_, "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
 
-   return loadu( &v_[i+j*mm_] );
+   return loadu( v_+i+j*mm_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3754,7 +3754,7 @@ inline void DynamicMatrix<Type,true>::store( size_t i, size_t j, const Intrinsic
    BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
 
-   store( &v_[i+j*mm_], value );
+   store( v_+i+j*mm_, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3787,7 +3787,7 @@ inline void DynamicMatrix<Type,true>::storeu( size_t i, size_t j, const Intrinsi
    BLAZE_INTERNAL_ASSERT( i + IT::size <= mm_, "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
 
-   storeu( &v_[i+j*mm_], value );
+   storeu( v_+i+j*mm_, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3822,7 +3822,7 @@ inline void DynamicMatrix<Type,true>::stream( size_t i, size_t j, const Intrinsi
    BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
 
-   stream( &v_[i+j*mm_], value );
+   stream( v_+i+j*mm_, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3894,7 +3894,7 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
    {
       for( size_t j=0UL; j<n_; ++j )
          for( size_t i=0UL; i<m_; i+=IT::size )
-            stream( &v_[i+j*mm_], (~rhs).load(i,j) );
+            stream( v_+i+j*mm_, (~rhs).load(i,j) );
    }
    else
    {
@@ -3903,13 +3903,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
 
       for( size_t j=0UL; j<n_; ++j ) {
          for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-            store( &v_[i+j*mm_             ], (~rhs).load(i             ,j) );
-            store( &v_[i+j*mm_+IT::size    ], (~rhs).load(i+IT::size    ,j) );
-            store( &v_[i+j*mm_+IT::size*2UL], (~rhs).load(i+IT::size*2UL,j) );
-            store( &v_[i+j*mm_+IT::size*3UL], (~rhs).load(i+IT::size*3UL,j) );
+            store( v_+i+j*mm_             , (~rhs).load(i             ,j) );
+            store( v_+i+j*mm_+IT::size    , (~rhs).load(i+IT::size    ,j) );
+            store( v_+i+j*mm_+IT::size*2UL, (~rhs).load(i+IT::size*2UL,j) );
+            store( v_+i+j*mm_+IT::size*3UL, (~rhs).load(i+IT::size*3UL,j) );
          }
          for( size_t i=iend; i<m_; i+=IT::size ) {
-            store( &v_[i+j*mm_], (~rhs).load(i,j) );
+            store( v_+i+j*mm_, (~rhs).load(i,j) );
          }
       }
    }
@@ -4070,13 +4070,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
 
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-         store( &v_[i+j*mm_             ], load( &v_[i+j*mm_             ] ) + (~rhs).load(i             ,j) );
-         store( &v_[i+j*mm_+IT::size    ], load( &v_[i+j*mm_+IT::size    ] ) + (~rhs).load(i+IT::size    ,j) );
-         store( &v_[i+j*mm_+IT::size*2UL], load( &v_[i+j*mm_+IT::size*2UL] ) + (~rhs).load(i+IT::size*2UL,j) );
-         store( &v_[i+j*mm_+IT::size*3UL], load( &v_[i+j*mm_+IT::size*3UL] ) + (~rhs).load(i+IT::size*3UL,j) );
+         store( v_+i+j*mm_             , load( v_+i+j*mm_              ) + (~rhs).load(i             ,j) );
+         store( v_+i+j*mm_+IT::size    , load( v_+i+j*mm_+IT::size     ) + (~rhs).load(i+IT::size    ,j) );
+         store( v_+i+j*mm_+IT::size*2UL, load( v_+i+j*mm_+IT::size*2UL ) + (~rhs).load(i+IT::size*2UL,j) );
+         store( v_+i+j*mm_+IT::size*3UL, load( v_+i+j*mm_+IT::size*3UL ) + (~rhs).load(i+IT::size*3UL,j) );
       }
       for( size_t i=iend; i<m_; i+=IT::size ) {
-         store( &v_[i+j*mm_], load( &v_[i+j*mm_] ) + (~rhs).load(i,j) );
+         store( v_+i+j*mm_, load( v_+i+j*mm_ ) + (~rhs).load(i,j) );
       }
    }
 }
@@ -4237,13 +4237,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
 
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-         store( &v_[i+j*mm_             ], load( &v_[i+j*mm_             ] ) - (~rhs).load(i             ,j) );
-         store( &v_[i+j*mm_+IT::size    ], load( &v_[i+j*mm_+IT::size    ] ) - (~rhs).load(i+IT::size    ,j) );
-         store( &v_[i+j*mm_+IT::size*2UL], load( &v_[i+j*mm_+IT::size*2UL] ) - (~rhs).load(i+IT::size*2UL,j) );
-         store( &v_[i+j*mm_+IT::size*3UL], load( &v_[i+j*mm_+IT::size*3UL] ) - (~rhs).load(i+IT::size*3UL,j) );
+         store( v_+i+j*mm_             , load( v_+i+j*mm_              ) - (~rhs).load(i             ,j) );
+         store( v_+i+j*mm_+IT::size    , load( v_+i+j*mm_+IT::size     ) - (~rhs).load(i+IT::size    ,j) );
+         store( v_+i+j*mm_+IT::size*2UL, load( v_+i+j*mm_+IT::size*2UL ) - (~rhs).load(i+IT::size*2UL,j) );
+         store( v_+i+j*mm_+IT::size*3UL, load( v_+i+j*mm_+IT::size*3UL ) - (~rhs).load(i+IT::size*3UL,j) );
       }
       for( size_t i=iend; i<m_; i+=IT::size ) {
-         store( &v_[i+j*mm_], load( &v_[i+j*mm_] ) - (~rhs).load(i,j) );
+         store( v_+i+j*mm_, load( v_+i+j*mm_ ) - (~rhs).load(i,j) );
       }
    }
 }
