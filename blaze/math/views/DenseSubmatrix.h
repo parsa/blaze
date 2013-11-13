@@ -729,7 +729,7 @@ template< typename MT  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,SO>::ConstIterator DenseSubmatrix<MT,SO>::cbegin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
-   return matrix_.begin( row_ + i ) + column_;
+   return matrix_.cbegin( row_ + i ) + column_;
 }
 //*************************************************************************************************
 
@@ -792,7 +792,7 @@ template< typename MT  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,SO>::ConstIterator DenseSubmatrix<MT,SO>::cend( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
-   return matrix_.begin( row_ + i ) + column_ + n_;
+   return matrix_.cbegin( row_ + i ) + column_ + n_;
 }
 //*************************************************************************************************
 
@@ -2419,7 +2419,7 @@ template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,true>::ConstIterator DenseSubmatrix<MT,true>::cbegin( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
-   return matrix_.begin( column_ + j ) + row_;
+   return matrix_.cbegin( column_ + j ) + row_;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2470,7 +2470,7 @@ template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,true>::ConstIterator DenseSubmatrix<MT,true>::cend( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
-   return matrix_.begin( column_ + j ) + row_ + m_;
+   return matrix_.cbegin( column_ + j ) + row_ + m_;
 }
 /*! \endcond */
 //*************************************************************************************************

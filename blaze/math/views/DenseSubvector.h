@@ -709,7 +709,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline typename DenseSubvector<VT,TF>::ConstIterator DenseSubvector<VT,TF>::cbegin() const
 {
-   return vector_.begin() + offset_;
+   return vector_.cbegin() + offset_;
 }
 //*************************************************************************************************
 
@@ -757,7 +757,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline typename DenseSubvector<VT,TF>::ConstIterator DenseSubvector<VT,TF>::cend() const
 {
-   return vector_.begin() + offset_ + size_;
+   return vector_.cbegin() + offset_ + size_;
 }
 //*************************************************************************************************
 
