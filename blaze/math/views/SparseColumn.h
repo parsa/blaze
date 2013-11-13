@@ -623,7 +623,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline typename SparseColumn<MT,SO>::ConstIterator SparseColumn<MT,SO>::cbegin() const
 {
-   return matrix_.begin( col_ );
+   return matrix_.cbegin( col_ );
 }
 //*************************************************************************************************
 
@@ -671,7 +671,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline typename SparseColumn<MT,SO>::ConstIterator SparseColumn<MT,SO>::cend() const
 {
-   return matrix_.end( col_ );
+   return matrix_.cend( col_ );
 }
 //*************************************************************************************************
 
