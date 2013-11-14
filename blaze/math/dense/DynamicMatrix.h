@@ -42,6 +42,7 @@
 
 #include <algorithm>
 #include <stdexcept>
+#include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
@@ -72,11 +73,9 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Memory.h>
-#include <blaze/util/mpl/If.h>
 #include <blaze/util/Null.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
@@ -181,18 +180,18 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DynamicMatrix<Type,SO>   This;            //!< Type of this DynamicMatrix instance.
-   typedef This                     ResultType;      //!< Result type for expression template evaluations.
-   typedef DynamicMatrix<Type,!SO>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
-   typedef DynamicMatrix<Type,!SO>  TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef Type                     ElementType;     //!< Type of the matrix elements.
-   typedef typename IT::Type        IntrinsicType;   //!< Intrinsic type of the matrix elements.
-   typedef const Type&              ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&              CompositeType;   //!< Data type for composite expression templates.
-   typedef Type&                    Reference;       //!< Reference to a non-constant matrix value.
-   typedef const Type&              ConstReference;  //!< Reference to a constant matrix value.
-   typedef Type*                    Iterator;        //!< Iterator over non-constant elements.
-   typedef const Type*              ConstIterator;   //!< Iterator over constant elements.
+   typedef DynamicMatrix<Type,SO>     This;            //!< Type of this DynamicMatrix instance.
+   typedef This                       ResultType;      //!< Result type for expression template evaluations.
+   typedef DynamicMatrix<Type,!SO>    OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
+   typedef DynamicMatrix<Type,!SO>    TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef Type                       ElementType;     //!< Type of the matrix elements.
+   typedef typename IT::Type          IntrinsicType;   //!< Intrinsic type of the matrix elements.
+   typedef const Type&                ReturnType;      //!< Return type for expression template evaluations.
+   typedef const This&                CompositeType;   //!< Data type for composite expression templates.
+   typedef Type&                      Reference;       //!< Reference to a non-constant matrix value.
+   typedef const Type&                ConstReference;  //!< Reference to a constant matrix value.
+   typedef DenseIterator<Type>        Iterator;        //!< Iterator over non-constant elements.
+   typedef DenseIterator<const Type>  ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -750,7 +749,7 @@ inline typename DynamicMatrix<Type,SO>::Iterator
    DynamicMatrix<Type,SO>::begin( size_t i )
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
-   return v_ + i*nn_;
+   return Iterator( v_ + i*nn_ );
 }
 //*************************************************************************************************
 
@@ -772,7 +771,7 @@ inline typename DynamicMatrix<Type,SO>::ConstIterator
    DynamicMatrix<Type,SO>::begin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
-   return v_ + i*nn_;
+   return ConstIterator( v_ + i*nn_ );
 }
 //*************************************************************************************************
 
@@ -794,7 +793,7 @@ inline typename DynamicMatrix<Type,SO>::ConstIterator
    DynamicMatrix<Type,SO>::cbegin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
-   return v_ + i*nn_;
+   return ConstIterator( v_ + i*nn_ );
 }
 //*************************************************************************************************
 
@@ -816,7 +815,7 @@ inline typename DynamicMatrix<Type,SO>::Iterator
    DynamicMatrix<Type,SO>::end( size_t i )
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
-   return v_ + i*nn_ + n_;
+   return Iterator( v_ + i*nn_ + n_ );
 }
 //*************************************************************************************************
 
@@ -838,7 +837,7 @@ inline typename DynamicMatrix<Type,SO>::ConstIterator
    DynamicMatrix<Type,SO>::end( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
-   return v_ + i*nn_ + n_;
+   return ConstIterator( v_ + i*nn_ + n_ );
 }
 //*************************************************************************************************
 
@@ -860,7 +859,7 @@ inline typename DynamicMatrix<Type,SO>::ConstIterator
    DynamicMatrix<Type,SO>::cend( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
-   return v_ + i*nn_ + n_;
+   return ConstIterator( v_ + i*nn_ + n_ );
 }
 //*************************************************************************************************
 
@@ -2289,8 +2288,8 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    typedef const This&                CompositeType;   //!< Data type for composite expression templates.
    typedef Type&                      Reference;       //!< Reference to a non-constant matrix value.
    typedef const Type&                ConstReference;  //!< Reference to a constant matrix value.
-   typedef Type*                      Iterator;        //!< Iterator over non-constant elements.
-   typedef const Type*                ConstIterator;   //!< Iterator over constant elements.
+   typedef DenseIterator<Type>        Iterator;        //!< Iterator over non-constant elements.
+   typedef DenseIterator<const Type>  ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2851,7 +2850,7 @@ inline typename DynamicMatrix<Type,true>::Iterator
    DynamicMatrix<Type,true>::begin( size_t j )
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
-   return v_ + j*mm_;
+   return Iterator( v_ + j*mm_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2869,7 +2868,7 @@ inline typename DynamicMatrix<Type,true>::ConstIterator
    DynamicMatrix<Type,true>::begin( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
-   return v_ + j*mm_;
+   return ConstIterator( v_ + j*mm_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2887,7 +2886,7 @@ inline typename DynamicMatrix<Type,true>::ConstIterator
    DynamicMatrix<Type,true>::cbegin( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
-   return v_ + j*mm_;
+   return ConstIterator( v_ + j*mm_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2905,7 +2904,7 @@ inline typename DynamicMatrix<Type,true>::Iterator
    DynamicMatrix<Type,true>::end( size_t j )
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
-   return v_ + j*mm_ + m_;
+   return Iterator( v_ + j*mm_ + m_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2923,7 +2922,7 @@ inline typename DynamicMatrix<Type,true>::ConstIterator
    DynamicMatrix<Type,true>::end( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
-   return v_ + j*mm_ + m_;
+   return ConstIterator( v_ + j*mm_ + m_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2941,7 +2940,7 @@ inline typename DynamicMatrix<Type,true>::ConstIterator
    DynamicMatrix<Type,true>::cend( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
-   return v_ + j*mm_ + m_;
+   return ConstIterator( v_ + j*mm_ + m_ );
 }
 /*! \endcond */
 //*************************************************************************************************
