@@ -42,9 +42,9 @@
 
 #include <algorithm>
 #include <stdexcept>
+#include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/Forward.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
@@ -70,11 +70,9 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Memory.h>
-#include <blaze/util/mpl/If.h>
 #include <blaze/util/Null.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
@@ -163,17 +161,17 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DynamicVector<Type,TF>   This;            //!< Type of this DynamicVector instance.
-   typedef This                     ResultType;      //!< Result type for expression template evaluations.
-   typedef DynamicVector<Type,!TF>  TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef Type                     ElementType;     //!< Type of the vector elements.
-   typedef typename IT::Type        IntrinsicType;   //!< Intrinsic type of the vector elements.
-   typedef const Type&              ReturnType;      //!< Return type for expression template evaluations
-   typedef const DynamicVector&     CompositeType;   //!< Data type for composite expression templates.
-   typedef Type&                    Reference;       //!< Reference to a non-constant vector value.
-   typedef const Type&              ConstReference;  //!< Reference to a constant vector value.
-   typedef Type*                    Iterator;        //!< Iterator over non-constant elements.
-   typedef const Type*              ConstIterator;   //!< Iterator over constant elements.
+   typedef DynamicVector<Type,TF>     This;            //!< Type of this DynamicVector instance.
+   typedef This                       ResultType;      //!< Result type for expression template evaluations.
+   typedef DynamicVector<Type,!TF>    TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef Type                       ElementType;     //!< Type of the vector elements.
+   typedef typename IT::Type          IntrinsicType;   //!< Intrinsic type of the vector elements.
+   typedef const Type&                ReturnType;      //!< Return type for expression template evaluations
+   typedef const DynamicVector&       CompositeType;   //!< Data type for composite expression templates.
+   typedef Type&                      Reference;       //!< Reference to a non-constant vector value.
+   typedef const Type&                ConstReference;  //!< Reference to a constant vector value.
+   typedef DenseIterator<Type>        Iterator;        //!< Iterator over non-constant elements.
+   typedef DenseIterator<const Type>  ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -656,7 +654,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline typename DynamicVector<Type,TF>::Iterator DynamicVector<Type,TF>::begin()
 {
-   return v_;
+   return Iterator( v_ );
 }
 //*************************************************************************************************
 
@@ -670,7 +668,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::begin() const
 {
-   return v_;
+   return ConstIterator( v_ );
 }
 //*************************************************************************************************
 
@@ -684,7 +682,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::cbegin() const
 {
-   return v_;
+   return ConstIterator( v_ );
 }
 //*************************************************************************************************
 
@@ -698,7 +696,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline typename DynamicVector<Type,TF>::Iterator DynamicVector<Type,TF>::end()
 {
-   return v_ + size_;
+   return Iterator( v_ + size_ );
 }
 //*************************************************************************************************
 
@@ -712,7 +710,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::end() const
 {
-   return v_ + size_;
+   return ConstIterator( v_ + size_ );
 }
 //*************************************************************************************************
 
@@ -726,7 +724,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::cend() const
 {
-   return v_ + size_;
+   return ConstIterator( v_ + size_ );
 }
 //*************************************************************************************************
 
