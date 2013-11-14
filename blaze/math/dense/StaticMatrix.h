@@ -43,6 +43,7 @@
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>
+#include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Intrinsics.h>
@@ -73,11 +74,9 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/mpl/If.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
@@ -202,8 +201,8 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    typedef const This&                 CompositeType;   //!< Data type for composite expression templates.
    typedef Type&                       Reference;       //!< Reference to a non-constant matrix value.
    typedef const Type&                 ConstReference;  //!< Reference to a constant matrix value.
-   typedef Type*                       Iterator;        //!< Iterator over non-constant elements.
-   typedef const Type*                 ConstIterator;   //!< Iterator over constant elements.
+   typedef DenseIterator<Type>         Iterator;        //!< Iterator over non-constant elements.
+   typedef DenseIterator<const Type>   ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -1275,7 +1274,7 @@ inline typename StaticMatrix<Type,M,N,SO>::ConstReference
 // \return Pointer to the internal element storage.
 //
 // This function returns a pointer to the internal storage of the static matrix. Note that you
-// can NOT assume that all matrix elements lie adjacent to each other! The dynamic matrix may
+// can NOT assume that all matrix elements lie adjacent to each other! The static matrix may
 // use techniques such as padding to improve the alignment of the data.
 */
 template< typename Type  // Data type of the matrix
@@ -1295,7 +1294,7 @@ inline Type* StaticMatrix<Type,M,N,SO>::data()
 // \return Pointer to the internal element storage.
 //
 // This function returns a pointer to the internal storage of the static matrix. Note that you
-// can NOT assume that all matrix elements lie adjacent to each other! The dynamic matrix may
+// can NOT assume that all matrix elements lie adjacent to each other! The static matrix may
 // use techniques such as padding to improve the alignment of the data.
 */
 template< typename Type  // Data type of the matrix
@@ -1368,7 +1367,7 @@ inline typename StaticMatrix<Type,M,N,SO>::Iterator
    StaticMatrix<Type,M,N,SO>::begin( size_t i )
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
-   return v_ + i*NN;
+   return Iterator( v_ + i*NN );
 }
 //*************************************************************************************************
 
@@ -1392,7 +1391,7 @@ inline typename StaticMatrix<Type,M,N,SO>::ConstIterator
    StaticMatrix<Type,M,N,SO>::begin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
-   return v_ + i*NN;
+   return ConstIterator( v_ + i*NN );
 }
 //*************************************************************************************************
 
@@ -1416,7 +1415,7 @@ inline typename StaticMatrix<Type,M,N,SO>::ConstIterator
    StaticMatrix<Type,M,N,SO>::cbegin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
-   return v_ + i*NN;
+   return ConstIterator( v_ + i*NN );
 }
 //*************************************************************************************************
 
@@ -1440,7 +1439,7 @@ inline typename StaticMatrix<Type,M,N,SO>::Iterator
    StaticMatrix<Type,M,N,SO>::end( size_t i )
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
-   return v_ + i*NN + N;
+   return Iterator( v_ + i*NN + N );
 }
 //*************************************************************************************************
 
@@ -1464,7 +1463,7 @@ inline typename StaticMatrix<Type,M,N,SO>::ConstIterator
    StaticMatrix<Type,M,N,SO>::end( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
-   return v_ + i*NN + N;
+   return ConstIterator( v_ + i*NN + N );
 }
 //*************************************************************************************************
 
@@ -1488,7 +1487,7 @@ inline typename StaticMatrix<Type,M,N,SO>::ConstIterator
    StaticMatrix<Type,M,N,SO>::cend( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
-   return v_ + i*NN + N;
+   return ConstIterator( v_ + i*NN + N );
 }
 //*************************************************************************************************
 
@@ -2669,8 +2668,8 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    typedef const This&                   CompositeType;   //!< Data type for composite expression templates.
    typedef Type&                         Reference;       //!< Reference to a non-constant matrix value.
    typedef const Type&                   ConstReference;  //!< Reference to a constant matrix value.
-   typedef Type*                         Iterator;        //!< Iterator over non-constant elements.
-   typedef const Type*                   ConstIterator;   //!< Iterator over constant elements.
+   typedef DenseIterator<Type>           Iterator;        //!< Iterator over non-constant elements.
+   typedef DenseIterator<const Type>     ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -3746,7 +3745,7 @@ inline typename StaticMatrix<Type,M,N,true>::ConstReference
 // \return Pointer to the internal element storage.
 //
 // This function returns a pointer to the internal storage of the static matrix. Note that you
-// can NOT assume that all matrix elements lie adjacent to each other! The dynamic matrix may
+// can NOT assume that all matrix elements lie adjacent to each other! The static matrix may
 // use techniques such as padding to improve the alignment of the data.
 */
 template< typename Type  // Data type of the matrix
@@ -3767,7 +3766,7 @@ inline Type* StaticMatrix<Type,M,N,true>::data()
 // \return Pointer to the internal element storage.
 //
 // This function returns a pointer to the internal storage of the static matrix. Note that you
-// can NOT assume that all matrix elements lie adjacent to each other! The dynamic matrix may
+// can NOT assume that all matrix elements lie adjacent to each other! The static matrix may
 // use techniques such as padding to improve the alignment of the data.
 */
 template< typename Type  // Data type of the matrix
@@ -3837,7 +3836,7 @@ inline typename StaticMatrix<Type,M,N,true>::Iterator
    StaticMatrix<Type,M,N,true>::begin( size_t j )
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
-   return v_ + j*MM;
+   return Iterator( v_ + j*MM );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3857,7 +3856,7 @@ inline typename StaticMatrix<Type,M,N,true>::ConstIterator
    StaticMatrix<Type,M,N,true>::begin( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
-   return v_ + j*MM;
+   return ConstIterator( v_ + j*MM );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3877,7 +3876,7 @@ inline typename StaticMatrix<Type,M,N,true>::ConstIterator
    StaticMatrix<Type,M,N,true>::cbegin( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
-   return v_ + j*MM;
+   return ConstIterator( v_ + j*MM );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3897,7 +3896,7 @@ inline typename StaticMatrix<Type,M,N,true>::Iterator
    StaticMatrix<Type,M,N,true>::end( size_t j )
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
-   return v_ + j*MM + M;
+   return Iterator( v_ + j*MM + M );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3917,7 +3916,7 @@ inline typename StaticMatrix<Type,M,N,true>::ConstIterator
    StaticMatrix<Type,M,N,true>::end( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
-   return v_ + j*MM + M;
+   return ConstIterator( v_ + j*MM + M );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3937,7 +3936,7 @@ inline typename StaticMatrix<Type,M,N,true>::ConstIterator
    StaticMatrix<Type,M,N,true>::cend( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
-   return v_ + j*MM + M;
+   return ConstIterator( v_ + j*MM + M );
 }
 /*! \endcond */
 //*************************************************************************************************
