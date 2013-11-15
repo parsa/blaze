@@ -47,4 +47,9 @@ $PATH_DVECSVECCROSS/VDaVCb; if [ $? != 0 ]; then exit 1; fi
 $PATH_DVECSVECCROSS/VDbVCa; if [ $? != 0 ]; then exit 1; fi
 $PATH_DVECSVECCROSS/VDbVCb; if [ $? != 0 ]; then exit 1; fi
 
+$PATH_DVECSVECCROSS/VHaVCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECSVECCROSS/VHaVCb; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECSVECCROSS/VHbVCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECSVECCROSS/VHbVCb; if [ $? != 0 ]; then exit 1; fi
+
 $PATH_DVECSVECCROSS/AliasingTest; if [ $? != 0 ]; then exit 1; fi
