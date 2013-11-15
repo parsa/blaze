@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/dvectdvecmult/VDaVDa.cpp
-//  \brief Source file for the VDaVDa dense vector/dense vector outer product math test
+//  \file src/mathtest/dvecdvecmult/VHbVHa.cpp
+//  \brief Source file for the VHbVHa dense vector/dense vector outer product math test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -39,7 +39,7 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <blaze/math/DynamicVector.h>
+#include <blaze/math/HybridVector.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/dvectdvecmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
@@ -54,34 +54,37 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running 'VDaVDa'..." << std::endl;
+   std::cout << "   Running 'VHbVHa'..." << std::endl;
 
    using blazetest::mathtest::TypeA;
+   using blazetest::mathtest::TypeB;
 
    try
    {
       // Vector type definitions
-      typedef blaze::DynamicVector<TypeA>  VDa;
+      typedef blaze::HybridVector<TypeB,128UL>  VHb;
+      typedef blaze::HybridVector<TypeA,128UL>  VHa;
 
       // Creator type definitions
-      typedef blazetest::Creator<VDa>  CVDa;
+      typedef blazetest::Creator<VHb>  CVHb;
+      typedef blazetest::Creator<VHa>  CVHa;
 
       // Running tests with small vectors
       for( size_t i=0UL; i<=6UL; ++i ) {
          for( size_t j=0UL; j<=6UL; ++j ) {
-            RUN_DVECTDVECMULT_OPERATION_TEST( CVDa( i ), CVDa( j ) );
+            RUN_DVECTDVECMULT_OPERATION_TEST( CVHb( i ), CVHa( j ) );
          }
       }
 
       // Running tests with large vectors
-      RUN_DVECTDVECMULT_OPERATION_TEST( CVDa(  67UL ), CVDa(  67UL ) );
-      RUN_DVECTDVECMULT_OPERATION_TEST( CVDa(  67UL ), CVDa( 127UL ) );
-      RUN_DVECTDVECMULT_OPERATION_TEST( CVDa( 127UL ), CVDa(  67UL ) );
-      RUN_DVECTDVECMULT_OPERATION_TEST( CVDa( 127UL ), CVDa( 127UL ) );
-      RUN_DVECTDVECMULT_OPERATION_TEST( CVDa(  64UL ), CVDa(  64UL ) );
-      RUN_DVECTDVECMULT_OPERATION_TEST( CVDa(  64UL ), CVDa( 128UL ) );
-      RUN_DVECTDVECMULT_OPERATION_TEST( CVDa( 128UL ), CVDa(  64UL ) );
-      RUN_DVECTDVECMULT_OPERATION_TEST( CVDa( 128UL ), CVDa( 128UL ) );
+      RUN_DVECTDVECMULT_OPERATION_TEST( CVHb(  67UL ), CVHa(  67UL ) );
+      RUN_DVECTDVECMULT_OPERATION_TEST( CVHb(  67UL ), CVHa( 127UL ) );
+      RUN_DVECTDVECMULT_OPERATION_TEST( CVHb( 127UL ), CVHa(  67UL ) );
+      RUN_DVECTDVECMULT_OPERATION_TEST( CVHb( 127UL ), CVHa( 127UL ) );
+      RUN_DVECTDVECMULT_OPERATION_TEST( CVHb(  64UL ), CVHa(  64UL ) );
+      RUN_DVECTDVECMULT_OPERATION_TEST( CVHb(  64UL ), CVHa( 128UL ) );
+      RUN_DVECTDVECMULT_OPERATION_TEST( CVHb( 128UL ), CVHa(  64UL ) );
+      RUN_DVECTDVECMULT_OPERATION_TEST( CVHb( 128UL ), CVHa( 128UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense vector/dense vector outer product:\n"
