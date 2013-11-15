@@ -58,6 +58,10 @@ V3aVDa: V3aVDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 V3aVDb: V3aVDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+V3aVHa: V3aVHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+V3aVHb: V3aVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 V3bV3a: V3bV3a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 V3bV3b: V3bV3b.o
@@ -65,6 +69,10 @@ V3bV3b: V3bV3b.o
 V3bVDa: V3bVDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 V3bVDb: V3bVDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+V3bVHa: V3bVHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+V3bVHb: V3bVHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 VDaV3a: VDaV3a.o
@@ -75,6 +83,10 @@ VDaVDa: VDaVDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDaVDb: VDaVDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDaVHa: VDaVHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDaVHb: VDaVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDbV3a: VDbV3a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDbV3b: VDbV3b.o
@@ -82,6 +94,35 @@ VDbV3b: VDbV3b.o
 VDbVDa: VDbVDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDbVDb: VDbVDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDbVHa: VDbVHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDbVHb: VDbVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+VHaV3a: VHaV3a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VHaV3b: VHaV3b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VHaVDa: VHaVDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VHaVDb: VHaVDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VHaVHa: VHaVHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VHaVHb: VHaVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VHbV3a: VHbV3a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VHbV3b: VHbV3b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VHbVDa: VHbVDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VHbVDb: VHbVDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VHbVHa: VHbVHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VHbVHb: VHbVHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 AliasingTest: AliasingTest.o

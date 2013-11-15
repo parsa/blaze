@@ -41,20 +41,42 @@ $PATH_DVECDVECCROSS/V3aV3a; if [ $? != 0 ]; then exit 1; fi
 $PATH_DVECDVECCROSS/V3aV3b; if [ $? != 0 ]; then exit 1; fi
 $PATH_DVECDVECCROSS/V3aVDa; if [ $? != 0 ]; then exit 1; fi
 $PATH_DVECDVECCROSS/V3aVDb; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECCROSS/V3aVHa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECCROSS/V3aVHb; if [ $? != 0 ]; then exit 1; fi
 
 $PATH_DVECDVECCROSS/V3bV3a; if [ $? != 0 ]; then exit 1; fi
 $PATH_DVECDVECCROSS/V3bV3b; if [ $? != 0 ]; then exit 1; fi
 $PATH_DVECDVECCROSS/V3bVDa; if [ $? != 0 ]; then exit 1; fi
 $PATH_DVECDVECCROSS/V3bVDb; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECCROSS/V3bVHa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECCROSS/V3bVHb; if [ $? != 0 ]; then exit 1; fi
 
 $PATH_DVECDVECCROSS/VDaV3a; if [ $? != 0 ]; then exit 1; fi
 $PATH_DVECDVECCROSS/VDaV3b; if [ $? != 0 ]; then exit 1; fi
 $PATH_DVECDVECCROSS/VDaVDa; if [ $? != 0 ]; then exit 1; fi
 $PATH_DVECDVECCROSS/VDaVDb; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECCROSS/VDaVHa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECCROSS/VDaVHb; if [ $? != 0 ]; then exit 1; fi
 
 $PATH_DVECDVECCROSS/VDbV3a; if [ $? != 0 ]; then exit 1; fi
 $PATH_DVECDVECCROSS/VDbV3b; if [ $? != 0 ]; then exit 1; fi
 $PATH_DVECDVECCROSS/VDbVDa; if [ $? != 0 ]; then exit 1; fi
 $PATH_DVECDVECCROSS/VDbVDb; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECCROSS/VDbVHa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECCROSS/VDbVHb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DVECDVECCROSS/VHaV3a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECCROSS/VHaV3b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECCROSS/VHaVDa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECCROSS/VHaVDb; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECCROSS/VHaVHa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECCROSS/VHaVHb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_DVECDVECCROSS/VHbV3a; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECCROSS/VHbV3b; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECCROSS/VHbVDa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECCROSS/VHbVDb; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECCROSS/VHbVHa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECDVECCROSS/VHbVHb; if [ $? != 0 ]; then exit 1; fi
 
 $PATH_DVECDVECCROSS/AliasingTest; if [ $? != 0 ]; then exit 1; fi
