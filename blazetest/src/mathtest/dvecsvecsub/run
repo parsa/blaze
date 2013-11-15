@@ -67,4 +67,9 @@ $PATH_DVECSVECSUB/VDaVCb; if [ $? != 0 ]; then exit 1; fi
 $PATH_DVECSVECSUB/VDbVCa; if [ $? != 0 ]; then exit 1; fi
 $PATH_DVECSVECSUB/VDbVCb; if [ $? != 0 ]; then exit 1; fi
 
+$PATH_DVECSVECSUB/VHaVCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECSVECSUB/VHaVCb; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECSVECSUB/VHbVCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_DVECSVECSUB/VHbVCb; if [ $? != 0 ]; then exit 1; fi
+
 $PATH_DVECSVECSUB/AliasingTest; if [ $? != 0 ]; then exit 1; fi
