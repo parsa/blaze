@@ -67,4 +67,9 @@ $PATH_TDVECSMATMULT/VDaMCb; if [ $? != 0 ]; then exit 1; fi
 $PATH_TDVECSMATMULT/VDbMCa; if [ $? != 0 ]; then exit 1; fi
 $PATH_TDVECSMATMULT/VDbMCb; if [ $? != 0 ]; then exit 1; fi
 
+$PATH_TDVECSMATMULT/VHaMCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSMATMULT/VHaMCb; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSMATMULT/VHbMCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSMATMULT/VHbMCb; if [ $? != 0 ]; then exit 1; fi
+
 $PATH_TDVECSMATMULT/AliasingTest; if [ $? != 0 ]; then exit 1; fi
