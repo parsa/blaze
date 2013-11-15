@@ -4768,6 +4768,18 @@ struct MultTrait< StaticVector<T1,N,true>, CompressedMatrix<T2,SO> >
    typedef DynamicVector< typename MultTrait<T1,T2>::Type, true >  Type;
 };
 
+template< typename T1, bool SO, typename T2, size_t N >
+struct MultTrait< CompressedMatrix<T1,SO>, HybridVector<T2,N,false> >
+{
+   typedef DynamicVector< typename MultTrait<T1,T2>::Type, false >  Type;
+};
+
+template< typename T1, size_t N, typename T2, bool SO >
+struct MultTrait< HybridVector<T1,N,true>, CompressedMatrix<T2,SO> >
+{
+   typedef DynamicVector< typename MultTrait<T1,T2>::Type, true >  Type;
+};
+
 template< typename T1, bool SO, typename T2 >
 struct MultTrait< CompressedMatrix<T1,SO>, DynamicVector<T2,false> >
 {

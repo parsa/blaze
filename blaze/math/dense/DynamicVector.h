@@ -2008,6 +2008,18 @@ struct AddTrait< StaticVector<T1,N,TF>, DynamicVector<T2,TF> >
    typedef StaticVector< typename AddTrait<T1,T2>::Type, N, TF >  Type;
 };
 
+template< typename T1, bool TF, typename T2, size_t N >
+struct AddTrait< DynamicVector<T1,TF>, HybridVector<T2,N,TF> >
+{
+   typedef HybridVector< typename AddTrait<T1,T2>::Type, N, TF >  Type;
+};
+
+template< typename T1, size_t N, bool TF, typename T2 >
+struct AddTrait< HybridVector<T1,N,TF>, DynamicVector<T2,TF> >
+{
+   typedef HybridVector< typename AddTrait<T1,T2>::Type, N, TF >  Type;
+};
+
 template< typename T1, bool TF, typename T2 >
 struct AddTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
 {
@@ -2037,6 +2049,18 @@ template< typename T1, size_t N, bool TF, typename T2 >
 struct SubTrait< StaticVector<T1,N,TF>, DynamicVector<T2,TF> >
 {
    typedef StaticVector< typename SubTrait<T1,T2>::Type, N, TF >  Type;
+};
+
+template< typename T1, bool TF, typename T2, size_t N >
+struct SubTrait< DynamicVector<T1,TF>, HybridVector<T2,N,TF> >
+{
+   typedef HybridVector< typename SubTrait<T1,T2>::Type, N, TF >  Type;
+};
+
+template< typename T1, size_t N, bool TF, typename T2 >
+struct SubTrait< HybridVector<T1,N,TF>, DynamicVector<T2,TF> >
+{
+   typedef HybridVector< typename SubTrait<T1,T2>::Type, N, TF >  Type;
 };
 
 template< typename T1, bool TF, typename T2 >
@@ -2108,6 +2132,42 @@ struct MultTrait< StaticVector<T1,N,true>, DynamicVector<T2,false> >
    typedef typename MultTrait<T1,T2>::Type  Type;
 };
 
+template< typename T1, bool TF, typename T2, size_t N >
+struct MultTrait< DynamicVector<T1,TF>, HybridVector<T2,N,TF> >
+{
+   typedef HybridVector< typename MultTrait<T1,T2>::Type, N, TF >  Type;
+};
+
+template< typename T1, typename T2, size_t N >
+struct MultTrait< DynamicVector<T1,false>, HybridVector<T2,N,true> >
+{
+   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+};
+
+template< typename T1, typename T2, size_t N >
+struct MultTrait< DynamicVector<T1,true>, HybridVector<T2,N,false> >
+{
+   typedef typename MultTrait<T1,T2>::Type  Type;
+};
+
+template< typename T1, size_t N, bool TF, typename T2 >
+struct MultTrait< HybridVector<T1,N,TF>, DynamicVector<T2,TF> >
+{
+   typedef HybridVector< typename MultTrait<T1,T2>::Type, N, TF >  Type;
+};
+
+template< typename T1, size_t N, typename T2 >
+struct MultTrait< HybridVector<T1,N,false>, DynamicVector<T2,true> >
+{
+   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+};
+
+template< typename T1, size_t N, typename T2 >
+struct MultTrait< HybridVector<T1,N,true>, DynamicVector<T2,false> >
+{
+   typedef typename MultTrait<T1,T2>::Type  Type;
+};
+
 template< typename T1, bool TF, typename T2 >
 struct MultTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
 {
@@ -2151,6 +2211,26 @@ struct CrossTrait< DynamicVector<T1,false>, StaticVector<T2,3UL,false> >
 
 template< typename T1, typename T2 >
 struct CrossTrait< StaticVector<T1,3UL,false>, DynamicVector<T2,false> >
+{
+ private:
+   typedef typename MultTrait<T1,T2>::Type  T;
+
+ public:
+   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
+};
+
+template< typename T1, typename T2, size_t N >
+struct CrossTrait< DynamicVector<T1,false>, HybridVector<T2,N,false> >
+{
+ private:
+   typedef typename MultTrait<T1,T2>::Type  T;
+
+ public:
+   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
+};
+
+template< typename T1, size_t N, typename T2 >
+struct CrossTrait< HybridVector<T1,N,false>, DynamicVector<T2,false> >
 {
  private:
    typedef typename MultTrait<T1,T2>::Type  T;

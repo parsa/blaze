@@ -5359,6 +5359,18 @@ struct MultTrait< StaticVector<T1,M,true>, StaticMatrix<T2,M,N,SO> >
    typedef StaticVector< typename MultTrait<T1,T2>::Type, N, true >  Type;
 };
 
+template< typename T1, size_t M, size_t N, bool SO, typename T2, size_t L >
+struct MultTrait< StaticMatrix<T1,M,N,SO>, HybridVector<T2,L,false> >
+{
+   typedef StaticVector< typename MultTrait<T1,T2>::Type, M, false >  Type;
+};
+
+template< typename T1, size_t L, typename T2, size_t M, size_t N, bool SO >
+struct MultTrait< HybridVector<T1,L,true>, StaticMatrix<T2,M,N,SO> >
+{
+   typedef StaticVector< typename MultTrait<T1,T2>::Type, N, true >  Type;
+};
+
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct MultTrait< StaticMatrix<T1,M,N,SO>, DynamicVector<T2,false> >
 {
