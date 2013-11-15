@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/svecdvecadd/VCaVDb.cpp
-//  \brief Source file for the VCaVDb sparse vector/dense vector addition math test
+//  \file src/mathtest/svecdvecadd/VCaVHa.cpp
+//  \brief Source file for the VCaVHa sparse vector/dense vector addition math test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -40,7 +40,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/CompressedVector.h>
-#include <blaze/math/DynamicVector.h>
+#include <blaze/math/HybridVector.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/svecdvecadd/OperationTest.h>
 #include <blazetest/system/MathTest.h>
@@ -55,31 +55,30 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running 'VCaVDb'..." << std::endl;
+   std::cout << "   Running 'VCaVHa'..." << std::endl;
 
    using blazetest::mathtest::TypeA;
-   using blazetest::mathtest::TypeB;
 
    try
    {
       // Vector type definitions
-      typedef blaze::CompressedVector<TypeA>  VCa;
-      typedef blaze::DynamicVector<TypeB>     VDb;
+      typedef blaze::CompressedVector<TypeA>    VCa;
+      typedef blaze::HybridVector<TypeA,128UL>  VHa;
 
       // Creator type definitions
       typedef blazetest::Creator<VCa>  CVCa;
-      typedef blazetest::Creator<VDb>  CVDb;
+      typedef blazetest::Creator<VHa>  CVHa;
 
       // Running tests with small vectors
       for( size_t i=0UL; i<=6UL; ++i ) {
          for( size_t j=0UL; j<=i; ++j ) {
-            RUN_SVECDVECADD_OPERATION_TEST( CVCa( i, j ), CVDb( i ) );
+            RUN_SVECDVECADD_OPERATION_TEST( CVCa( i, j ), CVHa( i ) );
          }
       }
 
       // Running tests with large vectors
-      RUN_SVECDVECADD_OPERATION_TEST( CVCa( 127UL, 13UL ), CVDb( 127UL ) );
-      RUN_SVECDVECADD_OPERATION_TEST( CVCa( 128UL, 16UL ), CVDb( 128UL ) );
+      RUN_SVECDVECADD_OPERATION_TEST( CVCa( 127UL, 13UL ), CVHa( 127UL ) );
+      RUN_SVECDVECADD_OPERATION_TEST( CVCa( 128UL, 16UL ), CVHa( 128UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during sparse vector/dense vector addition:\n"
