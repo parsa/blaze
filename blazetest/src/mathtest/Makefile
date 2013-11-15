@@ -34,7 +34,7 @@
 
 # Rules
 default: intrinsics \
-         staticvector dynamicvector compressedvector \
+         staticvector hybridvector dynamicvector compressedvector \
          staticmatrix dynamicmatrix compressedmatrix \
          densesubvector sparsesubvector \
          densesubmatrix sparsesubmatrix \
@@ -61,6 +61,11 @@ staticvector:
 	@echo
 	@echo "Building the StaticVector tests..."
 	@$(MAKE) --no-print-directory -C ./staticvector/
+
+hybridvector:
+	@echo
+	@echo "Building the HybridVector tests..."
+	@$(MAKE) --no-print-directory -C ./hybridvector/
 
 dynamicvector:
 	@echo
@@ -360,6 +365,7 @@ matrixserializer:
 clean:
 	@$(MAKE) --no-print-directory -C ./intrinsics clean
 	@$(MAKE) --no-print-directory -C ./staticvector clean
+	@$(MAKE) --no-print-directory -C ./hybridvector clean
 	@$(MAKE) --no-print-directory -C ./dynamicvector clean
 	@$(MAKE) --no-print-directory -C ./compressedvector clean
 	@$(MAKE) --no-print-directory -C ./staticmatrix clean
@@ -425,7 +431,7 @@ clean:
 # Setting the independent commands
 .PHONY: default clean \
         intrinsics \
-        staticvector dynamicvector compressedvector \
+        staticvector hybridvector dynamicvector compressedvector \
         staticmatrix dynamicmatrix compressedmatrix \
         densesubvector sparsesubvector \
         densesubmatrix sparsesubmatrix \
