@@ -41,10 +41,14 @@ $PATH_SVECDVECCROSS/VCaV3a; if [ $? != 0 ]; then exit 1; fi
 $PATH_SVECDVECCROSS/VCaV3b; if [ $? != 0 ]; then exit 1; fi
 $PATH_SVECDVECCROSS/VCaVDa; if [ $? != 0 ]; then exit 1; fi
 $PATH_SVECDVECCROSS/VCaVDb; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECCROSS/VCaVHa; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECCROSS/VCaVHb; if [ $? != 0 ]; then exit 1; fi
 
 $PATH_SVECDVECCROSS/VCbV3a; if [ $? != 0 ]; then exit 1; fi
 $PATH_SVECDVECCROSS/VCbV3b; if [ $? != 0 ]; then exit 1; fi
 $PATH_SVECDVECCROSS/VCbVDa; if [ $? != 0 ]; then exit 1; fi
 $PATH_SVECDVECCROSS/VCbVDb; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECCROSS/VCbVHa; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECCROSS/VCbVHb; if [ $? != 0 ]; then exit 1; fi
 
 $PATH_SVECDVECCROSS/AliasingTest; if [ $? != 0 ]; then exit 1; fi
