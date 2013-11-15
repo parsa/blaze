@@ -66,3 +66,8 @@ $PATH_TDVECSVECMULT/VDaVCa; if [ $? != 0 ]; then exit 1; fi
 $PATH_TDVECSVECMULT/VDaVCb; if [ $? != 0 ]; then exit 1; fi
 $PATH_TDVECSVECMULT/VDbVCa; if [ $? != 0 ]; then exit 1; fi
 $PATH_TDVECSVECMULT/VDbVCb; if [ $? != 0 ]; then exit 1; fi
+
+$PATH_TDVECSVECMULT/VHaVCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSVECMULT/VHaVCb; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSVECMULT/VHbVCa; if [ $? != 0 ]; then exit 1; fi
+$PATH_TDVECSVECMULT/VHbVCb; if [ $? != 0 ]; then exit 1; fi
