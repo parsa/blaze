@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/tdvecdvecmult/VDaVDa.cpp
-//  \brief Source file for the VDaVDa dense vector/dense vector inner product math test
+//  \file src/mathtest/tdvecdvecmult/VHbV6b.cpp
+//  \brief Source file for the VHbV6b dense vector/dense vector inner product math test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -39,7 +39,8 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <blaze/math/DynamicVector.h>
+#include <blaze/math/HybridVector.h>
+#include <blaze/math/StaticVector.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/tdvecdvecmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
@@ -54,26 +55,22 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running 'VDaVDa'..." << std::endl;
+   std::cout << "   Running 'VHbV6b'..." << std::endl;
 
-   using blazetest::mathtest::TypeA;
+   using blazetest::mathtest::TypeB;
 
    try
    {
       // Vector type definitions
-      typedef blaze::DynamicVector<TypeA>  VDa;
+      typedef blaze::HybridVector<TypeB,6UL>  VHb;
+      typedef blaze::StaticVector<TypeB,6UL>  V6b;
 
       // Creator type definitions
-      typedef blazetest::Creator<VDa>  CVDa;
+      typedef blazetest::Creator<VHb>  CVHb;
+      typedef blazetest::Creator<V6b>  CV6b;
 
-      // Running tests with small vectors
-      for( size_t i=0UL; i<=6UL; ++i ) {
-         RUN_TDVECDVECMULT_OPERATION_TEST( CVDa( i ), CVDa( i ) );
-      }
-
-      // Running tests with large vectors
-      RUN_TDVECDVECMULT_OPERATION_TEST( CVDa( 127UL ), CVDa( 127UL ) );
-      RUN_TDVECDVECMULT_OPERATION_TEST( CVDa( 128UL ), CVDa( 128UL ) );
+      // Running the tests
+      RUN_TDVECDVECMULT_OPERATION_TEST( CVHb( 6UL ), CV6b() );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense vector/dense vector inner product:\n"

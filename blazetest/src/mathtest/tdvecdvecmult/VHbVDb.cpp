@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/tdvecdvecmult/VDaVDa.cpp
-//  \brief Source file for the VDaVDa dense vector/dense vector inner product math test
+//  \file src/mathtest/tdvecdvecmult/VHbVDb.cpp
+//  \brief Source file for the VHbVDb dense vector/dense vector inner product math test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -54,26 +54,28 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running 'VDaVDa'..." << std::endl;
+   std::cout << "   Running 'VHbVDb'..." << std::endl;
 
-   using blazetest::mathtest::TypeA;
+   using blazetest::mathtest::TypeB;
 
    try
    {
       // Vector type definitions
-      typedef blaze::DynamicVector<TypeA>  VDa;
+      typedef blaze::HybridVector<TypeB,128UL>  VHb;
+      typedef blaze::DynamicVector<TypeB>       VDb;
 
       // Creator type definitions
-      typedef blazetest::Creator<VDa>  CVDa;
+      typedef blazetest::Creator<VHb>  CVHb;
+      typedef blazetest::Creator<VDb>  CVDb;
 
       // Running tests with small vectors
       for( size_t i=0UL; i<=6UL; ++i ) {
-         RUN_TDVECDVECMULT_OPERATION_TEST( CVDa( i ), CVDa( i ) );
+         RUN_TDVECDVECMULT_OPERATION_TEST( CVHb( i ), CVDb( i ) );
       }
 
       // Running tests with large vectors
-      RUN_TDVECDVECMULT_OPERATION_TEST( CVDa( 127UL ), CVDa( 127UL ) );
-      RUN_TDVECDVECMULT_OPERATION_TEST( CVDa( 128UL ), CVDa( 128UL ) );
+      RUN_TDVECDVECMULT_OPERATION_TEST( CVHb( 127UL ), CVDb( 127UL ) );
+      RUN_TDVECDVECMULT_OPERATION_TEST( CVHb( 128UL ), CVDb( 128UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense vector/dense vector inner product:\n"
