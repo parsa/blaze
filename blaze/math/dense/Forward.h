@@ -46,6 +46,7 @@ namespace blaze {
 
 template< typename, bool > class DynamicVector;
 template< typename, bool > class DynamicMatrix;
+template< typename, size_t, bool > class HybridVector;
 template< typename, size_t, size_t, bool > class StaticMatrix;
 template< typename, size_t, bool > class StaticVector;
 
