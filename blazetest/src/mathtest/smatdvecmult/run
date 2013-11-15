@@ -49,6 +49,8 @@ $PATH_SMATDVECMULT/MCaV6a; if [ $? != 0 ]; then exit 1; fi
 $PATH_SMATDVECMULT/MCaV6b; if [ $? != 0 ]; then exit 1; fi
 $PATH_SMATDVECMULT/MCaVDa; if [ $? != 0 ]; then exit 1; fi
 $PATH_SMATDVECMULT/MCaVDb; if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDVECMULT/MCaVHa; if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDVECMULT/MCaVHb; if [ $? != 0 ]; then exit 1; fi
 
 $PATH_SMATDVECMULT/MCbV2a; if [ $? != 0 ]; then exit 1; fi
 $PATH_SMATDVECMULT/MCbV2b; if [ $? != 0 ]; then exit 1; fi
@@ -62,5 +64,7 @@ $PATH_SMATDVECMULT/MCbV6a; if [ $? != 0 ]; then exit 1; fi
 $PATH_SMATDVECMULT/MCbV6b; if [ $? != 0 ]; then exit 1; fi
 $PATH_SMATDVECMULT/MCbVDa; if [ $? != 0 ]; then exit 1; fi
 $PATH_SMATDVECMULT/MCbVDb; if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDVECMULT/MCbVHa; if [ $? != 0 ]; then exit 1; fi
+$PATH_SMATDVECMULT/MCbVHb; if [ $? != 0 ]; then exit 1; fi
 
 $PATH_SMATDVECMULT/AliasingTest; if [ $? != 0 ]; then exit 1; fi
