@@ -49,6 +49,8 @@ $PATH_SVECDVECMULT/VCaV6a; if [ $? != 0 ]; then exit 1; fi
 $PATH_SVECDVECMULT/VCaV6b; if [ $? != 0 ]; then exit 1; fi
 $PATH_SVECDVECMULT/VCaVDa; if [ $? != 0 ]; then exit 1; fi
 $PATH_SVECDVECMULT/VCaVDb; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCaVHa; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCaVHb; if [ $? != 0 ]; then exit 1; fi
 
 $PATH_SVECDVECMULT/VCbV2a; if [ $? != 0 ]; then exit 1; fi
 $PATH_SVECDVECMULT/VCbV2b; if [ $? != 0 ]; then exit 1; fi
@@ -62,5 +64,7 @@ $PATH_SVECDVECMULT/VCbV6a; if [ $? != 0 ]; then exit 1; fi
 $PATH_SVECDVECMULT/VCbV6b; if [ $? != 0 ]; then exit 1; fi
 $PATH_SVECDVECMULT/VCbVDa; if [ $? != 0 ]; then exit 1; fi
 $PATH_SVECDVECMULT/VCbVDb; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCbVHa; if [ $? != 0 ]; then exit 1; fi
+$PATH_SVECDVECMULT/VCbVHb; if [ $? != 0 ]; then exit 1; fi
 
 $PATH_SVECDVECMULT/AliasingTest; if [ $? != 0 ]; then exit 1; fi
