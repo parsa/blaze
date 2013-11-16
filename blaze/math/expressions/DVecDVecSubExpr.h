@@ -151,6 +151,268 @@ class DVecDVecSubExpr : public DenseVector< DVecDVecSubExpr<VT1,VT2,TF>, TF >
    typedef typename SelectType< IsExpression<VT2>::value, const VT2, const VT2& >::Type  RightOperand;
    //**********************************************************************************************
 
+   //**ConstIterator class definition*************************************************************
+   /*!\brief Iterator over the elements of the dense vector.
+   */
+   class ConstIterator
+   {
+    public:
+      //**Type definitions*************************************************************************
+      typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
+      typedef ElementType                      ValueType;         //!< Type of the underlying elements.
+      typedef ElementType*                     PointerType;       //!< Pointer return type.
+      typedef ElementType&                     ReferenceType;     //!< Reference return type.
+      typedef ptrdiff_t                        DifferenceType;    //!< Difference between two iterators.
+
+      // STL iterator requirements
+      typedef IteratorCategory  iterator_category;  //!< The iterator category.
+      typedef ValueType         value_type;         //!< Type of the underlying elements.
+      typedef PointerType       pointer;            //!< Pointer return type.
+      typedef ReferenceType     reference;          //!< Reference return type.
+      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+
+      //! ConstIterator type of the left-hand side dense vector expression.
+      typedef typename VT1::ConstIterator  LeftIteratorType;
+
+      //! ConstIterator type of the right-hand side dense vector expression.
+      typedef typename VT2::ConstIterator  RightIteratorType;
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Constructor for the ConstIterator class.
+      //
+      // \param left Iterator to the initial left-hand side element.
+      // \param right Iterator to the initial right-hand side element.
+      */
+      explicit inline ConstIterator( LeftIteratorType left, RightIteratorType right )
+         : left_ ( left  )  // Iterator to the current left-hand side element
+         , right_( right )  // Iterator to the current right-hand side element
+      {}
+      //*******************************************************************************************
+
+      //**Addition assignment operator*************************************************************
+      /*!\brief Addition assignment operator.
+      //
+      // \param inc The increment of the iterator.
+      // \return The incremented iterator.
+      */
+      inline ConstIterator& operator+=( size_t inc ) {
+         left_  += inc;
+         right_ += inc;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Subtraction assignment operator**********************************************************
+      /*!\brief Subtraction assignment operator.
+      //
+      // \param dec The decrement of the iterator.
+      // \return The decremented iterator.
+      */
+      inline ConstIterator& operator-=( size_t dec ) {
+         left_  -= dec;
+         right_ -= dec;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Prefix increment operator****************************************************************
+      /*!\brief Pre-increment operator.
+      //
+      // \return Reference to the incremented iterator.
+      */
+      inline ConstIterator& operator++() {
+         ++left_;
+         ++right_;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Postfix increment operator***************************************************************
+      /*!\brief Post-increment operator.
+      //
+      // \return The previous position of the iterator.
+      */
+      inline const ConstIterator operator++( int ) {
+         return ConstIterator( left_--, right_-- );
+      }
+      //*******************************************************************************************
+
+      //**Prefix decrement operator****************************************************************
+      /*!\brief Pre-decrement operator.
+      //
+      // \return Reference to the decremented iterator.
+      */
+      inline ConstIterator& operator--() {
+         --left_;
+         --right_;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Postfix decrement operator***************************************************************
+      /*!\brief Post-decrement operator.
+      //
+      // \return The previous position of the iterator.
+      */
+      inline const ConstIterator operator--( int ) {
+         return ConstIterator( left_--, right_-- );
+      }
+      //*******************************************************************************************
+
+      //**Element access operator******************************************************************
+      /*!\brief Direct access to the element at the current iterator position.
+      //
+      // \return The resulting value.
+      */
+      inline ReturnType operator*() const {
+         return (*left_) - (*right_);
+      }
+      //*******************************************************************************************
+
+      //**Load function****************************************************************************
+      /*!\brief Access to the intrinsic elements of the vector.
+      //
+      // \return The resulting intrinsic value.
+      */
+      inline IntrinsicType load() const {
+         return left_.load() - right_.load();
+      }
+      //*******************************************************************************************
+
+      //**Equality operator************************************************************************
+      /*!\brief Equality comparison between two ConstIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators refer to the same element, \a false if not.
+      */
+      inline bool operator==( const ConstIterator& rhs ) const {
+         return left_ == rhs.left_;
+      }
+      //*******************************************************************************************
+
+      //**Inequality operator**********************************************************************
+      /*!\brief Inequality comparison between two ConstIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators don't refer to the same element, \a false if they do.
+      */
+      inline bool operator!=( const ConstIterator& rhs ) const {
+         return left_ != rhs.left_;
+      }
+      //*******************************************************************************************
+
+      //**Less-than operator***********************************************************************
+      /*!\brief Less-than comparison between two ConstIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller, \a false if not.
+      */
+      inline bool operator<( const ConstIterator& rhs ) const {
+         return left_ < rhs.left_;
+      }
+      //*******************************************************************************************
+
+      //**Greater-than operator********************************************************************
+      /*!\brief Greater-than comparison between two ConstIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater, \a false if not.
+      */
+      inline bool operator>( const ConstIterator& rhs ) const {
+         return left_ > rhs.left_;
+      }
+      //*******************************************************************************************
+
+      //**Less-or-equal-than operator**************************************************************
+      /*!\brief Less-than comparison between two ConstIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
+      */
+      inline bool operator<=( const ConstIterator& rhs ) const {
+         return left_ <= rhs.left_;
+      }
+      //*******************************************************************************************
+
+      //**Greater-or-equal-than operator***********************************************************
+      /*!\brief Greater-than comparison between two ConstIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
+      */
+      inline bool operator>=( const ConstIterator& rhs ) const {
+         return left_ >= rhs.left_;
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Calculating the number of elements between two iterators.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return The number of elements between the two iterators.
+      */
+      inline DifferenceType operator-( const ConstIterator& rhs ) const {
+         return left_ - rhs.left_;
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between a ConstIterator and an integral value.
+      //
+      // \param it The iterator to be incremented.
+      // \param inc The number of elements the iterator is incremented.
+      // \return The incremented iterator.
+      */
+      friend inline const ConstIterator operator+( const ConstIterator& it, size_t inc ) {
+         return ConstIterator( it.left_ + inc, it.right_ + inc );
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between an integral value and a ConstIterator.
+      //
+      // \param inc The number of elements the iterator is incremented.
+      // \param it The iterator to be incremented.
+      // \return The incremented iterator.
+      */
+      friend inline const ConstIterator operator+( size_t inc, const ConstIterator& it ) {
+         return ConstIterator( it.left_ + inc, it.right_ + inc );
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Subtraction between a ConstIterator and an integral value.
+      //
+      // \param it The iterator to be decremented.
+      // \param inc The number of elements the iterator is decremented.
+      // \return The decremented iterator.
+      */
+      friend inline const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
+         return ConstIterator( it.left_ - dec, it.right_ - dec );
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Subtraction between an integral value and a ConstIterator.
+      //
+      // \param inc The number of elements the iterator is decremented.
+      // \param it The iterator to be decremented.
+      // \return The decremented iterator.
+      */
+      friend inline const ConstIterator operator-( size_t dec, const ConstIterator& it ) {
+         return ConstIterator( it.left_ - dec, it.right_ - dec );
+      }
+      //*******************************************************************************************
+
+    private:
+      //**Member variables*************************************************************************
+      LeftIteratorType  left_;   //!< Iterator to the current left-hand side element.
+      RightIteratorType right_;  //!< Iterator to the current right-hand side element.
+      //*******************************************************************************************
+   };
+   //**********************************************************************************************
+
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = VT1::vectorizable && VT2::vectorizable &&
@@ -197,6 +459,26 @@ class DVecDVecSubExpr : public DenseVector< DVecDVecSubExpr<VT1,VT2,TF>, TF >
       const IntrinsicType xmm1( lhs_.load( index ) );
       const IntrinsicType xmm2( rhs_.load( index ) );
       return xmm1 - xmm2;
+   }
+   //**********************************************************************************************
+
+   //**Begin function******************************************************************************
+   /*!\brief Returns an iterator to the first non-zero element of the dense vector.
+   //
+   // \return Iterator to the first non-zero element of the dense vector.
+   */
+   inline ConstIterator begin() const {
+      return ConstIterator( lhs_.begin(), rhs_.begin() );
+   }
+   //**********************************************************************************************
+
+   //**End function********************************************************************************
+   /*!\brief Returns an iterator just past the last non-zero element of the dense vector.
+   //
+   // \return Iterator just past the last non-zero element of the dense vector.
+   */
+   inline ConstIterator end() const {
+      return ConstIterator( lhs_.end(), rhs_.end() );
    }
    //**********************************************************************************************
 
