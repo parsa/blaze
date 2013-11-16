@@ -1231,8 +1231,8 @@ inline void HybridVector<Type,N,TF>::swap( HybridVector& v ) /* throw() */
 {
    using std::swap;
 
-   const size_t size( max( size_, v.size_ ) );
-   for( size_t i=0UL; i<size; ++i )
+   const size_t maxsize( max( size_, v.size_ ) );
+   for( size_t i=0UL; i<maxsize; ++i )
       swap( v_[i], v.v_[i] );
    swap( size_, v.size_ );
 }
