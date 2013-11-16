@@ -351,10 +351,17 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
       //! The iterator category.
       typedef typename std::iterator_traits<IteratorType>::iterator_category  IteratorCategory;
 
-      typedef ElementType   ValueType;       //!< Type of the underlying elements.
-      typedef ElementType*  PointerType;     //!< Pointer return type.
-      typedef ElementType&  ReferenceType;   //!< Reference return type.
-      typedef ptrdiff_t     DifferenceType;  //!< Difference between two iterators.
+      //! Type of the underlying elements.
+      typedef typename std::iterator_traits<IteratorType>::value_type  ValueType;
+
+      //! Pointer return type.
+      typedef typename std::iterator_traits<IteratorType>::pointer  PointerType;
+
+      //! Reference return type.
+      typedef typename std::iterator_traits<IteratorType>::reference  ReferenceType;
+
+      //! Difference between two iterators.
+      typedef typename std::iterator_traits<IteratorType>::difference_type  DifferenceType;
 
       // STL iterator requirements
       typedef IteratorCategory  iterator_category;  //!< The iterator category.
@@ -982,7 +989,7 @@ template< typename MT  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,SO>::ConstIterator DenseSubmatrix<MT,SO>::begin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
-   return ConstIterator( matrix_.begin( row_ + i ) + column_ );
+   return ConstIterator( matrix_.cbegin( row_ + i ) + column_ );
 }
 //*************************************************************************************************
 
@@ -1045,7 +1052,7 @@ template< typename MT  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,SO>::ConstIterator DenseSubmatrix<MT,SO>::end( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
-   return ConstIterator( matrix_.begin( row_ + i ) + column_ + n_ );
+   return ConstIterator( matrix_.cbegin( row_ + i ) + column_ + n_ );
 }
 //*************************************************************************************************
 
@@ -2322,10 +2329,17 @@ class DenseSubmatrix<MT,true> : public DenseMatrix< DenseSubmatrix<MT,true>, tru
       //! The iterator category.
       typedef typename std::iterator_traits<IteratorType>::iterator_category  IteratorCategory;
 
-      typedef ElementType   ValueType;       //!< Type of the underlying elements.
-      typedef ElementType*  PointerType;     //!< Pointer return type.
-      typedef ElementType&  ReferenceType;   //!< Reference return type.
-      typedef ptrdiff_t     DifferenceType;  //!< Difference between two iterators.
+      //! Type of the underlying elements.
+      typedef typename std::iterator_traits<IteratorType>::value_type  ValueType;
+
+      //! Pointer return type.
+      typedef typename std::iterator_traits<IteratorType>::pointer  PointerType;
+
+      //! Reference return type.
+      typedef typename std::iterator_traits<IteratorType>::reference  ReferenceType;
+
+      //! Difference between two iterators.
+      typedef typename std::iterator_traits<IteratorType>::difference_type  DifferenceType;
 
       // STL iterator requirements
       typedef IteratorCategory  iterator_category;  //!< The iterator category.
@@ -2950,7 +2964,7 @@ template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,true>::ConstIterator DenseSubmatrix<MT,true>::begin( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
-   return ConstIterator( matrix_.begin( column_ + j ) + row_ );
+   return ConstIterator( matrix_.cbegin( column_ + j ) + row_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3001,7 +3015,7 @@ template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,true>::ConstIterator DenseSubmatrix<MT,true>::end( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
-   return ConstIterator( matrix_.begin( column_ + j ) + row_ + m_ );
+   return ConstIterator( matrix_.cbegin( column_ + j ) + row_ + m_ );
 }
 /*! \endcond */
 //*************************************************************************************************

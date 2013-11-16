@@ -353,10 +353,17 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
       //! The iterator category.
       typedef typename std::iterator_traits<IteratorType>::iterator_category  IteratorCategory;
 
-      typedef ElementType   ValueType;       //!< Type of the underlying elements.
-      typedef ElementType*  PointerType;     //!< Pointer return type.
-      typedef ElementType&  ReferenceType;   //!< Reference return type.
-      typedef ptrdiff_t     DifferenceType;  //!< Difference between two iterators.
+      //! Type of the underlying elements.
+      typedef typename std::iterator_traits<IteratorType>::value_type  ValueType;
+
+      //! Pointer return type.
+      typedef typename std::iterator_traits<IteratorType>::pointer  PointerType;
+
+      //! Reference return type.
+      typedef typename std::iterator_traits<IteratorType>::reference  ReferenceType;
+
+      //! Difference between two iterators.
+      typedef typename std::iterator_traits<IteratorType>::difference_type  DifferenceType;
 
       // STL iterator requirements
       typedef IteratorCategory  iterator_category;  //!< The iterator category.
@@ -968,7 +975,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline typename DenseSubvector<VT,TF>::ConstIterator DenseSubvector<VT,TF>::begin() const
 {
-   return ConstIterator( vector_.begin() + offset_ );
+   return ConstIterator( vector_.cbegin() + offset_ );
 }
 //*************************************************************************************************
 
@@ -1016,7 +1023,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline typename DenseSubvector<VT,TF>::ConstIterator DenseSubvector<VT,TF>::end() const
 {
-   return ConstIterator( vector_.begin() + offset_ + size_ );
+   return ConstIterator( vector_.cbegin() + offset_ + size_ );
 }
 //*************************************************************************************************
 
