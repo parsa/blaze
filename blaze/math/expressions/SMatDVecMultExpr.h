@@ -186,7 +186,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
          const ConstIterator end( A.end(index) );
          ConstIterator element( A.begin(index) );
 
-         // Early exit in case row i is empty
+         // Early exit in case row 'index' is empty
          if( element == end )
             return tmp;
 
