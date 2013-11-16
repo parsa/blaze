@@ -678,7 +678,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline typename DenseColumn<MT,SO>::ConstIterator DenseColumn<MT,SO>::begin() const
 {
-   return matrix_.begin( col_ );
+   return matrix_.cbegin( col_ );
 }
 //*************************************************************************************************
 
@@ -726,7 +726,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline typename DenseColumn<MT,SO>::ConstIterator DenseColumn<MT,SO>::end() const
 {
-   return matrix_.end( col_ );
+   return matrix_.cend( col_ );
 }
 //*************************************************************************************************
 
