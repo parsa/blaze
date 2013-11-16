@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <iterator>
 #include <stdexcept>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseVector.h>
@@ -339,12 +340,286 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
 
    //! Pointer to a constant subvector value.
    typedef typename SelectType< useConst, ConstPointer, ElementType* >::Type  Pointer;
+   //**********************************************************************************************
 
+   //**SubvectorIterator class definition**********************************************************
+   /*!\brief Iterator over the elements of the sparse subvector.
+   */
+   template< typename IteratorType >  // Type of the dense vector iterator
+   class SubvectorIterator
+   {
+    public:
+      //**Type definitions*************************************************************************
+      //! The iterator category.
+      typedef typename std::iterator_traits<IteratorType>::iterator_category  IteratorCategory;
+
+      typedef ElementType   ValueType;       //!< Type of the underlying elements.
+      typedef ElementType*  PointerType;     //!< Pointer return type.
+      typedef ElementType&  ReferenceType;   //!< Reference return type.
+      typedef ptrdiff_t     DifferenceType;  //!< Difference between two iterators.
+
+      // STL iterator requirements
+      typedef IteratorCategory  iterator_category;  //!< The iterator category.
+      typedef ValueType         value_type;         //!< Type of the underlying elements.
+      typedef PointerType       pointer;            //!< Pointer return type.
+      typedef ReferenceType     reference;          //!< Reference return type.
+      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Constructor for the SubvectorIterator class.
+      //
+      // \param iterator Iterator to the initial element.
+      */
+      explicit inline SubvectorIterator( IteratorType iterator )
+         : iterator_( iterator )  // Iterator to the current subvector element
+      {}
+      //*******************************************************************************************
+
+      //**Addition assignment operator*************************************************************
+      /*!\brief Addition assignment operator.
+      //
+      // \param inc The increment of the iterator.
+      // \return The incremented iterator.
+      */
+      inline SubvectorIterator& operator+=( size_t inc ) {
+         iterator_ += inc;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Subtraction assignment operator**********************************************************
+      /*!\brief Subtraction assignment operator.
+      //
+      // \param dec The decrement of the iterator.
+      // \return The decremented iterator.
+      */
+      inline SubvectorIterator& operator-=( size_t dec ) {
+         iterator_ -= dec;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Prefix increment operator****************************************************************
+      /*!\brief Pre-increment operator.
+      //
+      // \return Reference to the incremented iterator.
+      */
+      inline SubvectorIterator& operator++() {
+         ++iterator_;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Postfix increment operator***************************************************************
+      /*!\brief Post-increment operator.
+      //
+      // \return The previous position of the iterator.
+      */
+      inline const SubvectorIterator operator++( int ) {
+         return SubvectorIterator( iterator_++ );
+      }
+      //*******************************************************************************************
+
+      //**Prefix decrement operator****************************************************************
+      /*!\brief Pre-decrement operator.
+      //
+      // \return Reference to the decremented iterator.
+      */
+      inline SubvectorIterator& operator--() {
+         --iterator_;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Postfix decrement operator***************************************************************
+      /*!\brief Post-decrement operator.
+      //
+      // \return The previous position of the iterator.
+      */
+      inline const SubvectorIterator operator--( int ) {
+         return SubvectorIterator( iterator_-- );
+      }
+      //*******************************************************************************************
+
+      //**Element access operator******************************************************************
+      /*!\brief Direct access to the element at the current iterator position.
+      //
+      // \return The resulting value.
+      */
+      inline ReferenceType operator*() const {
+         return *iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Load function****************************************************************************
+      /*!\brief Aligned load of an intrinsic element of the dense subvector.
+      //
+      // \return The loaded intrinsic element.
+      //
+      // This function performs an aligned load of the current intrinsic element of the subvector
+      // iterator. This function must \b NOT be called explicitly! It is used internally for the
+      // performance optimized evaluation of expression templates. Calling this function explicitly
+      // might result in erroneous results and/or in compilation errors.
+      */
+      inline IntrinsicType load() const {
+         return iterator_.loadu();
+      }
+      //*******************************************************************************************
+
+      //**Loadu function***************************************************************************
+      /*!\brief Unaligned load of an intrinsic element of the dense subvector.
+      //
+      // \return The loaded intrinsic element.
+      //
+      // This function performs an unaligned load of the current intrinsic element of the subvector
+      // iterator. This function must \b NOT be called explicitly! It is used internally for the
+      // performance optimized evaluation of expression templates. Calling this function explicitly
+      // might result in erroneous results and/or in compilation errors.
+      */
+      inline IntrinsicType loadu() const {
+         return iterator_.loadu();
+      }
+      //*******************************************************************************************
+
+      //**Equality operator************************************************************************
+      /*!\brief Equality comparison between two SubvectorIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators refer to the same element, \a false if not.
+      */
+      inline bool operator==( const SubvectorIterator& rhs ) const {
+         return iterator_ == rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Inequality operator**********************************************************************
+      /*!\brief Inequality comparison between two SubvectorIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators don't refer to the same element, \a false if they do.
+      */
+      inline bool operator!=( const SubvectorIterator& rhs ) const {
+         return iterator_ != rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Less-than operator***********************************************************************
+      /*!\brief Less-than comparison between two SubvectorIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller, \a false if not.
+      */
+      inline bool operator<( const SubvectorIterator& rhs ) const {
+         return iterator_ < rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Greater-than operator********************************************************************
+      /*!\brief Greater-than comparison between two SubvectorIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater, \a false if not.
+      */
+      inline bool operator>( const SubvectorIterator& rhs ) const {
+         return iterator_ > rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Less-or-equal-than operator**************************************************************
+      /*!\brief Less-than comparison between two SubvectorIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
+      */
+      inline bool operator<=( const SubvectorIterator& rhs ) const {
+         return iterator_ <= rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Greater-or-equal-than operator***********************************************************
+      /*!\brief Greater-than comparison between two SubvectorIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
+      */
+      inline bool operator>=( const SubvectorIterator& rhs ) const {
+         return iterator_ >= rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Calculating the number of elements between two iterators.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return The number of elements between the two iterators.
+      */
+      inline DifferenceType operator-( const SubvectorIterator& rhs ) const {
+         return iterator_ - rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between a SubvectorIterator and an integral value.
+      //
+      // \param it The iterator to be incremented.
+      // \param inc The number of elements the iterator is incremented.
+      // \return The incremented iterator.
+      */
+      friend inline const SubvectorIterator operator+( const SubvectorIterator& it, size_t inc ) {
+         return SubvectorIterator( it.iterator_ + inc );
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between an integral value and a SubvectorIterator.
+      //
+      // \param inc The number of elements the iterator is incremented.
+      // \param it The iterator to be incremented.
+      // \return The incremented iterator.
+      */
+      friend inline const SubvectorIterator operator+( size_t inc, const SubvectorIterator& it ) {
+         return SubvectorIterator( it.iterator_ + inc );
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Subtraction between a SubvectorIterator and an integral value.
+      //
+      // \param it The iterator to be decremented.
+      // \param inc The number of elements the iterator is decremented.
+      // \return The decremented iterator.
+      */
+      friend inline const SubvectorIterator operator-( const SubvectorIterator& it, size_t dec ) {
+         return SubvectorIterator( it.iterator - dec );
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Subtraction between an integral value and a SubvectorIterator.
+      //
+      // \param inc The number of elements the iterator is decremented.
+      // \param it The iterator to be decremented.
+      // \return The decremented iterator.
+      */
+      friend inline const SubvectorIterator operator-( size_t dec, const SubvectorIterator& it ) {
+         return SubvectorIterator( it.iterator_ - dec );
+      }
+      //*******************************************************************************************
+
+    private:
+      //**Member variables*************************************************************************
+      IteratorType iterator_;  //!< Iterator to the current subvector element.
+      //*******************************************************************************************
+   };
+   //**********************************************************************************************
+
+   //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   typedef typename VT::ConstIterator  ConstIterator;
+   typedef SubvectorIterator<typename VT::ConstIterator>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename SelectType< useConst, ConstIterator, typename VT::Iterator >::Type  Iterator;
+   typedef typename SelectType< useConst, ConstIterator, SubvectorIterator<typename VT::Iterator> >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -677,7 +952,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline typename DenseSubvector<VT,TF>::Iterator DenseSubvector<VT,TF>::begin()
 {
-   return vector_.begin() + offset_;
+   return Iterator( vector_.begin() + offset_ );
 }
 //*************************************************************************************************
 
@@ -693,7 +968,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline typename DenseSubvector<VT,TF>::ConstIterator DenseSubvector<VT,TF>::begin() const
 {
-   return vector_.begin() + offset_;
+   return ConstIterator( vector_.begin() + offset_ );
 }
 //*************************************************************************************************
 
@@ -709,7 +984,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline typename DenseSubvector<VT,TF>::ConstIterator DenseSubvector<VT,TF>::cbegin() const
 {
-   return vector_.cbegin() + offset_;
+   return ConstIterator( vector_.cbegin() + offset_ );
 }
 //*************************************************************************************************
 
@@ -725,7 +1000,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline typename DenseSubvector<VT,TF>::Iterator DenseSubvector<VT,TF>::end()
 {
-   return vector_.begin() + offset_ + size_;
+   return Iterator( vector_.begin() + offset_ + size_ );
 }
 //*************************************************************************************************
 
@@ -741,7 +1016,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline typename DenseSubvector<VT,TF>::ConstIterator DenseSubvector<VT,TF>::end() const
 {
-   return vector_.begin() + offset_ + size_;
+   return ConstIterator( vector_.begin() + offset_ + size_ );
 }
 //*************************************************************************************************
 
@@ -757,7 +1032,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline typename DenseSubvector<VT,TF>::ConstIterator DenseSubvector<VT,TF>::cend() const
 {
-   return vector_.cbegin() + offset_ + size_;
+   return ConstIterator( vector_.cbegin() + offset_ + size_ );
 }
 //*************************************************************************************************
 
