@@ -1811,14 +1811,15 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
       BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jend, "Invalid end calculation" );
 
       for( size_t i=0UL; i<m_; ++i ) {
+         typename MT::ConstIterator it( (~rhs).begin(i) );
          for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
-            store( v_+i*nn_+j             , (~rhs).load(i,j             ) );
-            store( v_+i*nn_+j+IT::size    , (~rhs).load(i,j+IT::size    ) );
-            store( v_+i*nn_+j+IT::size*2UL, (~rhs).load(i,j+IT::size*2UL) );
-            store( v_+i*nn_+j+IT::size*3UL, (~rhs).load(i,j+IT::size*3UL) );
+            store( v_+i*nn_+j             , it.load() ); it += IT::size;
+            store( v_+i*nn_+j+IT::size    , it.load() ); it += IT::size;
+            store( v_+i*nn_+j+IT::size*2UL, it.load() ); it += IT::size;
+            store( v_+i*nn_+j+IT::size*3UL, it.load() ); it += IT::size;
          }
-         for( size_t j=jend; j<n_; j+=IT::size ) {
-            store( v_+i*nn_+j, (~rhs).load(i,j) );
+         for( size_t j=jend; j<n_; j+=IT::size, it+=IT::size ) {
+            store( v_+i*nn_+j, it.load() );
          }
       }
    }
@@ -1979,14 +1980,15 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
    BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jend, "Invalid end calculation" );
 
    for( size_t i=0UL; i<m_; ++i ) {
+      typename MT::ConstIterator it( (~rhs).begin(i) );
       for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
-         store( v_+i*nn_+j             , load( v_+i*nn_+j              ) + (~rhs).load(i,j             ) );
-         store( v_+i*nn_+j+IT::size    , load( v_+i*nn_+j+IT::size     ) + (~rhs).load(i,j+IT::size    ) );
-         store( v_+i*nn_+j+IT::size*2UL, load( v_+i*nn_+j+IT::size*2UL ) + (~rhs).load(i,j+IT::size*2UL) );
-         store( v_+i*nn_+j+IT::size*3UL, load( v_+i*nn_+j+IT::size*3UL ) + (~rhs).load(i,j+IT::size*3UL) );
+         store( v_+i*nn_+j             , load( v_+i*nn_+j              ) + it.load() ); it += IT::size;
+         store( v_+i*nn_+j+IT::size    , load( v_+i*nn_+j+IT::size     ) + it.load() ); it += IT::size;
+         store( v_+i*nn_+j+IT::size*2UL, load( v_+i*nn_+j+IT::size*2UL ) + it.load() ); it += IT::size;
+         store( v_+i*nn_+j+IT::size*3UL, load( v_+i*nn_+j+IT::size*3UL ) + it.load() ); it += IT::size;
       }
-      for( size_t j=jend; j<n_; j+=IT::size ) {
-         store( v_+i*nn_+j, load( v_+i*nn_+j ) + (~rhs).load(i,j) );
+      for( size_t j=jend; j<n_; j+=IT::size, it+=IT::size ) {
+         store( v_+i*nn_+j, load( v_+i*nn_+j ) + it.load() );
       }
    }
 }
@@ -2146,14 +2148,15 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
    BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jend, "Invalid end calculation" );
 
    for( size_t i=0UL; i<m_; ++i ) {
+      typename MT::ConstIterator it( (~rhs).begin(i) );
       for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
-         store( v_+i*nn_+j             , load( v_+i*nn_+j              ) - (~rhs).load(i,j             ) );
-         store( v_+i*nn_+j+IT::size    , load( v_+i*nn_+j+IT::size     ) - (~rhs).load(i,j+IT::size    ) );
-         store( v_+i*nn_+j+IT::size*2UL, load( v_+i*nn_+j+IT::size*2UL ) - (~rhs).load(i,j+IT::size*2UL) );
-         store( v_+i*nn_+j+IT::size*3UL, load( v_+i*nn_+j+IT::size*3UL ) - (~rhs).load(i,j+IT::size*3UL) );
+         store( v_+i*nn_+j             , load( v_+i*nn_+j              ) - it.load() ); it += IT::size;
+         store( v_+i*nn_+j+IT::size    , load( v_+i*nn_+j+IT::size     ) - it.load() ); it += IT::size;
+         store( v_+i*nn_+j+IT::size*2UL, load( v_+i*nn_+j+IT::size*2UL ) - it.load() ); it += IT::size;
+         store( v_+i*nn_+j+IT::size*3UL, load( v_+i*nn_+j+IT::size*3UL ) - it.load() ); it += IT::size;
       }
-      for( size_t j=jend; j<n_; j+=IT::size ) {
-         store( v_+i*nn_+j, load( v_+i*nn_+j ) - (~rhs).load(i,j) );
+      for( size_t j=jend; j<n_; j+=IT::size, it+=IT::size ) {
+         store( v_+i*nn_+j, load( v_+i*nn_+j ) - it.load() );
       }
    }
 }
@@ -3914,14 +3917,15 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
       BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
 
       for( size_t j=0UL; j<n_; ++j ) {
+         typename MT::ConstIterator it( (~rhs).begin(j) );
          for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-            store( v_+i+j*mm_             , (~rhs).load(i             ,j) );
-            store( v_+i+j*mm_+IT::size    , (~rhs).load(i+IT::size    ,j) );
-            store( v_+i+j*mm_+IT::size*2UL, (~rhs).load(i+IT::size*2UL,j) );
-            store( v_+i+j*mm_+IT::size*3UL, (~rhs).load(i+IT::size*3UL,j) );
+            store( v_+i+j*mm_             , it.load() ); it += IT::size;
+            store( v_+i+j*mm_+IT::size    , it.load() ); it += IT::size;
+            store( v_+i+j*mm_+IT::size*2UL, it.load() ); it += IT::size;
+            store( v_+i+j*mm_+IT::size*3UL, it.load() ); it += IT::size;
          }
-         for( size_t i=iend; i<m_; i+=IT::size ) {
-            store( v_+i+j*mm_, (~rhs).load(i,j) );
+         for( size_t i=iend; i<m_; i+=IT::size, it+=IT::size ) {
+            store( v_+i+j*mm_, it.load() );
          }
       }
    }
@@ -4081,14 +4085,15 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
    BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
 
    for( size_t j=0UL; j<n_; ++j ) {
+      typename MT::ConstIterator it( (~rhs).begin(j) );
       for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-         store( v_+i+j*mm_             , load( v_+i+j*mm_              ) + (~rhs).load(i             ,j) );
-         store( v_+i+j*mm_+IT::size    , load( v_+i+j*mm_+IT::size     ) + (~rhs).load(i+IT::size    ,j) );
-         store( v_+i+j*mm_+IT::size*2UL, load( v_+i+j*mm_+IT::size*2UL ) + (~rhs).load(i+IT::size*2UL,j) );
-         store( v_+i+j*mm_+IT::size*3UL, load( v_+i+j*mm_+IT::size*3UL ) + (~rhs).load(i+IT::size*3UL,j) );
+         store( v_+i+j*mm_             , load( v_+i+j*mm_              ) + it.load() ); it += IT::size;
+         store( v_+i+j*mm_+IT::size    , load( v_+i+j*mm_+IT::size     ) + it.load() ); it += IT::size;
+         store( v_+i+j*mm_+IT::size*2UL, load( v_+i+j*mm_+IT::size*2UL ) + it.load() ); it += IT::size;
+         store( v_+i+j*mm_+IT::size*3UL, load( v_+i+j*mm_+IT::size*3UL ) + it.load() ); it += IT::size;
       }
-      for( size_t i=iend; i<m_; i+=IT::size ) {
-         store( v_+i+j*mm_, load( v_+i+j*mm_ ) + (~rhs).load(i,j) );
+      for( size_t i=iend; i<m_; i+=IT::size, it+=IT::size ) {
+         store( v_+i+j*mm_, load( v_+i+j*mm_ ) + it.load() );
       }
    }
 }
@@ -4248,14 +4253,15 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
    BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
 
    for( size_t j=0UL; j<n_; ++j ) {
+      typename MT::ConstIterator it( (~rhs).begin(j) );
       for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-         store( v_+i+j*mm_             , load( v_+i+j*mm_              ) - (~rhs).load(i             ,j) );
-         store( v_+i+j*mm_+IT::size    , load( v_+i+j*mm_+IT::size     ) - (~rhs).load(i+IT::size    ,j) );
-         store( v_+i+j*mm_+IT::size*2UL, load( v_+i+j*mm_+IT::size*2UL ) - (~rhs).load(i+IT::size*2UL,j) );
-         store( v_+i+j*mm_+IT::size*3UL, load( v_+i+j*mm_+IT::size*3UL ) - (~rhs).load(i+IT::size*3UL,j) );
+         store( v_+i+j*mm_             , load( v_+i+j*mm_              ) - it.load() ); it += IT::size;
+         store( v_+i+j*mm_+IT::size    , load( v_+i+j*mm_+IT::size     ) - it.load() ); it += IT::size;
+         store( v_+i+j*mm_+IT::size*2UL, load( v_+i+j*mm_+IT::size*2UL ) - it.load() ); it += IT::size;
+         store( v_+i+j*mm_+IT::size*3UL, load( v_+i+j*mm_+IT::size*3UL ) - it.load() ); it += IT::size;
       }
-      for( size_t i=iend; i<m_; i+=IT::size ) {
-         store( v_+i+j*mm_, load( v_+i+j*mm_ ) - (~rhs).load(i,j) );
+      for( size_t i=iend; i<m_; i+=IT::size, it+=IT::size ) {
+         store( v_+i+j*mm_, load( v_+i+j*mm_ ) - it.load() );
       }
    }
 }
