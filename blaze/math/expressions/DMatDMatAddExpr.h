@@ -236,7 +236,7 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
       // \return The previous position of the iterator.
       */
       inline const ConstIterator operator++( int ) {
-         return ConstIterator( left_--, right_-- );
+         return ConstIterator( left_++, right_++ );
       }
       //*******************************************************************************************
 

@@ -267,7 +267,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       // \return The previous position of the iterator.
       */
       inline const ConstIterator operator++( int ) {
-         return ConstIterator( left_, right_-- );
+         return ConstIterator( left_, right_++ );
       }
       //*******************************************************************************************
 

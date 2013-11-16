@@ -202,7 +202,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
       // \return The previous position of the iterator.
       */
       inline const ConstIterator operator++( int ) {
-         return ConstIterator( iterator_-- );
+         return ConstIterator( iterator_++ );
       }
       //*******************************************************************************************
 

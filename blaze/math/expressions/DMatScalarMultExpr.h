@@ -238,7 +238,7 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
       // \return The previous position of the iterator.
       */
       inline const ConstIterator operator++( int ) {
-         return ConstIterator( iterator_-- );
+         return ConstIterator( iterator_++ );
       }
       //*******************************************************************************************
 
