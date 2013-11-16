@@ -1515,14 +1515,15 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
       const size_t iend( size_ & size_t(-IT::size*4) );
       BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
 
+      typename VT::ConstIterator it( (~rhs).begin() );
       for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-         store( v_+i             , (~rhs).load(i             ) );
-         store( v_+i+IT::size    , (~rhs).load(i+IT::size    ) );
-         store( v_+i+IT::size*2UL, (~rhs).load(i+IT::size*2UL) );
-         store( v_+i+IT::size*3UL, (~rhs).load(i+IT::size*3UL) );
+         store( v_+i             , it.load() ); it += IT::size;
+         store( v_+i+IT::size    , it.load() ); it += IT::size;
+         store( v_+i+IT::size*2UL, it.load() ); it += IT::size;
+         store( v_+i+IT::size*3UL, it.load() ); it += IT::size;
       }
-      for( size_t i=iend; i<size_; i+=IT::size ) {
-         store( v_+i, (~rhs).load(i) );
+      for( size_t i=iend; i<size_; i+=IT::size, it+=IT::size ) {
+         store( v_+i, it.load() );
       }
    }
 }
@@ -1610,14 +1611,15 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
    const size_t iend( size_ & size_t(-IT::size*4) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
 
+   typename VT::ConstIterator it( (~rhs).begin() );
    for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-      store( v_+i             , load(v_+i             ) + (~rhs).load(i             ) );
-      store( v_+i+IT::size    , load(v_+i+IT::size    ) + (~rhs).load(i+IT::size    ) );
-      store( v_+i+IT::size*2UL, load(v_+i+IT::size*2UL) + (~rhs).load(i+IT::size*2UL) );
-      store( v_+i+IT::size*3UL, load(v_+i+IT::size*3UL) + (~rhs).load(i+IT::size*3UL) );
+      store( v_+i             , load(v_+i             ) + it.load() ); it += IT::size;
+      store( v_+i+IT::size    , load(v_+i+IT::size    ) + it.load() ); it += IT::size;
+      store( v_+i+IT::size*2UL, load(v_+i+IT::size*2UL) + it.load() ); it += IT::size;
+      store( v_+i+IT::size*3UL, load(v_+i+IT::size*3UL) + it.load() ); it += IT::size;
    }
-   for( size_t i=iend; i<size_; i+=IT::size ) {
-      store( v_+i, load(v_+i) + (~rhs).load(i) );
+   for( size_t i=iend; i<size_; i+=IT::size, it+=IT::size ) {
+      store( v_+i, load(v_+i) + it.load() );
    }
 }
 //*************************************************************************************************
@@ -1704,14 +1706,15 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
    const size_t iend( size_ & size_t(-IT::size*4) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
 
+   typename VT::ConstIterator it( (~rhs).begin() );
    for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-      store( v_+i             , load(v_+i             ) - (~rhs).load(i             ) );
-      store( v_+i+IT::size    , load(v_+i+IT::size    ) - (~rhs).load(i+IT::size    ) );
-      store( v_+i+IT::size*2UL, load(v_+i+IT::size*2UL) - (~rhs).load(i+IT::size*2UL) );
-      store( v_+i+IT::size*3UL, load(v_+i+IT::size*3UL) - (~rhs).load(i+IT::size*3UL) );
+      store( v_+i             , load(v_+i             ) - it.load() ); it += IT::size;
+      store( v_+i+IT::size    , load(v_+i+IT::size    ) - it.load() ); it += IT::size;
+      store( v_+i+IT::size*2UL, load(v_+i+IT::size*2UL) - it.load() ); it += IT::size;
+      store( v_+i+IT::size*3UL, load(v_+i+IT::size*3UL) - it.load() ); it += IT::size;
    }
-   for( size_t i=iend; i<size_; i+=IT::size ) {
-      store( v_+i, load(v_+i) - (~rhs).load(i) );
+   for( size_t i=iend; i<size_; i+=IT::size, it+=IT::size ) {
+      store( v_+i, load(v_+i) - it.load() );
    }
 }
 //*************************************************************************************************
@@ -1798,14 +1801,15 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
    const size_t iend( size_ & size_t(-IT::size*4) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
 
+   typename VT::ConstIterator it( (~rhs).begin() );
    for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-      store( v_+i             , load(v_+i             ) * (~rhs).load(i             ) );
-      store( v_+i+IT::size    , load(v_+i+IT::size    ) * (~rhs).load(i+IT::size    ) );
-      store( v_+i+IT::size*2UL, load(v_+i+IT::size*2UL) * (~rhs).load(i+IT::size*2UL) );
-      store( v_+i+IT::size*3UL, load(v_+i+IT::size*3UL) * (~rhs).load(i+IT::size*3UL) );
+      store( v_+i             , load(v_+i             ) * it.load() ); it += IT::size;
+      store( v_+i+IT::size    , load(v_+i+IT::size    ) * it.load() ); it += IT::size;
+      store( v_+i+IT::size*2UL, load(v_+i+IT::size*2UL) * it.load() ); it += IT::size;
+      store( v_+i+IT::size*3UL, load(v_+i+IT::size*3UL) * it.load() ); it += IT::size;
    }
-   for( size_t i=iend; i<size_; i+=IT::size ) {
-      store( v_+i, load(v_+i) * (~rhs).load(i) );
+   for( size_t i=iend; i<size_; i+=IT::size, it+=IT::size ) {
+      store( v_+i, load(v_+i) * it.load() );
    }
 }
 //*************************************************************************************************
