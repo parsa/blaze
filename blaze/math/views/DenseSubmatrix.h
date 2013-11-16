@@ -338,12 +338,286 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
 
    //! Pointer to a constant row value.
    typedef typename SelectType< useConst, ConstPointer, ElementType* >::Type  Pointer;
+   //**********************************************************************************************
 
+   //**SubmatrixIterator class definition**********************************************************
+   /*!\brief Iterator over the elements of the sparse submatrix.
+   */
+   template< typename IteratorType >  // Type of the dense matrix iterator
+   class SubmatrixIterator
+   {
+    public:
+      //**Type definitions*************************************************************************
+      //! The iterator category.
+      typedef typename std::iterator_traits<IteratorType>::iterator_category  IteratorCategory;
+
+      typedef ElementType   ValueType;       //!< Type of the underlying elements.
+      typedef ElementType*  PointerType;     //!< Pointer return type.
+      typedef ElementType&  ReferenceType;   //!< Reference return type.
+      typedef ptrdiff_t     DifferenceType;  //!< Difference between two iterators.
+
+      // STL iterator requirements
+      typedef IteratorCategory  iterator_category;  //!< The iterator category.
+      typedef ValueType         value_type;         //!< Type of the underlying elements.
+      typedef PointerType       pointer;            //!< Pointer return type.
+      typedef ReferenceType     reference;          //!< Reference return type.
+      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Constructor for the SubmatrixIterator class.
+      //
+      // \param iterator Iterator to the initial element.
+      */
+      explicit inline SubmatrixIterator( IteratorType iterator )
+         : iterator_( iterator )  // Iterator to the current submatrix element
+      {}
+      //*******************************************************************************************
+
+      //**Addition assignment operator*************************************************************
+      /*!\brief Addition assignment operator.
+      //
+      // \param inc The increment of the iterator.
+      // \return The incremented iterator.
+      */
+      inline SubmatrixIterator& operator+=( size_t inc ) {
+         iterator_ += inc;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Subtraction assignment operator**********************************************************
+      /*!\brief Subtraction assignment operator.
+      //
+      // \param dec The decrement of the iterator.
+      // \return The decremented iterator.
+      */
+      inline SubmatrixIterator& operator-=( size_t dec ) {
+         iterator_ -= dec;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Prefix increment operator****************************************************************
+      /*!\brief Pre-increment operator.
+      //
+      // \return Reference to the incremented iterator.
+      */
+      inline SubmatrixIterator& operator++() {
+         ++iterator_;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Postfix increment operator***************************************************************
+      /*!\brief Post-increment operator.
+      //
+      // \return The previous position of the iterator.
+      */
+      inline const SubmatrixIterator operator++( int ) {
+         return SubmatrixIterator( iterator_++ );
+      }
+      //*******************************************************************************************
+
+      //**Prefix decrement operator****************************************************************
+      /*!\brief Pre-decrement operator.
+      //
+      // \return Reference to the decremented iterator.
+      */
+      inline SubmatrixIterator& operator--() {
+         --iterator_;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Postfix decrement operator***************************************************************
+      /*!\brief Post-decrement operator.
+      //
+      // \return The previous position of the iterator.
+      */
+      inline const SubmatrixIterator operator--( int ) {
+         return SubmatrixIterator( iterator_-- );
+      }
+      //*******************************************************************************************
+
+      //**Element access operator******************************************************************
+      /*!\brief Direct access to the element at the current iterator position.
+      //
+      // \return The resulting value.
+      */
+      inline ReferenceType operator*() const {
+         return *iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Load function****************************************************************************
+      /*!\brief Aligned load of an intrinsic element of the dense submatrix.
+      //
+      // \return The loaded intrinsic element.
+      //
+      // This function performs an aligned load of the current intrinsic element of the submatrix
+      // iterator. This function must \b NOT be called explicitly! It is used internally for the
+      // performance optimized evaluation of expression templates. Calling this function explicitly
+      // might result in erroneous results and/or in compilation errors.
+      */
+      inline IntrinsicType load() const {
+         return iterator_.loadu();
+      }
+      //*******************************************************************************************
+
+      //**Loadu function***************************************************************************
+      /*!\brief Unaligned load of an intrinsic element of the dense submatrix.
+      //
+      // \return The loaded intrinsic element.
+      //
+      // This function performs an unaligned load of the current intrinsic element of the submatrix
+      // iterator. This function must \b NOT be called explicitly! It is used internally for the
+      // performance optimized evaluation of expression templates. Calling this function explicitly
+      // might result in erroneous results and/or in compilation errors.
+      */
+      inline IntrinsicType loadu() const {
+         return iterator_.loadu();
+      }
+      //*******************************************************************************************
+
+      //**Equality operator************************************************************************
+      /*!\brief Equality comparison between two SubmatrixIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators refer to the same element, \a false if not.
+      */
+      inline bool operator==( const SubmatrixIterator& rhs ) const {
+         return iterator_ == rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Inequality operator**********************************************************************
+      /*!\brief Inequality comparison between two SubmatrixIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators don't refer to the same element, \a false if they do.
+      */
+      inline bool operator!=( const SubmatrixIterator& rhs ) const {
+         return iterator_ != rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Less-than operator***********************************************************************
+      /*!\brief Less-than comparison between two SubmatrixIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller, \a false if not.
+      */
+      inline bool operator<( const SubmatrixIterator& rhs ) const {
+         return iterator_ < rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Greater-than operator********************************************************************
+      /*!\brief Greater-than comparison between two SubmatrixIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater, \a false if not.
+      */
+      inline bool operator>( const SubmatrixIterator& rhs ) const {
+         return iterator_ > rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Less-or-equal-than operator**************************************************************
+      /*!\brief Less-than comparison between two SubmatrixIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
+      */
+      inline bool operator<=( const SubmatrixIterator& rhs ) const {
+         return iterator_ <= rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Greater-or-equal-than operator***********************************************************
+      /*!\brief Greater-than comparison between two SubmatrixIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
+      */
+      inline bool operator>=( const SubmatrixIterator& rhs ) const {
+         return iterator_ >= rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Calculating the number of elements between two iterators.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return The number of elements between the two iterators.
+      */
+      inline DifferenceType operator-( const SubmatrixIterator& rhs ) const {
+         return iterator_ - rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between a SubmatrixIterator and an integral value.
+      //
+      // \param it The iterator to be incremented.
+      // \param inc The number of elements the iterator is incremented.
+      // \return The incremented iterator.
+      */
+      friend inline const SubmatrixIterator operator+( const SubmatrixIterator& it, size_t inc ) {
+         return SubmatrixIterator( it.iterator_ + inc );
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between an integral value and a SubmatrixIterator.
+      //
+      // \param inc The number of elements the iterator is incremented.
+      // \param it The iterator to be incremented.
+      // \return The incremented iterator.
+      */
+      friend inline const SubmatrixIterator operator+( size_t inc, const SubmatrixIterator& it ) {
+         return SubmatrixIterator( it.iterator_ + inc );
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Subtraction between a SubmatrixIterator and an integral value.
+      //
+      // \param it The iterator to be decremented.
+      // \param inc The number of elements the iterator is decremented.
+      // \return The decremented iterator.
+      */
+      friend inline const SubmatrixIterator operator-( const SubmatrixIterator& it, size_t dec ) {
+         return SubmatrixIterator( it.iterator_ - dec );
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Subtraction between an integral value and a SubmatrixIterator.
+      //
+      // \param inc The number of elements the iterator is decremented.
+      // \param it The iterator to be decremented.
+      // \return The decremented iterator.
+      */
+      friend inline const SubmatrixIterator operator-( size_t dec, const SubmatrixIterator& it ) {
+         return SubmatrixIterator( it.iterator_ - dec );
+      }
+      //*******************************************************************************************
+
+    private:
+      //**Member variables*************************************************************************
+      IteratorType iterator_;  //!< Iterator to the current submatrix element.
+      //*******************************************************************************************
+   };
+   //**********************************************************************************************
+
+   //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   typedef typename MT::ConstIterator  ConstIterator;
+   typedef SubmatrixIterator<typename MT::ConstIterator>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename SelectType< useConst, ConstIterator, typename MT::Iterator >::Type  Iterator;
+   typedef typename SelectType< useConst, ConstIterator, SubmatrixIterator<typename MT::Iterator> >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -687,7 +961,7 @@ template< typename MT  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,SO>::Iterator DenseSubmatrix<MT,SO>::begin( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
-   return matrix_.begin( row_ + i ) + column_;
+   return Iterator( matrix_.begin( row_ + i ) + column_ );
 }
 //*************************************************************************************************
 
@@ -708,7 +982,7 @@ template< typename MT  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,SO>::ConstIterator DenseSubmatrix<MT,SO>::begin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
-   return matrix_.begin( row_ + i ) + column_;
+   return ConstIterator( matrix_.begin( row_ + i ) + column_ );
 }
 //*************************************************************************************************
 
@@ -729,7 +1003,7 @@ template< typename MT  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,SO>::ConstIterator DenseSubmatrix<MT,SO>::cbegin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
-   return matrix_.cbegin( row_ + i ) + column_;
+   return ConstIterator( matrix_.cbegin( row_ + i ) + column_ );
 }
 //*************************************************************************************************
 
@@ -750,7 +1024,7 @@ template< typename MT  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,SO>::Iterator DenseSubmatrix<MT,SO>::end( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
-   return matrix_.begin( row_ + i ) + column_ + n_;
+   return Iterator( matrix_.begin( row_ + i ) + column_ + n_ );
 }
 //*************************************************************************************************
 
@@ -771,7 +1045,7 @@ template< typename MT  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,SO>::ConstIterator DenseSubmatrix<MT,SO>::end( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
-   return matrix_.begin( row_ + i ) + column_ + n_;
+   return ConstIterator( matrix_.begin( row_ + i ) + column_ + n_ );
 }
 //*************************************************************************************************
 
@@ -792,7 +1066,7 @@ template< typename MT  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,SO>::ConstIterator DenseSubmatrix<MT,SO>::cend( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
-   return matrix_.cbegin( row_ + i ) + column_ + n_;
+   return ConstIterator( matrix_.cbegin( row_ + i ) + column_ + n_ );
 }
 //*************************************************************************************************
 
@@ -2035,12 +2309,286 @@ class DenseSubmatrix<MT,true> : public DenseMatrix< DenseSubmatrix<MT,true>, tru
 
    //! Pointer to a constant row value.
    typedef typename SelectType< useConst, ConstPointer, ElementType* >::Type  Pointer;
+   //**********************************************************************************************
 
+   //**SubmatrixIterator class definition**********************************************************
+   /*!\brief Iterator over the elements of the sparse submatrix.
+   */
+   template< typename IteratorType >  // Type of the dense matrix iterator
+   class SubmatrixIterator
+   {
+    public:
+      //**Type definitions*************************************************************************
+      //! The iterator category.
+      typedef typename std::iterator_traits<IteratorType>::iterator_category  IteratorCategory;
+
+      typedef ElementType   ValueType;       //!< Type of the underlying elements.
+      typedef ElementType*  PointerType;     //!< Pointer return type.
+      typedef ElementType&  ReferenceType;   //!< Reference return type.
+      typedef ptrdiff_t     DifferenceType;  //!< Difference between two iterators.
+
+      // STL iterator requirements
+      typedef IteratorCategory  iterator_category;  //!< The iterator category.
+      typedef ValueType         value_type;         //!< Type of the underlying elements.
+      typedef PointerType       pointer;            //!< Pointer return type.
+      typedef ReferenceType     reference;          //!< Reference return type.
+      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Constructor for the SubmatrixIterator class.
+      //
+      // \param iterator Iterator to the initial element.
+      */
+      explicit inline SubmatrixIterator( IteratorType iterator )
+         : iterator_( iterator )  // Iterator to the current submatrix element
+      {}
+      //*******************************************************************************************
+
+      //**Addition assignment operator*************************************************************
+      /*!\brief Addition assignment operator.
+      //
+      // \param inc The increment of the iterator.
+      // \return The incremented iterator.
+      */
+      inline SubmatrixIterator& operator+=( size_t inc ) {
+         iterator_ += inc;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Subtraction assignment operator**********************************************************
+      /*!\brief Subtraction assignment operator.
+      //
+      // \param dec The decrement of the iterator.
+      // \return The decremented iterator.
+      */
+      inline SubmatrixIterator& operator-=( size_t dec ) {
+         iterator_ -= dec;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Prefix increment operator****************************************************************
+      /*!\brief Pre-increment operator.
+      //
+      // \return Reference to the incremented iterator.
+      */
+      inline SubmatrixIterator& operator++() {
+         ++iterator_;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Postfix increment operator***************************************************************
+      /*!\brief Post-increment operator.
+      //
+      // \return The previous position of the iterator.
+      */
+      inline const SubmatrixIterator operator++( int ) {
+         return SubmatrixIterator( iterator_++ );
+      }
+      //*******************************************************************************************
+
+      //**Prefix decrement operator****************************************************************
+      /*!\brief Pre-decrement operator.
+      //
+      // \return Reference to the decremented iterator.
+      */
+      inline SubmatrixIterator& operator--() {
+         --iterator_;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Postfix decrement operator***************************************************************
+      /*!\brief Post-decrement operator.
+      //
+      // \return The previous position of the iterator.
+      */
+      inline const SubmatrixIterator operator--( int ) {
+         return SubmatrixIterator( iterator_-- );
+      }
+      //*******************************************************************************************
+
+      //**Element access operator******************************************************************
+      /*!\brief Direct access to the element at the current iterator position.
+      //
+      // \return The resulting value.
+      */
+      inline ReferenceType operator*() const {
+         return *iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Load function****************************************************************************
+      /*!\brief Aligned load of an intrinsic element of the dense submatrix.
+      //
+      // \return The loaded intrinsic element.
+      //
+      // This function performs an aligned load of the current intrinsic element of the submatrix
+      // iterator. This function must \b NOT be called explicitly! It is used internally for the
+      // performance optimized evaluation of expression templates. Calling this function explicitly
+      // might result in erroneous results and/or in compilation errors.
+      */
+      inline IntrinsicType load() const {
+         return iterator_.loadu();
+      }
+      //*******************************************************************************************
+
+      //**Loadu function***************************************************************************
+      /*!\brief Unaligned load of an intrinsic element of the dense submatrix.
+      //
+      // \return The loaded intrinsic element.
+      //
+      // This function performs an unaligned load of the current intrinsic element of the submatrix
+      // iterator. This function must \b NOT be called explicitly! It is used internally for the
+      // performance optimized evaluation of expression templates. Calling this function explicitly
+      // might result in erroneous results and/or in compilation errors.
+      */
+      inline IntrinsicType loadu() const {
+         return iterator_.loadu();
+      }
+      //*******************************************************************************************
+
+      //**Equality operator************************************************************************
+      /*!\brief Equality comparison between two SubmatrixIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators refer to the same element, \a false if not.
+      */
+      inline bool operator==( const SubmatrixIterator& rhs ) const {
+         return iterator_ == rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Inequality operator**********************************************************************
+      /*!\brief Inequality comparison between two SubmatrixIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators don't refer to the same element, \a false if they do.
+      */
+      inline bool operator!=( const SubmatrixIterator& rhs ) const {
+         return iterator_ != rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Less-than operator***********************************************************************
+      /*!\brief Less-than comparison between two SubmatrixIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller, \a false if not.
+      */
+      inline bool operator<( const SubmatrixIterator& rhs ) const {
+         return iterator_ < rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Greater-than operator********************************************************************
+      /*!\brief Greater-than comparison between two SubmatrixIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater, \a false if not.
+      */
+      inline bool operator>( const SubmatrixIterator& rhs ) const {
+         return iterator_ > rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Less-or-equal-than operator**************************************************************
+      /*!\brief Less-than comparison between two SubmatrixIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
+      */
+      inline bool operator<=( const SubmatrixIterator& rhs ) const {
+         return iterator_ <= rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Greater-or-equal-than operator***********************************************************
+      /*!\brief Greater-than comparison between two SubmatrixIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
+      */
+      inline bool operator>=( const SubmatrixIterator& rhs ) const {
+         return iterator_ >= rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Calculating the number of elements between two iterators.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return The number of elements between the two iterators.
+      */
+      inline DifferenceType operator-( const SubmatrixIterator& rhs ) const {
+         return iterator_ - rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between a SubmatrixIterator and an integral value.
+      //
+      // \param it The iterator to be incremented.
+      // \param inc The number of elements the iterator is incremented.
+      // \return The incremented iterator.
+      */
+      friend inline const SubmatrixIterator operator+( const SubmatrixIterator& it, size_t inc ) {
+         return SubmatrixIterator( it.iterator_ + inc );
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between an integral value and a SubmatrixIterator.
+      //
+      // \param inc The number of elements the iterator is incremented.
+      // \param it The iterator to be incremented.
+      // \return The incremented iterator.
+      */
+      friend inline const SubmatrixIterator operator+( size_t inc, const SubmatrixIterator& it ) {
+         return SubmatrixIterator( it.iterator_ + inc );
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Subtraction between a SubmatrixIterator and an integral value.
+      //
+      // \param it The iterator to be decremented.
+      // \param inc The number of elements the iterator is decremented.
+      // \return The decremented iterator.
+      */
+      friend inline const SubmatrixIterator operator-( const SubmatrixIterator& it, size_t dec ) {
+         return SubmatrixIterator( it.iterator_ - dec );
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Subtraction between an integral value and a SubmatrixIterator.
+      //
+      // \param inc The number of elements the iterator is decremented.
+      // \param it The iterator to be decremented.
+      // \return The decremented iterator.
+      */
+      friend inline const SubmatrixIterator operator-( size_t dec, const SubmatrixIterator& it ) {
+         return SubmatrixIterator( it.iterator_ - dec );
+      }
+      //*******************************************************************************************
+
+    private:
+      //**Member variables*************************************************************************
+      IteratorType iterator_;  //!< Iterator to the current submatrix element.
+      //*******************************************************************************************
+   };
+   //**********************************************************************************************
+
+   //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   typedef typename MT::ConstIterator  ConstIterator;
+   typedef SubmatrixIterator<typename MT::ConstIterator>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename SelectType< useConst, ConstIterator, typename MT::Iterator >::Type  Iterator;
+   typedef typename SelectType< useConst, ConstIterator, SubmatrixIterator<typename MT::Iterator> >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2385,7 +2933,7 @@ template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,true>::Iterator DenseSubmatrix<MT,true>::begin( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
-   return matrix_.begin( column_ + j ) + row_;
+   return Iterator( matrix_.begin( column_ + j ) + row_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2402,7 +2950,7 @@ template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,true>::ConstIterator DenseSubmatrix<MT,true>::begin( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
-   return matrix_.begin( column_ + j ) + row_;
+   return ConstIterator( matrix_.begin( column_ + j ) + row_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2419,7 +2967,7 @@ template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,true>::ConstIterator DenseSubmatrix<MT,true>::cbegin( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
-   return matrix_.cbegin( column_ + j ) + row_;
+   return ConstIterator( matrix_.cbegin( column_ + j ) + row_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2436,7 +2984,7 @@ template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,true>::Iterator DenseSubmatrix<MT,true>::end( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
-   return matrix_.begin( column_ + j ) + row_ + m_;
+   return Iterator( matrix_.begin( column_ + j ) + row_ + m_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2453,7 +3001,7 @@ template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,true>::ConstIterator DenseSubmatrix<MT,true>::end( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
-   return matrix_.begin( column_ + j ) + row_ + m_;
+   return ConstIterator( matrix_.begin( column_ + j ) + row_ + m_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2470,7 +3018,7 @@ template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,true>::ConstIterator DenseSubmatrix<MT,true>::cend( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
-   return matrix_.cbegin( column_ + j ) + row_ + m_;
+   return ConstIterator( matrix_.cbegin( column_ + j ) + row_ + m_ );
 }
 /*! \endcond */
 //*************************************************************************************************
