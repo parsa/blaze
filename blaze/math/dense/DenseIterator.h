@@ -599,7 +599,7 @@ inline const DenseIterator<Type> operator-( ptrdiff_t dec, const DenseIterator<T
 // \return The number of elements between the two iterators.
 */
 template< typename Type >  // Element type of the iterator
-inline ptrdiff_t operator-( const DenseIterator<Type>& lhs, DenseIterator<Type>& rhs )
+inline ptrdiff_t operator-( const DenseIterator<Type>& lhs, const DenseIterator<Type>& rhs )
 {
    return lhs.base() - rhs.base();
 }
