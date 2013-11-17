@@ -537,6 +537,34 @@ namespace blaze {}
 //             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
 //
 //
+// \n \section vector_types_hybrid_vector HybridVector
+// <hr>
+//
+// The blaze::HybridVector class template combines the advantages of the blaze::StaticVector and
+// the blaze::DynamicVector class templates. It represents a fixed-size vector with statically
+// allocated elements, but still can be dynamically resized (within the bounds of the available
+// memory). It can be included via the header file
+
+   \code
+   #include <blaze/math/HybridVector.h>
+   \endcode
+
+// The type of the elements, the number of elements, and the transpose flag of the vector can
+// be specified via the three template parameters:
+
+   \code
+   template< typename Type, size_t N, bool TF >
+   class HybridVector;
+   \endcode
+
+//  - \c Type: specifies the type of the vector elements. HybridVector can be used with any
+//             non-cv-qualified, non-reference, non-pointer element type.
+//  - \c N   : specifies the maximum number of vector elements. It is expected that HybridVector
+//             is only used for tiny and small vectors.
+//  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
+//             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
+//
+//
 // \n \section vector_types_compressed_vector CompressedVector
 // <hr>
 //
