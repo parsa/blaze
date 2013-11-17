@@ -308,7 +308,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       // \return The resulting intrinsic value.
       */
       inline IntrinsicType load() const {
-         return set( *left_ ) + right_.load();
+         return set( *left_ ) * right_.load();
       }
       //*******************************************************************************************
 
