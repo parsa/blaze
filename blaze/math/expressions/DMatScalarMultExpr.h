@@ -189,11 +189,12 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
       //**Constructor******************************************************************************
       /*!\brief Constructor for the ConstIterator class.
       //
-      // \param iterator Iterator to the initial left-hand side element.
+      // \param iterator Iterator to the initial element.
+      // \param scalar Scalar of the multiplication expression.
       */
       explicit inline ConstIterator( IteratorType iterator, RightOperand scalar )
          : iterator_( iterator )  // Iterator to the current element
-         , scalar_  ( scalar   )  // Right-hand side scalar of the multiplication expression
+         , scalar_  ( scalar   )  // Scalar of the multiplication expression
       {}
       //*******************************************************************************************
 
@@ -388,7 +389,7 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
       /*!\brief Subtraction between a ConstIterator and an integral value.
       //
       // \param it The iterator to be decremented.
-      // \param inc The number of elements the iterator is decremented.
+      // \param dec The number of elements the iterator is decremented.
       // \return The decremented iterator.
       */
       friend inline const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
@@ -399,7 +400,7 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
       //**Subtraction operator*********************************************************************
       /*!\brief Subtraction between an integral value and a ConstIterator.
       //
-      // \param inc The number of elements the iterator is decremented.
+      // \param dec The number of elements the iterator is decremented.
       // \param it The iterator to be decremented.
       // \return The decremented iterator.
       */
@@ -411,7 +412,7 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
     private:
       //**Member variables*************************************************************************
       IteratorType iterator_;  //!< Iterator to the current element.
-      RightOperand scalar_;    //!< Right-hand side scalar of the multiplication expression.
+      RightOperand scalar_;    //!< Scalar of the multiplication expression.
       //*******************************************************************************************
    };
    //**********************************************************************************************

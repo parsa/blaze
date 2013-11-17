@@ -387,7 +387,7 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
       /*!\brief Subtraction between a ConstIterator and an integral value.
       //
       // \param it The iterator to be decremented.
-      // \param inc The number of elements the iterator is decremented.
+      // \param dec The number of elements the iterator is decremented.
       // \return The decremented iterator.
       */
       friend inline const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
@@ -398,7 +398,7 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
       //**Subtraction operator*********************************************************************
       /*!\brief Subtraction between an integral value and a ConstIterator.
       //
-      // \param inc The number of elements the iterator is decremented.
+      // \param dec The number of elements the iterator is decremented.
       // \param it The iterator to be decremented.
       // \return The decremented iterator.
       */

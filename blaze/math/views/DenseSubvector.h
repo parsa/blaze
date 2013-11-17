@@ -594,7 +594,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
       /*!\brief Subtraction between a SubvectorIterator and an integral value.
       //
       // \param it The iterator to be decremented.
-      // \param inc The number of elements the iterator is decremented.
+      // \param dec The number of elements the iterator is decremented.
       // \return The decremented iterator.
       */
       friend inline const SubvectorIterator operator-( const SubvectorIterator& it, size_t dec ) {
@@ -605,7 +605,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
       //**Subtraction operator*********************************************************************
       /*!\brief Subtraction between an integral value and a SubvectorIterator.
       //
-      // \param inc The number of elements the iterator is decremented.
+      // \param dec The number of elements the iterator is decremented.
       // \param it The iterator to be decremented.
       // \return The decremented iterator.
       */

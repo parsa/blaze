@@ -592,7 +592,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
       /*!\brief Subtraction between a SubmatrixIterator and an integral value.
       //
       // \param it The iterator to be decremented.
-      // \param inc The number of elements the iterator is decremented.
+      // \param dec The number of elements the iterator is decremented.
       // \return The decremented iterator.
       */
       friend inline const SubmatrixIterator operator-( const SubmatrixIterator& it, size_t dec ) {
@@ -603,7 +603,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
       //**Subtraction operator*********************************************************************
       /*!\brief Subtraction between an integral value and a SubmatrixIterator.
       //
-      // \param inc The number of elements the iterator is decremented.
+      // \param dec The number of elements the iterator is decremented.
       // \param it The iterator to be decremented.
       // \return The decremented iterator.
       */
