@@ -121,7 +121,10 @@ ClassTest::ClassTest()
 */
 void ClassTest::testConstructors()
 {
+   //=====================================================================================
    // Default constructor
+   //=====================================================================================
+
    {
       test_ = "StaticVector default constructor";
 
@@ -142,7 +145,11 @@ void ClassTest::testConstructors()
       }
    }
 
+
+   //=====================================================================================
    // Homogeneous initialization
+   //=====================================================================================
+
    {
       test_ = "StaticVector homogeneous initialization constructor";
 
@@ -163,7 +170,11 @@ void ClassTest::testConstructors()
       }
    }
 
+
+   //=====================================================================================
    // 2D initialization constructor
+   //=====================================================================================
+
    {
       test_ = "StaticVector 2D initialization constructor";
 
@@ -184,7 +195,11 @@ void ClassTest::testConstructors()
       }
    }
 
+
+   //=====================================================================================
    // 3D initialization constructor
+   //=====================================================================================
+
    {
       test_ = "StaticVector 3D initialization constructor";
 
@@ -205,7 +220,11 @@ void ClassTest::testConstructors()
       }
    }
 
+
+   //=====================================================================================
    // 4D initialization constructor
+   //=====================================================================================
+
    {
       test_ = "StaticVector 4D initialization constructor";
 
@@ -226,7 +245,11 @@ void ClassTest::testConstructors()
       }
    }
 
+
+   //=====================================================================================
    // 5D initialization constructor
+   //=====================================================================================
+
    {
       test_ = "StaticVector 5D initialization constructor";
 
@@ -247,7 +270,11 @@ void ClassTest::testConstructors()
       }
    }
 
+
+   //=====================================================================================
    // 6D initialization constructor
+   //=====================================================================================
+
    {
       test_ = "StaticVector 6D initialization constructor";
 
@@ -268,7 +295,11 @@ void ClassTest::testConstructors()
       }
    }
 
+
+   //=====================================================================================
    // Array initialization
+   //=====================================================================================
+
    {
       test_ = "StaticVector array initialization constructor";
 
@@ -290,7 +321,11 @@ void ClassTest::testConstructors()
       }
    }
 
+
+   //=====================================================================================
    // Copy constructor
+   //=====================================================================================
+
    {
       test_ = "StaticVector copy constructor";
 
@@ -311,6 +346,108 @@ void ClassTest::testConstructors()
          throw std::runtime_error( oss.str() );
       }
    }
+
+
+   //=====================================================================================
+   // Dense vector constructor
+   //=====================================================================================
+
+   {
+      test_ = "StaticVector dense vector constructor";
+
+      blaze::DynamicVector<int,blaze::rowVector> vec1( 5UL );
+      vec1[0] = 1;
+      vec1[1] = 2;
+      vec1[2] = 3;
+      vec1[3] = 4;
+      vec1[4] = 5;
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec2( vec1 );
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 5UL );
+
+      if( vec2[0] != 1 || vec2[1] != 2 || vec2[2] != 3 || vec2[3] != 4 || vec2[4] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 2 3 4 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   try {
+      test_ = "StaticVector dense vector constructor (non-fitting vector)";
+
+      blaze::DynamicVector<int,blaze::rowVector> vec1( 5UL );
+      vec1[0] = 1;
+      vec1[1] = 2;
+      vec1[2] = 3;
+      vec1[3] = 4;
+      vec1[4] = 5;
+      blaze::StaticVector<int,4UL,blaze::rowVector> vec2( vec1 );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Construction succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << vec2 << "\n"
+          << "   Given vector:\n( 1 2 3 4 5 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& )
+   {}
+
+
+   //=====================================================================================
+   // Sparse vector constructor
+   //=====================================================================================
+
+   {
+      test_ = "StaticVector sparse vector constructor";
+
+      blaze::CompressedVector<int,blaze::rowVector> vec1( 5UL, 3UL );
+      vec1[0] = 1;
+      vec1[2] = 3;
+      vec1[4] = 5;
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec2( vec1 );
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 3UL );
+
+      if( vec2[0] != 1 || vec2[1] != 0 || vec2[2] != 3 || vec2[3] != 0 || vec2[4] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 0 3 0 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   try {
+      test_ = "HybridVector sparse vector constructor (non-fitting vector)";
+
+      blaze::CompressedVector<int,blaze::rowVector> vec1( 5UL, 3UL );
+      vec1[0] = 1;
+      vec1[2] = 3;
+      vec1[4] = 5;
+      blaze::StaticVector<int,4UL,blaze::rowVector> vec2( vec1 );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Construction succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << vec2 << "\n"
+          << "   Given vector:\n( 1 0 3 0 5 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& )
+   {}
 }
 //*************************************************************************************************
 
@@ -1338,7 +1475,7 @@ void ClassTest::testNormalize()
 
    if( !blaze::equal( length( normalized ), 1.0 ) ) {
       std::ostringstream oss;
-      oss << " Test: StaticVector::getNormalized()\n"
+      oss << " Test: " << test_ << "\n"
           << " Error: Normalization failed\n"
           << " Details:\n"
           << "   Result: " << length( normalized ) << "\n"
@@ -1352,7 +1489,7 @@ void ClassTest::testNormalize()
    if( !blaze::equal( length( vec ), 1.0 ) ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Normalization failed\n"
+          << " Error: Self-normalization failed\n"
           << " Details:\n"
           << "   Result: " << length( vec ) << "\n"
           << "   Expected result: 1\n";

@@ -339,7 +339,7 @@ void ClassTest::testConstructors()
    }
 
    {
-      test_ = "HybridVector dense vector constructor (size 5)";
+      test_ = "HybridVector sparse vector constructor (size 5)";
 
       blaze::CompressedVector<int,blaze::rowVector> vec1( 5UL, 3UL );
       vec1[0] = 1;

@@ -261,6 +261,61 @@ void ClassTest::testConstructors()
          throw std::runtime_error( oss.str() );
       }
    }
+
+
+   //=====================================================================================
+   // Dense vector constructor
+   //=====================================================================================
+
+   {
+      test_ = "DynamicVector dense vector constructor";
+
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec1( 1, 2, 3, 4, 5 );
+      blaze::DynamicVector<int,blaze::rowVector> vec2( vec1 );
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 5UL );
+
+      if( vec2[0] != 1 || vec2[1] != 2 || vec2[2] != 3 || vec2[3] != 4 || vec2[4] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 2 3 4 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Sparse vector constructor
+   //=====================================================================================
+
+   {
+      test_ = "DynamicVector sparse vector constructor";
+
+      blaze::CompressedVector<int,blaze::rowVector> vec1( 5UL, 3UL );
+      vec1[0] = 1;
+      vec1[2] = 3;
+      vec1[4] = 5;
+      blaze::DynamicVector<int,blaze::rowVector> vec2( vec1 );
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 3UL );
+
+      if( vec2[0] != 1 || vec2[1] != 0 || vec2[2] != 3 || vec2[3] != 0 || vec2[4] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 0 3 0 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 }
 //*************************************************************************************************
 
@@ -1637,7 +1692,7 @@ void ClassTest::testNormalize()
 
    if( !blaze::equal( length( normalized ), 1.0 ) ) {
       std::ostringstream oss;
-      oss << " Test: DynamicVector::getNormalized()\n"
+      oss << " Test: " << test_ << "\n"
           << " Error: Normalization failed\n"
           << " Details:\n"
           << "   Result: " << length( normalized ) << "\n"
@@ -1651,7 +1706,7 @@ void ClassTest::testNormalize()
    if( !blaze::equal( length( vec ), 1.0 ) ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Normalization failed\n"
+          << " Error: Self-normalization failed\n"
           << " Details:\n"
           << "   Result: " << length( vec ) << "\n"
           << "   Expected result: 1\n";
