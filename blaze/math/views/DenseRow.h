@@ -56,7 +56,7 @@
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
-#include <blaze/math/typetraits/IsExpression.h>h>
+#include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/system/CacheSize.h>
