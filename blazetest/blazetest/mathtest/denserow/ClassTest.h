@@ -171,6 +171,8 @@ class ClassTest
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( TMT );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RT  );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( TRT );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE  ( RT  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE  ( TRT );
    /*! \endcond */
    //**********************************************************************************************
 };

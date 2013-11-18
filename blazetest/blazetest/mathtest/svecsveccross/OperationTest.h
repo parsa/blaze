@@ -56,7 +56,6 @@
 #include <blaze/math/traits/CrossExprTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
-#include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
@@ -194,20 +193,20 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( TSRE  );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( TDRRE );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( TSRRE );
-   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( VT1   );
-   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( VT2   );
-   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( RT1   );
-   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( RT2   );
-   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( DRE   );
-   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( SRE   );
-   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( DRRE  );
-   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( SRRE  );
-   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE   ( TDRE  );
-   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE   ( TSRE  );
-   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE   ( TDRRE );
-   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE   ( TSRRE );
-   BLAZE_CONSTRAINT_MUST_BE_CROSSEXPR_TYPE  ( CrossExprType );
-   BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE( CrossExprType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( VT1   );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( VT2   );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( RT1   );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( RT2   );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( DRE   );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( SRE   );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( DRRE  );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( SRRE  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( TDRE  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( TSRE  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( TDRRE );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( TSRRE );
+   BLAZE_CONSTRAINT_MUST_BE_CROSSEXPR_TYPE    ( CrossExprType );
+   BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE  ( CrossExprType );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -2168,8 +2167,6 @@ template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side sparse vector
 void OperationTest<VT1,VT2>::checkTransposeResults()
 {
-   using blaze::IsTransposeVector;
-
    if( !isEqual( tdres_, trefres_ ) ) {
       std::ostringstream oss;
       oss.precision( 20 );

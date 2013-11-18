@@ -56,7 +56,7 @@
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
-#include <blaze/math/typetraits/IsTransposeVector.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
@@ -99,7 +99,7 @@ class OperationTest
    //**********************************************************************************************
 
    //**Enumerations********************************************************************************
-   enum { TF = blaze::IsTransposeVector<VT1>::value };
+   enum { TF = blaze::IsRowVector<VT1>::value };
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
@@ -3116,7 +3116,7 @@ template< typename LT     // Type of the left-hand side operand
         , typename RT >   // Type of the right-hand side operand
 void OperationTest<VT1,VT2>::checkResults()
 {
-   using blaze::IsTransposeVector;
+   using blaze::IsRowVector;
 
    if( !isEqual( dres_, refres_ ) ) {
       std::ostringstream oss;
@@ -3124,9 +3124,9 @@ void OperationTest<VT1,VT2>::checkResults()
       oss << " Test : " << test_ << "\n"
           << " Error: Incorrect dense result vector detected\n"
           << " Details:\n"
-          << "   " << ( IsTransposeVector<LT>::value ? ( "Transpose l" ) : ( "L" ) ) << "eft-hand side sparse vector type:\n"
+          << "   Left-hand side sparse " << ( IsRowVector<LT>::value ? ( "row" ) : ( "column" ) ) << " vector type:\n"
           << "     " << typeid( LT ).name() << "\n"
-          << "   " << ( IsTransposeVector<RT>::value ? ( "Transpose r" ) : ( "R" ) ) << "ight-hand side dense vector type:\n"
+          << "   Right-hand side dense " << ( IsRowVector<RT>::value ? ( "row" ) : ( "column" ) ) << " vector type:\n"
           << "     " << typeid( RT ).name() << "\n"
           << "   Result:\n" << dres_ << "\n"
           << "   Expected result:\n" << refres_ << "\n";
@@ -3139,9 +3139,9 @@ void OperationTest<VT1,VT2>::checkResults()
       oss << " Test : " << test_ << "\n"
           << " Error: Incorrect sparse result vector detected\n"
           << " Details:\n"
-          << "   " << ( IsTransposeVector<LT>::value ? ( "Transpose l" ) : ( "L" ) ) << "eft-hand side sparse vector type:\n"
+          << "   Left-hand side sparse " << ( IsRowVector<LT>::value ? ( "row" ) : ( "column" ) ) << " vector type:\n"
           << "     " << typeid( LT ).name() << "\n"
-          << "   " << ( IsTransposeVector<RT>::value ? ( "Transpose r" ) : ( "R" ) ) << "ight-hand side dense vector type:\n"
+          << "   Right-hand side dense " << ( IsRowVector<RT>::value ? ( "row" ) : ( "column" ) ) << " vector type:\n"
           << "     " << typeid( RT ).name() << "\n"
           << "   Result:\n" << sres_ << "\n"
           << "   Expected result:\n" << refres_ << "\n";
@@ -3168,7 +3168,7 @@ template< typename LT     // Type of the left-hand side operand
         , typename RT >   // Type of the right-hand side operand
 void OperationTest<VT1,VT2>::checkTransposeResults()
 {
-   using blaze::IsTransposeVector;
+   using blaze::IsRowVector;
 
    if( !isEqual( tdres_, trefres_ ) ) {
       std::ostringstream oss;
@@ -3176,9 +3176,9 @@ void OperationTest<VT1,VT2>::checkTransposeResults()
       oss << " Test : " << test_ << "\n"
           << " Error: Incorrect dense result vector detected\n"
           << " Details:\n"
-          << "   " << ( IsTransposeVector<LT>::value ? ( "Transpose l" ) : ( "L" ) ) << "eft-hand side sparse vector type:\n"
+          << "   Left-hand side sparse " << ( IsRowVector<LT>::value ? ( "row" ) : ( "column" ) ) << " vector type:\n"
           << "     " << typeid( LT ).name() << "\n"
-          << "   " << ( IsTransposeVector<RT>::value ? ( "Transpose r" ) : ( "R" ) ) << "ight-hand side dense vector type:\n"
+          << "   Right-hand side dense " << ( IsRowVector<RT>::value ? ( "row" ) : ( "column" ) ) << " vector type:\n"
           << "     " << typeid( RT ).name() << "\n"
           << "   Result:\n" << tdres_ << "\n"
           << "   Expected result:\n" << trefres_ << "\n";
@@ -3191,9 +3191,9 @@ void OperationTest<VT1,VT2>::checkTransposeResults()
       oss << " Test : " << test_ << "\n"
           << " Error: Incorrect sparse result vector detected\n"
           << " Details:\n"
-          << "   " << ( IsTransposeVector<LT>::value ? ( "Transpose l" ) : ( "L" ) ) << "eft-hand side sparse vector type:\n"
+          << "   Left-hand side sparse " << ( IsRowVector<LT>::value ? ( "row" ) : ( "column" ) ) << " vector type:\n"
           << "     " << typeid( LT ).name() << "\n"
-          << "   " << ( IsTransposeVector<RT>::value ? ( "Transpose r" ) : ( "R" ) ) << "ight-hand side dense vector type:\n"
+          << "   Right-hand side dense " << ( IsRowVector<RT>::value ? ( "row" ) : ( "column" ) ) << " vector type:\n"
           << "     " << typeid( RT ).name() << "\n"
           << "   Result:\n" << tsres_ << "\n"
           << "   Expected result:\n" << trefres_ << "\n";
@@ -3273,15 +3273,15 @@ template< typename LT     // Type of the left-hand side operand
         , typename RT >   // Type of the right-hand side operand
 void OperationTest<VT1,VT2>::convertException( const std::exception& ex )
 {
-   using blaze::IsTransposeVector;
+   using blaze::IsRowVector;
 
    std::ostringstream oss;
    oss << " Test : " << test_ << "\n"
        << " Error: " << error_ << "\n"
        << " Details:\n"
-       << "   " << ( IsTransposeVector<LT>::value ? ( "Transpose l" ) : ( "L" ) ) << "eft-hand side sparse vector type:\n"
+       << "   Left-hand side sparse " << ( IsRowVector<LT>::value ? ( "row" ) : ( "column" ) ) << " vector type:\n"
        << "     " << typeid( LT ).name() << "\n"
-       << "   " << ( IsTransposeVector<RT>::value ? ( "Transpose r" ) : ( "R" ) ) << "ight-hand side dense vector type:\n"
+       << "   Right-hand side dense " << ( IsRowVector<RT>::value ? ( "row" ) : ( "column" ) ) << " vector type:\n"
        << "     " << typeid( RT ).name() << "\n"
        << "   Error message: " << ex.what() << "\n";
    throw std::runtime_error( oss.str() );

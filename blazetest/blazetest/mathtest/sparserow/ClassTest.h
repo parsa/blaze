@@ -178,6 +178,8 @@ class ClassTest
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TMT );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( RT  );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( TRT );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( RT  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( TRT );
    /*! \endcond */
    //**********************************************************************************************
 };
