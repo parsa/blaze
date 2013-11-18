@@ -43,8 +43,8 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
-#include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/math/typetraits/NumericElementType.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/SelectType.h>
@@ -135,7 +135,7 @@ struct DVecScalarDivExprTrait
    enum { qualified = IsConst<VT>::value || IsVolatile<VT>::value || IsReference<VT>::value ||
                       IsConst<ST>::value || IsVolatile<ST>::value || IsReference<ST>::value };
 
-   enum { condition = IsDenseVector<VT>::value && !IsTransposeVector<VT>::value &&
+   enum { condition = IsDenseVector<VT>::value && IsColumnVector<VT>::value &&
                       IsNumeric<ST>::value };
    /*! \endcond */
    //**********************************************************************************************

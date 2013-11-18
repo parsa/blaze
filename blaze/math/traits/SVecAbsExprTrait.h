@@ -41,8 +41,8 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
-#include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -80,7 +80,7 @@ struct SVecAbsExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef SelectType< IsSparseVector<VT>::value && !IsTransposeVector<VT>::value
+   typedef SelectType< IsSparseVector<VT>::value && IsColumnVector<VT>::value
                      , SVecAbsExpr<VT,false>, INVALID_TYPE >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<VT>::Type >::Type  Type1;

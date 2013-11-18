@@ -43,8 +43,8 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
-#include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/math/typetraits/NumericElementType.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/SelectType.h>
@@ -132,7 +132,7 @@ struct SVecScalarMultExprTrait
    enum { qualified = IsConst<VT>::value || IsVolatile<VT>::value || IsReference<VT>::value ||
                       IsConst<ST>::value || IsVolatile<ST>::value || IsReference<ST>::value };
 
-   enum { condition = IsSparseVector<VT>::value && !IsTransposeVector<VT>::value &&
+   enum { condition = IsSparseVector<VT>::value && IsColumnVector<VT>::value &&
                       IsNumeric<ST>::value };
    /*! \endcond */
    //**********************************************************************************************

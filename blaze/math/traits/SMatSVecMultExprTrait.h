@@ -41,10 +41,10 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
-#include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -87,7 +87,7 @@ struct SMatSVecMultExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    typedef SelectType< IsSparseMatrix<MT>::value && IsRowMajorMatrix<MT>::value &&
-                       IsSparseVector<VT>::value && !IsTransposeVector<VT>::value
+                       IsSparseVector<VT>::value && IsColumnVector<VT>::value
                      , SMatSVecMultExpr<MT,VT>, INVALID_TYPE >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<MT>::Type >::Type  Type1;

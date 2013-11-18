@@ -43,8 +43,8 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
-#include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -86,7 +86,7 @@ struct TSVecDMatMultExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef SelectType< IsSparseVector<VT>::value && IsTransposeVector<VT>::value &&
+   typedef SelectType< IsSparseVector<VT>::value && IsRowVector<VT>::value &&
                        IsDenseMatrix<MT>::value  && IsRowMajorMatrix<MT>::value
                      , TSVecDMatMultExpr<VT,MT>, INVALID_TYPE >  Tmp;
 

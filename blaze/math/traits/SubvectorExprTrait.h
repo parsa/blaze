@@ -42,9 +42,9 @@
 
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
-#include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/math/views/Forward.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
@@ -87,14 +87,14 @@ struct SubvectorExprTrait
    //**struct DenseResult**************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
-   struct DenseResult { typedef DenseSubvector<T,IsTransposeVector<T>::value>  Type; };
+   struct DenseResult { typedef DenseSubvector<T,IsRowVector<T>::value>  Type; };
    /*! \endcond */
    //**********************************************************************************************
 
    //**struct SparseResult*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
-   struct SparseResult { typedef SparseSubvector<T,IsTransposeVector<T>::value>  Type; };
+   struct SparseResult { typedef SparseSubvector<T,IsRowVector<T>::value>  Type; };
    /*! \endcond */
    //**********************************************************************************************
 

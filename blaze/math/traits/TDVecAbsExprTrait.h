@@ -42,7 +42,7 @@
 
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
-#include <blaze/math/typetraits/IsTransposeVector.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -80,7 +80,7 @@ struct TDVecAbsExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef SelectType< IsDenseVector<VT>::value && IsTransposeVector<VT>::value
+   typedef SelectType< IsDenseVector<VT>::value && IsRowVector<VT>::value
                      , DVecAbsExpr<VT,true>, INVALID_TYPE >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<VT>::Type >::Type  Type1;

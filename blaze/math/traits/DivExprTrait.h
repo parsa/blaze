@@ -52,7 +52,7 @@
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
-#include <blaze/math/typetraits/IsTransposeVector.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
@@ -127,7 +127,7 @@ struct DivExprTrait
                                    >::Type
                       , typename If< IsVector<T1>
                                    , typename If< IsDenseVector<T1>
-                                                , typename If< IsTransposeVector<T1>
+                                                , typename If< IsRowVector<T1>
                                                              , typename If< IsNumeric<T2>
                                                                           , TDVecScalarDivExprTrait<T1,T2>
                                                                           , Failure
@@ -137,7 +137,7 @@ struct DivExprTrait
                                                                           , Failure
                                                                           >::Type
                                                              >::Type
-                                                , typename If< IsTransposeVector<T1>
+                                                , typename If< IsRowVector<T1>
                                                              , typename If< IsNumeric<T2>
                                                                           , TSVecScalarDivExprTrait<T1,T2>
                                                                           , Failure

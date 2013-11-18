@@ -97,14 +97,14 @@
 #include <blaze/math/traits/TSVecTDVecMultExprTrait.h>
 #include <blaze/math/traits/TSVecTSMatMultExprTrait.h>
 #include <blaze/math/traits/TSVecTSVecMultExprTrait.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
-#include <blaze/math/typetraits/IsTransposeVector.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Not.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -168,11 +168,11 @@ struct MultExprTrait
                                                                           >::Type
                                                              , typename If< IsVector<T2>
                                                                           , typename If< IsDenseVector<T2>
-                                                                                       , typename If< Not< IsTransposeVector<T2> >
+                                                                                       , typename If< IsColumnVector<T2>
                                                                                                     , DMatDVecMultExprTrait<T1,T2>
                                                                                                     , Failure
                                                                                                     >::Type
-                                                                                       , typename If< Not< IsTransposeVector<T2> >
+                                                                                       , typename If< IsColumnVector<T2>
                                                                                                     , DMatSVecMultExprTrait<T1,T2>
                                                                                                     , Failure
                                                                                                     >::Type
@@ -196,11 +196,11 @@ struct MultExprTrait
                                                                           >::Type
                                                              , typename If< IsVector<T2>
                                                                           , typename If< IsDenseVector<T2>
-                                                                                       , typename If< Not< IsTransposeVector<T2> >
+                                                                                       , typename If< IsColumnVector<T2>
                                                                                                     , TDMatDVecMultExprTrait<T1,T2>
                                                                                                     , Failure
                                                                                                     >::Type
-                                                                                       , typename If< Not< IsTransposeVector<T2> >
+                                                                                       , typename If< IsColumnVector<T2>
                                                                                                     , TDMatSVecMultExprTrait<T1,T2>
                                                                                                     , Failure
                                                                                                     >::Type
@@ -226,11 +226,11 @@ struct MultExprTrait
                                                                           >::Type
                                                              , typename If< IsVector<T2>
                                                                           , typename If< IsDenseVector<T2>
-                                                                                       , typename If< Not< IsTransposeVector<T2> >
+                                                                                       , typename If< IsColumnVector<T2>
                                                                                                     , SMatDVecMultExprTrait<T1,T2>
                                                                                                     , Failure
                                                                                                     >::Type
-                                                                                       , typename If< Not< IsTransposeVector<T2> >
+                                                                                       , typename If< IsColumnVector<T2>
                                                                                                     , SMatSVecMultExprTrait<T1,T2>
                                                                                                     , Failure
                                                                                                     >::Type
@@ -254,11 +254,11 @@ struct MultExprTrait
                                                                           >::Type
                                                              , typename If< IsVector<T2>
                                                                           , typename If< IsDenseVector<T2>
-                                                                                       , typename If< Not< IsTransposeVector<T2> >
+                                                                                       , typename If< IsColumnVector<T2>
                                                                                                     , TSMatDVecMultExprTrait<T1,T2>
                                                                                                     , Failure
                                                                                                     >::Type
-                                                                                       , typename If< Not< IsTransposeVector<T2> >
+                                                                                       , typename If< IsColumnVector<T2>
                                                                                                     , TSMatSVecMultExprTrait<T1,T2>
                                                                                                     , Failure
                                                                                                     >::Type
@@ -273,7 +273,7 @@ struct MultExprTrait
                                    >::Type
                       , typename If< IsVector<T1>
                                    , typename If< IsDenseVector<T1>
-                                                , typename If< IsTransposeVector<T1>
+                                                , typename If< IsRowVector<T1>
                                                              , typename If< IsMatrix<T2>
                                                                           , typename If< IsDenseMatrix<T2>
                                                                                        , typename If< IsRowMajorMatrix<T2>
@@ -287,11 +287,11 @@ struct MultExprTrait
                                                                                        >::Type
                                                                           , typename If< IsVector<T2>
                                                                                        , typename If< IsDenseVector<T2>
-                                                                                                    , typename If< IsTransposeVector<T2>
+                                                                                                    , typename If< IsRowVector<T2>
                                                                                                                  , TDVecTDVecMultExprTrait<T1,T2>
                                                                                                                  , TDVecDVecMultExprTrait<T1,T2>
                                                                                                                  >::Type
-                                                                                                    , typename If< IsTransposeVector<T2>
+                                                                                                    , typename If< IsRowVector<T2>
                                                                                                                  , TDVecTSVecMultExprTrait<T1,T2>
                                                                                                                  , TDVecSVecMultExprTrait<T1,T2>
                                                                                                                  >::Type
@@ -304,11 +304,11 @@ struct MultExprTrait
                                                                           >::Type
                                                              , typename If< IsVector<T2>
                                                                           , typename If< IsDenseVector<T2>
-                                                                                       , typename If< IsTransposeVector<T2>
+                                                                                       , typename If< IsRowVector<T2>
                                                                                                     , DVecTDVecMultExprTrait<T1,T2>
                                                                                                     , DVecDVecMultExprTrait<T1,T2>
                                                                                                     >::Type
-                                                                                       , typename If< IsTransposeVector<T2>
+                                                                                       , typename If< IsRowVector<T2>
                                                                                                     , DVecTSVecMultExprTrait<T1,T2>
                                                                                                     , DVecSVecMultExprTrait<T1,T2>
                                                                                                     >::Type
@@ -319,7 +319,7 @@ struct MultExprTrait
                                                                                        >::Type
                                                                           >::Type
                                                              >::Type
-                                                , typename If< IsTransposeVector<T1>
+                                                , typename If< IsRowVector<T1>
                                                              , typename If< IsMatrix<T2>
                                                                           , typename If< IsDenseMatrix<T2>
                                                                                        , typename If< IsRowMajorMatrix<T2>
@@ -333,11 +333,11 @@ struct MultExprTrait
                                                                                        >::Type
                                                                           , typename If< IsVector<T2>
                                                                                        , typename If< IsDenseVector<T2>
-                                                                                                    , typename If< IsTransposeVector<T2>
+                                                                                                    , typename If< IsRowVector<T2>
                                                                                                                  , TSVecTDVecMultExprTrait<T1,T2>
                                                                                                                  , TSVecDVecMultExprTrait<T1,T2>
                                                                                                                  >::Type
-                                                                                                    , typename If< IsTransposeVector<T2>
+                                                                                                    , typename If< IsRowVector<T2>
                                                                                                                  , TSVecTSVecMultExprTrait<T1,T2>
                                                                                                                  , TSVecSVecMultExprTrait<T1,T2>
                                                                                                                  >::Type
@@ -350,11 +350,11 @@ struct MultExprTrait
                                                                           >::Type
                                                              , typename If< IsVector<T2>
                                                                           , typename If< IsDenseVector<T2>
-                                                                                       , typename If< IsTransposeVector<T2>
+                                                                                       , typename If< IsRowVector<T2>
                                                                                                     , SVecTDVecMultExprTrait<T1,T2>
                                                                                                     , SVecDVecMultExprTrait<T1,T2>
                                                                                                     >::Type
-                                                                                       , typename If< IsTransposeVector<T2>
+                                                                                       , typename If< IsRowVector<T2>
                                                                                                     , SVecTSVecMultExprTrait<T1,T2>
                                                                                                     , SVecSVecMultExprTrait<T1,T2>
                                                                                                     >::Type
@@ -380,11 +380,11 @@ struct MultExprTrait
                                                                  >::Type
                                                     , typename If< IsVector<T2>
                                                                  , typename If< IsDenseVector<T2>
-                                                                              , typename If< IsTransposeVector<T2>
+                                                                              , typename If< IsRowVector<T2>
                                                                                            , TDVecScalarMultExprTrait<T2,T1>
                                                                                            , DVecScalarMultExprTrait<T2,T1>
                                                                                            >::Type
-                                                                              , typename If< IsTransposeVector<T2>
+                                                                              , typename If< IsRowVector<T2>
                                                                                            , TSVecScalarMultExprTrait<T2,T1>
                                                                                            , SVecScalarMultExprTrait<T2,T1>
                                                                                            >::Type

@@ -68,7 +68,7 @@
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
-#include <blaze/math/typetraits/IsTransposeVector.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
@@ -173,44 +173,44 @@ struct SubExprTrait
                                    , typename If< IsVector<T2>
                                                 , typename If< IsDenseVector<T1>
                                                              , typename If< IsDenseVector<T2>
-                                                                          , typename If< IsTransposeVector<T1>
-                                                                                       , typename If< IsTransposeVector<T2>
+                                                                          , typename If< IsRowVector<T1>
+                                                                                       , typename If< IsRowVector<T2>
                                                                                                     , TDVecTDVecSubExprTrait<T1,T2>
                                                                                                     , Failure
                                                                                                     >::Type
-                                                                                       , typename If< IsTransposeVector<T2>
+                                                                                       , typename If< IsRowVector<T2>
                                                                                                     , Failure
                                                                                                     , DVecDVecSubExprTrait<T1,T2>
                                                                                                     >::Type
                                                                                        >::Type
-                                                                          , typename If< IsTransposeVector<T1>
-                                                                                       , typename If< IsTransposeVector<T2>
+                                                                          , typename If< IsRowVector<T1>
+                                                                                       , typename If< IsRowVector<T2>
                                                                                                     , TDVecTSVecSubExprTrait<T1,T2>
                                                                                                     , Failure
                                                                                                     >::Type
-                                                                                       , typename If< IsTransposeVector<T2>
+                                                                                       , typename If< IsRowVector<T2>
                                                                                                     , Failure
                                                                                                     , DVecSVecSubExprTrait<T1,T2>
                                                                                                     >::Type
                                                                                        >::Type
                                                                           >::Type
                                                              , typename If< IsDenseVector<T2>
-                                                                          , typename If< IsTransposeVector<T1>
-                                                                                       , typename If< IsTransposeVector<T2>
+                                                                          , typename If< IsRowVector<T1>
+                                                                                       , typename If< IsRowVector<T2>
                                                                                                     , TSVecTDVecSubExprTrait<T1,T2>
                                                                                                     , Failure
                                                                                                     >::Type
-                                                                                       , typename If< IsTransposeVector<T2>
+                                                                                       , typename If< IsRowVector<T2>
                                                                                                     , Failure
                                                                                                     , SVecDVecSubExprTrait<T1,T2>
                                                                                                     >::Type
                                                                                        >::Type
-                                                                          , typename If< IsTransposeVector<T1>
-                                                                                       , typename If< IsTransposeVector<T2>
+                                                                          , typename If< IsRowVector<T1>
+                                                                                       , typename If< IsRowVector<T2>
                                                                                                     , TSVecTSVecSubExprTrait<T1,T2>
                                                                                                     , Failure
                                                                                                     >::Type
-                                                                                       , typename If< IsTransposeVector<T2>
+                                                                                       , typename If< IsRowVector<T2>
                                                                                                     , Failure
                                                                                                     , SVecSVecSubExprTrait<T1,T2>
                                                                                                     >::Type

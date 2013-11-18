@@ -44,11 +44,10 @@
 #include <blaze/math/traits/DVecSVecCrossExprTrait.h>
 #include <blaze/math/traits/SVecDVecCrossExprTrait.h>
 #include <blaze/math/traits/SVecSVecCrossExprTrait.h>
-#include <blaze/math/typetraits/IsTransposeVector.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Not.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -97,8 +96,8 @@ struct CrossExprTrait
    /*! \cond BLAZE_INTERNAL */
    typedef typename If< IsVector<T1>
                       , typename If< IsVector<T2>
-                                   , typename If< Not< IsTransposeVector<T1> >
-                                                , typename If< Not< IsTransposeVector<T2> >
+                                   , typename If< IsColumnVector<T1>
+                                                , typename If< IsColumnVector<T2>
                                                              , typename If< IsDenseVector<T1>
                                                                           , typename If< IsDenseVector<T2>
                                                                                        , DVecDVecCrossExprTrait<T1,T2>

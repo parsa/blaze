@@ -44,7 +44,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
-#include <blaze/math/typetraits/IsTransposeVector.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/NumericElementType.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/SelectType.h>
@@ -132,7 +132,7 @@ struct TDVecScalarMultExprTrait
    enum { qualified = IsConst<VT>::value || IsVolatile<VT>::value || IsReference<VT>::value ||
                       IsConst<ST>::value || IsVolatile<ST>::value || IsReference<ST>::value };
 
-   enum { condition = IsDenseVector<VT>::value && IsTransposeVector<VT>::value &&
+   enum { condition = IsDenseVector<VT>::value && IsRowVector<VT>::value &&
                       IsNumeric<ST>::value };
    /*! \endcond */
    //**********************************************************************************************
