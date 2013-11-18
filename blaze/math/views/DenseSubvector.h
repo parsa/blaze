@@ -61,9 +61,9 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsCrossExpr.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
-#include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/util/Assert.h>
@@ -283,8 +283,8 @@ namespace blaze {
    SubvectorType sv2 = subvector( sv1, 1UL, 5UL );
    \endcode
 */
-template< typename VT                               // Type of the dense vector
-        , bool TF = IsTransposeVector<VT>::value >  // Transpose flag
+template< typename VT                         // Type of the dense vector
+        , bool TF = IsRowVector<VT>::value >  // Transpose flag
 class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
                      , private Expression
 {

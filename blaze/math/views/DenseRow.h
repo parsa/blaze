@@ -810,8 +810,8 @@ inline DenseRow<MT,SO>& DenseRow<MT,SO>::operator=( const Vector<VT,true>& rhs )
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
@@ -848,8 +848,8 @@ inline DenseRow<MT,SO>& DenseRow<MT,SO>::operator+=( const Vector<VT,true>& rhs 
 {
    using blaze::addAssign;
 
-   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
@@ -884,8 +884,8 @@ inline DenseRow<MT,SO>& DenseRow<MT,SO>::operator-=( const Vector<VT,true>& rhs 
 {
    using blaze::subAssign;
 
-   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
@@ -921,8 +921,8 @@ inline DenseRow<MT,SO>& DenseRow<MT,SO>::operator*=( const Vector<VT,true>& rhs 
 {
    using blaze::multAssign;
 
-   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
@@ -2331,9 +2331,9 @@ inline DenseRow<MT,false>& DenseRow<MT,false>::operator=( const Vector<VT,true>&
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE    ( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
@@ -2371,8 +2371,8 @@ inline DenseRow<MT,false>& DenseRow<MT,false>::operator+=( const Vector<VT,true>
 {
    using blaze::addAssign;
 
-   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
@@ -2408,8 +2408,8 @@ inline DenseRow<MT,false>& DenseRow<MT,false>::operator-=( const Vector<VT,true>
 {
    using blaze::subAssign;
 
-   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
@@ -2446,8 +2446,8 @@ inline DenseRow<MT,false>& DenseRow<MT,false>::operator*=( const Vector<VT,true>
 {
    using blaze::multAssign;
 
-   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );

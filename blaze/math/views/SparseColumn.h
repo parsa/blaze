@@ -690,9 +690,9 @@ inline SparseColumn<MT,SO>& SparseColumn<MT,SO>::operator=( const SparseColumn& 
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE      ( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION     ( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
    if( this == &rhs || ( &matrix_ == &rhs.matrix_ && col_ == rhs.col_ ) )
       return *this;
@@ -734,9 +734,9 @@ inline SparseColumn<MT,SO>& SparseColumn<MT,SO>::operator=( const DenseVector<VT
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE       ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION     ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
@@ -776,9 +776,9 @@ inline SparseColumn<MT,SO>& SparseColumn<MT,SO>::operator=( const SparseVector<V
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE      ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION     ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename VT::ResultType tmp( ~rhs );
@@ -872,8 +872,8 @@ inline SparseColumn<MT,SO>& SparseColumn<MT,SO>::operator*=( const Vector<VT,fal
 
    typedef typename MultTrait<ResultType,typename VT::ResultType>::Type  MultType;
 
-   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( MultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION     ( MultType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( MultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
 
    const MultType tmp( *this * (~rhs) );
    matrix_.reset( col_ );
@@ -1450,9 +1450,9 @@ inline void SparseColumn<MT,SO>::addAssign( const DenseVector<VT,false>& rhs )
 {
    typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE       ( AddType );
-   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( AddType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION     ( AddType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( AddType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1481,9 +1481,9 @@ inline void SparseColumn<MT,SO>::addAssign( const SparseVector<VT,false>& rhs )
 {
    typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
 
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE      ( AddType );
-   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( AddType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION     ( AddType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( AddType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1513,9 +1513,9 @@ inline void SparseColumn<MT,SO>::subAssign( const DenseVector<VT,false>& rhs )
 {
    typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE       ( SubType );
-   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( SubType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION     ( SubType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( SubType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1544,9 +1544,9 @@ inline void SparseColumn<MT,SO>::subAssign( const SparseVector<VT,false>& rhs )
 {
    typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
 
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE      ( SubType );
-   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( SubType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION     ( SubType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( SubType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2246,9 +2246,9 @@ inline SparseColumn<MT,false>& SparseColumn<MT,false>::operator=( const SparseCo
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE      ( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION     ( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
    if( this == &rhs || ( &matrix_ == &rhs.matrix_ && col_ == rhs.col_ ) )
       return *this;
@@ -2376,8 +2376,8 @@ inline SparseColumn<MT,false>& SparseColumn<MT,false>::operator*=( const Vector<
 
    typedef typename MultTrait<ResultType,typename VT::ResultType>::Type  MultType;
 
-   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( MultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION     ( MultType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( MultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
 
    const MultType tmp( *this * (~rhs) );
    assign( tmp );
@@ -3007,8 +3007,8 @@ inline void SparseColumn<MT,false>::addAssign( const Vector<VT,false>& rhs )
 {
    typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
 
-   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( AddType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION     ( AddType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -3037,8 +3037,8 @@ inline void SparseColumn<MT,false>::subAssign( const Vector<VT,false>& rhs )
 {
    typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
 
-   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( SubType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION     ( SubType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
