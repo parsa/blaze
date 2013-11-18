@@ -54,12 +54,13 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMultExpr.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsTemporary.h>
-#include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/FloatingPoint.h>
@@ -762,7 +763,7 @@ struct SVecScalarMultExprTrait< SVecScalarDivExpr<VT,ST1,false>, ST2 >
 
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsSparseVector<VT>::value && !IsTransposeVector<VT>::value &&
+   typedef typename SelectType< IsSparseVector<VT>::value && IsColumnVector<VT>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
                               , typename SelectType<condition,T1,T2>::Type
                               , INVALID_TYPE >::Type  Type;
@@ -797,7 +798,7 @@ struct TSVecScalarMultExprTrait< SVecScalarDivExpr<VT,ST1,true>, ST2 >
 
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsSparseVector<VT>::value && IsTransposeVector<VT>::value &&
+   typedef typename SelectType< IsSparseVector<VT>::value && IsRowVector<VT>::value &&
                                 IsNumeric<ST1>::value && IsNumeric<ST2>::value
                               , typename SelectType<condition,T1,T2>::Type
                               , INVALID_TYPE >::Type  Type;

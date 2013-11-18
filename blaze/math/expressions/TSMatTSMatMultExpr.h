@@ -65,13 +65,14 @@
 #include <blaze/math/traits/TDVecTSMatMultExprTrait.h>
 #include <blaze/math/traits/TSVecTSMatMultExprTrait.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
-#include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Byte.h>
@@ -740,7 +741,7 @@ struct TSMatDVecMultExprTrait< TSMatTSMatMultExpr<MT1,MT2>, VT >
    //**********************************************************************************************
    typedef typename SelectType< IsSparseMatrix<MT1>::value && IsColumnMajorMatrix<MT1>::value &&
                                 IsSparseMatrix<MT2>::value && IsColumnMajorMatrix<MT2>::value &&
-                                IsDenseVector<VT>::value   && !IsTransposeVector<VT>::value
+                                IsDenseVector<VT>::value   && IsColumnVector<VT>::value
                               , typename TSMatDVecMultExprTrait< MT1, typename TSMatDVecMultExprTrait<MT2,VT>::Type >::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
@@ -758,7 +759,7 @@ struct TSMatSVecMultExprTrait< TSMatTSMatMultExpr<MT1,MT2>, VT >
    //**********************************************************************************************
    typedef typename SelectType< IsSparseMatrix<MT1>::value && IsColumnMajorMatrix<MT1>::value &&
                                 IsSparseMatrix<MT2>::value && IsColumnMajorMatrix<MT2>::value &&
-                                IsSparseVector<VT>::value  && !IsTransposeVector<VT>::value
+                                IsSparseVector<VT>::value  && IsColumnVector<VT>::value
                               , typename TSMatDVecMultExprTrait< MT1, typename TSMatDVecMultExprTrait<MT2,VT>::Type >::Type
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
@@ -774,7 +775,7 @@ struct TDVecTSMatMultExprTrait< VT, TSMatTSMatMultExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsDenseVector<VT>::value   && IsTransposeVector<VT>::value    &&
+   typedef typename SelectType< IsDenseVector<VT>::value   && IsRowVector<VT>::value          &&
                                 IsSparseMatrix<MT1>::value && IsColumnMajorMatrix<MT1>::value &&
                                 IsSparseMatrix<MT2>::value && IsColumnMajorMatrix<MT2>::value
                               , typename TDVecTSMatMultExprTrait< typename TDVecTSMatMultExprTrait<VT,MT1>::Type, MT2 >::Type
@@ -792,7 +793,7 @@ struct TSVecTSMatMultExprTrait< VT, TSMatTSMatMultExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsSparseVector<VT>::value  && IsTransposeVector<VT>::value    &&
+   typedef typename SelectType< IsSparseVector<VT>::value  && IsRowVector<VT>::value          &&
                                 IsSparseMatrix<MT1>::value && IsColumnMajorMatrix<MT1>::value &&
                                 IsSparseMatrix<MT2>::value && IsColumnMajorMatrix<MT2>::value
                               , typename TSVecTSMatMultExprTrait< typename TSVecTSMatMultExprTrait<VT,MT1>::Type, MT2 >::Type

@@ -52,12 +52,13 @@
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsTemporary.h>
-#include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/logging/FunctionTrace.h>
@@ -516,9 +517,9 @@ struct DVecDVecAddExprTrait< DVecSVecSubExpr<VT1,VT2,false>, VT3 >
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< IsDenseVector<VT1>::value  && !IsTransposeVector<VT1>::value &&
-                                IsSparseVector<VT2>::value && !IsTransposeVector<VT2>::value &&
-                                IsDenseVector<VT3>::value  && !IsTransposeVector<VT3>::value
+   typedef typename SelectType< IsDenseVector<VT1>::value  && IsColumnVector<VT1>::value &&
+                                IsSparseVector<VT2>::value && IsColumnVector<VT2>::value &&
+                                IsDenseVector<VT3>::value  && IsColumnVector<VT3>::value
                               , typename DVecSVecSubExprTrait< typename DVecDVecAddExprTrait<VT1,VT3>::Type, VT2 >::Type
                               , INVALID_TYPE >::Type  Type;
    /*! \endcond */
@@ -536,9 +537,9 @@ struct TDVecTDVecAddExprTrait< DVecSVecSubExpr<VT1,VT2,true>, VT3 >
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< IsDenseVector<VT1>::value  && IsTransposeVector<VT1>::value &&
-                                IsSparseVector<VT2>::value && IsTransposeVector<VT2>::value &&
-                                IsDenseVector<VT3>::value  && IsTransposeVector<VT3>::value
+   typedef typename SelectType< IsDenseVector<VT1>::value  && IsRowVector<VT1>::value &&
+                                IsSparseVector<VT2>::value && IsRowVector<VT2>::value &&
+                                IsDenseVector<VT3>::value  && IsRowVector<VT3>::value
                               , typename TDVecTSVecSubExprTrait< typename TDVecTDVecAddExprTrait<VT1,VT3>::Type, VT2 >::Type
                               , INVALID_TYPE >::Type  Type;
    /*! \endcond */
@@ -556,9 +557,9 @@ struct DVecDVecSubExprTrait< DVecSVecSubExpr<VT1,VT2,false>, VT3 >
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< IsDenseVector<VT1>::value  && !IsTransposeVector<VT1>::value &&
-                                IsSparseVector<VT2>::value && !IsTransposeVector<VT2>::value &&
-                                IsDenseVector<VT3>::value  && !IsTransposeVector<VT3>::value
+   typedef typename SelectType< IsDenseVector<VT1>::value  && IsColumnVector<VT1>::value &&
+                                IsSparseVector<VT2>::value && IsColumnVector<VT2>::value &&
+                                IsDenseVector<VT3>::value  && IsColumnVector<VT3>::value
                               , typename DVecSVecSubExprTrait< typename DVecDVecSubExprTrait<VT1,VT3>::Type, VT2 >::Type
                               , INVALID_TYPE >::Type  Type;
    /*! \endcond */
@@ -576,9 +577,9 @@ struct TDVecTDVecSubExprTrait< DVecSVecSubExpr<VT1,VT2,true>, VT3 >
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< IsDenseVector<VT1>::value  && IsTransposeVector<VT1>::value &&
-                                IsSparseVector<VT2>::value && IsTransposeVector<VT2>::value &&
-                                IsDenseVector<VT3>::value  && IsTransposeVector<VT3>::value
+   typedef typename SelectType< IsDenseVector<VT1>::value  && IsRowVector<VT1>::value &&
+                                IsSparseVector<VT2>::value && IsRowVector<VT2>::value &&
+                                IsDenseVector<VT3>::value  && IsRowVector<VT3>::value
                               , typename TDVecTSVecSubExprTrait< typename TDVecTDVecSubExprTrait<VT1,VT3>::Type, VT2 >::Type
                               , INVALID_TYPE >::Type  Type;
    /*! \endcond */

@@ -109,8 +109,8 @@ inline const typename MultTrait<typename T1::ElementType,typename T2::ElementTyp
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( T1 );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( T2 );
-   BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE( T1 );
-   BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE( T2 );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( T1 );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( T2 );
 
    if( (~lhs).size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
