@@ -42,7 +42,6 @@
 
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsRowVector.h>
-#include <blaze/math/typetraits/IsTransposeVector.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/constraints/ConstraintTest.h>
 #include <blaze/util/Suffix.h>
@@ -208,166 +207,6 @@ template<> struct CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE_FAILED<true> { enum 
 
 //=================================================================================================
 //
-//  MUST_BE_TRANSPOSE_VECTOR_TYPE CONSTRAINT
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup math_constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Constraint on the data type.
-// \ingroup math_constraints
-//
-// In case the given data type \a T is not a transpose dense or sparse vector type a compilation
-// error is created.
-*/
-#define BLAZE_CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE(T) \
-   typedef \
-      blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE_FAILED< blaze::IsTransposeVector<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_BE_TRANSPOSE_VECTOR_TYPE_TYPEDEF, __LINE__ )
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  MUST_NOT_BE_TRANSPOSE_VECTOR_TYPE CONSTRAINT
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup math_constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_NOT_BE_TRANSPOSE_VECTOR_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_NOT_BE_TRANSPOSE_VECTOR_TYPE_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Constraint on the data type.
-// \ingroup math_constraints
-//
-// In case the given data type \a T is a transpose dense or sparse vector type a compilation
-// error is created.
-*/
-#define BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSPOSE_VECTOR_TYPE(T) \
-   typedef \
-      blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_NOT_BE_TRANSPOSE_VECTOR_TYPE_FAILED< !blaze::IsTransposeVector<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_TRANSPOSE_VECTOR_TYPE_TYPEDEF, __LINE__ )
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  MUST_BE_NONTRANSPOSE_VECTOR_TYPE CONSTRAINT
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup math_constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Constraint on the data type.
-// \ingroup math_constraints
-//
-// In case the given data type \a T is a non-transpose dense or sparse vector type (i.e., a
-// vector type that is not transposed) a compilation error is created.
-*/
-#define BLAZE_CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE(T) \
-   typedef \
-      blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE_FAILED< \
-            blaze::IsVector<T>::value && \
-            !blaze::IsTransposeVector<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_BE_NONTRANSPOSE_VECTOR_TYPE_TYPEDEF, __LINE__ )
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  MUST_NOT_BE_NONTRANSPOSE_VECTOR_TYPE CONSTRAINT
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup math_constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_NOT_BE_NONTRANSPOSE_VECTOR_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_NOT_BE_NONTRANSPOSE_VECTOR_TYPE_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Constraint on the data type.
-// \ingroup math_constraints
-//
-// In case the given data type \a T is not a non-transpose dense or sparse vector type (i.e.,
-// any data type except a normal, non-transposed vector type) a compilation error is created.
-*/
-#define BLAZE_CONSTRAINT_MUST_NOT_BE_NONTRANSPOSE_VECTOR_TYPE(T) \
-   typedef \
-      blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_NOT_BE_NONTRANSPOSE_VECTOR_TYPE_FAILED< \
-            !blaze::IsVector<T>::value || \
-            blaze::IsTransposeVector<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_NONTRANSPOSE_VECTOR_TYPE_TYPEDEF, __LINE__ )
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG CONSTRAINT
 //
 //=================================================================================================
@@ -401,7 +240,7 @@ template<> struct CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG_FAILED<true> { e
       blaze::CONSTRAINT_TEST< \
          blaze::CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG_FAILED< \
             blaze::IsVector<T>::value && \
-            blaze::IsTransposeVector<T>::value == TF >::value > \
+            blaze::IsRowVector<T>::value == TF >::value > \
       BLAZE_JOIN( CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
@@ -443,7 +282,7 @@ template<> struct CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG_FAILED<true> 
          blaze::CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG_FAILED< \
             blaze::IsVector<T1>::value && \
             blaze::IsVector<T2>::value && \
-            static_cast<int>( blaze::IsTransposeVector<T1>::value ) == static_cast<int>( blaze::IsTransposeVector<T2>::value ) >::value > \
+            static_cast<int>( blaze::IsColumnVector<T1>::value ) == static_cast<int>( blaze::IsColumnVector<T2>::value ) >::value > \
       BLAZE_JOIN( CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
