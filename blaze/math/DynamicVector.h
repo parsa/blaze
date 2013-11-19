@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/dense/HybridVector.h>
 #include <blaze/math/dense/DynamicVector.h>
 #include <blaze/math/DenseVector.h>
 #include <blaze/math/DynamicMatrix.h>
