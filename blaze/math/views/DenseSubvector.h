@@ -48,7 +48,6 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/TransposeFlag.h>
-#include <blaze/math/dense/DynamicVector.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/CrossExpr.h>
 #include <blaze/math/expressions/DenseVector.h>
@@ -2169,12 +2168,12 @@ inline DenseSubvector<VT,TF>
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline typename EnableIf< IsCrossExpr<VT>, DynamicVector<typename VT::ElementType,TF> >::Type
+inline typename EnableIf< IsCrossExpr<VT>, HybridVector<typename VT::ElementType,3UL,TF> >::Type
    subvector( const DenseVector<VT,TF>& dv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   DynamicVector<typename VT::ElementType,TF> tmp( size );
+   HybridVector<typename VT::ElementType,3UL,TF> tmp( size );
 
    for( size_t i=0UL; i<size; ++i ) {
       tmp[i] = (~dv)[index+i];
