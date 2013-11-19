@@ -108,6 +108,13 @@ BLAS="no"
 BLAS_INCLUDE_PATH=
 BLAS_INCLUDE_FILE=
 
+# Configuration of the OpenMP parallelization (optional)
+# Blaze offers a shared memory parallelization by means of OpenMP. If this switch is set
+# to 'yes' the OpenMP parallelization is activated and all algorithms are executed on
+# several compute cores (if beneficial for the performance). If the switch is to 'no'
+# all algorithms are guaranteed to run serially on a single compute core.
+OPENMP="no"
+
 # Configuration of the MPI library (optional)
 # If set to 'yes' the MPI parallel execution of the Blaze library will be activated. If
 # set to 'yes' and in case the MPI include directory is not explicitly specified it is
