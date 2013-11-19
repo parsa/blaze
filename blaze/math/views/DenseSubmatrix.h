@@ -67,6 +67,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
+#include <blaze/system/CacheSize.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/DisableIf.h>
