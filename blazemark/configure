@@ -2028,231 +2028,231 @@ main:
 binaries:
 	@echo "Building the binaries..."
 	@echo "  Building the memory sweep binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/memorysweep \$(OBJECT_PATH)/MAIN_MemorySweep.o
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/memorysweep \$(OBJECT_PATH)/MAIN_MemorySweep.o
 	@echo "  Building dense vector/dense vector addition (dvecdvecadd) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dvecdvecadd $DVECDVECADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dvecdvecadd $DVECDVECADD \$(LIBRARIES)
 	@echo "  Building dense vector/sparse vector addition (dvecsvecadd) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dvecsvecadd $DVECSVECADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dvecsvecadd $DVECSVECADD \$(LIBRARIES)
 	@echo "  Building sparse vector/dense vector addition (svecdvecadd) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/svecdvecadd $SVECDVECADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/svecdvecadd $SVECDVECADD \$(LIBRARIES)
 	@echo "  Building sparse vector/sparse vector addition (svecsvecadd) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/svecsvecadd $SVECSVECADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/svecsvecadd $SVECSVECADD \$(LIBRARIES)
 	@echo "  Building dense vector/dense vector subtraction (dvecdvecsub) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dvecdvecsub $DVECDVECSUB \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dvecdvecsub $DVECDVECSUB \$(LIBRARIES)
 	@echo "  Building dense vector/scalar multiplication (dvecscalarmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dvecscalarmult $DVECSCALARMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dvecscalarmult $DVECSCALARMULT \$(LIBRARIES)
 	@echo "  Building sparse vector/scalar multiplication (svecscalarmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/svecscalarmult $SVECSCALARMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/svecscalarmult $SVECSCALARMULT \$(LIBRARIES)
 	@echo "  Building dense vector/dense vector multiplication (dvecdvecmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dvecdvecmult $DVECDVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dvecdvecmult $DVECDVECMULT \$(LIBRARIES)
 	@echo "  Building dense vector/sparse vector multiplication (dvecsvecmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dvecsvecmult $DVECSVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dvecsvecmult $DVECSVECMULT \$(LIBRARIES)
 	@echo "  Building sparse vector/dense vector multiplication (svecdvecmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/svecdvecmult $SVECDVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/svecdvecmult $SVECDVECMULT \$(LIBRARIES)
 	@echo "  Building sparse vector/sparse vector multiplication (svecsvecmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/svecsvecmult $SVECSVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/svecsvecmult $SVECSVECMULT \$(LIBRARIES)
 	@echo "  Building daxpy product (daxpy) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/daxpy $DAXPY \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/daxpy $DAXPY \$(LIBRARIES)
 	@echo "  Building dense vector/dense vector cross product (dvecdveccross) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dvecdveccross $DVECDVECCROSS \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dvecdveccross $DVECDVECCROSS \$(LIBRARIES)
 	@echo "  Building dense vector/sparse vector cross product (dvecsveccross) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dvecsveccross $DVECSVECCROSS \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dvecsveccross $DVECSVECCROSS \$(LIBRARIES)
 	@echo "  Building sparse vector/dense vector cross product (svecdveccross) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/svecdveccross $SVECDVECCROSS \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/svecdveccross $SVECDVECCROSS \$(LIBRARIES)
 	@echo "  Building sparse vector/sparse vector cross product (svecsveccross) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/svecsveccross $SVECSVECCROSS \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/svecsveccross $SVECSVECCROSS \$(LIBRARIES)
 	@echo "  Building dense vector norm (dvecnorm) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dvecnorm $DVECNORM \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dvecnorm $DVECNORM \$(LIBRARIES)
 	@echo "  Building dense vector/dense vector inner product (tdvecdvecmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tdvecdvecmult $TDVECDVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tdvecdvecmult $TDVECDVECMULT \$(LIBRARIES)
 	@echo "  Building dense vector/sparse vector inner product (tdvecsvecmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tdvecsvecmult $TDVECSVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tdvecsvecmult $TDVECSVECMULT \$(LIBRARIES)
 	@echo "  Building sparse vector/dense vector inner product (tsvecdvecmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tsvecdvecmult $TSVECDVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tsvecdvecmult $TSVECDVECMULT \$(LIBRARIES)
 	@echo "  Building sparse vector/sparse vector inner product (tsvecsvecmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tsvecsvecmult $TSVECSVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tsvecsvecmult $TSVECSVECMULT \$(LIBRARIES)
 	@echo "  Building dense vector/dense vector outer product (dvectdvecmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dvectdvecmult $DVECTDVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dvectdvecmult $DVECTDVECMULT \$(LIBRARIES)
 	@echo "  Building dense vector/sparse vector outer product (dvectsvecmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dvectsvecmult $DVECTSVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dvectsvecmult $DVECTSVECMULT \$(LIBRARIES)
 	@echo "  Building sparse vector/dense vector outer product (svectdvecmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/svectdvecmult $SVECTDVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/svectdvecmult $SVECTDVECMULT \$(LIBRARIES)
 	@echo "  Building sparse vector/sparse vector outer product (svectsvecmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/svectsvecmult $SVECTSVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/svectsvecmult $SVECTSVECMULT \$(LIBRARIES)
 	@echo "  Building dense matrix/dense vector multiplication (dmatdvecmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dmatdvecmult $DMATDVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dmatdvecmult $DMATDVECMULT \$(LIBRARIES)
 	@echo "  Building transpose dense matrix/dense vector multiplication (tdmatdvecmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tdmatdvecmult $TDMATDVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tdmatdvecmult $TDMATDVECMULT \$(LIBRARIES)
 	@echo "  Building dense matrix/sparse vector multiplication (dmatsvecmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dmatsvecmult $DMATSVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dmatsvecmult $DMATSVECMULT \$(LIBRARIES)
 	@echo "  Building transpose dense matrix/sparse vector multiplication (tdmatsvecmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tdmatsvecmult $TDMATSVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tdmatsvecmult $TDMATSVECMULT \$(LIBRARIES)
 	@echo "  Building sparse matrix/dense vector multiplication (smatdvecmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/smatdvecmult $SMATDVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/smatdvecmult $SMATDVECMULT \$(LIBRARIES)
 	@echo "  Building transpose sparse matrix/dense vector multiplication (tsmatdvecmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tsmatdvecmult $TSMATDVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tsmatdvecmult $TSMATDVECMULT \$(LIBRARIES)
 	@echo "  Building sparse matrix/sparse vector multiplication (smatsvecmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/smatsvecmult $SMATSVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/smatsvecmult $SMATSVECMULT \$(LIBRARIES)
 	@echo "  Building transpose sparse matrix/sparse vector multiplication (tsmatsvecmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tsmatsvecmult $TSMATSVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tsmatsvecmult $TSMATSVECMULT \$(LIBRARIES)
 	@echo "  Building transpose dense vector/dense matrix multiplication (tdvecdmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tdvecdmatmult $TDVECDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tdvecdmatmult $TDVECDMATMULT \$(LIBRARIES)
 	@echo "  Building transpose dense vector/transpose dense matrix multiplication (tdvectdmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tdvectdmatmult $TDVECTDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tdvectdmatmult $TDVECTDMATMULT \$(LIBRARIES)
 	@echo "  Building transpose sparse vector/dense matrix multiplication (tsvecdmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tsvecdmatmult $TSVECDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tsvecdmatmult $TSVECDMATMULT \$(LIBRARIES)
 	@echo "  Building transpose sparse vector/transpose dense matrix multiplication (tsvectdmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tsvectdmatmult $TSVECTDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tsvectdmatmult $TSVECTDMATMULT \$(LIBRARIES)
 	@echo "  Building transpose dense vector/sparse matrix multiplication (tdvecsmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tdvecsmatmult $TDVECSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tdvecsmatmult $TDVECSMATMULT \$(LIBRARIES)
 	@echo "  Building transpose dense vector/transpose sparse matrix multiplication (tdvectsmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tdvectsmatmult $TDVECTSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tdvectsmatmult $TDVECTSMATMULT \$(LIBRARIES)
 	@echo "  Building transpose sparse vector/sparse matrix multiplication (tsvecsmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tsvecsmatmult $TSVECSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tsvecsmatmult $TSVECSMATMULT \$(LIBRARIES)
 	@echo "  Building transpose sparse vector/transpose sparse matrix multiplication (tsvectsmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tsvectsmatmult $TSVECTSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tsvectsmatmult $TSVECTSMATMULT \$(LIBRARIES)
 	@echo "  Building dense matrix transpose (dmattrans) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dmattrans $DMATTRANS \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dmattrans $DMATTRANS \$(LIBRARIES)
 	@echo "  Building sparse matrix transpose (smattrans) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/smattrans $SMATTRANS \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/smattrans $SMATTRANS \$(LIBRARIES)
 	@echo "  Building dense matrix/dense matrix addition (dmatdmatadd) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dmatdmatadd $DMATDMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dmatdmatadd $DMATDMATADD \$(LIBRARIES)
 	@echo "  Building dense matrix/transpose dense matrix addition (dmattdmatadd) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dmattdmatadd $DMATTDMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dmattdmatadd $DMATTDMATADD \$(LIBRARIES)
 	@echo "  Building transpose dense matrix/dense matrix addition (tdmatdmatadd) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tdmatdmatadd $TDMATDMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tdmatdmatadd $TDMATDMATADD \$(LIBRARIES)
 	@echo "  Building transpose dense matrix/transpose dense matrix addition (tdmattdmatadd) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tdmattdmatadd $TDMATTDMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tdmattdmatadd $TDMATTDMATADD \$(LIBRARIES)
 	@echo "  Building dense matrix/sparse matrix addition (dmatsmatadd) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dmatsmatadd $DMATSMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dmatsmatadd $DMATSMATADD \$(LIBRARIES)
 	@echo "  Building dense matrix/transpose sparse matrix addition (dmattsmatadd) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dmattsmatadd $DMATTSMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dmattsmatadd $DMATTSMATADD \$(LIBRARIES)
 	@echo "  Building transpose dense matrix/sparse matrix addition (tdmatsmatadd) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tdmatsmatadd $TDMATSMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tdmatsmatadd $TDMATSMATADD \$(LIBRARIES)
 	@echo "  Building transpose dense matrix/transpose sparse matrix addition (tdmattsmatadd) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tdmattsmatadd $TDMATTSMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tdmattsmatadd $TDMATTSMATADD \$(LIBRARIES)
 	@echo "  Building sparse matrix/dense matrix addition (smatdmatadd) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/smatdmatadd $SMATDMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/smatdmatadd $SMATDMATADD \$(LIBRARIES)
 	@echo "  Building sparse matrix/transpose dense matrix addition (smattdmatadd) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/smattdmatadd $SMATTDMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/smattdmatadd $SMATTDMATADD \$(LIBRARIES)
 	@echo "  Building transpose sparse matrix/dense matrix addition (tsmatdmatadd) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tsmatdmatadd $TSMATDMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tsmatdmatadd $TSMATDMATADD \$(LIBRARIES)
 	@echo "  Building transpose sparse matrix/transpose dense matrix addition (tsmatdmatadd) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tsmattdmatadd $TSMATTDMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tsmattdmatadd $TSMATTDMATADD \$(LIBRARIES)
 	@echo "  Building sparse matrix/sparse matrix addition (smatsmatadd) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/smatsmatadd $SMATSMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/smatsmatadd $SMATSMATADD \$(LIBRARIES)
 	@echo "  Building sparse matrix/transpose sparse matrix addition (smattsmatadd) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/smattsmatadd $SMATTSMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/smattsmatadd $SMATTSMATADD \$(LIBRARIES)
 	@echo "  Building transpose sparse matrix/sparse matrix addition (tsmatsmatadd) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tsmatsmatadd $TSMATSMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tsmatsmatadd $TSMATSMATADD \$(LIBRARIES)
 	@echo "  Building transpose sparse matrix/transpose sparse matrix addition (tsmattsmatadd) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tsmattsmatadd $TSMATTSMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tsmattsmatadd $TSMATTSMATADD \$(LIBRARIES)
 	@echo "  Building dense matrix/dense matrix subtraction (dmatdmatsub) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dmatdmatsub $DMATDMATSUB \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dmatdmatsub $DMATDMATSUB \$(LIBRARIES)
 	@echo "  Building dense matrix/scalar multiplication (dmatscalarmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dmatscalarmult $DMATSCALARMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dmatscalarmult $DMATSCALARMULT \$(LIBRARIES)
 	@echo "  Building sparse matrix/scalar multiplication (smatscalarmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/smatscalarmult $SMATSCALARMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/smatscalarmult $SMATSCALARMULT \$(LIBRARIES)
 	@echo "  Building dense matrix/dense matrix multiplication (dmatdmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dmatdmatmult $DMATDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dmatdmatmult $DMATDMATMULT \$(LIBRARIES)
 	@echo "  Building dense matrix/transpose dense matrix multiplication (dmattdmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dmattdmatmult $DMATTDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dmattdmatmult $DMATTDMATMULT \$(LIBRARIES)
 	@echo "  Building transpose dense matrix/dense matrix multiplication (tdmatdmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tdmatdmatmult $TDMATDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tdmatdmatmult $TDMATDMATMULT \$(LIBRARIES)
 	@echo "  Building transpose dense matrix/transpose dense matrix multiplication (tdmattdmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tdmattdmatmult $TDMATTDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tdmattdmatmult $TDMATTDMATMULT \$(LIBRARIES)
 	@echo "  Building dense matrix/sparse matrix multiplication (dmatsmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dmatsmatmult $DMATSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dmatsmatmult $DMATSMATMULT \$(LIBRARIES)
 	@echo "  Building dense matrix/transpose sparse matrix multiplication (dmattsmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/dmattsmatmult $DMATTSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dmattsmatmult $DMATTSMATMULT \$(LIBRARIES)
 	@echo "  Building transpose dense matrix/sparse matrix multiplication (tdmatsmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tdmatsmatmult $TDMATSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tdmatsmatmult $TDMATSMATMULT \$(LIBRARIES)
 	@echo "  Building transpose dense matrix/transpose sparse matrix multiplication (tdmattsmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tdmattsmatmult $TDMATTSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tdmattsmatmult $TDMATTSMATMULT \$(LIBRARIES)
 	@echo "  Building sparse matrix/dense matrix multiplication (smatdmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/smatdmatmult $SMATDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/smatdmatmult $SMATDMATMULT \$(LIBRARIES)
 	@echo "  Building sparse matrix/transpose dense matrix multiplication (smattdmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/smattdmatmult $SMATTDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/smattdmatmult $SMATTDMATMULT \$(LIBRARIES)
 	@echo "  Building transpose sparse matrix/dense matrix multiplication (tsmatdmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tsmatdmatmult $TSMATDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tsmatdmatmult $TSMATDMATMULT \$(LIBRARIES)
 	@echo "  Building transpose sparse matrix/transpose dense matrix multiplication (tsmattdmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tsmattdmatmult $TSMATTDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tsmattdmatmult $TSMATTDMATMULT \$(LIBRARIES)
 	@echo "  Building sparse matrix/sparse matrix multiplication (smatsmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/smatsmatmult $SMATSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/smatsmatmult $SMATSMATMULT \$(LIBRARIES)
 	@echo "  Building sparse matrix/transpose sparse matrix multiplication (smattsmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/smattsmatmult $SMATTSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/smattsmatmult $SMATTSMATMULT \$(LIBRARIES)
 	@echo "  Building transpose sparse matrix/sparse matrix multiplication (tsmatsmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tsmatsmatmult $TSMATSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tsmatsmatmult $TSMATSMATMULT \$(LIBRARIES)
 	@echo "  Building transpose sparse matrix/transpose sparse matrix multiplication (tsmattsmatmult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tsmattsmatmult $TSMATTSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tsmattsmatmult $TSMATTSMATMULT \$(LIBRARIES)
 	@echo "  Building 3-dimensional vector/vector addition (vec3vec3add) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/vec3vec3add $VEC3VEC3ADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/vec3vec3add $VEC3VEC3ADD \$(LIBRARIES)
 	@echo "  Building 6-dimensional vector/vector addition (vec6vec6add) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/vec6vec6add $VEC6VEC6ADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/vec6vec6add $VEC6VEC6ADD \$(LIBRARIES)
 	@echo "  Building 3-dimensional matrix/vector multiplication (mat3vec3mult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/mat3vec3mult $MAT3VEC3MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/mat3vec3mult $MAT3VEC3MULT \$(LIBRARIES)
 	@echo "  Building 3-dimensional transpose matrix/vector multiplication (tmat3vec3mult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tmat3vec3mult $TMAT3VEC3MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tmat3vec3mult $TMAT3VEC3MULT \$(LIBRARIES)
 	@echo "  Building 6-dimensional matrix/vector multiplication (mat6vec6mult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/mat6vec6mult $MAT6VEC6MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/mat6vec6mult $MAT6VEC6MULT \$(LIBRARIES)
 	@echo "  Building 6-dimensional transpose matrix/vector multiplication (tmat6vec6mult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tmat6vec6mult $TMAT6VEC6MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tmat6vec6mult $TMAT6VEC6MULT \$(LIBRARIES)
 	@echo "  Building 3-dimensional transpose vector/matrix multiplication (tvec3mat3mult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tvec3mat3mult $TVEC3MAT3MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tvec3mat3mult $TVEC3MAT3MULT \$(LIBRARIES)
 	@echo "  Building 3-dimensional transpose vector/transpose matrix multiplication (tvec3tmat3mult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tvec3tmat3mult $TVEC3TMAT3MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tvec3tmat3mult $TVEC3TMAT3MULT \$(LIBRARIES)
 	@echo "  Building 6-dimensional transpose vector/matrix multiplication (tvec6mat6mult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tvec6mat6mult $TVEC6MAT6MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tvec6mat6mult $TVEC6MAT6MULT \$(LIBRARIES)
 	@echo "  Building 6-dimensional transpose vector/transpose matrix multiplication (tvec6tmat6mult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tvec6tmat6mult $TVEC6TMAT6MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tvec6tmat6mult $TVEC6TMAT6MULT \$(LIBRARIES)
 	@echo "  Building 3-dimensional matrix/matrix addition (mat3mat3add) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/mat3mat3add $MAT3MAT3ADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/mat3mat3add $MAT3MAT3ADD \$(LIBRARIES)
 	@echo "  Building 3-dimensional transpose matrix/transpose matrix addition (tmat3tmat3add) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tmat3tmat3add $TMAT3TMAT3ADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tmat3tmat3add $TMAT3TMAT3ADD \$(LIBRARIES)
 	@echo "  Building 6-dimensional matrix/matrix addition (mat6mat6add) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/mat6mat6add $MAT6MAT6ADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/mat6mat6add $MAT6MAT6ADD \$(LIBRARIES)
 	@echo "  Building 6-dimensional transpose matrix/transpose matrix addition (tmat6tmat6add) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tmat6tmat6add $TMAT6TMAT6ADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tmat6tmat6add $TMAT6TMAT6ADD \$(LIBRARIES)
 	@echo "  Building 3-dimensional matrix/matrix multiplication (mat3mat3mult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/mat3mat3mult $MAT3MAT3MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/mat3mat3mult $MAT3MAT3MULT \$(LIBRARIES)
 	@echo "  Building 3-dimensional matrix/transpose matrix multiplication (mat3tmat3mult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/mat3tmat3mult $MAT3TMAT3MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/mat3tmat3mult $MAT3TMAT3MULT \$(LIBRARIES)
 	@echo "  Building 3-dimensional transpose matrix/matrix multiplication (tmat3mat3mult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tmat3mat3mult $TMAT3MAT3MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tmat3mat3mult $TMAT3MAT3MULT \$(LIBRARIES)
 	@echo "  Building 3-dimensional transpose matrix/transpose matrix multiplication (tmat3tmat3mult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tmat3tmat3mult $TMAT3TMAT3MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tmat3tmat3mult $TMAT3TMAT3MULT \$(LIBRARIES)
 	@echo "  Building 6-dimensional matrix/matrix multiplication (mat6mat6mult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/mat6mat6mult $MAT6MAT6MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/mat6mat6mult $MAT6MAT6MULT \$(LIBRARIES)
 	@echo "  Building 6-dimensional matrix/transpose matrix multiplication (mat6tmat6mult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/mat6tmat6mult $MAT6TMAT6MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/mat6tmat6mult $MAT6TMAT6MULT \$(LIBRARIES)
 	@echo "  Building 6-dimensional transpose matrix/matrix multiplication (tmat6mat6mult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tmat6mat6mult $TMAT6MAT6MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tmat6mat6mult $TMAT6MAT6MULT \$(LIBRARIES)
 	@echo "  Building 6-dimensional transpose matrix/transpose matrix multiplication (tmat6tmat6mult) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/tmat6tmat6mult $TMAT6TMAT6MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tmat6tmat6mult $TMAT6TMAT6MULT \$(LIBRARIES)
 	@echo "  Building complex expression ( c = A * ( a + b ) ) (complex1) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/complex1 $COMPLEX1 \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/complex1 $COMPLEX1 \$(LIBRARIES)
 	@echo "  Building complex expression ( d = A * ( a + b + c ) ) (complex2) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/complex2 $COMPLEX2 \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/complex2 $COMPLEX2 \$(LIBRARIES)
 	@echo "  Building complex expression ( c = A * B * ( a + b ) ) (complex3) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/complex3 $COMPLEX3 \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/complex3 $COMPLEX3 \$(LIBRARIES)
 	@echo "  Building complex expression ( b += s * A * a ) (complex4) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/complex4 $COMPLEX4 \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/complex4 $COMPLEX4 \$(LIBRARIES)
 	@echo "  Building complex expression ( D = ( A * B ) + C ) (complex5) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/complex5 $COMPLEX5 \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/complex5 $COMPLEX5 \$(LIBRARIES)
 	@echo "  Building complex expression ( D = A * B * C ) (complex6) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/complex6 $COMPLEX6 \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/complex6 $COMPLEX6 \$(LIBRARIES)
 	@echo "  Building complex expression ( E = ( A + B ) * ( C - D ) ) (complex7) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/complex7 $COMPLEX7 \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/complex7 $COMPLEX7 \$(LIBRARIES)
 	@echo "  Building complex expression ( C += s * A * B ) (complex8) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/complex8 $COMPLEX8 \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/complex8 $COMPLEX8 \$(LIBRARIES)
 	@echo "  Building conjugate gradient (cg) binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/cg $CG \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/cg $CG \$(LIBRARIES)
 	@echo
 
 memorysweep:
 	@echo
 	@echo "Building the memory sweep binary..."
-	@\$(CXX) -o \$(INSTALL_PATH)/bin/memorysweep \$(INSTALL_PATH)/src/main/MemorySweep.cpp
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/memorysweep \$(INSTALL_PATH)/src/main/MemorySweep.cpp
 	@echo "... finished"
 	@echo
 EOF
@@ -2263,7 +2263,7 @@ cat >> Makefile <<EOF
 
 dvecdvecadd: \$(BINARY_PATH)/dvecdvecadd
 \$(BINARY_PATH)/dvecdvecadd: $DVECDVECADD
-	@\$(CXX) -o \$(BINARY_PATH)/dvecdvecadd $DVECDVECADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dvecdvecadd $DVECDVECADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLIKE_DVecDVecAdd.o:
@@ -2342,7 +2342,7 @@ cat >> Makefile <<EOF
 
 dvecsvecadd: \$(BINARY_PATH)/dvecsvecadd
 \$(BINARY_PATH)/dvecsvecadd: $DVECSVECADD
-	@\$(CXX) -o \$(BINARY_PATH)/dvecsvecadd $DVECSVECADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dvecsvecadd $DVECSVECADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_DVecSVecAdd.o:
@@ -2375,7 +2375,7 @@ cat >> Makefile <<EOF
 
 svecdvecadd: \$(BINARY_PATH)/svecdvecadd
 \$(BINARY_PATH)/svecdvecadd: $SVECDVECADD
-	@\$(CXX) -o \$(BINARY_PATH)/svecdvecadd $SVECDVECADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/svecdvecadd $SVECDVECADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_SVecDVecAdd.o:
@@ -2408,7 +2408,7 @@ cat >> Makefile <<EOF
 
 svecsvecadd: \$(BINARY_PATH)/svecsvecadd
 \$(BINARY_PATH)/svecsvecadd: $SVECSVECADD
-	@\$(CXX) -o \$(BINARY_PATH)/svecsvecadd $SVECSVECADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/svecsvecadd $SVECSVECADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_SVecSVecAdd.o:
@@ -2441,7 +2441,7 @@ cat >> Makefile <<EOF
 
 dvecdvecsub: \$(BINARY_PATH)/dvecdvecsub
 \$(BINARY_PATH)/dvecdvecsub: $DVECDVECSUB
-	@\$(CXX) -o \$(BINARY_PATH)/dvecdvecsub $DVECDVECSUB \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dvecdvecsub $DVECDVECSUB \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLIKE_DVecDVecSub.o:
@@ -2520,7 +2520,7 @@ cat >> Makefile <<EOF
 
 dvecscalarmult: \$(BINARY_PATH)/dvecscalarmult
 \$(BINARY_PATH)/dvecscalarmult: $DVECSCALARMULT
-	@\$(CXX) -o \$(BINARY_PATH)/dvecscalarmult $DVECSCALARMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dvecscalarmult $DVECSCALARMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLASSIC_DVecScalarMult.o:
@@ -2596,7 +2596,7 @@ cat >> Makefile <<EOF
 
 svecscalarmult: \$(BINARY_PATH)/svecscalarmult
 \$(BINARY_PATH)/svecscalarmult: $SVECSCALARMULT
-	@\$(CXX) -o \$(BINARY_PATH)/svecscalarmult $SVECSCALARMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/svecscalarmult $SVECSCALARMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_SVecScalarMult.o:
@@ -2629,7 +2629,7 @@ cat >> Makefile <<EOF
 
 dvecdvecmult: \$(BINARY_PATH)/dvecdvecmult
 \$(BINARY_PATH)/dvecdvecmult: $DVECDVECMULT
-	@\$(CXX) -o \$(BINARY_PATH)/dvecdvecmult $DVECDVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dvecdvecmult $DVECDVECMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLIKE_DVecDVecMult.o:
@@ -2684,7 +2684,7 @@ cat >> Makefile <<EOF
 
 dvecsvecmult: \$(BINARY_PATH)/dvecsvecmult
 \$(BINARY_PATH)/dvecsvecmult: $DVECSVECMULT
-	@\$(CXX) -o \$(BINARY_PATH)/dvecsvecmult $DVECSVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dvecsvecmult $DVECSVECMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_DVecSVecMult.o:
@@ -2706,7 +2706,7 @@ cat >> Makefile <<EOF
 
 svecdvecmult: \$(BINARY_PATH)/svecdvecmult
 \$(BINARY_PATH)/svecdvecmult: $SVECDVECMULT
-	@\$(CXX) -o \$(BINARY_PATH)/svecdvecmult $SVECDVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/svecdvecmult $SVECDVECMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_SVecDVecMult.o:
@@ -2728,7 +2728,7 @@ cat >> Makefile <<EOF
 
 svecsvecmult: \$(BINARY_PATH)/svecsvecmult
 \$(BINARY_PATH)/svecsvecmult: $SVECSVECMULT
-	@\$(CXX) -o \$(BINARY_PATH)/svecsvecmult $SVECSVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/svecsvecmult $SVECSVECMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_SVecSVecMult.o:
@@ -2750,7 +2750,7 @@ cat >> Makefile <<EOF
 
 daxpy: \$(BINARY_PATH)/daxpy
 \$(BINARY_PATH)/daxpy: $DAXPY
-	@\$(CXX) -o \$(BINARY_PATH)/daxpy $DAXPY \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/daxpy $DAXPY \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLIKE_Daxpy.o:
@@ -2840,7 +2840,7 @@ cat >> Makefile <<EOF
 
 dvecdveccross: \$(BINARY_PATH)/dvecdveccross
 \$(BINARY_PATH)/dvecdveccross: $DVECDVECCROSS
-	@\$(CXX) -o \$(BINARY_PATH)/dvecdveccross $DVECDVECCROSS \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dvecdveccross $DVECDVECCROSS \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_DVecDVecCross.o:
@@ -2878,7 +2878,7 @@ cat >> Makefile <<EOF
 
 dvecsveccross: \$(BINARY_PATH)/dvecsveccross
 \$(BINARY_PATH)/dvecsveccross: $DVECSVECCROSS
-	@\$(CXX) -o \$(BINARY_PATH)/dvecsveccross $DVECSVECCROSS \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dvecsveccross $DVECSVECCROSS \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_DVecSVecCross.o:
@@ -2897,7 +2897,7 @@ cat >> Makefile <<EOF
 
 svecdveccross: \$(BINARY_PATH)/svecdveccross
 \$(BINARY_PATH)/svecdveccross: $SVECDVECCROSS
-	@\$(CXX) -o \$(BINARY_PATH)/svecdveccross $SVECDVECCROSS \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/svecdveccross $SVECDVECCROSS \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_SVecDVecCross.o:
@@ -2916,7 +2916,7 @@ cat >> Makefile <<EOF
 
 svecsveccross: \$(BINARY_PATH)/svecsveccross
 \$(BINARY_PATH)/svecsveccross: $SVECSVECCROSS
-	@\$(CXX) -o \$(BINARY_PATH)/svecsveccross $SVECSVECCROSS \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/svecsveccross $SVECSVECCROSS \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_SVecSVecCross.o:
@@ -2935,7 +2935,7 @@ cat >> Makefile <<EOF
 
 dvecnorm: \$(BINARY_PATH)/dvecnorm
 \$(BINARY_PATH)/dvecnorm: $DVECNORM
-	@\$(CXX) -o \$(BINARY_PATH)/dvecnorm $DVECNORM \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dvecnorm $DVECNORM \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLASSIC_DVecNorm.o:
@@ -3011,7 +3011,7 @@ cat >> Makefile <<EOF
 
 tdvecdvecmult: \$(BINARY_PATH)/tdvecdvecmult
 \$(BINARY_PATH)/tdvecdvecmult: $TDVECDVECMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tdvecdvecmult $TDVECDVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tdvecdvecmult $TDVECDVECMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLASSIC_TDVecDVecMult.o:
@@ -3087,7 +3087,7 @@ cat >> Makefile <<EOF
 
 tdvecsvecmult: \$(BINARY_PATH)/tdvecsvecmult
 \$(BINARY_PATH)/tdvecsvecmult: $TDVECSVECMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tdvecsvecmult $TDVECSVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tdvecsvecmult $TDVECSVECMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TDVecSVecMult.o:
@@ -3120,7 +3120,7 @@ cat >> Makefile <<EOF
 
 tsvecdvecmult: \$(BINARY_PATH)/tsvecdvecmult
 \$(BINARY_PATH)/tsvecdvecmult: $TSVECDVECMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tsvecdvecmult $TSVECDVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tsvecdvecmult $TSVECDVECMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TSVecDVecMult.o:
@@ -3153,7 +3153,7 @@ cat >> Makefile <<EOF
 
 tsvecsvecmult: \$(BINARY_PATH)/tsvecsvecmult
 \$(BINARY_PATH)/tsvecsvecmult: $TSVECSVECMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tsvecsvecmult $TSVECSVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tsvecsvecmult $TSVECSVECMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TSVecSVecMult.o:
@@ -3186,7 +3186,7 @@ cat >> Makefile <<EOF
 
 dvectdvecmult: \$(BINARY_PATH)/dvectdvecmult
 \$(BINARY_PATH)/dvectdvecmult: $DVECTDVECMULT
-	@\$(CXX) -o \$(BINARY_PATH)/dvectdvecmult $DVECTDVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dvectdvecmult $DVECTDVECMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLASSIC_DVecTDVecMult.o:
@@ -3230,7 +3230,7 @@ cat >> Makefile <<EOF
 
 dvectsvecmult: \$(BINARY_PATH)/dvectsvecmult
 \$(BINARY_PATH)/dvectsvecmult: $DVECTSVECMULT
-	@\$(CXX) -o \$(BINARY_PATH)/dvectsvecmult $DVECTSVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dvectsvecmult $DVECTSVECMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_DVecTSVecMult.o:
@@ -3252,7 +3252,7 @@ cat >> Makefile <<EOF
 
 svectdvecmult: \$(BINARY_PATH)/svectdvecmult
 \$(BINARY_PATH)/svectdvecmult: $SVECTDVECMULT
-	@\$(CXX) -o \$(BINARY_PATH)/svectdvecmult $SVECTDVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/svectdvecmult $SVECTDVECMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_SVecTDVecMult.o:
@@ -3274,7 +3274,7 @@ cat >> Makefile <<EOF
 
 svectsvecmult: \$(BINARY_PATH)/svectsvecmult
 \$(BINARY_PATH)/svectsvecmult: $SVECTSVECMULT
-	@\$(CXX) -o \$(BINARY_PATH)/svectsvecmult $SVECTSVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/svectsvecmult $SVECTSVECMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_SVecTSVecMult.o:
@@ -3296,7 +3296,7 @@ cat >> Makefile <<EOF
 
 dmatdvecmult: \$(BINARY_PATH)/dmatdvecmult
 \$(BINARY_PATH)/dmatdvecmult: $DMATDVECMULT
-	@\$(CXX) -o \$(BINARY_PATH)/dmatdvecmult $DMATDVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dmatdvecmult $DMATDVECMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLASSIC_DMatDVecMult.o:
@@ -3367,7 +3367,7 @@ cat >> Makefile <<EOF
 
 tdmatdvecmult: \$(BINARY_PATH)/tdmatdvecmult
 \$(BINARY_PATH)/tdmatdvecmult: $TDMATDVECMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tdmatdvecmult $TDMATDVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tdmatdvecmult $TDMATDVECMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLASSIC_TDMatDVecMult.o:
@@ -3454,7 +3454,7 @@ cat >> Makefile <<EOF
 
 dmatsvecmult: \$(BINARY_PATH)/dmatsvecmult
 \$(BINARY_PATH)/dmatsvecmult: $DMATSVECMULT
-	@\$(CXX) -o \$(BINARY_PATH)/dmatsvecmult $DMATSVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dmatsvecmult $DMATSVECMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_DMatSVecMult.o:
@@ -3476,7 +3476,7 @@ cat >> Makefile <<EOF
 
 tdmatsvecmult: \$(BINARY_PATH)/tdmatsvecmult
 \$(BINARY_PATH)/tdmatsvecmult: $TDMATSVECMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tdmatsvecmult $TDMATSVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tdmatsvecmult $TDMATSVECMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TDMatSVecMult.o:
@@ -3509,7 +3509,7 @@ cat >> Makefile <<EOF
 
 smatdvecmult: \$(BINARY_PATH)/smatdvecmult
 \$(BINARY_PATH)/smatdvecmult: $SMATDVECMULT
-	@\$(CXX) -o \$(BINARY_PATH)/smatdvecmult $SMATDVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/smatdvecmult $SMATDVECMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLIKE_SMatDVecMult.o:
@@ -3569,7 +3569,7 @@ cat >> Makefile <<EOF
 
 tsmatdvecmult: \$(BINARY_PATH)/tsmatdvecmult
 \$(BINARY_PATH)/tsmatdvecmult: $TSMATDVECMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tsmatdvecmult $TSMATDVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tsmatdvecmult $TSMATDVECMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TSMatDVecMult.o:
@@ -3626,7 +3626,7 @@ cat >> Makefile <<EOF
 
 smatsvecmult: \$(BINARY_PATH)/smatsvecmult
 \$(BINARY_PATH)/smatsvecmult: $SMATSVECMULT
-	@\$(CXX) -o \$(BINARY_PATH)/smatsvecmult $SMATSVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/smatsvecmult $SMATSVECMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_SMatSVecMult.o:
@@ -3659,7 +3659,7 @@ cat >> Makefile <<EOF
 
 tsmatsvecmult: \$(BINARY_PATH)/tsmatsvecmult
 \$(BINARY_PATH)/tsmatsvecmult: $TSMATSVECMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tsmatsvecmult $TSMATSVECMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tsmatsvecmult $TSMATSVECMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TSMatSVecMult.o:
@@ -3692,7 +3692,7 @@ cat >> Makefile <<EOF
 
 tdvecdmatmult: \$(BINARY_PATH)/tdvecdmatmult
 \$(BINARY_PATH)/tdvecdmatmult: $TDVECDMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tdvecdmatmult $TDVECDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tdvecdmatmult $TDVECDMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLASSIC_TDVecDMatMult.o:
@@ -3755,7 +3755,7 @@ cat >> Makefile <<EOF
 
 tdvectdmatmult: \$(BINARY_PATH)/tdvectdmatmult
 \$(BINARY_PATH)/tdvectdmatmult: $TDVECTDMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tdvectdmatmult $TDVECTDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tdvectdmatmult $TDVECTDMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 EOF
@@ -3823,7 +3823,7 @@ cat >> Makefile <<EOF
 
 tsvecdmatmult: \$(BINARY_PATH)/tsvecdmatmult
 \$(BINARY_PATH)/tsvecdmatmult: $TSVECDMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tsvecdmatmult $TSVECDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tsvecdmatmult $TSVECDMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TSVecDMatMult.o:
@@ -3845,7 +3845,7 @@ cat >> Makefile <<EOF
 
 tsvectdmatmult: \$(BINARY_PATH)/tsvectdmatmult
 \$(BINARY_PATH)/tsvectdmatmult: $TSVECTDMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tsvectdmatmult $TSVECTDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tsvectdmatmult $TSVECTDMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TSVecTDMatMult.o:
@@ -3867,7 +3867,7 @@ cat >> Makefile <<EOF
 
 tdvecsmatmult: \$(BINARY_PATH)/tdvecsmatmult
 \$(BINARY_PATH)/tdvecsmatmult: $TDVECSMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tdvecsmatmult $TDVECSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tdvecsmatmult $TDVECSMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TDVecSMatMult.o:
@@ -3900,7 +3900,7 @@ cat >> Makefile <<EOF
 
 tdvectsmatmult: \$(BINARY_PATH)/tdvectsmatmult
 \$(BINARY_PATH)/tdvectsmatmult: $TDVECTSMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tdvectsmatmult $TDVECTSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tdvectsmatmult $TDVECTSMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TDVecTSMatMult.o:
@@ -3933,7 +3933,7 @@ cat >> Makefile <<EOF
 
 tsvecsmatmult: \$(BINARY_PATH)/tsvecsmatmult
 \$(BINARY_PATH)/tsvecsmatmult: $TSVECSMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tsvecsmatmult $TSVECSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tsvecsmatmult $TSVECSMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TSVecSMatMult.o:
@@ -3955,7 +3955,7 @@ cat >> Makefile <<EOF
 
 tsvectsmatmult: \$(BINARY_PATH)/tsvectsmatmult
 \$(BINARY_PATH)/tsvectsmatmult: $TSVECTSMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tsvectsmatmult $TSVECTSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tsvectsmatmult $TSVECTSMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TSVecTSMatMult.o:
@@ -3977,7 +3977,7 @@ cat >> Makefile <<EOF
 
 dmattrans: \$(BINARY_PATH)/dmattrans
 \$(BINARY_PATH)/dmattrans: $DMATTRANS
-	@\$(CXX) -o \$(BINARY_PATH)/dmattrans $DMATTRANS \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dmattrans $DMATTRANS \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_DMatTrans.o:
@@ -4034,7 +4034,7 @@ cat >> Makefile <<EOF
 
 smattrans: \$(BINARY_PATH)/smattrans
 \$(BINARY_PATH)/smattrans: $SMATTRANS
-	@\$(CXX) -o \$(BINARY_PATH)/smattrans $SMATTRANS \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/smattrans $SMATTRANS \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_SMatTrans.o:
@@ -4083,7 +4083,7 @@ cat >> Makefile <<EOF
 
 dmatdmatadd: \$(BINARY_PATH)/dmatdmatadd
 \$(BINARY_PATH)/dmatdmatadd: $DMATDMATADD
-	@\$(CXX) -o \$(BINARY_PATH)/dmatdmatadd $DMATDMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dmatdmatadd $DMATDMATADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLASSIC_DMatDMatAdd.o:
@@ -4143,7 +4143,7 @@ cat >> Makefile <<EOF
 
 dmattdmatadd: \$(BINARY_PATH)/dmattdmatadd
 \$(BINARY_PATH)/dmattdmatadd: $DMATTDMATADD
-	@\$(CXX) -o \$(BINARY_PATH)/dmattdmatadd $DMATTDMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dmattdmatadd $DMATTDMATADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_DMatTDMatAdd.o:
@@ -4200,7 +4200,7 @@ cat >> Makefile <<EOF
 
 tdmatdmatadd: \$(BINARY_PATH)/tdmatdmatadd
 \$(BINARY_PATH)/tdmatdmatadd: $TDMATDMATADD
-	@\$(CXX) -o \$(BINARY_PATH)/tdmatdmatadd $TDMATDMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tdmatdmatadd $TDMATDMATADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TDMatDMatAdd.o:
@@ -4257,7 +4257,7 @@ cat >> Makefile <<EOF
 
 tdmattdmatadd: \$(BINARY_PATH)/tdmattdmatadd
 \$(BINARY_PATH)/tdmattdmatadd: $TDMATTDMATADD
-	@\$(CXX) -o \$(BINARY_PATH)/tdmattdmatadd $TDMATTDMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tdmattdmatadd $TDMATTDMATADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TDMatTDMatAdd.o:
@@ -4330,7 +4330,7 @@ cat >> Makefile <<EOF
 
 dmatsmatadd: \$(BINARY_PATH)/dmatsmatadd
 \$(BINARY_PATH)/dmatsmatadd: $DMATSMATADD
-	@\$(CXX) -o \$(BINARY_PATH)/dmatsmatadd $DMATSMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dmatsmatadd $DMATSMATADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_DMatSMatAdd.o:
@@ -4363,7 +4363,7 @@ cat >> Makefile <<EOF
 
 dmattsmatadd: \$(BINARY_PATH)/dmattsmatadd
 \$(BINARY_PATH)/dmattsmatadd: $DMATTSMATADD
-	@\$(CXX) -o \$(BINARY_PATH)/dmattsmatadd $DMATTSMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dmattsmatadd $DMATTSMATADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_DMatTSMatAdd.o:
@@ -4396,7 +4396,7 @@ cat >> Makefile <<EOF
 
 tdmatsmatadd: \$(BINARY_PATH)/tdmatsmatadd
 \$(BINARY_PATH)/tdmatsmatadd: $TDMATSMATADD
-	@\$(CXX) -o \$(BINARY_PATH)/tdmatsmatadd $TDMATSMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tdmatsmatadd $TDMATSMATADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TDMatSMatAdd.o:
@@ -4437,7 +4437,7 @@ cat >> Makefile <<EOF
 
 tdmattsmatadd: \$(BINARY_PATH)/tdmattsmatadd
 \$(BINARY_PATH)/tdmattsmatadd: $TDMATTSMATADD
-	@\$(CXX) -o \$(BINARY_PATH)/tdmattsmatadd $TDMATTSMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tdmattsmatadd $TDMATTSMATADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TDMatTSMatAdd.o:
@@ -4478,7 +4478,7 @@ cat >> Makefile <<EOF
 
 smatdmatadd: \$(BINARY_PATH)/smatdmatadd
 \$(BINARY_PATH)/smatdmatadd: $SMATDMATADD
-	@\$(CXX) -o \$(BINARY_PATH)/smatdmatadd $SMATDMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/smatdmatadd $SMATDMATADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_SMatDMatAdd.o:
@@ -4511,7 +4511,7 @@ cat >> Makefile <<EOF
 
 smattdmatadd: \$(BINARY_PATH)/smattdmatadd
 \$(BINARY_PATH)/smattdmatadd: $SMATTDMATADD
-	@\$(CXX) -o \$(BINARY_PATH)/smattdmatadd $SMATTDMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/smattdmatadd $SMATTDMATADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_SMatTDMatAdd.o:
@@ -4552,7 +4552,7 @@ cat >> Makefile <<EOF
 
 tsmatdmatadd: \$(BINARY_PATH)/tsmatdmatadd
 \$(BINARY_PATH)/tsmatdmatadd: $TSMATDMATADD
-	@\$(CXX) -o \$(BINARY_PATH)/tsmatdmatadd $TSMATDMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tsmatdmatadd $TSMATDMATADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TSMatDMatAdd.o:
@@ -4585,7 +4585,7 @@ cat >> Makefile <<EOF
 
 tsmattdmatadd: \$(BINARY_PATH)/tsmattdmatadd
 \$(BINARY_PATH)/tsmattdmatadd: $TSMATTDMATADD
-	@\$(CXX) -o \$(BINARY_PATH)/tsmattdmatadd $TSMATTDMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tsmattdmatadd $TSMATTDMATADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TSMatTDMatAdd.o:
@@ -4626,7 +4626,7 @@ cat >> Makefile <<EOF
 
 smatsmatadd: \$(BINARY_PATH)/smatsmatadd
 \$(BINARY_PATH)/smatsmatadd: $SMATSMATADD
-	@\$(CXX) -o \$(BINARY_PATH)/smatsmatadd $SMATSMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/smatsmatadd $SMATSMATADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_SMatSMatAdd.o:
@@ -4675,7 +4675,7 @@ cat >> Makefile <<EOF
 
 smattsmatadd: \$(BINARY_PATH)/smattsmatadd
 \$(BINARY_PATH)/smattsmatadd: $SMATTSMATADD
-	@\$(CXX) -o \$(BINARY_PATH)/smattsmatadd $SMATTSMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/smattsmatadd $SMATTSMATADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_SMatTSMatAdd.o:
@@ -4716,7 +4716,7 @@ cat >> Makefile <<EOF
 
 tsmatsmatadd: \$(BINARY_PATH)/tsmatsmatadd
 \$(BINARY_PATH)/tsmatsmatadd: $TSMATSMATADD
-	@\$(CXX) -o \$(BINARY_PATH)/tsmatsmatadd $TSMATSMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tsmatsmatadd $TSMATSMATADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TSMatSMatAdd.o:
@@ -4757,7 +4757,7 @@ cat >> Makefile <<EOF
 
 tsmattsmatadd: \$(BINARY_PATH)/tsmattsmatadd
 \$(BINARY_PATH)/tsmattsmatadd: $TSMATTSMATADD
-	@\$(CXX) -o \$(BINARY_PATH)/tsmattsmatadd $TSMATTSMATADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tsmattsmatadd $TSMATTSMATADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TSMatTSMatAdd.o:
@@ -4806,7 +4806,7 @@ cat >> Makefile <<EOF
 
 dmatdmatsub: \$(BINARY_PATH)/dmatdmatsub
 \$(BINARY_PATH)/dmatdmatsub: $DMATDMATSUB
-	@\$(CXX) -o \$(BINARY_PATH)/dmatdmatsub $DMATDMATSUB \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dmatdmatsub $DMATDMATSUB \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLASSIC_DMatDMatSub.o:
@@ -4866,7 +4866,7 @@ cat >> Makefile <<EOF
 
 dmatscalarmult: \$(BINARY_PATH)/dmatscalarmult
 \$(BINARY_PATH)/dmatscalarmult: $DMATSCALARMULT
-	@\$(CXX) -o \$(BINARY_PATH)/dmatscalarmult $DMATSCALARMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dmatscalarmult $DMATSCALARMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLASSIC_DMatScalarMult.o:
@@ -4942,7 +4942,7 @@ cat >> Makefile <<EOF
 
 smatscalarmult: \$(BINARY_PATH)/smatscalarmult
 \$(BINARY_PATH)/smatscalarmult: $SMATSCALARMULT
-	@\$(CXX) -o \$(BINARY_PATH)/smatscalarmult $SMATSCALARMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/smatscalarmult $SMATSCALARMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_SMatScalarMult.o:
@@ -4991,7 +4991,7 @@ cat >> Makefile <<EOF
 
 dmatdmatmult: \$(BINARY_PATH)/dmatdmatmult
 \$(BINARY_PATH)/dmatdmatmult: $DMATDMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/dmatdmatmult $DMATDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dmatdmatmult $DMATDMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLASSIC_DMatDMatMult.o:
@@ -5062,7 +5062,7 @@ cat >> Makefile <<EOF
 
 dmattdmatmult: \$(BINARY_PATH)/dmattdmatmult
 \$(BINARY_PATH)/dmattdmatmult: $DMATTDMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/dmattdmatmult $DMATTDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dmattdmatmult $DMATTDMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 EOF
@@ -5130,7 +5130,7 @@ cat >> Makefile <<EOF
 
 tdmatdmatmult: \$(BINARY_PATH)/tdmatdmatmult
 \$(BINARY_PATH)/tdmatdmatmult: $TDMATDMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tdmatdmatmult $TDMATDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tdmatdmatmult $TDMATDMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 EOF
@@ -5198,7 +5198,7 @@ cat >> Makefile <<EOF
 
 tdmattdmatmult: \$(BINARY_PATH)/tdmattdmatmult
 \$(BINARY_PATH)/tdmattdmatmult: $TDMATTDMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tdmattdmatmult $TDMATTDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tdmattdmatmult $TDMATTDMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLASSIC_TDMatTDMatMult.o:
@@ -5285,7 +5285,7 @@ cat >> Makefile <<EOF
 
 dmatsmatmult: \$(BINARY_PATH)/dmatsmatmult
 \$(BINARY_PATH)/dmatsmatmult: $DMATSMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/dmatsmatmult $DMATSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dmatsmatmult $DMATSMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_DMatSMatMult.o:
@@ -5326,7 +5326,7 @@ cat >> Makefile <<EOF
 
 dmattsmatmult: \$(BINARY_PATH)/dmattsmatmult
 \$(BINARY_PATH)/dmattsmatmult: $DMATTSMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/dmattsmatmult $DMATTSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dmattsmatmult $DMATTSMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_DMatTSMatMult.o:
@@ -5367,7 +5367,7 @@ cat >> Makefile <<EOF
 
 tdmatsmatmult: \$(BINARY_PATH)/tdmatsmatmult
 \$(BINARY_PATH)/tdmatsmatmult: $TDMATSMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tdmatsmatmult $TDMATSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tdmatsmatmult $TDMATSMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TDMatSMatMult.o:
@@ -5416,7 +5416,7 @@ cat >> Makefile <<EOF
 
 tdmattsmatmult: \$(BINARY_PATH)/tdmattsmatmult
 \$(BINARY_PATH)/tdmattsmatmult: $TDMATTSMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tdmattsmatmult $TDMATTSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tdmattsmatmult $TDMATTSMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TDMatTSMatMult.o:
@@ -5465,7 +5465,7 @@ cat >> Makefile <<EOF
 
 smatdmatmult: \$(BINARY_PATH)/smatdmatmult
 \$(BINARY_PATH)/smatdmatmult: $SMATDMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/smatdmatmult $SMATDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/smatdmatmult $SMATDMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_SMatDMatMult.o:
@@ -5506,7 +5506,7 @@ cat >> Makefile <<EOF
 
 smattdmatmult: \$(BINARY_PATH)/smattdmatmult
 \$(BINARY_PATH)/smattdmatmult: $SMATTDMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/smattdmatmult $SMATTDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/smattdmatmult $SMATTDMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_SMatTDMatMult.o:
@@ -5555,7 +5555,7 @@ cat >> Makefile <<EOF
 
 tsmatdmatmult: \$(BINARY_PATH)/tsmatdmatmult
 \$(BINARY_PATH)/tsmatdmatmult: $TSMATDMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tsmatdmatmult $TSMATDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tsmatdmatmult $TSMATDMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TSMatDMatMult.o:
@@ -5596,7 +5596,7 @@ cat >> Makefile <<EOF
 
 tsmattdmatmult: \$(BINARY_PATH)/tsmattdmatmult
 \$(BINARY_PATH)/tsmattdmatmult: $TSMATTDMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tsmattdmatmult $TSMATTDMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tsmattdmatmult $TSMATTDMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TSMatTDMatMult.o:
@@ -5645,7 +5645,7 @@ cat >> Makefile <<EOF
 
 smatsmatmult: \$(BINARY_PATH)/smatsmatmult
 \$(BINARY_PATH)/smatsmatmult: $SMATSMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/smatsmatmult $SMATSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/smatsmatmult $SMATSMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_SMatSMatMult.o:
@@ -5694,7 +5694,7 @@ cat >> Makefile <<EOF
 
 smattsmatmult: \$(BINARY_PATH)/smattsmatmult
 \$(BINARY_PATH)/smattsmatmult: $SMATTSMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/smattsmatmult $SMATTSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/smattsmatmult $SMATTSMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_SMatTSMatMult.o:
@@ -5743,7 +5743,7 @@ cat >> Makefile <<EOF
 
 tsmatsmatmult: \$(BINARY_PATH)/tsmatsmatmult
 \$(BINARY_PATH)/tsmatsmatmult: $TSMATSMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tsmatsmatmult $TSMATSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tsmatsmatmult $TSMATSMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TSMatSMatMult.o:
@@ -5792,7 +5792,7 @@ cat >> Makefile <<EOF
 
 tsmattsmatmult: \$(BINARY_PATH)/tsmattsmatmult
 \$(BINARY_PATH)/tsmattsmatmult: $TSMATTSMATMULT
-	@\$(CXX) -o \$(BINARY_PATH)/tsmattsmatmult $TSMATTSMATMULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tsmattsmatmult $TSMATTSMATMULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TSMatTSMatMult.o:
@@ -5841,7 +5841,7 @@ cat >> Makefile <<EOF
 
 vec3vec3add: \$(BINARY_PATH)/vec3vec3add
 \$(BINARY_PATH)/vec3vec3add: $VEC3VEC3ADD
-	@\$(CXX) -o \$(BINARY_PATH)/vec3vec3add $VEC3VEC3ADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/vec3vec3add $VEC3VEC3ADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_Vec3Vec3Add.o:
@@ -5914,7 +5914,7 @@ cat >> Makefile <<EOF
 
 vec6vec6add: \$(BINARY_PATH)/vec6vec6add
 \$(BINARY_PATH)/vec6vec6add: $VEC6VEC6ADD
-	@\$(CXX) -o \$(BINARY_PATH)/vec6vec6add $VEC6VEC6ADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/vec6vec6add $VEC6VEC6ADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_Vec6Vec6Add.o:
@@ -5987,7 +5987,7 @@ cat >> Makefile <<EOF
 
 mat3vec3mult: \$(BINARY_PATH)/mat3vec3mult
 \$(BINARY_PATH)/mat3vec3mult: $MAT3VEC3MULT
-	@\$(CXX) -o \$(BINARY_PATH)/mat3vec3mult $MAT3VEC3MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/mat3vec3mult $MAT3VEC3MULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_Mat3Vec3Mult.o:
@@ -6044,7 +6044,7 @@ cat >> Makefile <<EOF
 
 tmat3vec3mult: \$(BINARY_PATH)/tmat3vec3mult
 \$(BINARY_PATH)/tmat3vec3mult: $TMAT3VEC3MULT
-	@\$(CXX) -o \$(BINARY_PATH)/tmat3vec3mult $TMAT3VEC3MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tmat3vec3mult $TMAT3VEC3MULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TMat3Vec3Mult.o:
@@ -6109,7 +6109,7 @@ cat >> Makefile <<EOF
 
 mat6vec6mult: \$(BINARY_PATH)/mat6vec6mult
 \$(BINARY_PATH)/mat6vec6mult: $MAT6VEC6MULT
-	@\$(CXX) -o \$(BINARY_PATH)/mat6vec6mult $MAT6VEC6MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/mat6vec6mult $MAT6VEC6MULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_Mat6Vec6Mult.o:
@@ -6166,7 +6166,7 @@ cat >> Makefile <<EOF
 
 tmat6vec6mult: \$(BINARY_PATH)/tmat6vec6mult
 \$(BINARY_PATH)/tmat6vec6mult: $TMAT6VEC6MULT
-	@\$(CXX) -o \$(BINARY_PATH)/tmat6vec6mult $TMAT6VEC6MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tmat6vec6mult $TMAT6VEC6MULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TMat6Vec6Mult.o:
@@ -6231,7 +6231,7 @@ cat >> Makefile <<EOF
 
 tvec3mat3mult: \$(BINARY_PATH)/tvec3mat3mult
 \$(BINARY_PATH)/tvec3mat3mult: $TVEC3MAT3MULT
-	@\$(CXX) -o \$(BINARY_PATH)/tvec3mat3mult $TVEC3MAT3MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tvec3mat3mult $TVEC3MAT3MULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TVec3Mat3Mult.o:
@@ -6280,7 +6280,7 @@ cat >> Makefile <<EOF
 
 tvec3tmat3mult: \$(BINARY_PATH)/tvec3tmat3mult
 \$(BINARY_PATH)/tvec3tmat3mult: $TVEC3TMAT3MULT
-	@\$(CXX) -o \$(BINARY_PATH)/tvec3tmat3mult $TVEC3TMAT3MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tvec3tmat3mult $TVEC3TMAT3MULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TVec3TMat3Mult.o:
@@ -6329,7 +6329,7 @@ cat >> Makefile <<EOF
 
 tvec6mat6mult: \$(BINARY_PATH)/tvec6mat6mult
 \$(BINARY_PATH)/tvec6mat6mult: $TVEC6MAT6MULT
-	@\$(CXX) -o \$(BINARY_PATH)/tvec6mat6mult $TVEC6MAT6MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tvec6mat6mult $TVEC6MAT6MULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TVec6Mat6Mult.o:
@@ -6378,7 +6378,7 @@ cat >> Makefile <<EOF
 
 tvec6tmat6mult: \$(BINARY_PATH)/tvec6tmat6mult
 \$(BINARY_PATH)/tvec6tmat6mult: $TVEC6TMAT6MULT
-	@\$(CXX) -o \$(BINARY_PATH)/tvec6tmat6mult $TVEC6TMAT6MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tvec6tmat6mult $TVEC6TMAT6MULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TVec6TMat6Mult.o:
@@ -6427,7 +6427,7 @@ cat >> Makefile <<EOF
 
 mat3mat3add: \$(BINARY_PATH)/mat3mat3add
 \$(BINARY_PATH)/mat3mat3add: $MAT3MAT3ADD
-	@\$(CXX) -o \$(BINARY_PATH)/mat3mat3add $MAT3MAT3ADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/mat3mat3add $MAT3MAT3ADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_Mat3Mat3Add.o:
@@ -6484,7 +6484,7 @@ cat >> Makefile <<EOF
 
 tmat3tmat3add: \$(BINARY_PATH)/tmat3tmat3add
 \$(BINARY_PATH)/tmat3tmat3add: $TMAT3TMAT3ADD
-	@\$(CXX) -o \$(BINARY_PATH)/tmat3tmat3add $TMAT3TMAT3ADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tmat3tmat3add $TMAT3TMAT3ADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TMat3TMat3Add.o:
@@ -6557,7 +6557,7 @@ cat >> Makefile <<EOF
 
 mat6mat6add: \$(BINARY_PATH)/mat6mat6add
 \$(BINARY_PATH)/mat6mat6add: $MAT6MAT6ADD
-	@\$(CXX) -o \$(BINARY_PATH)/mat6mat6add $MAT6MAT6ADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/mat6mat6add $MAT6MAT6ADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_Mat6Mat6Add.o:
@@ -6614,7 +6614,7 @@ cat >> Makefile <<EOF
 
 tmat6tmat6add: \$(BINARY_PATH)/tmat6tmat6add
 \$(BINARY_PATH)/tmat6tmat6add: $TMAT6TMAT6ADD
-	@\$(CXX) -o \$(BINARY_PATH)/tmat6tmat6add $TMAT6TMAT6ADD \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tmat6tmat6add $TMAT6TMAT6ADD \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TMat6TMat6Add.o:
@@ -6687,7 +6687,7 @@ cat >> Makefile <<EOF
 
 mat3mat3mult: \$(BINARY_PATH)/mat3mat3mult
 \$(BINARY_PATH)/mat3mat3mult: $MAT3MAT3MULT
-	@\$(CXX) -o \$(BINARY_PATH)/mat3mat3mult $MAT3MAT3MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/mat3mat3mult $MAT3MAT3MULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_Mat3Mat3Mult.o:
@@ -6744,7 +6744,7 @@ cat >> Makefile <<EOF
 
 mat3tmat3mult: \$(BINARY_PATH)/mat3tmat3mult
 \$(BINARY_PATH)/mat3tmat3mult: $MAT3TMAT3MULT
-	@\$(CXX) -o \$(BINARY_PATH)/mat3tmat3mult $MAT3TMAT3MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/mat3tmat3mult $MAT3TMAT3MULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_Mat3TMat3Mult.o:
@@ -6801,7 +6801,7 @@ cat >> Makefile <<EOF
 
 tmat3mat3mult: \$(BINARY_PATH)/tmat3mat3mult
 \$(BINARY_PATH)/tmat3mat3mult: $TMAT3MAT3MULT
-	@\$(CXX) -o \$(BINARY_PATH)/tmat3mat3mult $TMAT3MAT3MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tmat3mat3mult $TMAT3MAT3MULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TMat3Mat3Mult.o:
@@ -6858,7 +6858,7 @@ cat >> Makefile <<EOF
 
 tmat3tmat3mult: \$(BINARY_PATH)/tmat3tmat3mult
 \$(BINARY_PATH)/tmat3tmat3mult: $TMAT3TMAT3MULT
-	@\$(CXX) -o \$(BINARY_PATH)/tmat3tmat3mult $TMAT3TMAT3MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tmat3tmat3mult $TMAT3TMAT3MULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TMat3TMat3Mult.o:
@@ -6931,7 +6931,7 @@ cat >> Makefile <<EOF
 
 mat6mat6mult: \$(BINARY_PATH)/mat6mat6mult
 \$(BINARY_PATH)/mat6mat6mult: $MAT6MAT6MULT
-	@\$(CXX) -o \$(BINARY_PATH)/mat6mat6mult $MAT6MAT6MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/mat6mat6mult $MAT6MAT6MULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_Mat6Mat6Mult.o:
@@ -6988,7 +6988,7 @@ cat >> Makefile <<EOF
 
 mat6tmat6mult: \$(BINARY_PATH)/mat6tmat6mult
 \$(BINARY_PATH)/mat6tmat6mult: $MAT6TMAT6MULT
-	@\$(CXX) -o \$(BINARY_PATH)/mat6tmat6mult $MAT6TMAT6MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/mat6tmat6mult $MAT6TMAT6MULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_Mat6TMat6Mult.o:
@@ -7045,7 +7045,7 @@ cat >> Makefile <<EOF
 
 tmat6mat6mult: \$(BINARY_PATH)/tmat6mat6mult
 \$(BINARY_PATH)/tmat6mat6mult: $TMAT6MAT6MULT
-	@\$(CXX) -o \$(BINARY_PATH)/tmat6mat6mult $TMAT6MAT6MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tmat6mat6mult $TMAT6MAT6MULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TMat6Mat6Mult.o:
@@ -7102,7 +7102,7 @@ cat >> Makefile <<EOF
 
 tmat6tmat6mult: \$(BINARY_PATH)/tmat6tmat6mult
 \$(BINARY_PATH)/tmat6tmat6mult: $TMAT6TMAT6MULT
-	@\$(CXX) -o \$(BINARY_PATH)/tmat6tmat6mult $TMAT6TMAT6MULT \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tmat6tmat6mult $TMAT6TMAT6MULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_TMat6TMat6Mult.o:
@@ -7175,7 +7175,7 @@ cat >> Makefile <<EOF
 
 complex1: \$(BINARY_PATH)/complex1
 \$(BINARY_PATH)/complex1: $COMPLEX1
-	@\$(CXX) -o \$(BINARY_PATH)/complex1 $COMPLEX1 \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/complex1 $COMPLEX1 \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLASSIC_Complex1.o:
@@ -7251,7 +7251,7 @@ cat >> Makefile <<EOF
 
 complex2: \$(BINARY_PATH)/complex2
 \$(BINARY_PATH)/complex2: $COMPLEX2
-	@\$(CXX) -o \$(BINARY_PATH)/complex2 $COMPLEX2 \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/complex2 $COMPLEX2 \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLASSIC_Complex2.o:
@@ -7327,7 +7327,7 @@ cat >> Makefile <<EOF
 
 complex3: \$(BINARY_PATH)/complex3
 \$(BINARY_PATH)/complex3: $COMPLEX3
-	@\$(CXX) -o \$(BINARY_PATH)/complex3 $COMPLEX3 \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/complex3 $COMPLEX3 \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLASSIC_Complex3.o:
@@ -7403,7 +7403,7 @@ cat >> Makefile <<EOF
 
 complex4: \$(BINARY_PATH)/complex4
 \$(BINARY_PATH)/complex4: $COMPLEX4
-	@\$(CXX) -o \$(BINARY_PATH)/complex4 $COMPLEX4 \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/complex4 $COMPLEX4 \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLASSIC_Complex4.o:
@@ -7479,7 +7479,7 @@ cat >> Makefile <<EOF
 
 complex5: \$(BINARY_PATH)/complex5
 \$(BINARY_PATH)/complex5: $COMPLEX5
-	@\$(CXX) -o \$(BINARY_PATH)/complex5 $COMPLEX5 \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/complex5 $COMPLEX5 \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLASSIC_Complex5.o:
@@ -7555,7 +7555,7 @@ cat >> Makefile <<EOF
 
 complex6: \$(BINARY_PATH)/complex6
 \$(BINARY_PATH)/complex6: $COMPLEX6
-	@\$(CXX) -o \$(BINARY_PATH)/complex6 $COMPLEX6 \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/complex6 $COMPLEX6 \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLASSIC_Complex6.o:
@@ -7631,7 +7631,7 @@ cat >> Makefile <<EOF
 
 complex7: \$(BINARY_PATH)/complex7
 \$(BINARY_PATH)/complex7: $COMPLEX7
-	@\$(CXX) -o \$(BINARY_PATH)/complex7 $COMPLEX7 \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/complex7 $COMPLEX7 \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLASSIC_Complex7.o:
@@ -7707,7 +7707,7 @@ cat >> Makefile <<EOF
 
 complex8: \$(BINARY_PATH)/complex8
 \$(BINARY_PATH)/complex8: $COMPLEX8
-	@\$(CXX) -o \$(BINARY_PATH)/complex8 $COMPLEX8 \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/complex8 $COMPLEX8 \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/CLASSIC_Complex8.o:
@@ -7783,7 +7783,7 @@ cat >> Makefile <<EOF
 
 cg: \$(BINARY_PATH)/cg
 \$(BINARY_PATH)/cg: $CG
-	@\$(CXX) -o \$(BINARY_PATH)/cg $CG \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/cg $CG \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_CG.o:
@@ -7832,7 +7832,7 @@ cat >> Makefile <<EOF
 
 custom: \$(BINARY_PATH)/custom
 \$(BINARY_PATH)/custom: $CUSTOM
-	@\$(CXX) -o \$(BINARY_PATH)/custom $CUSTOM \$(LIBRARIES)
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/custom $CUSTOM \$(LIBRARIES)
 	@echo "... finished"
 	@echo
 \$(OBJECT_PATH)/BLAZE_Custom.o:
