@@ -271,5 +271,5 @@ typedef double  TypeB;
 // repetitions increases the likelihood of detecting implementationn errors. On the downside
 // the execution of all tests takes longer.
 */
-const size_t repetitions = 5;
+const size_t repetitions = 3;
 //*************************************************************************************************
