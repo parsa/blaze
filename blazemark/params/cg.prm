@@ -44,8 +44,8 @@
 // algorithm. In case 'steps' or 'iterations' are omitted, the according value is automatically
 // evaluated.
 //
-// Note that is possible to use comments. A single-line comment is started with '//', a multiline
-// comment is started with '/*' and ended with '*/'.
+// Note that it is possible to use comments. A single-line comment can be started with '//', a
+// multiline commend can be started with '/*' and ended with '*/'.
 //=================================================================================================
 
 // Selected sizes
