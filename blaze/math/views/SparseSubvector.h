@@ -57,6 +57,7 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -2038,6 +2039,58 @@ template< typename VT, bool TF >
 struct SubvectorTrait< SparseSubvector<VT,TF> >
 {
    typedef typename SubvectorTrait< typename SparseSubvector<VT,TF>::ResultType >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBVECTOREXPRTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct SubvectorExprTrait< SparseSubvector<VT,TF> >
+{
+   typedef SparseSubvector<VT,TF>  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct SubvectorExprTrait< const SparseSubvector<VT,TF> >
+{
+   typedef SparseSubvector<VT,TF>  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct SubvectorExprTrait< volatile SparseSubvector<VT,TF> >
+{
+   typedef SparseSubvector<VT,TF>  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct SubvectorExprTrait< const volatile SparseSubvector<VT,TF> >
+{
+   typedef SparseSubvector<VT,TF>  Type;
 };
 /*! \endcond */
 //*************************************************************************************************

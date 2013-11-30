@@ -49,7 +49,6 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/StaticAssert.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
@@ -100,31 +99,26 @@ struct SubvectorExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename RemoveReference< typename RemoveCV<VT>::Type >::Type  Tmp;
+   typedef typename RemoveReference<VT>::Type  Tmp;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsComputation<VT>, IsTransExpr<VT> >
-                      , SubvectorExprTrait<Tmp>
-                      , typename If< IsDenseVector<VT>
-                                   , DenseResult<VT>
-                                   , typename If< IsSparseVector<VT>
-                                                , SparseResult<VT>
+   typedef typename If< Or< IsComputation<Tmp>, IsTransExpr<Tmp> >
+                      , typename If< Or< IsConst<Tmp>, IsVolatile<Tmp> >
+                                   , SubvectorExprTrait< typename RemoveCV<Tmp>::Type >
+                                   , Failure
+                                   >::Type
+                      , typename If< IsDenseVector<Tmp>
+                                   , DenseResult<Tmp>
+                                   , typename If< IsSparseVector<Tmp>
+                                                , SparseResult<Tmp>
                                                 , Failure
                                                 >::Type
                                    >::Type
                       >::Type::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-
- private:
-   //**Compile time checks*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   BLAZE_STATIC_ASSERT( !( Or< IsComputation<VT>, IsTransExpr<VT> >::value ) ||
-                        IsConst<VT>::value || IsVolatile<VT>::value || IsReference<VT>::value );
    /*! \endcond */
    //**********************************************************************************************
 };

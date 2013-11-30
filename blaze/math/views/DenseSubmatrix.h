@@ -61,6 +61,7 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
+#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
@@ -4458,6 +4459,58 @@ template< typename MT, bool SO >
 struct SubmatrixTrait< DenseSubmatrix<MT,SO> >
 {
    typedef typename SubmatrixTrait< typename DenseSubmatrix<MT,SO>::ResultType >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBMATRIXEXPRTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct SubmatrixExprTrait< DenseSubmatrix<MT,SO> >
+{
+   typedef DenseSubmatrix<MT,SO>  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct SubmatrixExprTrait< const DenseSubmatrix<MT,SO> >
+{
+   typedef DenseSubmatrix<MT,SO>  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct SubmatrixExprTrait< volatile DenseSubmatrix<MT,SO> >
+{
+   typedef DenseSubmatrix<MT,SO>  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct SubmatrixExprTrait< const volatile DenseSubmatrix<MT,SO> >
+{
+   typedef DenseSubmatrix<MT,SO>  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
