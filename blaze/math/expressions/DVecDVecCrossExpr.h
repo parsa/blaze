@@ -43,12 +43,11 @@
 #include <stdexcept>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
-#include <blaze/math/dense/StaticVector.h>
+#include <blaze/math/dense/Forward.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/CrossExpr.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
-#include <blaze/math/traits/CrossExprTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
@@ -471,8 +470,7 @@ struct SubvectorExprTrait< DVecDVecCrossExpr<VT1,VT2> >
 {
  public:
    //**********************************************************************************************
-   typedef typename CrossExprTrait< typename SubvectorExprTrait<const VT1>::Type
-                                  , typename SubvectorExprTrait<const VT2>::Type >::Type  Type;
+   typedef HybridVector< typename DVecDVecCrossExpr<VT1,VT2>::ElementType, 3UL, false >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/dense/HybridVector.h>
+#include <blaze/math/dense/StaticVector.h>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/sparse/CompressedVector.h>
 #include <blaze/math/SparseVector.h>
