@@ -52,6 +52,7 @@
 #include <blaze/math/expressions/CrossExpr.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Expression.h>
+#include <blaze/math/expressions/Forward.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -1961,6 +1962,510 @@ inline void DenseSubvector<VT,TF>::multAssign( const SparseVector<VT2,TF>& rhs )
 
 //=================================================================================================
 //
+//  CLASS TEMPLATE SPECIALIZATION FOR DVECDVECCROSSEXPR
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of DenseSubvector for dense vector/dense vector cross products.
+// \ingroup dense_subvector
+//
+// This specialization of DenseSubvector adapts the class template to the special case of
+// dense vector/dense vector cross products.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+class DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, false >
+   : public DenseVector< DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, false >, false >
+   , private Expression
+{
+ private:
+   //**Type definitions****************************************************************************
+   typedef DVecDVecCrossExpr<VT1,VT2>  CPE;  //!< Type of the cross product expression.
+   typedef typename CPE::ResultType    RT;   //!< Result type of the cross product expression.
+   //**********************************************************************************************
+
+ public:
+   //**Type definitions****************************************************************************
+   typedef DenseSubvector<CPE,false>           This;           //!< Type of this DenseSubvector instance.
+   typedef typename SubvectorTrait<RT>::Type   ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename CPE::ElementType           ElementType;    //!< Type of the subvector elements.
+   typedef typename CPE::ReturnType            ReturnType;     //!< Return type for expression template evaluations
+   typedef const ResultType                    CompositeType;  //!< Data type for composite expression templates.
+   //**********************************************************************************************
+
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template evaluation strategy.
+   enum { vectorizable = 0 };
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for the DenseSubvector specialization class.
+   //
+   // \param vector The dense vector/dense vector cross product expression.
+   // \param index The first index of the subvector in the given expression.
+   // \param n The size of the subvector.
+   */
+   explicit inline DenseSubvector( const CPE& vector, size_t index, size_t n )
+      : vector_( vector )  // The dense vector/dense vector cross product expression
+      , offset_( index  )  // The offset of the subvector within the cross product expression
+      , size_  ( n      )  // The size of the subvector
+   {}
+   //**********************************************************************************************
+
+   //**Subscript operator**************************************************************************
+   /*!\brief Subscript operator for the direct access to the vector elements.
+   //
+   // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   */
+   inline ReturnType operator[]( size_t index ) const {
+      BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
+      return vector_[offset_+index];
+   }
+   //**********************************************************************************************
+
+   //**Size function*******************************************************************************
+   /*!\brief Returns the current size/dimension of the vector.
+   //
+   // \return The size of the vector.
+   */
+   inline size_t size() const {
+      return size_;
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return vector_.canAlias( alias );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression is aliased with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case an alias effect is detected, \a false otherwise.
+   */
+   template< typename T >
+   inline bool isAliased( const T* alias ) const {
+      return vector_.isAliased( alias );
+   }
+   //**********************************************************************************************
+
+ private:
+   //**Member variables****************************************************************************
+   /*!\name Member variables */
+   //@{
+   CPE          vector_;  //!< The dense vector/dense vector cross product expression.
+   const size_t offset_;  //!< The offset of the subvector within the cross product expression.
+   const size_t size_;    //!< The size of the subvector.
+   //@}
+   //**********************************************************************************************
+
+   //**Friend declarations*************************************************************************
+   template< typename VT, bool TF >
+   friend DenseSubvector<VT,TF> subvector( const DenseSubvector<VT,TF>& dv, size_t index, size_t size );
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+
+
+
+
+//=================================================================================================
+//
+//  CLASS TEMPLATE SPECIALIZATION FOR DVECSVECCROSSEXPR
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of DenseSubvector for dense vector/sparse vector cross products.
+// \ingroup dense_subvector
+//
+// This specialization of DenseSubvector adapts the class template to the special case of
+// dense vector/sparse vector cross products.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side sparse vector
+class DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, false >
+   : public DenseVector< DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, false >, false >
+   , private Expression
+{
+ private:
+   //**Type definitions****************************************************************************
+   typedef DVecSVecCrossExpr<VT1,VT2>  CPE;  //!< Type of the cross product expression.
+   typedef typename CPE::ResultType    RT;   //!< Result type of the cross product expression.
+   //**********************************************************************************************
+
+ public:
+   //**Type definitions****************************************************************************
+   typedef DenseSubvector<CPE,false>           This;           //!< Type of this DenseSubvector instance.
+   typedef typename SubvectorTrait<RT>::Type   ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename CPE::ElementType           ElementType;    //!< Type of the subvector elements.
+   typedef typename CPE::ReturnType            ReturnType;     //!< Return type for expression template evaluations
+   typedef const ResultType                    CompositeType;  //!< Data type for composite expression templates.
+   //**********************************************************************************************
+
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template evaluation strategy.
+   enum { vectorizable = 0 };
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for the DenseSubvector specialization class.
+   //
+   // \param vector The dense vector/sparse vector cross product expression.
+   // \param index The first index of the subvector in the given expression.
+   // \param n The size of the subvector.
+   */
+   explicit inline DenseSubvector( const CPE& vector, size_t index, size_t n )
+      : vector_( vector )  // The dense vector/sparse vector cross product expression
+      , offset_( index  )  // The offset of the subvector within the cross product expression
+      , size_  ( n      )  // The size of the subvector
+   {}
+   //**********************************************************************************************
+
+   //**Subscript operator**************************************************************************
+   /*!\brief Subscript operator for the direct access to the vector elements.
+   //
+   // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   */
+   inline ReturnType operator[]( size_t index ) const {
+      BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
+      return vector_[offset_+index];
+   }
+   //**********************************************************************************************
+
+   //**Size function*******************************************************************************
+   /*!\brief Returns the current size/dimension of the vector.
+   //
+   // \return The size of the vector.
+   */
+   inline size_t size() const {
+      return size_;
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return vector_.canAlias( alias );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression is aliased with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case an alias effect is detected, \a false otherwise.
+   */
+   template< typename T >
+   inline bool isAliased( const T* alias ) const {
+      return vector_.isAliased( alias );
+   }
+   //**********************************************************************************************
+
+ private:
+   //**Member variables****************************************************************************
+   /*!\name Member variables */
+   //@{
+   CPE          vector_;  //!< The dense vector/sparse vector cross product expression.
+   const size_t offset_;  //!< The offset of the subvector within the cross product expression.
+   const size_t size_;    //!< The size of the subvector.
+   //@}
+   //**********************************************************************************************
+
+   //**Friend declarations*************************************************************************
+   template< typename VT, bool TF >
+   friend DenseSubvector<VT,TF> subvector( const DenseSubvector<VT,TF>& dv, size_t index, size_t size );
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+
+
+
+
+//=================================================================================================
+//
+//  CLASS TEMPLATE SPECIALIZATION FOR SVECDVECCROSSEXPR
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of DenseSubvector for sparse vector/dense vector cross products.
+// \ingroup dense_subvector
+//
+// This specialization of DenseSubvector adapts the class template to the special case of
+// sparse vector/dense vector cross products.
+*/
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+class DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, false >
+   : public DenseVector< DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, false >, false >
+   , private Expression
+{
+ private:
+   //**Type definitions****************************************************************************
+   typedef SVecDVecCrossExpr<VT1,VT2>  CPE;  //!< Type of the cross product expression.
+   typedef typename CPE::ResultType    RT;   //!< Result type of the cross product expression.
+   //**********************************************************************************************
+
+ public:
+   //**Type definitions****************************************************************************
+   typedef DenseSubvector<CPE,false>           This;           //!< Type of this DenseSubvector instance.
+   typedef typename SubvectorTrait<RT>::Type   ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename CPE::ElementType           ElementType;    //!< Type of the subvector elements.
+   typedef typename CPE::ReturnType            ReturnType;     //!< Return type for expression template evaluations
+   typedef const ResultType                    CompositeType;  //!< Data type for composite expression templates.
+   //**********************************************************************************************
+
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template evaluation strategy.
+   enum { vectorizable = 0 };
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for the DenseSubvector specialization class.
+   //
+   // \param vector The sparse vector/dense vector cross product expression.
+   // \param index The first index of the subvector in the given expression.
+   // \param n The size of the subvector.
+   */
+   explicit inline DenseSubvector( const CPE& vector, size_t index, size_t n )
+      : vector_( vector )  // The sparse vector/dense vector cross product expression
+      , offset_( index  )  // The offset of the subvector within the cross product expression
+      , size_  ( n      )  // The size of the subvector
+   {}
+   //**********************************************************************************************
+
+   //**Subscript operator**************************************************************************
+   /*!\brief Subscript operator for the direct access to the vector elements.
+   //
+   // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   */
+   inline ReturnType operator[]( size_t index ) const {
+      BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
+      return vector_[offset_+index];
+   }
+   //**********************************************************************************************
+
+   //**Size function*******************************************************************************
+   /*!\brief Returns the current size/dimension of the vector.
+   //
+   // \return The size of the vector.
+   */
+   inline size_t size() const {
+      return size_;
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return vector_.canAlias( alias );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression is aliased with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case an alias effect is detected, \a false otherwise.
+   */
+   template< typename T >
+   inline bool isAliased( const T* alias ) const {
+      return vector_.isAliased( alias );
+   }
+   //**********************************************************************************************
+
+ private:
+   //**Member variables****************************************************************************
+   /*!\name Member variables */
+   //@{
+   CPE          vector_;  //!< The sparse vector/dense vector cross product expression.
+   const size_t offset_;  //!< The offset of the subvector within the cross product expression.
+   const size_t size_;    //!< The size of the subvector.
+   //@}
+   //**********************************************************************************************
+
+   //**Friend declarations*************************************************************************
+   template< typename VT, bool TF >
+   friend DenseSubvector<VT,TF> subvector( const DenseSubvector<VT,TF>& dv, size_t index, size_t size );
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+
+
+
+
+//=================================================================================================
+//
+//  CLASS TEMPLATE SPECIALIZATION FOR SVECSVECCROSSEXPR
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of DenseSubvector for sparse vector/sparse vector cross products.
+// \ingroup dense_subvector
+//
+// This specialization of DenseSubvector adapts the class template to the special case of
+// sparse vector/sparse vector cross products.
+*/
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side sparse vector
+class DenseSubvector< SVecSVecCrossExpr<VT1,VT2>, false >
+   : public DenseVector< DenseSubvector< SVecSVecCrossExpr<VT1,VT2>, false >, false >
+   , private Expression
+{
+ private:
+   //**Type definitions****************************************************************************
+   typedef SVecSVecCrossExpr<VT1,VT2>  CPE;  //!< Type of the cross product expression.
+   typedef typename CPE::ResultType    RT;   //!< Result type of the cross product expression.
+   //**********************************************************************************************
+
+ public:
+   //**Type definitions****************************************************************************
+   typedef DenseSubvector<CPE,false>           This;           //!< Type of this DenseSubvector instance.
+   typedef typename SubvectorTrait<RT>::Type   ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename CPE::ElementType           ElementType;    //!< Type of the subvector elements.
+   typedef typename CPE::ReturnType            ReturnType;     //!< Return type for expression template evaluations
+   typedef const ResultType                    CompositeType;  //!< Data type for composite expression templates.
+   //**********************************************************************************************
+
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template evaluation strategy.
+   enum { vectorizable = 0 };
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for the DenseSubvector specialization class.
+   //
+   // \param vector The sparse vector/sparse vector cross product expression.
+   // \param index The first index of the subvector in the given expression.
+   // \param n The size of the subvector.
+   */
+   explicit inline DenseSubvector( const CPE& vector, size_t index, size_t n )
+      : vector_( vector )  // The sparse vector/sparse vector cross product expression
+      , offset_( index  )  // The offset of the subvector within the cross product expression
+      , size_  ( n      )  // The size of the subvector
+   {}
+   //**********************************************************************************************
+
+   //**Subscript operator**************************************************************************
+   /*!\brief Subscript operator for the direct access to the vector elements.
+   //
+   // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   */
+   inline ReturnType operator[]( size_t index ) const {
+      BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
+      return vector_[offset_+index];
+   }
+   //**********************************************************************************************
+
+   //**Size function*******************************************************************************
+   /*!\brief Returns the current size/dimension of the vector.
+   //
+   // \return The size of the vector.
+   */
+   inline size_t size() const {
+      return size_;
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return vector_.canAlias( alias );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression is aliased with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case an alias effect is detected, \a false otherwise.
+   */
+   template< typename T >
+   inline bool isAliased( const T* alias ) const {
+      return vector_.isAliased( alias );
+   }
+   //**********************************************************************************************
+
+ private:
+   //**Member variables****************************************************************************
+   /*!\name Member variables */
+   //@{
+   CPE          vector_;  //!< The sparse vector/sparse vector cross product expression.
+   const size_t offset_;  //!< The offset of the subvector within the cross product expression.
+   const size_t size_;    //!< The size of the subvector.
+   //@}
+   //**********************************************************************************************
+
+   //**Friend declarations*************************************************************************
+   template< typename VT, bool TF >
+   friend DenseSubvector<VT,TF> subvector( const DenseSubvector<VT,TF>& dv, size_t index, size_t size );
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+
+
+
+
+//=================================================================================================
+//
 //  DENSESUBVECTOR OPERATORS
 //
 //=================================================================================================
@@ -2170,18 +2675,12 @@ inline DenseSubvector<VT,TF>
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline typename EnableIf< IsCrossExpr<VT>, HybridVector<typename VT::ElementType,3UL,TF> >::Type
+inline typename EnableIf< IsCrossExpr<VT>, DenseSubvector<VT> >::Type
    subvector( const DenseVector<VT,TF>& dv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   HybridVector<typename VT::ElementType,3UL,TF> tmp( size );
-
-   for( size_t i=0UL; i<size; ++i ) {
-      tmp[i] = (~dv)[index+i];
-   }
-
-   return tmp;
+   return DenseSubvector<VT>( ~dv, index, size );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2253,6 +2752,62 @@ template< typename VT, bool TF >
 struct SubvectorExprTrait< const volatile DenseSubvector<VT,TF> >
 {
    typedef DenseSubvector<VT,TF>  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT1, typename VT2 >
+struct SubvectorExprTrait< DVecDVecCrossExpr<VT1,VT2> >
+{
+ public:
+   //**********************************************************************************************
+   typedef DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, false >  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT1, typename VT2 >
+struct SubvectorExprTrait< DVecSVecCrossExpr<VT1,VT2> >
+{
+ public:
+   //**********************************************************************************************
+   typedef DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, false >  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT1, typename VT2 >
+struct SubvectorExprTrait< SVecDVecCrossExpr<VT1,VT2> >
+{
+ public:
+   //**********************************************************************************************
+   typedef DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, false >  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT1, typename VT2 >
+struct SubvectorExprTrait< SVecSVecCrossExpr<VT1,VT2> >
+{
+ public:
+   //**********************************************************************************************
+   typedef DenseSubvector< SVecSVecCrossExpr<VT1,VT2>, false >  Type;
+   //**********************************************************************************************
 };
 /*! \endcond */
 //*************************************************************************************************
