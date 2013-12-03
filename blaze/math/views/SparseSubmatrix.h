@@ -881,7 +881,11 @@ template< typename MT  // Type of the sparse matrix
 inline typename SparseSubmatrix<MT,SO>::Iterator SparseSubmatrix<MT,SO>::begin( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid sparse submatrix row access index" );
-   return Iterator( matrix_.lowerBound( i + row_, column_ ), column_ );
+
+   if( column_ == 0UL )
+      return Iterator( matrix_.begin( i + row_ ), column_ );
+   else
+      return Iterator( matrix_.lowerBound( i + row_, column_ ), column_ );
 }
 //*************************************************************************************************
 
@@ -902,7 +906,11 @@ template< typename MT  // Type of the sparse matrix
 inline typename SparseSubmatrix<MT,SO>::ConstIterator SparseSubmatrix<MT,SO>::begin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid sparse submatrix row access index" );
-   return Iterator( matrix_.lowerBound( i + row_, column_ ), column_ );
+
+   if( column_ == 0UL )
+      return ConstIterator( matrix_.cbegin( i + row_ ), column_ );
+   else
+      return ConstIterator( matrix_.lowerBound( i + row_, column_ ), column_ );
 }
 //*************************************************************************************************
 
@@ -923,7 +931,11 @@ template< typename MT  // Type of the sparse matrix
 inline typename SparseSubmatrix<MT,SO>::ConstIterator SparseSubmatrix<MT,SO>::cbegin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid sparse submatrix row access index" );
-   return Iterator( matrix_.lowerBound( i + row_, column_ ), column_ );
+
+   if( column_ == 0UL )
+      return ConstIterator( matrix_.cbegin( i + row_ ), column_ );
+   else
+      return ConstIterator( matrix_.lowerBound( i + row_, column_ ), column_ );
 }
 //*************************************************************************************************
 
@@ -944,7 +956,11 @@ template< typename MT  // Type of the sparse matrix
 inline typename SparseSubmatrix<MT,SO>::Iterator SparseSubmatrix<MT,SO>::end( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid sparse submatrix row access index" );
-   return Iterator( matrix_.lowerBound( i + row_, column_ + n_ ), column_ );
+
+   if( matrix_.columns() == column_ + n_ )
+      return Iterator( matrix_.end( i + row_ ), column_ );
+   else
+      return Iterator( matrix_.lowerBound( i + row_, column_ + n_ ), column_ );
 }
 //*************************************************************************************************
 
@@ -965,7 +981,11 @@ template< typename MT  // Type of the sparse matrix
 inline typename SparseSubmatrix<MT,SO>::ConstIterator SparseSubmatrix<MT,SO>::end( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid sparse submatrix row access index" );
-   return ConstIterator( matrix_.lowerBound( i + row_, column_ + n_ ), column_ );
+
+   if( matrix_.columns() == column_ + n_ )
+      return ConstIterator( matrix_.cend( i + row_ ), column_ );
+   else
+      return ConstIterator( matrix_.lowerBound( i + row_, column_ + n_ ), column_ );
 }
 //*************************************************************************************************
 
@@ -986,7 +1006,11 @@ template< typename MT  // Type of the sparse matrix
 inline typename SparseSubmatrix<MT,SO>::ConstIterator SparseSubmatrix<MT,SO>::cend( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid sparse submatrix row access index" );
-   return ConstIterator( matrix_.lowerBound( i + row_, column_ + n_ ), column_ );
+
+   if( matrix_.columns() == column_ + n_ )
+      return ConstIterator( matrix_.cend( i + row_ ), column_ );
+   else
+      return ConstIterator( matrix_.lowerBound( i + row_, column_ + n_ ), column_ );
 }
 //*************************************************************************************************
 
@@ -2747,7 +2771,11 @@ template< typename MT >  // Type of the sparse matrix
 inline typename SparseSubmatrix<MT,true>::Iterator SparseSubmatrix<MT,true>::begin( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid sparse submatrix column access index" );
-   return Iterator( matrix_.lowerBound( row_, j + column_ ), row_ );
+
+   if( row_ == 0UL )
+      return Iterator( matrix_.begin( j + column_ ), row_ );
+   else
+      return Iterator( matrix_.lowerBound( row_, j + column_ ), row_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2764,7 +2792,11 @@ template< typename MT >  // Type of the sparse matrix
 inline typename SparseSubmatrix<MT,true>::ConstIterator SparseSubmatrix<MT,true>::begin( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid sparse submatrix column access index" );
-   return Iterator( matrix_.lowerBound( row_, j + column_ ), row_ );
+
+   if( row_ == 0UL )
+      return ConstIterator( matrix_.cbegin( j + column_ ), row_ );
+   else
+      return ConstIterator( matrix_.lowerBound( row_, j + column_ ), row_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2781,7 +2813,11 @@ template< typename MT >  // Type of the sparse matrix
 inline typename SparseSubmatrix<MT,true>::ConstIterator SparseSubmatrix<MT,true>::cbegin( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid sparse submatrix column access index" );
-   return Iterator( matrix_.lowerBound( row_, j + column_ ), row_ );
+
+   if( row_ == 0UL )
+      return ConstIterator( matrix_.cbegin( j + column_ ), row_ );
+   else
+      return ConstIterator( matrix_.lowerBound( row_, j + column_ ), row_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2798,7 +2834,11 @@ template< typename MT >  // Type of the sparse matrix
 inline typename SparseSubmatrix<MT,true>::Iterator SparseSubmatrix<MT,true>::end( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid sparse submatrix column access index" );
-   return Iterator( matrix_.lowerBound( row_ + m_, j + column_ ), row_ );
+
+   if( matrix_.rows() == row_ + m_ )
+      return Iterator( matrix_.end( j + column_ ), row_ );
+   else
+      return Iterator( matrix_.lowerBound( row_ + m_, j + column_ ), row_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2815,7 +2855,11 @@ template< typename MT >  // Type of the sparse matrix
 inline typename SparseSubmatrix<MT,true>::ConstIterator SparseSubmatrix<MT,true>::end( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid sparse submatrix column access index" );
-   return ConstIterator( matrix_.lowerBound( row_ + m_, j + column_ ), row_ );
+
+   if( matrix_.rows() == row_ + m_ )
+      return ConstIterator( matrix_.cend( j + column_ ), row_ );
+   else
+      return ConstIterator( matrix_.lowerBound( row_ + m_, j + column_ ), row_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2832,7 +2876,11 @@ template< typename MT >  // Type of the sparse matrix
 inline typename SparseSubmatrix<MT,true>::ConstIterator SparseSubmatrix<MT,true>::cend( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid sparse submatrix column access index" );
-   return ConstIterator( matrix_.lowerBound( row_ + m_, j + column_ ), row_ );
+
+   if( matrix_.rows() == row_ + m_ )
+      return ConstIterator( matrix_.cend( j + column_ ), row_ );
+   else
+      return ConstIterator( matrix_.lowerBound( row_ + m_, j + column_ ), row_ );
 }
 /*! \endcond */
 //*************************************************************************************************
