@@ -690,6 +690,25 @@ namespace blaze {}
    StaticVector<long,6UL>               v18( 1L, 3L, -2L, 9L, 4L, -3L );
    \endcode
 
+// \n \subsection vector_operations_array_construction Array Construction
+//
+// Alternatively, all dense vector classes offer a constructor for an initialization with a dynamic
+// or static array. If the vector is initialized from a dynamic array, the constructor expects the
+// actual size of the array as first argument, the array as second argument. In case of a static
+// array, the fixed size of the array is used:
+
+   \code
+   const double array1* = new double[2];
+   // ... Initialization of the dynamic array
+
+   float array2[4] = { 1.0F, 2.0F, 3.0F, 4.0F };
+
+   blaze::StaticVector<double,2UL> v1( 2UL, array1 );
+   blaze::DynamicVector<float>     v2( array2 );
+
+   delete[] array1;
+   \endcode
+
 // \n \subsection vector_operations_copy_construction Copy Construction
 //
 // All dense and sparse vectors can be created as the copy of any other dense or sparse vector
@@ -1306,6 +1325,25 @@ namespace blaze {}
    StaticMatrix<double,3UL,3UL,rowVector>  M14( 1.3, -0.4,  8.3,
                                                 0.2, -1.5, -2.6,
                                                 1.3,  9.3, -7.1 );
+   \endcode
+
+// \n \subsection matrix_operations_array_construction Array Construction
+//
+// Alternatively, all dense matrix classes offer a constructor for an initialization with a
+// dynamic or static array. If the matrix is initialized from a dynamic array, the constructor
+// expects the dimensions of values provided by the array as first and second argument, the
+// array as third argument. In case of a static array, the fixed size of the array is used:
+
+   \code
+   const double array1* = new double[6];
+   // ... Initialization of the dynamic array
+
+   float array2[3][2] = { { 3.1F, 6.4F }, { -0.9F, -1.2F }, { 4.8F, 0.6F } };
+
+   blaze::StaticMatrix<double,2UL,3UL> v1( 2UL, 3UL, array1 );
+   blaze::DynamicMatrix<float>         v2( array2 );
+
+   delete[] array1;
    \endcode
 
 // \n \subsection matrix_operations_copy_construction Copy Construction
