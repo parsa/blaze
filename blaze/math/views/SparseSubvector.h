@@ -851,7 +851,10 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename SparseSubvector<VT,TF>::Iterator SparseSubvector<VT,TF>::begin()
 {
-   return Iterator( vector_.lowerBound( offset_ ), offset_ );
+   if( offset_ == 0UL )
+      return Iterator( vector_.begin(), offset_ );
+   else
+      return Iterator( vector_.lowerBound( offset_ ), offset_ );
 }
 //*************************************************************************************************
 
@@ -867,7 +870,10 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::begin() const
 {
-   return ConstIterator( vector_.lowerBound( offset_ ), offset_ );
+   if( offset_ == 0UL )
+      return ConstIterator( vector_.cbegin(), offset_ );
+   else
+      return ConstIterator( vector_.lowerBound( offset_ ), offset_ );
 }
 //*************************************************************************************************
 
@@ -883,7 +889,10 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::cbegin() const
 {
-   return ConstIterator( vector_.lowerBound( offset_ ), offset_ );
+   if( offset_ == 0UL )
+      return ConstIterator( vector_.cbegin(), offset_ );
+   else
+      return ConstIterator( vector_.lowerBound( offset_ ), offset_ );
 }
 //*************************************************************************************************
 
@@ -899,7 +908,10 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename SparseSubvector<VT,TF>::Iterator SparseSubvector<VT,TF>::end()
 {
-   return Iterator( vector_.lowerBound( offset_ + size_ ), offset_ );
+   if( offset_ + size_ == vector_.size() )
+      return Iterator( vector_.end(), offset_ );
+   else
+      return Iterator( vector_.lowerBound( offset_ + size_ ), offset_ );
 }
 //*************************************************************************************************
 
@@ -915,7 +927,10 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::end() const
 {
-   return ConstIterator( vector_.lowerBound( offset_ + size_ ), offset_ );
+   if( offset_ + size_ == vector_.size() )
+      return ConstIterator( vector_.cend(), offset_ );
+   else
+      return ConstIterator( vector_.lowerBound( offset_ + size_ ), offset_ );
 }
 //*************************************************************************************************
 
@@ -931,7 +946,10 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::cend() const
 {
-   return ConstIterator( vector_.lowerBound( offset_ + size_ ), offset_ );
+   if( offset_ + size_ == vector_.size() )
+      return ConstIterator( vector_.cend(), offset_ );
+   else
+      return ConstIterator( vector_.lowerBound( offset_ + size_ ), offset_ );
 }
 //*************************************************************************************************
 
