@@ -279,7 +279,7 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
    }
    //**********************************************************************************************
 
-   //**Left function*******************************************************************************
+   //**Left operand access*************************************************************************
    /*!\brief Returns the left-hand side sparse matrix operand.
    //
    // \return The left-hand side sparse matrix operand.
@@ -289,7 +289,7 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
    }
    //**********************************************************************************************
 
-   //**Right function******************************************************************************
+   //**Right operand access************************************************************************
    /*!\brief Returns the right-hand side sparse vector operand.
    //
    // \return The right-hand side sparse vector operand.

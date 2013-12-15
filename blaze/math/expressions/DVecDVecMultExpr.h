@@ -572,7 +572,7 @@ class DVecDVecMultExpr : public DenseVector< DVecDVecMultExpr<VT1,VT2,TF>, TF >
          multAssign( ~lhs, rhs.lhs_ );
       }
       else {
-         assign   ( ~lhs, rhs.lhs_ );
+         assign    ( ~lhs, rhs.lhs_ );
          multAssign( ~lhs, rhs.rhs_ );
       }
    }

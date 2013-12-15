@@ -258,7 +258,7 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
    //**Assignment to dense vectors*****************************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Assignment of a transpose sparse vector-transpose dense matrix multiplication to
-   //        a dense vector.
+   //        a dense vector (\f$ \vec{y}^T=\vec{x}^T*A \f$).
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
@@ -317,8 +317,8 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
    //**Assignment to sparse vectors****************************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Assignment of a transpose sparse vector-transpose dense matrix multiplication to
-   //        a sparse vector.
-   // \ingroup sparse_vector
+   //        a sparse vector (\f$ \vec{y}^T=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
    //
    // \param lhs The target left-hand side sparse vector.
    // \param rhs The right-hand side multiplication expression to be assigned.
@@ -346,7 +346,8 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
 
    //**Addition assignment to dense vectors********************************************************
    /*!\brief Addition assignment of a transpose sparse vector-transpose dense matrix multiplication
-   //        to a dense vector.
+   //        to a dense vector (\f$ \vec{y}^T+=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
    // \param rhs The right-hand side multiplication expression to be added.
@@ -395,7 +396,8 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
 
    //**Subtraction assignment to dense vectors*****************************************************
    /*!\brief Subtraction assignment of a transpose sparse vector-transpose dense matrix
-   //        multiplication to a dense vector.
+   //        multiplication to a dense vector (\f$ \vec{y}^T-=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
    // \param rhs The right-hand side multiplication expression to be subtracted.
@@ -444,7 +446,8 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
 
    //**Multiplication assignment to dense vectors**************************************************
    /*!\brief Multiplication assignment of a transpose sparse vector-transpose dense matrix
-   //        multiplication to a dense vector.
+   //        multiplication to a dense vector (\f$ \vec{y}^T*=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
    // \param rhs The right-hand side multiplication expression to be multiplied.

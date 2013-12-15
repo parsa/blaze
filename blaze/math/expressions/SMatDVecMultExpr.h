@@ -58,6 +58,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/DisableIf.h>
@@ -246,7 +247,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
    }
    //**********************************************************************************************
 
-   //**Left function*******************************************************************************
+   //**Left operand access*************************************************************************
    /*!\brief Returns the left-hand side sparse matrix operand.
    //
    // \return The left-hand side sparse matrix operand.
@@ -256,7 +257,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
    }
    //**********************************************************************************************
 
-   //**Right function******************************************************************************
+   //**Right operand access************************************************************************
    /*!\brief Returns the right-hand side dense vector operand.
    //
    // \return The right-hand side dense vector operand.
@@ -298,7 +299,8 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
    //**Assignment to dense vectors*****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a sparse matrix-dense vector multiplication to a dense vector.
+   /*!\brief Assignment of a sparse matrix-dense vector multiplication to a dense vector
+   //        (\f$ \vec{y}=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
@@ -341,7 +343,8 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
    //**Assignment to sparse vectors****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a sparse matrix-dense vector multiplication to a sparse vector.
+   /*!\brief Assignment of a sparse matrix-dense vector multiplication to a sparse vector
+   //        (\f$ \vec{y}=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side sparse vector.
@@ -375,6 +378,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
    //**Addition assignment to dense vectors********************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Addition assignment of a sparse matrix-dense vector multiplication to a dense vector.
+   //        (\f$ \vec{y}+=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
@@ -420,7 +424,8 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
    //**Subtraction assignment to dense vectors*****************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Subtraction assignment of a sparse matrix-dense vector multiplication to a dense vector.
+   /*!\brief Subtraction assignment of a sparse matrix-dense vector multiplication to a dense
+   //        vector (\f$ \vec{y}-=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
@@ -466,7 +471,8 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
    //**Multiplication assignment to dense vectors**************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Multiplication assignment of a sparse matrix-dense vector multiplication to a dense vector.
+   /*!\brief Multiplication assignment of a sparse matrix-dense vector multiplication to a dense
+   //        vector (\f$ \vec{y}*=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.

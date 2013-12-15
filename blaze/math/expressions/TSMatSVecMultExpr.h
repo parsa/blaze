@@ -193,7 +193,7 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
    }
    //**********************************************************************************************
 
-   //**Left function*******************************************************************************
+   //**Left operand access*************************************************************************
    /*!\brief Returns the left-hand side transpose sparse matrix operand.
    //
    // \return The left-hand side transpose sparse matrix operand.
@@ -203,7 +203,7 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
    }
    //**********************************************************************************************
 
-   //**Right function******************************************************************************
+   //**Right operand function**********************************************************************
    /*!\brief Returns the right-hand side sparse vector operand.
    //
    // \return The right-hand side sparse vector operand.

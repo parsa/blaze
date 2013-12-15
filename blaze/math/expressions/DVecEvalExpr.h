@@ -180,9 +180,7 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    // \return void
    //
    // This function implements the performance optimized assignment of a dense vector evaluation
-   // expression to a dense vector. Due to the explicit application of the SFINAE principle, this
-   // operator can only be selected by the compiler in case the operand requires an intermediate
-   // evaluation.
+   // expression to a dense vector.
    */
    template< typename VT2 >  // Type of the target dense vector
    friend inline void assign( DenseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )
@@ -206,9 +204,7 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    // \return void
    //
    // This function implements the performance optimized assignment of a dense vector evaluation
-   // expression to a sparse vector. Due to the explicit application of the SFINAE principle, this
-   // operator can only be selected by the compiler in case the operand requires an intermediate
-   // evaluation.
+   // expression to a sparse vector.
    */
    template< typename VT2 >  // Type of the target sparse vector
    friend inline void assign( SparseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )
@@ -232,9 +228,7 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    // \return void
    //
    // This function implements the performance optimized addition assignment of a dense vector
-   // evaluation expression to a dense vector. Due to the explicit application of the SFINAE
-   // principle, this operator can only be selected by the compiler in case the operand requires
-   // an intermediate evaluation.
+   // evaluation expression to a dense vector.
    */
    template< typename VT2 >  // Type of the target dense vector
    friend inline void addAssign( DenseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )
@@ -258,9 +252,7 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    // \return void
    //
    // This function implements the performance optimized addition assignment of a dense vector
-   // evaluation expression to a sparse vector. Due to the explicit application of the SFINAE
-   // principle, this operator can only be selected by the compiler in case the operand requires
-   // an intermediate evaluation.
+   // evaluation expression to a sparse vector.
    */
    template< typename VT2 >  // Type of the target sparse vector
    friend inline void addAssign( SparseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )
@@ -284,9 +276,7 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    // \return void
    //
    // This function implements the performance optimized subtraction assignment of a dense
-   // vector evaluation expression to a dense vector. Due to the explicit application of
-   // the SFINAE principle, this operator can only be selected by the compiler in case the
-   // operand requires an intermediate evaluation.
+   // vector evaluation expression to a dense vector.
    */
    template< typename VT2 >  // Type of the target dense vector
    friend inline void subAssign( DenseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )
@@ -310,9 +300,7 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    // \return void
    //
    // This function implements the performance optimized subtraction assignment of a dense
-   // vector evaluation expression to a sparse vector. Due to the explicit application of
-   // the SFINAE principle, this operator can only be selected by the compiler in case the
-   // operand requires an intermediate evaluation.
+   // vector evaluation expression to a sparse vector.
    */
    template< typename VT2 >  // Type of the target sparse vector
    friend inline void subAssign( SparseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )
@@ -336,9 +324,7 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    // \return void
    //
    // This function implements the performance optimized multiplication assignment of a dense
-   // vector evaluation expression to a dense vector. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the operand
-   // requires an intermediate evaluation.
+   // vector evaluation expression to a dense vector.
    */
    template< typename VT2 >  // Type of the target dense vector
    friend inline void multAssign( DenseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )
@@ -362,9 +348,7 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    // \return void
    //
    // This function implements the performance optimized multiplication assignment of a dense
-   // vector evaluation expression to a sparse vector. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the operand
-   // requires an intermediate evaluation.
+   // vector evaluation expression to a sparse vector.
    */
    template< typename VT2 >  // Type of the target sparse vector
    friend inline void multAssign( SparseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )

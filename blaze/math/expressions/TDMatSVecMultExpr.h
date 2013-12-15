@@ -104,8 +104,13 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side dense matrix expression.
-   enum { evaluate = IsComputation<MT>::value && !MT::vectorizable &&
-                     IsSame<VET,MET>::value && IsBlasCompatible<VET>::value };
+   enum { evaluateMatrix = IsComputation<MT>::value && !MT::vectorizable &&
+                           IsSame<VET,MET>::value && IsBlasCompatible<VET>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Compilation switch for the composite type of the right-hand side dense vector expression.
+   enum { evaluateVector = IsComputation<VT>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -170,10 +175,10 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
    typedef typename SelectType< IsExpression<VT>::value, const VT, const VT& >::Type  RightOperand;
 
    //! Type for the assignment of the left-hand side dense matrix operand.
-   typedef typename SelectType< evaluate, const MRT, MCT >::Type  LT;
+   typedef typename SelectType< evaluateMatrix, const MRT, MCT >::Type  LT;
 
    //! Type for the assignment of the right-hand side dense matrix operand.
-   typedef typename SelectType< IsComputation<VT>::value, const VRT, typename VT::CompositeType >::Type  RT;
+   typedef typename SelectType< evaluateVector, const VRT, typename VT::CompositeType >::Type  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -238,7 +243,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
    }
    //**********************************************************************************************
 
-   //**Left function*******************************************************************************
+   //**Left operand access*************************************************************************
    /*!\brief Returns the left-hand side transpose dense matrix operand.
    //
    // \return The left-hand side transpose dense matrix operand.
@@ -248,7 +253,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
    }
    //**********************************************************************************************
 
-   //**Right function******************************************************************************
+   //**Right operand access************************************************************************
    /*!\brief Returns the right-hand side sparse vector operand.
    //
    // \return The right-hand side sparse vector operand.
@@ -290,7 +295,8 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
    //**Assignment to dense vectors*****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a transpose dense matrix-sparse vector multiplication to a dense vector.
+   /*!\brief Assignment of a transpose dense matrix-sparse vector multiplication to a dense vector
+   //        (\f$ \vec{y}=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
@@ -564,7 +570,8 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
    //**Assignment to sparse vectors****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a transpose dense matrix-sparse vector multiplication to a sparse vector.
+   /*!\brief Assignment of a transpose dense matrix-sparse vector multiplication to a sparse vector
+   //        (\f$ \vec{y}=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side sparse vector.
@@ -594,7 +601,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
    //**Addition assignment to dense vectors********************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Addition assignment of a transpose dense matrix-sparse vector multiplication to a
-   //        dense vector.
+   //        dense vector (\f$ \vec{y}+=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
@@ -806,7 +813,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
    //**Subtraction assignment to dense vectors*****************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Subtraction assignment of a transpose dense matrix-sparse vector multiplication to
-   //        a dense vector.
+   //        a dense vector (\f$ \vec{y}-=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
@@ -1018,7 +1025,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
    //**Multiplication assignment to dense vectors**************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Multiplication assignment of a transpose dense matrix-sparse vector multiplication
-   //        to a dense vector.
+   //        to a dense vector (\f$ \vec{y}*=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.

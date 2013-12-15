@@ -408,10 +408,6 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    // No special implementation for the multiplication assignment to sparse vectors.
    //**********************************************************************************************
 
-   //**Multiplication assignment to sparse vectors*************************************************
-   // No special implementation for the multiplication assignment to sparse vectors.
-   //**********************************************************************************************
-
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( VT );

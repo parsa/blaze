@@ -115,8 +115,13 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side dense matrix expression.
-   enum { evaluate = IsComputation<MT>::value && !MT::vectorizable &&
-                     IsSame<VET,MET>::value && IsBlasCompatible<VET>::value };
+   enum { evaluateMatrix = IsComputation<MT>::value && !MT::vectorizable &&
+                           IsSame<VET,MET>::value && IsBlasCompatible<VET>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Compilation switch for the composite type of the right-hand side dense vector expression.
+   enum { evaluateVector = IsComputation<VT>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -234,10 +239,10 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    typedef typename SelectType< IsExpression<VT>::value, const VT, const VT& >::Type  RightOperand;
 
    //! Type for the assignment of the left-hand side dense matrix operand.
-   typedef typename SelectType< evaluate, const MRT, MCT >::Type  LT;
+   typedef typename SelectType< evaluateMatrix, const MRT, MCT >::Type  LT;
 
    //! Type for the assignment of the right-hand side dense vector operand.
-   typedef typename SelectType< IsComputation<VT>::value, const VRT, VCT >::Type  RT;
+   typedef typename SelectType< evaluateVector, const VRT, VCT >::Type  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -298,7 +303,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    }
    //**********************************************************************************************
 
-   //**Left function*******************************************************************************
+   //**Left operand access*************************************************************************
    /*!\brief Returns the left-hand side transpose dense matrix operand.
    //
    // \return The left-hand side transpose dense matrix operand.
@@ -308,7 +313,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    }
    //**********************************************************************************************
 
-   //**Right function******************************************************************************
+   //**Right operand access************************************************************************
    /*!\brief Returns the right-hand side dense vector operand.
    //
    // \return The right-hand side dense vector operand.
@@ -351,7 +356,8 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
    //**Assignment to dense vectors*****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a transpose dense matrix-dense vector multiplication to a dense vector.
+   /*!\brief Assignment of a transpose dense matrix-dense vector multiplication to a dense vector
+   //        (\f$ \vec{y}=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
@@ -384,7 +390,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size()     , "Invalid vector size"       );
 
-      if( ( IsComputation<MT>::value && !evaluate ) ||
+      if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDMATDVECMULT_THRESHOLD ) )
          TDMatDVecMultExpr::selectDefaultAssignKernel( ~lhs, A, x );
       else
@@ -720,7 +726,8 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
    //**Assignment to sparse vectors****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a transpose dense matrix-dense vector multiplication to a sparse vector.
+   /*!\brief Assignment of a transpose dense matrix-dense vector multiplication to a sparse vector
+   //        (\f$ \vec{y}=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side sparse vector.
@@ -750,7 +757,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    //**Addition assignment to dense vectors********************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Addition assignment of a transpose dense matrix-dense vector multiplication to a dense
-   //        vector.
+   //        vector (\f$ \vec{y}+=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
@@ -779,7 +786,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size()     , "Invalid vector size"       );
 
-      if( ( IsComputation<MT>::value && !evaluate ) ||
+      if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDMATDVECMULT_THRESHOLD ) )
          TDMatDVecMultExpr::selectDefaultAddAssignKernel( ~lhs, A, x );
       else
@@ -1130,7 +1137,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    //**Subtraction assignment to dense vectors*****************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Subtraction assignment of a transpose dense matrix-dense vector multiplication to a
-   //        dense vector.
+   //        dense vector (\f$ \vec{y}-=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
@@ -1159,7 +1166,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size()     , "Invalid vector size"       );
 
-      if( ( IsComputation<MT>::value && !evaluate ) ||
+      if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDMATDVECMULT_THRESHOLD ) )
          TDMatDVecMultExpr::selectDefaultSubAssignKernel( ~lhs, A, x );
       else
@@ -1510,7 +1517,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    //**Multiplication assignment to dense vectors**************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Multiplication assignment of a transpose dense matrix-dense vector multiplication to
-   //        a dense vector.
+   //        a dense vector (\f$ \vec{y}*=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
@@ -1592,8 +1599,13 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense matrix expression.
-   enum { evaluate = IsComputation<MT>::value && !MT::vectorizable &&
-                     IsSame<VET,MET>::value && IsBlasCompatible<VET>::value };
+   enum { evaluateMatrix = IsComputation<MT>::value && !MT::vectorizable &&
+                           IsSame<VET,MET>::value && IsBlasCompatible<VET>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Compilation switch for the composite type of the right-hand side dense vector expression.
+   enum { evaluateVector = IsComputation<VT>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -1702,10 +1714,10 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    typedef ST  RightOperand;
 
    //! Type for the assignment of the dense matrix operand of the left-hand side expression.
-   typedef typename SelectType< evaluate, const MRT, MCT >::Type  LT;
+   typedef typename SelectType< evaluateMatrix, const MRT, MCT >::Type  LT;
 
    //! Type for the assignment of the dense vector operand of the left-hand side expression.
-   typedef typename SelectType< IsComputation<VT>::value, const VRT, VCT >::Type  RT;
+   typedef typename SelectType< evaluateVector, const VRT, VCT >::Type  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -1835,7 +1847,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
       BLAZE_INTERNAL_ASSERT( x.size()    == right.size()  , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size() , "Invalid vector size"       );
 
-      if( ( IsComputation<MT>::value && !evaluate ) ||
+      if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDMATDVECMULT_THRESHOLD ) )
          DVecScalarMultExpr::selectDefaultAssignKernel( ~lhs, A, x, rhs.scalar_ );
       else
@@ -2176,7 +2188,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
    //**Assignment to sparse vectors****************************************************************
    /*!\brief Assignment of a scaled transpose dense matrix-dense vector multiplication to a sparse
-   //        vector.
+   //        vector (\f$ \vec{y}=s*A*\vec{x} \f$).
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side sparse vector.
@@ -2236,7 +2248,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
       BLAZE_INTERNAL_ASSERT( x.size()    == right.size()  , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size() , "Invalid vector size"       );
 
-      if( ( IsComputation<MT>::value && !evaluate ) ||
+      if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDMATDVECMULT_THRESHOLD ) )
          DVecScalarMultExpr::selectDefaultAddAssignKernel( ~lhs, A, x, rhs.scalar_ );
       else
@@ -2592,7 +2604,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
       BLAZE_INTERNAL_ASSERT( x.size()    == right.size()  , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size() , "Invalid vector size"       );
 
-      if( ( IsComputation<MT>::value && !evaluate ) ||
+      if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDMATDVECMULT_THRESHOLD ) )
          DVecScalarMultExpr::selectDefaultSubAssignKernel( ~lhs, A, x, rhs.scalar_ );
       else

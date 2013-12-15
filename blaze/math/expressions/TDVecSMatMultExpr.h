@@ -98,6 +98,16 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
    typedef typename MT::CompositeType  MCT;  //!< Composite type of the right-hand side sparse matrix expression.
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   //! Compilation switch for the composite type of the right-hand side dense vector expression.
+   enum { evaluateVector = IsComputation<VT>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Compilation switch for the composite type of the left-hand side dense matrix expression.
+   enum { evaluateMatrix = RequiresEvaluation<MT>::value };
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    typedef TDVecSMatMultExpr<VT,MT>            This;           //!< Type of this TDVecSMatMultExpr instance.
@@ -114,7 +124,7 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
    typedef typename SelectType< IsExpression<MT>::value, const MT, const MT& >::Type  RightOperand;
 
    //! Composite type of the left-hand side dense vector expression.
-   typedef typename SelectType< IsComputation<VT>::value, const VRT, VCT >::Type  LT;
+   typedef typename SelectType< evaluateVector, const VRT, VCT >::Type  LT;
 
    //! Composite type of the right-hand side sparse matrix expression.
    typedef MCT  RT;
@@ -223,7 +233,8 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
 
    //**Default assignment to dense vectors*********************************************************
    /*!\brief Default assignment of a transpose dense vector-sparse matrix multiplication to a
-   //        dense vector.
+   //        dense vector (\f$ \vec{y}^T=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
    // \param rhs The right-hand side multiplication expression to be assigned.
@@ -265,7 +276,8 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
 
    //**Optimized assignment to dense vectors*******************************************************
    /*!\brief Optimized assignment of a transpose dense vector-sparse matrix multiplication to a
-   //        dense vector.
+   //        dense vector (\f$ \vec{y}^T=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
    // \param rhs The right-hand side multiplication expression to be assigned.
@@ -311,7 +323,9 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
    //**********************************************************************************************
 
    //**Assignment to sparse vectors****************************************************************
-   /*!\brief Assignment of a transpose dense vector-sparse matrix multiplication to a sparse vector.
+   /*!\brief Assignment of a transpose dense vector-sparse matrix multiplication to a sparse
+   //        vector (\f$ \vec{y}^T=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
    //
    // \param lhs The target left-hand side sparse vector.
    // \param rhs The right-hand side multiplication expression to be assigned.
@@ -338,7 +352,8 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
 
    //**Addition assignment to dense vectors********************************************************
    /*!\brief Addition assignment of a transpose dense vector-sparse matrix multiplication to a
-   //        dense vector.
+   //        dense vector (\f$ \vec{y}^T+=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
    // \param rhs The right-hand side multiplication expression to be added.
@@ -384,7 +399,8 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
 
    //**Subtraction assignment to dense vectors*****************************************************
    /*!\brief Subtraction assignment of a transpose dense vector-sparse matrix multiplication
-   //        to a dense vector.
+   //        to a dense vector (\f$ \vec{y}^T-=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
    // \param rhs The right-hand side multiplication expression to be subtracted.
@@ -430,7 +446,8 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
 
    //**Multiplication assignment to dense vectors**************************************************
    /*!\brief Multiplication assignment of a transpose dense vector-sparse matrix multiplication
-   //        to a dense vector.
+   //        to a dense vector (\f$ \vec{y}^T*=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
    // \param rhs The right-hand side multiplication expression to be multiplied.

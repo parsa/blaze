@@ -83,6 +83,8 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    typedef const This&                  CompositeType;   //!< Data type for composite expression templates.
    typedef typename VT::Reference       Reference;       //!< Reference to a non-constant matrix value.
    typedef typename VT::ConstReference  ConstReference;  //!< Reference to a constant matrix value.
+   typedef typename VT::Iterator        Iterator;        //!< Iterator over non-constant elements.
+   typedef typename VT::ConstIterator   ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
