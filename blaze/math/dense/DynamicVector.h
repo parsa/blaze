@@ -187,14 +187,16 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-                           explicit inline DynamicVector();
-                           explicit inline DynamicVector( size_t n );
-                           explicit inline DynamicVector( size_t n, const Type& init );
-                                    inline DynamicVector( const DynamicVector& v );
-   template< typename VT >          inline DynamicVector( const Vector<VT,TF>& v );
+                              explicit inline DynamicVector();
+                              explicit inline DynamicVector( size_t n );
+                              explicit inline DynamicVector( size_t n, const Type& init );
+   template< typename Other > explicit inline DynamicVector( size_t n, const Other* array );
 
    template< typename Other, size_t N >
-   explicit inline DynamicVector( const Other (&rhs)[N] );
+   explicit inline DynamicVector( const Other (&array)[N] );
+
+                           inline DynamicVector( const DynamicVector& v );
+   template< typename VT > inline DynamicVector( const Vector<VT,TF>& v );
    //@}
    //**********************************************************************************************
 
@@ -225,7 +227,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    /*!\name Assignment operators */
    //@{
    template< typename Other, size_t N >
-   inline DynamicVector& operator=( const Other (&rhs)[N] );
+   inline DynamicVector& operator=( const Other (&array)[N] );
 
                            inline DynamicVector& operator= ( const Type& rhs );
                            inline DynamicVector& operator= ( const DynamicVector& rhs );
@@ -468,6 +470,82 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Type& init )
 
 
 //*************************************************************************************************
+/*!\brief Array initialization of all vector elements.
+//
+// \param n The size of the vector.
+// \param array Dynamic array for the initialization.
+//
+// This assignment operator offers the option to directly initialize the elements of the vector
+// with a dynamic array:
+
+   \code
+   double* array = new double[4];
+   // ... Initialization of the dynamic array
+   blaze::DynamicVector<real> v( array, 4UL );
+   delete[] array;
+   \endcode
+
+// The vector is sized accoring to the specified size of the array and initialized with the
+// values from the given array. Note that it is expected that the given \a array has at least
+// \a n elements. Providing an array with less elements results in undefined behavior!
+*/
+template< typename Type     // Data type of the vector
+        , bool TF >         // Transpose flag
+template< typename Other >  // Data type of the initialization array
+inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Other* array )
+   : size_    ( n )                            // The current size/dimension of the vector
+   , capacity_( adjustCapacity( n ) )          // The maximum capacity of the vector
+   , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
+{
+   for( size_t i=0UL; i<n; ++i )
+      v_[i] = array[i];
+
+   if( IsNumeric<Type>::value ) {
+      for( size_t i=n; i<capacity_; ++i )
+         v_[i] = Type();
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Array initialization of all vector elements.
+//
+// \param array N-dimensional array for the initialization.
+//
+// This assignment operator offers the option to directly initialize the elements of the vector
+// with a static array:
+
+   \code
+   const real init[4] = { 1, 2, 3 };
+   blaze::DynamicVector<real> v( init );
+   \endcode
+
+// The vector is sized accoring to the size of the array and initialized with the values from the
+// given array. Missing values are initialized with default values (as e.g. the fourth element in
+// the example).
+*/
+template< typename Type   // Data type of the vector
+        , bool TF >       // Transpose flag
+template< typename Other  // Data type of the initialization array
+        , size_t N >      // Dimension of the initialization array
+inline DynamicVector<Type,TF>::DynamicVector( const Other (&array)[N] )
+   : size_    ( N )                            // The current size/dimension of the vector
+   , capacity_( adjustCapacity( N ) )          // The maximum capacity of the vector
+   , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
+{
+   for( size_t i=0UL; i<N; ++i )
+      v_[i] = array[i];
+
+   if( IsNumeric<Type>::value ) {
+      for( size_t i=N; i<capacity_; ++i )
+         v_[i] = Type();
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief The copy constructor for DynamicVector.
 //
 // \param v Vector to be copied.
@@ -513,41 +591,6 @@ inline DynamicVector<Type,TF>::DynamicVector( const Vector<VT,TF>& v )
    }
 
    assign( *this, ~v );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Array initialization of all vector elements.
-//
-// \param rhs N-dimensional array for the initialization.
-//
-// This assignment operator offers the option to directly initialize the elements of the vector:
-
-   \code
-   const real init[4] = { 1, 2, 3 };
-   blaze::DynamicVector<real> v( init );
-   \endcode
-
-// The vector is sized accoring to the size of the array and initialized with the given values.
-// Missing values are initialized with zero (as e.g. the fourth element in the example).
-*/
-template< typename Type   // Data type of the vector
-        , bool TF >       // Transpose flag
-template< typename Other  // Data type of the initialization array
-        , size_t N >      // Dimension of the initialization array
-inline DynamicVector<Type,TF>::DynamicVector( const Other (&rhs)[N] )
-   : size_    ( N )                            // The current size/dimension of the vector
-   , capacity_( adjustCapacity( N ) )          // The maximum capacity of the vector
-   , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
-{
-   for( size_t i=0UL; i<N; ++i )
-      v_[i] = rhs[i];
-
-   if( IsNumeric<Type>::value ) {
-      for( size_t i=size_; i<capacity_; ++i )
-         v_[i] = Type();
-   }
 }
 //*************************************************************************************************
 
@@ -741,7 +784,7 @@ inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::ce
 //*************************************************************************************************
 /*!\brief Array assignment to all vector elements.
 //
-// \param rhs N-dimensional array for the assignment.
+// \param array N-dimensional array for the assignment.
 // \return Reference to the assigned vector.
 //
 // This assignment operator offers the option to directly set all elements of the vector:
@@ -752,19 +795,20 @@ inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::ce
    v = init;
    \endcode
 
-// The vector is resized accoring to the size of the array and initialized with the given values.
-// Missing values are initialized with zero (as e.g. the fourth element in the example).
+// The vector is resized accoring to the size of the array and assigned the values from the given
+// array. Missing values are initialized with default values (as e.g. the fourth element in the
+// example).
 */
 template< typename Type   // Data type of the vector
         , bool TF >       // Transpose flag
 template< typename Other  // Data type of the initialization array
         , size_t N >      // Dimension of the initialization array
-inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const Other (&rhs)[N] )
+inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const Other (&array)[N] )
 {
    resize( N, false );
 
    for( size_t i=0UL; i<N; ++i )
-      v_[i] = rhs[i];
+      v_[i] = array[i];
 
    return *this;
 }

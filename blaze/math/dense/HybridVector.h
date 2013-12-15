@@ -191,14 +191,16 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-                           explicit inline HybridVector();
-                           explicit inline HybridVector( size_t n );
-                           explicit inline HybridVector( size_t n, const Type& init );
-                                    inline HybridVector( const HybridVector& v );
-   template< typename VT >          inline HybridVector( const Vector<VT,TF>& v );
+                              explicit inline HybridVector();
+                              explicit inline HybridVector( size_t n );
+                              explicit inline HybridVector( size_t n, const Type& init );
+   template< typename Other > explicit inline HybridVector( size_t n, const Other* array );
 
    template< typename Other, size_t M >
-   explicit inline HybridVector( const Other (&rhs)[M] );
+   explicit inline HybridVector( const Other (&array)[M] );
+
+                           inline HybridVector( const HybridVector& v );
+   template< typename VT > inline HybridVector( const Vector<VT,TF>& v );
    //@}
    //**********************************************************************************************
 
@@ -226,7 +228,7 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    /*!\name Assignment operators */
    //@{
    template< typename Other, size_t M >
-   inline HybridVector& operator=( const Other (&rhs)[M] );
+   inline HybridVector& operator=( const Other (&array)[M] );
 
                            inline HybridVector& operator= ( const Type& rhs );
                            inline HybridVector& operator= ( const HybridVector& rhs );
@@ -483,6 +485,91 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Type& init )
 
 
 //*************************************************************************************************
+/*!\brief Array initialization of all vector elements.
+//
+// \param n The size of the vector.
+// \param array Dynamic array for the initialization.
+//
+// This assignment operator offers the option to directly initialize the elements of the vector
+// with a dynamic array:
+
+   \code
+   double* array = new double[6];
+   // ... Initialization of the dynamic array
+   blaze::HybridVector<double,6> v( array, 6UL );
+   delete[] array;
+   \endcode
+
+// The vector is sized according to the size of the array and initialized with the values from
+// the given array. In case the size of the given array exceeds the maximum size of the hybrid
+// vector (i.e. is larger than N), a \a std::invalid_argument exception is thrown.\n
+// Note that it is expected that the given \a array has at least \a n elements. Providing an
+// array with less elements results in undefined behavior!
+*/
+template< typename Type     // Data type of the vector
+        , size_t N          // Number of elements
+        , bool TF >         // Transpose flag
+template< typename Other >  // Data type of the initialization array
+inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Other* array )
+   : size_( n )  // The current size/dimension of the vector
+{
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
+
+   if( n > N )
+      throw std::invalid_argument( "Invalid setup of hybrid vector" );
+
+   for( size_t i=0UL; i<n; ++i )
+      v_[i] = array[i];
+
+   if( IsNumeric<Type>::value ) {
+      for( size_t i=n; i<NN; ++i )
+         v_[i] = Type();
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Array initialization of all vector elements.
+//
+// \param array M-dimensional array for the initialization.
+//
+// This assignment operator offers the option to directly initialize the elements of the vector
+// with a static array:
+
+   \code
+   const double init[2] = { 1.0, 2.0 };
+   blaze::HybridVector<double,4> v( init );
+   \endcode
+
+// The vector is sized according to the size of the array and initialized with the values from
+// the given array. This constructor only works for arrays with a size smaller-or-equal than the
+// maximum number of elements of the hybrid vector (i.e. M <= N). The attempt to use a larger
+// array will result in a compile time error.
+*/
+template< typename Type   // Data type of the vector
+        , size_t N        // Number of elements
+        , bool TF >       // Transpose flag
+template< typename Other  // Data type of the initialization array
+        , size_t M >      // Number of elements of the initialization array
+inline HybridVector<Type,N,TF>::HybridVector( const Other (&array)[M] )
+   : size_( M )  // The current size/dimension of the vector
+{
+   BLAZE_STATIC_ASSERT( M <= N );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
+
+   for( size_t i=0UL; i<M; ++i )
+      v_[i] = array[i];
+
+   if( IsNumeric<Type>::value ) {
+      for( size_t i=M; i<NN; ++i )
+         v_[i] = Type();
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief The copy constructor for HybridVector.
 //
 // \param v Vector to be copied.
@@ -538,45 +625,6 @@ inline HybridVector<Type,N,TF>::HybridVector( const Vector<VT,TF>& v )
    }
 
    assign( *this, ~v );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Array initialization of all vector elements.
-//
-// \param rhs M-dimensional array for the initialization.
-//
-// This assignment operator offers the option to directly initialize the elements of the vector:
-
-   \code
-   const double init[2] = { 1.0, 2.0 };
-   blaze::HybridVector<double,4> v( init );
-   \endcode
-
-// The vector is sized according to the size of the array and initialized with the given values.
-// Missing values are initialized with zero. This constructor only works for arrays with a size
-// smaller-or-equal than the maximum number of elements of the hybrid vector (i.e. M <= N). The
-// attempt to use a larger array will result in a compile time error.
-*/
-template< typename Type   // Data type of the vector
-        , size_t N        // Number of elements
-        , bool TF >       // Transpose flag
-template< typename Other  // Data type of the initialization array
-        , size_t M >      // Number of elements of the initialization array
-inline HybridVector<Type,N,TF>::HybridVector( const Other (&rhs)[M] )
-   : size_( M )  // The current size/dimension of the vector
-{
-   BLAZE_STATIC_ASSERT( M <= N );
-   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
-
-   for( size_t i=0UL; i<M; ++i )
-      v_[i] = rhs[i];
-
-   if( IsNumeric<Type>::value ) {
-      for( size_t i=M; i<NN; ++i )
-         v_[i] = Type();
-   }
 }
 //*************************************************************************************************
 
@@ -765,6 +813,44 @@ inline typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Array assignment to all vector elements.
+//
+// \param array M-dimensional array for the assignment.
+// \return Reference to the assigned vector.
+//
+// This assignment operator offers the option to directly set all elements of the vector:
+
+   \code
+   const double init[2] = { 1.0, 2.0 };
+   blaze::HybridVector<double,4> v;
+   v = init;
+   \endcode
+
+// The vector is sized according to the size of the array and assigned the values of the given
+// array. This assignment operator only works for arrays with a size smaller-or-equal than the
+// maximum number of elements of the hybrid vector. (i.e. M<= N). The attempt to use a larger
+// array will result in a compile time error.
+*/
+template< typename Type   // Data type of the vector
+        , size_t N        // Number of elements
+        , bool TF >       // Transpose flag
+template< typename Other  // Data type of the initialization array
+        , size_t M >      // Number of elements of the initialization array
+inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const Other (&array)[M] )
+{
+   BLAZE_STATIC_ASSERT( M <= N );
+
+   resize( M );
+
+   for( size_t i=0UL; i<M; ++i )
+      v_[i] = array[i];
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Homogenous assignment to all vector elements.
 //
 // \param rhs Scalar value to be assigned to all vector elements.
@@ -840,44 +926,6 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const Vector
          reset();
       assign( *this, ~rhs );
    }
-
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Array assignment to all vector elements.
-//
-// \param rhs M-dimensional array for the assignment.
-// \return Reference to the assigned vector.
-//
-// This assignment operator offers the option to directly set all elements of the vector:
-
-   \code
-   const double init[2] = { 1.0, 2.0 };
-   blaze::HybridVector<double,4> v;
-   v = init;
-   \endcode
-
-// The vector is sized according to the size of the array and initialized with the given values.
-// Missing values are initialized with zero. This assignment operator only works for arrays with
-// a size smaller-or-equal than the maximum number of elements of the hybrid vector. (i.e. M<= N).
-// The attempt to use a larger array will result in a compile time error.
-*/
-template< typename Type   // Data type of the vector
-        , size_t N        // Number of elements
-        , bool TF >       // Transpose flag
-template< typename Other  // Data type of the initialization array
-        , size_t M >      // Number of elements of the initialization array
-inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const Other (&rhs)[M] )
-{
-   BLAZE_STATIC_ASSERT( M <= N );
-
-   resize( M );
-
-   for( size_t i=0UL; i<M; ++i )
-      v_[i] = rhs[i];
 
    return *this;
 }

@@ -44,6 +44,7 @@
 #include <blaze/math/shims/Equal.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/Random.h>
+#include <blaze/util/UniqueArray.h>
 #include <blazetest/mathtest/dynamicvector/ClassTest.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
@@ -201,7 +202,32 @@ void ClassTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "DynamicVector array initialization constructor (size 4)";
+      test_ = "DynamicVector dynamic array initialization constructor (size 4)";
+
+      blaze::UniqueArray<int> array( new int[4] );
+      array[0] = 1;
+      array[1] = 2;
+      array[2] = 3;
+      array[3] = 4;
+      blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, array.get() );
+
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
+
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 2 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "DynamicVector static array initialization constructor (size 4)";
 
       const int array[4] = { 1, 2, 3, 4 };
       blaze::DynamicVector<int,blaze::rowVector> vec( array );

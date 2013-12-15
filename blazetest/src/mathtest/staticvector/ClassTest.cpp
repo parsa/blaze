@@ -44,6 +44,7 @@
 #include <blaze/math/shims/Equal.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/Random.h>
+#include <blaze/util/UniqueArray.h>
 #include <blazetest/mathtest/staticvector/ClassTest.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
@@ -301,7 +302,55 @@ void ClassTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "StaticVector array initialization constructor";
+      test_ = "StaticVector dynamic array initialization constructor";
+
+      blaze::UniqueArray<int> array( new int[2] );
+      array[0] = 1;
+      array[1] = 2;
+      blaze::StaticVector<int,4UL,blaze::rowVector> vec( 2UL, array.get() );
+
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 2UL );
+
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 0 || vec[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 2 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "StaticVector dynamic array initialization constructor";
+
+      blaze::UniqueArray<int> array( new int[4] );
+      array[0] = 1;
+      array[1] = 2;
+      array[2] = 3;
+      array[3] = 4;
+      blaze::StaticVector<int,4UL,blaze::rowVector> vec( 4UL, array.get() );
+
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
+
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 2 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "StaticVector static array initialization constructor";
 
       int array[4] = { 1, 2, 3, 4 };
       blaze::StaticVector<int,4UL,blaze::rowVector> vec( array );
@@ -492,6 +541,28 @@ void ClassTest::testAssignment()
    //=====================================================================================
    // Array assignment
    //=====================================================================================
+
+   {
+      test_ = "StaticVector array assignment";
+
+      int array[4] = { 1, 2 };
+      blaze::StaticVector<int,4UL,blaze::rowVector> vec;
+      vec = array;
+
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 2UL );
+
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 0 || vec[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 2 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
    {
       test_ = "StaticVector array assignment";
