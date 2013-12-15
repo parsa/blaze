@@ -2202,7 +2202,7 @@ struct MathTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 template< typename T1, size_t N, bool TF >
 struct SubvectorTrait< StaticVector<T1,N,TF> >
 {
-   typedef DynamicVector<T1,TF>  Type;
+   typedef HybridVector<T1,N,TF>  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
