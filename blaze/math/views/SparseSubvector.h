@@ -50,7 +50,6 @@
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/SparseVector.h>
-#include <blaze/math/Forward.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>
