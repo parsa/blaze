@@ -502,8 +502,8 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& init )
 
 // The matrix is initialized with the values from the given array. Missing values are initialized
 // with default values. In case the specified number of rows and/or columns exceeds the maximum
-// number of rows/column of the static matrix (i.e. \m is larger than M or \a n is larger than N),
-// a \a std::invalid_argument exception is thrown.\n
+// number of rows/column of the static matrix (i.e. \a m is larger than M or \a n is larger than
+// N), a \a std::invalid_argument exception is thrown.\n
 // Note that it is expected that the given \a array has at least \a m by \a n elements. Providing
 // an array with less elements results in undefined behavior!
 */
