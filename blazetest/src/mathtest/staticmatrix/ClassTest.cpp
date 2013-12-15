@@ -43,6 +43,7 @@
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/Random.h>
+#include <blaze/util/UniqueArray.h>
 #include <blazetest/mathtest/staticmatrix/ClassTest.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
@@ -178,6 +179,99 @@ void ClassTest::testConstructors()
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
              << "   Expected result:\n( 2 2 2 2 )\n( 2 2 2 2 )\n( 2 2 2 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major array initialization
+   //=====================================================================================
+
+   {
+      test_ = "Row-major StaticMatrix dynamic array initialization constructor";
+
+      blaze::UniqueArray<int> array( new int[6] );
+      array[0] = 1;
+      array[1] = 2;
+      array[2] = 3;
+      array[3] = 4;
+      array[4] = 5;
+      array[5] = 6;
+      blaze::StaticMatrix<int,3UL,4UL,blaze::rowMajor> mat( 2UL, 3UL, array.get() );
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 12UL );
+      checkNonZeros( mat,  6UL );
+      checkNonZeros( mat,  0UL, 3UL );
+      checkNonZeros( mat,  1UL, 3UL );
+
+      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 0 ||
+          mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 || mat(1,3) != 0 ||
+          mat(2,0) != 0 || mat(2,1) != 0 || mat(2,2) != 0 || mat(2,3) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 2 3 0 )\n( 4 5 6 0 )\n( 0 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major StaticMatrix dynamic array initialization constructor";
+
+      blaze::UniqueArray<int> array( new int[6] );
+      array[0] = 1;
+      array[1] = 2;
+      array[2] = 3;
+      array[3] = 4;
+      array[4] = 5;
+      array[5] = 6;
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat( 2UL, 3UL, array.get() );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 6UL );
+      checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
+
+      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
+          mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major StaticMatrix static array initialization constructor";
+
+      const int array[2][3] = { { 1, 2, 3 }, { 4, 5, 6 } };
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat( array );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 6UL );
+      checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
+
+      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
+          mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -938,6 +1032,102 @@ void ClassTest::testConstructors()
 
 
    //=====================================================================================
+   // Column-major array initialization
+   //=====================================================================================
+
+   {
+      test_ = "Column-major StaticMatrix dynamic array initialization constructor";
+
+      blaze::UniqueArray<int> array( new int[6] );
+      array[0] = 1;
+      array[1] = 2;
+      array[2] = 3;
+      array[3] = 4;
+      array[4] = 5;
+      array[5] = 6;
+      blaze::StaticMatrix<int,3UL,4UL,blaze::columnMajor> mat( 2UL, 3UL, array.get() );
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 12UL );
+      checkNonZeros( mat,  6UL );
+      checkNonZeros( mat,  0UL, 2UL );
+      checkNonZeros( mat,  1UL, 2UL );
+      checkNonZeros( mat,  2UL, 2UL );
+
+      if( mat(0,0) != 1 || mat(0,1) != 3 || mat(0,2) != 5 || mat(0,3) != 0 ||
+          mat(1,0) != 2 || mat(1,1) != 4 || mat(1,2) != 6 || mat(1,3) != 0 ||
+          mat(2,0) != 0 || mat(2,1) != 0 || mat(2,2) != 0 || mat(2,3) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 3 5 0 )\n( 2 4 6 0 )\n( 0 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major StaticMatrix dynamic array initialization constructor";
+
+      blaze::UniqueArray<int> array( new int[6] );
+      array[0] = 1;
+      array[1] = 2;
+      array[2] = 3;
+      array[3] = 4;
+      array[4] = 5;
+      array[5] = 6;
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat( 2UL, 3UL, array.get() );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 6UL );
+      checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 2UL );
+
+      if( mat(0,0) != 1 || mat(0,1) != 3 || mat(0,2) != 5 ||
+          mat(1,0) != 2 || mat(1,1) != 4 || mat(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 3 5 )\n( 2 4 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major StaticMatrix static array initialization constructor";
+
+      const int array[2][3] = { { 1, 2, 3 }, { 4, 5, 6 } };
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat( array );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 6UL );
+      checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 2UL );
+
+      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
+          mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major initialization constructors
    //=====================================================================================
 
@@ -1668,6 +1858,37 @@ void ClassTest::testAssignment()
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
              << "   Expected result:\n( 2 2 2 2 )\n( 2 2 2 2 )\n( 2 2 2 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major array assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major DynamicMatrix array assignment";
+
+      const int array[2][3] = { { 1, 2, 3 }, { 4, 5, 6 } };
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat;
+      mat = array;
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 6UL );
+      checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
+
+      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
+          mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
          throw std::runtime_error( oss.str() );
       }
    }

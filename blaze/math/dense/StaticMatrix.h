@@ -45,6 +45,7 @@
 #include <stdexcept>
 #include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Equal.h>
@@ -220,8 +221,11 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    explicit inline StaticMatrix();
    explicit inline StaticMatrix( const Type& init );
 
+   template< typename Other > explicit inline StaticMatrix( size_t m, size_t n, const Other* array );
+   template< typename Other > explicit inline StaticMatrix( const Other (&array)[M][N] );
+
                                         inline StaticMatrix( const StaticMatrix& m );
-   template< typename Other, bool SO2 > inline StaticMatrix( const StaticMatrix<Other,M,N,SO2>&  m );
+   template< typename Other, bool SO2 > inline StaticMatrix( const StaticMatrix<Other,M,N,SO2>& m );
    template< typename MT   , bool SO2 > inline StaticMatrix( const Matrix<MT,SO2>& m );
 
    inline StaticMatrix( const Type& v1, const Type& v2 );
@@ -266,6 +270,9 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   template< typename Other >
+   inline StaticMatrix& operator=( const Other (&array)[M][N] );
+
                                         inline StaticMatrix& operator= ( const Type& set );
                                         inline StaticMatrix& operator= ( const StaticMatrix& rhs );
    template< typename Other, bool SO2 > inline StaticMatrix& operator= ( const StaticMatrix<Other,M,N,SO2>& rhs );
@@ -464,6 +471,104 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& init )
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; ++j )
          v_[i*NN+j] = init;
+
+      if( IsNumeric<Type>::value ) {
+         for( size_t j=N; j<NN; ++j )
+            v_[i*NN+j] = Type();
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Array initialization of all matrix elements.
+//
+// \param m The number of rows of the matrix.
+// \param n The number of columns of the matrix.
+// \param array Dynamic array for the initialization.
+//
+// This constructor offers the option to directly initialize the elements of the matrix with
+// a dynamic array:
+
+   \code
+   using blaze::rowMajor;
+
+   int* array = new int[6];
+   // ... Initialization of the dynamic array
+   blaze::StaticMatrix<int,3,4,rowMajor> v( array, 2UL, 3UL );
+   delete[] array;
+   \endcode
+
+// The matrix is initialized with the values from the given array. Missing values are initialized
+// with default values. In case the specified number of rows and/or columns exceeds the maximum
+// number of rows/column of the static matrix (i.e. \m is larger than M or \a n is larger than N),
+// a \a std::invalid_argument exception is thrown.\n
+// Note that it is expected that the given \a array has at least \a m by \a n elements. Providing
+// an array with less elements results in undefined behavior!
+*/
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO >         // Storage order
+template< typename Other >  // Data type of the initialization array
+inline StaticMatrix<Type,M,N,SO>::StaticMatrix( size_t m, size_t n, const Other* array )
+{
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
+
+   if( m > M || n > N )
+      throw std::invalid_argument( "Invalid setup of static matrix" );
+
+   for( size_t i=0UL; i<m; ++i ) {
+      for( size_t j=0UL; j<n; ++j )
+         v_[i*NN+j] = array[i*n+j];
+
+      if( IsNumeric<Type>::value ) {
+         for( size_t j=n; j<NN; ++j )
+            v_[i*NN+j] = Type();
+      }
+   }
+
+   for( size_t i=m; i<M; ++i ) {
+      for( size_t j=0UL; j<NN; ++j )
+         v_[i*NN+j] = Type();
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Array initialization of all matrix elements.
+//
+// \param array \f$ M \times N \f$ dimensional array for the initialization.
+//
+// This constructor offers the option to directly initialize the elements of the matrix with
+// a static array:
+
+   \code
+   using blaze::rowMajor;
+
+   const int init[3][3] = { { 1, 2, 3 },
+                            { 4, 5 },
+                            { 7, 8, 9 } };
+   blaze::StaticMatrix<int,3,3,rowMajor> A( init );
+   \endcode
+
+// The matrix is initialized with the values from the given array. Missing values are initialized
+// with default values (as e.g. the value 6 in the example).
+*/
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO >         // Storage order
+template< typename Other >  // Data type of the initialization array
+inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Other (&array)[M][N] )
+{
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
+
+   for( size_t i=0UL; i<M; ++i ) {
+      for( size_t j=0UL; j<N; ++j )
+         v_[i*NN+j] = array[i][j];
 
       if( IsNumeric<Type>::value ) {
          for( size_t j=N; j<NN; ++j )
@@ -1499,6 +1604,43 @@ inline typename StaticMatrix<Type,M,N,SO>::ConstIterator
 //  ASSIGNMENT OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Array assignment to all matrix elements.
+//
+// \param array \f$ M \times N \f$ dimensional array for the assignment.
+// \return Reference to the assigned matrix.
+//
+// This assignment operator offers the option to directly set all elements of the matrix:
+
+   \code
+   using blaze::rowMajor;
+
+   const real init[3][3] = { { 1, 2, 3 },
+                             { 4, 5 },
+                             { 7, 8, 9 } };
+   blaze::StaticMatrix<int,3UL,3UL,rowMajor> A;
+   A = init;
+   \endcode
+
+// The matrix is assigned the values from the given array. Missing values are initialized with
+// default values (as e.g. the value 6 in the example).
+*/
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO >         // Storage order
+template< typename Other >  // Data type of the initialization array
+inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator=( const Other (&array)[M][N] )
+{
+   for( size_t i=0UL; i<M; ++i )
+      for( size_t j=0UL; j<N; ++j )
+         v_[i*NN+j] = array[i][j];
+
+   return *this;
+}
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Homogenous assignment to all matrix elements.
@@ -2687,6 +2829,9 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    explicit inline StaticMatrix();
    explicit inline StaticMatrix( const Type& init );
 
+   template< typename Other > explicit inline StaticMatrix( size_t m, size_t n, const Other* array );
+   template< typename Other > explicit inline StaticMatrix( const Other (&array)[M][N] );
+
                                        inline StaticMatrix( const StaticMatrix& m );
    template< typename Other, bool SO > inline StaticMatrix( const StaticMatrix<Other,M,N,SO>&  m );
    template< typename MT   , bool SO > inline StaticMatrix( const Matrix<MT,SO>& m );
@@ -2733,6 +2878,9 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   template< typename Other >
+   inline StaticMatrix& operator=( const Other (&array)[M][N] );
+
                                        inline StaticMatrix& operator= ( const Type& set );
                                        inline StaticMatrix& operator= ( const StaticMatrix& rhs );
    template< typename Other, bool SO > inline StaticMatrix& operator= ( const StaticMatrix<Other,M,N,SO>&  rhs );
@@ -2918,6 +3066,106 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& init )
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; ++i )
          v_[i+j*MM] = init;
+
+      if( IsNumeric<Type>::value ) {
+         for( size_t i=M; i<MM; ++i )
+            v_[i+j*MM] = Type();
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Array initialization of all matrix elements.
+//
+// \param m The number of rows of the matrix.
+// \param n The number of columns of the matrix.
+// \param array Dynamic array for the initialization.
+//
+// This constructor offers the option to directly initialize the elements of the matrix with
+// a dynamic array:
+
+   \code
+   using blaze::columnMajor;
+
+   int* array = new int[6];
+   // ... Initialization of the dynamic array
+   blaze::StaticMatrix<int,3,4,columnMajor> v( array, 2UL, 3UL );
+   delete[] array;
+   \endcode
+
+// The matrix is initialized with the values from the given array. Missing values are initialized
+// with default values. In case the specified number of rows and/or columns exceeds the maximum
+// number of rows/column of the static matrix (i.e. \m is larger than M or \a n is larger than N),
+// a \a std::invalid_argument exception is thrown.\n
+// Note that it is expected that the given \a array has at least \a m by \a n elements. Providing
+// an array with less elements results in undefined behavior!
+*/
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N >        // Number of columns
+template< typename Other >  // Data type of the initialization array
+inline StaticMatrix<Type,M,N,true>::StaticMatrix( size_t m, size_t n, const Other* array )
+{
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
+
+   if( m > M || n > N )
+      throw std::invalid_argument( "Invalid setup of static matrix" );
+
+   for( size_t j=0UL; j<n; ++j ) {
+      for( size_t i=0UL; i<m; ++i )
+         v_[i+j*MM] = array[i+j*m];
+
+      if( IsNumeric<Type>::value ) {
+         for( size_t i=m; i<MM; ++i )
+            v_[i+j*MM] = Type();
+      }
+   }
+
+   for( size_t j=n; j<N; ++j ) {
+      for( size_t i=0UL; i<M; ++i )
+         v_[i+j*MM] = Type();
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Array initialization of all matrix elements.
+//
+// \param array \f$ M \times N \f$ dimensional array for the initialization.
+//
+// This constructor offers the option to directly initialize the elements of the matrix with
+// a static array:
+
+   \code
+   using blaze::columnMajor;
+
+   const int init[3][3] = { { 1, 2, 3 },
+                            { 4, 5 },
+                            { 7, 8, 9 } };
+   blaze::StaticMatrix<int,3,3,columnMajor> A( init );
+   \endcode
+
+// The matrix is initialized with the values from the given array. Missing values are initialized
+// with default values (as e.g. the value 6 in the example).
+*/
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N >        // Number of columns
+template< typename Other >  // Data type of the initialization array
+inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Other (&array)[M][N] )
+{
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
+
+   for( size_t j=0UL; j<N; ++j ) {
+      for( size_t i=0UL; i<M; ++i )
+         v_[i+j*MM] = array[i][j];
 
       if( IsNumeric<Type>::value ) {
          for( size_t i=M; i<MM; ++i )
@@ -3949,6 +4197,45 @@ inline typename StaticMatrix<Type,M,N,true>::ConstIterator
 //  ASSIGNMENT OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Array assignment to all matrix elements.
+//
+// \param array \f$ M \times N \f$ dimensional array for the assignment.
+// \return Reference to the assigned matrix.
+//
+// This assignment operator offers the option to directly set all elements of the matrix:
+
+   \code
+   using blaze::rowMajor;
+
+   const real init[3][3] = { { 1, 2, 3 },
+                             { 4, 5 },
+                             { 7, 8, 9 } };
+   blaze::StaticMatrix<int,3UL,3UL,rowMajor> A;
+   A = init;
+   \endcode
+
+// The matrix is assigned the values from the given array. Missing values are initialized with
+// default values (as e.g. the value 6 in the example).
+*/
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N >        // Number of columns
+template< typename Other >  // Data type of the initialization array
+inline StaticMatrix<Type,M,N,true>&
+   StaticMatrix<Type,M,N,true>::operator=( const Other (&array)[M][N] )
+{
+   for( size_t j=0UL; j<N; ++j )
+      for( size_t i=0UL; i<M; ++i )
+         v_[i+j*MM] = array[i][j];
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
