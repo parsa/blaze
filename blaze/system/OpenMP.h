@@ -44,19 +44,17 @@
 
 //*************************************************************************************************
 /*!\brief Compilation switch for the OpenMP parallelization.
-// \ingroup openmp
+// \ingroup system
 //
-// This compilation switch enables/disables the OpenMP parallelization.
-//
-// Possible settings for the OpenMP switch:
-//  - Deactivated: \b 0
-//  - Activated  : \b 1
-//
-// Note that changing the setting of the OpenMP parallel mode requires a recompilation of the
-// Blaze library. Also note that this switch is automatically set by the configuration script
-// of the Blaze library.
+// This compilation switch enables/disables the OpenMP parallelization. In case OpenMP is enabled
+// during compilation the Blaze library attempts to parallelize all matrix and vector computations.
+// In case OpenMP is not enabled, all computations are performed on a single compute core.
 */
+#ifndef _OPENMP
 #define BLAZE_OPENMP_PARALLEL_MODE 0
+#else
+#define BLAZE_OPENMP_PARALLEL_MODE 1
+#endif
 //*************************************************************************************************
 
 #endif
