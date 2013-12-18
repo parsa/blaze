@@ -47,7 +47,9 @@
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -121,6 +123,40 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
    */
    inline ConstIterator end() const {
       return sv_.end();
+   }
+   //**********************************************************************************************
+
+   //**Multiplication assignment operator**********************************************************
+   /*!\brief Multiplication assignment operator for the multiplication between a vector and
+   //        a scalar value (\f$ \vec{a}*=s \f$).
+   //
+   // \param rhs The right-hand side scalar value for the multiplication.
+   // \return Reference to this DVecTransposer.
+   */
+   template< typename Other >  // Data type of the right-hand side scalar
+   inline typename EnableIf< IsNumeric<Other>, SVecTransposer >::Type& operator*=( Other rhs )
+   {
+      (~sv_) *= rhs;
+      return *this;
+   }
+   //**********************************************************************************************
+
+   //**Division assignment operator****************************************************************
+   /*!\brief Division assignment operator for the division of a vector by a scalar value
+   //        (\f$ \vec{a}/=s \f$).
+   //
+   // \param rhs The right-hand side scalar value for the division.
+   // \return Reference to this DVecTransposer.
+   //
+   // \b Note: A division by zero is only checked by an user assert.
+   */
+   template< typename Other >  // Data type of the right-hand side scalar
+   inline typename EnableIf< IsNumeric<Other>, SVecTransposer >::Type& operator/=( Other rhs )
+   {
+      BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
+
+      (~sv_) /= rhs;
+      return *this;
    }
    //**********************************************************************************************
 
