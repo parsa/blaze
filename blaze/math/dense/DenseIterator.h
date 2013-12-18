@@ -81,6 +81,9 @@ class DenseIterator
    //@{
    explicit inline DenseIterator();
    explicit inline DenseIterator( Type* ptr );
+
+   template< typename Other >
+   inline DenseIterator( const DenseIterator<Other>& it );
    //@}
    //**********************************************************************************************
 
@@ -155,7 +158,7 @@ class DenseIterator
 */
 template< typename Type >  // Type of the elements
 inline DenseIterator<Type>::DenseIterator()
-   : ptr_( NULL )  // Pointer to the current element.
+   : ptr_( NULL )  // Pointer to the current element
 {}
 //*************************************************************************************************
 
@@ -167,7 +170,20 @@ inline DenseIterator<Type>::DenseIterator()
 */
 template< typename Type >  // Type of the elements
 inline DenseIterator<Type>::DenseIterator( Type* ptr )
-   : ptr_( ptr )  // Pointer to the current element.
+   : ptr_( ptr )  // Pointer to the current element
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Conversion constructor from different DenseIterator instances.
+//
+// \param it The foreign DenseIterator instance to be copied.
+*/
+template< typename Type >   // Type of the elements
+template< typename Other >  // Type of the foreign elements
+inline DenseIterator<Type>::DenseIterator( const DenseIterator<Other>& it )
+   : ptr_( it.base() )  // Pointer to the current element
 {}
 //*************************************************************************************************
 
