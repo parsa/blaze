@@ -127,6 +127,40 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    }
    //**********************************************************************************************
 
+   //**Multiplication assignment operator**********************************************************
+   /*!\brief Multiplication assignment operator for the multiplication between a matrix and
+   //        a scalar value (\f$ A*=s \f$).
+   //
+   // \param rhs The right-hand side scalar value for the multiplication.
+   // \return Reference to this DMatTransposer.
+   */
+   template< typename Other >  // Data type of the right-hand side scalar
+   inline typename EnableIf< IsNumeric<Other>, DMatTransposer >::Type& operator*=( Other rhs )
+   {
+      (~dm_) *= rhs;
+      return *this;
+   }
+   //**********************************************************************************************
+
+   //**Division assignment operator****************************************************************
+   /*!\brief Division assignment operator for the division of a matrix by a scalar value
+   //        (\f$ A/=s \f$).
+   //
+   // \param rhs The right-hand side scalar value for the division.
+   // \return Reference to this DMatTransposer.
+   //
+   // \b Note: A division by zero is only checked by an user assert.
+   */
+   template< typename Other >  // Data type of the right-hand side scalar
+   inline typename EnableIf< IsNumeric<Other>, DMatTransposer >::Type& operator/=( Other rhs )
+   {
+      BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
+
+      (~dm_) /= rhs;
+      return *this;
+   }
+   //**********************************************************************************************
+
    //**Rows function*******************************************************************************
    /*!\brief Returns the current number of rows of the matrix.
    //

@@ -131,7 +131,7 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
    //        a scalar value (\f$ \vec{a}*=s \f$).
    //
    // \param rhs The right-hand side scalar value for the multiplication.
-   // \return Reference to this DVecTransposer.
+   // \return Reference to this SVecTransposer.
    */
    template< typename Other >  // Data type of the right-hand side scalar
    inline typename EnableIf< IsNumeric<Other>, SVecTransposer >::Type& operator*=( Other rhs )
@@ -146,7 +146,7 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
    //        (\f$ \vec{a}/=s \f$).
    //
    // \param rhs The right-hand side scalar value for the division.
-   // \return Reference to this DVecTransposer.
+   // \return Reference to this SVecTransposer.
    //
    // \b Note: A division by zero is only checked by an user assert.
    */
