@@ -60,6 +60,7 @@
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Restrict.h>
+#include <blaze/system/Streaming.h>
 #include <blaze/system/TransposeFlag.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
@@ -1549,7 +1550,7 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   if( size_ > ( cacheSize/( sizeof(Type) * 3UL ) ) && !(~rhs).isAliased( this ) )
+   if( useStreaming && size_ > ( cacheSize/( sizeof(Type) * 3UL ) ) && !(~rhs).isAliased( this ) )
    {
       for( size_t i=0UL; i<size_; i+=IT::size ) {
          stream( v_+i, (~rhs).load(i) );

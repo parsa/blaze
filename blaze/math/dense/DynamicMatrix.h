@@ -64,6 +64,7 @@
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Restrict.h>
 #include <blaze/system/StorageOrder.h>
+#include <blaze/system/Streaming.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -1853,7 +1854,7 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   if( m_*n_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) && !(~rhs).isAliased( this ) )
+   if( useStreaming && m_*n_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) && !(~rhs).isAliased( this ) )
    {
       for( size_t i=0UL; i<m_; ++i )
          for( size_t j=0UL; j<n_; j+=IT::size )
@@ -4011,7 +4012,7 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   if( m_*n_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) && !(~rhs).isAliased( this ) )
+   if( useStreaming && m_*n_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) && !(~rhs).isAliased( this ) )
    {
       for( size_t j=0UL; j<n_; ++j )
          for( size_t i=0UL; i<m_; i+=IT::size )
