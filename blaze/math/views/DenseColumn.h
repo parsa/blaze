@@ -816,7 +816,7 @@ inline DenseColumn<MT,SO>& DenseColumn<MT,SO>::operator=( const Vector<VT,false>
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   if( (~rhs).canAlias( this ) ) {
+   if( (~rhs).canAlias( &matrix_ ) ) {
       const typename VT::ResultType tmp( ~rhs );
       assign( *this, tmp );
    }
@@ -854,7 +854,7 @@ inline DenseColumn<MT,SO>& DenseColumn<MT,SO>::operator+=( const Vector<VT,false
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   if( (~rhs).canAlias( this ) ) {
+   if( (~rhs).canAlias( &matrix_ ) ) {
       const typename VT::ResultType tmp( ~rhs );
       addAssign( *this, tmp );
    }
@@ -890,7 +890,7 @@ inline DenseColumn<MT,SO>& DenseColumn<MT,SO>::operator-=( const Vector<VT,false
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   if( (~rhs).canAlias( this ) ) {
+   if( (~rhs).canAlias( &matrix_ ) ) {
       const typename VT::ResultType tmp( ~rhs );
       subAssign( *this, tmp );
    }
@@ -927,7 +927,7 @@ inline DenseColumn<MT,SO>& DenseColumn<MT,SO>::operator*=( const Vector<VT,false
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   if( (~rhs).canAlias( this ) || IsSparseVector<VT>::value ) {
+   if( (~rhs).canAlias( &matrix_ ) || IsSparseVector<VT>::value ) {
       const typename VT::ResultType tmp( ~rhs );
       multAssign( *this, tmp );
    }
@@ -2338,7 +2338,7 @@ inline DenseColumn<MT,false>& DenseColumn<MT,false>::operator=( const Vector<VT,
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   if( (~rhs).canAlias( this ) ) {
+   if( (~rhs).canAlias( &matrix_ ) ) {
       const ResultType tmp( ~rhs );
       assign( *this, tmp );
    }
@@ -2377,7 +2377,7 @@ inline DenseColumn<MT,false>& DenseColumn<MT,false>::operator+=( const Vector<VT
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   if( (~rhs).canAlias( this ) ) {
+   if( (~rhs).canAlias( &matrix_ ) ) {
       const typename VT::ResultType tmp( ~rhs );
       addAssign( *this, tmp );
    }
@@ -2414,7 +2414,7 @@ inline DenseColumn<MT,false>& DenseColumn<MT,false>::operator-=( const Vector<VT
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   if( (~rhs).canAlias( this ) ) {
+   if( (~rhs).canAlias( &matrix_ ) ) {
       const typename VT::ResultType tmp( ~rhs );
       subAssign( *this, tmp );
    }
@@ -2452,7 +2452,7 @@ inline DenseColumn<MT,false>& DenseColumn<MT,false>::operator*=( const Vector<VT
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   if( (~rhs).canAlias( this ) || IsSparseVector<VT>::value ) {
+   if( (~rhs).canAlias( &matrix_ ) || IsSparseVector<VT>::value ) {
       const typename VT::ResultType tmp( ~rhs );
       multAssign( *this, tmp );
    }
