@@ -561,9 +561,9 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    RightOperand scalar_;  //!< Right-hand side scalar of the multiplication expression.
    //**********************************************************************************************
 
-   //**Assignment to row-major dense matrices******************************************************
+   //**Assignment to dense matrices****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a row-major dense matrix-scalar multiplication to a dense matrix.
+   /*!\brief Assignment of a dense matrix-scalar multiplication to a dense matrix.
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.
@@ -575,9 +575,10 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    // SFINAE principle, this operator can only be selected by the compiler in case the matrix
    // operand requires an intermediate evaluation.
    */
-   template< typename MT2 >  // Type of the target dense matrix
+   template< typename MT2  // Type of the target dense matrix
+           , bool SO2 >    // Storage order of the target dense matrix
    friend inline typename EnableIf< UseAssign<MT2> >::Type
-      assign( DenseMatrix<MT2,false>& lhs, const DMatScalarMultExpr& rhs )
+      assign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -585,57 +586,14 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       assign( ~lhs, rhs.matrix_ );
-
-      const size_t m( (~lhs).rows()    );
-      const size_t n( (~lhs).columns() );
-      for( size_t i=0UL; i<m; ++i ) {
-         for( size_t j=0UL; j<n; ++j ) {
-            (~lhs)(i,j) *= rhs.scalar_;
-         }
-      }
+      (~lhs) *= rhs.scalar_;
    }
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Assignment to column-major dense matrices***************************************************
+   //**Assignment to sparse matrices***************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a column-major dense matrix-scalar multiplication to a dense matrix.
-   // \ingroup dense_matrix
-   //
-   // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side multiplication expression to be assigned.
-   // \return void
-   //
-   // This function implements the performance optimized assignment of a dense matrix-scalar
-   // multiplication expression to a dense matrix. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the matrix
-   // operand requires an intermediate evaluation.
-   */
-   template< typename MT2 >  // Type of the target dense matrix
-   friend inline typename EnableIf< UseAssign<MT2> >::Type
-      assign( DenseMatrix<MT2,true>& lhs, const DMatScalarMultExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-
-      assign( ~lhs, rhs.matrix_ );
-
-      const size_t m( (~lhs).rows()    );
-      const size_t n( (~lhs).columns() );
-      for( size_t j=0UL; j<n; ++j ) {
-         for( size_t i=0UL; i<m; ++i ) {
-            (~lhs)(i,j) *= rhs.scalar_;
-         }
-      }
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Assignment to row-major sparse matrices*****************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a row-major dense matrix-scalar multiplication to a sparse matrix.
+   /*!\brief Assignment of a dense matrix-scalar multiplication to a sparse matrix.
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
@@ -647,9 +605,10 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    // SFINAE principle, this operator can only be selected by the compiler in case the matrix
    // operand requires an intermediate evaluation.
    */
-   template< typename MT2 >  // Type of the target sparse matrix
+   template< typename MT2  // Type of the target sparse matrix
+           , bool SO2 >    // Storage order of the target sparse matrix
    friend inline typename EnableIf< UseAssign<MT2> >::Type
-      assign( SparseMatrix<MT2,false>& lhs, const DMatScalarMultExpr& rhs )
+      assign( SparseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -657,52 +616,7 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       assign( ~lhs, rhs.matrix_ );
-
-      for( size_t i=0UL; i<(~lhs).rows(); ++i )
-      {
-         typename MT2::Iterator element( (~lhs).begin(i) );
-         const typename MT2::Iterator end( (~lhs).end(i) );
-
-         for( ; element!=end; ++element )
-            element->value() *= rhs.scalar_;
-      }
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Assignment to column-major sparse matrices**************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a column-major dense matrix-scalar multiplication to a sparse matrix.
-   // \ingroup dense_matrix
-   //
-   // \param lhs The target left-hand side sparse matrix.
-   // \param rhs The right-hand side multiplication expression to be assigned.
-   // \return void
-   //
-   // This function implements the performance optimized assignment of a dense matrix-scalar
-   // multiplication expression to a sparse matrix. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the matrix
-   // operand requires an intermediate evaluation.
-   */
-   template< typename MT2 >  // Type of the target sparse matrix
-   friend inline typename EnableIf< UseAssign<MT2> >::Type
-      assign( SparseMatrix<MT2,true>& lhs, const DMatScalarMultExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-
-      assign( ~lhs, rhs.matrix_ );
-
-      for( size_t j=0UL; j<(~lhs).columns(); ++j )
-      {
-         typename MT2::Iterator element( (~lhs).begin(j) );
-         const typename MT2::Iterator end( (~lhs).end(j) );
-
-         for( ; element!=end; ++element )
-            element->value() *= rhs.scalar_;
-      }
+      (~lhs) *= rhs.scalar_;
    }
    /*! \endcond */
    //**********************************************************************************************

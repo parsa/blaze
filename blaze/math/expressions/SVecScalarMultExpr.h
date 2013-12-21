@@ -427,10 +427,7 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       assign( ~lhs, rhs.vector_ );
-
-      const size_t size( rhs.size() );
-      for( size_t i=0UL; i<size; ++i )
-         (~lhs)[i] *= rhs.scalar_;
+      (~lhs) *= rhs.scalar_;
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -458,12 +455,7 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       assign( ~lhs, rhs.vector_ );
-
-      typename VT2::Iterator begin( (~lhs).begin() );
-      const typename VT2::Iterator end( (~lhs).end() );
-
-      for( ; begin!=end; ++begin )
-         begin->value() *= rhs.scalar_;
+      (~lhs) *= rhs.scalar_;
    }
    /*! \endcond */
    //**********************************************************************************************
