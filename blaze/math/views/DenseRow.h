@@ -53,6 +53,7 @@
 #include <blaze/math/expressions/View.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -68,6 +69,7 @@
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
+#include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -2478,7 +2480,9 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseRow<MT,false> >::Type&
    DenseRow<MT,false>::operator*=( Other rhs )
 {
-   return operator=( (*this) * rhs );
+   for( size_t j=0UL; j<size(); ++j )
+      matrix_(row_,j) *= rhs;
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2501,7 +2505,22 @@ inline typename EnableIf< IsNumeric<Other>, DenseRow<MT,false> >::Type&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   return operator=( (*this) / rhs );
+   typedef typename DivTrait<ElementType,Other>::Type  DT;
+   typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
+
+   // Depending on the two involved data types, an integer division is applied or a
+   // floating point division is selected.
+   if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
+      const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
+      for( size_t j=0UL; j<size(); ++j )
+         matrix_(row_,j) *= tmp;
+   }
+   else {
+      for( size_t j=0UL; j<size(); ++j )
+         matrix_(row_,j) /= rhs;
+   }
+
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
