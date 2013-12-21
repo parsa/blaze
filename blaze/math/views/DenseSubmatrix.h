@@ -50,7 +50,7 @@
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/expressions/DenseMatrix.h>
-#include <blaze/math/expressions/Expression.h>
+#include <blaze/math/expressions/View.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
@@ -287,7 +287,7 @@ namespace blaze {
 template< typename MT                                 // Type of the dense matrix
         , bool SO = IsColumnMajorMatrix<MT>::value >  // Storage order
 class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
-                     , private Expression
+                     , private View
 {
  private:
    //**Type definitions****************************************************************************
@@ -2265,7 +2265,7 @@ inline void DenseSubmatrix<MT,SO>::subAssign( const SparseMatrix<MT2,!SO>& rhs )
 */
 template< typename MT >  // Type of the dense matrix
 class DenseSubmatrix<MT,true> : public DenseMatrix< DenseSubmatrix<MT,true>, true >
-                              , private Expression
+                              , private View
 {
  private:
    //**Type definitions****************************************************************************

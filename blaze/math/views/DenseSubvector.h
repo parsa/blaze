@@ -51,8 +51,8 @@
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/CrossExpr.h>
 #include <blaze/math/expressions/DenseVector.h>
-#include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/expressions/View.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
@@ -287,7 +287,7 @@ namespace blaze {
 template< typename VT                         // Type of the dense vector
         , bool TF = IsRowVector<VT>::value >  // Transpose flag
 class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
-                     , private Expression
+                     , private View
 {
  private:
    //**Type definitions****************************************************************************
@@ -1977,7 +1977,7 @@ template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
 class DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, false >
    : public DenseVector< DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, false >, false >
-   , private Expression
+   , private View
 {
  private:
    //**Type definitions****************************************************************************
@@ -2103,7 +2103,7 @@ template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
 class DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, false >
    : public DenseVector< DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, false >, false >
-   , private Expression
+   , private View
 {
  private:
    //**Type definitions****************************************************************************
@@ -2229,7 +2229,7 @@ template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
 class DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, false >
    : public DenseVector< DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, false >, false >
-   , private Expression
+   , private View
 {
  private:
    //**Type definitions****************************************************************************
@@ -2355,7 +2355,7 @@ template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side sparse vector
 class DenseSubvector< SVecSVecCrossExpr<VT1,VT2>, false >
    : public DenseVector< DenseSubvector< SVecSVecCrossExpr<VT1,VT2>, false >, false >
-   , private Expression
+   , private View
 {
  private:
    //**Type definitions****************************************************************************

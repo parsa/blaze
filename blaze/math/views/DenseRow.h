@@ -50,7 +50,7 @@
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/DenseVector.h>
-#include <blaze/math/expressions/Expression.h>
+#include <blaze/math/expressions/View.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/RowTrait.h>
@@ -301,7 +301,7 @@ namespace blaze {
 template< typename MT                              // Type of the dense matrix
         , bool SO = IsRowMajorMatrix<MT>::value >  // Storage order
 class DenseRow : public DenseVector< DenseRow<MT,SO>, true >
-               , private Expression
+               , private View
 {
  private:
    //**Type definitions****************************************************************************
@@ -1628,7 +1628,7 @@ inline void DenseRow<MT,SO>::multAssign( const SparseVector<VT,true>& rhs )
 */
 template< typename MT >  // Type of the dense matrix
 class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
-                         , private Expression
+                         , private View
 {
  private:
    //**Type definitions****************************************************************************

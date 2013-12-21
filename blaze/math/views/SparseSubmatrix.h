@@ -50,8 +50,8 @@
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/TransExpr.h>
-#include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/expressions/View.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/sparse/SparseElement.h>
@@ -320,7 +320,7 @@ namespace blaze {
 template< typename MT                                 // Type of the sparse matrix
         , bool SO = IsColumnMajorMatrix<MT>::value >  // Storage order
 class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
-                      , private Expression
+                      , private View
 {
  private:
    //**Type definitions****************************************************************************
@@ -2212,7 +2212,7 @@ inline void SparseSubmatrix<MT,SO>::subAssign( const SparseMatrix<MT2,SO2>& rhs 
 */
 template< typename MT >  // Type of the sparse matrix
 class SparseSubmatrix<MT,true> : public SparseMatrix< SparseSubmatrix<MT,true>, true >
-                               , private Expression
+                               , private View
 {
  private:
    //**Type definitions****************************************************************************

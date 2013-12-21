@@ -48,8 +48,8 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/TransposeFlag.h>
-#include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/SparseVector.h>
+#include <blaze/math/expressions/View.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -319,7 +319,7 @@ namespace blaze {
 template< typename VT                         // Type of the sparse vector
         , bool TF = IsRowVector<VT>::value >  // Transpose flag
 class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
-                      , private Expression
+                      , private View
 {
  private:
    //**Type definitions****************************************************************************
