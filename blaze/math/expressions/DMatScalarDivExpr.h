@@ -40,12 +40,14 @@
 // Includes
 //*************************************************************************************************
 
+#include <iterator>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatScalarDivExpr.h>
+#include <blaze/math/Intrinsics.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/DivExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -73,6 +75,7 @@
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -101,6 +104,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    //**Type definitions****************************************************************************
    typedef typename MT::ResultType     RT;  //!< Result type of the dense matrix expression.
    typedef typename MT::ReturnType     RN;  //!< Return type of the dense matrix expression.
+   typedef typename MT::ElementType    ET;  //!< Element type of the dense matrix expression.
    typedef typename MT::CompositeType  CT;  //!< Composite type of the dense matrix expression.
    //**********************************************************************************************
 
@@ -138,11 +142,12 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DMatScalarDivExpr<MT,ST,SO>         This;           //!< Type of this DMatScalarDivExpr instance.
-   typedef typename DivTrait<RT,ST>::Type      ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
+   typedef DMatScalarDivExpr<MT,ST,SO>                 This;           //!< Type of this DMatScalarDivExpr instance.
+   typedef typename DivTrait<RT,ST>::Type              ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::OppositeType           OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
+   typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
 
    //! Return type for expression template evaluations.
    typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
@@ -157,9 +162,266 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    typedef ST  RightOperand;
    //**********************************************************************************************
 
+   //**ConstIterator class definition*************************************************************
+   /*!\brief Iterator over the elements of the dense matrix.
+   */
+   class ConstIterator
+   {
+    public:
+      //**Type definitions*************************************************************************
+      typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
+      typedef ElementType                      ValueType;         //!< Type of the underlying elements.
+      typedef ElementType*                     PointerType;       //!< Pointer return type.
+      typedef ElementType&                     ReferenceType;     //!< Reference return type.
+      typedef ptrdiff_t                        DifferenceType;    //!< Difference between two iterators.
+
+      // STL iterator requirements
+      typedef IteratorCategory  iterator_category;  //!< The iterator category.
+      typedef ValueType         value_type;         //!< Type of the underlying elements.
+      typedef PointerType       pointer;            //!< Pointer return type.
+      typedef ReferenceType     reference;          //!< Reference return type.
+      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+
+      //! ConstIterator type of the dense matrix expression.
+      typedef typename MT::ConstIterator  IteratorType;
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Constructor for the ConstIterator class.
+      //
+      // \param iterator Iterator to the initial element.
+      // \param scalar Scalar of the multiplication expression.
+      */
+      explicit inline ConstIterator( IteratorType iterator, RightOperand scalar )
+         : iterator_( iterator )  // Iterator to the current element
+         , scalar_  ( scalar   )  // Scalar of the multiplication expression
+      {}
+      //*******************************************************************************************
+
+      //**Addition assignment operator*************************************************************
+      /*!\brief Addition assignment operator.
+      //
+      // \param inc The increment of the iterator.
+      // \return The incremented iterator.
+      */
+      inline ConstIterator& operator+=( size_t inc ) {
+         iterator_ += inc;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Subtraction assignment operator**********************************************************
+      /*!\brief Subtraction assignment operator.
+      //
+      // \param dec The decrement of the iterator.
+      // \return The decremented iterator.
+      */
+      inline ConstIterator& operator-=( size_t dec ) {
+         iterator_ -= dec;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Prefix increment operator****************************************************************
+      /*!\brief Pre-increment operator.
+      //
+      // \return Reference to the incremented iterator.
+      */
+      inline ConstIterator& operator++() {
+         ++iterator_;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Postfix increment operator***************************************************************
+      /*!\brief Post-increment operator.
+      //
+      // \return The previous position of the iterator.
+      */
+      inline const ConstIterator operator++( int ) {
+         return ConstIterator( iterator_++ );
+      }
+      //*******************************************************************************************
+
+      //**Prefix decrement operator****************************************************************
+      /*!\brief Pre-decrement operator.
+      //
+      // \return Reference to the decremented iterator.
+      */
+      inline ConstIterator& operator--() {
+         --iterator_;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Postfix decrement operator***************************************************************
+      /*!\brief Post-decrement operator.
+      //
+      // \return The previous position of the iterator.
+      */
+      inline const ConstIterator operator--( int ) {
+         return ConstIterator( iterator_-- );
+      }
+      //*******************************************************************************************
+
+      //**Element access operator******************************************************************
+      /*!\brief Direct access to the element at the current iterator position.
+      //
+      // \return The resulting value.
+      */
+      inline ReturnType operator*() const {
+         return *iterator_ / scalar_;
+      }
+      //*******************************************************************************************
+
+      //**Load function****************************************************************************
+      /*!\brief Access to the intrinsic elements of the matrix.
+      //
+      // \return The resulting intrinsic value.
+      */
+      inline IntrinsicType load() const {
+         return iterator_.load() / set( scalar_ );
+      }
+      //*******************************************************************************************
+
+      //**Equality operator************************************************************************
+      /*!\brief Equality comparison between two ConstIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators refer to the same element, \a false if not.
+      */
+      inline bool operator==( const ConstIterator& rhs ) const {
+         return iterator_ == rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Inequality operator**********************************************************************
+      /*!\brief Inequality comparison between two ConstIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators don't refer to the same element, \a false if they do.
+      */
+      inline bool operator!=( const ConstIterator& rhs ) const {
+         return iterator_ != rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Less-than operator***********************************************************************
+      /*!\brief Less-than comparison between two ConstIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller, \a false if not.
+      */
+      inline bool operator<( const ConstIterator& rhs ) const {
+         return iterator_ < rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Greater-than operator********************************************************************
+      /*!\brief Greater-than comparison between two ConstIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater, \a false if not.
+      */
+      inline bool operator>( const ConstIterator& rhs ) const {
+         return iterator_ > rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Less-or-equal-than operator**************************************************************
+      /*!\brief Less-than comparison between two ConstIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
+      */
+      inline bool operator<=( const ConstIterator& rhs ) const {
+         return iterator_ <= rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Greater-or-equal-than operator***********************************************************
+      /*!\brief Greater-than comparison between two ConstIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
+      */
+      inline bool operator>=( const ConstIterator& rhs ) const {
+         return iterator_ >= rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Calculating the number of elements between two iterators.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return The number of elements between the two iterators.
+      */
+      inline DifferenceType operator-( const ConstIterator& rhs ) const {
+         return iterator_ - rhs.iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between a ConstIterator and an integral value.
+      //
+      // \param it The iterator to be incremented.
+      // \param inc The number of elements the iterator is incremented.
+      // \return The incremented iterator.
+      */
+      friend inline const ConstIterator operator+( const ConstIterator& it, size_t inc ) {
+         return ConstIterator( it.iterator_ + inc );
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between an integral value and a ConstIterator.
+      //
+      // \param inc The number of elements the iterator is incremented.
+      // \param it The iterator to be incremented.
+      // \return The incremented iterator.
+      */
+      friend inline const ConstIterator operator+( size_t inc, const ConstIterator& it ) {
+         return ConstIterator( it.iterator_ + inc );
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Subtraction between a ConstIterator and an integral value.
+      //
+      // \param it The iterator to be decremented.
+      // \param dec The number of elements the iterator is decremented.
+      // \return The decremented iterator.
+      */
+      friend inline const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
+         return ConstIterator( it.iterator_ - dec );
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Subtraction between an integral value and a ConstIterator.
+      //
+      // \param dec The number of elements the iterator is decremented.
+      // \param it The iterator to be decremented.
+      // \return The decremented iterator.
+      */
+      friend inline const ConstIterator operator-( size_t dec, const ConstIterator& it ) {
+         return ConstIterator( it.iterator_ - dec );
+      }
+      //*******************************************************************************************
+
+    private:
+      //**Member variables*************************************************************************
+      IteratorType iterator_;  //!< Iterator to the current element.
+      RightOperand scalar_;    //!< Scalar of the multiplication expression.
+      //*******************************************************************************************
+   };
+   //**********************************************************************************************
+
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = 0 };
+   enum { vectorizable = MT::vectorizable &&
+                         IsSame<ET,RightOperand>::value &&
+                         IntrinsicTrait<ET>::division };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -185,6 +447,47 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
       BLAZE_INTERNAL_ASSERT( i < matrix_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < matrix_.columns(), "Invalid column access index" );
       return matrix_(i,j) / scalar_;
+   }
+   //**********************************************************************************************
+
+   //**Get function********************************************************************************
+   /*!\brief Access to the intrinsic elements of the matrix.
+   //
+   // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+   // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+   // \return Reference to the accessed values.
+   */
+   inline IntrinsicType load( size_t i, size_t j ) const {
+      typedef IntrinsicTrait<ElementType>  IT;
+      BLAZE_INTERNAL_ASSERT( i < matrix_.rows()   , "Invalid row access index"    );
+      BLAZE_INTERNAL_ASSERT( j < matrix_.columns(), "Invalid column access index" );
+      BLAZE_INTERNAL_ASSERT( !SO || ( i % IT::size == 0UL ), "Invalid row access index"    );
+      BLAZE_INTERNAL_ASSERT( SO  || ( j % IT::size == 0UL ), "Invalid column access index" );
+      const IntrinsicType xmm1( matrix_.load(i,j) );
+      const IntrinsicType xmm2( set( scalar_ ) );
+      return xmm1 / xmm2;
+   }
+   //**********************************************************************************************
+
+   //**Begin function******************************************************************************
+   /*!\brief Returns an iterator to the first non-zero element of row \a i.
+   //
+   // \param i The row index.
+   // \return Iterator to the first non-zero element of row \a i.
+   */
+   inline ConstIterator begin( size_t i ) const {
+      return ConstIterator( matrix_.begin(i), scalar_ );
+   }
+   //**********************************************************************************************
+
+   //**End function********************************************************************************
+   /*!\brief Returns an iterator just past the last non-zero element of row \a i.
+   //
+   // \param i The row index.
+   // \return Iterator just past the last non-zero element of row \a i.
+   */
+   inline ConstIterator end( size_t i ) const {
+      return ConstIterator( matrix_.end(i), scalar_ );
    }
    //**********************************************************************************************
 
