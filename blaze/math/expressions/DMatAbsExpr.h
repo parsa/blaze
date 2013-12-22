@@ -49,14 +49,20 @@
 #include <blaze/math/expressions/MatAbsExpr.h>
 #include <blaze/math/traits/AbsExprTrait.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
+#include <blaze/math/traits/DVecAbsExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
+#include <blaze/math/traits/TDVecAbsExprTrait.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
+#include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
@@ -444,7 +450,7 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
 
 //=================================================================================================
 //
-//  GLOBAL OPERATORS
+//  GLOBAL FUNCTIONS
 //
 //=================================================================================================
 
@@ -456,7 +462,7 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
 // \return The absolute value of each single element of \a dm.
 //
 // The \a abs function calculates the absolute value of each element of the input matrix \a dm.
-// The operator returns an expression representing this operation.\n
+// The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a abs function:
 
    \code
@@ -480,19 +486,19 @@ inline const DMatAbsExpr<MT,SO> abs( const DenseMatrix<MT,SO>& dm )
 
 //=================================================================================================
 //
-//  GLOBAL RESTRUCTURING OPERATORS
+//  GLOBAL RESTRUCTURING FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Absolute value operator for absolute value dense matrix expressions.
+/*!\brief Absolute value function for absolute value dense matrix expressions.
 // \ingroup dense_matrix
 //
 // \param dm The absolute value dense matrix expression.
 // \return The absolute value of each single element of \a dm.
 //
-// This operator implements a performance optimized treatment of the absolute value operation
+// This function implements a performance optimized treatment of the absolute value operation
 // on a dense matrix absolute value expression.
 */
 template< typename MT  // Type of the dense matrix
@@ -514,6 +520,38 @@ inline const DMatAbsExpr<MT,SO>& abs( const DMatAbsExpr<MT,SO>& dm )
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct DMatAbsExprTrait< DMatAbsExpr<MT,false> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsDenseMatrix<MT>::value && IsRowMajorMatrix<MT>::value
+                              , DMatAbsExpr<MT,false>
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct TDMatAbsExprTrait< DMatAbsExpr<MT,true> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsDenseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value
+                              , DMatAbsExpr<MT,true>
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

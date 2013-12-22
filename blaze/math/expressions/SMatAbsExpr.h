@@ -52,14 +52,20 @@
 #include <blaze/math/traits/AbsExprTrait.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
+#include <blaze/math/traits/SMatAbsExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
+#include <blaze/math/traits/TSMatAbsExprTrait.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
@@ -617,7 +623,7 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
 
 //=================================================================================================
 //
-//  GLOBAL OPERATORS
+//  GLOBAL FUNCTIONS
 //
 //=================================================================================================
 
@@ -629,7 +635,7 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
 // \return The absolute value of each single element of \a sm.
 //
 // The \a abs function calculates the absolute value of each element of the input matrix \a sm.
-// The operator returns an expression representing this operation.\n
+// The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a abs function:
 
    \code
@@ -653,19 +659,19 @@ inline const SMatAbsExpr<MT,SO> abs( const SparseMatrix<MT,SO>& sm )
 
 //=================================================================================================
 //
-//  GLOBAL RESTRUCTURING OPERATORS
+//  GLOBAL RESTRUCTURING FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Absolute value operator for absolute value sparse matrix expressions.
+/*!\brief Absolute value function for absolute value sparse matrix expressions.
 // \ingroup sparse_matrix
 //
 // \param sm The absolute value sparse matrix expression.
 // \return The absolute value of each single element of \a sm.
 //
-// This operator implements a performance optimized treatment of the absolute value operation
+// This function implements a performance optimized treatment of the absolute value operation
 // on a sparse matrix absolute value expression.
 */
 template< typename MT  // Type of the sparse matrix
@@ -687,6 +693,38 @@ inline const SMatAbsExpr<MT,TF>& abs( const SMatAbsExpr<MT,TF>& sm )
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct SMatAbsExprTrait< SMatAbsExpr<MT,false> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsSparseMatrix<MT>::value && IsRowMajorMatrix<MT>::value
+                              , SMatAbsExpr<MT,false>
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct TSMatAbsExprTrait< SMatAbsExpr<MT,true> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsSparseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value
+                              , SMatAbsExpr<MT,true>
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

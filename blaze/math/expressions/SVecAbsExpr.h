@@ -51,13 +51,19 @@
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/AbsExprTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
+#include <blaze/math/traits/SVecAbsExprTrait.h>
+#include <blaze/math/traits/TSVecAbsExprTrait.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
@@ -565,7 +571,7 @@ class SVecAbsExpr : public SparseVector< SVecAbsExpr<VT,TF>, TF >
 
 //=================================================================================================
 //
-//  GLOBAL OPERATORS
+//  GLOBAL FUNCTIONS
 //
 //=================================================================================================
 
@@ -577,7 +583,7 @@ class SVecAbsExpr : public SparseVector< SVecAbsExpr<VT,TF>, TF >
 // \return The absolute value of each single element of \a sv.
 //
 // The \a abs function calculates the absolute value of each element of the sparse input vector
-// \a sv. The operator returns an expression representing this operation.\n
+// \a sv. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a abs function:
 
    \code
@@ -601,19 +607,19 @@ inline const SVecAbsExpr<VT,TF> abs( const SparseVector<VT,TF>& sv )
 
 //=================================================================================================
 //
-//  GLOBAL RESTRUCTURING OPERATORS
+//  GLOBAL RESTRUCTURING FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Absolute value operator for absolute value sparse vector expressions.
+/*!\brief Absolute value function for absolute value sparse vector expressions.
 // \ingroup sparse_vector
 //
 // \param sv The absolute value sparse vector expression.
 // \return The absolute value of each single element of \a sv.
 //
-// This operator implements a performance optimized treatment of the absolute value operation
+// This function implements a performance optimized treatment of the absolute value operation
 // on a sparse vector absolute value expression.
 */
 template< typename VT  // Type of the sparse vector
@@ -635,6 +641,38 @@ inline const SVecAbsExpr<VT,TF>& abs( const SVecAbsExpr<VT,TF>& sv )
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct SVecAbsExprTrait< SVecAbsExpr<VT,false> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsSparseVector<VT>::value && IsColumnVector<VT>::value
+                              , SVecAbsExpr<VT,false>
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct TSVecAbsExprTrait< SVecAbsExpr<VT,true> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsSparseVector<VT>::value && IsRowVector<VT>::value
+                              , SVecAbsExpr<VT,true>
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

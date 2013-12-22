@@ -48,13 +48,19 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/VecAbsExpr.h>
 #include <blaze/math/traits/AbsExprTrait.h>
+#include <blaze/math/traits/DVecAbsExprTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
+#include <blaze/math/traits/TDVecAbsExprTrait.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
+#include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
@@ -404,7 +410,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
 
 //=================================================================================================
 //
-//  GLOBAL OPERATORS
+//  GLOBAL FUNCTIONS
 //
 //=================================================================================================
 
@@ -416,7 +422,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
 // \return The absolute value of each single element of \a dv.
 //
 // The \a abs function calculates the absolute value of each element of the input vector \a dv.
-// The operator returns an expression representing this operation.\n
+// The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a abs function:
 
    \code
@@ -440,19 +446,19 @@ inline const DVecAbsExpr<VT,TF> abs( const DenseVector<VT,TF>& dv )
 
 //=================================================================================================
 //
-//  GLOBAL RESTRUCTURING OPERATORS
+//  GLOBAL RESTRUCTURING FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Absolute value operator for absolute value dense vector expressions.
+/*!\brief Absolute value function for absolute value dense vector expressions.
 // \ingroup dense_vector
 //
 // \param dv The absolute value dense vector expression.
 // \return The absolute value of each single element of \a dv.
 //
-// This operator implements a performance optimized treatment of the absolute value operation
+// This function implements a performance optimized treatment of the absolute value operation
 // on a dense vector absolute value expression.
 */
 template< typename VT  // Type of the dense vector
@@ -474,6 +480,38 @@ inline const DVecAbsExpr<VT,TF>& abs( const DVecAbsExpr<VT,TF>& dv )
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct DVecAbsExprTrait< DVecAbsExpr<VT,false> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsDenseVector<VT>::value && IsColumnVector<VT>::value
+                              , DVecAbsExpr<VT,false>
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct TDVecAbsExprTrait< DVecAbsExpr<VT,true> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsDenseVector<VT>::value && IsRowVector<VT>::value
+                              , DVecAbsExpr<VT,true>
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
