@@ -47,12 +47,18 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/VecEvalExpr.h>
+#include <blaze/math/traits/DVecEvalExprTrait.h>
 #include <blaze/math/traits/EvalExprTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
+#include <blaze/math/traits/TDVecEvalExprTrait.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
+#include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
@@ -376,7 +382,7 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
 
 //=================================================================================================
 //
-//  GLOBAL OPERATORS
+//  GLOBAL FUNCTIONS
 //
 //=================================================================================================
 
@@ -388,7 +394,7 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
 // \return The evaluated dense vector.
 //
 // The \a eval function forces the evaluation of the given dense vector expression \a dv.
-// The operator returns an expression representing this operation.\n
+// The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a eval function:
 
    \code
@@ -412,9 +418,70 @@ inline const DVecEvalExpr<VT,TF> eval( const DenseVector<VT,TF>& dv )
 
 //=================================================================================================
 //
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Evaluation of the given dense vector evaluation expression \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input evaluation expression.
+// \return The evaluated dense vector.
+//
+// This function implements a performance optimized treatment of the evaluation of a dense vector
+// evaluation expression.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecEvalExpr<VT,TF> eval( const DVecEvalExpr<VT,TF>& dv )
+{
+   return dv;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct DVecEvalExprTrait< DVecEvalExpr<VT,false> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsDenseVector<VT>::value && IsColumnVector<VT>::value
+                              , DVecEvalExpr<VT,false>
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct TDVecEvalExprTrait< DVecEvalExpr<VT,true> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsDenseVector<VT>::value && IsRowVector<VT>::value
+                              , DVecEvalExpr<VT,true>
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

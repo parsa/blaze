@@ -48,13 +48,19 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatEvalExpr.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
+#include <blaze/math/traits/DMatEvalExprTrait.h>
 #include <blaze/math/traits/EvalExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
+#include <blaze/math/traits/TDMatEvalExprTrait.h>
+#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
+#include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
@@ -363,7 +369,7 @@ class DMatEvalExpr : public DenseMatrix< DMatEvalExpr<MT,SO>, SO >
 
 //=================================================================================================
 //
-//  GLOBAL OPERATORS
+//  GLOBAL FUNCTIONS
 //
 //=================================================================================================
 
@@ -375,7 +381,7 @@ class DMatEvalExpr : public DenseMatrix< DMatEvalExpr<MT,SO>, SO >
 // \return The evaluated dense matrix.
 //
 // The \a eval function forces the evaluation of the given dense matrix expression \a dm.
-// The operator returns an expression representing the operation.\n
+// The function returns an expression representing the operation.\n
 // The following example demonstrates the use of the \a eval function
 
    \code
@@ -399,9 +405,70 @@ inline const DMatEvalExpr<MT,SO> eval( const DenseMatrix<MT,SO>& dm )
 
 //=================================================================================================
 //
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Evaluation of the given dense matrix evaluation expression \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input evaluation expression.
+// \return The evaluated dense matrix.
+//
+// This function implements a performance optimized treatment of the evaluation of a dense matrix
+// evaluation expression.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatEvalExpr<MT,SO> eval( const DMatEvalExpr<MT,SO>& dm )
+{
+   return dm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct DMatEvalExprTrait< DMatEvalExpr<MT,false> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsDenseMatrix<MT>::value && IsRowMajorMatrix<MT>::value
+                              , DMatEvalExpr<MT,false>
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct TDMatEvalExprTrait< DMatEvalExpr<MT,true> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsDenseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value
+                              , DMatEvalExpr<MT,true>
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

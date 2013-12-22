@@ -50,12 +50,18 @@
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/EvalExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
+#include <blaze/math/traits/SMatEvalExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
+#include <blaze/math/traits/TSMatEvalExprTrait.h>
+#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
@@ -424,7 +430,7 @@ class SMatEvalExpr : public SparseMatrix< SMatEvalExpr<MT,SO>, SO >
 
 //=================================================================================================
 //
-//  GLOBAL OPERATORS
+//  GLOBAL FUNCTIONS
 //
 //=================================================================================================
 
@@ -436,7 +442,7 @@ class SMatEvalExpr : public SparseMatrix< SMatEvalExpr<MT,SO>, SO >
 // \return The evaluated sparse matrix.
 //
 // The \a eval function forces the evaluation of the given sparse matrix expression \a sm.
-// The operator returns an expression representing the operation.\n
+// The function returns an expression representing the operation.\n
 // The following example demonstrates the use of the \a eval function
 
    \code
@@ -460,9 +466,70 @@ inline const SMatEvalExpr<MT,SO> eval( const SparseMatrix<MT,SO>& sm )
 
 //=================================================================================================
 //
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Evaluation of the given sparse matrix evaluation expression \a sm.
+// \ingroup sparse_matrix
+//
+// \param sm The input evaluation expression.
+// \return The evaluated sparse matrix.
+//
+// This function implements a performance optimized treatment of the evaluation of a sparse matrix
+// evaluation expression.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const SMatEvalExpr<MT,SO> eval( const SMatEvalExpr<MT,SO>& sm )
+{
+   return sm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct SMatEvalExprTrait< SMatEvalExpr<MT,false> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsSparseMatrix<MT>::value && IsRowMajorMatrix<MT>::value
+                              , SMatEvalExpr<MT,false>
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct TSMatEvalExprTrait< SMatEvalExpr<MT,true> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsSparseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value
+                              , SMatEvalExpr<MT,true>
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

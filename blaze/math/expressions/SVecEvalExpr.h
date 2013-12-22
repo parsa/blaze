@@ -49,12 +49,18 @@
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/traits/EvalExprTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
+#include <blaze/math/traits/SVecEvalExprTrait.h>
+#include <blaze/math/traits/TSVecEvalExprTrait.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
@@ -399,7 +405,7 @@ class SVecEvalExpr : public SparseVector< SVecEvalExpr<VT,TF>, TF >
 
 //=================================================================================================
 //
-//  GLOBAL OPERATORS
+//  GLOBAL FUNCTIONS
 //
 //=================================================================================================
 
@@ -411,7 +417,7 @@ class SVecEvalExpr : public SparseVector< SVecEvalExpr<VT,TF>, TF >
 // \return The evaluated sparse vector.
 //
 // The \a eval function forces the evaluation of the given sparse vector expression \a sv.
-// The operator returns an expression representing this operation.\n
+// The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a eval function:
 
    \code
@@ -435,9 +441,70 @@ inline const SVecEvalExpr<VT,TF> eval( const SparseVector<VT,TF>& sv )
 
 //=================================================================================================
 //
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Evaluation of the given sparse vector evaluation expression \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The input evaluation expression.
+// \return The evaluated sparse vector.
+//
+// This function implements a performance optimized treatment of the evaluation of a sparse vector
+// evaluation expression.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecEvalExpr<VT,TF> eval( const SVecEvalExpr<VT,TF>& sv )
+{
+   return sv;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct SVecEvalExprTrait< SVecEvalExpr<VT,false> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsSparseVector<VT>::value && IsColumnVector<VT>::value
+                              , SVecEvalExpr<VT,false>
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct TSVecEvalExprTrait< SVecEvalExpr<VT,true> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsSparseVector<VT>::value && IsRowVector<VT>::value
+                              , SVecEvalExpr<VT,true>
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
