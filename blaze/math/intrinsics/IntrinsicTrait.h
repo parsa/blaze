@@ -83,7 +83,8 @@ struct IntrinsicTraitHelper<1UL>
    enum { size           = 32,
           addition       = 1,
           subtraction    = 1,
-          multiplication = 0 };
+          multiplication = 0,
+          division       = 0 };
 };
 #else
 template<>
@@ -93,7 +94,8 @@ struct IntrinsicTraitHelper<1UL>
    enum { size           = ( BLAZE_SSE2_MODE )?( 16 ):( 1 ),
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
-          multiplication = 0 };
+          multiplication = 0,
+          division       = 0 };
 };
 #endif
 /*! \endcond */
@@ -113,7 +115,8 @@ struct IntrinsicTraitHelper<2UL>
    enum { size           = 16,
           addition       = 1,
           subtraction    = 1,
-          multiplication = 1 };
+          multiplication = 1,
+          division       = 0 };
 };
 #else
 template<>
@@ -123,7 +126,8 @@ struct IntrinsicTraitHelper<2UL>
    enum { size           = ( BLAZE_SSE2_MODE )?( 8 ):( 1 ),
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
-          multiplication = BLAZE_SSE2_MODE };
+          multiplication = BLAZE_SSE2_MODE,
+          division       = 0 };
 };
 #endif
 /*! \endcond */
@@ -143,7 +147,8 @@ struct IntrinsicTraitHelper<4UL>
    enum { size           = 16,
           addition       = 1,
           subtraction    = 1,
-          multiplication = 1 };
+          multiplication = 1,
+          division       = 1 };
 };
 #elif BLAZE_AVX2_MODE
 template<>
@@ -153,7 +158,8 @@ struct IntrinsicTraitHelper<4UL>
    enum { size           = 8,
           addition       = 1,
           subtraction    = 1,
-          multiplication = 1 };
+          multiplication = 1,
+          division       = 0 };
 };
 #else
 template<>
@@ -163,7 +169,8 @@ struct IntrinsicTraitHelper<4UL>
    enum { size           = ( BLAZE_SSE2_MODE )?( 4 ):( 1 ),
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
-          multiplication = BLAZE_SSE4_MODE };
+          multiplication = BLAZE_SSE4_MODE,
+          division       = 0 };
 };
 #endif
 /*! \endcond */
@@ -183,7 +190,8 @@ struct IntrinsicTraitHelper<8UL>
    enum { size           = 8,
           addition       = 1,
           subtraction    = 0,
-          multiplication = 0 };
+          multiplication = 0,
+          division       = 1 };
 };
 #elif BLAZE_AVX2_MODE
 template<>
@@ -193,7 +201,8 @@ struct IntrinsicTraitHelper<8UL>
    enum { size           = 4,
           addition       = 1,
           subtraction    = 1,
-          multiplication = 0 };
+          multiplication = 0,
+          division       = 0 };
 };
 #else
 template<>
@@ -203,7 +212,8 @@ struct IntrinsicTraitHelper<8UL>
    enum { size           = ( BLAZE_SSE2_MODE )?( 2 ):( 1 ),
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
-          multiplication = 0 };
+          multiplication = 0,
+          division       = 0 };
 };
 #endif
 /*! \endcond */
@@ -231,7 +241,8 @@ struct IntrinsicTraitBase
           alignment      = AlignmentTrait<T>::value,
           addition       = 0,
           subtraction    = 0,
-          multiplication = 0 };
+          multiplication = 0,
+          division       = 0 };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -254,7 +265,8 @@ struct IntrinsicTraitBase<short>
           alignment      = AlignmentTrait<short>::value,
           addition       = Helper::addition,
           subtraction    = Helper::subtraction,
-          multiplication = Helper::multiplication };
+          multiplication = Helper::multiplication,
+          division       = Helper::division };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -277,7 +289,8 @@ struct IntrinsicTraitBase<unsigned short>
           alignment      = AlignmentTrait<unsigned short>::value,
           addition       = Helper::addition,
           subtraction    = Helper::subtraction,
-          multiplication = Helper::multiplication };
+          multiplication = Helper::multiplication,
+          division       = Helper::division };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -300,7 +313,8 @@ struct IntrinsicTraitBase<int>
           alignment      = AlignmentTrait<int>::value,
           addition       = Helper::addition,
           subtraction    = Helper::subtraction,
-          multiplication = Helper::multiplication };
+          multiplication = Helper::multiplication,
+          division       = Helper::division };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -323,7 +337,8 @@ struct IntrinsicTraitBase<unsigned int>
           alignment      = AlignmentTrait<unsigned int>::value,
           addition       = Helper::addition,
           subtraction    = Helper::subtraction,
-          multiplication = Helper::multiplication };
+          multiplication = Helper::multiplication,
+          division       = Helper::division };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -346,7 +361,8 @@ struct IntrinsicTraitBase<long>
           alignment      = AlignmentTrait<long>::value,
           addition       = Helper::addition,
           subtraction    = Helper::subtraction,
-          multiplication = Helper::multiplication };
+          multiplication = Helper::multiplication,
+          division       = Helper::division };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -369,7 +385,8 @@ struct IntrinsicTraitBase<unsigned long>
           alignment      = AlignmentTrait<unsigned long>::value,
           addition       = Helper::addition,
           subtraction    = Helper::subtraction,
-          multiplication = Helper::multiplication };
+          multiplication = Helper::multiplication,
+          division       = Helper::division };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -388,7 +405,8 @@ struct IntrinsicTraitBase<float>
           alignment      = AlignmentTrait<float>::value,
           addition       = 1,
           subtraction    = 1,
-          multiplication = 1 };
+          multiplication = 1,
+          division       = 1 };
 };
 #elif BLAZE_AVX_MODE
 template<>
@@ -399,7 +417,8 @@ struct IntrinsicTraitBase<float>
           alignment      = AlignmentTrait<float>::value,
           addition       = 1,
           subtraction    = 1,
-          multiplication = 1 };
+          multiplication = 1,
+          division       = 1 };
 };
 #else
 template<>
@@ -410,7 +429,8 @@ struct IntrinsicTraitBase<float>
           alignment      = AlignmentTrait<float>::value,
           addition       = BLAZE_SSE_MODE,
           subtraction    = BLAZE_SSE_MODE,
-          multiplication = BLAZE_SSE_MODE };
+          multiplication = BLAZE_SSE_MODE,
+          division       = BLAZE_SSE_MODE };
 };
 #endif
 /*! \endcond */
@@ -431,7 +451,8 @@ struct IntrinsicTraitBase<double>
           alignment      = AlignmentTrait<double>::value,
           addition       = 1,
           subtraction    = 1,
-          multiplication = 1 };
+          multiplication = 1,
+          division       = 1 };
 };
 #elif BLAZE_AVX_MODE
 template<>
@@ -442,7 +463,8 @@ struct IntrinsicTraitBase<double>
           alignment      = AlignmentTrait<double>::value,
           addition       = 1,
           subtraction    = 1,
-          multiplication = 1 };
+          multiplication = 1,
+          division       = 1 };
 };
 #else
 template<>
@@ -453,7 +475,8 @@ struct IntrinsicTraitBase<double>
           alignment      = AlignmentTrait<double>::value,
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
-          multiplication = BLAZE_SSE2_MODE };
+          multiplication = BLAZE_SSE2_MODE,
+          division       = BLAZE_SSE2_MODE };
 };
 #endif
 /*! \endcond */
@@ -474,7 +497,8 @@ struct IntrinsicTraitBase< complex<float> >
           alignment      = AlignmentTrait< complex<float> >::value,
           addition       = 1,
           subtraction    = 1,
-          multiplication = 0 };
+          multiplication = 0,
+          division       = 0 };
 
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 };
@@ -487,7 +511,8 @@ struct IntrinsicTraitBase< complex<float> >
           alignment      = AlignmentTrait< complex<float> >::value,
           addition       = 1,
           subtraction    = 1,
-          multiplication = 1 };
+          multiplication = 1,
+          division       = 0 };
 
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 };
@@ -500,7 +525,8 @@ struct IntrinsicTraitBase< complex<float> >
           alignment      = AlignmentTrait< complex<float> >::value,
           addition       = BLAZE_SSE_MODE,
           subtraction    = BLAZE_SSE_MODE,
-          multiplication = BLAZE_SSE3_MODE };
+          multiplication = BLAZE_SSE3_MODE,
+          division       = 0 };
 
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 };
@@ -523,7 +549,8 @@ struct IntrinsicTraitBase< complex<double> >
           alignment      = AlignmentTrait< complex<double> >::value,
           addition       = 1,
           subtraction    = 1,
-          multiplication = 0 };
+          multiplication = 0,
+          division       = 0 };
 
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 };
@@ -536,7 +563,8 @@ struct IntrinsicTraitBase< complex<double> >
           alignment      = AlignmentTrait< complex<double> >::value,
           addition       = 1,
           subtraction    = 1,
-          multiplication = 1 };
+          multiplication = 1,
+          division       = 0 };
 
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 };
@@ -549,7 +577,8 @@ struct IntrinsicTraitBase< complex<double> >
           alignment      = AlignmentTrait< complex<double> >::value,
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
-          multiplication = BLAZE_SSE3_MODE };
+          multiplication = BLAZE_SSE3_MODE,
+          division       = 0 };
 
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 };
