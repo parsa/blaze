@@ -1088,7 +1088,7 @@ inline DenseSubvector<VT,TF>& DenseSubvector<VT,TF>::operator=( const DenseSubve
       throw std::invalid_argument( "Subvector sizes do not match" );
 
    if( rhs.canAlias( &vector_ ) ) {
-      const typename VT::ResultType tmp( ~rhs );
+      const ResultType tmp( ~rhs );
       assign( *this, tmp );
    }
    else {
@@ -1117,14 +1117,14 @@ inline DenseSubvector<VT,TF>& DenseSubvector<VT,TF>::operator=( const Vector<VT2
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT::ResultType, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
 
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
    if( (~rhs).canAlias( &vector_ ) ) {
-      const typename VT::ResultType tmp( ~rhs );
+      const typename VT2::ResultType tmp( ~rhs );
       assign( *this, tmp );
    }
    else {
@@ -1155,14 +1155,14 @@ inline DenseSubvector<VT,TF>& DenseSubvector<VT,TF>::operator+=( const Vector<VT
 {
    using blaze::addAssign;
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT::ResultType, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
 
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
    if( (~rhs).canAlias( &vector_ ) ) {
-      const typename VT::ResultType tmp( ~rhs );
+      const typename VT2::ResultType tmp( ~rhs );
       addAssign( *this, tmp );
    }
    else {
@@ -1191,14 +1191,14 @@ inline DenseSubvector<VT,TF>& DenseSubvector<VT,TF>::operator-=( const Vector<VT
 {
    using blaze::subAssign;
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT::ResultType, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
 
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
    if( (~rhs).canAlias( &vector_ ) ) {
-      const typename VT::ResultType tmp( ~rhs );
+      const typename VT2::ResultType tmp( ~rhs );
       subAssign( *this, tmp );
    }
    else {
@@ -1228,14 +1228,14 @@ inline DenseSubvector<VT,TF>& DenseSubvector<VT,TF>::operator*=( const Vector<VT
 {
    using blaze::multAssign;
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT::ResultType, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
 
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
    if( (~rhs).canAlias( &vector_ ) || IsSparseVector<VT2>::value ) {
-      const typename VT::ResultType tmp( ~rhs );
+      const typename VT2::ResultType tmp( ~rhs );
       multAssign( *this, tmp );
    }
    else {
