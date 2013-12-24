@@ -483,7 +483,7 @@ inline StaticVector<Type,N,TF>::StaticVector( size_t n, const Other* array )
    BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    if( n > N )
-      throw std::invalid_argument( "Invalid setup of hybrid vector" );
+      throw std::invalid_argument( "Invalid setup of static vector" );
 
    for( size_t i=0UL; i<n; ++i )
       v_[i] = array[i];
