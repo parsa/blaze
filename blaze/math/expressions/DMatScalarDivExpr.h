@@ -57,6 +57,7 @@
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMultExpr.h>
@@ -539,7 +540,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const {
-      return matrix_.canAlias( alias );
+      return IsComputation<MT>::value && matrix_.canAlias( alias );
    }
    //**********************************************************************************************
 

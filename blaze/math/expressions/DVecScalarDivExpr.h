@@ -55,6 +55,7 @@
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMultExpr.h>
@@ -519,7 +520,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const {
-      return vector_.canAlias( alias );
+      return IsComputation<VT>::value && vector_.canAlias( alias );
    }
    //**********************************************************************************************
 
