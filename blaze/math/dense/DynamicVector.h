@@ -1003,7 +1003,10 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DynamicVector<Type,TF> >::Type&
    DynamicVector<Type,TF>::operator*=( Other rhs )
 {
-   return operator=( (*this) * rhs );
+   using blaze::assign;
+
+   assign( *this, (*this) * rhs );
+   return *this;
 }
 //*************************************************************************************************
 
@@ -1023,9 +1026,12 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DynamicVector<Type,TF> >::Type&
    DynamicVector<Type,TF>::operator/=( Other rhs )
 {
+   using blaze::assign;
+
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   return operator=( (*this) / rhs );
+   assign( *this, (*this) / rhs );
+   return *this;
 }
 //*************************************************************************************************
 

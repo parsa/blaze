@@ -1863,7 +1863,10 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, StaticMatrix<Type,M,N,SO> >::Type&
    StaticMatrix<Type,M,N,SO>::operator*=( Other rhs )
 {
-   return operator=( (*this) * rhs );
+   using blaze::assign;
+
+   assign( *this, (*this) * rhs );
+   return *this;
 }
 //*************************************************************************************************
 
@@ -1885,9 +1888,12 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, StaticMatrix<Type,M,N,SO> >::Type&
    StaticMatrix<Type,M,N,SO>::operator/=( Other rhs )
 {
+   using blaze::assign;
+
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   return operator=( (*this) / rhs );
+   assign( *this, (*this) / rhs );
+   return *this;
 }
 //*************************************************************************************************
 
@@ -4467,7 +4473,10 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, StaticMatrix<Type,M,N,true> >::Type&
    StaticMatrix<Type,M,N,true>::operator*=( Other rhs )
 {
-   return operator=( (*this) * rhs );
+   using blaze::assign;
+
+   assign( *this, (*this) * rhs );
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4490,9 +4499,12 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, StaticMatrix<Type,M,N,true> >::Type&
    StaticMatrix<Type,M,N,true>::operator/=( Other rhs )
 {
+   using blaze::assign;
+
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   return operator=( (*this) / rhs );
+   assign( *this, (*this) / rhs );
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
