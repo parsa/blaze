@@ -453,7 +453,7 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    }
    //**********************************************************************************************
 
-   //**Get function********************************************************************************
+   //**Load function*******************************************************************************
    /*!\brief Access to the intrinsic elements of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.

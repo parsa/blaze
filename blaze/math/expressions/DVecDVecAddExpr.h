@@ -448,7 +448,7 @@ class DVecDVecAddExpr : public DenseVector< DVecDVecAddExpr<VT1,VT2,TF>, TF >
    }
    //**********************************************************************************************
 
-   //**Get function********************************************************************************
+   //**Load function*******************************************************************************
    /*!\brief Access to the intrinsic elements of the vector.
    //
    // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.

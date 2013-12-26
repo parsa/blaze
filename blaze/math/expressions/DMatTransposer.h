@@ -227,7 +227,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    }
    //**********************************************************************************************
 
-   //**Get function********************************************************************************
+   //**Load function*******************************************************************************
    /*!\brief Aligned load of an intrinsic element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -863,7 +863,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    }
    //**********************************************************************************************
 
-   //**Get function********************************************************************************
+   //**Load function*******************************************************************************
    /*!\brief Aligned load of an intrinsic element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].

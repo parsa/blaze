@@ -209,7 +209,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    }
    //**********************************************************************************************
 
-   //**Get function********************************************************************************
+   //**Load function*******************************************************************************
    /*!\brief Aligned load of an intrinsic element of the vector.
    //
    // \param index Access index. The index must be smaller than the number of vector elements.
