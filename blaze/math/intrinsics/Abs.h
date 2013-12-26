@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/intrinsics/Functions.h
-//  \brief Header file for all intrinsic functions
+//  \file blaze/math/intrinsics/Abs.h
+//  \brief Header file for the intrinisc abs functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,82 +32,89 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_INTRINSICS_FUNCTIONS_H_
-#define _BLAZE_MATH_INTRINSICS_FUNCTIONS_H_
+#ifndef _BLAZE_MATH_INTRINSICS_ABS_H_
+#define _BLAZE_MATH_INTRINSICS_ABS_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/intrinsics/Abs.h>
-#include <blaze/math/intrinsics/Addition.h>
-#include <blaze/math/intrinsics/Division.h>
-#include <blaze/math/intrinsics/Load.h>
-#include <blaze/math/intrinsics/Loadu.h>
-#include <blaze/math/intrinsics/Multiplication.h>
-#include <blaze/math/intrinsics/Reduction.h>
-#include <blaze/math/intrinsics/Set.h>
-#include <blaze/math/intrinsics/Setzero.h>
-#include <blaze/math/intrinsics/Store.h>
-#include <blaze/math/intrinsics/Storeu.h>
-#include <blaze/math/intrinsics/Stream.h>
-#include <blaze/math/intrinsics/Subtraction.h>
+#include <blaze/math/intrinsics/BasicTypes.h>
+#include <blaze/system/Vectorization.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  INTRINSIC DOT PRODUCT
+//  INTRINSIC ABSOLUTE VALUE FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*\brief Dot product of two vectors of single precision floating point values.
+/*!\fn sse_int8_t abs( sse_int8_t )
+// \brief Absolute value of a vector of 8-bit integral values.
 // \ingroup intrinsics
 //
-// \param a The left-hand side operand.
-// \param b The right-hand side operand.
-// \return The result of the dot product.
+// \param a The vector of 8-bit integral values.
+// \return The absolute values.
 */
-// #if BLAZE_SSE4_MODE
-// inline float dot( sse_float_t a, sse_float_t b )
-// {
-//    return _mm_cvtss_f32( _mm_dp_ps( a.value, b.value, 0xF1 ) );
-// }
-// #elif BLAZE_SSE2_MODE
-// inline float dot( sse_float_t a, sse_float_t b )
-// {
-//    float array[4];
-//    store( array, a * b );
-//    return array[0] + array[1] + array[2] + array[3];
-// }
-// #endif
+#if BLAZE_AVX2_MODE
+inline sse_int8_t abs( const sse_int8_t& a )
+{
+   return _mm256_abs_epi8( a.value );
+}
+#elif BLAZE_SSSE3_MODE
+inline sse_int8_t abs( const sse_int8_t& a )
+{
+   return _mm_abs_epi8( a.value );
+}
+#endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*\brief Dot product of two vectors of double precision floating point values.
+/*!\fn sse_int16_t abs( sse_int16_t )
+// \brief Absolute value of a vector of 16-bit integral values.
 // \ingroup intrinsics
 //
-// \param a The left-hand side operand.
-// \param b The right-hand side operand.
-// \return The result of the dot product.
+// \param a The vector of 16-bit integral values.
+// \return The absolute values.
 */
-// #if BLAZE_SSE4_MODE
-// inline double dot( sse_double_t a, sse_double_t b )
-// {
-//    return _mm_cvtsd_f64( _mm_dp_pd( a.value, b.value, 0xF1 ) );
-// }
-// #elif BLAZE_SSE2_MODE
-// inline double dot( sse_double_t a, sse_double_t b )
-// {
-//    double array[2];
-//    store( array, a * b );
-//    return array[0] + array[1];
-// }
-// #endif
+#if BLAZE_AVX2_MODE
+inline sse_int16_t abs( const sse_int16_t& a )
+{
+   return _mm256_abs_epi16( a.value );
+}
+#elif BLAZE_SSSE3_MODE
+inline sse_int16_t abs( const sse_int16_t& a )
+{
+   return _mm_abs_epi16( a.value );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\fn sse_int32_t abs( sse_int32_t )
+// \brief Absolute value of a vector of 32-bit integral values.
+// \ingroup intrinsics
+//
+// \param a The vector of 32-bit integral values.
+// \return The absolute values.
+*/
+#if BLAZE_AVX2_MODE
+inline sse_int32_t abs( const sse_int32_t& a )
+{
+   return _mm256_abs_epi32( a.value );
+}
+#elif BLAZE_SSSE3_MODE
+inline sse_int32_t abs( const sse_int32_t& a )
+{
+   return _mm_abs_epi32( a.value );
+}
+#endif
 //*************************************************************************************************
 
 } // namespace blaze
