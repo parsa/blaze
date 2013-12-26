@@ -122,6 +122,7 @@ namespace blaze {}
 //          </li>
 //       </ul>
 //    </li>
+//    <li> \ref configuration_files </li>
 // </ul>
 */
 //*************************************************************************************************
@@ -183,8 +184,7 @@ namespace blaze {}
 // functionality for instance for the matrix/matrix multiplication.
 //
 // In order to further customize the \b Blaze library the header files in the <em>./blaze/config/</em>
-// subdirectory can be adapted. For instance, in the header file <em>./blaze/config/StorageOrder.h</em>
-// the default matrix storage order (i.e. row-major or column-major) can be specified.
+// subdirectory can be adapted. See section \ref configuration_files for more details.
 //
 // \n \subsection step_1_configuration_windows Windows User
 //
@@ -3492,12 +3492,12 @@ namespace blaze {}
 // are possible. Note however that the highest performance for a multiplication between two dense
 // matrices can be expected for two matrices with the same scalar element type.
 //
-// <center> Previous: \ref matrix_vector_multiplication &nbsp; &nbsp; Next: \ref vector_serialization </center>
+// \n <center> Previous: \ref matrix_vector_multiplication &nbsp; &nbsp; Next: \ref vector_serialization </center>
 */
 //*************************************************************************************************
 
 
-//**Vector serialization***************************************************************************
+//**Vector Serialization***************************************************************************
 /*!\page vector_serialization Vector Serialization
 //
 // <center> Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref matrix_serialization </center> \n
@@ -3590,15 +3590,15 @@ namespace blaze {}
 // In case an error is encountered during (de-)serialization, a \a std::runtime_exception is
 // thrown.
 //
-// <center> Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref matrix_serialization </center>
+// \n <center> Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref matrix_serialization </center>
 */
 //*************************************************************************************************
 
 
-//**Matrix serialization***************************************************************************
+//**Matrix Serialization***************************************************************************
 /*!\page matrix_serialization Matrix Serialization
 //
-// <center> Previous: \ref vector_serialization </center> \n
+// <center> Previous: \ref vector_serialization &nbsp; &nbsp; Next: \ref configuration_files </center> \n
 //
 // The serialization of matrices works in the same manner as the serialization of vectors. The
 // following example demonstrates the (de-)serialization of dense and sparse matrices:
@@ -3684,7 +3684,116 @@ namespace blaze {}
 // In case an error is encountered during (de-)serialization, a \a std::runtime_exception is
 // thrown.
 //
-// <center> Previous: \ref vector_serialization </center>
+// \n <center> Previous: \ref vector_serialization &nbsp; &nbsp; Next: \ref configuration_files </center> \n
+*/
+//*************************************************************************************************
+
+
+//**Configuration Files****************************************************************************
+/*!\page configuration_files Configuration Files
+//
+// <center> Previous: \ref matrix_serialization </center> \n
+//
+//
+// \tableofcontents
+//
+//
+// Sometimes it might necessary to adapt \b Blaze to specific requirements. For this purpose
+// \b Blaze provides several configuration files in the <em>./blaze/config/</em> subdirectory,
+// which provide ample opportunity to customize internal settings, behavior, and thresholds.
+// This chapter explains the most important of these configuration files.
+//
+//
+// \n \section transpose_flag Default Vector Storage
+// <hr>
+//
+// The \b Blaze default is that all vectors are created as column vectors (if not specified
+// explicitly):
+
+   \code
+   blaze::StaticVector<double,3UL> x;  // Creates a 3-dimensional static column vector
+   \endcode
+
+// The header file <em>./blaze/config/TransposeFlag.h</em> allows the configuration of the default
+// vector storage (i.e. the default transpose flag of the vectors). Via the \a defaultTransposeFlag
+// value the default transpose flag for all vector of the \b Blaze library can be specified:
+
+   \code
+   const bool defaultTransposeFlag = columnVector;
+   \endcode
+
+// Valid settings for the \a defaultTransposeFlag are blaze::rowVector and blaze::columnVector.
+//
+//
+// \n \section storage_order Default Matrix Storage
+// <hr>
+//
+// Matrices are by default created as row-major matrices:
+
+   \code
+   blaze::StaticMatrix<double,3UL,3UL>  A;  // Creates a 3x3 row-major matrix
+   \endcode
+
+// The header file <em>./blaze/config/StorageOrder.h</em> allows the configuration of the default
+// matrix storage order. Via the \a defaultStorageOrder value the default storage order for all
+// matrices of the \b Blaze library can be specified.
+
+   \code
+   const bool defaultStorageOrder = rowMajor;
+   \endcode
+
+// Valid settings for the \a defaultStorageOrder are blaze::rowMajor and blaze::columnMajor.
+//
+//
+// \n \section vectorization Vectorization
+//
+// In order to achieve maximum performance and to exploit the compute power of a target platform
+// the \b Blaze library attempts to vectorize all linear algebra operations by SSE, AVX, and/or
+// MIC intrinsics, depending on which instruction set is available. However, it is possible to
+// disable the vectorization entirely by the compile time switch in the configuration file
+// <em>./blaze/config/Vectorization.h</em>:
+
+   \code
+   #define BLAZE_USE_VECTORIZATION 1
+   \endcode
+
+// In case the switch is set to 1, vectorization is enabled and the \b Blaze library is allowed
+// to use intrinsics to speed up computations. In case the switch is set to 0, vectorization is
+// disabled entirely and the \b Blaze library chooses default, non-vectorized functionality for
+// the operations. Note that deactivating the vectorization may pose a severe performance
+// limitation for a large number of operations!
+//
+//
+// \n \section thresholds Thresholds
+//
+// \b Blaze provides several thresholds that can be adapted to the characteristics of the target
+// platform. For instance, the \a DMATDVECMULT_THRESHOLD specifies the threshold between the
+// application of the custom Blaze kernels for small dense matrix/dense vector multiplications
+// and the BLAS kernels for large multiplications. All thresholds are contained within the
+// configuration file <em>./blaze/config/Thresholds.h</em>.
+//
+//
+// \n \section streaming Streaming (Non-Temporal Stores)
+//
+// For vectors and matrices that don't fit into the cache anymore non-temporal stores can provide
+// a significant performance advantage of about 20%. However, this advantage is only in effect in
+// case the memory bandwidth of the target architecture is maxed out. If the target architecture's
+// memory bandwidth cannot be exhausted the use of non-temporal stores can decrease performance
+// instead of increasing it.
+//
+// The configuration file <em>./blaze/config/Streaming.h</em> provides a compile time switch that
+// can be used to (de-)activate streaming:
+
+   \code
+   const bool useStreaming = true;
+   \endcode
+
+// If \a useStreaming is set to \a true streaming is enabled, if it is set to \a false streaming
+// is disabled. It is recommended to consult the target architecture's white papers to decide
+// whether streaming is beneficial or hurtful for performance.
+//
+//
+// \n <center> Previous: \ref matrix_serialization </center>
 */
 //*************************************************************************************************
 
