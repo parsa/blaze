@@ -153,7 +153,7 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
    typedef typename SelectType< IsExpression<MT2>::value, const MT2, const MT2& >::Type  RightOperand;
    //**********************************************************************************************
 
-   //**ConstIterator class definition*************************************************************
+   //**ConstIterator class definition**************************************************************
    /*!\brief Iterator over the elements of the dense matrix.
    */
    class ConstIterator

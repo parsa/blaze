@@ -127,7 +127,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
    typedef typename SelectType< IsExpression<VT>::value, const VT, const VT& >::Type  Operand;
    //**********************************************************************************************
 
-   //**ConstIterator class definition*************************************************************
+   //**ConstIterator class definition**************************************************************
    /*!\brief Iterator over the elements of the dense vector.
    */
    class ConstIterator

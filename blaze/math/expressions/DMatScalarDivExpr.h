@@ -163,7 +163,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    typedef ST  RightOperand;
    //**********************************************************************************************
 
-   //**ConstIterator class definition*************************************************************
+   //**ConstIterator class definition**************************************************************
    /*!\brief Iterator over the elements of the dense matrix.
    */
    class ConstIterator

@@ -160,7 +160,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    typedef ST  RightOperand;
    //**********************************************************************************************
 
-   //**ConstIterator class definition*************************************************************
+   //**ConstIterator class definition**************************************************************
    /*!\brief Iterator over the elements of the dense vector.
    */
    class ConstIterator

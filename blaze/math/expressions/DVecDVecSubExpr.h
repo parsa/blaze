@@ -151,7 +151,7 @@ class DVecDVecSubExpr : public DenseVector< DVecDVecSubExpr<VT1,VT2,TF>, TF >
    typedef typename SelectType< IsExpression<VT2>::value, const VT2, const VT2& >::Type  RightOperand;
    //**********************************************************************************************
 
-   //**ConstIterator class definition*************************************************************
+   //**ConstIterator class definition**************************************************************
    /*!\brief Iterator over the elements of the dense vector.
    */
    class ConstIterator

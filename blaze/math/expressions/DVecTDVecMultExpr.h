@@ -187,7 +187,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    typedef typename SelectType< IsComputation<VT2>::value, const RT2, CT2 >::Type  RT;
    //**********************************************************************************************
 
-   //**ConstIterator class definition*************************************************************
+   //**ConstIterator class definition**************************************************************
    /*!\brief Iterator over the elements of the dense matrix.
    */
    class ConstIterator
