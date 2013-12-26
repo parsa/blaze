@@ -41,12 +41,14 @@
 //*************************************************************************************************
 
 #include <cmath>
-#include <limits>
 #include <blaze/math/traits/MathTrait.h>
+#include <blaze/util/constraints/Builtin.h>
 #include <blaze/util/constraints/FloatingPoint.h>
 #include <blaze/util/constraints/Integral.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsFloatingPoint.h>
+#include <blaze/util/typetraits/IsSigned.h>
 
 
 namespace blaze {
@@ -61,7 +63,7 @@ namespace blaze {
 /*!\name Mathematical utility functions */
 //@{
 template< typename T >
-inline const T sign( T a );
+inline int sign( T a );
 
 template< typename T >
 inline size_t digits( T a );
@@ -95,17 +97,21 @@ inline bool lessThan( T1 a, T2 b );
 /*!\brief Sign function.
 // \ingroup math
 //
-// \param a The signed value.
-// \return 1 if the value is greater than or equal to zero, -1 if the value is smaller than zero.
+// \param a The given value.
+// \return 1 if the value is greater than zero, 0 if it is zero, and -1 if it is smaller than zero.
 //
-// The sign function only works for signed built-in data types. The attempt to use unsigned data
-// types or user-defined class types will result in a compile time error.
+// The sign function only works for built-in data types. The attempt to use any user-defined class
+// type will result in a compile time error.
 */
 template< typename T >
-inline const T sign( T a )
+inline int sign( T a )
 {
-   BLAZE_STATIC_ASSERT( std::numeric_limits<T>::is_signed );
-   return ( a < T(0) )?( T(-1) ):( T(1) );
+   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( T );
+
+   if( IsSigned<T>::value || IsFloatingPoint<T>::value )
+      return ( T(0) < a ) - ( a < T(0) );
+   else
+      return ( T(0) < a );
 }
 //*************************************************************************************************
 
