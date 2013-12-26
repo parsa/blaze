@@ -84,7 +84,8 @@ struct IntrinsicTraitHelper<1UL>
           addition       = 1,
           subtraction    = 1,
           multiplication = 0,
-          division       = 0 };
+          division       = 0,
+          absoluteValue  = 1 };
 };
 #else
 template<>
@@ -95,7 +96,8 @@ struct IntrinsicTraitHelper<1UL>
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
           multiplication = 0,
-          division       = 0 };
+          division       = 0,
+          absoluteValue  = BLAZE_SSSE3_MODE };
 };
 #endif
 /*! \endcond */
@@ -116,7 +118,8 @@ struct IntrinsicTraitHelper<2UL>
           addition       = 1,
           subtraction    = 1,
           multiplication = 1,
-          division       = 0 };
+          division       = 0,
+          absoluteValue  = 1 };
 };
 #else
 template<>
@@ -127,7 +130,8 @@ struct IntrinsicTraitHelper<2UL>
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
           multiplication = BLAZE_SSE2_MODE,
-          division       = 0 };
+          division       = 0,
+          absoluteValue  = BLAZE_SSSE3_MODE };
 };
 #endif
 /*! \endcond */
@@ -148,7 +152,8 @@ struct IntrinsicTraitHelper<4UL>
           addition       = 1,
           subtraction    = 1,
           multiplication = 1,
-          division       = 1 };
+          division       = 1,
+          absoluteValue  = 0 };
 };
 #elif BLAZE_AVX2_MODE
 template<>
@@ -159,7 +164,8 @@ struct IntrinsicTraitHelper<4UL>
           addition       = 1,
           subtraction    = 1,
           multiplication = 1,
-          division       = 0 };
+          division       = 0,
+          absoluteValue  = 1 };
 };
 #else
 template<>
@@ -170,7 +176,8 @@ struct IntrinsicTraitHelper<4UL>
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
           multiplication = BLAZE_SSE4_MODE,
-          division       = 0 };
+          division       = 0,
+          absoluteValue  = BLAZE_SSSE3_MODE };
 };
 #endif
 /*! \endcond */
@@ -191,7 +198,8 @@ struct IntrinsicTraitHelper<8UL>
           addition       = 1,
           subtraction    = 0,
           multiplication = 0,
-          division       = 1 };
+          division       = 1,
+          absoluteValue  = 0 };
 };
 #elif BLAZE_AVX2_MODE
 template<>
@@ -202,7 +210,8 @@ struct IntrinsicTraitHelper<8UL>
           addition       = 1,
           subtraction    = 1,
           multiplication = 0,
-          division       = 0 };
+          division       = 0,
+          absoluteValue  = 0 };
 };
 #else
 template<>
@@ -213,7 +222,8 @@ struct IntrinsicTraitHelper<8UL>
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
           multiplication = 0,
-          division       = 0 };
+          division       = 0,
+          absoluteValue  = 0 };
 };
 #endif
 /*! \endcond */
@@ -242,7 +252,8 @@ struct IntrinsicTraitBase
           addition       = 0,
           subtraction    = 0,
           multiplication = 0,
-          division       = 0 };
+          division       = 0,
+          absoluteValue  = 0 };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -266,7 +277,8 @@ struct IntrinsicTraitBase<short>
           addition       = Helper::addition,
           subtraction    = Helper::subtraction,
           multiplication = Helper::multiplication,
-          division       = Helper::division };
+          division       = Helper::division,
+          absoluteValue  = Helper::absoluteValue };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -290,7 +302,8 @@ struct IntrinsicTraitBase<unsigned short>
           addition       = Helper::addition,
           subtraction    = Helper::subtraction,
           multiplication = Helper::multiplication,
-          division       = Helper::division };
+          division       = Helper::division,
+          absoluteValue  = Helper::absoluteValue };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -314,7 +327,8 @@ struct IntrinsicTraitBase<int>
           addition       = Helper::addition,
           subtraction    = Helper::subtraction,
           multiplication = Helper::multiplication,
-          division       = Helper::division };
+          division       = Helper::division,
+          absoluteValue  = Helper::absoluteValue };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -338,7 +352,8 @@ struct IntrinsicTraitBase<unsigned int>
           addition       = Helper::addition,
           subtraction    = Helper::subtraction,
           multiplication = Helper::multiplication,
-          division       = Helper::division };
+          division       = Helper::division,
+          absoluteValue  = Helper::absoluteValue };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -362,7 +377,8 @@ struct IntrinsicTraitBase<long>
           addition       = Helper::addition,
           subtraction    = Helper::subtraction,
           multiplication = Helper::multiplication,
-          division       = Helper::division };
+          division       = Helper::division,
+          absoluteValue  = Helper::absoluteValue };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -386,7 +402,8 @@ struct IntrinsicTraitBase<unsigned long>
           addition       = Helper::addition,
           subtraction    = Helper::subtraction,
           multiplication = Helper::multiplication,
-          division       = Helper::division };
+          division       = Helper::division,
+          absoluteValue  = Helper::absoluteValue };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -406,7 +423,8 @@ struct IntrinsicTraitBase<float>
           addition       = 1,
           subtraction    = 1,
           multiplication = 1,
-          division       = 1 };
+          division       = 1,
+          absoluteValue  = 0 };
 };
 #elif BLAZE_AVX_MODE
 template<>
@@ -418,7 +436,8 @@ struct IntrinsicTraitBase<float>
           addition       = 1,
           subtraction    = 1,
           multiplication = 1,
-          division       = 1 };
+          division       = 1,
+          absoluteValue  = 0 };
 };
 #else
 template<>
@@ -430,7 +449,8 @@ struct IntrinsicTraitBase<float>
           addition       = BLAZE_SSE_MODE,
           subtraction    = BLAZE_SSE_MODE,
           multiplication = BLAZE_SSE_MODE,
-          division       = BLAZE_SSE_MODE };
+          division       = BLAZE_SSE_MODE,
+          absoluteValue  = 0 };
 };
 #endif
 /*! \endcond */
@@ -452,7 +472,8 @@ struct IntrinsicTraitBase<double>
           addition       = 1,
           subtraction    = 1,
           multiplication = 1,
-          division       = 1 };
+          division       = 1,
+          absoluteValue  = 0 };
 };
 #elif BLAZE_AVX_MODE
 template<>
@@ -464,7 +485,8 @@ struct IntrinsicTraitBase<double>
           addition       = 1,
           subtraction    = 1,
           multiplication = 1,
-          division       = 1 };
+          division       = 1,
+          absoluteValue  = 0 };
 };
 #else
 template<>
@@ -476,7 +498,8 @@ struct IntrinsicTraitBase<double>
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
           multiplication = BLAZE_SSE2_MODE,
-          division       = BLAZE_SSE2_MODE };
+          division       = BLAZE_SSE2_MODE,
+          absoluteValue  = 0 };
 };
 #endif
 /*! \endcond */
@@ -498,7 +521,8 @@ struct IntrinsicTraitBase< complex<float> >
           addition       = 1,
           subtraction    = 1,
           multiplication = 0,
-          division       = 0 };
+          division       = 0,
+          absoluteValue  = 0 };
 
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 };
@@ -512,7 +536,8 @@ struct IntrinsicTraitBase< complex<float> >
           addition       = 1,
           subtraction    = 1,
           multiplication = 1,
-          division       = 0 };
+          division       = 0,
+          absoluteValue  = 0 };
 
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 };
@@ -526,7 +551,8 @@ struct IntrinsicTraitBase< complex<float> >
           addition       = BLAZE_SSE_MODE,
           subtraction    = BLAZE_SSE_MODE,
           multiplication = BLAZE_SSE3_MODE,
-          division       = 0 };
+          division       = 0,
+          absoluteValue  = 0 };
 
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 };
@@ -550,7 +576,8 @@ struct IntrinsicTraitBase< complex<double> >
           addition       = 1,
           subtraction    = 1,
           multiplication = 0,
-          division       = 0 };
+          division       = 0,
+          absoluteValue  = 0 };
 
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 };
@@ -564,7 +591,8 @@ struct IntrinsicTraitBase< complex<double> >
           addition       = 1,
           subtraction    = 1,
           multiplication = 1,
-          division       = 0 };
+          division       = 0,
+          absoluteValue  = 0 };
 
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 };
@@ -578,7 +606,8 @@ struct IntrinsicTraitBase< complex<double> >
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
           multiplication = BLAZE_SSE3_MODE,
-          division       = 0 };
+          division       = 0,
+          absoluteValue  = 0 };
 
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 };
