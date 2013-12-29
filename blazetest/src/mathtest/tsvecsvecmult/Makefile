@@ -45,8 +45,10 @@ OBJ = $(SRC:.cpp=.o)
 BIN = $(SRC:.cpp=)
 
 
-# Default rule
-default: $(BIN)
+# General rules
+default: all
+all: $(BIN)
+essential: VCaVCa
 
 
 # Build rules
@@ -77,4 +79,4 @@ endif
 
 
 # Setting the independent commands
-.PHONY: default clean
+.PHONY: default all essential clean

@@ -45,8 +45,10 @@ OBJ = $(SRC:.cpp=.o)
 BIN = $(SRC:.cpp=)
 
 
-# Default rule
-default: $(BIN)
+# General rules
+default: all
+all: $(BIN)
+essential: $(BIN)
 
 
 # Build rules

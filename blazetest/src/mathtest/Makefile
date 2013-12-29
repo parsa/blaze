@@ -32,341 +32,347 @@
 #==================================================================================================
 
 
-# Rules
-default: functions intrinsics \
-         staticvector hybridvector dynamicvector compressedvector \
-         staticmatrix dynamicmatrix compressedmatrix \
-         densesubvector sparsesubvector \
-         densesubmatrix sparsesubmatrix \
-         denserow densecolumn sparserow sparsecolumn \
-         dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
-         dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
-         dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \
-         dvecdveccross dvecsveccross svecdveccross svecsveccross \
-         tdvecdvecmult tdvecsvecmult tsvecdvecmult tsvecsvecmult \
-         dvectdvecmult dvectsvecmult svectdvecmult svectsvecmult \
-         dmatdvecmult dmatsvecmult smatdvecmult smatsvecmult \
-         tdvecdmatmult tsvecdmatmult tdvecsmatmult tsvecsmatmult \
-         dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
-         dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
-         dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
-         vectorserializer matrixserializer
+# General rules
+default: all
+
+all: functions intrinsics \
+     staticvector hybridvector dynamicvector compressedvector \
+     staticmatrix dynamicmatrix compressedmatrix \
+     densesubvector sparsesubvector \
+     densesubmatrix sparsesubmatrix \
+     denserow densecolumn sparserow sparsecolumn \
+     dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
+     dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
+     dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \
+     dvecdveccross dvecsveccross svecdveccross svecsveccross \
+     tdvecdvecmult tdvecsvecmult tsvecdvecmult tsvecsvecmult \
+     dvectdvecmult dvectsvecmult svectdvecmult svectsvecmult \
+     dmatdvecmult dmatsvecmult smatdvecmult smatsvecmult \
+     tdvecdmatmult tsvecdmatmult tdvecsmatmult tsvecsmatmult \
+     dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
+     dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
+     dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
+     vectorserializer matrixserializer
+
+essential: all
 
 functions:
 	@echo
 	@echo "Building the mathematical functions operation tests..."
-	@$(MAKE) --no-print-directory -C ./functions/
+	@$(MAKE) --no-print-directory -C ./functions $(MAKECMDGOALS)
 
 intrinsics:
 	@echo
 	@echo "Building the intrinsics operation tests..."
-	@$(MAKE) --no-print-directory -C ./intrinsics/
+	@$(MAKE) --no-print-directory -C ./intrinsics $(MAKECMDGOALS)
 
 staticvector:
 	@echo
 	@echo "Building the StaticVector tests..."
-	@$(MAKE) --no-print-directory -C ./staticvector/
+	@$(MAKE) --no-print-directory -C ./staticvector $(MAKECMDGOALS)
 
 hybridvector:
 	@echo
 	@echo "Building the HybridVector tests..."
-	@$(MAKE) --no-print-directory -C ./hybridvector/
+	@$(MAKE) --no-print-directory -C ./hybridvector $(MAKECMDGOALS)
 
 dynamicvector:
 	@echo
 	@echo "Building the DynamicVector tests..."
-	@$(MAKE) --no-print-directory -C ./dynamicvector/
+	@$(MAKE) --no-print-directory -C ./dynamicvector $(MAKECMDGOALS)
 
 compressedvector:
 	@echo
 	@echo "Building the CompressedVector tests..."
-	@$(MAKE) --no-print-directory -C ./compressedvector/
+	@$(MAKE) --no-print-directory -C ./compressedvector $(MAKECMDGOALS)
 
 staticmatrix:
 	@echo
 	@echo "Building the StaticMatrix tests..."
-	@$(MAKE) --no-print-directory -C ./staticmatrix/
+	@$(MAKE) --no-print-directory -C ./staticmatrix $(MAKECMDGOALS)
 
 dynamicmatrix:
 	@echo
 	@echo "Building the DynamicMatrix tests..."
-	@$(MAKE) --no-print-directory -C ./dynamicmatrix/
+	@$(MAKE) --no-print-directory -C ./dynamicmatrix $(MAKECMDGOALS)
 
 compressedmatrix:
 	@echo
 	@echo "Building the CompressedMatrix tests..."
-	@$(MAKE) --no-print-directory -C ./compressedmatrix/
+	@$(MAKE) --no-print-directory -C ./compressedmatrix $(MAKECMDGOALS)
 
 densesubvector:
 	@echo
 	@echo "Building the DenseSubvector tests..."
-	@$(MAKE) --no-print-directory -C ./densesubvector/
+	@$(MAKE) --no-print-directory -C ./densesubvector $(MAKECMDGOALS)
 
 sparsesubvector:
 	@echo
 	@echo "Building the SparseSubvector tests..."
-	@$(MAKE) --no-print-directory -C ./sparsesubvector/
+	@$(MAKE) --no-print-directory -C ./sparsesubvector $(MAKECMDGOALS)
 
 densesubmatrix:
 	@echo
 	@echo "Building the DenseSubmatrix tests..."
-	@$(MAKE) --no-print-directory -C ./densesubmatrix/
+	@$(MAKE) --no-print-directory -C ./densesubmatrix $(MAKECMDGOALS)
 
 sparsesubmatrix:
 	@echo
 	@echo "Building the SparseSubmatrix tests..."
-	@$(MAKE) --no-print-directory -C ./sparsesubmatrix/
+	@$(MAKE) --no-print-directory -C ./sparsesubmatrix $(MAKECMDGOALS)
 
 denserow:
 	@echo
 	@echo "Building the DenseRow tests..."
-	@$(MAKE) --no-print-directory -C ./denserow/
+	@$(MAKE) --no-print-directory -C ./denserow $(MAKECMDGOALS)
 
 densecolumn:
 	@echo
 	@echo "Building the DenseColumn tests..."
-	@$(MAKE) --no-print-directory -C ./densecolumn/
+	@$(MAKE) --no-print-directory -C ./densecolumn $(MAKECMDGOALS)
 
 sparserow:
 	@echo
 	@echo "Building the SparseRow tests..."
-	@$(MAKE) --no-print-directory -C ./sparserow/
+	@$(MAKE) --no-print-directory -C ./sparserow $(MAKECMDGOALS)
 
 sparsecolumn:
 	@echo
 	@echo "Building the SparseColumn tests..."
-	@$(MAKE) --no-print-directory -C ./sparsecolumn/
+	@$(MAKE) --no-print-directory -C ./sparsecolumn $(MAKECMDGOALS)
 
 dvecdvecadd:
 	@echo
 	@echo "Building the dense vector/dense vector addition tests..."
-	@$(MAKE) --no-print-directory -C ./dvecdvecadd/
+	@$(MAKE) --no-print-directory -C ./dvecdvecadd $(MAKECMDGOALS)
 
 dvecsvecadd:
 	@echo
 	@echo "Building the dense vector/sparse vector addition tests..."
-	@$(MAKE) --no-print-directory -C ./dvecsvecadd/
+	@$(MAKE) --no-print-directory -C ./dvecsvecadd $(MAKECMDGOALS)
 
 svecdvecadd:
 	@echo
 	@echo "Building the sparse vector/dense vector addition tests..."
-	@$(MAKE) --no-print-directory -C ./svecdvecadd/
+	@$(MAKE) --no-print-directory -C ./svecdvecadd $(MAKECMDGOALS)
 
 svecsvecadd:
 	@echo
 	@echo "Building the sparse vector/sparse vector addition tests..."
-	@$(MAKE) --no-print-directory -C ./svecsvecadd/
+	@$(MAKE) --no-print-directory -C ./svecsvecadd $(MAKECMDGOALS)
 
 dvecdvecsub:
 	@echo
 	@echo "Building the dense vector/dense vector subtraction tests..."
-	@$(MAKE) --no-print-directory -C ./dvecdvecsub/
+	@$(MAKE) --no-print-directory -C ./dvecdvecsub $(MAKECMDGOALS)
 
 dvecsvecsub:
 	@echo
 	@echo "Building the dense vector/sparse vector subtraction tests..."
-	@$(MAKE) --no-print-directory -C ./dvecsvecsub/
+	@$(MAKE) --no-print-directory -C ./dvecsvecsub $(MAKECMDGOALS)
 
 svecdvecsub:
 	@echo
 	@echo "Building the sparse vector/dense vector subtraction tests..."
-	@$(MAKE) --no-print-directory -C ./svecdvecsub/
+	@$(MAKE) --no-print-directory -C ./svecdvecsub $(MAKECMDGOALS)
 
 svecsvecsub:
 	@echo
 	@echo "Building the sparse vector/sparse vector subtraction tests..."
-	@$(MAKE) --no-print-directory -C ./svecsvecsub/
+	@$(MAKE) --no-print-directory -C ./svecsvecsub $(MAKECMDGOALS)
 
 dvecdvecmult:
 	@echo
 	@echo "Building the dense vector/dense vector multiplication tests..."
-	@$(MAKE) --no-print-directory -C ./dvecdvecmult/
+	@$(MAKE) --no-print-directory -C ./dvecdvecmult $(MAKECMDGOALS)
 
 dvecsvecmult:
 	@echo
 	@echo "Building the dense vector/sparse vector multiplication tests..."
-	@$(MAKE) --no-print-directory -C ./dvecsvecmult/
+	@$(MAKE) --no-print-directory -C ./dvecsvecmult $(MAKECMDGOALS)
 
 svecdvecmult:
 	@echo
 	@echo "Building the sparse vector/dense vector multiplication tests..."
-	@$(MAKE) --no-print-directory -C ./svecdvecmult/
+	@$(MAKE) --no-print-directory -C ./svecdvecmult $(MAKECMDGOALS)
 
 svecsvecmult:
 	@echo
 	@echo "Building the sparse vector/sparse vector multiplication tests..."
-	@$(MAKE) --no-print-directory -C ./svecsvecmult/
+	@$(MAKE) --no-print-directory -C ./svecsvecmult $(MAKECMDGOALS)
 
 dvecdveccross:
 	@echo
 	@echo "Building the dense vector/dense vector cross product tests..."
-	@$(MAKE) --no-print-directory -C ./dvecdveccross/
+	@$(MAKE) --no-print-directory -C ./dvecdveccross $(MAKECMDGOALS)
 
 dvecsveccross:
 	@echo
 	@echo "Building the dense vector/sparse vector cross product tests..."
-	@$(MAKE) --no-print-directory -C ./dvecsveccross/
+	@$(MAKE) --no-print-directory -C ./dvecsveccross $(MAKECMDGOALS)
 
 svecdveccross:
 	@echo
 	@echo "Building the sparse vector/dense vector cross product tests..."
-	@$(MAKE) --no-print-directory -C ./svecdveccross/
+	@$(MAKE) --no-print-directory -C ./svecdveccross $(MAKECMDGOALS)
 
 svecsveccross:
 	@echo
 	@echo "Building the sparse vector/sparse vector cross product tests..."
-	@$(MAKE) --no-print-directory -C ./svecsveccross/
+	@$(MAKE) --no-print-directory -C ./svecsveccross $(MAKECMDGOALS)
 
 tdvecdvecmult:
 	@echo
 	@echo "Building the dense vector/dense vector inner product tests..."
-	@$(MAKE) --no-print-directory -C ./tdvecdvecmult/
+	@$(MAKE) --no-print-directory -C ./tdvecdvecmult $(MAKECMDGOALS)
 
 tdvecsvecmult:
 	@echo
 	@echo "Building the dense vector/sparse vector inner product tests..."
-	@$(MAKE) --no-print-directory -C ./tdvecsvecmult/
+	@$(MAKE) --no-print-directory -C ./tdvecsvecmult $(MAKECMDGOALS)
 
 tsvecdvecmult:
 	@echo
 	@echo "Building the sparse vector/dense vector inner product tests..."
-	@$(MAKE) --no-print-directory -C ./tsvecdvecmult/
+	@$(MAKE) --no-print-directory -C ./tsvecdvecmult $(MAKECMDGOALS)
 
 tsvecsvecmult:
 	@echo
 	@echo "Building the sparse vector/sparse vector inner product tests..."
-	@$(MAKE) --no-print-directory -C ./tsvecsvecmult/
+	@$(MAKE) --no-print-directory -C ./tsvecsvecmult $(MAKECMDGOALS)
 
 dvectdvecmult:
 	@echo
 	@echo "Building the dense vector/dense vector outer product tests..."
-	@$(MAKE) --no-print-directory -C ./dvectdvecmult/
+	@$(MAKE) --no-print-directory -C ./dvectdvecmult $(MAKECMDGOALS)
 
 dvectsvecmult:
 	@echo
 	@echo "Building the dense vector/sparse vector outer product tests..."
-	@$(MAKE) --no-print-directory -C ./dvectsvecmult/
+	@$(MAKE) --no-print-directory -C ./dvectsvecmult $(MAKECMDGOALS)
 
 svectdvecmult:
 	@echo
 	@echo "Building the sparse vector/dense vector outer product tests..."
-	@$(MAKE) --no-print-directory -C ./svectdvecmult/
+	@$(MAKE) --no-print-directory -C ./svectdvecmult $(MAKECMDGOALS)
 
 svectsvecmult:
 	@echo
 	@echo "Building the sparse vector/sparse vector outer product tests..."
-	@$(MAKE) --no-print-directory -C ./svectsvecmult/
+	@$(MAKE) --no-print-directory -C ./svectsvecmult $(MAKECMDGOALS)
 
 dmatdvecmult:
 	@echo
 	@echo "Building the dense matrix/dense vector multiplication tests..."
-	@$(MAKE) --no-print-directory -C ./dmatdvecmult/
+	@$(MAKE) --no-print-directory -C ./dmatdvecmult $(MAKECMDGOALS)
 
 dmatsvecmult:
 	@echo
 	@echo "Building the dense matrix/sparse vector multiplication tests..."
-	@$(MAKE) --no-print-directory -C ./dmatsvecmult/
+	@$(MAKE) --no-print-directory -C ./dmatsvecmult $(MAKECMDGOALS)
 
 smatdvecmult:
 	@echo
 	@echo "Building the sparse matrix/dense vector multiplication tests..."
-	@$(MAKE) --no-print-directory -C ./smatdvecmult/
+	@$(MAKE) --no-print-directory -C ./smatdvecmult $(MAKECMDGOALS)
 
 smatsvecmult:
 	@echo
 	@echo "Building the sparse matrix/sparse vector multiplication tests..."
-	@$(MAKE) --no-print-directory -C ./smatsvecmult/
+	@$(MAKE) --no-print-directory -C ./smatsvecmult $(MAKECMDGOALS)
 
 tdvecdmatmult:
 	@echo
 	@echo "Building the dense vector/dense matrix multiplication tests..."
-	@$(MAKE) --no-print-directory -C ./tdvecdmatmult/
+	@$(MAKE) --no-print-directory -C ./tdvecdmatmult $(MAKECMDGOALS)
 
 tsvecdmatmult:
 	@echo
 	@echo "Building the sparse vector/dense matrix multiplication tests..."
-	@$(MAKE) --no-print-directory -C ./tsvecdmatmult/
+	@$(MAKE) --no-print-directory -C ./tsvecdmatmult $(MAKECMDGOALS)
 
 tdvecsmatmult:
 	@echo
 	@echo "Building the dense vector/sparse matrix multiplication tests..."
-	@$(MAKE) --no-print-directory -C ./tdvecsmatmult/
+	@$(MAKE) --no-print-directory -C ./tdvecsmatmult $(MAKECMDGOALS)
 
 tsvecsmatmult:
 	@echo
 	@echo "Building the sparse vector/sparse matrix multiplication tests..."
-	@$(MAKE) --no-print-directory -C ./tsvecsmatmult/
+	@$(MAKE) --no-print-directory -C ./tsvecsmatmult $(MAKECMDGOALS)
 
 dmatdmatadd:
 	@echo
 	@echo "Building the dense matrix/dense matrix addition tests..."
-	@$(MAKE) --no-print-directory -C ./dmatdmatadd/
+	@$(MAKE) --no-print-directory -C ./dmatdmatadd $(MAKECMDGOALS)
 
 dmatsmatadd:
 	@echo
 	@echo "Building the dense matrix/sparse matrix addition tests..."
-	@$(MAKE) --no-print-directory -C ./dmatsmatadd/
+	@$(MAKE) --no-print-directory -C ./dmatsmatadd $(MAKECMDGOALS)
 
 smatdmatadd:
 	@echo
 	@echo "Building the sparse matrix/dense matrix addition tests..."
-	@$(MAKE) --no-print-directory -C ./smatdmatadd/
+	@$(MAKE) --no-print-directory -C ./smatdmatadd $(MAKECMDGOALS)
 
 smatsmatadd:
 	@echo
 	@echo "Building the sparse matrix/sparse matrix addition tests..."
-	@$(MAKE) --no-print-directory -C ./smatsmatadd/
+	@$(MAKE) --no-print-directory -C ./smatsmatadd $(MAKECMDGOALS)
 
 dmatdmatsub:
 	@echo
 	@echo "Building the dense matrix/dense matrix subtraction tests..."
-	@$(MAKE) --no-print-directory -C ./dmatdmatsub/
+	@$(MAKE) --no-print-directory -C ./dmatdmatsub $(MAKECMDGOALS)
 
 dmatsmatsub:
 	@echo
 	@echo "Building the dense matrix/sparse matrix subtraction tests..."
-	@$(MAKE) --no-print-directory -C ./dmatsmatsub/
+	@$(MAKE) --no-print-directory -C ./dmatsmatsub $(MAKECMDGOALS)
 
 smatdmatsub:
 	@echo
 	@echo "Building the sparse matrix/dense matrix subtraction tests..."
-	@$(MAKE) --no-print-directory -C ./smatdmatsub/
+	@$(MAKE) --no-print-directory -C ./smatdmatsub $(MAKECMDGOALS)
 
 smatsmatsub:
 	@echo
 	@echo "Building the sparse matrix/sparse matrix subtraction tests..."
-	@$(MAKE) --no-print-directory -C ./smatsmatsub/
+	@$(MAKE) --no-print-directory -C ./smatsmatsub $(MAKECMDGOALS)
 
 dmatdmatmult:
 	@echo
 	@echo "Building the dense matrix/dense matrix multiplication tests..."
-	@$(MAKE) --no-print-directory -C ./dmatdmatmult/
+	@$(MAKE) --no-print-directory -C ./dmatdmatmult $(MAKECMDGOALS)
 
 dmatsmatmult:
 	@echo
 	@echo "Building the dense matrix/sparse matrix multiplication tests..."
-	@$(MAKE) --no-print-directory -C ./dmatsmatmult/
+	@$(MAKE) --no-print-directory -C ./dmatsmatmult $(MAKECMDGOALS)
 
 smatdmatmult:
 	@echo
 	@echo "Building the sparse matrix/dense matrix multiplication tests..."
-	@$(MAKE) --no-print-directory -C ./smatdmatmult/
+	@$(MAKE) --no-print-directory -C ./smatdmatmult $(MAKECMDGOALS)
 
 smatsmatmult:
 	@echo
 	@echo "Building the sparse matrix/sparse matrix multiplication tests..."
-	@$(MAKE) --no-print-directory -C ./smatsmatmult/
+	@$(MAKE) --no-print-directory -C ./smatsmatmult $(MAKECMDGOALS)
 
 vectorserializer:
 	@echo
 	@echo "Building the VectorSerializer class tests..."
-	@$(MAKE) --no-print-directory -C ./vectorserializer/
+	@$(MAKE) --no-print-directory -C ./vectorserializer $(MAKECMDGOALS)
 
 matrixserializer:
 	@echo
 	@echo "Building the MatrixSerializer class tests..."
-	@$(MAKE) --no-print-directory -C ./matrixserializer/
+	@$(MAKE) --no-print-directory -C ./matrixserializer $(MAKECMDGOALS)
 
+
+# Cleanup
 clean:
 	@$(MAKE) --no-print-directory -C ./functions clean
 	@$(MAKE) --no-print-directory -C ./intrinsics clean
@@ -435,7 +441,7 @@ clean:
 
 
 # Setting the independent commands
-.PHONY: default clean \
+.PHONY: default all essential clean \
         functions intrinsics \
         staticvector hybridvector dynamicvector compressedvector \
         staticmatrix dynamicmatrix compressedmatrix \

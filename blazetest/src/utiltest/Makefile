@@ -32,19 +32,25 @@
 #==================================================================================================
 
 
-# Rules
-default: uniqueptr uniquearray
+# General rules
+default: all
+
+all: uniqueptr uniquearray
+
+essential: uniqueptr uniquearray
 
 uniqueptr:
 	@echo
 	@echo "Building the unique pointer tests..."
-	@$(MAKE) --no-print-directory -C ./uniqueptr/
+	@$(MAKE) --no-print-directory -C ./uniqueptr $(MAKECMDGOALS)
 
 uniquearray:
 	@echo
 	@echo "Building the unique array tests..."
-	@$(MAKE) --no-print-directory -C ./uniquearray/
+	@$(MAKE) --no-print-directory -C ./uniquearray $(MAKECMDGOALS)
 
+
+# Cleanup
 clean:
 	@$(MAKE) --no-print-directory -C ./uniqueptr clean
 	@$(MAKE) --no-print-directory -C ./uniquearray clean

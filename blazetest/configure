@@ -186,8 +186,12 @@ cat > Makefile <<EOF
 #==================================================================================================
 
 
-# Build rules
-default: mathtest utiltest
+# General rules
+default: all
+
+all: mathtest utiltest
+
+essential: mathtest utiltest
 
 mathtest:
 	@echo
@@ -199,12 +203,14 @@ utiltest:
 	@\$(MAKE) --no-print-directory -C $INSTALL_PATH/src/utiltest
 	@echo
 
-# Clean up rules
+
+# Cleanup
 clean:
 	@echo "Cleaning up..."
 	@\$(MAKE) --no-print-directory -C $INSTALL_PATH/src/mathtest clean
 	@\$(MAKE) --no-print-directory -C $INSTALL_PATH/src/utiltest clean
 	@\$(RM) bin/* *.o
+
 
 # Setting the independent commands
 .PHONY: default clean
