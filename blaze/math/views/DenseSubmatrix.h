@@ -69,6 +69,7 @@
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/system/CacheSize.h>
+#include <blaze/system/Streaming.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/DisableIf.h>
@@ -1800,7 +1801,9 @@ inline typename EnableIf< typename DenseSubmatrix<MT,SO>::BLAZE_TEMPLATE Vectori
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   if( aligned_ && m_*n_ > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( &matrix_ ) )
+   if( useStreaming && aligned_ &&
+       m_*n_ > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) &&
+       !(~rhs).isAliased( &matrix_ ) )
    {
       for( size_t i=0UL; i<m_; ++i )
          for( size_t j=0UL; j<n_; j+=IT::size )
@@ -1812,14 +1815,15 @@ inline typename EnableIf< typename DenseSubmatrix<MT,SO>::BLAZE_TEMPLATE Vectori
       BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jend, "Invalid end calculation" );
 
       for( size_t i=0UL; i<m_; ++i ) {
+         typename MT2::ConstIterator it( (~rhs).begin(i) );
          for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
-            matrix_.storeu( row_+i, column_+j             , (~rhs).load(i,j             ) );
-            matrix_.storeu( row_+i, column_+j+IT::size    , (~rhs).load(i,j+IT::size    ) );
-            matrix_.storeu( row_+i, column_+j+IT::size*2UL, (~rhs).load(i,j+IT::size*2UL) );
-            matrix_.storeu( row_+i, column_+j+IT::size*3UL, (~rhs).load(i,j+IT::size*3UL) );
+            matrix_.storeu( row_+i, column_+j             , it.load() ); it += IT::size;
+            matrix_.storeu( row_+i, column_+j+IT::size    , it.load() ); it += IT::size;
+            matrix_.storeu( row_+i, column_+j+IT::size*2UL, it.load() ); it += IT::size;
+            matrix_.storeu( row_+i, column_+j+IT::size*3UL, it.load() ); it += IT::size;
          }
-         for( size_t j=jend; j<n_; j+=IT::size ) {
-            storeu( i, j, (~rhs).load(i,j) );
+         for( size_t j=jend; j<n_; j+=IT::size, it+=IT::size ) {
+            storeu( i, j, it.load() );
          }
       }
    }
@@ -1977,14 +1981,15 @@ inline typename EnableIf< typename DenseSubmatrix<MT,SO>::BLAZE_TEMPLATE Vectori
    BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jend, "Invalid end calculation" );
 
    for( size_t i=0UL; i<m_; ++i ) {
+      typename MT2::ConstIterator it( (~rhs).begin(i) );
       for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
-         matrix_.storeu( row_+i, column_+j             , load(i,j             ) + (~rhs).load(i,j             ) );
-         matrix_.storeu( row_+i, column_+j+IT::size    , load(i,j+IT::size    ) + (~rhs).load(i,j+IT::size    ) );
-         matrix_.storeu( row_+i, column_+j+IT::size*2UL, load(i,j+IT::size*2UL) + (~rhs).load(i,j+IT::size*2UL) );
-         matrix_.storeu( row_+i, column_+j+IT::size*3UL, load(i,j+IT::size*3UL) + (~rhs).load(i,j+IT::size*3UL) );
+         matrix_.storeu( row_+i, column_+j             , load(i,j             ) + it.load() ); it += IT::size;
+         matrix_.storeu( row_+i, column_+j+IT::size    , load(i,j+IT::size    ) + it.load() ); it += IT::size;
+         matrix_.storeu( row_+i, column_+j+IT::size*2UL, load(i,j+IT::size*2UL) + it.load() ); it += IT::size;
+         matrix_.storeu( row_+i, column_+j+IT::size*3UL, load(i,j+IT::size*3UL) + it.load() ); it += IT::size;
       }
-      for( size_t j=jend; j<n_; j+=IT::size ) {
-         storeu( i, j, load(i,j) + (~rhs).load(i,j) );
+      for( size_t j=jend; j<n_; j+=IT::size, it+=IT::size ) {
+         storeu( i, j, load(i,j) + it.load() );
       }
    }
 }
@@ -2141,14 +2146,15 @@ inline typename EnableIf< typename DenseSubmatrix<MT,SO>::BLAZE_TEMPLATE Vectori
    BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jend, "Invalid end calculation" );
 
    for( size_t i=0UL; i<m_; ++i ) {
+      typename MT2::ConstIterator it( (~rhs).begin(i) );
       for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
-         matrix_.storeu( row_+i, column_+j             , load(i,j             ) - (~rhs).load(i,j             ) );
-         matrix_.storeu( row_+i, column_+j+IT::size    , load(i,j+IT::size    ) - (~rhs).load(i,j+IT::size    ) );
-         matrix_.storeu( row_+i, column_+j+IT::size*2UL, load(i,j+IT::size*2UL) - (~rhs).load(i,j+IT::size*2UL) );
-         matrix_.storeu( row_+i, column_+j+IT::size*3UL, load(i,j+IT::size*3UL) - (~rhs).load(i,j+IT::size*3UL) );
+         matrix_.storeu( row_+i, column_+j             , load(i,j             ) - it.load() ); it += IT::size;
+         matrix_.storeu( row_+i, column_+j+IT::size    , load(i,j+IT::size    ) - it.load() ); it += IT::size;
+         matrix_.storeu( row_+i, column_+j+IT::size*2UL, load(i,j+IT::size*2UL) - it.load() ); it += IT::size;
+         matrix_.storeu( row_+i, column_+j+IT::size*3UL, load(i,j+IT::size*3UL) - it.load() ); it += IT::size;
       }
-      for( size_t j=jend; j<n_; j+=IT::size ) {
-         storeu( i, j, load(i,j) - (~rhs).load(i,j) );
+      for( size_t j=jend; j<n_; j+=IT::size, it+=IT::size ) {
+         storeu( i, j, load(i,j) - it.load() );
       }
    }
 }
@@ -3764,7 +3770,9 @@ inline typename EnableIf< typename DenseSubmatrix<MT,true>::BLAZE_TEMPLATE Vecto
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   if( aligned_ && m_*n_ > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( &matrix_ ) )
+   if( useStreaming && aligned_ &&
+       m_*n_ > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) &&
+       !(~rhs).isAliased( &matrix_ ) )
    {
       for( size_t j=0UL; j<n_; ++j )
          for( size_t i=0UL; i<m_; i+=IT::size )
@@ -3776,14 +3784,15 @@ inline typename EnableIf< typename DenseSubmatrix<MT,true>::BLAZE_TEMPLATE Vecto
       BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
 
       for( size_t j=0UL; j<n_; ++j ) {
+         typename MT2::ConstIterator it( (~rhs).begin(j) );
          for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-            matrix_.storeu( row_+i             , column_+j, (~rhs).load(i             ,j) );
-            matrix_.storeu( row_+i+IT::size    , column_+j, (~rhs).load(i+IT::size    ,j) );
-            matrix_.storeu( row_+i+IT::size*2UL, column_+j, (~rhs).load(i+IT::size*2UL,j) );
-            matrix_.storeu( row_+i+IT::size*3UL, column_+j, (~rhs).load(i+IT::size*3UL,j) );
+            matrix_.storeu( row_+i             , column_+j, it.load() ); it += IT::size;
+            matrix_.storeu( row_+i+IT::size    , column_+j, it.load() ); it += IT::size;
+            matrix_.storeu( row_+i+IT::size*2UL, column_+j, it.load() ); it += IT::size;
+            matrix_.storeu( row_+i+IT::size*3UL, column_+j, it.load() ); it += IT::size;
          }
-         for( size_t i=iend; i<m_; i+=IT::size ) {
-            storeu( i, j, (~rhs).load(i,j) );
+         for( size_t i=iend; i<m_; i+=IT::size, it+=IT::size ) {
+            storeu( i, j, it.load() );
          }
       }
    }
@@ -3946,14 +3955,15 @@ inline typename EnableIf< typename DenseSubmatrix<MT,true>::BLAZE_TEMPLATE Vecto
    BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
 
    for( size_t j=0UL; j<n_; ++j ) {
+      typename MT2::ConstIterator it( (~rhs).begin(j) );
       for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-         matrix_.storeu( row_+i             , column_+j, load(i             ,j) + (~rhs).load(i             ,j) );
-         matrix_.storeu( row_+i+IT::size    , column_+j, load(i+IT::size    ,j) + (~rhs).load(i+IT::size    ,j) );
-         matrix_.storeu( row_+i+IT::size*2UL, column_+j, load(i+IT::size*2UL,j) + (~rhs).load(i+IT::size*2UL,j) );
-         matrix_.storeu( row_+i+IT::size*3UL, column_+j, load(i+IT::size*3UL,j) + (~rhs).load(i+IT::size*3UL,j) );
+         matrix_.storeu( row_+i             , column_+j, load(i             ,j) + it.load() ); it += IT::size;
+         matrix_.storeu( row_+i+IT::size    , column_+j, load(i+IT::size    ,j) + it.load() ); it += IT::size;
+         matrix_.storeu( row_+i+IT::size*2UL, column_+j, load(i+IT::size*2UL,j) + it.load() ); it += IT::size;
+         matrix_.storeu( row_+i+IT::size*3UL, column_+j, load(i+IT::size*3UL,j) + it.load() ); it += IT::size;
       }
-      for( size_t i=iend; i<m_; i+=IT::size ) {
-         storeu( i, j, load(i,j) + (~rhs).load(i,j) );
+      for( size_t i=iend; i<m_; i+=IT::size, it+=IT::size ) {
+         storeu( i, j, load(i,j) + it.load() );
       }
    }
 }
@@ -4115,14 +4125,15 @@ inline typename EnableIf< typename DenseSubmatrix<MT,true>::BLAZE_TEMPLATE Vecto
    BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
 
    for( size_t j=0UL; j<n_; ++j ) {
+      typename MT2::ConstIterator it( (~rhs).begin(j) );
       for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-         matrix_.storeu( row_+i             , column_+j, load(i             ,j) - (~rhs).load(i             ,j) );
-         matrix_.storeu( row_+i+IT::size    , column_+j, load(i+IT::size    ,j) - (~rhs).load(i+IT::size    ,j) );
-         matrix_.storeu( row_+i+IT::size*2UL, column_+j, load(i+IT::size*2UL,j) - (~rhs).load(i+IT::size*2UL,j) );
-         matrix_.storeu( row_+i+IT::size*3UL, column_+j, load(i+IT::size*3UL,j) - (~rhs).load(i+IT::size*3UL,j) );
+         matrix_.storeu( row_+i             , column_+j, load(i             ,j) - it.load() ); it += IT::size;
+         matrix_.storeu( row_+i+IT::size    , column_+j, load(i+IT::size    ,j) - it.load() ); it += IT::size;
+         matrix_.storeu( row_+i+IT::size*2UL, column_+j, load(i+IT::size*2UL,j) - it.load() ); it += IT::size;
+         matrix_.storeu( row_+i+IT::size*3UL, column_+j, load(i+IT::size*3UL,j) - it.load() ); it += IT::size;
       }
-      for( size_t i=iend; i<m_; i+=IT::size ) {
-         storeu( i, j, load(i,j) - (~rhs).load(i,j) );
+      for( size_t i=iend; i<m_; i+=IT::size, it+=IT::size ) {
+         storeu( i, j, load(i,j) - it.load() );
       }
    }
 }

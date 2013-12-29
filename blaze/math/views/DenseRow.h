@@ -60,6 +60,7 @@
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/system/CacheSize.h>
+#include <blaze/system/Streaming.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/DisableIf.h>
@@ -1276,7 +1277,7 @@ inline typename EnableIf< typename DenseRow<MT,SO>::BLAZE_TEMPLATE VectorizedAss
 
    const size_t columns( size() );
 
-   if( columns > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( &matrix_ ) )
+   if( useStreaming && columns > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( &matrix_ ) )
    {
       for( size_t j=0UL; j<columns; j+=IT::size ) {
          matrix_.stream( row_, j, (~rhs).load(j) );
@@ -1284,17 +1285,18 @@ inline typename EnableIf< typename DenseRow<MT,SO>::BLAZE_TEMPLATE VectorizedAss
    }
    else
    {
-      BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (IT::size*4UL) ) ) == ( columns & size_t(-IT::size*4) ), "Invalid end calculation" );
       const size_t jend( columns & size_t(-IT::size*4) );
+      BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (IT::size*4UL) ) ) == jend, "Invalid end calculation" );
 
+      typename VT::ConstIterator it( (~rhs).begin() );
       for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
-         matrix_.store( row_, j             , (~rhs).load(j             ) );
-         matrix_.store( row_, j+IT::size    , (~rhs).load(j+IT::size    ) );
-         matrix_.store( row_, j+IT::size*2UL, (~rhs).load(j+IT::size*2UL) );
-         matrix_.store( row_, j+IT::size*3UL, (~rhs).load(j+IT::size*3UL) );
+         matrix_.store( row_, j             , it.load() ); it += IT::size;
+         matrix_.store( row_, j+IT::size    , it.load() ); it += IT::size;
+         matrix_.store( row_, j+IT::size*2UL, it.load() ); it += IT::size;
+         matrix_.store( row_, j+IT::size*3UL, it.load() ); it += IT::size;
       }
-      for( size_t j=jend; j<columns; j+=IT::size ) {
-         matrix_.store( row_, j, (~rhs).load(j) );
+      for( size_t j=jend; j<columns; j+=IT::size, it+=IT::size ) {
+         matrix_.store( row_, j, it.load() );
       }
    }
 }
@@ -1378,17 +1380,18 @@ inline typename EnableIf< typename DenseRow<MT,SO>::BLAZE_TEMPLATE VectorizedAdd
 
    const size_t columns( size() );
 
-   BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (IT::size*4UL) ) ) == ( columns & size_t(-IT::size*4) ), "Invalid end calculation" );
    const size_t jend( columns & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (IT::size*4UL) ) ) == jend, "Invalid end calculation" );
 
+   typename VT::ConstIterator it( (~rhs).begin() );
    for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
-      matrix_.store( row_, j             , matrix_.load(row_,j             ) + (~rhs).load(j             ) );
-      matrix_.store( row_, j+IT::size    , matrix_.load(row_,j+IT::size    ) + (~rhs).load(j+IT::size    ) );
-      matrix_.store( row_, j+IT::size*2UL, matrix_.load(row_,j+IT::size*2UL) + (~rhs).load(j+IT::size*2UL) );
-      matrix_.store( row_, j+IT::size*3UL, matrix_.load(row_,j+IT::size*3UL) + (~rhs).load(j+IT::size*3UL) );
+      matrix_.store( row_, j             , matrix_.load(row_,j             ) + it.load() ); it += IT::size;
+      matrix_.store( row_, j+IT::size    , matrix_.load(row_,j+IT::size    ) + it.load() ); it += IT::size;
+      matrix_.store( row_, j+IT::size*2UL, matrix_.load(row_,j+IT::size*2UL) + it.load() ); it += IT::size;
+      matrix_.store( row_, j+IT::size*3UL, matrix_.load(row_,j+IT::size*3UL) + it.load() ); it += IT::size;
    }
-   for( size_t j=jend; j<columns; j+=IT::size ) {
-      matrix_.store( row_, j, matrix_.load(row_,j) + (~rhs).load(j) );
+   for( size_t j=jend; j<columns; j+=IT::size, it+=IT::size ) {
+      matrix_.store( row_, j, matrix_.load(row_,j) + it.load() );
    }
 }
 //*************************************************************************************************
@@ -1471,17 +1474,18 @@ inline typename EnableIf< typename DenseRow<MT,SO>::BLAZE_TEMPLATE VectorizedSub
 
    const size_t columns( size() );
 
-   BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (IT::size*4UL) ) ) == ( columns & size_t(-IT::size*4) ), "Invalid end calculation" );
    const size_t jend( columns & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (IT::size*4UL) ) ) == jend, "Invalid end calculation" );
 
+   typename VT::ConstIterator it( (~rhs).begin() );
    for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
-      matrix_.store( row_, j             , matrix_.load(row_,j             ) - (~rhs).load(j             ) );
-      matrix_.store( row_, j+IT::size    , matrix_.load(row_,j+IT::size    ) - (~rhs).load(j+IT::size    ) );
-      matrix_.store( row_, j+IT::size*2UL, matrix_.load(row_,j+IT::size*2UL) - (~rhs).load(j+IT::size*2UL) );
-      matrix_.store( row_, j+IT::size*3UL, matrix_.load(row_,j+IT::size*3UL) - (~rhs).load(j+IT::size*3UL) );
+      matrix_.store( row_, j             , matrix_.load(row_,j             ) - it.load() ); it += IT::size;
+      matrix_.store( row_, j+IT::size    , matrix_.load(row_,j+IT::size    ) - it.load() ); it += IT::size;
+      matrix_.store( row_, j+IT::size*2UL, matrix_.load(row_,j+IT::size*2UL) - it.load() ); it += IT::size;
+      matrix_.store( row_, j+IT::size*3UL, matrix_.load(row_,j+IT::size*3UL) - it.load() ); it += IT::size;
    }
-   for( size_t j=jend; j<columns; j+=IT::size ) {
-      matrix_.store( row_, j, matrix_.load(row_,j) - (~rhs).load(j) );
+   for( size_t j=jend; j<columns; j+=IT::size, it+=IT::size ) {
+      matrix_.store( row_, j, matrix_.load(row_,j) - it.load() );
    }
 }
 //*************************************************************************************************
@@ -1564,17 +1568,18 @@ inline typename EnableIf< typename DenseRow<MT,SO>::BLAZE_TEMPLATE VectorizedMul
 
    const size_t columns( size() );
 
-   BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (IT::size*4UL) ) ) == ( columns & size_t(-IT::size*4) ), "Invalid end calculation" );
    const size_t jend( columns & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (IT::size*4UL) ) ) == jend, "Invalid end calculation" );
 
+   typename VT::ConstIterator it( (~rhs).begin() );
    for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
-      matrix_.store( row_, j             , matrix_.load(row_,j             ) * (~rhs).load(j             ) );
-      matrix_.store( row_, j+IT::size    , matrix_.load(row_,j+IT::size    ) * (~rhs).load(j+IT::size    ) );
-      matrix_.store( row_, j+IT::size*2UL, matrix_.load(row_,j+IT::size*2UL) * (~rhs).load(j+IT::size*2UL) );
-      matrix_.store( row_, j+IT::size*3UL, matrix_.load(row_,j+IT::size*3UL) * (~rhs).load(j+IT::size*3UL) );
+      matrix_.store( row_, j             , matrix_.load(row_,j             ) * it.load() ); it += IT::size;
+      matrix_.store( row_, j+IT::size    , matrix_.load(row_,j+IT::size    ) * it.load() ); it += IT::size;
+      matrix_.store( row_, j+IT::size*2UL, matrix_.load(row_,j+IT::size*2UL) * it.load() ); it += IT::size;
+      matrix_.store( row_, j+IT::size*3UL, matrix_.load(row_,j+IT::size*3UL) * it.load() ); it += IT::size;
    }
-   for( size_t j=jend; j<columns; j+=IT::size ) {
-      matrix_.store( row_, j, matrix_.load(row_,j) * (~rhs).load(j) );
+   for( size_t j=jend; j<columns; j+=IT::size, it+=IT::size ) {
+      matrix_.store( row_, j, matrix_.load(row_,j) * it.load() );
    }
 }
 //*************************************************************************************************
