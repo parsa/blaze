@@ -37,34 +37,34 @@ PATH_SMATDVECMULT=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running sparse matrix/dense vector multiplication tests...";
 
-$PATH_SMATDVECMULT/MCaV2a; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCaV2b; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCaV3a; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCaV3b; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCaV4a; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCaV4b; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCaV5a; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCaV5b; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCaV6a; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCaV6b; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCaVDa; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCaVDb; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCaVHa; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCaVHb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_SMATDVECMULT/MCaV2a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCaV2b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCaV3a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCaV3b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCaV4a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCaV4b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCaV5a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCaV5b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCaV6a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCaV6b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCaVDa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCaVDb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCaVHa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCaVHb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_SMATDVECMULT/MCbV2a; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCbV2b; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCbV3a; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCbV3b; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCbV4a; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCbV4b; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCbV5a; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCbV5b; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCbV6a; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCbV6b; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCbVDa; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCbVDb; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCbVHa; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDVECMULT/MCbVHb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_SMATDVECMULT/MCbV2a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCbV2b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCbV3a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCbV3b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCbV4a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCbV4b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCbV5a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCbV5b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCbV6a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCbV6b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCbVDa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCbVDb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCbVHa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/MCbVHb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_SMATDVECMULT/AliasingTest; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_SMATDVECMULT/AliasingTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

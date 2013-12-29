@@ -37,46 +37,46 @@ PATH_DVECDVECCROSS=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running dense vector/dense vector cross product tests...";
 
-$PATH_DVECDVECCROSS/V3aV3a; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/V3aV3b; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/V3aVDa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/V3aVDb; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/V3aVHa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/V3aVHb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DVECDVECCROSS/V3aV3a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/V3aV3b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/V3aVDa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/V3aVDb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/V3aVHa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/V3aVHb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_DVECDVECCROSS/V3bV3a; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/V3bV3b; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/V3bVDa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/V3bVDb; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/V3bVHa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/V3bVHb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DVECDVECCROSS/V3bV3a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/V3bV3b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/V3bVDa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/V3bVDb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/V3bVHa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/V3bVHb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_DVECDVECCROSS/VDaV3a; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/VDaV3b; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/VDaVDa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/VDaVDb; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/VDaVHa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/VDaVHb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DVECDVECCROSS/VDaV3a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/VDaV3b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/VDaVDa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/VDaVDb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/VDaVHa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/VDaVHb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_DVECDVECCROSS/VDbV3a; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/VDbV3b; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/VDbVDa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/VDbVDb; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/VDbVHa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/VDbVHb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DVECDVECCROSS/VDbV3a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/VDbV3b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/VDbVDa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/VDbVDb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/VDbVHa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/VDbVHb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_DVECDVECCROSS/VHaV3a; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/VHaV3b; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/VHaVDa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/VHaVDb; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/VHaVHa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/VHaVHb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DVECDVECCROSS/VHaV3a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/VHaV3b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/VHaVDa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/VHaVDb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/VHaVHa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/VHaVHb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_DVECDVECCROSS/VHbV3a; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/VHbV3b; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/VHbVDa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/VHbVDb; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/VHbVHa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECDVECCROSS/VHbVHb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DVECDVECCROSS/VHbV3a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/VHbV3b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/VHbVDa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/VHbVDb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/VHbVHa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECDVECCROSS/VHbVHb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_DVECDVECCROSS/AliasingTest; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DVECDVECCROSS/AliasingTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

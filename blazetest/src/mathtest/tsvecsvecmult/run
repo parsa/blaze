@@ -37,7 +37,7 @@ PATH_TSVECSVECMULT=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running sparse vector/sparse vector inner product tests...";
 
-$PATH_TSVECSVECMULT/VCaVCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_TSVECSVECMULT/VCaVCb; if [ $? != 0 ]; then exit 1; fi
-$PATH_TSVECSVECMULT/VCbVCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_TSVECSVECMULT/VCbVCb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_TSVECSVECMULT/VCaVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_TSVECSVECMULT/VCaVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_TSVECSVECMULT/VCbVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_TSVECSVECMULT/VCbVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

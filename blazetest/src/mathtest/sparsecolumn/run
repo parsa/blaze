@@ -37,4 +37,4 @@ PATH_SPARSECOLUMN=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running SparseColumn tests..."
 
-$PATH_SPARSECOLUMN/ClassTest; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_SPARSECOLUMN/ClassTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

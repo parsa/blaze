@@ -37,9 +37,9 @@ PATH_TSVECSMATMULT=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running sparse vector/sparse matrix multiplication tests...";
 
-$PATH_TSVECSMATMULT/VCaMCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_TSVECSMATMULT/VCaMCb; if [ $? != 0 ]; then exit 1; fi
-$PATH_TSVECSMATMULT/VCbMCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_TSVECSMATMULT/VCbMCb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_TSVECSMATMULT/VCaMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_TSVECSMATMULT/VCaMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_TSVECSMATMULT/VCbMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_TSVECSMATMULT/VCbMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_TSVECSMATMULT/AliasingTest; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_TSVECSMATMULT/AliasingTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

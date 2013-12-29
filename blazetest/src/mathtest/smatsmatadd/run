@@ -37,9 +37,9 @@ PATH_SMATSMATADD=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running sparse matrix/sparse matrix addition tests...";
 
-$PATH_SMATSMATADD/MCaMCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATSMATADD/MCaMCb; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATSMATADD/MCbMCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATSMATADD/MCbMCb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_SMATSMATADD/MCaMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATSMATADD/MCaMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATSMATADD/MCbMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATSMATADD/MCbMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_SMATSMATADD/AliasingTest; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_SMATSMATADD/AliasingTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

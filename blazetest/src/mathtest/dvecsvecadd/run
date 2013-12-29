@@ -37,39 +37,39 @@ PATH_DVECSVECADD=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running dense vector/sparse vector addition tests..."
 
-$PATH_DVECSVECADD/V2aVCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECSVECADD/V2aVCb; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECSVECADD/V2bVCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECSVECADD/V2bVCb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DVECSVECADD/V2aVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECSVECADD/V2aVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECSVECADD/V2bVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECSVECADD/V2bVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_DVECSVECADD/V3aVCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECSVECADD/V3aVCb; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECSVECADD/V3bVCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECSVECADD/V3bVCb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DVECSVECADD/V3aVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECSVECADD/V3aVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECSVECADD/V3bVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECSVECADD/V3bVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_DVECSVECADD/V4aVCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECSVECADD/V4aVCb; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECSVECADD/V4bVCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECSVECADD/V4bVCb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DVECSVECADD/V4aVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECSVECADD/V4aVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECSVECADD/V4bVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECSVECADD/V4bVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_DVECSVECADD/V5aVCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECSVECADD/V5aVCb; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECSVECADD/V5bVCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECSVECADD/V5bVCb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DVECSVECADD/V5aVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECSVECADD/V5aVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECSVECADD/V5bVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECSVECADD/V5bVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_DVECSVECADD/V6aVCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECSVECADD/V6aVCb; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECSVECADD/V6bVCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECSVECADD/V6bVCb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DVECSVECADD/V6aVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECSVECADD/V6aVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECSVECADD/V6bVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECSVECADD/V6bVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_DVECSVECADD/VDaVCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECSVECADD/VDaVCb; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECSVECADD/VDbVCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECSVECADD/VDbVCb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DVECSVECADD/VDaVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECSVECADD/VDaVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECSVECADD/VDbVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECSVECADD/VDbVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_DVECSVECADD/VHaVCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECSVECADD/VHaVCb; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECSVECADD/VHbVCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DVECSVECADD/VHbVCb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DVECSVECADD/VHaVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECSVECADD/VHaVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECSVECADD/VHbVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECSVECADD/VHbVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_DVECSVECADD/AliasingTest; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DVECSVECADD/AliasingTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

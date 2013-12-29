@@ -37,4 +37,4 @@ PATH_COMPRESSEDVECTOR=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running CompressedVector tests..."
 
-$PATH_COMPRESSEDVECTOR/ClassTest; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_COMPRESSEDVECTOR/ClassTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

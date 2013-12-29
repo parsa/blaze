@@ -37,4 +37,4 @@ PATH_DYNAMICVECTOR=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running DynamicVector tests..."
 
-$PATH_DYNAMICVECTOR/ClassTest; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DYNAMICVECTOR/ClassTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

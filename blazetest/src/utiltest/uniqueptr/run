@@ -37,4 +37,4 @@ UNIQUEPTR_PATH=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running UniquePtr tests..."
 
-$UNIQUEPTR_PATH/ClassTest; if [ $? != 0 ]; then exit 1; fi
+EXE=$UNIQUEPTR_PATH/ClassTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

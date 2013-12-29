@@ -37,4 +37,4 @@ PATH_FUNCTIONS=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running mathematical functions tests..."
 
-$PATH_FUNCTIONS/OperationTest; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_FUNCTIONS/OperationTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

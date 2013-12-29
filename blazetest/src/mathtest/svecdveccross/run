@@ -37,18 +37,18 @@ PATH_SVECDVECCROSS=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running sparse vector/dense vector cross product tests...";
 
-$PATH_SVECDVECCROSS/VCaV3a; if [ $? != 0 ]; then exit 1; fi
-$PATH_SVECDVECCROSS/VCaV3b; if [ $? != 0 ]; then exit 1; fi
-$PATH_SVECDVECCROSS/VCaVDa; if [ $? != 0 ]; then exit 1; fi
-$PATH_SVECDVECCROSS/VCaVDb; if [ $? != 0 ]; then exit 1; fi
-$PATH_SVECDVECCROSS/VCaVHa; if [ $? != 0 ]; then exit 1; fi
-$PATH_SVECDVECCROSS/VCaVHb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_SVECDVECCROSS/VCaV3a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SVECDVECCROSS/VCaV3b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SVECDVECCROSS/VCaVDa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SVECDVECCROSS/VCaVDb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SVECDVECCROSS/VCaVHa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SVECDVECCROSS/VCaVHb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_SVECDVECCROSS/VCbV3a; if [ $? != 0 ]; then exit 1; fi
-$PATH_SVECDVECCROSS/VCbV3b; if [ $? != 0 ]; then exit 1; fi
-$PATH_SVECDVECCROSS/VCbVDa; if [ $? != 0 ]; then exit 1; fi
-$PATH_SVECDVECCROSS/VCbVDb; if [ $? != 0 ]; then exit 1; fi
-$PATH_SVECDVECCROSS/VCbVHa; if [ $? != 0 ]; then exit 1; fi
-$PATH_SVECDVECCROSS/VCbVHb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_SVECDVECCROSS/VCbV3a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SVECDVECCROSS/VCbV3b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SVECDVECCROSS/VCbVDa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SVECDVECCROSS/VCbVDb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SVECDVECCROSS/VCbVHa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SVECDVECCROSS/VCbVHb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_SVECDVECCROSS/AliasingTest; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_SVECDVECCROSS/AliasingTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

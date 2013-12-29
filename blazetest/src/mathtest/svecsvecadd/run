@@ -37,9 +37,9 @@ PATH_SVECSVECADD=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running sparse vector/sparse vector addition tests...";
 
-$PATH_SVECSVECADD/VCaVCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_SVECSVECADD/VCaVCb; if [ $? != 0 ]; then exit 1; fi
-$PATH_SVECSVECADD/VCbVCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_SVECSVECADD/VCbVCb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_SVECSVECADD/VCaVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SVECSVECADD/VCaVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SVECSVECADD/VCbVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SVECSVECADD/VCbVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_SVECSVECADD/AliasingTest; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_SVECSVECADD/AliasingTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

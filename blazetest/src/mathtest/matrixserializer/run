@@ -37,4 +37,4 @@ PATH_MATRIXSERIALIZER=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running MatrixSerializer tests..."
 
-$PATH_MATRIXSERIALIZER/ClassTest; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_MATRIXSERIALIZER/ClassTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

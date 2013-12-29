@@ -37,4 +37,4 @@ PATH_DENSECOLUMN=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running DenseColumn tests..."
 
-$PATH_DENSECOLUMN/ClassTest; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DENSECOLUMN/ClassTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

@@ -37,36 +37,36 @@ PATH_SMATDMATADD=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running sparse matrix/dense matrix addition tests...";
 
-$PATH_SMATDMATADD/MCaM2x2a;  if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCaM2x2b;  if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCaM3x3a;  if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCaM3x3b;  if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCaM4x4a;  if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCaM4x4b;  if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCaM5x5a;  if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCaM5x5b;  if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCaM6x6a;  if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCaM6x6b;  if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCaM7x13a; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCaM7x13b; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCaM16x8a; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCaM16x8b; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCaMDa;    if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCaMDb;    if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_SMATDMATADD/MCaM2x2a;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCaM2x2b;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCaM3x3a;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCaM3x3b;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCaM4x4a;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCaM4x4b;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCaM5x5a;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCaM5x5b;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCaM6x6a;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCaM6x6b;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCaM7x13a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCaM7x13b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCaM16x8a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCaM16x8b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCaMDa;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCaMDb;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_SMATDMATADD/MCbM2x2a;  if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCbM2x2b;  if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCbM3x3a;  if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCbM3x3b;  if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCbM4x4a;  if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCbM4x4b;  if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCbM5x5a;  if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCbM5x5b;  if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCbM6x6a;  if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCbM6x6b;  if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCbM7x13a; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCbM7x13b; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCbM16x8a; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCbM16x8b; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCbMDa;    if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATDMATADD/MCbMDb;    if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_SMATDMATADD/MCbM2x2a;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCbM2x2b;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCbM3x3a;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCbM3x3b;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCbM4x4a;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCbM4x4b;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCbM5x5a;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCbM5x5b;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCbM6x6a;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCbM6x6b;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCbM7x13a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCbM7x13b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCbM16x8a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCbM16x8b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCbMDa;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDMATADD/MCbMDb;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

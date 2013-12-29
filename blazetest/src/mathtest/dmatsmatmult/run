@@ -37,44 +37,44 @@ PATH_DMATSMATMULT=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running dense matrix/sparse matrix multiplication tests...";
 
-$PATH_DMATSMATMULT/M2x2aMCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/M2x2aMCb; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/M2x2bMCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/M2x2bMCb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DMATSMATMULT/M2x2aMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/M2x2aMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/M2x2bMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/M2x2bMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_DMATSMATMULT/M3x3aMCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/M3x3aMCb; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/M3x3bMCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/M3x3bMCb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DMATSMATMULT/M3x3aMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/M3x3aMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/M3x3bMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/M3x3bMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_DMATSMATMULT/M4x4aMCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/M4x4aMCb; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/M4x4bMCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/M4x4bMCb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DMATSMATMULT/M4x4aMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/M4x4aMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/M4x4bMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/M4x4bMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_DMATSMATMULT/M5x5aMCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/M5x5aMCb; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/M5x5bMCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/M5x5bMCb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DMATSMATMULT/M5x5aMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/M5x5aMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/M5x5bMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/M5x5bMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_DMATSMATMULT/M6x6aMCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/M6x6aMCb; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/M6x6bMCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/M6x6bMCb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DMATSMATMULT/M6x6aMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/M6x6aMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/M6x6bMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/M6x6bMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_DMATSMATMULT/M7x13aMCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/M7x13aMCb; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/M7x13bMCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/M7x13bMCb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DMATSMATMULT/M7x13aMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/M7x13aMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/M7x13bMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/M7x13bMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_DMATSMATMULT/M16x8aMCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/M16x8aMCb; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/M16x8bMCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/M16x8bMCb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DMATSMATMULT/M16x8aMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/M16x8aMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/M16x8bMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/M16x8bMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_DMATSMATMULT/MDaMCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/MDaMCb; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/MDbMCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_DMATSMATMULT/MDbMCb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DMATSMATMULT/MDaMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/MDaMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/MDbMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATMULT/MDbMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_DMATSMATMULT/AliasingTest; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_DMATSMATMULT/AliasingTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

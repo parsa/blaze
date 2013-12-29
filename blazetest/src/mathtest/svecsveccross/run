@@ -37,9 +37,9 @@ PATH_SVECSVECCROSS=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running sparse vector/sparse vector cross product tests...";
 
-$PATH_SVECSVECCROSS/VCaVCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_SVECSVECCROSS/VCaVCb; if [ $? != 0 ]; then exit 1; fi
-$PATH_SVECSVECCROSS/VCbVCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_SVECSVECCROSS/VCbVCb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_SVECSVECCROSS/VCaVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SVECSVECCROSS/VCaVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SVECSVECCROSS/VCbVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SVECSVECCROSS/VCbVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_SVECSVECCROSS/AliasingTest; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_SVECSVECCROSS/AliasingTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

@@ -37,4 +37,4 @@ PATH_STATICVECTOR=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running StaticVector tests..."
 
-$PATH_STATICVECTOR/ClassTest; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_STATICVECTOR/ClassTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

@@ -37,4 +37,4 @@ PATH_SPARSESUBVECTOR=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running SparseSubvector tests..."
 
-$PATH_SPARSESUBVECTOR/ClassTest; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_SPARSESUBVECTOR/ClassTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

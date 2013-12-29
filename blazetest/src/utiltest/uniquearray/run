@@ -37,4 +37,4 @@ UNIQUEARRAY_PATH=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running UniqueArray tests..."
 
-$UNIQUEARRAY_PATH/ClassTest; if [ $? != 0 ]; then exit 1; fi
+EXE=$UNIQUEARRAY_PATH/ClassTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

@@ -37,9 +37,9 @@ PATH_SMATSMATSUB=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running sparse matrix/sparse matrix subtraction tests...";
 
-$PATH_SMATSMATSUB/MCaMCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATSMATSUB/MCaMCb; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATSMATSUB/MCbMCa; if [ $? != 0 ]; then exit 1; fi
-$PATH_SMATSMATSUB/MCbMCb; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_SMATSMATSUB/MCaMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATSMATSUB/MCaMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATSMATSUB/MCbMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATSMATSUB/MCbMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-$PATH_SMATSMATSUB/AliasingTest; if [ $? != 0 ]; then exit 1; fi
+EXE=$PATH_SMATSMATSUB/AliasingTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
