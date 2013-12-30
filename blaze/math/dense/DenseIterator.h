@@ -444,9 +444,6 @@ template< typename Type >
 inline const DenseIterator<Type> operator-( const DenseIterator<Type>& it, ptrdiff_t inc );
 
 template< typename Type >
-inline const DenseIterator<Type> operator-( ptrdiff_t inc, const DenseIterator<Type>& it );
-
-template< typename Type >
 inline ptrdiff_t operator-( const DenseIterator<Type>& lhs, const DenseIterator<Type>& rhs );
 //@}
 //*************************************************************************************************
@@ -586,21 +583,6 @@ inline const DenseIterator<Type> operator+( ptrdiff_t inc, const DenseIterator<T
 */
 template< typename Type >  // Element type of the iterator
 inline const DenseIterator<Type> operator-( const DenseIterator<Type>& it, ptrdiff_t dec )
-{
-   return DenseIterator<Type>( it.base() - dec );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Subtraction between an integral value and a DenseIterator.
-//
-// \param dec The number of elements the iterator is decremented.
-// \param it The iterator to be decremented.
-// \return The decremented iterator.
-*/
-template< typename Type >  // Element type of the iterator
-inline const DenseIterator<Type> operator-( ptrdiff_t dec, const DenseIterator<Type>& it )
 {
    return DenseIterator<Type>( it.base() - dec );
 }

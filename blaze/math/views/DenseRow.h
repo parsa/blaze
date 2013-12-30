@@ -1956,18 +1956,6 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
       }
       //*******************************************************************************************
 
-      //**Subtraction operator*********************************************************************
-      /*!\brief Subtraction between an integral value and a RowIterator.
-      //
-      // \param inc The number of elements the iterator is decremented.
-      // \param it The iterator to be decremented.
-      // \return The decremented iterator.
-      */
-      friend inline const RowIterator operator-( size_t dec, const RowIterator& it ) {
-         return RowIterator( it.matrix_, it.row_, it.column_-dec );
-      }
-      //*******************************************************************************************
-
     private:
       //**Member variables*************************************************************************
       MatrixType&  matrix_;  //!< The dense matrix containing the row.

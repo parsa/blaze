@@ -611,18 +611,6 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
       }
       //*******************************************************************************************
 
-      //**Subtraction operator*********************************************************************
-      /*!\brief Subtraction between an integral value and a SubmatrixIterator.
-      //
-      // \param dec The number of elements the iterator is decremented.
-      // \param it The iterator to be decremented.
-      // \return The decremented iterator.
-      */
-      friend inline const SubmatrixIterator operator-( size_t dec, const SubmatrixIterator& it ) {
-         return SubmatrixIterator( it.iterator_ - dec );
-      }
-      //*******************************************************************************************
-
     private:
       //**Member variables*************************************************************************
       IteratorType       iterator_;  //!< Iterator to the current submatrix element.
@@ -2616,18 +2604,6 @@ class DenseSubmatrix<MT,true> : public DenseMatrix< DenseSubmatrix<MT,true>, tru
       // \return The decremented iterator.
       */
       friend inline const SubmatrixIterator operator-( const SubmatrixIterator& it, size_t dec ) {
-         return SubmatrixIterator( it.iterator_ - dec );
-      }
-      //*******************************************************************************************
-
-      //**Subtraction operator*********************************************************************
-      /*!\brief Subtraction between an integral value and a SubmatrixIterator.
-      //
-      // \param inc The number of elements the iterator is decremented.
-      // \param it The iterator to be decremented.
-      // \return The decremented iterator.
-      */
-      friend inline const SubmatrixIterator operator-( size_t dec, const SubmatrixIterator& it ) {
          return SubmatrixIterator( it.iterator_ - dec );
       }
       //*******************************************************************************************

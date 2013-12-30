@@ -382,18 +382,6 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
       }
       //*******************************************************************************************
 
-      //**Subtraction operator*********************************************************************
-      /*!\brief Subtraction between an integral value and a ConstIterator.
-      //
-      // \param dec The number of elements the iterator is decremented.
-      // \param it The iterator to be decremented.
-      // \return The decremented iterator.
-      */
-      friend inline const ConstIterator operator-( size_t dec, const ConstIterator& it ) {
-         return ConstIterator( it.it_ - dec );
-      }
-      //*******************************************************************************************
-
     private:
       //**Member variables*************************************************************************
       IteratorType it_;  //!< Iterator to the current matrix element.

@@ -425,18 +425,6 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       }
       //*******************************************************************************************
 
-      //**Subtraction operator*********************************************************************
-      /*!\brief Subtraction between an integral value and a ConstIterator.
-      //
-      // \param dec The number of elements the iterator is decremented.
-      // \param it The iterator to be decremented.
-      // \return The decremented iterator.
-      */
-      friend inline const ConstIterator operator-( size_t dec, const ConstIterator& it ) {
-         return ConstIterator( it.left_, it.right_ - dec );
-      }
-      //*******************************************************************************************
-
     private:
       //**Member variables*************************************************************************
       LeftIteratorType  left_;   //!< Iterator to the current left-hand side element.

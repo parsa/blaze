@@ -379,18 +379,6 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
       }
       //*******************************************************************************************
 
-      //**Subtraction operator*********************************************************************
-      /*!\brief Subtraction between an integral value and a ConstIterator.
-      //
-      // \param dec The number of elements the iterator is decremented.
-      // \param it The iterator to be decremented.
-      // \return The decremented iterator.
-      */
-      friend inline const ConstIterator operator-( size_t dec, const ConstIterator& it ) {
-         return ConstIterator( it.it_ - dec );
-      }
-      //*******************************************************************************************
-
     private:
       //**Member variables*************************************************************************
       IteratorType it_;  //!< Iterator to the current vector element.

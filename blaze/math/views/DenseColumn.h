@@ -1957,18 +1957,6 @@ class DenseColumn<MT,false> : public DenseVector< DenseColumn<MT,false>, false >
       }
       //*******************************************************************************************
 
-      //**Subtraction operator*********************************************************************
-      /*!\brief Subtraction between an integral value and a ColumnIterator.
-      //
-      // \param inc The number of elements the iterator is decremented.
-      // \param it The iterator to be decremented.
-      // \return The decremented iterator.
-      */
-      friend inline const ColumnIterator operator-( size_t dec, const ColumnIterator& it ) {
-         return ColumnIterator( it.matrix_, it.row_-dec, it.column_ );
-      }
-      //*******************************************************************************************
-
     private:
       //**Member variables*************************************************************************
       MatrixType&  matrix_;  //!< The dense matrix containing the column.
