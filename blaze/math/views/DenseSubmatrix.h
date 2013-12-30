@@ -369,9 +369,15 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
       /*!\brief Constructor for the SubmatrixIterator class.
       //
       // \param iterator Iterator to the initial element.
+      // \param final The final iterator for intrinsic operations.
+      // \param rest The number of remaining elements beyond the final iterator.
+      // \param aligned Memory alignment flag.
       */
-      explicit inline SubmatrixIterator( IteratorType iterator )
+      explicit inline SubmatrixIterator( IteratorType iterator, IteratorType final, size_t rest, bool aligned )
          : iterator_( iterator )  // Iterator to the current submatrix element
+         , final_   ( final    )  // The final iterator for intrinsic operations
+         , rest_    ( rest     )  // The number of remaining elements beyond the final iterator
+         , aligned_ ( aligned  )  // Memory alignment flag
       {}
       //*******************************************************************************************
 
@@ -462,7 +468,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
       // might result in erroneous results and/or in compilation errors.
       */
       inline IntrinsicType load() const {
-         return iterator_.loadu();
+         return loadu();
       }
       //*******************************************************************************************
 
@@ -477,7 +483,18 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
       // might result in erroneous results and/or in compilation errors.
       */
       inline IntrinsicType loadu() const {
-         return iterator_.loadu();
+         if( aligned_ ) {
+            return iterator_.load();
+         }
+         else if( iterator_ != final_ ) {
+            return iterator_.loadu();
+         }
+         else {
+            IntrinsicType value;
+            for( size_t j=0UL; j<rest_; ++j )
+               value[j] = *(iterator_+j);
+            return value;
+         }
       }
       //*******************************************************************************************
 
@@ -608,7 +625,10 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
 
     private:
       //**Member variables*************************************************************************
-      IteratorType iterator_;  //!< Iterator to the current submatrix element.
+      IteratorType       iterator_;  //!< Iterator to the current submatrix element.
+      const IteratorType final_;     //!< The final iterator for intrinsic operations.
+      const size_t       rest_;      //!< The number of remaining elements beyond the final iterator.
+      const bool         aligned_;   //!< Memory alignment flag.
       //*******************************************************************************************
    };
    //**********************************************************************************************
@@ -962,7 +982,8 @@ template< typename MT  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,SO>::Iterator DenseSubmatrix<MT,SO>::begin( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
-   return Iterator( matrix_.begin( row_ + i ) + column_ );
+   const typename MT::Iterator first( matrix_.begin( row_ + i ) + column_ );
+   return Iterator( first, first + final_, rest_, aligned_ );
 }
 //*************************************************************************************************
 
@@ -983,7 +1004,8 @@ template< typename MT  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,SO>::ConstIterator DenseSubmatrix<MT,SO>::begin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
-   return ConstIterator( matrix_.cbegin( row_ + i ) + column_ );
+   const typename MT::ConstIterator first( matrix_.cbegin( row_ + i ) + column_ );
+   return ConstIterator( first, first + final_, rest_, aligned_ );
 }
 //*************************************************************************************************
 
@@ -1004,7 +1026,8 @@ template< typename MT  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,SO>::ConstIterator DenseSubmatrix<MT,SO>::cbegin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
-   return ConstIterator( matrix_.cbegin( row_ + i ) + column_ );
+   const typename MT::ConstIterator first( matrix_.cbegin( row_ + i ) + column_ );
+   return ConstIterator( first, first + final_, rest_, aligned_ );
 }
 //*************************************************************************************************
 
@@ -1025,7 +1048,8 @@ template< typename MT  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,SO>::Iterator DenseSubmatrix<MT,SO>::end( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
-   return Iterator( matrix_.begin( row_ + i ) + column_ + n_ );
+   const typename MT::Iterator last( matrix_.begin( row_ + i ) + column_ + n_ );
+   return Iterator( last, last, rest_, aligned_ );
 }
 //*************************************************************************************************
 
@@ -1046,7 +1070,8 @@ template< typename MT  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,SO>::ConstIterator DenseSubmatrix<MT,SO>::end( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
-   return ConstIterator( matrix_.cbegin( row_ + i ) + column_ + n_ );
+   const typename MT::ConstIterator last( matrix_.cbegin( row_ + i ) + column_ + n_ );
+   return ConstIterator( last, last, rest_, aligned_ );
 }
 //*************************************************************************************************
 
@@ -1067,7 +1092,8 @@ template< typename MT  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,SO>::ConstIterator DenseSubmatrix<MT,SO>::cend( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
-   return ConstIterator( matrix_.cbegin( row_ + i ) + column_ + n_ );
+   const typename MT::ConstIterator last( matrix_.cbegin( row_ + i ) + column_ + n_ );
+   return ConstIterator( last, last, rest_, aligned_ );
 }
 //*************************************************************************************************
 
@@ -2352,9 +2378,15 @@ class DenseSubmatrix<MT,true> : public DenseMatrix< DenseSubmatrix<MT,true>, tru
       /*!\brief Constructor for the SubmatrixIterator class.
       //
       // \param iterator Iterator to the initial element.
+      // \param final The final iterator for intrinsic operations.
+      // \param rest The number of remaining elements beyond the final iterator.
+      // \param aligned Memory alignment flag.
       */
-      explicit inline SubmatrixIterator( IteratorType iterator )
+      explicit inline SubmatrixIterator( IteratorType iterator, IteratorType final, size_t rest, bool aligned )
          : iterator_( iterator )  // Iterator to the current submatrix element
+         , final_   ( final    )  // The final iterator for intrinsic operations
+         , rest_    ( rest     )  // The number of remaining elements beyond the final iterator
+         , aligned_ ( aligned  )  // Memory alignment flag
       {}
       //*******************************************************************************************
 
@@ -2445,7 +2477,7 @@ class DenseSubmatrix<MT,true> : public DenseMatrix< DenseSubmatrix<MT,true>, tru
       // might result in erroneous results and/or in compilation errors.
       */
       inline IntrinsicType load() const {
-         return iterator_.loadu();
+         return loadu();
       }
       //*******************************************************************************************
 
@@ -2460,7 +2492,18 @@ class DenseSubmatrix<MT,true> : public DenseMatrix< DenseSubmatrix<MT,true>, tru
       // might result in erroneous results and/or in compilation errors.
       */
       inline IntrinsicType loadu() const {
-         return iterator_.loadu();
+         if( aligned_ ) {
+            return iterator_.load();
+         }
+         else if( iterator_ != final_ ) {
+            return iterator_.loadu();
+         }
+         else {
+            IntrinsicType value;
+            for( size_t j=0UL; j<rest_; ++j )
+               value[j] = *(iterator_+j);
+            return value;
+         }
       }
       //*******************************************************************************************
 
@@ -2591,7 +2634,10 @@ class DenseSubmatrix<MT,true> : public DenseMatrix< DenseSubmatrix<MT,true>, tru
 
     private:
       //**Member variables*************************************************************************
-      IteratorType iterator_;  //!< Iterator to the current submatrix element.
+      IteratorType       iterator_;  //!< Iterator to the current submatrix element.
+      const IteratorType final_;     //!< The final iterator for intrinsic operations.
+      const size_t       rest_;      //!< The number of remaining elements beyond the final iterator.
+      const bool         aligned_;   //!< Memory alignment flag.
       //*******************************************************************************************
    };
    //**********************************************************************************************
@@ -2946,7 +2992,8 @@ template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,true>::Iterator DenseSubmatrix<MT,true>::begin( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
-   return Iterator( matrix_.begin( column_ + j ) + row_ );
+   const typename MT::Iterator first( matrix_.begin( column_ + j ) + row_ );
+   return Iterator( first, first + final_, rest_, aligned_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2963,7 +3010,8 @@ template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,true>::ConstIterator DenseSubmatrix<MT,true>::begin( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
-   return ConstIterator( matrix_.cbegin( column_ + j ) + row_ );
+   const typename MT::ConstIterator first( matrix_.cbegin( column_ + j ) + row_ );
+   return ConstIterator( first, first + final_, rest_, aligned_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2980,7 +3028,8 @@ template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,true>::ConstIterator DenseSubmatrix<MT,true>::cbegin( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
-   return ConstIterator( matrix_.cbegin( column_ + j ) + row_ );
+   const typename MT::ConstIterator first( matrix_.cbegin( column_ + j ) + row_ );
+   return ConstIterator( first, first + final_, rest_, aligned_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2997,7 +3046,8 @@ template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,true>::Iterator DenseSubmatrix<MT,true>::end( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
-   return Iterator( matrix_.begin( column_ + j ) + row_ + m_ );
+   const typename MT::Iterator last( matrix_.begin( column_ + j ) + row_ + m_ );
+   return Iterator( last, last, rest_, aligned_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3014,7 +3064,8 @@ template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,true>::ConstIterator DenseSubmatrix<MT,true>::end( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
-   return ConstIterator( matrix_.cbegin( column_ + j ) + row_ + m_ );
+   const typename MT::ConstIterator last( matrix_.cbegin( column_ + j ) + row_ + m_ );
+   return ConstIterator( last, last, rest_, aligned_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3031,7 +3082,8 @@ template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,true>::ConstIterator DenseSubmatrix<MT,true>::cend( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
-   return ConstIterator( matrix_.cbegin( column_ + j ) + row_ + m_ );
+   const typename MT::ConstIterator last( matrix_.cbegin( column_ + j ) + row_ + m_ );
+   return ConstIterator( last, last, rest_, aligned_ );
 }
 /*! \endcond */
 //*************************************************************************************************
