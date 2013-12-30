@@ -402,6 +402,9 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = VT::vectorizable &&
                          IntrinsicTrait<ET>::absoluteValue };
+
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = VT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

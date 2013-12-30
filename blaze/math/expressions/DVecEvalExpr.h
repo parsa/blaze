@@ -103,6 +103,9 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = 0 };
+
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = VT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

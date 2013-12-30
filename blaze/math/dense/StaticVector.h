@@ -189,6 +189,12 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
        data type, the \a vectorizable compilation flag is set to \a true, otherwise it is set to
        \a false. */
    enum { vectorizable = IsVectorizable<Type>::value };
+
+   //! Compilation flag for SMP assignments.
+   /*! The \a canSMPAssign compilation flag indicates whether the vector can be used in SMP
+       (shared memory parallel) assignments (both on the left-hand and right-hand side of the
+       assignment). */
+   enum { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

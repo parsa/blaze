@@ -420,6 +420,9 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    enum { vectorizable = VT::vectorizable &&
                          IsSame<ET,RightOperand>::value &&
                          IntrinsicTrait<ET>::division };
+
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

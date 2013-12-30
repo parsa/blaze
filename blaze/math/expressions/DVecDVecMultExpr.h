@@ -418,6 +418,9 @@ class DVecDVecMultExpr : public DenseVector< DVecDVecMultExpr<VT1,VT2,TF>, TF >
    enum { vectorizable = VT1::vectorizable && VT2::vectorizable &&
                          IsSame<ET1,ET2>::value &&
                          IntrinsicTrait<ET1>::multiplication };
+
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = VT1::smpAssignable && VT2::smpAssignable };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

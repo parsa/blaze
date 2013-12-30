@@ -359,6 +359,9 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO>, false >
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = MT::vectorizable };
+
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -1992,6 +1995,9 @@ class DenseColumn<MT,false> : public DenseVector< DenseColumn<MT,false>, false >
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = 0 };
+
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

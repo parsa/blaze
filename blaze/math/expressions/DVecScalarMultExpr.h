@@ -427,6 +427,9 @@ class DVecScalarMultExpr : public DenseVector< DVecScalarMultExpr<VT,ST,TF>, TF 
    enum { vectorizable = VT::vectorizable &&
                          IsSame<ET,RightOperand>::value &&
                          IntrinsicTrait<ET>::multiplication };
+
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

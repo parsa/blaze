@@ -96,6 +96,12 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
        in can be optimized via intrinsics. In case the dense vector operand is vectorizable, the
        \a vectorizable compilation flag is set to \a true, otherwise it is set to \a false. */
    enum { vectorizable = VT::vectorizable };
+
+   //! Compilation flag for SMP assignments.
+   /*! The \a smpAssignable compilation flag indicates whether the vector can be used in SMP
+       (shared memory parallel) assignments (both on the left-hand and right-hand side of the
+       assignment). */
+   enum { smpAssignable = VT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
