@@ -46,6 +46,7 @@
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
@@ -405,6 +406,25 @@ inline void reset( SVecTransposer<VT,TF>& v )
 {
    v.reset();
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBVECTORTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct SubvectorTrait< SVecTransposer<VT,TF> >
+{
+   typedef typename SubvectorTrait< typename SVecTransposer<VT,TF>::ResultType >::Type  Type;
+};
 /*! \endcond */
 //*************************************************************************************************
 

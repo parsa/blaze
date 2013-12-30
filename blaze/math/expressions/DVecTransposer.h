@@ -45,6 +45,7 @@
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/intrinsics/IntrinsicTrait.h>
+#include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
@@ -563,6 +564,25 @@ inline void reset( DVecTransposer<VT,TF>& v )
 {
    v.reset();
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBVECTORTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct SubvectorTrait< DVecTransposer<VT,TF> >
+{
+   typedef typename SubvectorTrait< typename DVecTransposer<VT,TF>::ResultType >::Type  Type;
+};
 /*! \endcond */
 //*************************************************************************************************
 
