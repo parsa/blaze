@@ -67,7 +67,6 @@
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Streaming.h>
-#include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/DisableIf.h>
@@ -750,8 +749,6 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
    //@{
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
-
-   inline bool canSMPAssign() const;
 
    inline IntrinsicType load  ( size_t index ) const;
    inline IntrinsicType loadu ( size_t index ) const;
@@ -1450,25 +1447,6 @@ template< typename Other >  // Data type of the foreign expression
 inline bool DenseSubvector<VT,TF>::isAliased( const Other* alias ) const
 {
    return static_cast<const void*>( &vector_ ) == static_cast<const void*>( alias );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the subvector can be used in SMP assignments.
-//
-// \return \a true in case the subvector can be used in SMP assignments, \a false if not.
-//
-// This function returns whether the subvector can be used in SMP assignments. In contrast to
-// the \a smpAssignable member enumeration, which is based solely on compile time information,
-// this function additionally provides runtime information (as for instance the current size
-// of the subvector).
-*/
-template< typename VT       // Type of the dense vector
-        , bool TF >         // Transpose flag
-inline bool DenseSubvector<VT,TF>::canSMPAssign() const
-{
-   return ( size() > OPENMP_DVECASSGIN_THRESHOLD );
 }
 //*************************************************************************************************
 
