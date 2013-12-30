@@ -67,6 +67,7 @@
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Streaming.h>
+#include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/DisableIf.h>
@@ -368,9 +369,15 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
       /*!\brief Constructor for the SubvectorIterator class.
       //
       // \param iterator Iterator to the initial element.
+      // \param final The final iterator for intrinsic operations.
+      // \param rest The number of remaining elements beyond the final iterator.
+      // \param aligned Memory alignment flag.
       */
-      explicit inline SubvectorIterator( IteratorType iterator )
+      explicit inline SubvectorIterator( IteratorType iterator, IteratorType final, size_t rest, bool aligned )
          : iterator_( iterator )  // Iterator to the current subvector element
+         , final_   ( final    )  // The final iterator for intrinsic operations
+         , rest_    ( rest     )  // The number of remaining elements beyond the final iterator
+         , aligned_ ( aligned  )  // Memory alignment flag
       {}
       //*******************************************************************************************
 
@@ -461,7 +468,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
       // might result in erroneous results and/or in compilation errors.
       */
       inline IntrinsicType load() const {
-         return iterator_.loadu();
+         return loadu();
       }
       //*******************************************************************************************
 
@@ -476,7 +483,18 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
       // might result in erroneous results and/or in compilation errors.
       */
       inline IntrinsicType loadu() const {
-         return iterator_.loadu();
+         if( aligned_ ) {
+            return iterator_.load();
+         }
+         else if( iterator_ != final_ ) {
+            return iterator_.loadu();
+         }
+         else {
+            IntrinsicType value;
+            for( size_t j=0UL; j<rest_; ++j )
+               value[j] = *(iterator_+j);
+            return value;
+         }
       }
       //*******************************************************************************************
 
@@ -607,7 +625,10 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
 
     private:
       //**Member variables*************************************************************************
-      IteratorType iterator_;  //!< Iterator to the current subvector element.
+      IteratorType       iterator_;  //!< Iterator to the current subvector element.
+      const IteratorType final_;     //!< The final iterator for intrinsic operations.
+      const size_t       rest_;      //!< The number of remaining elements beyond the final iterator.
+      const bool         aligned_;   //!< Memory alignment flag.
       //*******************************************************************************************
    };
    //**********************************************************************************************
@@ -741,6 +762,8 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
    //@{
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
+
+   inline bool canSMPAssign() const;
 
    inline IntrinsicType load  ( size_t index ) const;
    inline IntrinsicType loadu ( size_t index ) const;
@@ -953,7 +976,8 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline typename DenseSubvector<VT,TF>::Iterator DenseSubvector<VT,TF>::begin()
 {
-   return Iterator( vector_.begin() + offset_ );
+   const typename VT::Iterator first( vector_.begin() + offset_ );
+   return Iterator( first, first + final_, rest_, aligned_ );
 }
 //*************************************************************************************************
 
@@ -969,7 +993,8 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline typename DenseSubvector<VT,TF>::ConstIterator DenseSubvector<VT,TF>::begin() const
 {
-   return ConstIterator( vector_.cbegin() + offset_ );
+   const typename VT::ConstIterator first( vector_.cbegin() + offset_ );
+   return ConstIterator( first, first + final_, rest_, aligned_ );
 }
 //*************************************************************************************************
 
@@ -985,7 +1010,8 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline typename DenseSubvector<VT,TF>::ConstIterator DenseSubvector<VT,TF>::cbegin() const
 {
-   return ConstIterator( vector_.cbegin() + offset_ );
+   const typename VT::ConstIterator first( vector_.cbegin() + offset_ );
+   return ConstIterator( first, first + final_, rest_, aligned_ );
 }
 //*************************************************************************************************
 
@@ -1001,7 +1027,8 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline typename DenseSubvector<VT,TF>::Iterator DenseSubvector<VT,TF>::end()
 {
-   return Iterator( vector_.begin() + offset_ + size_ );
+   const typename VT::Iterator last( vector_.begin() + offset_ + size_ );
+   return Iterator( last, last, rest_, aligned_ );
 }
 //*************************************************************************************************
 
@@ -1017,7 +1044,8 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline typename DenseSubvector<VT,TF>::ConstIterator DenseSubvector<VT,TF>::end() const
 {
-   return ConstIterator( vector_.cbegin() + offset_ + size_ );
+   const typename VT::ConstIterator last( vector_.cbegin() + offset_ + size_ );
+   return ConstIterator( last, last, rest_, aligned_ );
 }
 //*************************************************************************************************
 
@@ -1033,7 +1061,8 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline typename DenseSubvector<VT,TF>::ConstIterator DenseSubvector<VT,TF>::cend() const
 {
-   return ConstIterator( vector_.cbegin() + offset_ + size_ );
+   const typename VT::ConstIterator last( vector_.cbegin() + offset_ + size_ );
+   return ConstIterator( last, last, rest_, aligned_ );
 }
 //*************************************************************************************************
 
@@ -1433,6 +1462,25 @@ template< typename Other >  // Data type of the foreign expression
 inline bool DenseSubvector<VT,TF>::isAliased( const Other* alias ) const
 {
    return static_cast<const void*>( &vector_ ) == static_cast<const void*>( alias );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the subvector can be used in SMP assignments.
+//
+// \return \a true in case the subvector can be used in SMP assignments, \a false if not.
+//
+// This function returns whether the subvector can be used in SMP assignments. In contrast to
+// the \a smpAssignable member enumeration, which is based solely on compile time information,
+// this function additionally provides runtime information (as for instance the current size
+// of the subvector).
+*/
+template< typename VT       // Type of the dense vector
+        , bool TF >         // Transpose flag
+inline bool DenseSubvector<VT,TF>::canSMPAssign() const
+{
+   return ( size() > OPENMP_DVECASSGIN_THRESHOLD );
 }
 //*************************************************************************************************
 
