@@ -44,8 +44,12 @@
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/intrinsics/IntrinsicTrait.h>
+#include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -1382,6 +1386,25 @@ inline void reset( DMatTransposer<MT,SO>& m )
 {
    m.reset();
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBMATRIXTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct SubmatrixTrait< DMatTransposer<MT,SO> >
+{
+   typedef typename SubmatrixTrait< typename DMatTransposer<MT,SO>::ResultType >::Type  Type;
+};
 /*! \endcond */
 //*************************************************************************************************
 

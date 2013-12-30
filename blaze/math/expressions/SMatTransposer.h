@@ -44,8 +44,11 @@
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -733,6 +736,51 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT );
    /*! \endcond */
    //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Resetting the sparse matrix contained in a SMatTransposer.
+// \ingroup sparse_matrix_expression
+//
+// \param m The sparse matrix to be resetted.
+// \return void
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline void reset( SMatTransposer<MT,SO>& m )
+{
+   m.reset();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBMATRIXTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct SubmatrixTrait< SMatTransposer<MT,SO> >
+{
+   typedef typename SubmatrixTrait< typename SMatTransposer<MT,SO>::ResultType >::Type  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
