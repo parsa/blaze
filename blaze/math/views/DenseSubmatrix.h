@@ -850,6 +850,9 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
 // \param m The number of rows of the submatrix.
 // \param n The number of columns of the submatrix.
 // \exception std::invalid_argument Invalid submatrix specification.
+//
+// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
+// contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
@@ -2849,6 +2852,9 @@ class DenseSubmatrix<MT,true> : public DenseMatrix< DenseSubmatrix<MT,true>, tru
 // \param m The number of rows of the submatrix.
 // \param n The number of columns of the submatrix.
 // \exception std::invalid_argument Invalid submatrix specification.
+//
+// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
+// contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,true>::DenseSubmatrix( MT& matrix, size_t row, size_t column, size_t m, size_t n )
@@ -4396,6 +4402,9 @@ inline bool isDefault( const DenseSubmatrix<MT,SO>& dm )
    // ... Resizing and initialization
    blaze::DenseSubmatrix<Matrix> = submatrix( A, 3UL, 2UL, 4UL, 4UL );
    \endcode
+
+// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
+// contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
@@ -4434,6 +4443,9 @@ inline typename DisableIf< Or< IsComputation<MT>, IsTransExpr<MT> >, DenseSubmat
    // ... Resizing and initialization
    blaze::DenseSubmatrix<Matrix> = submatrix( A, 3UL, 2UL, 4UL, 4UL );
    \endcode
+
+// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
+// contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order

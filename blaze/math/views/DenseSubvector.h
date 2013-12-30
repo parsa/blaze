@@ -858,12 +858,16 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
 // \param index The first index of the subvector in the given vector.
 // \param n The size of the subvector.
 // \exception std::invalid_argument Invalid subvector specification.
+//
+// In case the subvector is not properly specified (i.e. if the specified first index is larger
+// than the size of the given vector or the subvector is specified beyond the size of the vector)
+// a \a std::invalid_argument exception is thrown.
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline DenseSubvector<VT,TF>::DenseSubvector( VT& vector, size_t index, size_t n )
    : vector_ ( vector       )  // The vector containing the subvector
-   , offset_ ( index        )  // The offset of the subvector within the sparse vector
+   , offset_ ( index        )  // The offset of the subvector within the dense vector
    , size_   ( n            )  // The size of the subvector
    , rest_   ( n % IT::size )  // The number of remaining elements in an unaligned intrinsic operation
    , final_  ( n - rest_    )  // The final index for unaligned intrinsic operations
@@ -2549,8 +2553,9 @@ inline void clear( DenseSubvector<VT,TF>& dv )
 //
 // This function checks whether the dense subvector is in default state. For instance, in case
 // the subvector is instantiated for a vector of built-in integral or floating point data type,
-// the function returns \a true in case all subvector elements are 0 and \a false in case any subvector
-// element is not 0. The following example demonstrates the use of the \a isDefault function:
+// the function returns \a true in case all subvector elements are 0 and \a false in case any
+// subvector element is not 0. The following example demonstrates the use of the \a isDefault
+// function:
 
    \code
    blaze::DynamicVector<int,rowVector> v;
@@ -2600,6 +2605,10 @@ inline bool isDefault( const DenseSubvector<VT,TF>& dv )
    // ... Resizing and initialization
    blaze::DenseSubvector<Vector> = subvector( v, 4UL, 8UL );
    \endcode
+
+// In case the subvector is not properly specified (i.e. if the specified first index is larger
+// than the total size of the given vector or the subvector is specified beyond the size of the
+// vector) a \a std::invalid_argument exception is thrown.
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
@@ -2636,6 +2645,10 @@ inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, DenseSubvec
    // ... Resizing and initialization
    blaze::DenseSubvector<Vector> = subvector( v, 4UL, 8UL );
    \endcode
+
+// In case the subvector is not properly specified (i.e. if the specified first index is larger
+// than the total size of the given vector or the subvector is specified beyond the size of the
+// vector) a \a std::invalid_argument exception is thrown.
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag

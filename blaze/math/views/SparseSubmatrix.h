@@ -800,6 +800,9 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,SO>, SO >
 // \param m The number of rows of the submatrix.
 // \param n The number of columns of the submatrix.
 // \exception std::invalid_argument Invalid submatrix specification.
+//
+// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
+// contained in the given sparse matrix) a \a std::invalid_argument exception is thrown.
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
@@ -2693,6 +2696,9 @@ class SparseSubmatrix<MT,true> : public SparseMatrix< SparseSubmatrix<MT,true>, 
 // \param m The number of rows of the submatrix.
 // \param n The number of columns of the submatrix.
 // \exception std::invalid_argument Invalid submatrix specification.
+//
+// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
+// contained in the given sparse matrix) a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the sparse matrix
 inline SparseSubmatrix<MT,true>::SparseSubmatrix( MT& matrix, size_t row, size_t column, size_t m, size_t n )
@@ -4208,6 +4214,9 @@ inline bool isDefault( const SparseSubmatrix<MT,SO>& sm )
    // ... Resizing and initialization
    blaze::SparseSubmatrix<Matrix> = submatrix( A, 3UL, 2UL, 4UL, 4UL );
    \endcode
+
+// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
+// contained in the given sparse matrix) a \a std::invalid_argument exception is thrown.
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
@@ -4246,6 +4255,9 @@ inline typename DisableIf< Or< IsComputation<MT>, IsTransExpr<MT> >, SparseSubma
    // ... Resizing and initialization
    blaze::SparseSubmatrix<Matrix> = submatrix( A, 3UL, 2UL, 4UL, 4UL );
    \endcode
+
+// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
+// contained in the given sparse matrix) a \a std::invalid_argument exception is thrown.
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order

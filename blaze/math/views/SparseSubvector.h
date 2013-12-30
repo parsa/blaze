@@ -784,6 +784,10 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
 // \param index The index of the first element of the subvector.
 // \param n The size of the subvector.
 // \exception std::invalid_argument Invalid subvector specification.
+//
+// In case the subvector is not properly specified (i.e. if the specified first index is larger
+// than the size of the given vector or the subvector is specified beyond the size of the vector)
+// a \a std::invalid_argument exception is thrown.
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
@@ -1957,6 +1961,10 @@ inline bool isDefault( const SparseSubvector<VT,TF>& sv )
    // ... Resizing and initialization
    blaze::SparseSubvector<Vector> = subvector( v, 4UL, 8UL );
    \endcode
+
+// In case the subvector is not properly specified (i.e. if the specified first index is larger
+// than the total size of the given vector or the subvector is specified beyond the size of the
+// vector) a \a std::invalid_argument exception is thrown.
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
@@ -1993,6 +2001,10 @@ inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, SparseSubve
    // ... Resizing and initialization
    blaze::SparseSubvector<Vector> = subvector( v, 4UL, 8UL );
    \endcode
+
+// In case the subvector is not properly specified (i.e. if the specified first index is larger
+// than the total size of the given vector or the subvector is specified beyond the size of the
+// vector) a \a std::invalid_argument exception is thrown.
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
