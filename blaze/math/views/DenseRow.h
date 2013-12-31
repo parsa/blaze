@@ -1736,6 +1736,18 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
       {}
       //*******************************************************************************************
 
+      //**Copy assignment operator*****************************************************************
+      /*!\brief Copy assignment operator of the RowIterator.
+      //
+      // \param it The row iterator to be copied.
+      */
+      inline RowIterator& operator=( const RowIterator& it ) {
+         BLAZE_USER_ASSERT( &matrix_ == &it.matrix_, "Invalid matrix reference detected" );
+         BLAZE_USER_ASSERT( row_     == it.row_    , "Invalid row index detected"        );
+         column_ = it.column_;
+      }
+      //*******************************************************************************************
+
       //**Addition assignment operator*************************************************************
       /*!\brief Addition assignment operator.
       //
@@ -1959,7 +1971,7 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
     private:
       //**Member variables*************************************************************************
       MatrixType&  matrix_;  //!< The dense matrix containing the row.
-      size_t       row_;     //!< The current row index.
+      const size_t row_;     //!< The current row index.
       size_t       column_;  //!< The current column index.
       //*******************************************************************************************
 
