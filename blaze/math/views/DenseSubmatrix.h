@@ -422,7 +422,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
       // \return The previous position of the iterator.
       */
       inline const SubmatrixIterator operator++( int ) {
-         return SubmatrixIterator( iterator_++ );
+         return SubmatrixIterator( iterator_++, final_, rest_, aligned_ );
       }
       //*******************************************************************************************
 
@@ -443,7 +443,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
       // \return The previous position of the iterator.
       */
       inline const SubmatrixIterator operator--( int ) {
-         return SubmatrixIterator( iterator_-- );
+         return SubmatrixIterator( iterator_--, final_, rest_, aligned_ );
       }
       //*******************************************************************************************
 
@@ -583,7 +583,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
       // \return The incremented iterator.
       */
       friend inline const SubmatrixIterator operator+( const SubmatrixIterator& it, size_t inc ) {
-         return SubmatrixIterator( it.iterator_ + inc );
+         return SubmatrixIterator( it.iterator_ + inc, it.final_, it.rest_, it.aligned_ );
       }
       //*******************************************************************************************
 
@@ -595,7 +595,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
       // \return The incremented iterator.
       */
       friend inline const SubmatrixIterator operator+( size_t inc, const SubmatrixIterator& it ) {
-         return SubmatrixIterator( it.iterator_ + inc );
+         return SubmatrixIterator( it.iterator_ + inc, it.final_, it.rest_, it.aligned_ );
       }
       //*******************************************************************************************
 
@@ -607,16 +607,16 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,SO>, SO >
       // \return The decremented iterator.
       */
       friend inline const SubmatrixIterator operator-( const SubmatrixIterator& it, size_t dec ) {
-         return SubmatrixIterator( it.iterator_ - dec );
+         return SubmatrixIterator( it.iterator_ - dec, it.final_, it.rest_, it.aligned_ );
       }
       //*******************************************************************************************
 
     private:
       //**Member variables*************************************************************************
-      IteratorType       iterator_;  //!< Iterator to the current submatrix element.
-      const IteratorType final_;     //!< The final iterator for intrinsic operations.
-      const size_t       rest_;      //!< The number of remaining elements beyond the final iterator.
-      const bool         aligned_;   //!< Memory alignment flag.
+      IteratorType iterator_;  //!< Iterator to the current submatrix element.
+      IteratorType final_;     //!< The final iterator for intrinsic operations.
+      size_t       rest_;      //!< The number of remaining elements beyond the final iterator.
+      bool         aligned_;   //!< Memory alignment flag.
       //*******************************************************************************************
    };
    //**********************************************************************************************
@@ -2422,7 +2422,7 @@ class DenseSubmatrix<MT,true> : public DenseMatrix< DenseSubmatrix<MT,true>, tru
       // \return The previous position of the iterator.
       */
       inline const SubmatrixIterator operator++( int ) {
-         return SubmatrixIterator( iterator_++ );
+         return SubmatrixIterator( iterator_++, final_, rest_, aligned_ );
       }
       //*******************************************************************************************
 
@@ -2443,7 +2443,7 @@ class DenseSubmatrix<MT,true> : public DenseMatrix< DenseSubmatrix<MT,true>, tru
       // \return The previous position of the iterator.
       */
       inline const SubmatrixIterator operator--( int ) {
-         return SubmatrixIterator( iterator_-- );
+         return SubmatrixIterator( iterator_--, final_, rest_, aligned_ );
       }
       //*******************************************************************************************
 
@@ -2583,7 +2583,7 @@ class DenseSubmatrix<MT,true> : public DenseMatrix< DenseSubmatrix<MT,true>, tru
       // \return The incremented iterator.
       */
       friend inline const SubmatrixIterator operator+( const SubmatrixIterator& it, size_t inc ) {
-         return SubmatrixIterator( it.iterator_ + inc );
+         return SubmatrixIterator( it.iterator_ + inc, it.final_, it.rest_, it.aligned_ );
       }
       //*******************************************************************************************
 
@@ -2595,7 +2595,7 @@ class DenseSubmatrix<MT,true> : public DenseMatrix< DenseSubmatrix<MT,true>, tru
       // \return The incremented iterator.
       */
       friend inline const SubmatrixIterator operator+( size_t inc, const SubmatrixIterator& it ) {
-         return SubmatrixIterator( it.iterator_ + inc );
+         return SubmatrixIterator( it.iterator_ + inc, it.final_, it.rest_, it.aligned_ );
       }
       //*******************************************************************************************
 
@@ -2607,16 +2607,16 @@ class DenseSubmatrix<MT,true> : public DenseMatrix< DenseSubmatrix<MT,true>, tru
       // \return The decremented iterator.
       */
       friend inline const SubmatrixIterator operator-( const SubmatrixIterator& it, size_t dec ) {
-         return SubmatrixIterator( it.iterator_ - dec );
+         return SubmatrixIterator( it.iterator_ - dec, it.final_, it.rest_, it.aligned_ );
       }
       //*******************************************************************************************
 
     private:
       //**Member variables*************************************************************************
-      IteratorType       iterator_;  //!< Iterator to the current submatrix element.
-      const IteratorType final_;     //!< The final iterator for intrinsic operations.
-      const size_t       rest_;      //!< The number of remaining elements beyond the final iterator.
-      const bool         aligned_;   //!< Memory alignment flag.
+      IteratorType iterator_;  //!< Iterator to the current submatrix element.
+      IteratorType final_;     //!< The final iterator for intrinsic operations.
+      size_t       rest_;      //!< The number of remaining elements beyond the final iterator.
+      bool         aligned_;   //!< Memory alignment flag.
       //*******************************************************************************************
    };
    //**********************************************************************************************
