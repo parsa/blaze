@@ -421,7 +421,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
       // \return The previous position of the iterator.
       */
       inline const SubvectorIterator operator++( int ) {
-         return SubvectorIterator( iterator_++ );
+         return SubvectorIterator( iterator_++, final_, rest_, aligned_ );
       }
       //*******************************************************************************************
 
@@ -442,7 +442,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
       // \return The previous position of the iterator.
       */
       inline const SubvectorIterator operator--( int ) {
-         return SubvectorIterator( iterator_-- );
+         return SubvectorIterator( iterator_--, final_, rest_, aligned_ );
       }
       //*******************************************************************************************
 
@@ -582,7 +582,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
       // \return The incremented iterator.
       */
       friend inline const SubvectorIterator operator+( const SubvectorIterator& it, size_t inc ) {
-         return SubvectorIterator( it.iterator_ + inc );
+         return SubvectorIterator( it.iterator_ + inc, it.final_, it.rest_, it.aligned_ );
       }
       //*******************************************************************************************
 
@@ -594,7 +594,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
       // \return The incremented iterator.
       */
       friend inline const SubvectorIterator operator+( size_t inc, const SubvectorIterator& it ) {
-         return SubvectorIterator( it.iterator_ + inc );
+         return SubvectorIterator( it.iterator_ + inc, it.final_, it.rest_, it.aligned_ );
       }
       //*******************************************************************************************
 
@@ -606,16 +606,16 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
       // \return The decremented iterator.
       */
       friend inline const SubvectorIterator operator-( const SubvectorIterator& it, size_t dec ) {
-         return SubvectorIterator( it.iterator - dec );
+         return SubvectorIterator( it.iterator_ - dec, it.final_, it.rest_, it.aligned_ );
       }
       //*******************************************************************************************
 
     private:
       //**Member variables*************************************************************************
-      IteratorType       iterator_;  //!< Iterator to the current subvector element.
-      const IteratorType final_;     //!< The final iterator for intrinsic operations.
-      const size_t       rest_;      //!< The number of remaining elements beyond the final iterator.
-      const bool         aligned_;   //!< Memory alignment flag.
+      IteratorType iterator_;  //!< Iterator to the current subvector element.
+      IteratorType final_;     //!< The final iterator for intrinsic operations.
+      size_t       rest_;      //!< The number of remaining elements beyond the final iterator.
+      bool         aligned_;   //!< Memory alignment flag.
       //*******************************************************************************************
    };
    //**********************************************************************************************
