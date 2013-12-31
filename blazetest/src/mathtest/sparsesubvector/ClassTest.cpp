@@ -1130,49 +1130,32 @@ void ClassTest::testIterator()
    {
       test_ = "Read-only access via ConstIterator";
 
-      SVT sv = subvector( vec_, 1UL, 5UL );
-      SVT::ConstIterator it( sv.cbegin() );
+      SVT sv = subvector( vec_, 1UL, 3UL );
+      SVT::ConstIterator it ( sv.cbegin() );
+      SVT::ConstIterator end( sv.cend() );
 
-      if( it->value() != 1 ) {
+      if( it == end || it->value() != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Unexpected iterator behavior\n"
-             << " Details:\n"
-             << "   Current value : " << it->value() << "\n"
-             << "   Expected value: 1\n";
+             << " Error: Invalid initial iterator detected\n";
          throw std::runtime_error( oss.str() );
       }
 
       ++it;
 
-      if( it->value() != -2 ) {
+      if( it == end || it->value() != -2 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Unexpected iterator behavior\n"
-             << " Details:\n"
-             << "   Current value : " << it->value() << "\n"
-             << "   Expected value: -2\n";
+             << " Error: Iterator pre-increment failed\n";
          throw std::runtime_error( oss.str() );
       }
 
-      ++it;
+      it++;
 
-      if( it->value() != -3 ) {
+      if( it != end ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Unexpected iterator behavior\n"
-             << " Details:\n"
-             << "   Current value : " << it->value() << "\n"
-             << "   Expected value: -3\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      ++it;
-
-      if( it != sv.cend() ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Invalid iterator end\n";
+             << " Error: Iterator post-increment failed\n";
          throw std::runtime_error( oss.str() );
       }
    }

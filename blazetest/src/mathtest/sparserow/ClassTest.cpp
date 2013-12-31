@@ -2163,49 +2163,32 @@ void ClassTest::testIterator()
       {
          test_ = "Row-major read-only access via ConstIterator";
 
-         RT row3 = row( mat_, 3UL );
-         RT::ConstIterator it( row3.cbegin() );
+         RT row2 = row( mat_, 2UL );
+         RT::ConstIterator it ( row2.cbegin() );
+         RT::ConstIterator end( row2.cend() );
 
-         if( it->value() != 4 ) {
+         if( it == end || it->value() != -2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Unexpected iterator behavior\n"
-                << " Details:\n"
-                << "   Current value : " << it->value() << "\n"
-                << "   Expected value: 4\n";
+                << " Error: Invalid initial iterator detected\n";
             throw std::runtime_error( oss.str() );
          }
 
          ++it;
 
-         if( it->value() != 5 ) {
+         if( it == end || it->value() != -3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Unexpected iterator behavior\n"
-                << " Details:\n"
-                << "   Current value : " << it->value() << "\n"
-                << "   Expected value: 5\n";
+                << " Error: Iterator pre-increment failed\n";
             throw std::runtime_error( oss.str() );
          }
 
-         ++it;
+         it++;
 
-         if( it->value() != -6 ) {
+         if( it != end ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Unexpected iterator behavior\n"
-                << " Details:\n"
-                << "   Current value : " << it->value() << "\n"
-                << "   Expected value: -6\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         ++it;
-
-         if( it != row3.cend() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator end\n";
+                << " Error: Iterator post-increment failed\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -2512,49 +2495,32 @@ void ClassTest::testIterator()
       {
          test_ = "Column-major read-only access via ConstIterator";
 
-         TRT row3 = row( tmat_, 3UL );
-         TRT::ConstIterator it( row3.cbegin() );
+         TRT row2 = row( tmat_, 2UL );
+         TRT::ConstIterator it ( row2.cbegin() );
+         TRT::ConstIterator end( row2.cend() );
 
-         if( it->value() != 4 ) {
+         if( it == end || it->value() != -2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Unexpected iterator behavior\n"
-                << " Details:\n"
-                << "   Current value : " << it->value() << "\n"
-                << "   Expected value: 4\n";
+                << " Error: Invalid initial iterator detected\n";
             throw std::runtime_error( oss.str() );
          }
 
          ++it;
 
-         if( it->value() != 5 ) {
+         if( it == end || it->value() != -3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Unexpected iterator behavior\n"
-                << " Details:\n"
-                << "   Current value : " << it->value() << "\n"
-                << "   Expected value: 5\n";
+                << " Error: Iterator pre-increment failed\n";
             throw std::runtime_error( oss.str() );
          }
 
-         ++it;
+         it++;
 
-         if( it->value() != -6 ) {
+         if( it != end ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Unexpected iterator behavior\n"
-                << " Details:\n"
-                << "   Current value : " << it->value() << "\n"
-                << "   Expected value: -6\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         ++it;
-
-         if( it != row3.cend() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator end\n";
+                << " Error: Iterator post-increment failed\n";
             throw std::runtime_error( oss.str() );
          }
       }

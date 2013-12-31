@@ -3745,48 +3745,94 @@ void ClassTest::testIterator()
       {
          test_ = "Row-major read-only access via ConstIterator";
 
-         SMT::ConstIterator it( sm.cbegin(2) );
+         SMT::ConstIterator it ( sm.cbegin(2) );
+         SMT::ConstIterator end( sm.cend(2) );
 
-         if( *it != 0 ) {
+         if( it == end || *it != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Unexpected iterator behavior\n"
-                << " Details:\n"
-                << "   Current value : " << *it << "\n"
-                << "   Expected value: 0\n";
+                << " Error: Invalid initial iterator detected\n";
             throw std::runtime_error( oss.str() );
          }
 
          ++it;
 
-         if( *it != 4 ) {
+         if( it == end || *it != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Unexpected iterator behavior\n"
-                << " Details:\n"
-                << "   Current value : " << *it << "\n"
-                << "   Expected value: 4\n";
+                << " Error: Iterator pre-increment failed\n";
             throw std::runtime_error( oss.str() );
          }
 
-         ++it;
+         --it;
 
-         if( *it != 5 ) {
+         if( it == end || *it != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Unexpected iterator behavior\n"
-                << " Details:\n"
-                << "   Current value : " << *it << "\n"
-                << "   Expected value: 5\n";
+                << " Error: Iterator pre-decrement failed\n";
             throw std::runtime_error( oss.str() );
          }
 
-         ++it;
+         it++;
 
-         if( it != sm.cend(2) ) {
+         if( it == end || *it != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator end\n";
+                << " Error: Iterator post-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it--;
+
+         if( it == end || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator post-decrement failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it += 2UL;
+
+         if( it == end || *it != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator addition assignment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it -= 2UL;
+
+         if( it == end || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator subtraction assignment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it = it + 2UL;
+
+         if( it == end || *it != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator/scalar addition failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it = it - 2UL;
+
+         if( it == end || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator/scalar subtraction failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it = 3UL + it;
+
+         if( it != end ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Scalar/iterator addition failed\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4060,48 +4106,94 @@ void ClassTest::testIterator()
       {
          test_ = "Column-major read-only access via ConstIterator";
 
-         TSMT::ConstIterator it( sm.cbegin(2) );
+         TSMT::ConstIterator it ( sm.cbegin(2) );
+         TSMT::ConstIterator end( sm.cend(2) );
 
-         if( *it != 0 ) {
+         if( it == end || *it != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Unexpected iterator behavior\n"
-                << " Details:\n"
-                << "   Current value : " << *it << "\n"
-                << "   Expected value: 0\n";
+                << " Error: Invalid initial iterator detected\n";
             throw std::runtime_error( oss.str() );
          }
 
          ++it;
 
-         if( *it != 4 ) {
+         if( it == end || *it != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Unexpected iterator behavior\n"
-                << " Details:\n"
-                << "   Current value : " << *it << "\n"
-                << "   Expected value: 4\n";
+                << " Error: Iterator pre-increment failed\n";
             throw std::runtime_error( oss.str() );
          }
 
-         ++it;
+         --it;
 
-         if( *it != 5 ) {
+         if( it == end || *it != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Unexpected iterator behavior\n"
-                << " Details:\n"
-                << "   Current value : " << *it << "\n"
-                << "   Expected value: 5\n";
+                << " Error: Iterator pre-decrement failed\n";
             throw std::runtime_error( oss.str() );
          }
 
-         ++it;
+         it++;
 
-         if( it != sm.cend(2) ) {
+         if( it == end || *it != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator end\n";
+                << " Error: Iterator post-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it--;
+
+         if( it == end || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator post-decrement failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it += 2UL;
+
+         if( it == end || *it != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator addition assignment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it -= 2UL;
+
+         if( it == end || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator subtraction assignment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it = it + 2UL;
+
+         if( it == end || *it != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator/scalar addition failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it = it - 2UL;
+
+         if( it == end || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator/scalar subtraction failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it = 3UL + it;
+
+         if( it != end ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Scalar/iterator addition failed\n";
             throw std::runtime_error( oss.str() );
          }
       }
