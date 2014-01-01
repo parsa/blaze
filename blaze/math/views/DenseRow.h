@@ -1717,9 +1717,9 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
       // \param column The column index.
       */
       inline RowIterator( MatrixType& matrix, size_t row, size_t column )
-         : matrix_( matrix )  // The dense matrix containing the row.
-         , row_   ( row    )  // The current row index.
-         , column_( column )  // The current column index.
+         : matrix_( &matrix )  // The dense matrix containing the row.
+         , row_   ( row     )  // The current row index.
+         , column_( column  )  // The current column index.
       {}
       //*******************************************************************************************
 
@@ -1734,18 +1734,6 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
          , row_   ( it.row_    )  // The current row index.
          , column_( it.column_ )  // The current column index.
       {}
-      //*******************************************************************************************
-
-      //**Copy assignment operator*****************************************************************
-      /*!\brief Copy assignment operator of the RowIterator.
-      //
-      // \param it The row iterator to be copied.
-      */
-      inline RowIterator& operator=( const RowIterator& it ) {
-         BLAZE_USER_ASSERT( &matrix_ == &it.matrix_, "Invalid matrix reference detected" );
-         BLAZE_USER_ASSERT( row_     == it.row_    , "Invalid row index detected"        );
-         column_ = it.column_;
-      }
       //*******************************************************************************************
 
       //**Addition assignment operator*************************************************************
@@ -1825,7 +1813,7 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
       // \return Reference to the accessed value.
       */
       inline ReferenceType operator[]( size_t index ) const {
-         return matrix_(row_,column_+index);
+         return (*matrix_)(row_,column_+index);
       }
       //*******************************************************************************************
 
@@ -1835,7 +1823,7 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
       // \return Reference to the current value.
       */
       inline ReferenceType operator*() const {
-         return matrix_(row_,column_);
+         return (*matrix_)(row_,column_);
       }
       //*******************************************************************************************
 
@@ -1845,7 +1833,7 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
       // \return Pointer to the dense row element at the current iterator position.
       */
       inline PointerType operator->() const {
-         return &matrix_(row_,column_);
+         return &(*matrix_)(row_,column_);
       }
       //*******************************************************************************************
 
@@ -1857,7 +1845,7 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
       */
       template< typename MatrixType2 >
       inline bool operator==( const RowIterator<MatrixType2>& rhs ) const {
-         return ( &matrix_ == &rhs.matrix_ ) && ( row_ == rhs.row_ ) && ( column_ == rhs.column_ );
+         return ( matrix_ == rhs.matrix_ ) && ( row_ == rhs.row_ ) && ( column_ == rhs.column_ );
       }
       //*******************************************************************************************
 
@@ -1881,7 +1869,7 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
       */
       template< typename MatrixType2 >
       inline bool operator<( const RowIterator<MatrixType2>& rhs ) const {
-         return ( &matrix_ == &rhs.matrix_ ) && ( row_ == rhs.row_ ) && ( column_ < rhs.column_ );
+         return ( matrix_ == rhs.matrix_ ) && ( row_ == rhs.row_ ) && ( column_ < rhs.column_ );
       }
       //*******************************************************************************************
 
@@ -1893,7 +1881,7 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
       */
       template< typename MatrixType2 >
       inline bool operator>( const RowIterator<MatrixType2>& rhs ) const {
-         return ( &matrix_ == &rhs.matrix_ ) && ( row_ == rhs.row_ ) && ( column_ > rhs.column_ );
+         return ( matrix_ == rhs.matrix_ ) && ( row_ == rhs.row_ ) && ( column_ > rhs.column_ );
       }
       //*******************************************************************************************
 
@@ -1905,7 +1893,7 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
       */
       template< typename MatrixType2 >
       inline bool operator<=( const RowIterator<MatrixType2>& rhs ) const {
-         return ( &matrix_ == &rhs.matrix_ ) && ( row_ == rhs.row_ ) && ( column_ <= rhs.column_ );
+         return ( matrix_ == rhs.matrix_ ) && ( row_ == rhs.row_ ) && ( column_ <= rhs.column_ );
       }
       //*******************************************************************************************
 
@@ -1917,7 +1905,7 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
       */
       template< typename MatrixType2 >
       inline bool operator>=( const RowIterator<MatrixType2>& rhs ) const {
-         return ( &matrix_ == &rhs.matrix_ ) && ( row_ == rhs.row_ ) && ( column_ >= rhs.column_ );
+         return ( matrix_ == rhs.matrix_ ) && ( row_ == rhs.row_ ) && ( column_ >= rhs.column_ );
       }
       //*******************************************************************************************
 
@@ -1940,7 +1928,7 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
       // \return The incremented iterator.
       */
       friend inline const RowIterator operator+( const RowIterator& it, size_t inc ) {
-         return RowIterator( it.matrix_, it.row_, it.column_+inc );
+         return RowIterator( *it.matrix_, it.row_, it.column_+inc );
       }
       //*******************************************************************************************
 
@@ -1952,7 +1940,7 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
       // \return The incremented iterator.
       */
       friend inline const RowIterator operator+( size_t inc, const RowIterator& it ) {
-         return RowIterator( it.matrix_, it.row_, it.column_+inc );
+         return RowIterator( *it.matrix_, it.row_, it.column_+inc );
       }
       //*******************************************************************************************
 
@@ -1964,15 +1952,15 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
       // \return The decremented iterator.
       */
       friend inline const RowIterator operator-( const RowIterator& it, size_t dec ) {
-         return RowIterator( it.matrix_, it.row_, it.column_-dec );
+         return RowIterator( *it.matrix_, it.row_, it.column_-dec );
       }
       //*******************************************************************************************
 
     private:
       //**Member variables*************************************************************************
-      MatrixType&  matrix_;  //!< The dense matrix containing the row.
-      const size_t row_;     //!< The current row index.
-      size_t       column_;  //!< The current column index.
+      MatrixType* matrix_;  //!< The dense matrix containing the row.
+      size_t      row_;     //!< The current row index.
+      size_t      column_;  //!< The current column index.
       //*******************************************************************************************
 
       //**Friend declarations**********************************************************************
