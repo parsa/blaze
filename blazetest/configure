@@ -195,12 +195,12 @@ essential: mathtest utiltest
 
 mathtest:
 	@echo
-	@\$(MAKE) --no-print-directory -C $INSTALL_PATH/src/mathtest
+	@\$(MAKE) --no-print-directory -C $INSTALL_PATH/src/mathtest $(MAKECMDGOALS)
 	@echo
 
 utiltest:
 	@echo
-	@\$(MAKE) --no-print-directory -C $INSTALL_PATH/src/utiltest
+	@\$(MAKE) --no-print-directory -C $INSTALL_PATH/src/utiltest $(MAKECMDGOALS)
 	@echo
 
 
