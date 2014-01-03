@@ -412,10 +412,10 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  ConstIterator;
+      typedef typename MT2::ConstIterator  RhsConstIterator;
 
       for( size_t i=0UL; i<(~rhs).rows(); ++i )
-         for( ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+         for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
             dm_(element->index(),i) = element->value();
    }
    //**********************************************************************************************
@@ -439,10 +439,10 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  ConstIterator;
+      typedef typename MT2::ConstIterator  RhsConstIterator;
 
       for( size_t j=0UL; j<(~rhs).columns(); ++j )
-         for( ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+         for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
             dm_(j,element->index()) = element->value();
    }
    //**********************************************************************************************
@@ -541,10 +541,10 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  ConstIterator;
+      typedef typename MT2::ConstIterator  RhsConstIterator;
 
       for( size_t i=0UL; i<(~rhs).rows(); ++i )
-         for( ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+         for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
             dm_(element->index(),i) += element->value();
    }
    //**********************************************************************************************
@@ -568,10 +568,10 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  ConstIterator;
+      typedef typename MT2::ConstIterator  RhsConstIterator;
 
       for( size_t j=0UL; j<(~rhs).columns(); ++j )
-         for( ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+         for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
             dm_(j,element->index()) += element->value();
    }
    //**********************************************************************************************
@@ -670,10 +670,10 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  ConstIterator;
+      typedef typename MT2::ConstIterator  RhsConstIterator;
 
       for( size_t i=0UL; i<(~rhs).rows(); ++i )
-         for( ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+         for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
             dm_(element->index(),i) -= element->value();
    }
    //**********************************************************************************************
@@ -697,10 +697,10 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  ConstIterator;
+      typedef typename MT2::ConstIterator  RhsConstIterator;
 
       for( size_t j=0UL; j<(~rhs).columns(); ++j )
-         for( ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+         for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
             dm_(j,element->index()) -= element->value();
    }
    //**********************************************************************************************
@@ -1048,10 +1048,10 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  ConstIterator;
+      typedef typename MT2::ConstIterator  RhsConstIterator;
 
       for( size_t j=0UL; j<(~rhs).columns(); ++j )
-         for( ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+         for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
             dm_(j,element->index()) = element->value();
    }
    //**********************************************************************************************
@@ -1075,10 +1075,10 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  ConstIterator;
+      typedef typename MT2::ConstIterator  RhsConstIterator;
 
       for( size_t i=0UL; i<(~rhs).rows(); ++i )
-         for( ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+         for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
             dm_(element->index(),i) = element->value();
    }
    //**********************************************************************************************
@@ -1176,10 +1176,10 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  ConstIterator;
+      typedef typename MT2::ConstIterator  RhsConstIterator;
 
       for( size_t j=0UL; j<(~rhs).columns(); ++j )
-         for( ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+         for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
             dm_(j,element->index()) += element->value();
    }
    //**********************************************************************************************
@@ -1203,10 +1203,10 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  ConstIterator;
+      typedef typename MT2::ConstIterator  RhsConstIterator;
 
       for( size_t i=0UL; i<(~rhs).rows(); ++i )
-         for( ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+         for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
             dm_(element->index(),i) += element->value();
    }
    //**********************************************************************************************
@@ -1304,10 +1304,10 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  ConstIterator;
+      typedef typename MT2::ConstIterator  RhsConstIterator;
 
       for( size_t j=0UL; j<(~rhs).columns(); ++j )
-         for( ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+         for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
             dm_(j,element->index()) -= element->value();
    }
    //**********************************************************************************************
@@ -1331,10 +1331,10 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  ConstIterator;
+      typedef typename MT2::ConstIterator  RhsConstIterator;
 
       for( size_t i=0UL; i<(~rhs).rows(); ++i )
-         for( ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+         for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
             dm_(element->index(),i) -= element->value();
    }
    //**********************************************************************************************

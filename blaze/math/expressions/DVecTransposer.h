@@ -349,9 +349,9 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( dv_.size() == (~rhs).size(), "Invalid vector sizes" );
 
-      typedef typename VT2::ConstIterator  ConstIterator;
+      typedef typename VT2::ConstIterator  RhsConstIterator;
 
-      for( ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+      for( RhsConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
          dv_[element->index()] = element->value();
    }
    //**********************************************************************************************
@@ -406,9 +406,9 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( dv_.size() == (~rhs).size(), "Invalid vector sizes" );
 
-      typedef typename VT2::ConstIterator  ConstIterator;
+      typedef typename VT2::ConstIterator  RhsConstIterator;
 
-      for( ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+      for( RhsConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
          dv_[element->index()] += element->value();
    }
    //**********************************************************************************************
@@ -463,9 +463,9 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( dv_.size() == (~rhs).size(), "Invalid vector sizes" );
 
-      typedef typename VT2::ConstIterator  ConstIterator;
+      typedef typename VT2::ConstIterator  RhsConstIterator;
 
-      for( ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+      for( RhsConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
          dv_[element->index()] -= element->value();
    }
    //**********************************************************************************************
@@ -520,14 +520,14 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( dv_.size() == (~rhs).size(), "Invalid vector sizes" );
 
-      typedef typename VT2::ConstIterator  ConstIterator;
+      typedef typename VT2::ConstIterator  RhsConstIterator;
 
       const VT tmp( dv_ );
-      const ConstIterator end( (~rhs).end() );
+      const RhsConstIterator end( (~rhs).end() );
 
       dv_.reset();
 
-      for( ConstIterator element=(~rhs).begin(); element!=end; ++element )
+      for( RhsConstIterator element=(~rhs).begin(); element!=end; ++element )
          dv_[element->index()] = tmp[element->index()] * element->value();
    }
    //**********************************************************************************************
