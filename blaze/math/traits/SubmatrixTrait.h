@@ -76,6 +76,8 @@ namespace blaze {
 //    <li>blaze::StaticMatrix</li>
 //    <li>blaze::DynamicMatrix</li>
 //    <li>blaze::CompressedMatrix</li>
+//    <li>blaze::DenseSubmatrix</li>
+//    <li>blaze::SparseSubmatrix</li>
 // </ul>
 //
 //
