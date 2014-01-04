@@ -42,7 +42,7 @@ namespace blaze {
 // For large vectors and matrices non-temporal stores can provide a significant performance
 // advantage of about 20%. However, this advantage is only in effect in case the memory bandwidth
 // of the target architecture is maxed out. If the target architecture's memory bandwidth cannot
-// be exhausted the use of non-temporal stores can decrease performance instead of increase it.
+// be exhausted the use of non-temporal stores can decrease performance instead of increasing it.
 //
 // Via this compilation switch streaming  (i.e. non-temporal stores) can be (de-)activated. If
 // set to \a true streaming is enabled, if set to \a false streaming is disabled.
