@@ -48,7 +48,7 @@ BIN = $(SRC:.cpp=)
 # General rules
 default: all
 all: $(BIN)
-essential: MCaVDa AliasingTest
+essential: MCaV3a MCaVHa MCaVDa AliasingTest
 
 
 # Build rules

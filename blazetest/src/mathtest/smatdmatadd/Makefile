@@ -48,7 +48,7 @@ BIN = $(SRC:.cpp=)
 # General rules
 default: all
 all: $(BIN)
-essential: MCaMDa
+essential: MCaM3x3a MCaMDa
 
 
 # Build rules

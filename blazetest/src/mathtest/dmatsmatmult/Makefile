@@ -48,7 +48,7 @@ BIN = $(SRC:.cpp=)
 # General rules
 default: all
 all: $(BIN)
-essential: MDaMCa AliasingTest
+essential: M3x3aMCa MDaMCa AliasingTest
 
 
 # Build rules

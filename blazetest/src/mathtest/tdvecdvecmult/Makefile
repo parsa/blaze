@@ -48,7 +48,7 @@ BIN = $(SRC:.cpp=)
 # General rules
 default: all
 all: $(BIN)
-essential: VDaVDa
+essential: V3aV3a VHaVHa VDaVDa
 
 
 # Build rules
