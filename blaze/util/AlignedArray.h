@@ -45,7 +45,6 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/constraints/Const.h>
-#include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
 
 
@@ -313,9 +312,8 @@ class AlignedArray
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST    ( Type );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE ( Type );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE( Type );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST   ( Type );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE( Type );
    /*! \endcond */
    //**********************************************************************************************
 };
