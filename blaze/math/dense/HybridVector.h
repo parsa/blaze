@@ -50,8 +50,7 @@
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/system/TransposeFlag.h>
-#include <blaze/util/AlignmentCheck.h>
-#include <blaze/util/AlignedStorage.h>
+#include <blaze/util/AlignedArray.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -152,7 +151,6 @@ template< typename Type                     // Data type of the vector
         , size_t N                          // Number of elements
         , bool TF = defaultTransposeFlag >  // Transpose flag
 class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
-                   , private AlignedStorage<Type>
 {
  private:
    //**Type definitions****************************************************************************
@@ -375,13 +373,13 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   Type v_[NN];   //!< The statically allocated vector elements.
-                  /*!< Access to the vector values is gained via the subscript operator.
-                       The order of the elements is
-                       \f[\left(\begin{array}{*{4}{c}}
-                       0 & 1 & \cdots & N-1 \\
-                       \end{array}\right)\f] */
-   size_t size_;  //!< The current size/dimension of the vector.
+   AlignedArray<Type,NN> v_;  //!< The statically allocated vector elements.
+                              /*!< Access to the vector values is gained via the subscript
+                                   operator. The order of the elements is
+                                   \f[\left(\begin{array}{*{4}{c}}
+                                   0 & 1 & \cdots & N-1 \\
+                                   \end{array}\right)\f] */
+   size_t size_;              //!< The current size/dimension of the vector.
    //@}
    //**********************************************************************************************
 
@@ -418,8 +416,6 @@ template< typename Type  // Data type of the vector
 inline HybridVector<Type,N,TF>::HybridVector()
    : size_( 0UL )  // The current size/dimension of the vector
 {
-   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
-
    if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<NN; ++i )
          v_[i] = Type();
@@ -444,8 +440,6 @@ template< typename Type  // Data type of the vector
 inline HybridVector<Type,N,TF>::HybridVector( size_t n )
    : size_( n )  // The current size/dimension of the vector
 {
-   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
-
    if( n > N )
       throw std::invalid_argument( "Invalid size for hybrid vector" );
 
@@ -474,8 +468,6 @@ template< typename Type  // Data type of the vector
 inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Type& init )
    : size_( n )  // The current size/dimension of the vector
 {
-   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
-
    if( n > N )
       throw std::invalid_argument( "Invalid size for hybrid vector" );
 
@@ -519,8 +511,6 @@ template< typename Other >  // Data type of the initialization array
 inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Other* array )
    : size_( n )  // The current size/dimension of the vector
 {
-   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
-
    if( n > N )
       throw std::invalid_argument( "Invalid setup of hybrid vector" );
 
@@ -562,7 +552,6 @@ inline HybridVector<Type,N,TF>::HybridVector( const Other (&array)[M] )
    : size_( M )  // The current size/dimension of the vector
 {
    BLAZE_STATIC_ASSERT( M <= N );
-   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    for( size_t i=0UL; i<M; ++i )
       v_[i] = array[i];
@@ -588,8 +577,6 @@ template< typename Type  // Data type of the vector
 inline HybridVector<Type,N,TF>::HybridVector( const HybridVector& v )
    : size_( v.size_ )  // The current size/dimension of the vector
 {
-   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
-
    for( size_t i=0UL; i<size_; ++i )
       v_[i] = v.v_[i];
 
@@ -619,8 +606,6 @@ inline HybridVector<Type,N,TF>::HybridVector( const Vector<VT,TF>& v )
    : size_( (~v).size() )  // The current size/dimension of the vector
 {
    using blaze::assign;
-
-   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ ), "Invalid alignment detected" );
 
    if( (~v).size() > N )
       throw std::invalid_argument( "Invalid setup of hybrid vector" );
