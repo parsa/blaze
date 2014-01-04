@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/util/AlignedArray.h>
 #include <blaze/util/AlignedStorage.h>
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/AlignmentTrait.h>
