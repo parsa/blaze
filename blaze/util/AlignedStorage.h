@@ -57,7 +57,7 @@ namespace blaze {
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Auxiliary helper struct for the AlignedStorage class template.
-// \ingroup intrinsics
+// \ingroup util
 */
 template< size_t Alignment >
 struct AlignedStorageHelper;
@@ -68,7 +68,7 @@ struct AlignedStorageHelper;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of AlignedStorage for 1-byte alignment.
-// \ingroup intrinsics
+// \ingroup util
 */
 template<>
 struct BLAZE_ALIGN( 1UL ) AlignedStorageHelper<1UL>
@@ -80,7 +80,7 @@ struct BLAZE_ALIGN( 1UL ) AlignedStorageHelper<1UL>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of AlignedStorage for 2-byte alignment.
-// \ingroup intrinsics
+// \ingroup util
 */
 template<>
 struct BLAZE_ALIGN( 2UL ) AlignedStorageHelper<2UL>
@@ -92,7 +92,7 @@ struct BLAZE_ALIGN( 2UL ) AlignedStorageHelper<2UL>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of AlignedStorage for 4-byte alignment.
-// \ingroup intrinsics
+// \ingroup util
 */
 template<>
 struct BLAZE_ALIGN( 4UL ) AlignedStorageHelper<4UL>
@@ -104,7 +104,7 @@ struct BLAZE_ALIGN( 4UL ) AlignedStorageHelper<4UL>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of AlignedStorage for 8-byte alignment.
-// \ingroup intrinsics
+// \ingroup util
 */
 template<>
 struct BLAZE_ALIGN( 8UL ) AlignedStorageHelper<8UL>
@@ -116,7 +116,7 @@ struct BLAZE_ALIGN( 8UL ) AlignedStorageHelper<8UL>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of AlignedStorage for 16-byte alignment.
-// \ingroup intrinsics
+// \ingroup util
 */
 template<>
 struct BLAZE_ALIGN( 16UL ) AlignedStorageHelper<16UL>
@@ -128,7 +128,7 @@ struct BLAZE_ALIGN( 16UL ) AlignedStorageHelper<16UL>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of AlignedStorage for 32-byte alignment.
-// \ingroup intrinsics
+// \ingroup util
 */
 template<>
 struct BLAZE_ALIGN( 32UL ) AlignedStorageHelper<32UL>
@@ -140,7 +140,7 @@ struct BLAZE_ALIGN( 32UL ) AlignedStorageHelper<32UL>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of AlignedStorage for 64-byte alignment.
-// \ingroup intrinsics
+// \ingroup util
 */
 template<>
 struct BLAZE_ALIGN( 64UL ) AlignedStorageHelper<64UL>
@@ -152,7 +152,7 @@ struct BLAZE_ALIGN( 64UL ) AlignedStorageHelper<64UL>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of AlignedStorage for 128-byte alignment.
-// \ingroup intrinsics
+// \ingroup util
 */
 template<>
 struct BLAZE_ALIGN( 128UL ) AlignedStorageHelper<128UL>
@@ -164,7 +164,7 @@ struct BLAZE_ALIGN( 128UL ) AlignedStorageHelper<128UL>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of AlignedStorage for 256-byte alignment.
-// \ingroup intrinsics
+// \ingroup util
 */
 template<>
 struct BLAZE_ALIGN( 256UL ) AlignedStorageHelper<256UL>
@@ -175,7 +175,7 @@ struct BLAZE_ALIGN( 256UL ) AlignedStorageHelper<256UL>
 
 //*************************************************************************************************
 /*!\brief POD data type with a fixed alignment.
-// \ingroup intrinsics
+// \ingroup util
 //
 // The AlignedStorage class template represents a POD data type with a fixed alignment. Via this
 // class it is possible to enforce a specific, type-based alignment for static data types. The
@@ -196,11 +196,11 @@ struct BLAZE_ALIGN( 256UL ) AlignedStorageHelper<256UL>
    };
    \endcode
 
-// Note that since AlignedStorage is designed as a base class proper alignment is depending on
-// the compiler's capacity to perform an empty base class optimization (EBO) and to transfer the
-// base class's alignment restriction to the deriving class. Currently, the only observed problem
-// in this context is that the Clang 4.1 compiler omits this optimization for optimization level
-// below \c -O2.
+// Note that since the AlignedStorage class template is designed as a base class proper alignment
+// is heavily depending on the compiler's memory model for base classes (which influences how the
+// base class's alignment restrictions are transfered to the deriving class) and it's capacity to
+// perform an empty base class optimization (EBO). Currently, this approach works with the GCC,
+// the Intel, and the Visual Studio compiler, but fails with the Clang compiler.
 */
 template< typename T >
 class AlignedStorage : private AlignedStorageHelper< AlignmentTrait<T>::value >
