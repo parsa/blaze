@@ -87,7 +87,7 @@ struct SubvectorExprTrait
    //**struct DenseResult**************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
-   struct DenseResult { typedef DenseSubvector<T,IsRowVector<T>::value>  Type; };
+   struct DenseResult { typedef DenseSubvector<T,AF,IsRowVector<T>::value>  Type; };
    /*! \endcond */
    //**********************************************************************************************
 
