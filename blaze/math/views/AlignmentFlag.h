@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/Views.h
-//  \brief Header file for the vector and matrix views
+//  \file blaze/math/views/AlignmentFlag.h
+//  \brief Header file for the subvector/submatrix alignment flag values
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,26 +32,57 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_VIEWS_H_
-#define _BLAZE_MATH_VIEWS_H_
+#ifndef _BLAZE_MATH_VIEWS_ALIGNMENTFLAG_H_
+#define _BLAZE_MATH_VIEWS_ALIGNMENTFLAG_H_
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  ALIGNMENT FLAG VALUES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Alignment flag for unaligned subvectors and submatrices.
+//
+// Via this flag it is possible to specify subvectors and submatrices as unaligned. The following
+// example demonstrates the setup of an unaligned subvector:
+
+   \code
+   using blaze::columnVector;
+   using blaze::unaligned;
+
+   typedef blaze::DynamicVector<int,columnVector>  VectorType;
+
+   VectorType v( 100UL );
+   DenseSubvector<VectorType,unaligned> sv = subvector<unaligned>( v, 10UL, 20UL );
+   \endcode
+*/
+const bool unaligned = false;
+//*************************************************************************************************
 
 
 //*************************************************************************************************
-// Includes
+/*!\brief Alignment flag for aligned subvectors and submatrices.
+//
+// Via this flag it is possible to specify subvectors and submatrices as aligned. The following
+// example demonstrates the setup of an aligned subvector:
+
+   \code
+   using blaze::columnVector;
+   using blaze::aligned;
+
+   typedef blaze::DynamicVector<int,columnVector>  VectorType;
+
+   VectorType v( 100UL );
+   DenseSubvector<VectorType,aligned> sv = subvector<aligned>( v, 8UL, 32UL );
+   \endcode
+*/
+const bool aligned = true;
 //*************************************************************************************************
 
-#include <blaze/math/views/AlignmentFlag.h>
-#include <blaze/math/views/Column.h>
-#include <blaze/math/views/DenseColumn.h>
-#include <blaze/math/views/DenseRow.h>
-#include <blaze/math/views/DenseSubmatrix.h>
-#include <blaze/math/views/DenseSubvector.h>
-#include <blaze/math/views/Row.h>
-#include <blaze/math/views/SparseColumn.h>
-#include <blaze/math/views/SparseRow.h>
-#include <blaze/math/views/SparseSubmatrix.h>
-#include <blaze/math/views/SparseSubvector.h>
-#include <blaze/math/views/Submatrix.h>
-#include <blaze/math/views/Subvector.h>
+} // namespace blaze
 
 #endif
