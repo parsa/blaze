@@ -370,13 +370,13 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
       // \param iterator Iterator to the initial element.
       // \param final The final iterator for intrinsic operations.
       // \param rest The number of remaining elements beyond the final iterator.
-      // \param aligned Memory alignment flag.
+      // \param isAligned Memory alignment flag.
       */
-      explicit inline SubvectorIterator( IteratorType iterator, IteratorType final, size_t rest, bool aligned )
-         : iterator_( iterator )  // Iterator to the current subvector element
-         , final_   ( final    )  // The final iterator for intrinsic operations
-         , rest_    ( rest     )  // The number of remaining elements beyond the final iterator
-         , aligned_ ( aligned  )  // Memory alignment flag
+      explicit inline SubvectorIterator( IteratorType iterator, IteratorType final, size_t rest, bool isAligned )
+         : iterator_ ( iterator  )  // Iterator to the current subvector element
+         , final_    ( final     )  // The final iterator for intrinsic operations
+         , rest_     ( rest      )  // The number of remaining elements beyond the final iterator
+         , isAligned_( isAligned )  // Memory alignment flag
       {}
       //*******************************************************************************************
 
@@ -421,7 +421,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
       // \return The previous position of the iterator.
       */
       inline const SubvectorIterator operator++( int ) {
-         return SubvectorIterator( iterator_++, final_, rest_, aligned_ );
+         return SubvectorIterator( iterator_++, final_, rest_, isAligned_ );
       }
       //*******************************************************************************************
 
@@ -442,7 +442,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
       // \return The previous position of the iterator.
       */
       inline const SubvectorIterator operator--( int ) {
-         return SubvectorIterator( iterator_--, final_, rest_, aligned_ );
+         return SubvectorIterator( iterator_--, final_, rest_, isAligned_ );
       }
       //*******************************************************************************************
 
@@ -482,7 +482,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
       // might result in erroneous results and/or in compilation errors.
       */
       inline IntrinsicType loadu() const {
-         if( aligned_ ) {
+         if( isAligned_ ) {
             return iterator_.load();
          }
          else if( iterator_ != final_ ) {
@@ -582,7 +582,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
       // \return The incremented iterator.
       */
       friend inline const SubvectorIterator operator+( const SubvectorIterator& it, size_t inc ) {
-         return SubvectorIterator( it.iterator_ + inc, it.final_, it.rest_, it.aligned_ );
+         return SubvectorIterator( it.iterator_ + inc, it.final_, it.rest_, it.isAligned_ );
       }
       //*******************************************************************************************
 
@@ -594,7 +594,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
       // \return The incremented iterator.
       */
       friend inline const SubvectorIterator operator+( size_t inc, const SubvectorIterator& it ) {
-         return SubvectorIterator( it.iterator_ + inc, it.final_, it.rest_, it.aligned_ );
+         return SubvectorIterator( it.iterator_ + inc, it.final_, it.rest_, it.isAligned_ );
       }
       //*******************************************************************************************
 
@@ -606,16 +606,16 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
       // \return The decremented iterator.
       */
       friend inline const SubvectorIterator operator-( const SubvectorIterator& it, size_t dec ) {
-         return SubvectorIterator( it.iterator_ - dec, it.final_, it.rest_, it.aligned_ );
+         return SubvectorIterator( it.iterator_ - dec, it.final_, it.rest_, it.isAligned_ );
       }
       //*******************************************************************************************
 
     private:
       //**Member variables*************************************************************************
-      IteratorType iterator_;  //!< Iterator to the current subvector element.
-      IteratorType final_;     //!< The final iterator for intrinsic operations.
-      size_t       rest_;      //!< The number of remaining elements beyond the final iterator.
-      bool         aligned_;   //!< Memory alignment flag.
+      IteratorType iterator_;   //!< Iterator to the current subvector element.
+      IteratorType final_;      //!< The final iterator for intrinsic operations.
+      size_t       rest_;       //!< The number of remaining elements beyond the final iterator.
+      bool         isAligned_;  //!< Memory alignment flag.
       //*******************************************************************************************
    };
    //**********************************************************************************************
@@ -811,7 +811,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
                                 involved in a vectorized operation, the final index indicates at
                                 which index a special treatment for the remaining elements is
                                 required. */
-   const bool   aligned_;  //!< Memory alignment flag.
+   const bool isAligned_;  //!< Memory alignment flag.
                            /*!< The alignment flag indicates whether the subvector is fully aligned.
                                 In case the subvector is fully aligned, no special handling has to
                                 be used for the last elements of the subvector in a vectorized
@@ -866,13 +866,13 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,TF>, TF >
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline DenseSubvector<VT,TF>::DenseSubvector( VT& vector, size_t index, size_t n )
-   : vector_ ( vector       )  // The vector containing the subvector
-   , offset_ ( index        )  // The offset of the subvector within the dense vector
-   , size_   ( n            )  // The size of the subvector
-   , rest_   ( n % IT::size )  // The number of remaining elements in an unaligned intrinsic operation
-   , final_  ( n - rest_    )  // The final index for unaligned intrinsic operations
-   , aligned_( ( index % IT::size == 0UL ) &&
-               ( index + n == vector.size() || n % IT::size == 0UL ) )
+   : vector_   ( vector       )  // The vector containing the subvector
+   , offset_   ( index        )  // The offset of the subvector within the dense vector
+   , size_     ( n            )  // The size of the subvector
+   , rest_     ( n % IT::size )  // The number of remaining elements in an unaligned intrinsic operation
+   , final_    ( n - rest_    )  // The final index for unaligned intrinsic operations
+   , isAligned_( ( index % IT::size == 0UL ) &&
+                 ( index + n == vector.size() || n % IT::size == 0UL ) )
 {
    if( index + n > vector.size() )
       throw std::invalid_argument( "Invalid subvector specification" );
@@ -966,7 +966,7 @@ template< typename VT  // Type of the dense vector
 inline typename DenseSubvector<VT,TF>::Iterator DenseSubvector<VT,TF>::begin()
 {
    const typename VT::Iterator first( vector_.begin() + offset_ );
-   return Iterator( first, first + final_, rest_, aligned_ );
+   return Iterator( first, first + final_, rest_, isAligned_ );
 }
 //*************************************************************************************************
 
@@ -983,7 +983,7 @@ template< typename VT  // Type of the dense vector
 inline typename DenseSubvector<VT,TF>::ConstIterator DenseSubvector<VT,TF>::begin() const
 {
    const typename VT::ConstIterator first( vector_.cbegin() + offset_ );
-   return ConstIterator( first, first + final_, rest_, aligned_ );
+   return ConstIterator( first, first + final_, rest_, isAligned_ );
 }
 //*************************************************************************************************
 
@@ -1000,7 +1000,7 @@ template< typename VT  // Type of the dense vector
 inline typename DenseSubvector<VT,TF>::ConstIterator DenseSubvector<VT,TF>::cbegin() const
 {
    const typename VT::ConstIterator first( vector_.cbegin() + offset_ );
-   return ConstIterator( first, first + final_, rest_, aligned_ );
+   return ConstIterator( first, first + final_, rest_, isAligned_ );
 }
 //*************************************************************************************************
 
@@ -1017,7 +1017,7 @@ template< typename VT  // Type of the dense vector
 inline typename DenseSubvector<VT,TF>::Iterator DenseSubvector<VT,TF>::end()
 {
    const typename VT::Iterator last( vector_.begin() + offset_ + size_ );
-   return Iterator( last, last, rest_, aligned_ );
+   return Iterator( last, last, rest_, isAligned_ );
 }
 //*************************************************************************************************
 
@@ -1034,7 +1034,7 @@ template< typename VT  // Type of the dense vector
 inline typename DenseSubvector<VT,TF>::ConstIterator DenseSubvector<VT,TF>::end() const
 {
    const typename VT::ConstIterator last( vector_.cbegin() + offset_ + size_ );
-   return ConstIterator( last, last, rest_, aligned_ );
+   return ConstIterator( last, last, rest_, isAligned_ );
 }
 //*************************************************************************************************
 
@@ -1051,7 +1051,7 @@ template< typename VT  // Type of the dense vector
 inline typename DenseSubvector<VT,TF>::ConstIterator DenseSubvector<VT,TF>::cend() const
 {
    const typename VT::ConstIterator last( vector_.cbegin() + offset_ + size_ );
-   return ConstIterator( last, last, rest_, aligned_ );
+   return ConstIterator( last, last, rest_, isAligned_ );
 }
 //*************************************************************************************************
 
@@ -1501,7 +1501,7 @@ inline typename DenseSubvector<VT,TF>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( index < size()         , "Invalid subvector access index" );
    BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid subvector access index" );
 
-   if( aligned_ || index != final_ ) {
+   if( isAligned_ || index != final_ ) {
       return vector_.loadu( offset_+index );
    }
    else {
@@ -1560,7 +1560,7 @@ inline void DenseSubvector<VT,TF>::storeu( size_t index, const IntrinsicType& va
    BLAZE_INTERNAL_ASSERT( index < size()         , "Invalid subvector access index" );
    BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid subvector access index" );
 
-   if( aligned_ || index != final_ ) {
+   if( isAligned_ || index != final_ ) {
       vector_.storeu( offset_+index, value );
    }
    else {
@@ -1646,7 +1646,7 @@ inline typename EnableIf< typename DenseSubvector<VT,TF>::BLAZE_TEMPLATE Vectori
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   if( useStreaming && aligned_ &&
+   if( useStreaming && isAligned_ &&
        ( size_ > ( cacheSize/( sizeof(ElementType) * 3UL ) ) ) &&
        !(~rhs).isAliased( &vector_ ) )
    {
