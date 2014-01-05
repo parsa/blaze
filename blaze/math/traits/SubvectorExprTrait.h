@@ -68,12 +68,13 @@ namespace blaze {
 /*!\brief Evaluation of the expression type type of a subvector operation.
 // \ingroup math_traits
 //
-// Via this type trait it is possible to evaluate the return type of a subvector operation. Given
-// the dense or sparse vector type \a VT, the nested type \a Type corresponds to the resulting
-// return type. In case the given type is neither a dense nor a sparse vector type, the resulting
-// data type \a Type is set to \a INVALID_TYPE.
+// Via this type trait it is possible to evaluate the return type of a subvector operation.
+// Given the dense or sparse vector type \a VT and the alignment flag \a AF, the nested type
+// \a Type corresponds to the resulting return type. In case the given type is neither a
+// dense nor a sparse vector type, the resulting data type \a Type is set to \a INVALID_TYPE.
 */
-template< typename VT >  // Type of the vector operand
+template< typename VT  // Type of the vector operand
+        , bool AF >    // Alignment Flag
 struct SubvectorExprTrait
 {
  private:
@@ -108,7 +109,7 @@ struct SubvectorExprTrait
    /*! \cond BLAZE_INTERNAL */
    typedef typename If< Or< IsComputation<Tmp>, IsTransExpr<Tmp> >
                       , typename If< Or< IsConst<Tmp>, IsVolatile<Tmp> >
-                                   , SubvectorExprTrait< typename RemoveCV<Tmp>::Type >
+                                   , SubvectorExprTrait< typename RemoveCV<Tmp>::Type, AF >
                                    , Failure
                                    >::Type
                       , typename If< IsDenseVector<Tmp>

@@ -818,12 +818,12 @@ struct TSVecScalarMultExprTrait< SVecScalarDivExpr<VT,ST1,true>, ST2 >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, typename ST, bool TF >
-struct SubvectorExprTrait< SVecScalarDivExpr<VT,ST,TF> >
+template< typename VT, typename ST, bool TF, bool AF >
+struct SubvectorExprTrait< SVecScalarDivExpr<VT,ST,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename DivExprTrait< typename SubvectorExprTrait<const VT>::Type, ST >::Type  Type;
+   typedef typename DivExprTrait< typename SubvectorExprTrait<const VT,AF>::Type, ST >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -615,12 +615,12 @@ inline const typename EnableIf< IsMatMatMultExpr<T1>, MultExprTrait<T1,T2> >::Ty
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, typename VT >
-struct SubvectorExprTrait< DMatSVecMultExpr<MT,VT> >
+template< typename MT, typename VT, bool AF >
+struct SubvectorExprTrait< DMatSVecMultExpr<MT,VT>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename MultExprTrait< typename SubmatrixExprTrait<const MT>::Type, VT >::Type  Type;
+   typedef typename MultExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type, VT >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

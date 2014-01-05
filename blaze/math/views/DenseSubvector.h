@@ -2751,8 +2751,8 @@ struct SubvectorTrait< DenseSubvector<VT,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF >
-struct SubvectorExprTrait< DenseSubvector<VT,TF> >
+template< typename VT, bool TF, bool AF >
+struct SubvectorExprTrait< DenseSubvector<VT,TF>, AF >
 {
    typedef DenseSubvector<VT,TF>  Type;
 };
@@ -2762,8 +2762,8 @@ struct SubvectorExprTrait< DenseSubvector<VT,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF >
-struct SubvectorExprTrait< const DenseSubvector<VT,TF> >
+template< typename VT, bool TF, bool AF >
+struct SubvectorExprTrait< const DenseSubvector<VT,TF>, AF >
 {
    typedef DenseSubvector<VT,TF>  Type;
 };
@@ -2773,8 +2773,8 @@ struct SubvectorExprTrait< const DenseSubvector<VT,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF >
-struct SubvectorExprTrait< volatile DenseSubvector<VT,TF> >
+template< typename VT, bool TF, bool AF >
+struct SubvectorExprTrait< volatile DenseSubvector<VT,TF>, AF >
 {
    typedef DenseSubvector<VT,TF>  Type;
 };
@@ -2784,8 +2784,8 @@ struct SubvectorExprTrait< volatile DenseSubvector<VT,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF >
-struct SubvectorExprTrait< const volatile DenseSubvector<VT,TF> >
+template< typename VT, bool TF, bool AF >
+struct SubvectorExprTrait< const volatile DenseSubvector<VT,TF>, AF >
 {
    typedef DenseSubvector<VT,TF>  Type;
 };
@@ -2795,8 +2795,8 @@ struct SubvectorExprTrait< const volatile DenseSubvector<VT,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2 >
-struct SubvectorExprTrait< DVecDVecCrossExpr<VT1,VT2> >
+template< typename VT1, typename VT2, bool AF >
+struct SubvectorExprTrait< DVecDVecCrossExpr<VT1,VT2>, AF >
 {
  public:
    //**********************************************************************************************
@@ -2809,8 +2809,8 @@ struct SubvectorExprTrait< DVecDVecCrossExpr<VT1,VT2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2 >
-struct SubvectorExprTrait< DVecSVecCrossExpr<VT1,VT2> >
+template< typename VT1, typename VT2, bool AF >
+struct SubvectorExprTrait< DVecSVecCrossExpr<VT1,VT2>, AF >
 {
  public:
    //**********************************************************************************************
@@ -2823,8 +2823,8 @@ struct SubvectorExprTrait< DVecSVecCrossExpr<VT1,VT2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2 >
-struct SubvectorExprTrait< SVecDVecCrossExpr<VT1,VT2> >
+template< typename VT1, typename VT2, bool AF >
+struct SubvectorExprTrait< SVecDVecCrossExpr<VT1,VT2>, AF >
 {
  public:
    //**********************************************************************************************
@@ -2837,8 +2837,8 @@ struct SubvectorExprTrait< SVecDVecCrossExpr<VT1,VT2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2 >
-struct SubvectorExprTrait< SVecSVecCrossExpr<VT1,VT2> >
+template< typename VT1, typename VT2, bool AF >
+struct SubvectorExprTrait< SVecSVecCrossExpr<VT1,VT2>, AF >
 {
  public:
    //**********************************************************************************************

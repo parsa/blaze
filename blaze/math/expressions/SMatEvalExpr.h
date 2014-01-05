@@ -533,12 +533,12 @@ struct TSMatEvalExprTrait< SMatEvalExpr<MT,true> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct SubmatrixExprTrait< SMatEvalExpr<MT,SO> >
+template< typename MT, bool SO, bool AF >
+struct SubmatrixExprTrait< SMatEvalExpr<MT,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename EvalExprTrait< typename SubmatrixExprTrait<const MT>::Type >::Type  Type;
+   typedef typename EvalExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

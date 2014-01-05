@@ -462,12 +462,12 @@ inline const DMatTransExpr<MT,!SO> trans( const DenseMatrix<MT,SO>& dm )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct SubmatrixExprTrait< DMatTransExpr<MT,SO> >
+template< typename MT, bool SO, bool AF >
+struct SubmatrixExprTrait< DMatTransExpr<MT,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename TransExprTrait< typename SubmatrixExprTrait<const MT>::Type >::Type  Type;
+   typedef typename TransExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

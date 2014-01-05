@@ -585,12 +585,12 @@ inline const SVecTransExpr<VT,!TF> trans( const SparseVector<VT,TF>& sv )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF >
-struct SubvectorExprTrait< SVecTransExpr<VT,TF> >
+template< typename VT, bool TF, bool AF >
+struct SubvectorExprTrait< SVecTransExpr<VT,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename TransExprTrait< typename SubvectorExprTrait<const VT>::Type >::Type  Type;
+   typedef typename TransExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

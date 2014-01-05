@@ -585,12 +585,12 @@ inline const SMatTransExpr<MT,!SO> trans( const SparseMatrix<MT,SO>& sm )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct SubmatrixExprTrait< SMatTransExpr<MT,SO> >
+template< typename MT, bool SO, bool AF >
+struct SubmatrixExprTrait< SMatTransExpr<MT,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename TransExprTrait< typename SubmatrixExprTrait<const MT>::Type >::Type  Type;
+   typedef typename TransExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

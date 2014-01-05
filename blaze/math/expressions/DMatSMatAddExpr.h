@@ -713,13 +713,13 @@ struct TDMatTDMatSubExprTrait< DMatSMatAddExpr<MT1,MT2,true>, MT3 >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SO >
-struct SubmatrixExprTrait< DMatSMatAddExpr<MT1,MT2,SO> >
+template< typename MT1, typename MT2, bool SO, bool AF >
+struct SubmatrixExprTrait< DMatSMatAddExpr<MT1,MT2,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename AddExprTrait< typename SubmatrixExprTrait<const MT1>::Type
-                                , typename SubmatrixExprTrait<const MT2>::Type >::Type  Type;
+   typedef typename AddExprTrait< typename SubmatrixExprTrait<const MT1,AF>::Type
+                                , typename SubmatrixExprTrait<const MT2,AF>::Type >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

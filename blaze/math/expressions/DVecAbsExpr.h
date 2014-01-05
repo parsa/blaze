@@ -788,12 +788,12 @@ struct TDVecAbsExprTrait< DVecAbsExpr<VT,true> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF >
-struct SubvectorExprTrait< DVecAbsExpr<VT,TF> >
+template< typename VT, bool TF, bool AF >
+struct SubvectorExprTrait< DVecAbsExpr<VT,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename AbsExprTrait< typename SubvectorExprTrait<const VT>::Type >::Type  Type;
+   typedef typename AbsExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

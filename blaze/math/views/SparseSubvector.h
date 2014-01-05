@@ -2081,8 +2081,8 @@ struct SubvectorTrait< SparseSubvector<VT,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF >
-struct SubvectorExprTrait< SparseSubvector<VT,TF> >
+template< typename VT, bool TF, bool AF >
+struct SubvectorExprTrait< SparseSubvector<VT,TF>, AF >
 {
    typedef SparseSubvector<VT,TF>  Type;
 };
@@ -2092,8 +2092,8 @@ struct SubvectorExprTrait< SparseSubvector<VT,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF >
-struct SubvectorExprTrait< const SparseSubvector<VT,TF> >
+template< typename VT, bool TF, bool AF >
+struct SubvectorExprTrait< const SparseSubvector<VT,TF>, AF >
 {
    typedef SparseSubvector<VT,TF>  Type;
 };
@@ -2103,8 +2103,8 @@ struct SubvectorExprTrait< const SparseSubvector<VT,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF >
-struct SubvectorExprTrait< volatile SparseSubvector<VT,TF> >
+template< typename VT, bool TF, bool AF >
+struct SubvectorExprTrait< volatile SparseSubvector<VT,TF>, AF >
 {
    typedef SparseSubvector<VT,TF>  Type;
 };
@@ -2114,8 +2114,8 @@ struct SubvectorExprTrait< volatile SparseSubvector<VT,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF >
-struct SubvectorExprTrait< const volatile SparseSubvector<VT,TF> >
+template< typename VT, bool TF, bool AF >
+struct SubvectorExprTrait< const volatile SparseSubvector<VT,TF>, AF >
 {
    typedef SparseSubvector<VT,TF>  Type;
 };

@@ -2163,12 +2163,12 @@ struct TSMatTSMatMultExprTrait< SMatScalarMultExpr<MT1,ST1,true>, SMatScalarMult
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST, bool SO >
-struct SubmatrixExprTrait< SMatScalarMultExpr<MT,ST,SO> >
+template< typename MT, typename ST, bool SO, bool AF >
+struct SubmatrixExprTrait< SMatScalarMultExpr<MT,ST,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename MultExprTrait< typename SubmatrixExprTrait<const MT>::Type, ST >::Type  Type;
+   typedef typename MultExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type, ST >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

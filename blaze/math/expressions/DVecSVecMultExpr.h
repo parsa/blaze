@@ -677,13 +677,13 @@ inline const DVecSVecMultExpr<T1,T2,TF>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2, bool TF >
-struct SubvectorExprTrait< DVecSVecMultExpr<VT1,VT2,TF> >
+template< typename VT1, typename VT2, bool TF, bool AF >
+struct SubvectorExprTrait< DVecSVecMultExpr<VT1,VT2,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename MultExprTrait< typename SubvectorExprTrait<const VT1>::Type
-                                 , typename SubvectorExprTrait<const VT2>::Type >::Type  Type;
+   typedef typename MultExprTrait< typename SubvectorExprTrait<const VT1,AF>::Type
+                                 , typename SubvectorExprTrait<const VT2,AF>::Type >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

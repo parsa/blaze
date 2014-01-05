@@ -729,12 +729,12 @@ inline const DVecTransExpr<VT,!TF> trans( const DenseVector<VT,TF>& dv )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF >
-struct SubvectorExprTrait< DVecTransExpr<VT,TF> >
+template< typename VT, bool TF, bool AF >
+struct SubvectorExprTrait< DVecTransExpr<VT,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename TransExprTrait< typename SubvectorExprTrait<const VT>::Type >::Type  Type;
+   typedef typename TransExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

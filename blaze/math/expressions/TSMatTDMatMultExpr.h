@@ -759,13 +759,13 @@ struct TSVecTDMatMultExprTrait< VT, TSMatTDMatMultExpr<MT1,MT2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct SubmatrixExprTrait< TSMatTDMatMultExpr<MT1,MT2> >
+template< typename MT1, typename MT2, bool AF >
+struct SubmatrixExprTrait< TSMatTDMatMultExpr<MT1,MT2>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename MultExprTrait< typename SubmatrixExprTrait<const MT1>::Type
-                                 , typename SubmatrixExprTrait<const MT2>::Type >::Type  Type;
+   typedef typename MultExprTrait< typename SubmatrixExprTrait<const MT1,AF>::Type
+                                 , typename SubmatrixExprTrait<const MT2,AF>::Type >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

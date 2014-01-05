@@ -636,13 +636,13 @@ struct TDVecTDVecSubExprTrait< DVecSVecAddExpr<VT1,VT2,true>, VT3 >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2, bool TF >
-struct SubvectorExprTrait< DVecSVecAddExpr<VT1,VT2,TF> >
+template< typename VT1, typename VT2, bool TF, bool AF >
+struct SubvectorExprTrait< DVecSVecAddExpr<VT1,VT2,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename AddExprTrait< typename SubvectorExprTrait<const VT1>::Type
-                                , typename SubvectorExprTrait<const VT2>::Type >::Type  Type;
+   typedef typename AddExprTrait< typename SubvectorExprTrait<const VT1,AF>::Type
+                                , typename SubvectorExprTrait<const VT2,AF>::Type >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

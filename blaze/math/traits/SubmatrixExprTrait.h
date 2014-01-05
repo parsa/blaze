@@ -68,12 +68,13 @@ namespace blaze {
 /*!\brief Evaluation of the expression type type of a submatrix operation.
 // \ingroup math_traits
 //
-// Via this type trait it is possible to evaluate the return type of a submatrix operation. Given
-// the dense or sparse matrix type \a MT, the nested type \a Type corresponds to the resulting
-// return type. In case the given type is neither a dense nor a sparse matrix type, the resulting
-// data type \a Type is set to \a INVALID_TYPE.
+// Via this type trait it is possible to evaluate the return type of a submatrix operation.
+// Given the dense or sparse matrix type \a MT and the alignment flag \a AF, the nested type
+// \a Type corresponds to the resulting return type. In case the given type is neither a
+// dense nor a sparse matrix type, the resulting data type \a Type is set to \a INVALID_TYPE.
 */
-template< typename MT >  // Type of the matrix operand
+template< typename MT  // Type of the matrix operand
+        , bool AF >    // Alignment flag
 struct SubmatrixExprTrait
 {
  private:
@@ -108,7 +109,7 @@ struct SubmatrixExprTrait
    /*! \cond BLAZE_INTERNAL */
    typedef typename If< Or< IsComputation<Tmp>, IsTransExpr<Tmp> >
                       , typename If< Or< IsConst<Tmp>, IsVolatile<Tmp> >
-                                   , SubmatrixExprTrait< typename RemoveCV<Tmp>::Type >
+                                   , SubmatrixExprTrait< typename RemoveCV<Tmp>::Type, AF >
                                    , Failure
                                    >::Type
                       , typename If< IsDenseMatrix<Tmp>

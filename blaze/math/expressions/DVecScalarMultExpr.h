@@ -2319,12 +2319,12 @@ struct TDVecTSMatMultExprTrait< DVecScalarMultExpr<VT,ST,true>, MT >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, typename ST, bool TF >
-struct SubvectorExprTrait< DVecScalarMultExpr<VT,ST,TF> >
+template< typename VT, typename ST, bool TF, bool AF >
+struct SubvectorExprTrait< DVecScalarMultExpr<VT,ST,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename MultExprTrait< typename SubvectorExprTrait<const VT>::Type, ST >::Type  Type;
+   typedef typename MultExprTrait< typename SubvectorExprTrait<const VT,AF>::Type, ST >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

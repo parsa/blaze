@@ -4336,8 +4336,8 @@ struct SubmatrixTrait< SparseSubmatrix<MT,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct SubmatrixExprTrait< SparseSubmatrix<MT,SO> >
+template< typename MT, bool SO, bool AF >
+struct SubmatrixExprTrait< SparseSubmatrix<MT,SO>, AF >
 {
    typedef SparseSubmatrix<MT,SO>  Type;
 };
@@ -4347,8 +4347,8 @@ struct SubmatrixExprTrait< SparseSubmatrix<MT,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct SubmatrixExprTrait< const SparseSubmatrix<MT,SO> >
+template< typename MT, bool SO, bool AF >
+struct SubmatrixExprTrait< const SparseSubmatrix<MT,SO>, AF >
 {
    typedef SparseSubmatrix<MT,SO>  Type;
 };
@@ -4358,8 +4358,8 @@ struct SubmatrixExprTrait< const SparseSubmatrix<MT,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct SubmatrixExprTrait< volatile SparseSubmatrix<MT,SO> >
+template< typename MT, bool SO, bool AF >
+struct SubmatrixExprTrait< volatile SparseSubmatrix<MT,SO>, AF >
 {
    typedef SparseSubmatrix<MT,SO>  Type;
 };
@@ -4369,8 +4369,8 @@ struct SubmatrixExprTrait< volatile SparseSubmatrix<MT,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct SubmatrixExprTrait< const volatile SparseSubmatrix<MT,SO> >
+template< typename MT, bool SO, bool AF >
+struct SubmatrixExprTrait< const volatile SparseSubmatrix<MT,SO>, AF >
 {
    typedef SparseSubmatrix<MT,SO>  Type;
 };

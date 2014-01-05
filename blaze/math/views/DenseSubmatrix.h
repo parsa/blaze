@@ -4524,8 +4524,8 @@ struct SubmatrixTrait< DenseSubmatrix<MT,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct SubmatrixExprTrait< DenseSubmatrix<MT,SO> >
+template< typename MT, bool SO, bool AF >
+struct SubmatrixExprTrait< DenseSubmatrix<MT,SO>, AF >
 {
    typedef DenseSubmatrix<MT,SO>  Type;
 };
@@ -4535,8 +4535,8 @@ struct SubmatrixExprTrait< DenseSubmatrix<MT,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct SubmatrixExprTrait< const DenseSubmatrix<MT,SO> >
+template< typename MT, bool SO, bool AF >
+struct SubmatrixExprTrait< const DenseSubmatrix<MT,SO>, AF >
 {
    typedef DenseSubmatrix<MT,SO>  Type;
 };
@@ -4546,8 +4546,8 @@ struct SubmatrixExprTrait< const DenseSubmatrix<MT,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct SubmatrixExprTrait< volatile DenseSubmatrix<MT,SO> >
+template< typename MT, bool SO, bool AF >
+struct SubmatrixExprTrait< volatile DenseSubmatrix<MT,SO>, AF >
 {
    typedef DenseSubmatrix<MT,SO>  Type;
 };
@@ -4557,8 +4557,8 @@ struct SubmatrixExprTrait< volatile DenseSubmatrix<MT,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct SubmatrixExprTrait< const volatile DenseSubmatrix<MT,SO> >
+template< typename MT, bool SO, bool AF >
+struct SubmatrixExprTrait< const volatile DenseSubmatrix<MT,SO>, AF >
 {
    typedef DenseSubmatrix<MT,SO>  Type;
 };

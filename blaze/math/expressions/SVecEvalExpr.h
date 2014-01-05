@@ -508,12 +508,12 @@ struct TSVecEvalExprTrait< SVecEvalExpr<VT,true> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF >
-struct SubvectorExprTrait< SVecEvalExpr<VT,TF> >
+template< typename VT, bool TF, bool AF >
+struct SubvectorExprTrait< SVecEvalExpr<VT,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename EvalExprTrait< typename SubvectorExprTrait<const VT>::Type >::Type  Type;
+   typedef typename EvalExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
