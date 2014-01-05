@@ -63,6 +63,7 @@
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/math/views/AlignmentFlag.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
@@ -95,12 +96,14 @@ namespace blaze {
 // primitive. The type of the sparse vector is specified via the first template parameter:
 
    \code
-   template< typename VT, bool TF >
+   template< typename VT, bool AF, bool TF >
    class SparseSubvector;
    \endcode
 
 //  - VT: specifies the type of the sparse vector primitive. SparseSubvector can be used with
 //        every sparse vector primitive or view, but does not work with any vector expression type.
+//  - AF: the alignment flag specifies whether the subvector is aligned (\a blaze::aligned) or
+//        unaligned (\a blaze::unaligned). The default value is \a blaze::unaligned.
 //  - TF: specifies whether the vector is a row vector (\a blaze::rowVector) or a column
 //        vector (\a blaze::columnVector). This template parameter doesn't have to be explicitly
 //        defined, but is automatically derived from the first template parameter.
@@ -317,8 +320,9 @@ namespace blaze {
    \endcode
 */
 template< typename VT                         // Type of the sparse vector
+        , bool AF = unaligned                 // Alignment flag
         , bool TF = IsRowVector<VT>::value >  // Transpose flag
-class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
+class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
                       , private View
 {
  private:
@@ -340,7 +344,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SparseSubvector<VT,TF>              This;           //!< Type of this SparseSubvector instance.
+   typedef SparseSubvector<VT,AF,TF>           This;           //!< Type of this SparseSubvector instance.
    typedef typename SubvectorTrait<VT>::Type   ResultType;     //!< Result type for expression template evaluations.
    typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename VT::ElementType            ElementType;    //!< Type of the subvector elements.
@@ -752,8 +756,9 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
 
    //**Friend declarations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   template< typename VT2, bool TF2 >
-   friend SparseSubvector<VT2,TF2> subvector( const SparseSubvector<VT2,TF2>& sv, size_t index, size_t size );
+   template< typename VT2, bool AF2, bool TF2 >
+   friend SparseSubvector<VT2,AF2,TF2>
+      subvector( const SparseSubvector<VT2,AF2,TF2>& sv, size_t index, size_t size );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -790,8 +795,9 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,TF>, TF >
 // a \a std::invalid_argument exception is thrown.
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline SparseSubvector<VT,TF>::SparseSubvector( VT& vector, size_t index, size_t n )
+inline SparseSubvector<VT,AF,TF>::SparseSubvector( VT& vector, size_t index, size_t n )
    : vector_( vector )  // The sparse vector containing the subvector
    , offset_( index  )  // The offset of the subvector within the sparse vector
    , size_  ( n      )  // The size of the subvector
@@ -817,9 +823,10 @@ inline SparseSubvector<VT,TF>::SparseSubvector( VT& vector, size_t index, size_t
 // \return Reference to the accessed value.
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline typename SparseSubvector<VT,TF>::Reference
-   SparseSubvector<VT,TF>::operator[]( size_t index )
+inline typename SparseSubvector<VT,AF,TF>::Reference
+   SparseSubvector<VT,AF,TF>::operator[]( size_t index )
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid subvector access index" );
    return vector_[offset_+index];
@@ -834,9 +841,10 @@ inline typename SparseSubvector<VT,TF>::Reference
 // \return Reference to the accessed value.
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline typename SparseSubvector<VT,TF>::ConstReference
-   SparseSubvector<VT,TF>::operator[]( size_t index ) const
+inline typename SparseSubvector<VT,AF,TF>::ConstReference
+   SparseSubvector<VT,AF,TF>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid subvector access index" );
    return const_cast<const VT&>( vector_ )[offset_+index];
@@ -852,8 +860,9 @@ inline typename SparseSubvector<VT,TF>::ConstReference
 // This function returns an iterator to the first element of the subvector.
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline typename SparseSubvector<VT,TF>::Iterator SparseSubvector<VT,TF>::begin()
+inline typename SparseSubvector<VT,AF,TF>::Iterator SparseSubvector<VT,AF,TF>::begin()
 {
    if( offset_ == 0UL )
       return Iterator( vector_.begin(), offset_ );
@@ -871,8 +880,9 @@ inline typename SparseSubvector<VT,TF>::Iterator SparseSubvector<VT,TF>::begin()
 // This function returns an iterator to the first element of the subvector.
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::begin() const
+inline typename SparseSubvector<VT,AF,TF>::ConstIterator SparseSubvector<VT,AF,TF>::begin() const
 {
    if( offset_ == 0UL )
       return ConstIterator( vector_.cbegin(), offset_ );
@@ -890,8 +900,9 @@ inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::be
 // This function returns an iterator to the first element of the subvector.
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::cbegin() const
+inline typename SparseSubvector<VT,AF,TF>::ConstIterator SparseSubvector<VT,AF,TF>::cbegin() const
 {
    if( offset_ == 0UL )
       return ConstIterator( vector_.cbegin(), offset_ );
@@ -909,8 +920,9 @@ inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::cb
 // This function returns an iterator just past the last element of the subvector.
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline typename SparseSubvector<VT,TF>::Iterator SparseSubvector<VT,TF>::end()
+inline typename SparseSubvector<VT,AF,TF>::Iterator SparseSubvector<VT,AF,TF>::end()
 {
    if( offset_ + size_ == vector_.size() )
       return Iterator( vector_.end(), offset_ );
@@ -928,8 +940,9 @@ inline typename SparseSubvector<VT,TF>::Iterator SparseSubvector<VT,TF>::end()
 // This function returns an iterator just past the last element of the subvector.
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::end() const
+inline typename SparseSubvector<VT,AF,TF>::ConstIterator SparseSubvector<VT,AF,TF>::end() const
 {
    if( offset_ + size_ == vector_.size() )
       return ConstIterator( vector_.cend(), offset_ );
@@ -947,8 +960,9 @@ inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::en
 // This function returns an iterator just past the last element of the subvector.
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::cend() const
+inline typename SparseSubvector<VT,AF,TF>::ConstIterator SparseSubvector<VT,AF,TF>::cend() const
 {
    if( offset_ + size_ == vector_.size() )
       return ConstIterator( vector_.cend(), offset_ );
@@ -977,8 +991,10 @@ inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::ce
 // exception is thrown.
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator=( const SparseSubvector& rhs )
+inline SparseSubvector<VT,AF,TF>&
+   SparseSubvector<VT,AF,TF>::operator=( const SparseSubvector& rhs )
 {
    using blaze::assign;
 
@@ -1017,9 +1033,11 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator=( const SparseSu
 // exception is thrown.
 */
 template< typename VT     // Type of the sparse vector
+        , bool AF         // Alignment flag
         , bool TF >       // Transpose flag
 template< typename VT2 >  // Type of the right-hand side dense vector
-inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator=( const DenseVector<VT2,TF>& rhs )
+inline SparseSubvector<VT,AF,TF>&
+   SparseSubvector<VT,AF,TF>::operator=( const DenseVector<VT2,TF>& rhs )
 {
    using blaze::assign;
 
@@ -1056,9 +1074,11 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator=( const DenseVec
 // exception is thrown.
 */
 template< typename VT     // Type of the sparse vector
+        , bool AF         // Alignment flag
         , bool TF >       // Transpose flag
 template< typename VT2 >  // Type of the right-hand side sparse vector
-inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator=( const SparseVector<VT2,TF>& rhs )
+inline SparseSubvector<VT,AF,TF>&
+   SparseSubvector<VT,AF,TF>::operator=( const SparseVector<VT2,TF>& rhs )
 {
    using blaze::assign;
 
@@ -1095,9 +1115,11 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator=( const SparseVe
 // is thrown.
 */
 template< typename VT     // Type of the sparse vector
+        , bool AF         // Alignment flag
         , bool TF >       // Transpose flag
 template< typename VT2 >  // Type of the right-hand side vector
-inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator+=( const Vector<VT2,TF>& rhs )
+inline SparseSubvector<VT,AF,TF>&
+   SparseSubvector<VT,AF,TF>::operator+=( const Vector<VT2,TF>& rhs )
 {
    using blaze::addAssign;
 
@@ -1122,9 +1144,11 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator+=( const Vector<
 // is thrown.
 */
 template< typename VT     // Type of the sparse vector
+        , bool AF         // Alignment flag
         , bool TF >       // Transpose flag
 template< typename VT2 >  // Type of the right-hand side vector
-inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator-=( const Vector<VT2,TF>& rhs )
+inline SparseSubvector<VT,AF,TF>&
+   SparseSubvector<VT,AF,TF>::operator-=( const Vector<VT2,TF>& rhs )
 {
    using blaze::subAssign;
 
@@ -1150,9 +1174,11 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator-=( const Vector<
 // is thrown.
 */
 template< typename VT     // Type of the sparse vector
+        , bool AF         // Alignment flag
         , bool TF >       // Transpose flag
 template< typename VT2 >  // Type of the right-hand side vector
-inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator*=( const Vector<VT2,TF>& rhs )
+inline SparseSubvector<VT,AF,TF>&
+   SparseSubvector<VT,AF,TF>::operator*=( const Vector<VT2,TF>& rhs )
 {
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
@@ -1184,10 +1210,11 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::operator*=( const Vector<
 // scalar built-in data type.
 */
 template< typename VT       // Type of the sparse vector
+        , bool AF           // Alignment flag
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, SparseSubvector<VT,TF> >::Type&
-   SparseSubvector<VT,TF>::operator*=( Other rhs )
+inline typename EnableIf< IsNumeric<Other>, SparseSubvector<VT,AF,TF> >::Type&
+   SparseSubvector<VT,AF,TF>::operator*=( Other rhs )
 {
    const Iterator last( end() );
    for( Iterator element=begin(); element!=last; ++element )
@@ -1210,10 +1237,11 @@ inline typename EnableIf< IsNumeric<Other>, SparseSubvector<VT,TF> >::Type&
 // type.
 */
 template< typename VT       // Type of the sparse vector
+        , bool AF           // Alignment flag
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, SparseSubvector<VT,TF> >::Type&
-   SparseSubvector<VT,TF>::operator/=( Other rhs )
+inline typename EnableIf< IsNumeric<Other>, SparseSubvector<VT,AF,TF> >::Type&
+   SparseSubvector<VT,AF,TF>::operator/=( Other rhs )
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
@@ -1253,8 +1281,9 @@ inline typename EnableIf< IsNumeric<Other>, SparseSubvector<VT,TF> >::Type&
 // \return The size of the sparse subvector.
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline size_t SparseSubvector<VT,TF>::size() const
+inline size_t SparseSubvector<VT,AF,TF>::size() const
 {
    return size_;
 }
@@ -1267,8 +1296,9 @@ inline size_t SparseSubvector<VT,TF>::size() const
 // \return The capacity of the sparse subvector.
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline size_t SparseSubvector<VT,TF>::capacity() const
+inline size_t SparseSubvector<VT,AF,TF>::capacity() const
 {
    return nonZeros() + vector_.capacity() - vector_.nonZeros();
 }
@@ -1283,8 +1313,9 @@ inline size_t SparseSubvector<VT,TF>::capacity() const
 // Note that the number of non-zero elements is always smaller than the size of the subvector.
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline size_t SparseSubvector<VT,TF>::nonZeros() const
+inline size_t SparseSubvector<VT,AF,TF>::nonZeros() const
 {
    return end() - begin();
 }
@@ -1297,8 +1328,9 @@ inline size_t SparseSubvector<VT,TF>::nonZeros() const
 // \return void
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline void SparseSubvector<VT,TF>::reset()
+inline void SparseSubvector<VT,AF,TF>::reset()
 {
    vector_.erase( vector_.lowerBound( offset_ ), vector_.lowerBound( offset_ + size_ ) );
 }
@@ -1318,9 +1350,10 @@ inline void SparseSubvector<VT,TF>::reset()
 // a \a std::invalid_argument exception is thrown.
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline typename SparseSubvector<VT,TF>::Iterator
-   SparseSubvector<VT,TF>::insert( size_t index, const ElementType& value )
+inline typename SparseSubvector<VT,AF,TF>::Iterator
+   SparseSubvector<VT,AF,TF>::insert( size_t index, const ElementType& value )
 {
    return Iterator( vector_.insert( offset_ + index, value ), offset_ );
 }
@@ -1336,8 +1369,9 @@ inline typename SparseSubvector<VT,TF>::Iterator
 // This function erases an element from the sparse subvector.
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline void SparseSubvector<VT,TF>::erase( size_t index )
+inline void SparseSubvector<VT,AF,TF>::erase( size_t index )
 {
    vector_.erase( offset_ + index );
 }
@@ -1353,8 +1387,9 @@ inline void SparseSubvector<VT,TF>::erase( size_t index )
 // This function erases an element from the sparse subvector.
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline typename SparseSubvector<VT,TF>::Iterator SparseSubvector<VT,TF>::erase( Iterator pos )
+inline typename SparseSubvector<VT,AF,TF>::Iterator SparseSubvector<VT,AF,TF>::erase( Iterator pos )
 {
    return Iterator( vector_.erase( pos.pos_ ), offset_ );
 }
@@ -1371,8 +1406,10 @@ inline typename SparseSubvector<VT,TF>::Iterator SparseSubvector<VT,TF>::erase( 
 // This function erases a range of elements from the sparse subvector.
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline typename SparseSubvector<VT,TF>::Iterator SparseSubvector<VT,TF>::erase( Iterator first, Iterator last )
+inline typename SparseSubvector<VT,AF,TF>::Iterator
+   SparseSubvector<VT,AF,TF>::erase( Iterator first, Iterator last )
 {
    return Iterator( vector_.erase( first.pos_, last.pos_ ), offset_ );
 }
@@ -1389,8 +1426,9 @@ inline typename SparseSubvector<VT,TF>::Iterator SparseSubvector<VT,TF>::erase( 
 // current values of the subvector elements are preserved.
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-void SparseSubvector<VT,TF>::reserve( size_t n )
+void SparseSubvector<VT,AF,TF>::reserve( size_t n )
 {
    const size_t current( capacity() );
 
@@ -1408,9 +1446,10 @@ void SparseSubvector<VT,TF>::reserve( size_t n )
 // \return Reference to the sparse subvector.
 */
 template< typename VT       // Type of the sparse vector
+        , bool AF           // Alignment flag
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the scalar value
-inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::scale( Other scalar )
+inline SparseSubvector<VT,AF,TF>& SparseSubvector<VT,AF,TF>::scale( Other scalar )
 {
    for( Iterator element=begin(); element!=end(); ++element )
       element->value() *= scalar;
@@ -1441,8 +1480,10 @@ inline SparseSubvector<VT,TF>& SparseSubvector<VT,TF>::scale( Other scalar )
 // via the subscript operator or the insert() function!
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline typename SparseSubvector<VT,TF>::Iterator SparseSubvector<VT,TF>::find( size_t index )
+inline typename SparseSubvector<VT,AF,TF>::Iterator
+   SparseSubvector<VT,AF,TF>::find( size_t index )
 {
    const typename VT::Iterator pos( vector_.find( offset_ + index ) );
 
@@ -1468,8 +1509,10 @@ inline typename SparseSubvector<VT,TF>::Iterator SparseSubvector<VT,TF>::find( s
 // via the subscript operator or the insert() function!
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::find( size_t index ) const
+inline typename SparseSubvector<VT,AF,TF>::ConstIterator
+   SparseSubvector<VT,AF,TF>::find( size_t index ) const
 {
    const typename VT::ConstIterator pos( vector_.find( offset_ + index ) );
 
@@ -1494,8 +1537,10 @@ inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::fi
 // or the insert() function!
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline typename SparseSubvector<VT,TF>::Iterator SparseSubvector<VT,TF>::lowerBound( size_t index )
+inline typename SparseSubvector<VT,AF,TF>::Iterator
+   SparseSubvector<VT,AF,TF>::lowerBound( size_t index )
 {
    return Iterator( vector_.lowerBound( offset_ + index ), offset_ );
 }
@@ -1515,8 +1560,10 @@ inline typename SparseSubvector<VT,TF>::Iterator SparseSubvector<VT,TF>::lowerBo
 // or the insert() function!
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::lowerBound( size_t index ) const
+inline typename SparseSubvector<VT,AF,TF>::ConstIterator
+   SparseSubvector<VT,AF,TF>::lowerBound( size_t index ) const
 {
    return ConstIterator( vector_.lowerBound( offset_ + index ), offset_ );
 }
@@ -1536,8 +1583,10 @@ inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::lo
 // or the insert() function!
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline typename SparseSubvector<VT,TF>::Iterator SparseSubvector<VT,TF>::upperBound( size_t index )
+inline typename SparseSubvector<VT,AF,TF>::Iterator
+   SparseSubvector<VT,AF,TF>::upperBound( size_t index )
 {
    return Iterator( vector_.upperBound( offset_ + index ), offset_ );
 }
@@ -1557,8 +1606,10 @@ inline typename SparseSubvector<VT,TF>::Iterator SparseSubvector<VT,TF>::upperBo
 // or the insert() function!
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::upperBound( size_t index ) const
+inline typename SparseSubvector<VT,AF,TF>::ConstIterator
+   SparseSubvector<VT,AF,TF>::upperBound( size_t index ) const
 {
    return ConstIterator( vector_.upperBound( offset_ + index ), offset_ );
 }
@@ -1598,8 +1649,9 @@ inline typename SparseSubvector<VT,TF>::ConstIterator SparseSubvector<VT,TF>::up
 // returned by the end() functions!
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline void SparseSubvector<VT,TF>::append( size_t index, const ElementType& value, bool check )
+inline void SparseSubvector<VT,AF,TF>::append( size_t index, const ElementType& value, bool check )
 {
    if( offset_ + size_ == vector_.size() )
       vector_.append( offset_ + index, value, check );
@@ -1628,9 +1680,10 @@ inline void SparseSubvector<VT,TF>::append( size_t index, const ElementType& val
 // to optimize the evaluation.
 */
 template< typename VT       // Type of the sparse vector
+        , bool AF           // Alignment flag
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseSubvector<VT,TF>::canAlias( const Other* alias ) const
+inline bool SparseSubvector<VT,AF,TF>::canAlias( const Other* alias ) const
 {
    return static_cast<const void*>( &vector_ ) == static_cast<const void*>( alias );
 }
@@ -1648,9 +1701,10 @@ inline bool SparseSubvector<VT,TF>::canAlias( const Other* alias ) const
 // expressions to optimize the evaluation.
 */
 template< typename VT       // Type of the sparse vector
+        , bool AF           // Alignment flag
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseSubvector<VT,TF>::isAliased( const Other* alias ) const
+inline bool SparseSubvector<VT,AF,TF>::isAliased( const Other* alias ) const
 {
    return static_cast<const void*>( &vector_ ) == static_cast<const void*>( alias );
 }
@@ -1669,9 +1723,10 @@ inline bool SparseSubvector<VT,TF>::isAliased( const Other* alias ) const
 // assignment operator.
 */
 template< typename VT     // Type of the sparse vector
+        , bool AF         // Alignment flag
         , bool TF >       // Transpose flag
 template< typename VT2 >  // Type of the right-hand side dense vector
-inline void SparseSubvector<VT,TF>::assign( const DenseVector<VT2,TF>& rhs )
+inline void SparseSubvector<VT,AF,TF>::assign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
@@ -1697,9 +1752,10 @@ inline void SparseSubvector<VT,TF>::assign( const DenseVector<VT2,TF>& rhs )
 // assignment operator.
 */
 template< typename VT     // Type of the sparse vector
+        , bool AF         // Alignment flag
         , bool TF >       // Transpose flag
 template< typename VT2 >  // Type of the right-hand side sparse vector
-inline void SparseSubvector<VT,TF>::assign( const SparseVector<VT2,TF>& rhs )
+inline void SparseSubvector<VT,AF,TF>::assign( const SparseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
@@ -1725,9 +1781,10 @@ inline void SparseSubvector<VT,TF>::assign( const SparseVector<VT2,TF>& rhs )
 // assignment operator.
 */
 template< typename VT     // Type of the sparse vector
+        , bool AF         // Alignment flag
         , bool TF >       // Transpose flag
 template< typename VT2 >  // Type of the right-hand side dense vector
-inline void SparseSubvector<VT,TF>::addAssign( const DenseVector<VT2,TF>& rhs )
+inline void SparseSubvector<VT,AF,TF>::addAssign( const DenseVector<VT2,TF>& rhs )
 {
    typedef typename AddTrait<ResultType,typename VT2::ResultType>::Type  AddType;
 
@@ -1756,9 +1813,10 @@ inline void SparseSubvector<VT,TF>::addAssign( const DenseVector<VT2,TF>& rhs )
 // assignment operator.
 */
 template< typename VT     // Type of the sparse vector
+        , bool AF         // Alignment flag
         , bool TF >       // Transpose flag
 template< typename VT2 >  // Type of the right-hand side sparse vector
-inline void SparseSubvector<VT,TF>::addAssign( const SparseVector<VT2,TF>& rhs )
+inline void SparseSubvector<VT,AF,TF>::addAssign( const SparseVector<VT2,TF>& rhs )
 {
    typedef typename AddTrait<ResultType,typename VT2::ResultType>::Type  AddType;
 
@@ -1787,9 +1845,10 @@ inline void SparseSubvector<VT,TF>::addAssign( const SparseVector<VT2,TF>& rhs )
 // assignment operator.
 */
 template< typename VT     // Type of the sparse vector
+        , bool AF         // Alignment flag
         , bool TF >       // Transpose flag
 template< typename VT2 >  // Type of the right-hand side dense vector
-inline void SparseSubvector<VT,TF>::subAssign( const DenseVector<VT2,TF>& rhs )
+inline void SparseSubvector<VT,AF,TF>::subAssign( const DenseVector<VT2,TF>& rhs )
 {
    typedef typename SubTrait<ResultType,typename VT2::ResultType>::Type  SubType;
 
@@ -1818,9 +1877,10 @@ inline void SparseSubvector<VT,TF>::subAssign( const DenseVector<VT2,TF>& rhs )
 // assignment operator.
 */
 template< typename VT     // Type of the sparse vector
+        , bool AF         // Alignment flag
         , bool TF >       // Transpose flag
 template< typename VT2 >  // Type of the right-hand side sparse vector
-inline void SparseSubvector<VT,TF>::subAssign( const SparseVector<VT2,TF>& rhs )
+inline void SparseSubvector<VT,AF,TF>::subAssign( const SparseVector<VT2,TF>& rhs )
 {
    typedef typename SubTrait<ResultType,typename VT2::ResultType>::Type  SubType;
 
@@ -1852,14 +1912,14 @@ inline void SparseSubvector<VT,TF>::subAssign( const SparseVector<VT2,TF>& rhs )
 //*************************************************************************************************
 /*!\name SparseSubvector operators */
 //@{
-template< typename VT, bool TF >
-inline void reset( SparseSubvector<VT,TF>& sv );
+template< typename VT, bool AF, bool TF >
+inline void reset( SparseSubvector<VT,AF,TF>& sv );
 
-template< typename VT, bool TF >
-inline void clear( SparseSubvector<VT,TF>& sv );
+template< typename VT, bool AF, bool TF >
+inline void clear( SparseSubvector<VT,AF,TF>& sv );
 
-template< typename VT, bool TF >
-inline bool isDefault( const SparseSubvector<VT,TF>& sv );
+template< typename VT, bool AF, bool TF >
+inline bool isDefault( const SparseSubvector<VT,AF,TF>& sv );
 //@}
 //*************************************************************************************************
 
@@ -1872,8 +1932,9 @@ inline bool isDefault( const SparseSubvector<VT,TF>& sv );
 // \return void
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline void reset( SparseSubvector<VT,TF>& sv )
+inline void reset( SparseSubvector<VT,AF,TF>& sv )
 {
    sv.reset();
 }
@@ -1890,8 +1951,9 @@ inline void reset( SparseSubvector<VT,TF>& sv )
 // Clearing a sparse subvector is equivalent to resetting it via the reset() function.
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline void clear( SparseSubvector<VT,TF>& sv )
+inline void clear( SparseSubvector<VT,AF,TF>& sv )
 {
    sv.reset();
 }
@@ -1917,10 +1979,11 @@ inline void clear( SparseSubvector<VT,TF>& sv )
    \endcode
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline bool isDefault( const SparseSubvector<VT,TF>& sv )
+inline bool isDefault( const SparseSubvector<VT,AF,TF>& sv )
 {
-   typedef typename SparseSubvector<VT,TF>::ConstIterator  ConstIterator;
+   typedef typename SparseSubvector<VT,AF,TF>::ConstIterator  ConstIterator;
 
    const ConstIterator end( sv.end() );
    for( ConstIterator element=sv.begin(); element!=end; ++element )
@@ -1967,6 +2030,7 @@ inline bool isDefault( const SparseSubvector<VT,TF>& sv )
 // vector) a \a std::invalid_argument exception is thrown.
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
 inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, SparseSubvector<VT> >::Type
    subvector( SparseVector<VT,TF>& sv, size_t index, size_t size )
@@ -2007,6 +2071,7 @@ inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, SparseSubve
 // vector) a \a std::invalid_argument exception is thrown.
 */
 template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
 inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, SparseSubvector<const VT> >::Type
    subvector( const SparseVector<VT,TF>& sv, size_t index, size_t size )
@@ -2039,14 +2104,15 @@ inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, SparseSubve
 // This function returns an expression representing the specified subvector of the given
 // sparse subvector.
 */
-template< typename VT  // Type of the sparse subvector
+template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline SparseSubvector<VT,TF>
-   subvector( const SparseSubvector<VT,TF>& sv, size_t index, size_t size )
+inline SparseSubvector<VT,AF,TF>
+   subvector( const SparseSubvector<VT,AF,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SparseSubvector<VT,TF>( sv.vector_, sv.offset_ + index, size );
+   return SparseSubvector<VT,AF,TF>( sv.vector_, sv.offset_ + index, size );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2062,10 +2128,10 @@ inline SparseSubvector<VT,TF>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF >
-struct SubvectorTrait< SparseSubvector<VT,TF> >
+template< typename VT, bool AF, bool TF >
+struct SubvectorTrait< SparseSubvector<VT,AF,TF> >
 {
-   typedef typename SubvectorTrait< typename SparseSubvector<VT,TF>::ResultType >::Type  Type;
+   typedef typename SubvectorTrait< typename SparseSubvector<VT,AF,TF>::ResultType >::Type  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2081,10 +2147,10 @@ struct SubvectorTrait< SparseSubvector<VT,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF, bool AF >
-struct SubvectorExprTrait< SparseSubvector<VT,TF>, AF >
+template< typename VT, bool AF1, bool TF, bool AF2 >
+struct SubvectorExprTrait< SparseSubvector<VT,AF1,TF>, AF2 >
 {
-   typedef SparseSubvector<VT,TF>  Type;
+   typedef SparseSubvector<VT,AF2,TF>  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2092,10 +2158,10 @@ struct SubvectorExprTrait< SparseSubvector<VT,TF>, AF >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF, bool AF >
-struct SubvectorExprTrait< const SparseSubvector<VT,TF>, AF >
+template< typename VT, bool AF1, bool TF, bool AF2 >
+struct SubvectorExprTrait< const SparseSubvector<VT,AF1,TF>, AF2 >
 {
-   typedef SparseSubvector<VT,TF>  Type;
+   typedef SparseSubvector<VT,AF2,TF>  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2103,10 +2169,10 @@ struct SubvectorExprTrait< const SparseSubvector<VT,TF>, AF >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF, bool AF >
-struct SubvectorExprTrait< volatile SparseSubvector<VT,TF>, AF >
+template< typename VT, bool AF1, bool TF, bool AF2 >
+struct SubvectorExprTrait< volatile SparseSubvector<VT,AF1,TF>, AF2 >
 {
-   typedef SparseSubvector<VT,TF>  Type;
+   typedef SparseSubvector<VT,AF2,TF>  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2114,10 +2180,10 @@ struct SubvectorExprTrait< volatile SparseSubvector<VT,TF>, AF >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF, bool AF >
-struct SubvectorExprTrait< const volatile SparseSubvector<VT,TF>, AF >
+template< typename VT, bool AF1, bool TF, bool AF2 >
+struct SubvectorExprTrait< const volatile SparseSubvector<VT,AF1,TF>, AF2 >
 {
-   typedef SparseSubvector<VT,TF>  Type;
+   typedef SparseSubvector<VT,AF2,TF>  Type;
 };
 /*! \endcond */
 //*************************************************************************************************

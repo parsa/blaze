@@ -94,7 +94,7 @@ struct SubvectorExprTrait
    //**struct SparseResult*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
-   struct SparseResult { typedef SparseSubvector<T,IsRowVector<T>::value>  Type; };
+   struct SparseResult { typedef SparseSubvector<T,AF,IsRowVector<T>::value>  Type; };
    /*! \endcond */
    //**********************************************************************************************
 
