@@ -45,7 +45,7 @@
 #include <string>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/DynamicVector.h>
-#include <blaze/math/views/DenseSubvector.h>
+#include <blaze/math/DenseSubvector.h>
 #include <blazetest/system/Types.h>
 
 

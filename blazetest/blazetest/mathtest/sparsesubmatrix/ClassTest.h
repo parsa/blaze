@@ -45,7 +45,7 @@
 #include <string>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/CompressedMatrix.h>
-#include <blaze/math/views/SparseSubmatrix.h>
+#include <blaze/math/SparseSubmatrix.h>
 #include <blazetest/system/Types.h>
 
 

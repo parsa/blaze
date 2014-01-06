@@ -45,7 +45,7 @@
 #include <string>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/CompressedVector.h>
-#include <blaze/math/views/SparseSubvector.h>
+#include <blaze/math/SparseSubvector.h>
 #include <blazetest/system/Types.h>
 
 

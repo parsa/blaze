@@ -45,7 +45,7 @@
 #include <string>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/views/DenseSubmatrix.h>
+#include <blaze/math/DenseSubmatrix.h>
 #include <blazetest/system/Types.h>
 
 
