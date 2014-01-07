@@ -46,7 +46,7 @@
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/views/DenseRow.h>
+#include <blaze/math/DenseRow.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blazetest/system/Types.h>
 

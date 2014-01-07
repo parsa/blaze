@@ -46,7 +46,7 @@
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/CompressedMatrix.h>
-#include <blaze/math/views/SparseRow.h>
+#include <blaze/math/SparseRow.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blazetest/system/Types.h>
 
