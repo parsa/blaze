@@ -58,13 +58,9 @@
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
-#include <blaze/math/typetraits/IsComputation.h>
-#include <blaze/math/typetraits/IsCrossExpr.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
-#include <blaze/math/typetraits/IsTransExpr.h>
-#include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/views/AlignmentFlag.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Streaming.h>
@@ -830,8 +826,8 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
 
    //**Friend declarations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   template< typename VT2, bool AF2, bool TF2 >
-   friend DenseSubvector<VT2,AF2,TF2>
+   template< bool AF1, typename VT2, bool AF2, bool TF2 >
+   friend const DenseSubvector<VT2,AF1,TF2>
       subvector( const DenseSubvector<VT2,AF2,TF2>& dv, size_t index, size_t size );
    /*! \endcond */
    //**********************************************************************************************
@@ -2147,9 +2143,9 @@ class DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, unaligned, false >
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename VT, bool AF, bool TF >
-   friend DenseSubvector<VT,AF,TF>
-      subvector( const DenseSubvector<VT,AF,TF>& dv, size_t index, size_t size );
+   template< bool AF1, typename VT, bool AF2, bool TF >
+   friend const DenseSubvector<VT,AF1,TF>
+      subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -2274,9 +2270,9 @@ class DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, unaligned, false >
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename VT, bool AF, bool TF >
-   friend DenseSubvector<VT,AF,TF>
-      subvector( const DenseSubvector<VT,AF,TF>& dv, size_t index, size_t size );
+   template< bool AF1, typename VT, bool AF2, bool TF >
+   friend const DenseSubvector<VT,AF1,TF>
+      subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -2401,9 +2397,9 @@ class DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, unaligned, false >
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename VT, bool AF, bool TF >
-   friend DenseSubvector<VT,AF,TF>
-      subvector( const DenseSubvector<VT,AF,TF>& dv, size_t index, size_t size );
+   template< bool AF1, typename VT, bool AF2, bool TF >
+   friend const DenseSubvector<VT,AF1,TF>
+      subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -2528,9 +2524,9 @@ class DenseSubvector< SVecSVecCrossExpr<VT1,VT2>, unaligned, false >
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename VT, bool AF, bool TF >
-   friend DenseSubvector<VT,AF,TF>
-      subvector( const DenseSubvector<VT,AF,TF>& dv, size_t index, size_t size );
+   template< bool AF1, typename VT, bool AF2, bool TF >
+   friend const DenseSubvector<VT,AF1,TF>
+      subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -2633,96 +2629,6 @@ inline bool isDefault( const DenseSubvector<VT,AF,TF>& dv )
 
 //=================================================================================================
 //
-//  GLOBAL FUNCTION
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Creating a view on a specific subvector of the given dense vector.
-// \ingroup views
-//
-// \param dv The dense vector containing the subvector.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specific subvector of the dense vector.
-// \exception std::invalid_argument Invalid subvector specification.
-//
-// This function returns an expression representing the specified subvector of the given dense
-// vector. The following example demonstrates the creation of a subvector of size 8 starting
-// from index 4:
-
-   \code
-   using blaze::columnVector;
-
-   typedef blaze::DynamicVector<double,columnVector>  Vector;
-
-   Vector v;
-   // ... Resizing and initialization
-   blaze::DenseSubvector<Vector> = subvector( v, 4UL, 8UL );
-   \endcode
-
-// In case the subvector is not properly specified (i.e. if the specified first index is larger
-// than the total size of the given vector or the subvector is specified beyond the size of the
-// vector) a \a std::invalid_argument exception is thrown.
-*/
-template< typename VT  // Type of the dense vector
-        , bool AF      // Alignment flag
-        , bool TF >    // Transpose flag
-inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, DenseSubvector<VT> >::Type
-   subvector( DenseVector<VT,TF>& dv, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return DenseSubvector<VT>( ~dv, index, size );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Creating a view on a specific subvector of the given dense vector.
-// \ingroup views
-//
-// \param dv The dense vector containing the subvector.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specific subvector of the dense vector.
-// \exception std::invalid_argument Invalid subvector specification.
-//
-// This function returns an expression representing the specified subvector of the given dense
-// vector. The following example demonstrates the creation of a subvector of size 8 starting
-// from index 4:
-
-   \code
-   using blaze::columnVector;
-
-   typedef blaze::DynamicVector<double,columnVector>  Vector;
-
-   Vector v;
-   // ... Resizing and initialization
-   blaze::DenseSubvector<Vector> = subvector( v, 4UL, 8UL );
-   \endcode
-
-// In case the subvector is not properly specified (i.e. if the specified first index is larger
-// than the total size of the given vector or the subvector is specified beyond the size of the
-// vector) a \a std::invalid_argument exception is thrown.
-*/
-template< typename VT  // Type of the dense vector
-        , bool AF      // Alignment flag
-        , bool TF >    // Transpose flag
-inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, DenseSubvector<const VT> >::Type
-   subvector( const DenseVector<VT,TF>& dv, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return DenseSubvector<const VT>( ~dv, index, size );
-}
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  GLOBAL RESTRUCTURING OPERATORS
 //
 //=================================================================================================
@@ -2740,42 +2646,16 @@ inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, DenseSubvec
 // This function returns an expression representing the specified subvector of the given
 // dense subvector.
 */
-template< typename VT  // Type of the dense vector
-        , bool AF      // Alignment flag
+template< bool AF1     // Required alignment flag
+        , typename VT  // Type of the dense vector
+        , bool AF2     // Present alignment flag
         , bool TF >    // Transpose flag
-inline DenseSubvector<VT,AF,TF>
-   subvector( const DenseSubvector<VT,AF,TF>& dv, size_t index, size_t size )
+inline const DenseSubvector<VT,AF1,TF>
+   subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DenseSubvector<VT,AF,TF>( dv.vector_, dv.offset_ + index, size );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given vector/vector cross product.
-// \ingroup views
-//
-// \param dv The constant vector/vector cross product.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specified subvector of the multiplication.
-//
-// This function returns an expression representing the specified subvector of the given
-// vector/vector cross product.
-*/
-template< typename VT  // Type of the dense vector
-        , bool AF      // Alignment flag
-        , bool TF >    // Transpose flag
-inline typename EnableIf< IsCrossExpr<VT>, DenseSubvector<VT> >::Type
-   subvector( const DenseVector<VT,TF>& dv, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return DenseSubvector<VT>( ~dv, index, size );
+   return DenseSubvector<VT,AF1,TF>( dv.vector_, dv.offset_ + index, size );
 }
 /*! \endcond */
 //*************************************************************************************************

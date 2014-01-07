@@ -42,7 +42,10 @@
 
 #include <blaze/math/expressions/Vector.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
+#include <blaze/math/typetraits/IsComputation.h>
+#include <blaze/math/typetraits/IsCrossExpr.h>
 #include <blaze/math/typetraits/IsMatVecMultExpr.h>
+#include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/typetraits/IsTVecMatMultExpr.h>
 #include <blaze/math/typetraits/IsVecAbsExpr.h>
 #include <blaze/math/typetraits/IsVecEvalExpr.h>
@@ -52,12 +55,334 @@
 #include <blaze/math/typetraits/IsVecVecAddExpr.h>
 #include <blaze/math/typetraits/IsVecVecMultExpr.h>
 #include <blaze/math/typetraits/IsVecVecSubExpr.h>
+#include <blaze/math/views/AlignmentFlag.h>
+#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/Types.h>
 
 
 namespace blaze {
+
+//=================================================================================================
+//
+//  GLOBAL FUNCTION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Creating a view on a specific subvector of the given vector.
+// \ingroup views
+//
+// \param vector The vector containing the subvector.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
+// \return View on the specific subvector of the vector.
+// \exception std::invalid_argument Invalid subvector specification.
+//
+// This function returns an expression representing the specified subvector of the given vector.
+// The following example demonstrates the creation of a dense and sparse subvector:
+
+   \code
+   using blaze::columnVector;
+   using blaze::rowVector;
+
+   typedef blaze::DynamicVector<double,columnVector>  DenseVector;
+   typedef blaze::CompressedVector<int,rowVector>     SparseVector;
+
+   DenseVector  d;
+   SparseVector s;
+   // ... Resizing and initialization
+
+   // Creating a dense subvector of size 8, starting from index 4
+   blaze::DenseSubvector<DenseVector> dsv = subvector( d, 4UL, 8UL );
+
+   // Creating a sparse subvector of size 7, starting from index 5
+   blaze::SparseSubvector<SparseVector> ssv = subvector( s, 5UL, 7UL );
+   \endcode
+
+// In case the subvector is not properly specified (i.e. if the specified first index is larger
+// than the total size of the given vector or the subvector is specified beyond the size of the
+// vector) a \a std::invalid_argument exception is thrown.
+//
+// Please note that this function creates an unaligned dense or sparse subvector. For instance,
+// the creation of the dense subvector is equivalent to the following three function calls:
+
+   \code
+   blaze::DenseSubvector<DenseVector>           dsv = subvector<unaligned>( v, 4UL, 8UL );
+   blaze::DenseSubvector<DenseVector,unaligned> dsv = subvector           ( v, 4UL, 8UL );
+   blaze::DenseSubvector<DenseVector,unaligned> dsv = subvector<unaligned>( v, 4UL, 8UL );
+   \endcode
+
+// In contrast to unaligned subvectors, which provide full flexibility, aligned subvectors pose
+// additional alignment restrictions. However, especially in case of dense subvectors this may
+// result in considerable performance improvements. In order to create an aligned subvector the
+// following function call has to be used:
+
+   \code
+   blaze::DenseSubvector<DenseVector,aligned> = subvector<aligned>( v, 4UL, 8UL );
+   \endcode
+
+// Note however that in this case the given \a index and \a size are subject to additional checks
+// to guarantee proper alignment.
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag
+inline typename SubvectorExprTrait<VT,unaligned>::Type
+   subvector( Vector<VT,TF>& vector, size_t index, size_t size )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return subvector<unaligned>( ~vector, index, size );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Creating a view on a specific subvector of the given vector.
+// \ingroup views
+//
+// \param vector The vector containing the subvector.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
+// \return View on the specific subvector of the vector.
+// \exception std::invalid_argument Invalid subvector specification.
+//
+// This function returns an expression representing the specified subvector of the given vector.
+// The following example demonstrates the creation of a dense and sparse subvector:
+
+   \code
+   using blaze::columnVector;
+   using blaze::rowVector;
+
+   typedef blaze::DynamicVector<double,columnVector>  DenseVector;
+   typedef blaze::CompressedVector<int,rowVector>     SparseVector;
+
+   DenseVector  d;
+   SparseVector s;
+   // ... Resizing and initialization
+
+   // Creating a dense subvector of size 8, starting from index 4
+   blaze::DenseSubvector<DenseVector> dsv = subvector( d, 4UL, 8UL );
+
+   // Creating a sparse subvector of size 7, starting from index 5
+   blaze::SparseSubvector<SparseVector> ssv = subvector( s, 5UL, 7UL );
+   \endcode
+
+// In case the subvector is not properly specified (i.e. if the specified first index is larger
+// than the total size of the given vector or the subvector is specified beyond the size of the
+// vector) a \a std::invalid_argument exception is thrown.
+//
+// Please note that this function creates an unaligned dense or sparse subvector. For instance,
+// the creation of the dense subvector is equivalent to the following three function calls:
+
+   \code
+   blaze::DenseSubvector<DenseVector>           dsv = subvector<unaligned>( v, 4UL, 8UL );
+   blaze::DenseSubvector<DenseVector,unaligned> dsv = subvector           ( v, 4UL, 8UL );
+   blaze::DenseSubvector<DenseVector,unaligned> dsv = subvector<unaligned>( v, 4UL, 8UL );
+   \endcode
+
+// In contrast to unaligned subvectors, which provide full flexibility, aligned subvectors pose
+// additional alignment restrictions. However, especially in case of dense subvectors this may
+// result in considerable performance improvements. In order to create an aligned subvector the
+// following function call has to be used:
+
+   \code
+   blaze::DenseSubvector<DenseVector,aligned> = subvector<aligned>( v, 4UL, 8UL );
+   \endcode
+
+// Note however that in this case the given \a index and \a size are subject to additional checks
+// to guarantee proper alignment.
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag
+inline typename SubvectorExprTrait<const VT,unaligned>::Type
+   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return subvector<unaligned>( ~vector, index, size );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Creating a view on a specific subvector of the given vector.
+// \ingroup views
+//
+// \param vector The vector containing the subvector.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
+// \return View on the specific subvector of the vector.
+// \exception std::invalid_argument Invalid subvector specification.
+//
+// This function returns an expression representing an aligned or unaligned subvector of the
+// given dense or sparse vector, based on the specified alignment flag \a AF. The following
+// example demonstrates the creation of both an aligned and unaligned subvector:
+
+   \code
+   using blaze::columnVector;
+   using blaze::rowVector;
+
+   typedef blaze::DynamicVector<double,columnVector>  DenseVector;
+   typedef blaze::CompressedVector<int,rowVector>     SparseVector;
+
+   DenseVector  d;
+   SparseVector s;
+   // ... Resizing and initialization
+
+   // Creating an aligned dense subvector of size 8 starting from index 4
+   blaze::DenseSubvector<DenseVector,aligned> dsv = subvector<aligned>( d, 4UL, 8UL );
+
+   // Creating an unaligned subvector of size 7 starting from index 3
+   blaze::SparseSubvector<SparseVector,unaligned> ssv = subvector<unaligned>( s, 3UL, 7UL );
+   \endcode
+
+// In case the subvector is not properly specified (i.e. if the specified first index is larger
+// than the total size of the given vector or the subvector is specified beyond the size of the
+// vector) a \a std::invalid_argument exception is thrown.
+//
+// In contrast to unaligned subvectors, which provide full flexibility, aligned subvectors pose
+// additional alignment restrictions and the given \a index and \a size are subject to additional
+// checks to guarantee proper alignment. However, especially in case of dense subvectors this may
+// result in considerable performance improvements.
+//
+// The alignment restrictions refer to system dependent address restrictions for the used element
+// type and the available vectorization mode (SSE, AVX, ...). The following source code gives some
+// examples for a double precision dense vector, assuming that AVX is available, which packs 4
+// \c double values into an intrinsic vector:
+
+   \code
+   using blaze::columnVector;
+
+   typedef blaze::DynamicVector<double,columnVector>  VectorType;
+   typedef blaze::DenseSubvector<VectorType,aligned>  SubvectorType;
+
+   VectorType d( 17UL );
+   // ... Resizing and initialization
+
+   // OK: Starts at the beginning and the size is a multiple of 4
+   SubvectorType dsv1 = subvector<aligned>( d, 0UL, 12UL );
+
+   // OK: Start index and the size are both a multiple of 4
+   SubvectorType dsv2 = subvector<aligned>( d, 4UL, 8UL );
+
+   // OK: The start index is a multiple of 4 and the subvector includes the last element
+   SubvectorType dsv3 = subvector<aligned>( d, 8UL, 9UL );
+
+   // Error: Start index is not a multiple of 4
+   SubvectorType dsv4 = subvector<aligned>( d, 5UL, 8UL );
+
+   // Error: Size is not a multiple of 4 and the subvector does not include the last element
+   SubvectorType dsv5 = subvector<aligned>( d, 8UL, 5UL );
+   \endcode
+
+// In case any alignment restrictions are violated, a \a std::invalid_argument exception is thrown.
+*/
+template< bool AF      // Alignment flag
+        , typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >
+                         , typename SubvectorExprTrait<VT,AF>::Type >::Type
+   subvector( Vector<VT,TF>& vector, size_t index, size_t size )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   typedef typename SubvectorExprTrait<VT,AF>::Type  ReturnType;
+   return ReturnType( ~vector, index, size );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Creating a view on a specific subvector of the given vector.
+// \ingroup views
+//
+// \param vector The vector containing the subvector.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
+// \return View on the specific subvector of the vector.
+// \exception std::invalid_argument Invalid subvector specification.
+//
+// This function returns an expression representing an aligned or unaligned subvector of the
+// given dense or sparse vector, based on the specified alignment flag \a AF. The following
+// example demonstrates the creation of both an aligned and unaligned subvector:
+
+   \code
+   using blaze::columnVector;
+   using blaze::rowVector;
+
+   typedef blaze::DynamicVector<double,columnVector>  DenseVector;
+   typedef blaze::CompressedVector<int,rowVector>     SparseVector;
+
+   DenseVector  d;
+   SparseVector s;
+   // ... Resizing and initialization
+
+   // Creating an aligned dense subvector of size 8 starting from index 4
+   blaze::DenseSubvector<DenseVector,aligned> dsv = subvector<aligned>( d, 4UL, 8UL );
+
+   // Creating an unaligned subvector of size 7 starting from index 3
+   blaze::SparseSubvector<SparseVector,unaligned> ssv = subvector<unaligned>( s, 3UL, 7UL );
+   \endcode
+
+// In case the subvector is not properly specified (i.e. if the specified first index is larger
+// than the total size of the given vector or the subvector is specified beyond the size of the
+// vector) a \a std::invalid_argument exception is thrown.
+//
+// In contrast to unaligned subvectors, which provide full flexibility, aligned subvectors pose
+// additional alignment restrictions and the given \a index and \a size are subject to additional
+// checks to guarantee proper alignment. However, especially in case of dense subvectors this may
+// result in considerable performance improvements.
+//
+// The alignment restrictions refer to system dependent address restrictions for the used element
+// type and the available vectorization mode (SSE, AVX, ...). The following source code gives some
+// examples for a double precision dense vector, assuming that AVX is available, which packs 4
+// \c double values into an intrinsic vector:
+
+   \code
+   using blaze::columnVector;
+
+   typedef blaze::DynamicVector<double,columnVector>  VectorType;
+   typedef blaze::DenseSubvector<VectorType,aligned>  SubvectorType;
+
+   VectorType d( 17UL );
+   // ... Resizing and initialization
+
+   // OK: Starts at the beginning and the size is a multiple of 4
+   SubvectorType dsv1 = subvector<aligned>( d, 0UL, 12UL );
+
+   // OK: Start index and the size are both a multiple of 4
+   SubvectorType dsv2 = subvector<aligned>( d, 4UL, 8UL );
+
+   // OK: The start index is a multiple of 4 and the subvector includes the last element
+   SubvectorType dsv3 = subvector<aligned>( d, 8UL, 9UL );
+
+   // Error: Start index is not a multiple of 4
+   SubvectorType dsv4 = subvector<aligned>( d, 5UL, 8UL );
+
+   // Error: Size is not a multiple of 4 and the subvector does not include the last element
+   SubvectorType dsv5 = subvector<aligned>( d, 8UL, 5UL );
+   \endcode
+
+// In case any alignment restrictions are violated, a \a std::invalid_argument exception is thrown.
+*/
+template< bool AF      // Alignment flag
+        , typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >
+                         , typename SubvectorExprTrait<const VT,AF>::Type >::Type
+   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   typedef typename SubvectorExprTrait<const VT,AF>::Type  ReturnType;
+   return ReturnType( ~vector, index, size );
+}
+//*************************************************************************************************
+
+
+
 
 //=================================================================================================
 //
@@ -78,15 +403,16 @@ namespace blaze {
 // This function returns an expression representing the specified subvector of the given
 // vector/vector addition.
 */
-template< typename VT  // Type of the vector
+template< bool AF      // Alignment flag
+        , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline typename EnableIf< IsVecVecAddExpr<VT>, typename SubvectorExprTrait<VT,false>::Type >::Type
+inline typename EnableIf< IsVecVecAddExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >::Type
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector( (~vector).leftOperand() , index, size ) +
-          subvector( (~vector).rightOperand(), index, size );
+   return subvector<AF>( (~vector).leftOperand() , index, size ) +
+          subvector<AF>( (~vector).rightOperand(), index, size );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -105,15 +431,16 @@ inline typename EnableIf< IsVecVecAddExpr<VT>, typename SubvectorExprTrait<VT,fa
 // This function returns an expression representing the specified subvector of the given
 // vector/vector subtraction.
 */
-template< typename VT  // Type of the vector
+template< bool AF      // Alignment flag
+        , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline typename EnableIf< IsVecVecSubExpr<VT>, typename SubvectorExprTrait<VT,false>::Type >::Type
+inline typename EnableIf< IsVecVecSubExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >::Type
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector( (~vector).leftOperand() , index, size ) -
-          subvector( (~vector).rightOperand(), index, size );
+   return subvector<AF>( (~vector).leftOperand() , index, size ) -
+          subvector<AF>( (~vector).rightOperand(), index, size );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -132,15 +459,44 @@ inline typename EnableIf< IsVecVecSubExpr<VT>, typename SubvectorExprTrait<VT,fa
 // This function returns an expression representing the specified subvector of the given
 // vector/vector multiplication.
 */
-template< typename VT  // Type of the vector
+template< bool AF      // Alignment flag
+        , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline typename EnableIf< IsVecVecMultExpr<VT>, typename SubvectorExprTrait<VT,false>::Type >::Type
+inline typename EnableIf< IsVecVecMultExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >::Type
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector( (~vector).leftOperand() , index, size ) *
-          subvector( (~vector).rightOperand(), index, size );
+   return subvector<AF>( (~vector).leftOperand() , index, size ) *
+          subvector<AF>( (~vector).rightOperand(), index, size );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given vector/vector cross product.
+// \ingroup views
+//
+// \param dv The constant vector/vector cross product.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
+// \return View on the specified subvector of the multiplication.
+//
+// This function returns an expression representing the specified subvector of the given
+// vector/vector cross product.
+*/
+template< bool AF      // Alignment flag
+        , typename VT  // Type of the vector
+        , bool TF >    // Transpose flag
+inline typename EnableIf< IsCrossExpr<VT>, typename SubvectorExprTrait<VT,unaligned>::Type >::Type
+   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   typedef typename SubvectorExprTrait<VT,unaligned>::Type  ReturnType;
+   return ReturnType( ~vector, index, size );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -159,9 +515,10 @@ inline typename EnableIf< IsVecVecMultExpr<VT>, typename SubvectorExprTrait<VT,f
 // This function returns an expression representing the specified subvector of the given
 // matrix/vector multiplication.
 */
-template< typename VT  // Type of the vector
+template< bool AF      // Alignment flag
+        , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline typename EnableIf< IsMatVecMultExpr<VT>, typename SubvectorExprTrait<VT,false>::Type >::Type
+inline typename EnableIf< IsMatVecMultExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >::Type
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
@@ -169,7 +526,7 @@ inline typename EnableIf< IsMatVecMultExpr<VT>, typename SubvectorExprTrait<VT,f
    typename VT::LeftOperand  left ( (~vector).leftOperand()  );
    typename VT::RightOperand right( (~vector).rightOperand() );
 
-   return submatrix( left, index, 0UL, size, left.columns() ) * right;
+   return submatrix<AF>( left, index, 0UL, size, left.columns() ) * right;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -188,9 +545,10 @@ inline typename EnableIf< IsMatVecMultExpr<VT>, typename SubvectorExprTrait<VT,f
 // This function returns an expression representing the specified subvector of the given
 // vector/matrix multiplication.
 */
-template< typename VT  // Type of the vector
+template< bool AF      // Alignment flag
+        , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline typename EnableIf< IsTVecMatMultExpr<VT>, typename SubvectorExprTrait<VT,false>::Type >::Type
+inline typename EnableIf< IsTVecMatMultExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >::Type
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
@@ -198,7 +556,7 @@ inline typename EnableIf< IsTVecMatMultExpr<VT>, typename SubvectorExprTrait<VT,
    typename VT::LeftOperand  left ( (~vector).leftOperand()  );
    typename VT::RightOperand right( (~vector).rightOperand() );
 
-   return left * submatrix( right, 0UL, index, right.rows(), size );
+   return left * submatrix<AF>( right, 0UL, index, right.rows(), size );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -217,14 +575,15 @@ inline typename EnableIf< IsTVecMatMultExpr<VT>, typename SubvectorExprTrait<VT,
 // This function returns an expression representing the specified subvector of the given
 // vector/scalar multiplication.
 */
-template< typename VT  // Type of the vector
+template< bool AF      // Alignment flag
+        , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline typename EnableIf< IsVecScalarMultExpr<VT>, typename SubvectorExprTrait<VT,false>::Type >::Type
+inline typename EnableIf< IsVecScalarMultExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >::Type
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector( (~vector).leftOperand(), index, size ) * (~vector).rightOperand();
+   return subvector<AF>( (~vector).leftOperand(), index, size ) * (~vector).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -243,14 +602,15 @@ inline typename EnableIf< IsVecScalarMultExpr<VT>, typename SubvectorExprTrait<V
 // This function returns an expression representing the specified subvector of the given
 // vector/scalar division.
 */
-template< typename VT  // Type of the vector
+template< bool AF      // Alignment flag
+        , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline typename EnableIf< IsVecScalarDivExpr<VT>, typename SubvectorExprTrait<VT,false>::Type >::Type
+inline typename EnableIf< IsVecScalarDivExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >::Type
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector( (~vector).leftOperand(), index, size ) / (~vector).rightOperand();
+   return subvector<AF>( (~vector).leftOperand(), index, size ) / (~vector).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -269,14 +629,15 @@ inline typename EnableIf< IsVecScalarDivExpr<VT>, typename SubvectorExprTrait<VT
 // This function returns an expression representing the specified subvector of the given vector
 // abs operation.
 */
-template< typename VT  // Type of the vector
+template< bool AF      // Alignment flag
+        , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline typename EnableIf< IsVecAbsExpr<VT>, typename SubvectorExprTrait<VT,false>::Type >::Type
+inline typename EnableIf< IsVecAbsExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >::Type
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return abs( subvector( (~vector).operand(), index, size ) );
+   return abs( subvector<AF>( (~vector).operand(), index, size ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -295,14 +656,15 @@ inline typename EnableIf< IsVecAbsExpr<VT>, typename SubvectorExprTrait<VT,false
 // This function returns an expression representing the specified subvector of the given vector
 // evaluation operation.
 */
-template< typename VT  // Type of the vector
+template< bool AF      // Alignment flag
+        , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline typename EnableIf< IsVecEvalExpr<VT>, typename SubvectorExprTrait<VT,false>::Type >::Type
+inline typename EnableIf< IsVecEvalExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >::Type
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( subvector( (~vector).operand(), index, size ) );
+   return eval( subvector<AF>( (~vector).operand(), index, size ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -321,14 +683,15 @@ inline typename EnableIf< IsVecEvalExpr<VT>, typename SubvectorExprTrait<VT,fals
 // This function returns an expression representing the specified subvector of the given vector
 // transpose operation.
 */
-template< typename VT  // Type of the vector
+template< bool AF      // Alignment flag
+        , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline typename EnableIf< IsVecTransExpr<VT>, typename SubvectorExprTrait<VT,false>::Type >::Type
+inline typename EnableIf< IsVecTransExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >::Type
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( subvector( (~vector).operand(), index, size ) );
+   return trans( subvector<AF>( (~vector).operand(), index, size ) );
 }
 /*! \endcond */
 //*************************************************************************************************

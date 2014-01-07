@@ -87,14 +87,14 @@ struct SubmatrixExprTrait
    //**struct DenseResult**************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
-   struct DenseResult { typedef DenseSubmatrix<T,IsColumnMajorMatrix<T>::value>  Type; };
+   struct DenseResult { typedef DenseSubmatrix<T,AF,IsColumnMajorMatrix<T>::value>  Type; };
    /*! \endcond */
    //**********************************************************************************************
 
    //**struct SparseResult*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
-   struct SparseResult { typedef SparseSubmatrix<T,IsColumnMajorMatrix<T>::value>  Type; };
+   struct SparseResult { typedef SparseSubmatrix<T,AF,IsColumnMajorMatrix<T>::value>  Type; };
    /*! \endcond */
    //**********************************************************************************************
 

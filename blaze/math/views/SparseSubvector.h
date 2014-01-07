@@ -58,14 +58,11 @@
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
-#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsRowVector.h>
-#include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/views/AlignmentFlag.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
@@ -635,7 +632,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
       //**Friend declarations**********************************************************************
       /*! \cond BLAZE_INTERNAL */
       template< typename VectorType2, typename IteratorType2 > friend class SubvectorIterator;
-      template< typename VT2, bool TF2 > friend class SparseSubvector;
+      template< typename VT2, bool AF2, bool TF2 > friend class SparseSubvector;
       /*! \endcond */
       //*******************************************************************************************
    };
@@ -756,8 +753,8 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
 
    //**Friend declarations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   template< typename VT2, bool AF2, bool TF2 >
-   friend SparseSubvector<VT2,AF2,TF2>
+   template< bool AF1, typename VT2, bool AF2, bool TF2 >
+   friend const SparseSubvector<VT2,AF1,TF2>
       subvector( const SparseSubvector<VT2,AF2,TF2>& sv, size_t index, size_t size );
    /*! \endcond */
    //**********************************************************************************************
@@ -1997,96 +1994,6 @@ inline bool isDefault( const SparseSubvector<VT,AF,TF>& sv )
 
 //=================================================================================================
 //
-//  GLOBAL FUNCTION
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Creating a view on a specific subvector of the given sparse vector.
-// \ingroup views
-//
-// \param sv The sparse vector containing the subvector.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specific subvector of the sparse vector.
-// \exception std::invalid_argument Invalid subvector specification.
-//
-// This function returns an expression representing the specified subvector of the given sparse
-// vector. The following example demonstrates the creation of a subvector of size 8 starting
-// from index 4:
-
-   \code
-   using blaze::columnVector;
-
-   typedef blaze::CompressedVector<double,columnVector>  Vector;
-
-   Vector v;
-   // ... Resizing and initialization
-   blaze::SparseSubvector<Vector> = subvector( v, 4UL, 8UL );
-   \endcode
-
-// In case the subvector is not properly specified (i.e. if the specified first index is larger
-// than the total size of the given vector or the subvector is specified beyond the size of the
-// vector) a \a std::invalid_argument exception is thrown.
-*/
-template< typename VT  // Type of the sparse vector
-        , bool AF      // Alignment flag
-        , bool TF >    // Transpose flag
-inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, SparseSubvector<VT> >::Type
-   subvector( SparseVector<VT,TF>& sv, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return SparseSubvector<VT>( ~sv, index, size );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Creating a view on a specific subvector of the given sparse vector.
-// \ingroup views
-//
-// \param sv The sparse vector containing the subvector.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specific subvector of the sparse vector.
-// \exception std::invalid_argument Invalid subvector specification.
-//
-// This function returns an expression representing the specified subvector of the given sparse
-// vector. The following example demonstrates the creation of a subvector of size 8 starting
-// from index 4:
-
-   \code
-   using blaze::columnVector;
-
-   typedef blaze::CompressedVector<double,columnVector>  Vector;
-
-   Vector v;
-   // ... Resizing and initialization
-   blaze::SparseSubvector<Vector> = subvector( v, 4UL, 8UL );
-   \endcode
-
-// In case the subvector is not properly specified (i.e. if the specified first index is larger
-// than the total size of the given vector or the subvector is specified beyond the size of the
-// vector) a \a std::invalid_argument exception is thrown.
-*/
-template< typename VT  // Type of the sparse vector
-        , bool AF      // Alignment flag
-        , bool TF >    // Transpose flag
-inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, SparseSubvector<const VT> >::Type
-   subvector( const SparseVector<VT,TF>& sv, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return SparseSubvector<const VT>( ~sv, index, size );
-}
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  GLOBAL RESTRUCTURING OPERATORS
 //
 //=================================================================================================
@@ -2104,15 +2011,16 @@ inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >, SparseSubve
 // This function returns an expression representing the specified subvector of the given
 // sparse subvector.
 */
-template< typename VT  // Type of the sparse vector
-        , bool AF      // Alignment flag
+template< bool AF1     // Required alignment flag
+        , typename VT  // Type of the sparse vector
+        , bool AF2     // Present alignment flag
         , bool TF >    // Transpose flag
-inline SparseSubvector<VT,AF,TF>
-   subvector( const SparseSubvector<VT,AF,TF>& sv, size_t index, size_t size )
+inline const SparseSubvector<VT,AF1,TF>
+   subvector( const SparseSubvector<VT,AF2,TF>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SparseSubvector<VT,AF,TF>( sv.vector_, sv.offset_ + index, size );
+   return SparseSubvector<VT,AF1,TF>( sv.vector_, sv.offset_ + index, size );
 }
 /*! \endcond */
 //*************************************************************************************************
