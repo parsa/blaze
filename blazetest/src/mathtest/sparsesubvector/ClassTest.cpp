@@ -1389,7 +1389,7 @@ void ClassTest::testNonZeros()
    if( sv[0] != 0 || sv[1] != 1 || sv[2] != 5 || sv[3] != 0 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Function call operator failed\n"
+          << " Error: Subscript operator failed\n"
           << " Details:\n"
           << "   Result:\n" << sv << "\n"
           << "   Expected result:\n( 0 1 5 0 )\n";
