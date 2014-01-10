@@ -54,6 +54,8 @@ essential: $(BIN)
 # Build rules
 UnalignedTest: UnalignedTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+AlignedTest: AlignedTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 
 # Cleanup
