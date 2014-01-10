@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/densesubvector/ClassTest.cpp
-//  \brief Source file for the DenseSubvector class test
+//  \file src/mathtest/densesubvector/UnalignedTest.cpp
+//  \brief Source file for the unaligned DenseSubvector class test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -40,7 +40,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/CompressedVector.h>
-#include <blazetest/mathtest/densesubvector/ClassTest.h>
+#include <blazetest/mathtest/densesubvector/UnalignedTest.h>
 
 
 namespace blazetest {
@@ -56,11 +56,11 @@ namespace densesubvector {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the DenseSubvector class test.
+/*!\brief Constructor for the unaligned DenseSubvector class test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-ClassTest::ClassTest()
+UnalignedTest::UnalignedTest()
    : vec_( 8UL )
 {
    testConstructors();
@@ -100,7 +100,7 @@ ClassTest::ClassTest()
 // This function performs a test of all constructors of the DenseSubvector class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testConstructors()
+void UnalignedTest::testConstructors()
 {
    test_ = "DenseSubvector constructor";
 
@@ -140,7 +140,7 @@ void ClassTest::testConstructors()
 // This function performs a test of all assignment operators of the DenseSubvector class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testAssignment()
+void UnalignedTest::testAssignment()
 {
    //=====================================================================================
    // Homogeneous assignment
@@ -365,7 +365,7 @@ void ClassTest::testAssignment()
 // This function performs a test of the addition assignment operators of the DenseSubvector
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testAddAssign()
+void UnalignedTest::testAddAssign()
 {
    //=====================================================================================
    // DenseSubvector addition assignment
@@ -549,7 +549,7 @@ void ClassTest::testAddAssign()
 // This function performs a test of the subtraction assignment operators of the DenseSubvector
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testSubAssign()
+void UnalignedTest::testSubAssign()
 {
    //=====================================================================================
    // DenseSubvector subtraction assignment
@@ -733,7 +733,7 @@ void ClassTest::testSubAssign()
 // This function performs a test of the multiplication assignment operators of the DenseSubvector
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testMultAssign()
+void UnalignedTest::testMultAssign()
 {
    //=====================================================================================
    // DenseSubvector multiplication assignment
@@ -958,7 +958,7 @@ void ClassTest::testMultAssign()
 // This function performs a test of the division assignment operators of the DenseSubvector
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testDivAssign()
+void UnalignedTest::testDivAssign()
 {
    //=====================================================================================
    // Scalar division assignment
@@ -1013,7 +1013,7 @@ void ClassTest::testDivAssign()
 // of the DenseSubvector class template. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-void ClassTest::testSubscript()
+void UnalignedTest::testSubscript()
 {
    test_ = "DenseSubvector::operator[]";
 
@@ -1120,7 +1120,7 @@ void ClassTest::testSubscript()
 // This function performs a test of the iterator implementation of the DenseSubvector class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testIterator()
+void UnalignedTest::testIterator()
 {
    initialize();
 
@@ -1433,7 +1433,7 @@ void ClassTest::testIterator()
 // This function performs a test of the nonZeros member function of DenseSubvector. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testNonZeros()
+void UnalignedTest::testNonZeros()
 {
    test_ = "DenseSubvector::nonZeros()";
 
@@ -1486,7 +1486,7 @@ void ClassTest::testNonZeros()
    if( sv[0] != 0 || sv[1] != 1 || sv[2] != 5 || sv[3] != 0 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Function call operator failed\n"
+          << " Error: Subscript operator failed\n"
           << " Details:\n"
           << "   Result:\n" << sv << "\n"
           << "   Expected result:\n( 0 1 5 0 )\n";
@@ -1505,7 +1505,7 @@ void ClassTest::testNonZeros()
 // This function performs a test of the reset member function of DenseSubvector. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testReset()
+void UnalignedTest::testReset()
 {
    test_ = "DenseSubvector::reset()";
 
@@ -1565,7 +1565,7 @@ void ClassTest::testReset()
 // This function performs a test of the scale member function of DenseSubvector. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testScale()
+void UnalignedTest::testScale()
 {
    test_ = "DenseSubvector::scale()";
 
@@ -1615,7 +1615,7 @@ void ClassTest::testScale()
 // This function performs a test of the isDefault function with the DenseSubvector class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testIsDefault()
+void UnalignedTest::testIsDefault()
 {
    test_ = "isDefault() function";
 
@@ -1662,7 +1662,7 @@ void ClassTest::testIsDefault()
 // This function performs a test of the isnan function with the DenseSubvector class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testIsNan()
+void UnalignedTest::testIsNan()
 {
    test_ = "isnan() function";
 
@@ -1738,7 +1738,7 @@ void ClassTest::testIsNan()
 // This function performs a test of the min function used with the DenseSubvector class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testMinimum()
+void UnalignedTest::testMinimum()
 {
    test_ = "min() function";
 
@@ -1816,7 +1816,7 @@ void ClassTest::testMinimum()
 // This function performs a test of the max function used with the DenseSubvector class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testMaximum()
+void UnalignedTest::testMaximum()
 {
    test_ = "max() function";
 
@@ -1894,7 +1894,7 @@ void ClassTest::testMaximum()
 // This function performs a test of the subvector function used with the DenseSubvector class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testSubvector()
+void UnalignedTest::testSubvector()
 {
    test_ = "subvector() function";
 
@@ -1942,7 +1942,7 @@ void ClassTest::testSubvector()
 //
 // This function initializes all member vectors to specific predetermined values.
 */
-void ClassTest::initialize()
+void UnalignedTest::initialize()
 {
    // Initializing the dynamic row vector
    vec_[0] =  0;
@@ -1974,14 +1974,14 @@ void ClassTest::initialize()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running DenseSubvector class test..." << std::endl;
+   std::cout << "   Running unaligned DenseSubvector class test..." << std::endl;
 
    try
    {
-      RUN_DENSESUBVECTOR_CLASS_TEST;
+      RUN_DENSESUBVECTOR_UNALIGNED_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during DenseSubvector class test:\n"
+      std::cerr << "\n\n ERROR DETECTED during unaligned DenseSubvector class test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

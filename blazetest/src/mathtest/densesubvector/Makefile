@@ -52,7 +52,7 @@ essential: $(BIN)
 
 
 # Build rules
-ClassTest: ClassTest.o
+UnalignedTest: UnalignedTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 

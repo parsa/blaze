@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/densesubvector/ClassTest.h
-//  \brief Header file for the DenseSubvector class test
+//  \file blazetest/mathtest/densesubvector/UnalignedTest.h
+//  \brief Header file for the unaligned DenseSubvector class test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DENSESUBVECTOR_CLASSTEST_H_
-#define _BLAZETEST_MATHTEST_DENSESUBVECTOR_CLASSTEST_H_
+#ifndef _BLAZETEST_MATHTEST_DENSESUBVECTOR_UNALIGNEDTEST_H_
+#define _BLAZETEST_MATHTEST_DENSESUBVECTOR_UNALIGNEDTEST_H_
 
 
 //*************************************************************************************************
@@ -62,18 +62,18 @@ namespace densesubvector {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all tests of the DenseSubvector class template.
+/*!\brief Auxiliary class for all tests of the unaligned DenseSubvector class template.
 //
-// This class represents a test suite for the blaze::DenseSubvector class template. It performs
-// a series of both compile time as well as runtime tests.
+// This class represents a test suite for the unaligned specialization of the blaze::DenseSubvector
+// class template. It performs a series of both compile time as well as runtime tests.
 */
-class ClassTest
+class UnalignedTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit ClassTest();
+   explicit UnalignedTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -169,7 +169,7 @@ class ClassTest
 // correspond to the given expected size, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense vector
-void ClassTest::checkSize( const Type& vector, size_t expectedSize ) const
+void UnalignedTest::checkSize( const Type& vector, size_t expectedSize ) const
 {
    if( vector.size() != expectedSize ) {
       std::ostringstream oss;
@@ -196,7 +196,7 @@ void ClassTest::checkSize( const Type& vector, size_t expectedSize ) const
 // smaller than the given expected minimum capacity, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense vector
-void ClassTest::checkCapacity( const Type& vector, size_t minCapacity ) const
+void UnalignedTest::checkCapacity( const Type& vector, size_t minCapacity ) const
 {
    if( vector.capacity() < minCapacity ) {
       std::ostringstream oss;
@@ -224,7 +224,7 @@ void ClassTest::checkCapacity( const Type& vector, size_t minCapacity ) const
 // a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense vector
-void ClassTest::checkNonZeros( const Type& vector, size_t expectedNonZeros ) const
+void UnalignedTest::checkNonZeros( const Type& vector, size_t expectedNonZeros ) const
 {
    if( vector.nonZeros() != expectedNonZeros ) {
       std::ostringstream oss;
@@ -258,13 +258,13 @@ void ClassTest::checkNonZeros( const Type& vector, size_t expectedNonZeros ) con
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the DenseSubvector class template.
+/*!\brief Testing the functionality of the unaligned DenseSubvector class template.
 //
 // \return void
 */
 void runTest()
 {
-   ClassTest();
+   UnalignedTest();
 }
 //*************************************************************************************************
 
@@ -279,9 +279,9 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the DenseSubvector class test.
+/*!\brief Macro for the execution of the unaligned DenseSubvector class test.
 */
-#define RUN_DENSESUBVECTOR_CLASS_TEST \
+#define RUN_DENSESUBVECTOR_UNALIGNED_TEST \
    blazetest::mathtest::densesubvector::runTest()
 /*! \endcond */
 //*************************************************************************************************
