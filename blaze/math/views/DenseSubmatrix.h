@@ -119,7 +119,18 @@ namespace blaze {
 //
 // \n \section dense_submatrix_setup Setup of Dense Submatrices
 //
-// A view on a dense submatrix can be created very conveniently via the \c submatrix() function.
+// A view on a dense submatrix can be created very conveniently via the \c submatrix() function:
+
+   \code
+   typedef blaze::DynamicMatrix<double,blaze::rowMajor>  DenseMatrixType;
+
+   DenseMatrixType A;
+   // ... Resizing and initialization
+
+   // Creating a dense submatrix of size 8x16, starting in row 0 and column 4
+   blaze::DenseSubmatrix<DenseMatrixType> sm = submatrix( A, 0UL, 4UL, 8UL, 16UL );
+   \endcode
+
 // This view can be treated as any other dense matrix, i.e. it can be assigned to, it can be
 // copied from, and it can be used in arithmetic operations. The view can also be used on both
 // sides of an assignment: The submatrix can either be used as an alias to grant write access to
@@ -264,6 +275,82 @@ namespace blaze {
    a = submatrix( D1, 4UL, 4UL, 8UL, 8UL ) * b;  // Dense matrix/sparse vector multiplication
    \endcode
 
+// \n \section dense_submatrix_aligned_submatrix Aligned Submatrices
+//
+// Usually submatrices can be defined anywhere within a matrix. They may start at any position and
+// may have an arbitrary extension (only restricted by the extension of the underlying matrix).
+// However, in contrast to matrices themselves, which are always properly aligned in memory and
+// therefore can provide maximum performance, this means that submatrices in general have to be
+// considered to be unaligned. This can be made explicit by the \a blaze::unaligned flag:
+
+   \code
+   using blaze::unaligned;
+
+   typedef blaze::DynamicMatrix<double,blaze::rowMajor>  DenseMatrixType;
+
+   DenseMatrixType x;
+   // ... Resizing and initialization
+
+   // Identical creations of an unaligned submatrix of size 8x8, starting in row 0 and column 0
+   blaze::DenseSubmatrix<DenseMatrixType>           sm1 = submatrix           ( A, 0UL, 0UL, 8UL, 8UL );
+   blaze::DenseSubmatrix<DenseMatrixType>           sm2 = submatrix<unaligned>( A, 0UL, 0UL, 8UL, 8UL );
+   blaze::DenseSubmatrix<DenseMatrixType,unaligned> sm3 = submatrix           ( A, 0UL, 0UL, 8UL, 8UL );
+   blaze::DenseSubmatrix<DenseMatrixType,unaligned> sm4 = submatrix<unaligned>( A, 0UL, 0UL, 8UL, 8UL );
+   \endcode
+
+// All of these calls to the \c submatrix() function are identical. Whether the alignment flag is
+// explicitly specified or not, it always returns an unaligned submatrix. Whereas this may provide
+// full flexibility in the creation of submatrices, this might result in performance restrictions
+// (even in case the specified submatrix could be aligned). However, it is also possible to create
+// aligned submatrices. Aligned submatrices are identical to unaligned submatrices in all aspects,
+// except that they may pose additional alignment restrictions and therefore have less flexibility
+// during creation, but don't suffer from performance penalties and provide the same performance
+// as the underlying matrix. Aligned submatrices are created by explicitly specifying the
+// \a blaze::aligned flag:
+
+   \code
+   using blaze::aligned;
+
+   // Creating an aligned submatrix of size 8x8, starting in row 0 and column 0
+   blaze::DenseSubmatrix<DenseMatrixType,aligned> sv = submatrix<aligned>( x, 0UL, 0UL, 8UL, 8UL );
+   \endcode
+
+// The alignment restrictions refer to system dependent address restrictions for the used element
+// type and the available vectorization mode (SSE, AVX, ...). The following source code gives some
+// examples for a double precision dense matrix, assuming that AVX is available, which packs 4
+// \c double values into an intrinsic vector:
+
+   \code
+   using blaze::rowMajor;
+
+   typedef blaze::DynamicMatrix<double,rowMajor>      MatrixType;
+   typedef blaze::DenseSubmatrix<MatrixType,aligned>  SubmatrixType;
+
+   MatrixType D( 13UL, 17UL );
+   // ... Resizing and initialization
+
+   // OK: Starts at position (0,0) and the number of rows and columns are a multiple of 4
+   SubmatrixType dsm1 = submatrix<aligned>( D, 0UL, 0UL, 8UL, 12UL );
+
+   // OK: First row and column and the number of rows and columns are all a multiple of 4
+   SubmatrixType dsm2 = submatrix<aligned>( D, 4UL, 12UL, 8UL, 16UL );
+
+   // OK: First row and column are a multiple of 4 and the submatrix includes the last row and column
+   SubmatrixType dsm3 = submatrix<aligned>( D, 4UL, 0UL, 9UL, 17UL );
+
+   // Error: First row is not a multiple of 4
+   SubmatrixType dsm4 = submatrix<aligned>( D, 2UL, 4UL, 12UL, 12UL );
+
+   // Error: First column is not a multiple of 4
+   SubmatrixType dsm5 = submatrix<aligned>( D, 0UL, 2UL, 8UL, 8UL );
+
+   // Error: The number of rows is not a multiple of 4 and the submatrix does not include the last row
+   SubmatrixType dsm6 = submatrix<aligned>( D, 0UL, 0UL, 7UL, 8UL );
+
+   // Error: The number of columns is not a multiple of 4 and the submatrix does not include the last column
+   SubmatrixType dsm6 = submatrix<aligned>( D, 0UL, 0UL, 8UL, 11UL );
+   \endcode
+
 // \n \section dense_submatrix_on_dense_submatrix Submatrix on Submatrix
 //
 // It is also possible to create a submatrix view on another submatrix. In this context it is
@@ -319,7 +406,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename MT::ElementType            ElementType;    //!< Type of the submatrix elements.
-   typedef typename IT::Type                   IntrinsicType;  //!< Intrinsic type of the subvector elements.
+   typedef typename IT::Type                   IntrinsicType;  //!< Intrinsic type of the submatrix elements.
    typedef typename MT::ReturnType             ReturnType;     //!< Return type for expression template evaluations
    typedef const DenseSubmatrix&               CompositeType;  //!< Data type for composite expression templates.
 
@@ -2374,7 +2461,7 @@ class DenseSubmatrix<MT,AF,true> : public DenseMatrix< DenseSubmatrix<MT,AF,true
    typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename MT::ElementType            ElementType;    //!< Type of the submatrix elements.
-   typedef typename IT::Type                   IntrinsicType;  //!< Intrinsic type of the subvector elements.
+   typedef typename IT::Type                   IntrinsicType;  //!< Intrinsic type of the submatrix elements.
    typedef typename MT::ReturnType             ReturnType;     //!< Return type for expression template evaluations
    typedef const DenseSubmatrix&               CompositeType;  //!< Data type for composite expression templates.
 
