@@ -148,6 +148,54 @@ void UnalignedTest::testConstructors()
       }
    }
 
+   try {
+      SMT sm = submatrix( mat_, 2UL, 2UL, 4UL, 2UL );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Setup of out-of-bounds submatrix succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << sm << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
+
+   try {
+      SMT sm = submatrix( mat_, 2UL, 2UL, 2UL, 3UL );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Setup of out-of-bounds submatrix succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << sm << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
+
+   try {
+      SMT sm = submatrix( mat_, 5UL, 2UL, 2UL, 2UL );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Setup of out-of-bounds submatrix succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << sm << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
+
+   try {
+      SMT sm = submatrix( mat_, 2UL, 4UL, 2UL, 2UL );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Setup of out-of-bounds submatrix succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << sm << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
+
 
    //=====================================================================================
    // Column-major submatrix tests
@@ -188,6 +236,54 @@ void UnalignedTest::testConstructors()
          }
       }
    }
+
+   try {
+      TSMT sm = submatrix( tmat_, 2UL, 2UL, 3UL, 2UL );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Setup of out-of-bounds submatrix succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << sm << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
+
+   try {
+      TSMT sm = submatrix( tmat_, 2UL, 2UL, 2UL, 4UL );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Setup of out-of-bounds submatrix succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << sm << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
+
+   try {
+      TSMT sm = submatrix( tmat_, 4UL, 2UL, 2UL, 2UL );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Setup of out-of-bounds submatrix succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << sm << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
+
+   try {
+      TSMT sm = submatrix( tmat_, 2UL, 5UL, 2UL, 2UL );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Setup of out-of-bounds submatrix succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << sm << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
 }
 //*************************************************************************************************
 
