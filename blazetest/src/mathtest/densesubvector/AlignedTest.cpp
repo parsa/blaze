@@ -137,7 +137,53 @@ void AlignedTest::testConstructors()
       }
    }
 
-   // TODO: Add alignment restriction tests
+   try {
+      ASVT sv = subvector<aligned>( vec1_, 8UL, 64UL );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Setup of out-of-bounds subvector succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << sv << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
+
+   try {
+      ASVT sv = subvector<aligned>( vec1_, 80UL, 0UL );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Setup of out-of-bounds subvector succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << sv << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
+
+   try {
+      ASVT sv = subvector<aligned>( vec1_, 7UL, 16UL );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Setup of unaligned subvector succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << sv << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
+
+   try {
+      ASVT sv = subvector<aligned>( vec1_, 8UL, 13UL );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Setup of unaligned subvector succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << sv << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
 }
 //*************************************************************************************************
 
@@ -1723,17 +1769,7 @@ void AlignedTest::testSubvector()
 */
 void AlignedTest::initialize()
 {
-   // Initializing the small dynamic row vector
-   vec1_[0] =  0;
-   vec1_[1] =  1;
-   vec1_[2] =  0;
-   vec1_[3] = -2;
-   vec1_[4] = -3;
-   vec1_[5] =  0;
-   vec1_[6] =  4;
-   vec1_[7] =  0;
-
-   // Initializing the large dynamic row vectors
+   // Initializing the dynamic row vectors
    randomize( vec1_, -10, 10 );
    vec2_ = vec1_;
 }

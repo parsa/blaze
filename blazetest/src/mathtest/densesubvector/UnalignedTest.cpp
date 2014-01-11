@@ -127,6 +127,30 @@ void UnalignedTest::testConstructors()
          }
       }
    }
+
+   try {
+      SVT sv = subvector( vec_, 2UL, 7UL );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Setup of out-of-bounds subvector succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << sv << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
+
+   try {
+      SVT sv = subvector( vec_, 9UL, 0UL );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Setup of out-of-bounds subvector succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << sv << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
 }
 //*************************************************************************************************
 
