@@ -108,7 +108,18 @@ namespace blaze {
 //
 // \n \section sparse_subvector_setup Setup of Sparse Subvectors
 //
-// A view on a sparse subvector can be created very conveniently via the \c subvector() function.
+// A view on a sparse subvector can be created very conveniently via the \c subvector() function:
+
+      \code
+   typedef blaze::CompressedVector<double,blaze::rowVector>  SparseVectorType;
+
+   SparseVectorType x;
+   // ... Resizing and initialization
+
+   // Create a subvector from index 8 with a size of 16 (i.e. in the range [8..23])
+   blaze::SparseSubvector<SparseVectorType> sv = subvector( x, 8UL, 16UL );
+   \endcode
+
 // This view can be treated as any other sparse vector, i.e. it can be assigned to, it can be
 // copied from, and it can be used in arithmetic operations. The view can also be used on both
 // sides of an assignment: The subvector can either be used as an alias to grant write access to
@@ -126,8 +137,10 @@ namespace blaze {
    SparseMatrixType A;
    // ... Resizing and initialization
 
-   // Setting the first ten elements of y to the 2nd row of matrix A
+   // Create a subvector from index 0UL with a size of 10 (i.e. in the range [0..9])
    blaze::SparseSubvector<SparseVectorType> sv = subvector( y, 0UL, 10UL );
+
+   // Setting the first ten elements of y to the 2nd row of matrix A
    sv = row( A, 2UL );
 
    // Setting the second ten elements of y to x
@@ -294,6 +307,51 @@ namespace blaze {
    A = trans( d1 ) * subvector( s1, 4UL, 16UL );  // Outer product between two vectors
    \endcode
 
+// \n \section sparse_subvector_aligned_subvector Aligned Subvectors
+//
+// Usually subvectors can be defined anywhere within a vector. They may start at any position and
+// may have an arbitrary size (only restricted by the size of the underlying vector). However, in
+// contrast to vectors themselves, which are always properly aligned in memory and therefore can
+// provide maximum performance, this means that subvectors in general have to be considered to be
+// unaligned. This can be made explicit by the \a blaze::unaligned flag:
+
+   \code
+   using blaze::unaligned;
+
+   typedef blaze::CompressedVector<double,blaze::rowVector>  SparseVectorType;
+
+   SparseVectorType x;
+   // ... Resizing and initialization
+
+   // Identical creations of an unaligned subvector in the range [8..23]
+   blaze::SparseSubvector<SparseVectorType>           sv1 = subvector           ( x, 8UL, 16UL );
+   blaze::SparseSubvector<SparseVectorType>           sv2 = subvector<unaligned>( x, 8UL, 16UL );
+   blaze::SparseSubvector<SparseVectorType,unaligned> sv3 = subvector           ( x, 8UL, 16UL );
+   blaze::SparseSubvector<SparseVectorType,unaligned> sv4 = subvector<unaligned>( x, 8UL, 16UL );
+   \endcode
+
+// All of these calls to the \c subvector() function are identical. Whether the alignment flag is
+// explicitly specified or not, it always returns an unaligned subvector. Whereas this may provide
+// full flexibility in the creation of subvectors, this might result in performance restrictions
+// (even in case the specified subvector could be aligned). However, it is also possible to create
+// aligned subvectors. Aligned subvectors are identical to unaligned subvectors in all aspects,
+// except that they may pose additional alignment restrictions and therefore have less flexibility
+// during creation. These restrictions may limit their application, but due to that they don't
+// suffer from performance penalties and provide the same performance as the underlying vector.
+// Aligned subvectors are created by explicitly specifying the \a blaze::aligned flag:
+
+   \code
+   using blaze::aligned;
+
+   // Creating an aligned subvector in the range [8..23]
+   blaze::SparseSubvector<SparseVectorType,aligned> sv = subvector<aligned>( x, 8UL, 16UL );
+   \endcode
+
+// In contrast to dense subvectors, which pose several additional alignment restrictions based on
+// the used element type, sparse subvectors at this time don't pose any additional restrictions.
+// Therefore aligned and unaligned sparse subvectors are truly fully identical. Note however that
+// this is not true for dense subvectors (see the DenseSubvector class description)!
+//
 // \n \section sparse_subvector_on_sparse_subvector Subvectors on Subvectors
 //
 // It is also possible to create a subvector view on another subvector. In this context it is
@@ -324,7 +382,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
 {
  private:
    //**Type definitions****************************************************************************
-   //! Composite data type of the dense vector expression.
+   //! Composite data type of the sparse vector expression.
    typedef typename SelectType< IsExpression<VT>::value, VT, VT& >::Type  Operand;
    //**********************************************************************************************
 
