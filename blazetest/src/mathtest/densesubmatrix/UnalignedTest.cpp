@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/densesubmatrix/ClassTest.cpp
-//  \brief Source file for the DenseSubmatrix class test
+//  \file src/mathtest/densesubmatrix/UnalignedTest.cpp
+//  \brief Source file for the unaligned DenseSubmatrix class test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -41,7 +41,7 @@
 #include <iostream>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/Views.h>
-#include <blazetest/mathtest/densesubmatrix/ClassTest.h>
+#include <blazetest/mathtest/densesubmatrix/UnalignedTest.h>
 
 
 namespace blazetest {
@@ -61,7 +61,7 @@ namespace densesubmatrix {
 //
 // \exception std::runtime_error Operation error detected.
 */
-ClassTest::ClassTest()
+UnalignedTest::UnalignedTest()
    : mat_ ( 5UL, 4UL )
    , tmat_( 4UL, 5UL )
 {
@@ -106,7 +106,7 @@ ClassTest::ClassTest()
 // This function performs a test of all constructors of the DenseSubmatrix class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testConstructors()
+void UnalignedTest::testConstructors()
 {
    //=====================================================================================
    // Row-major submatrix tests
@@ -201,7 +201,7 @@ void ClassTest::testConstructors()
 // This function performs a test of all assignment operators of the DenseSubmatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testAssignment()
+void UnalignedTest::testAssignment()
 {
    //=====================================================================================
    // Row-major homogeneous assignment
@@ -1038,7 +1038,7 @@ void ClassTest::testAssignment()
 // This function performs a test of the addition assignment operators of the DenseSubmatrix
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testAddAssign()
+void UnalignedTest::testAddAssign()
 {
    //=====================================================================================
    // Row-major DenseSubmatrix addition assignment
@@ -1687,7 +1687,7 @@ void ClassTest::testAddAssign()
 // This function performs a test of the subtraction assignment operators of the DenseSubmatrix
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testSubAssign()
+void UnalignedTest::testSubAssign()
 {
    //=====================================================================================
    // Row-major DenseSubmatrix subtraction assignment
@@ -2336,7 +2336,7 @@ void ClassTest::testSubAssign()
 // This function performs a test of the multiplication assignment operators of the DenseSubmatrix
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testMultAssign()
+void UnalignedTest::testMultAssign()
 {
    //=====================================================================================
    // Row-major DenseSubmatrix multiplication assignment
@@ -3173,7 +3173,7 @@ void ClassTest::testMultAssign()
 // This function performs a test of the division assignment operators of the DenseSubmatrix
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testDivAssign()
+void UnalignedTest::testDivAssign()
 {
    //=====================================================================================
    // Row-major scalar division assignment
@@ -3379,7 +3379,7 @@ void ClassTest::testDivAssign()
 // of the DenseSubmatrix class template. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-void ClassTest::testFunctionCall()
+void UnalignedTest::testFunctionCall()
 {
    //=====================================================================================
    // Row-major submatrix tests
@@ -3679,7 +3679,7 @@ void ClassTest::testFunctionCall()
 // This function performs a test of the iterator implementation of the DenseSubmatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testIterator()
+void UnalignedTest::testIterator()
 {
    //=====================================================================================
    // Row-major submatrix tests
@@ -4404,7 +4404,7 @@ void ClassTest::testIterator()
 // This function performs a test of the nonZeros member function of DenseSubmatrix. In
 // case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testNonZeros()
+void UnalignedTest::testNonZeros()
 {
    //=====================================================================================
    // Row-major submatrix tests
@@ -4562,7 +4562,7 @@ void ClassTest::testNonZeros()
 // This function performs a test of the reset member function of DenseSubmatrix. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testReset()
+void UnalignedTest::testReset()
 {
    //=====================================================================================
    // Row-major reset
@@ -4840,7 +4840,7 @@ void ClassTest::testReset()
 // This function performs a test of the scale member function of DenseSubmatrix.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testScale()
+void UnalignedTest::testScale()
 {
    //=====================================================================================
    // Row-major submatrix tests
@@ -4995,7 +4995,7 @@ void ClassTest::testScale()
 // This function performs a test of the isDefault function with the DenseSubmatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testIsDefault()
+void UnalignedTest::testIsDefault()
 {
    //=====================================================================================
    // Row-major submatrix tests
@@ -5086,7 +5086,7 @@ void ClassTest::testIsDefault()
 // This function performs a test of the isnan function with the DenseSubmatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testIsNan()
+void UnalignedTest::testIsNan()
 {
    //=====================================================================================
    // Row-major submatrix tests
@@ -5207,7 +5207,7 @@ void ClassTest::testIsNan()
 // This function performs a test of the isDiagonal function with the DenseSubmatrix
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testIsDiagonal()
+void UnalignedTest::testIsDiagonal()
 {
    //=====================================================================================
    // Row-major submatrix tests
@@ -5412,7 +5412,7 @@ void ClassTest::testIsDiagonal()
 // This function performs a test of the isSymmetric function with the DenseSubmatrix
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testIsSymmetric()
+void UnalignedTest::testIsSymmetric()
 {
    //=====================================================================================
    // Row-major submatrix tests
@@ -5665,7 +5665,7 @@ void ClassTest::testIsSymmetric()
 // This function performs a test of the min function with the DenseSubmatrix class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testMinimum()
+void UnalignedTest::testMinimum()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -5826,7 +5826,7 @@ void ClassTest::testMinimum()
 // This function performs a test of the max function with the DenseSubmatrix class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testMaximum()
+void UnalignedTest::testMaximum()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -5987,7 +5987,7 @@ void ClassTest::testMaximum()
 // This function performs a test of the submatrix function with the DenseSubmatrix class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testSubmatrix()
+void UnalignedTest::testSubmatrix()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -6068,7 +6068,7 @@ void ClassTest::testSubmatrix()
 // This function performs a test of the row function with the DenseSubmatrix class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testRow()
+void UnalignedTest::testRow()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -6153,7 +6153,7 @@ void ClassTest::testRow()
 // This function performs a test of the column function with the DenseSubmatrix class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testColumn()
+void UnalignedTest::testColumn()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -6245,7 +6245,7 @@ void ClassTest::testColumn()
 //
 // This function initializes all member matrices to specific predetermined values.
 */
-void ClassTest::initialize()
+void UnalignedTest::initialize()
 {
    // Initializing the row-major dynamic matrix
    mat_.reset();
@@ -6293,14 +6293,14 @@ void ClassTest::initialize()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running DenseSubmatrix class test..." << std::endl;
+   std::cout << "   Running unaligned DenseSubmatrix class test..." << std::endl;
 
    try
    {
-      RUN_DENSESUBMATRIX_CLASS_TEST;
+      RUN_DENSESUBMATRIX_UNALIGNED_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during DenseSubmatrix class test:\n"
+      std::cerr << "\n\n ERROR DETECTED during unaligned DenseSubmatrix class test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

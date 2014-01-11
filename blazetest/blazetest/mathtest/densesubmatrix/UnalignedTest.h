@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/densesubmatrix/ClassTest.h
-//  \brief Header file for the DenseSubmatrix class test
+//  \file blazetest/mathtest/densesubmatrix/UnalignedTest.h
+//  \brief Header file for the unaligned DenseSubmatrix class test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DENSESUBMATRIX_CLASSTEST_H_
-#define _BLAZETEST_MATHTEST_DENSESUBMATRIX_CLASSTEST_H_
+#ifndef _BLAZETEST_MATHTEST_DENSESUBMATRIX_UNALIGNEDTEST_H_
+#define _BLAZETEST_MATHTEST_DENSESUBMATRIX_UNALIGNEDTEST_H_
 
 
 //*************************************************************************************************
@@ -62,18 +62,18 @@ namespace densesubmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all tests of the DenseSubmatrix class template.
+/*!\brief Auxiliary class for all tests of the unaligned DenseSubmatrix class template.
 //
 // This class represents a test suite for the blaze::DenseSubmatrix class template. It performs
 // a series of both compile time as well as runtime tests.
 */
-class ClassTest
+class UnalignedTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit ClassTest();
+   explicit UnalignedTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -197,7 +197,7 @@ class ClassTest
 // \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense matrix
-void ClassTest::checkRows( const Type& matrix, size_t expectedRows ) const
+void UnalignedTest::checkRows( const Type& matrix, size_t expectedRows ) const
 {
    if( matrix.rows() != expectedRows ) {
       std::ostringstream oss;
@@ -225,7 +225,7 @@ void ClassTest::checkRows( const Type& matrix, size_t expectedRows ) const
 // a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense matrix
-void ClassTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
+void UnalignedTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 {
    if( matrix.columns() != expectedColumns ) {
       std::ostringstream oss;
@@ -253,7 +253,7 @@ void ClassTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 // thrown.
 */
 template< typename Type >  // Type of the dense matrix
-void ClassTest::checkCapacity( const Type& matrix, size_t minCapacity ) const
+void UnalignedTest::checkCapacity( const Type& matrix, size_t minCapacity ) const
 {
    if( matrix.capacity() < minCapacity ) {
       std::ostringstream oss;
@@ -281,7 +281,7 @@ void ClassTest::checkCapacity( const Type& matrix, size_t minCapacity ) const
 // number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense matrix
-void ClassTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
+void UnalignedTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
 {
    if( matrix.nonZeros() != expectedNonZeros ) {
       std::ostringstream oss;
@@ -320,7 +320,7 @@ void ClassTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) con
 // to the given expected number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense matrix
-void ClassTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
+void UnalignedTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
 {
    if( matrix.nonZeros( index ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -356,13 +356,13 @@ void ClassTest::checkNonZeros( const Type& matrix, size_t index, size_t expected
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the DenseSubmatrix class template.
+/*!\brief Testing the functionality of the unaligned DenseSubmatrix class template.
 //
 // \return void
 */
 void runTest()
 {
-   ClassTest();
+   UnalignedTest();
 }
 //*************************************************************************************************
 
@@ -377,9 +377,9 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the DenseSubmatrix class test.
+/*!\brief Macro for the execution of the unaligned DenseSubmatrix class test.
 */
-#define RUN_DENSESUBMATRIX_CLASS_TEST \
+#define RUN_DENSESUBMATRIX_UNALIGNED_TEST \
    blazetest::mathtest::densesubmatrix::runTest()
 /*! \endcond */
 //*************************************************************************************************

@@ -37,4 +37,4 @@ PATH_DENSESUBMATRIX=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running DenseSubmatrix tests..."
 
-EXE=$PATH_DENSESUBMATRIX/ClassTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DENSESUBMATRIX/UnalignedTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
