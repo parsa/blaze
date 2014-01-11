@@ -64,8 +64,8 @@ namespace densesubvector {
 //*************************************************************************************************
 /*!\brief Auxiliary class for all tests of the unaligned DenseSubvector class template.
 //
-// This class represents a test suite for the unaligned specialization of the blaze::DenseSubvector
-// class template. It performs a series of both compile time as well as runtime tests.
+// This class represents a test suite for the blaze::DenseSubvector class template. It performs
+// a series of both compile time as well as runtime tests.
 */
 class UnalignedTest
 {
@@ -105,9 +105,6 @@ class UnalignedTest
 
    template< typename Type >
    void checkSize( const Type& vector, size_t expectedSize ) const;
-
-   template< typename Type >
-   void checkCapacity( const Type& vector, size_t minCapacity ) const;
 
    template< typename Type >
    void checkNonZeros( const Type& vector, size_t expectedNonZeros ) const;
@@ -178,33 +175,6 @@ void UnalignedTest::checkSize( const Type& vector, size_t expectedSize ) const
           << " Details:\n"
           << "   Size         : " << vector.size() << "\n"
           << "   Expected size: " << expectedSize << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checking the capacity of the given dense vector.
-//
-// \param vector The dense vector to be checked.
-// \param minCapacity The expected minimum capacity.
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function checks the capacity of the given dense vector. In case the actual capacity is
-// smaller than the given expected minimum capacity, a \a std::runtime_error exception is thrown.
-*/
-template< typename Type >  // Type of the dense vector
-void UnalignedTest::checkCapacity( const Type& vector, size_t minCapacity ) const
-{
-   if( vector.capacity() < minCapacity ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Invalid capacity detected\n"
-          << " Details:\n"
-          << "   Capacity                 : " << vector.capacity() << "\n"
-          << "   Expected minimum capacity: " << minCapacity << "\n";
       throw std::runtime_error( oss.str() );
    }
 }
