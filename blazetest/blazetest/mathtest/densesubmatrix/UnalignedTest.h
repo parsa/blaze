@@ -115,9 +115,6 @@ class UnalignedTest
    void checkColumns( const Type& matrix, size_t expectedColumns ) const;
 
    template< typename Type >
-   void checkCapacity( const Type& matrix, size_t minCapacity ) const;
-
-   template< typename Type >
    void checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const;
 
    template< typename Type >
@@ -234,34 +231,6 @@ void UnalignedTest::checkColumns( const Type& matrix, size_t expectedColumns ) c
           << " Details:\n"
           << "   Number of columns         : " << matrix.columns() << "\n"
           << "   Expected number of columns: " << expectedColumns << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checking the capacity of the given dense matrix.
-//
-// \param matrix The dense matrix to be checked.
-// \param minCapacity The expected minimum capacity of the dense matrix.
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function checks the capacity of the given dense matrix. In case the actual capacity
-// is smaller than the given expected minimum capacity, a \a std::runtime_error exception is
-// thrown.
-*/
-template< typename Type >  // Type of the dense matrix
-void UnalignedTest::checkCapacity( const Type& matrix, size_t minCapacity ) const
-{
-   if( matrix.capacity() < minCapacity ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Invalid capacity detected\n"
-          << " Details:\n"
-          << "   Capacity                 : " << matrix.capacity() << "\n"
-          << "   Expected minimum capacity: " << minCapacity << "\n";
       throw std::runtime_error( oss.str() );
    }
 }
