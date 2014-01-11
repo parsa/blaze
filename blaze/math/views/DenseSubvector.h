@@ -112,7 +112,18 @@ namespace blaze {
 //
 // \n \section dense_subvector_setup Setup of Dense Subvectors
 //
-// A view on a dense subvector can be created very conveniently via the \c subvector() function.
+// A view on a dense subvector can be created very conveniently via the \c subvector() function:
+
+   \code
+   typedef blaze::DynamicVector<double,blaze::rowVector>  DenseVectorType;
+
+   DenseVectorType x;
+   // ... Resizing and initialization
+
+   // Create a subvector from index 8 with a size of 16 (i.e. in the range [8..23])
+   blaze::DenseSubvector<DenseVectorType> sv = subvector( x, 8UL, 16UL );
+   \endcode
+
 // This view can be treated as any other dense vector, i.e. it can be assigned to, it can be
 // copied from, and it can be used in arithmetic operations. The view can also be used on both
 // sides of an assignment: The subvector can either be used as an alias to grant write access to
@@ -130,8 +141,10 @@ namespace blaze {
    DenseMatrixType  A;
    // ... Resizing and initialization
 
-   // Setting the first ten elements of x to the 2nd row of matrix A
+   // Create a subvector from index 0 with a size of 10 (i.e. in the range [0..9])
    blaze::DenseSubvector<DenseVectorType> sv = subvector( x, 0UL, 10UL );
+
+   // Setting the first ten elements of x to the 2nd row of matrix A
    sv = row( A, 2UL );
 
    // Setting the second ten elements of x to y
@@ -260,6 +273,76 @@ namespace blaze {
    double scalar = subvector( d1, 5UL, 10UL ) * trans( s1 );  // Scalar/dot/inner product between two vectors
 
    A = trans( s1 ) * subvector( d1, 4UL, 16UL );  // Outer product between two vectors
+   \endcode
+
+// \n \section dense_subvector_aligned_subvector Aligned Subvectors
+//
+// Usually subvectors can be defined anywhere within a vector. They may start at any position and
+// may have an arbitrary size (only restricted by the size of the underlying vector). However, in
+// contrast to vectors themselves, which are always properly aligned in memory and therefore can
+// provide maximum performance, this means that subvectors in general have to be considered to be
+// unaligned. This can be made explicit by the \a blaze::unaligned flag:
+
+   \code
+   using blaze::unaligned;
+
+   typedef blaze::DynamicVector<double,blaze::rowVector>  DenseVectorType;
+
+   DenseVectorType x;
+   // ... Resizing and initialization
+
+   // Identical creations of an unaligned subvector in the range [8..23]
+   blaze::DenseSubvector<DenseVectorType>           sv1 = subvector           ( x, 8UL, 16UL );
+   blaze::DenseSubvector<DenseVectorType>           sv2 = subvector<unaligned>( x, 8UL, 16UL );
+   blaze::DenseSubvector<DenseVectorType,unaligned> sv3 = subvector           ( x, 8UL, 16UL );
+   blaze::DenseSubvector<DenseVectorType,unaligned> sv4 = subvector<unaligned>( x, 8UL, 16UL );
+   \endcode
+
+// All of these calls to the \c subvector() function are identical. Whether the alignment flag is
+// explicitly specified or not, it always returns an unaligned subvector. Whereas this may provide
+// full flexibility in the creation of subvectors, this might result in performance restrictions
+// (even in case the specified subvector could be aligned). However, it is also possible to create
+// aligned subvectors. Aligned subvectors are identical to unaligned subvectors in all aspects,
+// except that they may pose additional alignment restrictions and therefore have less flexibility
+// during creation, but don't suffer from performance penalties and provide the same performance
+// as the underlying vector. Aligned subvectors are created by explicitly specifying the
+// \a blaze::aligned flag:
+
+   \code
+   using blaze::aligned;
+
+   // Creating an aligned subvector in the range [8..23]
+   blaze::DenseSubvector<DenseVectorType,aligned> sv = subvector<aligned>( x, 8UL, 16UL );
+   \endcode
+
+// The alignment restrictions refer to system dependent address restrictions for the used element
+// type and the available vectorization mode (SSE, AVX, ...). The following source code gives some
+// examples for a double precision dense vector, assuming that AVX is available, which packs 4
+// \c double values into an intrinsic vector:
+
+   \code
+   using blaze::columnVector;
+
+   typedef blaze::DynamicVector<double,columnVector>  VectorType;
+   typedef blaze::DenseSubvector<VectorType,aligned>  SubvectorType;
+
+   VectorType d( 17UL );
+   // ... Resizing and initialization
+
+   // OK: Starts at the beginning and the size is a multiple of 4
+   SubvectorType dsv1 = subvector<aligned>( d, 0UL, 12UL );
+
+   // OK: Start index and the size are both a multiple of 4
+   SubvectorType dsv2 = subvector<aligned>( d, 4UL, 8UL );
+
+   // OK: The start index is a multiple of 4 and the subvector includes the last element
+   SubvectorType dsv3 = subvector<aligned>( d, 8UL, 9UL );
+
+   // Error: Start index is not a multiple of 4
+   SubvectorType dsv4 = subvector<aligned>( d, 5UL, 8UL );
+
+   // Error: Size is not a multiple of 4 and the subvector does not include the last element
+   SubvectorType dsv5 = subvector<aligned>( d, 8UL, 5UL );
    \endcode
 
 // \n \section dense_subvector_on_dense_subvector Subvectors on Subvectors
