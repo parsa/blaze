@@ -2078,6 +2078,9 @@ inline const SparseSubvector<VT,AF1,TF>
 {
    BLAZE_FUNCTION_TRACE;
 
+   if( index + n > sv.size() )
+      throw std::invalid_argument( "Invalid subvector specification" );
+
    return SparseSubvector<VT,AF1,TF>( sv.vector_, sv.offset_ + index, size );
 }
 /*! \endcond */

@@ -4251,6 +4251,9 @@ inline const DenseSubvector<VT,AF1,TF>
 {
    BLAZE_FUNCTION_TRACE;
 
+   if( index + size > dv.size() )
+      throw std::invalid_argument( "Invalid subvector specification" );
+
    return DenseSubvector<VT,AF1,TF>( dv.vector_, dv.offset_ + index, size );
 }
 /*! \endcond */
