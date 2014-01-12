@@ -3652,7 +3652,7 @@ void ClassTest::testIterator()
              sm(2,0) != 0 || sm(2,1) != 8 || sm(2,2) != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Addition assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 1 0 )\n( 2 0 2 )\n( 0 8 9 )\n";
@@ -3666,7 +3666,7 @@ void ClassTest::testIterator()
              mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Addition assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
                 << "   Expected result:\n(  0  0  0  0 )\n"
@@ -3693,7 +3693,7 @@ void ClassTest::testIterator()
              sm(2,0) !=  0 || sm(2,1) != 8 || sm(2,2) !=  9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Subtraction assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n(  0  1  0 )\n( -2  0 -3 )\n(  0  8  9 )\n";
@@ -3707,7 +3707,7 @@ void ClassTest::testIterator()
              mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Subtraction assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
                 << "   Expected result:\n(  0  0  0  0 )\n"
@@ -3734,7 +3734,7 @@ void ClassTest::testIterator()
              sm(2,0) !=  0 || sm(2,1) != 8 || sm(2,2) !=  9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Multiplication assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n(  0  1  0 )\n( -2  0 -6 )\n(  0  8  9 )\n";
@@ -3748,7 +3748,7 @@ void ClassTest::testIterator()
              mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Multiplication assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
                 << "   Expected result:\n(  0  0  0  0 )\n"
@@ -3773,7 +3773,7 @@ void ClassTest::testIterator()
              sm(2,0) !=  0 || sm(2,1) != 8 || sm(2,2) !=  9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Division assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n(  0  1  0 )\n( -1  0 -3 )\n(  0  8  9 )\n";
@@ -3787,7 +3787,7 @@ void ClassTest::testIterator()
              mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Division assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
                 << "   Expected result:\n(  0  0  0  0 )\n"
@@ -3948,7 +3948,7 @@ void ClassTest::testIterator()
              sm(2,0) != 0 || sm(2,1) != 2 || sm(2,2) != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Addition assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 2 0 )\n( 1 0 8 )\n( 0 2 9 )\n";
@@ -3961,7 +3961,7 @@ void ClassTest::testIterator()
              tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) != 0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Addition assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
                 << "   Expected result:\n( 0  0  2  0  7 )\n"
@@ -3987,7 +3987,7 @@ void ClassTest::testIterator()
              sm(2,0) != 0 || sm(2,1) != -3 || sm(2,2) != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Subtraction assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 -2  0 )\n( 1  0  8 )\n( 0 -3  9 )\n";
@@ -4000,7 +4000,7 @@ void ClassTest::testIterator()
              tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Subtraction assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
                 << "   Expected result:\n( 0  0 -2  0  7 )\n"
@@ -4026,7 +4026,7 @@ void ClassTest::testIterator()
              sm(2,0) != 0 || sm(2,1) != -6 || sm(2,2) != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Multiplication assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 -2  0 )\n( 1  0  8 )\n( 0 -6  9 )\n";
@@ -4039,7 +4039,7 @@ void ClassTest::testIterator()
              tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Multiplication assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
                 << "   Expected result:\n( 0  0 -2  0  7 )\n"
@@ -4063,7 +4063,7 @@ void ClassTest::testIterator()
              sm(2,0) != 0 || sm(2,1) != -3 || sm(2,2) != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Division assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 -1  0 )\n( 1  0  8 )\n( 0 -3  9 )\n";
@@ -4076,7 +4076,7 @@ void ClassTest::testIterator()
              tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Division assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
                 << "   Expected result:\n( 0  0 -1  0  7 )\n"
@@ -6248,7 +6248,7 @@ void ClassTest::testScale()
           sm(1,0) != 8 || sm(1,1) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Scale operation failed\n"
+             << " Error: Integral scale operation failed\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 0 -6 )\n( 8 10 )\n";
@@ -6268,7 +6268,7 @@ void ClassTest::testScale()
           sm(1,0) != 4 || sm(1,1) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Scale operation failed\n"
+             << " Error: Floating point scale operation failed\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 0 -3 )\n( 4  5 )\n";
@@ -6319,7 +6319,7 @@ void ClassTest::testScale()
           sm(1,0) != -6 || sm(1,1) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Scale operation failed\n"
+             << " Error: Integral scale operation failed\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0  8 )\n( -6 10 )\n";
@@ -6339,7 +6339,7 @@ void ClassTest::testScale()
           sm(1,0) != -3 || sm(1,1) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Scale operation failed\n"
+             << " Error: Floating point scale operation failed\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 4 )\n( -3 5 )\n";
@@ -7919,7 +7919,7 @@ void ClassTest::testSubmatrix()
       if( sm2(1,1) != -6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator access failed\n"
+             << " Error: Function call operator access failed\n"
              << " Details:\n"
              << "   Result: " << sm2(1,1) << "\n"
              << "   Expected result: -6\n";
@@ -7953,7 +7953,7 @@ void ClassTest::testSubmatrix()
       if( sm2(1,1) != -6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator access failed\n"
+             << " Error: Function call operator access failed\n"
              << " Details:\n"
              << "   Result: " << sm2(1,1) << "\n"
              << "   Expected result: -6\n";

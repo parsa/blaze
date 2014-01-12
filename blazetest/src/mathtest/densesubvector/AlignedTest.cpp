@@ -118,6 +118,7 @@ void AlignedTest::testConstructors()
       for( size_t maxsize=0UL; ; maxsize+=alignment )
       {
          const size_t size( blaze::min( maxsize, vec1_.size()-start ) );
+
          const ASVT sv1 = subvector<aligned>  ( vec1_, start, size );
          const USVT sv2 = subvector<unaligned>( vec2_, start, size );
 
@@ -273,8 +274,8 @@ void AlignedTest::testAssignment()
 
       ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
-      sv1 = subvector( vec1_, 8UL, 16UL );
-      sv2 = subvector( vec2_, 8UL, 16UL );
+      sv1 = subvector( vec1_, 24UL, 16UL );
+      sv2 = subvector( vec2_, 24UL, 16UL );
 
       checkSize( sv1, 16UL );
       checkSize( sv2, 16UL );
@@ -303,7 +304,7 @@ void AlignedTest::testAssignment()
       ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 16UL, 0 );
+      blaze::DynamicVector<int,blaze::rowVector> vec( 16UL );
       randomize( vec, -10, 10 );
 
       sv1 = vec;
@@ -336,7 +337,7 @@ void AlignedTest::testAssignment()
       ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
-      blaze::CompressedVector<int,blaze::rowVector> vec( 16UL, 0 );
+      blaze::CompressedVector<int,blaze::rowVector> vec( 16UL );
       randomize( vec, 6UL, -10, 10 );
 
       sv1 = vec;
@@ -1182,7 +1183,7 @@ void AlignedTest::testIterator()
 
       ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
-      int value = 6;
+      int value = 1;
 
       ASVT::Iterator it1( sv1.begin() );
       USVT::Iterator it2( sv2.begin() );
@@ -1392,25 +1393,41 @@ void AlignedTest::testScale()
 
    initialize();
 
-   // Scaling the subvector in the range [8,23]
-   {
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
-      sv1.scale( 3 );
-      sv2.scale( 3 );
+   ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+   USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+   // Integral scaling of the subvector in the range [8,23]
+   sv1.scale( 3 );
+   sv2.scale( 3 );
 
-      if( sv1 != sv2 || vec1_ != vec2_ ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Scale operation of range [8,23] failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sv1 << "\n"
-             << "   Expected result:\n" << sv2 << "\n";
-         throw std::runtime_error( oss.str() );
-      }
+   checkSize( sv1, 16UL );
+   checkSize( sv2, 16UL );
+
+   if( sv1 != sv2 || vec1_ != vec2_ ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Integral scale operation of range [8,23] failed\n"
+          << " Details:\n"
+          << "   Result:\n" << sv1 << "\n"
+          << "   Expected result:\n" << sv2 << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Floating point scaling of the subvector in the range [8,23]
+   sv1.scale( 0.5 );
+   sv2.scale( 0.5 );
+
+   checkSize( sv1, 16UL );
+   checkSize( sv2, 16UL );
+
+   if( sv1 != sv2 || vec1_ != vec2_ ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Floating point scale operation of range [8,23] failed\n"
+          << " Details:\n"
+          << "   Result:\n" << sv1 << "\n"
+          << "   Expected result:\n" << sv2 << "\n";
+      throw std::runtime_error( oss.str() );
    }
 }
 //*************************************************************************************************
@@ -1484,14 +1501,11 @@ void AlignedTest::testIsNan()
 
    test_ = "isnan() function";
 
-   typedef blaze::DynamicVector<float,blaze::columnVector>  VectorType;
-   typedef blaze::DenseSubvector<VectorType,aligned>        SubvectorType;
+   typedef blaze::DynamicVector<float,blaze::rowVector>  VectorType;
+   typedef blaze::DenseSubvector<VectorType,aligned>     SubvectorType;
 
-   VectorType vec( 64UL, 0.0F );
-   VectorType tmp( 32UL, 0.0F );
-
-   randomize( tmp, -10.0F, 10.0F );
-   subvector( vec, 32, 32 ) = tmp;
+   VectorType vec( vec1_ );
+   subvector<aligned>( vec, 0UL, 32UL ) = 0;
 
    // isnan with empty 32-dimensional subvector
    {
@@ -1726,7 +1740,17 @@ void AlignedTest::testSubvector()
    ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 32UL );
    ASVT sv2 = subvector<aligned>  ( sv1  , 8UL, 16UL );
    USVT sv3 = subvector<unaligned>( vec2_, 8UL, 32UL );
-   USVT sv4 = subvector<unaligned>( sv3  , 8UL, 32UL );
+   USVT sv4 = subvector<unaligned>( sv3  , 8UL, 16UL );
+
+   if( sv2 != sv4 || vec1_ != vec2_ ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subvector function failed\n"
+          << " Details:\n"
+          << "   Result:\n" << sv2 << "\n"
+          << "   Expected result:\n" << sv4 << "\n";
+      throw std::runtime_error( oss.str() );
+   }
 
    if( sv2[1] != sv4[1] ) {
       std::ostringstream oss;

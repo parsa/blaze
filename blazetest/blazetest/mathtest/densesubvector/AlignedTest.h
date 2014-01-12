@@ -120,8 +120,8 @@ class AlignedTest
 
    //**Type definitions****************************************************************************
    typedef blaze::DynamicVector<int,blaze::rowVector>  VT;    //!< Dynamic row vector type
-   typedef blaze::DenseSubvector<VT,blaze::unaligned>  USVT;  //!< Unaligned subvector type for dynamic row vectors.
    typedef blaze::DenseSubvector<VT,blaze::aligned>    ASVT;  //!< Aligned subvector type for dynamic row vectors.
+   typedef blaze::DenseSubvector<VT,blaze::unaligned>  USVT;  //!< Unaligned subvector type for dynamic row vectors.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
@@ -139,8 +139,8 @@ class AlignedTest
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( VT   );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( USVT );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ASVT );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( USVT );
    /*! \endcond */
    //**********************************************************************************************
 };

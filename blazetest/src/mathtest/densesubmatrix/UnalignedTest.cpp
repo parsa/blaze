@@ -119,8 +119,8 @@ void UnalignedTest::testConstructors()
 
       for( size_t row=0UL; row<mat_.rows(); ++row ) {
          for( size_t column=0UL; column<mat_.columns(); ++column ) {
-            for( size_t m=1UL; (row+m)<mat_.rows(); ++m ) {
-               for( size_t n=1UL; (column+n)<mat_.columns(); ++n )
+            for( size_t m=0UL; (row+m)<mat_.rows(); ++m ) {
+               for( size_t n=0UL; (column+n)<mat_.columns(); ++n )
                {
                   SMT sm = submatrix( mat_, row, column, m, n );
 
@@ -146,55 +146,55 @@ void UnalignedTest::testConstructors()
             }
          }
       }
+
+      try {
+         SMT sm = submatrix( mat_, 2UL, 2UL, 4UL, 2UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         SMT sm = submatrix( mat_, 2UL, 2UL, 2UL, 3UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         SMT sm = submatrix( mat_, 5UL, 2UL, 2UL, 2UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         SMT sm = submatrix( mat_, 2UL, 4UL, 2UL, 2UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
-
-   try {
-      SMT sm = submatrix( mat_, 2UL, 2UL, 4UL, 2UL );
-
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Setup of out-of-bounds submatrix succeeded\n"
-          << " Details:\n"
-          << "   Result:\n" << sm << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-   catch( std::invalid_argument& ) {}
-
-   try {
-      SMT sm = submatrix( mat_, 2UL, 2UL, 2UL, 3UL );
-
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Setup of out-of-bounds submatrix succeeded\n"
-          << " Details:\n"
-          << "   Result:\n" << sm << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-   catch( std::invalid_argument& ) {}
-
-   try {
-      SMT sm = submatrix( mat_, 5UL, 2UL, 2UL, 2UL );
-
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Setup of out-of-bounds submatrix succeeded\n"
-          << " Details:\n"
-          << "   Result:\n" << sm << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-   catch( std::invalid_argument& ) {}
-
-   try {
-      SMT sm = submatrix( mat_, 2UL, 4UL, 2UL, 2UL );
-
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Setup of out-of-bounds submatrix succeeded\n"
-          << " Details:\n"
-          << "   Result:\n" << sm << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-   catch( std::invalid_argument& ) {}
 
 
    //=====================================================================================
@@ -208,8 +208,8 @@ void UnalignedTest::testConstructors()
 
       for( size_t column=0UL; column<tmat_.columns(); ++column ) {
          for( size_t row=0UL; row<tmat_.rows(); ++row ) {
-            for( size_t n=1UL; (column+n)<tmat_.columns(); ++n ) {
-               for( size_t m=1UL; (row+m)<tmat_.rows(); ++m )
+            for( size_t n=0UL; (column+n)<tmat_.columns(); ++n ) {
+               for( size_t m=0UL; (row+m)<tmat_.rows(); ++m )
                {
                   TSMT sm = submatrix( tmat_, row, column, m, n );
 
@@ -235,55 +235,55 @@ void UnalignedTest::testConstructors()
             }
          }
       }
+
+      try {
+         TSMT sm = submatrix( tmat_, 2UL, 2UL, 3UL, 2UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         TSMT sm = submatrix( tmat_, 2UL, 2UL, 2UL, 4UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         TSMT sm = submatrix( tmat_, 4UL, 2UL, 2UL, 2UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         TSMT sm = submatrix( tmat_, 2UL, 5UL, 2UL, 2UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
-
-   try {
-      TSMT sm = submatrix( tmat_, 2UL, 2UL, 3UL, 2UL );
-
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Setup of out-of-bounds submatrix succeeded\n"
-          << " Details:\n"
-          << "   Result:\n" << sm << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-   catch( std::invalid_argument& ) {}
-
-   try {
-      TSMT sm = submatrix( tmat_, 2UL, 2UL, 2UL, 4UL );
-
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Setup of out-of-bounds submatrix succeeded\n"
-          << " Details:\n"
-          << "   Result:\n" << sm << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-   catch( std::invalid_argument& ) {}
-
-   try {
-      TSMT sm = submatrix( tmat_, 4UL, 2UL, 2UL, 2UL );
-
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Setup of out-of-bounds submatrix succeeded\n"
-          << " Details:\n"
-          << "   Result:\n" << sm << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-   catch( std::invalid_argument& ) {}
-
-   try {
-      TSMT sm = submatrix( tmat_, 2UL, 5UL, 2UL, 2UL );
-
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Setup of out-of-bounds submatrix succeeded\n"
-          << " Details:\n"
-          << "   Result:\n" << sm << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-   catch( std::invalid_argument& ) {}
 }
 //*************************************************************************************************
 
@@ -3989,7 +3989,7 @@ void UnalignedTest::testIterator()
              sm(2,0) != 7 || sm(2,1) != 8 || sm(2,2) != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Addition assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 1 0 )\n( 2 5 3 )\n( 7 8 9 )\n";
@@ -4003,7 +4003,7 @@ void UnalignedTest::testIterator()
              mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Addition assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
                 << "   Expected result:\n(  0  0  0  0 )\n"
@@ -4030,7 +4030,7 @@ void UnalignedTest::testIterator()
              sm(2,0) !=  7 || sm(2,1) != 8 || sm(2,2) !=  9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Subtraction assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n(  0  1  0 )\n( -2  0 -3 )\n(  7  8  9 )\n";
@@ -4044,7 +4044,7 @@ void UnalignedTest::testIterator()
              mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Subtraction assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
                 << "   Expected result:\n(  0  0  0  0 )\n"
@@ -4071,7 +4071,7 @@ void UnalignedTest::testIterator()
              sm(2,0) !=  7 || sm(2,1) != 8 || sm(2,2) !=   9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Multiplication assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n(  0  1   0 )\n( -4  0 -12 )\n(  7  8   9 )\n";
@@ -4085,7 +4085,7 @@ void UnalignedTest::testIterator()
              mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=   9 || mat_(4,3) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Multiplication assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
                 << "   Expected result:\n(  0  0   0  0 )\n"
@@ -4110,7 +4110,7 @@ void UnalignedTest::testIterator()
              sm(2,0) !=  7 || sm(2,1) != 8 || sm(2,2) !=  9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Division assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n(  0  1  0 )\n( -2  0 -6 )\n(  7  8  9 )\n";
@@ -4124,7 +4124,7 @@ void UnalignedTest::testIterator()
              mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Division assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
                 << "   Expected result:\n(  0  0  0  0 )\n"
@@ -4348,7 +4348,7 @@ void UnalignedTest::testIterator()
              sm(2,0) != 0 || sm(2,1) != 3 || sm(2,2) != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Addition assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 2 7 )\n( 1 5 8 )\n( 0 3 9 )\n";
@@ -4361,7 +4361,7 @@ void UnalignedTest::testIterator()
              tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) != 0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Addition assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
                 << "   Expected result:\n( 0  0  2  7  7 )\n"
@@ -4387,7 +4387,7 @@ void UnalignedTest::testIterator()
              sm(2,0) != 0 || sm(2,1) != -3 || sm(2,2) != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Subtraction assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 -2  7 )\n( 1  0  8 )\n( 0 -3  9 )\n";
@@ -4400,7 +4400,7 @@ void UnalignedTest::testIterator()
              tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Subtraction assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
                 << "   Expected result:\n( 0  0 -2  7  7 )\n"
@@ -4426,7 +4426,7 @@ void UnalignedTest::testIterator()
              sm(2,0) != 0 || sm(2,1) != -12 || sm(2,2) != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Multiplication assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 -2  7 )\n( 1  0  8 )\n( 0 -6  9 )\n";
@@ -4439,7 +4439,7 @@ void UnalignedTest::testIterator()
              tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) !=   0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Multiplication assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
                 << "   Expected result:\n( 0  0  -4  7  7 )\n"
@@ -4463,7 +4463,7 @@ void UnalignedTest::testIterator()
              sm(2,0) != 0 || sm(2,1) != -6 || sm(2,2) != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Division assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 -2  7 )\n( 1  0  8 )\n( 0 -6  9 )\n";
@@ -4476,7 +4476,7 @@ void UnalignedTest::testIterator()
              tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Division assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
                 << "   Expected result:\n( 0  0 -2  7  7 )\n"
@@ -4980,7 +4980,7 @@ void UnalignedTest::testScale()
           sm(1,0) != 8 || sm(1,1) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Scale operation failed\n"
+             << " Error: Integral scale operation failed\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 0 -6 )\n( 8 10 )\n";
@@ -5000,7 +5000,7 @@ void UnalignedTest::testScale()
           sm(1,0) != 4 || sm(1,1) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Scale operation failed\n"
+             << " Error: Floating point scale operation failed\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( 0 -3 )\n( 4  5 )\n";
@@ -5051,7 +5051,7 @@ void UnalignedTest::testScale()
           sm(1,0) != -6 || sm(1,1) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Scale operation failed\n"
+             << " Error: Integral scale operation failed\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0  8 )\n( -6 10 )\n";
@@ -5071,7 +5071,7 @@ void UnalignedTest::testScale()
           sm(1,0) != -3 || sm(1,1) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Scale operation failed\n"
+             << " Error: Floating point scale operation failed\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 4 )\n( -3 5 )\n";
@@ -5194,9 +5194,11 @@ void UnalignedTest::testIsNan()
       typedef blaze::DynamicMatrix<float,blaze::rowMajor>  MatrixType;
       typedef blaze::DenseSubmatrix<MatrixType>            SubmatrixType;
 
+      initialize();
+
       MatrixType mat( mat_ );
 
-      // isnan with empty 2x2 matrix
+      // isnan with empty 2x2 submatrix
       {
          SubmatrixType sm = submatrix( mat, 0UL, 2UL, 2UL, 2UL );
 
@@ -5216,7 +5218,7 @@ void UnalignedTest::testIsNan()
          }
       }
 
-      // isnan with filled 2x3 matrix
+      // isnan with filled 2x3 submatrix
       {
          SubmatrixType sm = submatrix( mat, 2UL, 1UL, 2UL, 3UL );
 
@@ -5248,9 +5250,11 @@ void UnalignedTest::testIsNan()
       typedef blaze::DynamicMatrix<float,blaze::columnMajor>  MatrixType;
       typedef blaze::DenseSubmatrix<MatrixType>               SubmatrixType;
 
+      initialize();
+
       MatrixType mat( tmat_ );
 
-      // isnan with empty 2x2 matrix
+      // isnan with empty 2x2 submatrix
       {
          SubmatrixType sm = submatrix( mat, 2UL, 0UL, 2UL, 2UL );
 
@@ -5270,7 +5274,7 @@ void UnalignedTest::testIsNan()
          }
       }
 
-      // isnan with filled 3x2 matrix
+      // isnan with filled 3x2 submatrix
       {
          SubmatrixType sm = submatrix( mat, 1UL, 2UL, 3UL, 2UL );
 
@@ -6100,7 +6104,7 @@ void UnalignedTest::testSubmatrix()
       if( sm2(1,1) != -6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator access failed\n"
+             << " Error: Function call operator access failed\n"
              << " Details:\n"
              << "   Result: " << sm2(1,1) << "\n"
              << "   Expected result: -6\n";
@@ -6134,7 +6138,7 @@ void UnalignedTest::testSubmatrix()
       if( sm2(1,1) != -6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator access failed\n"
+             << " Error: Function call operator access failed\n"
              << " Details:\n"
              << "   Result: " << sm2(1,1) << "\n"
              << "   Expected result: -6\n";
