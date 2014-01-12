@@ -4400,7 +4400,7 @@ inline const SparseSubmatrix<MT,AF1,SO>
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( ( row + m > dm.rows() ) || ( column + n > dm.columns() ) )
+   if( ( row + m > sm.rows() ) || ( column + n > sm.columns() ) )
       throw std::invalid_argument( "Invalid submatrix specification" );
 
    return SparseSubmatrix<MT,AF1,SO>( sm.matrix_, sm.row_ + row, sm.column_ + column, m, n );
