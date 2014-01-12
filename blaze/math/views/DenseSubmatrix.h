@@ -4604,6 +4604,9 @@ inline const DenseSubmatrix<MT,AF1,SO>
 {
    BLAZE_FUNCTION_TRACE;
 
+   if( ( row + m > dm.rows() ) || ( column + n > dm.columns() ) )
+      throw std::invalid_argument( "Invalid submatrix specification" );
+
    return DenseSubmatrix<MT,AF1,SO>( dm.matrix_, dm.row_ + row, dm.column_ + column, m, n );
 }
 /*! \endcond */
