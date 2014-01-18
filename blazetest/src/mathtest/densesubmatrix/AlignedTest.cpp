@@ -4291,40 +4291,94 @@ void AlignedTest::testSubmatrix()
 
       initialize();
 
-      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 8UL, 16UL, 32UL );
-      ASMT sm2 = submatrix<aligned>  ( sm1  , 8UL, 8UL,  8UL, 16UL );
-      USMT sm3 = submatrix<unaligned>( mat2_, 8UL, 8UL, 16UL, 32UL );
-      USMT sm4 = submatrix<unaligned>( sm3  , 8UL, 8UL,  8UL, 16UL );
+      {
+         ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 8UL, 16UL, 32UL );
+         ASMT sm2 = submatrix<aligned>  ( sm1  , 8UL, 8UL,  8UL, 16UL );
+         USMT sm3 = submatrix<unaligned>( mat2_, 8UL, 8UL, 16UL, 32UL );
+         USMT sm4 = submatrix<unaligned>( sm3  , 8UL, 8UL,  8UL, 16UL );
 
-      if( sm2 != sm4 || mat1_ != mat2_ ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Submatrix function failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm2 << "\n"
-             << "   Expected result:\n" << sm4 << "\n";
-         throw std::runtime_error( oss.str() );
+         if( sm2 != sm4 || mat1_ != mat2_ ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Submatrix function failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm2 << "\n"
+                << "   Expected result:\n" << sm4 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sm2(1,1) != sm4(1,1) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << sm2(1,1) << "\n"
+                << "   Expected result: " << sm4(1,1) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *sm2.begin(1UL) != *sm4.begin(1UL) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *sm2.begin(1UL) << "\n"
+                << "   Expected result: " << *sm4.begin(1UL) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
-      if( sm2(1,1) != sm4(1,1) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator access failed\n"
-             << " Details:\n"
-             << "   Result: " << sm2(1,1) << "\n"
-             << "   Expected result: " << sm4(1,1) << "\n";
-         throw std::runtime_error( oss.str() );
-      }
+      try {
+         ASMT sm1 = submatrix<aligned>( mat1_,  8UL, 8UL, 16UL, 32UL );
+         ASMT sm2 = submatrix<aligned>( sm1  , 16UL, 8UL,  8UL,  8UL );
 
-      if( *sm2.begin(1UL) != *sm4.begin(1UL) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Iterator access failed\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
              << " Details:\n"
-             << "   Result: " << *sm2.begin(1UL) << "\n"
-             << "   Expected result: " << *sm4.begin(1UL) << "\n";
+             << "   Result:\n" << sm2 << "\n";
          throw std::runtime_error( oss.str() );
       }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         ASMT sm1 = submatrix<aligned>( mat1_, 8UL,  8UL, 16UL, 32UL );
+         ASMT sm2 = submatrix<aligned>( sm1  , 8UL, 32UL,  8UL,  8UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         ASMT sm1 = submatrix<aligned>( mat1_, 8UL, 8UL, 16UL, 32UL );
+         ASMT sm2 = submatrix<aligned>( sm1  , 8UL, 8UL, 16UL, 24UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         ASMT sm1 = submatrix<aligned>( mat1_, 8UL, 8UL, 16UL, 32UL );
+         ASMT sm2 = submatrix<aligned>( sm1  , 8UL, 8UL,  8UL, 32UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
 
 
@@ -4337,40 +4391,94 @@ void AlignedTest::testSubmatrix()
 
       initialize();
 
-      ATSMT sm1 = submatrix<aligned>  ( tmat1_, 8UL, 8UL, 32UL, 16UL );
-      ATSMT sm2 = submatrix<aligned>  ( sm1   , 8UL, 8UL, 16UL,  8UL );
-      UTSMT sm3 = submatrix<unaligned>( tmat2_, 8UL, 8UL, 32UL, 16UL );
-      UTSMT sm4 = submatrix<unaligned>( sm3   , 8UL, 8UL, 16UL,  8UL );
+      {
+         ATSMT sm1 = submatrix<aligned>  ( tmat1_, 8UL, 8UL, 32UL, 16UL );
+         ATSMT sm2 = submatrix<aligned>  ( sm1   , 8UL, 8UL, 16UL,  8UL );
+         UTSMT sm3 = submatrix<unaligned>( tmat2_, 8UL, 8UL, 32UL, 16UL );
+         UTSMT sm4 = submatrix<unaligned>( sm3   , 8UL, 8UL, 16UL,  8UL );
 
-      if( sm2 != sm4 || mat1_ != mat2_ ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Submatrix function failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm2 << "\n"
-             << "   Expected result:\n" << sm4 << "\n";
-         throw std::runtime_error( oss.str() );
+         if( sm2 != sm4 || mat1_ != mat2_ ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Submatrix function failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm2 << "\n"
+                << "   Expected result:\n" << sm4 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sm2(1,1) != sm4(1,1) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << sm2(1,1) << "\n"
+                << "   Expected result: " << sm4(1,1) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *sm2.begin(1UL) != *sm4.begin(1UL) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *sm2.begin(1UL) << "\n"
+                << "   Expected result: " << *sm4.begin(1UL) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
-      if( sm2(1,1) != sm4(1,1) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator access failed\n"
-             << " Details:\n"
-             << "   Result: " << sm2(1,1) << "\n"
-             << "   Expected result: " << sm4(1,1) << "\n";
-         throw std::runtime_error( oss.str() );
-      }
+      try {
+         ASMT sm1 = submatrix<aligned>( mat1_,  8UL, 8UL, 32UL, 16UL );
+         ASMT sm2 = submatrix<aligned>( sm1  , 32UL, 8UL,  8UL,  8UL );
 
-      if( *sm2.begin(1UL) != *sm4.begin(1UL) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Iterator access failed\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
              << " Details:\n"
-             << "   Result: " << *sm2.begin(1UL) << "\n"
-             << "   Expected result: " << *sm4.begin(1UL) << "\n";
+             << "   Result:\n" << sm2 << "\n";
          throw std::runtime_error( oss.str() );
       }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         ASMT sm1 = submatrix<aligned>( mat1_, 8UL,  8UL, 32UL, 16UL );
+         ASMT sm2 = submatrix<aligned>( sm1  , 8UL, 16UL,  8UL,  8UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         ASMT sm1 = submatrix<aligned>( mat1_, 8UL, 8UL, 32UL, 16UL );
+         ASMT sm2 = submatrix<aligned>( sm1  , 8UL, 8UL, 32UL,  8UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         ASMT sm1 = submatrix<aligned>( mat1_, 8UL, 8UL, 32UL, 16UL );
+         ASMT sm2 = submatrix<aligned>( sm1  , 8UL, 8UL, 24UL, 16UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************

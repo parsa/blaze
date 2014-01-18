@@ -7913,28 +7913,82 @@ void ClassTest::testSubmatrix()
 
       initialize();
 
-      SMT sm1 = submatrix( mat_, 1UL, 1UL, 4UL, 3UL );
-      SMT sm2 = submatrix( sm1 , 1UL, 1UL, 3UL, 2UL );
+      {
+         SMT sm1 = submatrix( mat_, 1UL, 1UL, 4UL, 3UL );
+         SMT sm2 = submatrix( sm1 , 1UL, 1UL, 3UL, 2UL );
 
-      if( sm2(1,1) != -6 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator access failed\n"
-             << " Details:\n"
-             << "   Result: " << sm2(1,1) << "\n"
-             << "   Expected result: -6\n";
-         throw std::runtime_error( oss.str() );
+         if( sm2(1,1) != -6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << sm2(1,1) << "\n"
+                << "   Expected result: -6\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sm2.begin(1UL)->value() != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << sm2.begin(1UL)->value() << "\n"
+                << "   Expected result: 5\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
-      if( sm2.begin(1UL)->value() != 5 ) {
+      try {
+         SMT sm1 = submatrix( mat_, 1UL, 1UL, 4UL, 3UL );
+         SMT sm2 = submatrix( sm1 , 4UL, 1UL, 3UL, 2UL );
+
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Iterator access failed\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
              << " Details:\n"
-             << "   Result: " << sm2.begin(1UL)->value() << "\n"
-             << "   Expected result: 5\n";
+             << "   Result:\n" << sm2 << "\n";
          throw std::runtime_error( oss.str() );
       }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         SMT sm1 = submatrix( mat_, 1UL, 1UL, 4UL, 3UL );
+         SMT sm2 = submatrix( sm1 , 1UL, 3UL, 3UL, 2UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         SMT sm1 = submatrix( mat_, 1UL, 1UL, 4UL, 3UL );
+         SMT sm2 = submatrix( sm1 , 1UL, 1UL, 4UL, 2UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         SMT sm1 = submatrix( mat_, 1UL, 1UL, 4UL, 3UL );
+         SMT sm2 = submatrix( sm1 , 1UL, 1UL, 3UL, 3UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
 
 
@@ -7947,28 +8001,82 @@ void ClassTest::testSubmatrix()
 
       initialize();
 
-      TSMT sm1 = submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
-      TSMT sm2 = submatrix( sm1  , 1UL, 1UL, 2UL, 3UL );
+      {
+         TSMT sm1 = submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
+         TSMT sm2 = submatrix( sm1  , 1UL, 1UL, 2UL, 3UL );
 
-      if( sm2(1,1) != -6 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator access failed\n"
-             << " Details:\n"
-             << "   Result: " << sm2(1,1) << "\n"
-             << "   Expected result: -6\n";
-         throw std::runtime_error( oss.str() );
+         if( sm2(1,1) != -6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << sm2(1,1) << "\n"
+                << "   Expected result: -6\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sm2.begin(1UL)->value() != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << sm2.begin(1UL)->value() << "\n"
+                << "   Expected result: 5\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
-      if( sm2.begin(1UL)->value() != 5 ) {
+      try {
+         TSMT sm1 = submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
+         TSMT sm2 = submatrix( sm1  , 3UL, 1UL, 2UL, 3UL );
+
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Iterator access failed\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
              << " Details:\n"
-             << "   Result: " << sm2.begin(1UL)->value() << "\n"
-             << "   Expected result: 5\n";
+             << "   Result:\n" << sm2 << "\n";
          throw std::runtime_error( oss.str() );
       }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         TSMT sm1 = submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
+         TSMT sm2 = submatrix( sm1  , 1UL, 4UL, 2UL, 3UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         TSMT sm1 = submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
+         TSMT sm2 = submatrix( sm1  , 1UL, 1UL, 3UL, 3UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         TSMT sm1 = submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
+         TSMT sm2 = submatrix( sm1  , 1UL, 1UL, 2UL, 4UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds submatrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************
