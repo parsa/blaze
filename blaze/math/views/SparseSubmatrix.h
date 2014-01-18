@@ -51,7 +51,7 @@
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
-#include <blaze/math/expressions/View.h>
+#include <blaze/math/expressions/Submatrix.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/sparse/SparseElement.h>
@@ -377,7 +377,7 @@ template< typename MT                                 // Type of the sparse matr
         , bool AF = unaligned                         // Alignment flag
         , bool SO = IsColumnMajorMatrix<MT>::value >  // Storage order
 class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
-                      , private View
+                      , private Submatrix
 {
  private:
    //**Type definitions****************************************************************************
@@ -2336,7 +2336,7 @@ inline void SparseSubmatrix<MT,AF,SO>::subAssign( const SparseMatrix<MT2,SO2>& r
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
 class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,true>, true >
-                                  , private View
+                                  , private Submatrix
 {
  private:
    //**Type definitions****************************************************************************

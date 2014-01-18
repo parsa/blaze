@@ -50,7 +50,7 @@
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/expressions/DenseMatrix.h>
-#include <blaze/math/expressions/View.h>
+#include <blaze/math/expressions/Submatrix.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
@@ -377,7 +377,7 @@ template< typename MT                                 // Type of the dense matri
         , bool AF = unaligned                         // Alignment flag
         , bool SO = IsColumnMajorMatrix<MT>::value >  // Storage order
 class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
-                     , private View
+                     , private Submatrix
 {
  private:
    //**Type definitions****************************************************************************
@@ -2432,7 +2432,7 @@ inline void DenseSubmatrix<MT,AF,SO>::subAssign( const SparseMatrix<MT2,!SO>& rh
 template< typename MT  // Type of the dense matrix
         , bool AF >    // Alignment flag
 class DenseSubmatrix<MT,AF,true> : public DenseMatrix< DenseSubmatrix<MT,AF,true>, true >
-                                 , private View
+                                 , private Submatrix
 {
  private:
    //**Type definitions****************************************************************************
