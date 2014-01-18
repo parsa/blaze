@@ -50,8 +50,8 @@
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/expressions/Column.h>
 #include <blaze/math/expressions/SparseVector.h>
-#include <blaze/math/expressions/View.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
@@ -338,7 +338,7 @@ namespace blaze {
 template< typename MT                                 // Type of the sparse matrix
         , bool SO = IsColumnMajorMatrix<MT>::value >  // Storage order
 class SparseColumn : public SparseVector< SparseColumn<MT,SO>, false >
-                   , private View
+                   , private Column
 {
  private:
    //**Type definitions****************************************************************************
@@ -1579,7 +1579,7 @@ inline void SparseColumn<MT,SO>::subAssign( const SparseVector<VT,false>& rhs )
 */
 template< typename MT >  // Type of the sparse matrix
 class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, false >
-                             , private View
+                             , private Column
 {
  private:
    //**Type definitions****************************************************************************

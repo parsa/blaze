@@ -49,8 +49,8 @@
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/expressions/Column.h>
 #include <blaze/math/expressions/DenseVector.h>
-#include <blaze/math/expressions/View.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/ColumnTrait.h>
@@ -305,7 +305,7 @@ namespace blaze {
 template< typename MT                                 // Type of the dense matrix
         , bool SO = IsColumnMajorMatrix<MT>::value >  // Storage order
 class DenseColumn : public DenseVector< DenseColumn<MT,SO>, false >
-                  , private View
+                  , private Column
 {
  private:
    //**Type definitions****************************************************************************
@@ -1639,7 +1639,7 @@ inline void DenseColumn<MT,SO>::multAssign( const SparseVector<VT,false>& rhs )
 */
 template< typename MT >  // Type of the dense matrix
 class DenseColumn<MT,false> : public DenseVector< DenseColumn<MT,false>, false >
-                            , private View
+                            , private Column
 {
  private:
    //**Type definitions****************************************************************************
