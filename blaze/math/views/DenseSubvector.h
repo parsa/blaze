@@ -52,7 +52,7 @@
 #include <blaze/math/expressions/CrossExpr.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
-#include <blaze/math/expressions/View.h>
+#include <blaze/math/expressions/Subvector.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
@@ -371,7 +371,7 @@ template< typename VT                         // Type of the dense vector
         , bool AF = unaligned                 // Alignment flag
         , bool TF = IsRowVector<VT>::value >  // Transpose flag
 class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
-                     , private View
+                     , private Subvector
 {
  private:
    //**Type definitions****************************************************************************
@@ -2131,7 +2131,7 @@ inline void DenseSubvector<VT,AF,TF>::multAssign( const SparseVector<VT2,TF>& rh
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,aligned,TF>, TF >
-                                    , private View
+                                    , private Subvector
 {
  private:
    //**Type definitions****************************************************************************
@@ -3633,7 +3633,7 @@ template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
 class DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, unaligned, false >
    : public DenseVector< DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, unaligned, false >, false >
-   , private View
+   , private Subvector
 {
  private:
    //**Type definitions****************************************************************************
@@ -3763,7 +3763,7 @@ template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
 class DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, unaligned, false >
    : public DenseVector< DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, unaligned, false >, false >
-   , private View
+   , private Subvector
 {
  private:
    //**Type definitions****************************************************************************
@@ -3893,7 +3893,7 @@ template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
 class DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, unaligned, false >
    : public DenseVector< DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, unaligned, false >, false >
-   , private View
+   , private Subvector
 {
  private:
    //**Type definitions****************************************************************************
@@ -4023,7 +4023,7 @@ template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side sparse vector
 class DenseSubvector< SVecSVecCrossExpr<VT1,VT2>, unaligned, false >
    : public DenseVector< DenseSubvector< SVecSVecCrossExpr<VT1,VT2>, unaligned, false >, false >
-   , private View
+   , private Subvector
 {
  private:
    //**Type definitions****************************************************************************

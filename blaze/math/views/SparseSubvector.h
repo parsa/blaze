@@ -49,7 +49,7 @@
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/SparseVector.h>
-#include <blaze/math/expressions/View.h>
+#include <blaze/math/expressions/Subvector.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -378,7 +378,7 @@ template< typename VT                         // Type of the sparse vector
         , bool AF = unaligned                 // Alignment flag
         , bool TF = IsRowVector<VT>::value >  // Transpose flag
 class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
-                      , private View
+                      , private Subvector
 {
  private:
    //**Type definitions****************************************************************************
