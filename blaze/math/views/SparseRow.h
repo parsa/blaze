@@ -51,7 +51,7 @@
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/SparseVector.h>
-#include <blaze/math/expressions/View.h>
+#include <blaze/math/expressions/Row.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
@@ -337,7 +337,7 @@ namespace blaze {
 template< typename MT                              // Type of the sparse matrix
         , bool SO = IsRowMajorMatrix<MT>::value >  // Storage order
 class SparseRow : public SparseVector< SparseRow<MT,SO>, true >
-                , private View
+                , private Row
 {
  private:
    //**Type definitions****************************************************************************
@@ -1578,7 +1578,7 @@ inline void SparseRow<MT,SO>::subAssign( const SparseVector<VT,true>& rhs )
 */
 template< typename MT >  // Type of the sparse matrix
 class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
-                          , private View
+                          , private Row
 {
  private:
    //**Type definitions****************************************************************************
