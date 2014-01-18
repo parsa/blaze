@@ -2667,28 +2667,56 @@ void ClassTest::testSubvector()
 
    initialize();
 
-   SVT sv1 = subvector( vec_, 1UL, 6UL );
-   SVT sv2 = subvector( sv1 , 1UL, 4UL );
+   {
+      SVT sv1 = subvector( vec_, 1UL, 6UL );
+      SVT sv2 = subvector( sv1 , 1UL, 4UL );
 
-   if( sv2[1] != -2 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Subscript operator access failed\n"
-          << " Details:\n"
-          << "   Result: " << sv2[1] << "\n"
-          << "   Expected result: -2\n";
-      throw std::runtime_error( oss.str() );
+      if( sv2[1] != -2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator access failed\n"
+             << " Details:\n"
+             << "   Result: " << sv2[1] << "\n"
+             << "   Expected result: -2\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( sv2.begin()->value() != -2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Iterator access failed\n"
+             << " Details:\n"
+             << "   Result: " << sv2.begin()->value() << "\n"
+             << "   Expected result: -2\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
-   if( sv2.begin()->value() != -2 ) {
+   try {
+      SVT sv1 = subvector( vec_, 1UL, 6UL );
+      SVT sv2 = subvector( sv1 , 6UL, 2UL );
+
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Iterator access failed\n"
+          << " Error: Setup of out-of-bounds subvector succeeded\n"
           << " Details:\n"
-          << "   Result: " << sv2.begin()->value() << "\n"
-          << "   Expected result: -2\n";
+          << "   Result:\n" << sv2 << "\n";
       throw std::runtime_error( oss.str() );
    }
+   catch( std::invalid_argument& ) {}
+
+   try {
+      SVT sv1 = subvector( vec_, 1UL, 6UL );
+      SVT sv2 = subvector( sv1 , 2UL, 5UL );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Setup of out-of-bounds subvector succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << sv2 << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
 }
 //*************************************************************************************************
 

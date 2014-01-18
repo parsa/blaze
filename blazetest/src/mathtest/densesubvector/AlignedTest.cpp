@@ -1737,40 +1737,68 @@ void AlignedTest::testSubvector()
 
    initialize();
 
-   ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 32UL );
-   ASVT sv2 = subvector<aligned>  ( sv1  , 8UL, 16UL );
-   USVT sv3 = subvector<unaligned>( vec2_, 8UL, 32UL );
-   USVT sv4 = subvector<unaligned>( sv3  , 8UL, 16UL );
+   {
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 32UL );
+      ASVT sv2 = subvector<aligned>  ( sv1  , 8UL, 16UL );
+      USVT sv3 = subvector<unaligned>( vec2_, 8UL, 32UL );
+      USVT sv4 = subvector<unaligned>( sv3  , 8UL, 16UL );
 
-   if( sv2 != sv4 || vec1_ != vec2_ ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Subvector function failed\n"
-          << " Details:\n"
-          << "   Result:\n" << sv2 << "\n"
-          << "   Expected result:\n" << sv4 << "\n";
-      throw std::runtime_error( oss.str() );
+      if( sv2 != sv4 || vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subvector function failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv2 << "\n"
+             << "   Expected result:\n" << sv4 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( sv2[1] != sv4[1] ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator access failed\n"
+             << " Details:\n"
+             << "   Result: " << sv2[1] << "\n"
+             << "   Expected result: " << sv4[1] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( *sv2.begin() != *sv4.begin() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Iterator access failed\n"
+             << " Details:\n"
+             << "   Result: " << *sv2.begin() << "\n"
+             << "   Expected result: " << *sv4.begin() << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
-   if( sv2[1] != sv4[1] ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Subscript operator access failed\n"
-          << " Details:\n"
-          << "   Result: " << sv2[1] << "\n"
-          << "   Expected result: " << sv4[1] << "\n";
-      throw std::runtime_error( oss.str() );
-   }
+   try {
+      ASVT sv1 = subvector<aligned>( vec1_,  8UL, 32UL );
+      ASVT sv2 = subvector<aligned>( sv1  , 32UL,  8UL );
 
-   if( *sv2.begin() != *sv4.begin() ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Iterator access failed\n"
+          << " Error: Setup of out-of-bounds subvector succeeded\n"
           << " Details:\n"
-          << "   Result: " << *sv2.begin() << "\n"
-          << "   Expected result: " << *sv4.begin() << "\n";
+          << "   Result:\n" << sv2 << "\n";
       throw std::runtime_error( oss.str() );
    }
+   catch( std::invalid_argument& ) {}
+
+   try {
+      ASVT sv1 = subvector<aligned>( vec1_, 8UL, 32UL );
+      ASVT sv2 = subvector<aligned>( sv1  , 8UL, 32UL );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Setup of out-of-bounds subvector succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << sv2 << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
 }
 //*************************************************************************************************
 
