@@ -70,6 +70,7 @@
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsSubExpr.h>
+#include <blaze/math/typetraits/IsSubvector.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/typetraits/IsTVecMatMultExpr.h>

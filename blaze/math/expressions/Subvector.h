@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/Constraints.h
-//  \brief Header file for all mathematical constraints
+//  \file blaze/math/expressions/Subvector.h
+//  \brief Header file for the Subvector base class
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,54 +32,39 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_CONSTRAINTS_H_
-#define _BLAZE_MATH_CONSTRAINTS_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_SUBVECTOR_H_
+#define _BLAZE_MATH_EXPRESSIONS_SUBVECTOR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/constraints/AbsExpr.h>
-#include <blaze/math/constraints/AddExpr.h>
-#include <blaze/math/constraints/Computation.h>
-#include <blaze/math/constraints/CrossExpr.h>
-#include <blaze/math/constraints/DenseMatrix.h>
-#include <blaze/math/constraints/DenseVector.h>
-#include <blaze/math/constraints/DivExpr.h>
-#include <blaze/math/constraints/EvalExpr.h>
-#include <blaze/math/constraints/Expression.h>
-#include <blaze/math/constraints/MatAbsExpr.h>
-#include <blaze/math/constraints/MatEvalExpr.h>
-#include <blaze/math/constraints/MatMatAddExpr.h>
-#include <blaze/math/constraints/MatMatMultExpr.h>
-#include <blaze/math/constraints/MatMatSubExpr.h>
-#include <blaze/math/constraints/Matrix.h>
-#include <blaze/math/constraints/MatScalarDivExpr.h>
-#include <blaze/math/constraints/MatScalarMultExpr.h>
-#include <blaze/math/constraints/MatTransExpr.h>
-#include <blaze/math/constraints/MatVecMultExpr.h>
-#include <blaze/math/constraints/MultExpr.h>
-#include <blaze/math/constraints/RequiresEvaluation.h>
-#include <blaze/math/constraints/SparseElement.h>
-#include <blaze/math/constraints/SparseMatrix.h>
-#include <blaze/math/constraints/SparseVector.h>
-#include <blaze/math/constraints/StorageOrder.h>
-#include <blaze/math/constraints/SubExpr.h>
-#include <blaze/math/constraints/Subvector.h>
-#include <blaze/math/constraints/TransExpr.h>
-#include <blaze/math/constraints/TransposeFlag.h>
-#include <blaze/math/constraints/TVecMatMultExpr.h>
-#include <blaze/math/constraints/VecAbsExpr.h>
-#include <blaze/math/constraints/VecEvalExpr.h>
-#include <blaze/math/constraints/VecScalarDivExpr.h>
-#include <blaze/math/constraints/VecScalarMultExpr.h>
-#include <blaze/math/constraints/Vector.h>
-#include <blaze/math/constraints/VecTransExpr.h>
-#include <blaze/math/constraints/VecTVecMultExpr.h>
-#include <blaze/math/constraints/VecVecAddExpr.h>
-#include <blaze/math/constraints/VecVecMultExpr.h>
-#include <blaze/math/constraints/VecVecSubExpr.h>
-#include <blaze/math/constraints/View.h>
+#include <blaze/math/expressions/View.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Base class for all subvectors.
+// \ingroup math
+//
+// The Subvector class serves as a tag for all subvectors (i.e. dense and sparse subvectors).
+// All classes that represent a subvector and that are used within the expression template
+// environment of the Blaze library have to derive from this class in order to qualify as a
+// subvector. Only in case a class is derived from the Subvector base class, the IsSubvector
+// type trait recognizes the class as valid subvector.
+*/
+struct Subvector : private View
+{};
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
