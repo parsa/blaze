@@ -98,12 +98,12 @@ struct IsSubvectorHelper
    typedef blaze::CompressedVector<int,columnVector>  SparseVectorType;
    typedef blaze::SparseSubvector<SparseVectorType>   SparseSubvectorType;
 
-   blaze::IsSubvector< SparseSubvectorType >::value      // Evaluates to 1
-   blaze::IsSubvector< const DenseSubvectorType >::Type  // Results in TrueType
-   blaze::IsSubvector< volatile DenseSubvectorType2 >    // Is derived from TrueType
-   blaze::IsSubvector< DenseVectorType1 >::value         // Evaluates to 0
-   blaze::IsSubvector< const SparseVectorType >::Type    // Results in FalseType
-   blaze::IsSubvector< volatile long double >            // Is derived from FalseType
+   blaze::IsSubvector< SparseSubvectorType >::value       // Evaluates to 1
+   blaze::IsSubvector< const DenseSubvectorType1 >::Type  // Results in TrueType
+   blaze::IsSubvector< volatile DenseSubvectorType2 >     // Is derived from TrueType
+   blaze::IsSubvector< DenseVectorType1 >::value          // Evaluates to 0
+   blaze::IsSubvector< const SparseVectorType >::Type     // Results in FalseType
+   blaze::IsSubvector< volatile long double >             // Is derived from FalseType
    \endcode
 */
 template< typename T >
