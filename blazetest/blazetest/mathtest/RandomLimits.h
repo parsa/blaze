@@ -42,6 +42,7 @@
 
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
+#include <blaze/util/typetraits/IsSigned.h>
 
 
 namespace blazetest {
@@ -57,8 +58,9 @@ namespace blazetest {
 //
 // The RandomLimits class provides minimum and maximum limits for the random initialization of
 // all numerical built-in data types. Via the \a min and \a max functions all numerical data
-// types can be restricted to a fixed range of values. Integral data types can be restricted to
-// the range \f$ [0..10] \f$, floating point data types to the range \f$ [0..1) \f$.
+// types are restricted to a fixed range of values. Unsigned integral data types are restricted
+// to the range \f$ [0..10] \f$, signed integral data types to the range \f$ [-10..10] \f$, and
+// floating point data types to the range \f$ [-1..1) \f$.
 //
 // Code examples:
 
@@ -73,18 +75,62 @@ namespace blazetest {
 template< typename Type >
 struct RandomLimits
 {
-   /*!\brief Initialization minimum.
-   // \return The smallest allowed initialization value. */
-   static inline Type min() { return Type(0); }
+   //**Limit functions*****************************************************************************
+   /*!\name Limit functions */
+   //@{
+   static inline Type min();
+   static inline Type max();
+   //@}
+   //**********************************************************************************************
 
-   /*!\brief Initialization maximum.
-   // \return The largest allowed initialization value. */
-   static inline Type max() { return ( blaze::IsFloatingPoint<Type>::value )?( Type(1) ):( Type(10) ); }
-
+   //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( Type );
    /*! \endcond */
+   //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  LIMIT FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Initialization minimum.
+//
+// \return The smallest allowed initialization value.
+*/
+template< typename Type >
+inline Type RandomLimits<Type>::min()
+{
+   if( blaze::IsSigned<Type>::value )
+      return Type(-10);
+   else if( blaze::IsFloatingPoint<Type>::value )
+      return Type(-1);
+   else
+      return Type(0);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initialization maximum.
+//
+// \return The largest allowed initialization value.
+*/
+template< typename Type >
+inline Type RandomLimits<Type>::max()
+{
+   if( blaze::IsFloatingPoint<Type>::value )
+      return Type(1);
+   else
+      return Type(10);
+}
 //*************************************************************************************************
 
 } // namespace blazetest
