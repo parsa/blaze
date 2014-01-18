@@ -42,6 +42,7 @@
 
 #include <blaze/math/constraints/AbsExpr.h>
 #include <blaze/math/constraints/AddExpr.h>
+#include <blaze/math/constraints/Column.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/CrossExpr.h>
 #include <blaze/math/constraints/DenseMatrix.h>

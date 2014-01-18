@@ -43,6 +43,7 @@
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsAbsExpr.h>
 #include <blaze/math/typetraits/IsAddExpr.h>
+#include <blaze/math/typetraits/IsColumn.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
