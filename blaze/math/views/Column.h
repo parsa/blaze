@@ -42,6 +42,7 @@
 
 #include <blaze/math/expressions/Matrix.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsMatAbsExpr.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
 #include <blaze/math/typetraits/IsMatMatAddExpr.h>
@@ -50,13 +51,108 @@
 #include <blaze/math/typetraits/IsMatScalarDivExpr.h>
 #include <blaze/math/typetraits/IsMatScalarMultExpr.h>
 #include <blaze/math/typetraits/IsMatTransExpr.h>
+#include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/typetraits/IsVecTVecMultExpr.h>
+#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/Types.h>
 
 
 namespace blaze {
+
+//=================================================================================================
+//
+//  GLOBAL OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Creating a view on a specific column of the given matrix.
+// \ingroup views
+//
+// \param matrix The matrix containing the column.
+// \param index The index of the column.
+// \return View on the specified column of the matrix.
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing the specified column of the given matrix.
+
+   \code
+   using blaze::columnMajor;
+
+   typedef blaze::DynamicMatrix<double,columnMajor>     DenseMatrix;
+   typedef blaze::CompressedMatrix<double,columnMajor>  SparseMatrix;
+
+   DenseMatrix D;
+   SparseMatrix S;
+   // ... Resizing and initialization
+
+   // Creating a view on the 3rd column of the dense matrix D
+   blaze::DenseColumn<DenseMatrix> = column( D, 3UL );
+
+   // Creating a view on the 4th column of the sparse matrix S
+   blaze::SparseColumn<SparseMatrix> = column( S, 4UL );
+   \endcode
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline typename DisableIf< Or< IsComputation<MT>, IsTransExpr<MT> >
+                         , typename ColumnExprTrait<MT>::Type >::Type
+   column( Matrix<MT,SO>& matrix, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   typedef typename ColumnExprTrait<MT>::Type  ReturnType;
+   return ReturnType( ~matrix, index );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Creating a view on a specific column of the given constant matrix.
+// \ingroup views
+//
+// \param matrix The constant matrix containing the column.
+// \param index The index of the column.
+// \return View on the specified column of the matrix.
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing the specified column of the given matrix.
+
+   \code
+   using blaze::columnMajor;
+
+   typedef blaze::DynamicMatrix<double,columnMajor>     DenseMatrix;
+   typedef blaze::CompressedMatrix<double,columnMajor>  SparseMatrix;
+
+   DenseMatrix D;
+   SparseMatrix S;
+   // ... Resizing and initialization
+
+   // Creating a view on the 3rd column of the dense matrix D
+   blaze::DenseColumn<DenseMatrix> = column( D, 3UL );
+
+   // Creating a view on the 4th column of the sparse matrix S
+   blaze::SparseColumn<SparseMatrix> = column( S, 4UL );
+   \endcode
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline typename DisableIf< Or< IsComputation<MT>, IsTransExpr<MT> >
+                         , typename ColumnExprTrait<const MT>::Type >::Type
+   column( const Matrix<MT,SO>& matrix, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   typedef typename ColumnExprTrait<const MT>::Type  ReturnType;
+   return ReturnType( ~matrix, index );
+}
+//*************************************************************************************************
+
+
+
 
 //=================================================================================================
 //
