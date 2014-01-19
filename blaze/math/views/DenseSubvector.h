@@ -2253,18 +2253,15 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
 
  private:
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT2 >
    struct VectorizedAssign {
       enum { value = vectorizable && VT2::vectorizable &&
                      IsSame<ElementType,typename VT2::ElementType>::value };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT2 >
    struct VectorizedAddAssign {
@@ -2272,11 +2269,9 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
                      IsSame<ElementType,typename VT2::ElementType>::value &&
                      IntrinsicTrait<ElementType>::addition };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT2 >
    struct VectorizedSubAssign {
@@ -2284,11 +2279,9 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
                      IsSame<ElementType,typename VT2::ElementType>::value &&
                      IntrinsicTrait<ElementType>::subtraction };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT2 >
    struct VectorizedMultAssign {
@@ -2296,7 +2289,6 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
                      IsSame<ElementType,typename VT2::ElementType>::value &&
                      IntrinsicTrait<ElementType>::multiplication };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
  public:
@@ -2365,21 +2357,17 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    template< bool AF1, typename VT2, bool AF2, bool TF2 >
    friend const DenseSubvector<VT2,AF1,TF2>
       subvector( const DenseSubvector<VT2,AF2,TF2>& dv, size_t index, size_t size );
-   /*! \endcond */
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE   ( VT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE  ( VT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SUBVECTOR_TYPE  ( VT );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
-   /*! \endcond */
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -3271,13 +3259,13 @@ inline typename EnableIf< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE
 
       typename VT2::ConstIterator it( (~rhs).begin() );
       for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-         vector_.storeu( offset_+i             , it.load() ); it += IT::size;
-         vector_.storeu( offset_+i+IT::size    , it.load() ); it += IT::size;
-         vector_.storeu( offset_+i+IT::size*2UL, it.load() ); it += IT::size;
-         vector_.storeu( offset_+i+IT::size*3UL, it.load() ); it += IT::size;
+         store( i             , it.load() ); it += IT::size;
+         store( i+IT::size    , it.load() ); it += IT::size;
+         store( i+IT::size*2UL, it.load() ); it += IT::size;
+         store( i+IT::size*3UL, it.load() ); it += IT::size;
       }
       for( size_t i=iend; i<size_; i+=IT::size, it+=IT::size ) {
-         storeu( i, it.load() );
+         store( i, it.load() );
       }
    }
 }
@@ -3371,13 +3359,13 @@ inline typename EnableIf< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE
 
    typename VT2::ConstIterator it( (~rhs).begin() );
    for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-      vector_.storeu( offset_+i             , load(i             ) + it.load() ); it += IT::size;
-      vector_.storeu( offset_+i+IT::size    , load(i+IT::size    ) + it.load() ); it += IT::size;
-      vector_.storeu( offset_+i+IT::size*2UL, load(i+IT::size*2UL) + it.load() ); it += IT::size;
-      vector_.storeu( offset_+i+IT::size*3UL, load(i+IT::size*3UL) + it.load() ); it += IT::size;
+      store( i             , load(i             ) + it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) + it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) + it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) + it.load() ); it += IT::size;
    }
    for( size_t i=iend; i<size_; i+=IT::size, it+=IT::size ) {
-      storeu( i, load(i) + it.load() );
+      store( i, load(i) + it.load() );
    }
 }
 /*! \endcond */
@@ -3470,13 +3458,13 @@ inline typename EnableIf< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE
 
    typename VT2::ConstIterator it( (~rhs).begin() );
    for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-      vector_.storeu( offset_+i             , load(i             ) - it.load() ); it += IT::size;
-      vector_.storeu( offset_+i+IT::size    , load(i+IT::size    ) - it.load() ); it += IT::size;
-      vector_.storeu( offset_+i+IT::size*2UL, load(i+IT::size*2UL) - it.load() ); it += IT::size;
-      vector_.storeu( offset_+i+IT::size*3UL, load(i+IT::size*3UL) - it.load() ); it += IT::size;
+      store( i             , load(i             ) - it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) - it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) - it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) - it.load() ); it += IT::size;
    }
    for( size_t i=iend; i<size_; i+=IT::size, it+=IT::size ) {
-      storeu( i, load(i) - it.load() );
+      store( i, load(i) - it.load() );
    }
 }
 /*! \endcond */
@@ -3569,13 +3557,13 @@ inline typename EnableIf< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE
 
    typename VT2::ConstIterator it( (~rhs).begin() );
    for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
-      vector_.storeu( offset_+i             , load(i             ) * it.load() ); it += IT::size;
-      vector_.storeu( offset_+i+IT::size    , load(i+IT::size    ) * it.load() ); it += IT::size;
-      vector_.storeu( offset_+i+IT::size*2UL, load(i+IT::size*2UL) * it.load() ); it += IT::size;
-      vector_.storeu( offset_+i+IT::size*3UL, load(i+IT::size*3UL) * it.load() ); it += IT::size;
+      store( i             , load(i             ) * it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) * it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) * it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) * it.load() ); it += IT::size;
    }
    for( size_t i=iend; i<size_; i+=IT::size, it+=IT::size ) {
-      storeu( i, load(i) * it.load() );
+      store( i, load(i) * it.load() );
    }
 }
 /*! \endcond */
