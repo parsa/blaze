@@ -2843,18 +2843,15 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
 
  private:
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
    struct VectorizedAssign {
       enum { value = vectorizable && MT2::vectorizable &&
                      IsSame<ElementType,typename MT2::ElementType>::value };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
    struct VectorizedAddAssign {
@@ -2862,11 +2859,9 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
                      IsSame<ElementType,typename MT2::ElementType>::value &&
                      IntrinsicTrait<ElementType>::addition };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
    struct VectorizedSubAssign {
@@ -2874,7 +2869,6 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
                      IsSame<ElementType,typename MT2::ElementType>::value &&
                      IntrinsicTrait<ElementType>::subtraction };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
  public:
@@ -2957,21 +2951,17 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    template< bool AF1, typename MT2, bool AF2, bool SO2 >
    friend const DenseSubmatrix<MT2,AF1,SO2>
       submatrix( const DenseSubmatrix<MT2,AF2,SO2>& dm, size_t row, size_t column, size_t m, size_t n );
-   /*! \endcond */
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE       ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE      ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SUBMATRIX_TYPE      ( MT );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT );
-   /*! \endcond */
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -4566,18 +4556,15 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
 
  private:
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
    struct VectorizedAssign {
       enum { value = vectorizable && MT2::vectorizable &&
                      IsSame<ElementType,typename MT2::ElementType>::value };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
    struct VectorizedAddAssign {
@@ -4585,11 +4572,9 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
                      IsSame<ElementType,typename MT2::ElementType>::value &&
                      IntrinsicTrait<ElementType>::addition };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
    struct VectorizedSubAssign {
@@ -4597,7 +4582,6 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
                      IsSame<ElementType,typename MT2::ElementType>::value &&
                      IntrinsicTrait<ElementType>::subtraction };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
  public:
@@ -4664,23 +4648,20 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    template< bool AF1, typename MT2, bool AF2, bool SO2 >
    friend const DenseSubmatrix<MT2,AF1,SO2>
       submatrix( const DenseSubmatrix<MT2,AF2,SO2>& dm, size_t row, size_t column, size_t m, size_t n );
-   /*! \endcond */
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE   ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SUBMATRIX_TYPE   ( MT );
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT );
-   /*! \endcond */
    //**********************************************************************************************
 };
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -4693,6 +4674,7 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief The constructor for DenseSubmatrix.
 //
 // \param matrix The dense matrix containing the submatrix.
@@ -4720,6 +4702,7 @@ inline DenseSubmatrix<MT,aligned,false>::DenseSubmatrix( MT& matrix, size_t row,
        column % IT::size != 0UL || ( column_ + n_ != matrix_.columns() && n_ % IT::size != 0UL ) )
       throw std::invalid_argument( "Invalid submatrix alignment" );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -4732,6 +4715,7 @@ inline DenseSubmatrix<MT,aligned,false>::DenseSubmatrix( MT& matrix, size_t row,
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief 2D-access to the dense submatrix elements.
 //
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
@@ -4747,10 +4731,12 @@ inline typename DenseSubmatrix<MT,aligned,false>::Reference
 
    return matrix_(row_+i,column_+j);
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief 2D-access to the dense submatrix elements.
 //
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
@@ -4766,10 +4752,12 @@ inline typename DenseSubmatrix<MT,aligned,false>::ConstReference
 
    return const_cast<const MT&>( matrix_ )(row_+i,column_+j);
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Low-level data access to the submatrix elements.
 //
 // \return Pointer to the internal element storage.
@@ -4783,10 +4771,12 @@ inline typename DenseSubmatrix<MT,aligned,false>::Pointer DenseSubmatrix<MT,alig
 {
    return matrix_.data() + row_*spacing() + column_;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Low-level data access to the submatrix elements.
 //
 // \return Pointer to the internal element storage.
@@ -4801,10 +4791,12 @@ inline typename DenseSubmatrix<MT,aligned,false>::ConstPointer
 {
    return matrix_.data() + row_*spacing() + column_;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator to the first non-zero element of row/column \a i.
 //
 // \param i The row/column index.
@@ -4822,10 +4814,12 @@ inline typename DenseSubmatrix<MT,aligned,false>::Iterator
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
    return ( matrix_.begin( row_ + i ) + column_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator to the first non-zero element of row/column \a i.
 //
 // \param i The row/column index.
@@ -4843,10 +4837,12 @@ inline typename DenseSubmatrix<MT,aligned,false>::ConstIterator
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
    return ( matrix_.cbegin( row_ + i ) + column_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator to the first non-zero element of row/column \a i.
 //
 // \param i The row/column index.
@@ -4864,10 +4860,12 @@ inline typename DenseSubmatrix<MT,aligned,false>::ConstIterator
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
    return ( matrix_.cbegin( row_ + i ) + column_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator just past the last non-zero element of row/column \a i.
 //
 // \param i The row/column index.
@@ -4885,10 +4883,12 @@ inline typename DenseSubmatrix<MT,aligned,false>::Iterator
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
    return ( matrix_.begin( row_ + i ) + column_ + n_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator just past the last non-zero element of row/column \a i.
 //
 // \param i The row/column index.
@@ -4906,10 +4906,12 @@ inline typename DenseSubmatrix<MT,aligned,false>::ConstIterator
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
    return ( matrix_.cbegin( row_ + i ) + column_ + n_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator just past the last non-zero element of row/column \a i.
 //
 // \param i The row/column index.
@@ -4927,6 +4929,7 @@ inline typename DenseSubmatrix<MT,aligned,false>::ConstIterator
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
    return ( matrix_.cbegin( row_ + i ) + column_ + n_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -4939,6 +4942,7 @@ inline typename DenseSubmatrix<MT,aligned,false>::ConstIterator
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Homogenous assignment to all submatrix elements.
 //
 // \param rhs Scalar value to be assigned to all submatrix elements.
@@ -4957,10 +4961,12 @@ inline DenseSubmatrix<MT,aligned,false>&
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Copy assignment operator for DenseSubmatrix.
 //
 // \param rhs Sparse submatrix to be copied.
@@ -4998,10 +5004,12 @@ inline DenseSubmatrix<MT,aligned,false>&
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Assignment operator for different matrices.
 //
 // \param rhs Matrix to be assigned.
@@ -5037,10 +5045,12 @@ inline DenseSubmatrix<MT,aligned,false>&
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Addition assignment operator for the addition of a matrix (\f$ A+=B \f$).
 //
 // \param rhs The right-hand side matrix to be added to the submatrix.
@@ -5073,10 +5083,12 @@ inline DenseSubmatrix<MT,aligned,false>&
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Subtraction assignment operator for the subtraction of a matrix (\f$ A-=B \f$).
 //
 // \param rhs The right-hand side matrix to be subtracted from the submatrix.
@@ -5109,10 +5121,12 @@ inline DenseSubmatrix<MT,aligned,false>&
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication assignment operator for the multiplication of a matrix (\f$ A*=B \f$).
 //
 // \param rhs The right-hand side matrix for the multiplication.
@@ -5143,10 +5157,12 @@ inline DenseSubmatrix<MT,aligned,false>&
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication assignment operator for the multiplication between a dense submatrix
 //        and a scalar value (\f$ A*=s \f$).
 //
@@ -5160,10 +5176,12 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,false> >::
 {
    return operator=( (*this) * rhs );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Division assignment operator for the division of a dense submatrix by a scalar value
 //        (\f$ A/=s \f$).
 //
@@ -5179,6 +5197,7 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,false> >::
 
    return operator=( (*this) / rhs );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -5191,6 +5210,7 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,false> >::
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the number of rows of the dense submatrix.
 //
 // \return The number of rows of the dense submatrix.
@@ -5200,10 +5220,12 @@ inline size_t DenseSubmatrix<MT,aligned,false>::rows() const
 {
    return m_;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the number of columns of the dense submatrix.
 //
 // \return The number of columns of the dense submatrix.
@@ -5213,10 +5235,12 @@ inline size_t DenseSubmatrix<MT,aligned,false>::columns() const
 {
    return n_;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the spacing between the beginning of two rows/columns.
 //
 // \return The spacing between the beginning of two rows/columns.
@@ -5231,10 +5255,12 @@ inline size_t DenseSubmatrix<MT,aligned,false>::spacing() const
 {
    return matrix_.spacing();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the maximum capacity of the dense submatrix.
 //
 // \return The capacity of the dense submatrix.
@@ -5244,10 +5270,12 @@ inline size_t DenseSubmatrix<MT,aligned,false>::capacity() const
 {
    return rows() * columns();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the current capacity of the specified row/column.
 //
 // \param i The index of the row/column.
@@ -5264,10 +5292,12 @@ inline size_t DenseSubmatrix<MT,aligned,false>::capacity( size_t i ) const
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    return columns();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the number of non-zero elements in the dense submatrix
 //
 // \return The number of non-zero elements in the dense submatrix.
@@ -5286,10 +5316,12 @@ inline size_t DenseSubmatrix<MT,aligned,false>::nonZeros() const
 
    return nonzeros;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the number of non-zero elements in the specified row/column.
 //
 // \param i The index of the row/column.
@@ -5314,10 +5346,12 @@ inline size_t DenseSubmatrix<MT,aligned,false>::nonZeros( size_t i ) const
 
    return nonzeros;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Reset to the default initial values.
 //
 // \return void
@@ -5334,10 +5368,12 @@ inline void DenseSubmatrix<MT,aligned,false>::reset()
       for( size_t j=column_; j<jend; ++j )
          reset( matrix_(i,j) );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Reset the specified row/column to the default initial values.
 //
 // \param i The index of the row/column.
@@ -5359,10 +5395,12 @@ inline void DenseSubmatrix<MT,aligned,false>::reset( size_t i )
    for( size_t j=column_; j<jend; ++j )
       reset( matrix_(row_+i,j) );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Scaling of the dense submatrix by the scalar value \a scalar (\f$ A=B*s \f$).
 //
 // \param scalar The scalar value for the submatrix scaling.
@@ -5381,6 +5419,7 @@ inline DenseSubmatrix<MT,aligned,false>& DenseSubmatrix<MT,aligned,false>::scale
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -5393,6 +5432,7 @@ inline DenseSubmatrix<MT,aligned,false>& DenseSubmatrix<MT,aligned,false>::scale
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the submatrix can alias with the given address \a alias.
 //
 // \param alias The alias to be checked.
@@ -5408,10 +5448,12 @@ inline bool DenseSubmatrix<MT,aligned,false>::canAlias( const Other* alias ) con
 {
    return static_cast<const void*>( &matrix_ ) == static_cast<const void*>( alias );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the submatrix is aliased with the given address \a alias.
 //
 // \param alias The alias to be checked.
@@ -5427,10 +5469,12 @@ inline bool DenseSubmatrix<MT,aligned,false>::isAliased( const Other* alias ) co
 {
    return static_cast<const void*>( &matrix_ ) == static_cast<const void*>( alias );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned load of an intrinsic element of the submatrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -5458,10 +5502,12 @@ inline typename DenseSubmatrix<MT,aligned,false>::IntrinsicType
 
    return matrix_.load( row_+i, column_+j );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Unaligned load of an intrinsic element of the submatrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -5489,10 +5535,12 @@ inline typename DenseSubmatrix<MT,aligned,false>::IntrinsicType
 
    return matrix_.loadu( row_+i, column_+j );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned store of an intrinsic element of the submatrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -5519,10 +5567,12 @@ inline void DenseSubmatrix<MT,aligned,false>::store( size_t i, size_t j, const I
 
    return matrix_.store( row_+i, column_+j, value );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Unaligned store of an intrinsic element of the submatrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -5549,10 +5599,12 @@ inline void DenseSubmatrix<MT,aligned,false>::storeu( size_t i, size_t j, const 
 
    matrix_.storeu( row_+i, column_+j, value );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned, non-temporal store of an intrinsic element of the submatrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -5580,10 +5632,12 @@ inline void DenseSubmatrix<MT,aligned,false>::stream( size_t i, size_t j, const 
 
    matrix_.stream( row_+i, column_+j, value );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the assignment of a row-major dense matrix.
 //
 // \param rhs The right-hand side dense matrix to be assigned.
@@ -5615,10 +5669,12 @@ inline typename DisableIf< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMP
       }
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Intrinsic optimized implementation of the assignment of a row-major dense matrix.
 //
 // \param rhs The right-hand side dense matrix to be assigned.
@@ -5666,10 +5722,12 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPL
       }
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the assignment of a column-major dense matrix.
 //
 // \param rhs The right-hand side dense matrix to be assigned.
@@ -5701,10 +5759,12 @@ inline void DenseSubmatrix<MT,aligned,false>::assign( const DenseMatrix<MT2,true
       }
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the assignment of a row-major sparse matrix.
 //
 // \param rhs The right-hand side sparse matrix to be assigned.
@@ -5726,10 +5786,12 @@ inline void DenseSubmatrix<MT,aligned,false>::assign( const SparseMatrix<MT2,fal
       for( typename MT2::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row_+i,column_+element->index()) = element->value();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the assignment of a column-major sparse matrix.
 //
 // \param rhs The right-hand side sparse matrix to be assigned.
@@ -5751,10 +5813,12 @@ inline void DenseSubmatrix<MT,aligned,false>::assign( const SparseMatrix<MT2,tru
       for( typename MT2::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row_+element->index(),column_+j) = element->value();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the addition assignment of a row-major dense matrix.
 //
 // \param rhs The right-hand side dense matrix to be added.
@@ -5786,10 +5850,12 @@ inline typename DisableIf< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMP
       }
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Intrinsic optimized implementation of the addition assignment of a row-major dense matrix.
 //
 // \param rhs The right-hand side dense matrix to be added.
@@ -5826,10 +5892,12 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPL
       }
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the addition assignment of a column-major dense matrix.
 //
 // \param rhs The right-hand side dense matrix to be added.
@@ -5861,10 +5929,12 @@ inline void DenseSubmatrix<MT,aligned,false>::addAssign( const DenseMatrix<MT2,t
       }
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the addition assignment of a row-major sparse matrix.
 //
 // \param rhs The right-hand side sparse matrix to be added.
@@ -5886,10 +5956,12 @@ inline void DenseSubmatrix<MT,aligned,false>::addAssign( const SparseMatrix<MT2,
       for( typename MT2::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row_+i,column_+element->index()) += element->value();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the addition assignment of a column-major sparse matrix.
 //
 // \param rhs The right-hand side sparse matrix to be added.
@@ -5911,10 +5983,12 @@ inline void DenseSubmatrix<MT,aligned,false>::addAssign( const SparseMatrix<MT2,
       for( typename MT2::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row_+element->index(),column_+j) += element->value();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the subtraction assignment of a row-major dense matrix.
 //
 // \param rhs The right-hand side dense matrix to be subtracted.
@@ -5946,10 +6020,12 @@ inline typename DisableIf< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMP
       }
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Intrinsic optimized implementation of the subtraction assignment of a row-major dense matrix.
 //
 // \param rhs The right-hand side dense matrix to be subtracted.
@@ -5986,10 +6062,12 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPL
       }
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the subtraction assignment of a column-major dense matrix.
 //
 // \param rhs The right-hand side dense matrix to be subtracted.
@@ -6021,10 +6099,12 @@ inline void DenseSubmatrix<MT,aligned,false>::subAssign( const DenseMatrix<MT2,t
       }
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the subtraction assignment of a row-major sparse matrix.
 //
 // \param rhs The right-hand side sparse matrix to be subtracted.
@@ -6046,10 +6126,12 @@ inline void DenseSubmatrix<MT,aligned,false>::subAssign( const SparseMatrix<MT2,
       for( typename MT2::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row_+i,column_+element->index()) -= element->value();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the subtraction assignment of a column-major sparse matrix.
 //
 // \param rhs The right-hand side sparse matrix to be subtracted.
@@ -6071,6 +6153,7 @@ inline void DenseSubmatrix<MT,aligned,false>::subAssign( const SparseMatrix<MT2,
       for( typename MT2::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row_+element->index(),column_+j) -= element->value();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -6219,18 +6302,15 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
 
  private:
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
    struct VectorizedAssign {
       enum { value = vectorizable && MT2::vectorizable &&
                      IsSame<ElementType,typename MT2::ElementType>::value };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
    struct VectorizedAddAssign {
@@ -6238,11 +6318,9 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
                      IsSame<ElementType,typename MT2::ElementType>::value &&
                      IntrinsicTrait<ElementType>::addition };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
    struct VectorizedSubAssign {
@@ -6250,7 +6328,6 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
                      IsSame<ElementType,typename MT2::ElementType>::value &&
                      IntrinsicTrait<ElementType>::subtraction };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
  public:
@@ -6317,21 +6394,17 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    template< bool AF1, typename MT2, bool AF2, bool SO2 >
    friend const DenseSubmatrix<MT2,AF1,SO2>
       submatrix( const DenseSubmatrix<MT2,AF2,SO2>& dm, size_t row, size_t column, size_t m, size_t n );
-   /*! \endcond */
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE       ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE      ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SUBMATRIX_TYPE      ( MT );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT );
-   /*! \endcond */
    //**********************************************************************************************
 };
 /*! \endcond */

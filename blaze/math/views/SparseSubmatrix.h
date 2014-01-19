@@ -2648,10 +2648,8 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
       //*******************************************************************************************
 
       //**Friend declarations**********************************************************************
-      /*! \cond BLAZE_INTERNAL */
       template< typename MatrixType2, typename IteratorType2 > friend class SubmatrixIterator;
       template< typename MT2, bool AF2, bool SO2 > friend class SparseSubmatrix;
-      /*! \endcond */
       //*******************************************************************************************
    };
    //**********************************************************************************************
@@ -2781,21 +2779,17 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    template< bool AF1, typename MT2, bool AF2, bool SO2 >
    friend const SparseSubmatrix<MT2,AF1,SO2>
       submatrix( const SparseSubmatrix<MT2,AF2,SO2>& sm, size_t row, size_t column, size_t m, size_t n );
-   /*! \endcond */
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE      ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE      ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SUBMATRIX_TYPE      ( MT );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT );
-   /*! \endcond */
    //**********************************************************************************************
 };
 /*! \endcond */
