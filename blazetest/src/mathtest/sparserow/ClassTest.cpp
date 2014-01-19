@@ -4326,7 +4326,7 @@ void ClassTest::testScale()
 
       initialize();
 
-      // Scaling the 3rd row
+      // Integral scaling the 3rd row
       {
          RT row3 = row( mat_, 3UL );
          row3.scale( 3 );
@@ -4340,7 +4340,7 @@ void ClassTest::testScale()
          if( row3[0] != 0 || row3[1] != 12 || row3[2] != 15 || row3[3] != -18 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Scale operation of 3rd row failed\n"
+                << " Error: Integral scale operation of 3rd row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
                 << "   Expected result:\n( 0 12 15 -18 )\n";
@@ -4354,13 +4354,53 @@ void ClassTest::testScale()
              mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) !=  10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Scale operation of 3rd row failed\n"
+                << " Error: Integral scale operation of 3rd row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
                 << "   Expected result:\n(  0   0   0   0 )\n"
                                         "(  0   1   0   0 )\n"
                                         "( -2   0  -3   0 )\n"
                                         "(  0  12  15 -18 )\n"
+                                        "(  7  -8   9  10 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Floating point scaling the 3rd row
+      {
+         RT row3 = row( mat_, 3UL );
+         row3.scale( 0.5 );
+
+         checkSize    ( row3,  4UL );
+         checkNonZeros( row3,  3UL );
+         checkRows    ( mat_,  5UL );
+         checkColumns ( mat_,  4UL );
+         checkNonZeros( mat_, 10UL );
+
+         if( row3[0] != 0 || row3[1] != 6 || row3[2] != 7 || row3[3] != -9 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Floating point scale operation of 3rd row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 6 7 -9 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+             mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+             mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
+             mat_(3,0) !=  0 || mat_(3,1) !=  6 || mat_(3,2) !=  7 || mat_(3,3) != -9 ||
+             mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Floating point scale operation of 3rd row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat_ << "\n"
+                << "   Expected result:\n(  0   0   0   0 )\n"
+                                        "(  0   1   0   0 )\n"
+                                        "( -2   0  -3   0 )\n"
+                                        "(  0   6   7  -9 )\n"
                                         "(  7  -8   9  10 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -4377,7 +4417,7 @@ void ClassTest::testScale()
 
       initialize();
 
-      // Scaling the 3rd row
+      // Integral scaling the 3rd row
       {
          TRT row3 = row( tmat_, 3UL );
          row3.scale( 3 );
@@ -4391,7 +4431,7 @@ void ClassTest::testScale()
          if( row3[0] != 0 || row3[1] != 12 || row3[2] != 15 || row3[3] != -18 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Scale operation of 3rd row failed\n"
+                << " Error: Integral scale operation of 3rd row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
                 << "   Expected result:\n( 0 12 15 -18 )\n";
@@ -4405,13 +4445,53 @@ void ClassTest::testScale()
              tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) !=  10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Scale operation of 3rd row failed\n"
+                << " Error: Integral scale operation of 3rd row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
                 << "   Expected result:\n(  0   0   0   0 )\n"
                                         "(  0   1   0   0 )\n"
                                         "( -2   0  -3   0 )\n"
                                         "(  0  12  15 -18 )\n"
+                                        "(  7  -8   9  10 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Floating point scaling the 3rd row
+      {
+         TRT row3 = row( tmat_, 3UL );
+         row3.scale( 0.5 );
+
+         checkSize    ( row3 ,  4UL );
+         checkNonZeros( row3 ,  3UL );
+         checkRows    ( tmat_,  5UL );
+         checkColumns ( tmat_,  4UL );
+         checkNonZeros( tmat_, 10UL );
+
+         if( row3[0] != 0 || row3[1] != 6 || row3[2] != 7 || row3[3] != -9 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Integral scale operation of 3rd row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 6 7 -9 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+             tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
+             tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
+             tmat_(3,0) !=  0 || tmat_(3,1) !=  6 || tmat_(3,2) !=  7 || tmat_(3,3) != -9 ||
+             tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Integral scale operation of 3rd row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << tmat_ << "\n"
+                << "   Expected result:\n(  0   0   0   0 )\n"
+                                        "(  0   1   0   0 )\n"
+                                        "( -2   0  -3   0 )\n"
+                                        "(  0   6   7  -9 )\n"
                                         "(  7  -8   9  10 )\n";
             throw std::runtime_error( oss.str() );
          }

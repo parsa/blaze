@@ -3319,7 +3319,7 @@ void ClassTest::testScale()
 
       initialize();
 
-      // Scaling the 3rd column
+      // Integral scaling the 3rd column
       {
          CT col3 = column( mat_, 3UL );
          col3.scale( 3 );
@@ -3334,7 +3334,7 @@ void ClassTest::testScale()
          if( col3[0] != 0 || col3[1] != 12 || col3[2] != 15 || col3[3] != -18 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Scale operation of 3rd column failed\n"
+                << " Error: Integral scale operation of 3rd column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col3 << "\n"
                 << "   Expected result:\n( 0 12 15 -18 )\n";
@@ -3347,13 +3347,52 @@ void ClassTest::testScale()
              mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -18 || mat_(3,4) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment failed\n"
+                << " Error: Integral scale operation of 3rd column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
                 << "   Expected result:\n( 0  0 -2  0   7 )\n"
                                         "( 0  1  0  12 -8 )\n"
                                         "( 0  0 -3  15  9 )\n"
                                         "( 0  0  0 -18 10 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Floating point scaling the 3rd column
+      {
+         CT col3 = column( mat_, 3UL );
+         col3.scale( 0.5 );
+
+         checkSize    ( col3,  4UL );
+         checkCapacity( col3,  4UL );
+         checkNonZeros( col3,  3UL );
+         checkRows    ( mat_,  4UL );
+         checkColumns ( mat_,  5UL );
+         checkNonZeros( mat_, 10UL );
+
+         if( col3[0] != 0 || col3[1] != 6 || col3[2] != 7 || col3[3] != -9 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Integral scale operation of 3rd column failed\n"
+                << " Details:\n"
+                << "   Result:\n" << col3 << "\n"
+                << "   Expected result:\n( 0 6 7 -9 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
+             mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  6 || mat_(1,4) != -8 ||
+             mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  7 || mat_(2,4) !=  9 ||
+             mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -9 || mat_(3,4) != 10 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Integral scale operation of 3rd column failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat_ << "\n"
+                << "   Expected result:\n( 0  0 -2  0  7 )\n"
+                                        "( 0  1  0  6 -8 )\n"
+                                        "( 0  0 -3  7  9 )\n"
+                                        "( 0  0  0 -9 10 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3369,7 +3408,7 @@ void ClassTest::testScale()
 
       initialize();
 
-      // Scaling the 3rd column
+      // Integral scaling the 3rd column
       {
          TCT col3 = column( tmat_, 3UL );
          col3.scale( 3 );
@@ -3384,7 +3423,7 @@ void ClassTest::testScale()
          if( col3[0] != 0 || col3[1] != 12 || col3[2] != 15 || col3[3] != -18 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Scale operation of 3rd column failed\n"
+                << " Error: Integral scale operation of 3rd column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col3 << "\n"
                 << "   Expected result:\n( 0 12 15 -18 )\n";
@@ -3397,13 +3436,52 @@ void ClassTest::testScale()
              tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -18 || tmat_(3,4) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment failed\n"
+                << " Error: Integral scale operation of 3rd column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
                 << "   Expected result:\n( 0  0 -2  0   7 )\n"
                                         "( 0  1  0  12 -8 )\n"
                                         "( 0  0 -3  15  9 )\n"
                                         "( 0  0  0 -18 10 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Floating point scaling the 3rd column
+      {
+         TCT col3 = column( tmat_, 3UL );
+         col3.scale( 0.5 );
+
+         checkSize    ( col3 ,  4UL );
+         checkCapacity( col3 ,  4UL );
+         checkNonZeros( col3 ,  3UL );
+         checkRows    ( tmat_,  4UL );
+         checkColumns ( tmat_,  5UL );
+         checkNonZeros( tmat_, 10UL );
+
+         if( col3[0] != 0 || col3[1] != 6 || col3[2] != 7 || col3[3] != -9 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Integral scale operation of 3rd column failed\n"
+                << " Details:\n"
+                << "   Result:\n" << col3 << "\n"
+                << "   Expected result:\n( 0 6 7 -9 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+             tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  6 || tmat_(1,4) != -8 ||
+             tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  7 || tmat_(2,4) !=  9 ||
+             tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -9 || tmat_(3,4) != 10 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Integral scale operation of 3rd column failed\n"
+                << " Details:\n"
+                << "   Result:\n" << tmat_ << "\n"
+                << "   Expected result:\n( 0  0 -2  0  7 )\n"
+                                        "( 0  1  0  6 -8 )\n"
+                                        "( 0  0 -3  7  9 )\n"
+                                        "( 0  0  0 -9 10 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
