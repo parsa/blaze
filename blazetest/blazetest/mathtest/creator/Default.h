@@ -117,8 +117,9 @@ class Creator
 // \return The randomly generated numeric value.
 //
 // This operator returns a randomly generated numeric value. In case \a T is a floating point
-// data type, a value in the range \f$ [0..1) \f$ is generated, in case \a T is an integral
-// data type, a value in the range \f$ [0..10] \f$ is generated.
+// data type, a value in the range \f$ [0..1) \f$ is generated, in case \a T is a signed integral
+// data type, the value will be in the range \f$ [-10..10] \f$, and in case \a T is an unsigned
+// integral data type, a value in the range \f$ [0..10] \f$ is generated.
 */
 template< typename T >  // Type to be created
 inline T Creator<T>::operator()() const
