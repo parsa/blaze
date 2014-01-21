@@ -41,6 +41,8 @@
 #include <iostream>
 #include <blaze/math/CompressedVector.h>
 #include <blazetest/mathtest/densesubvector/AlignedTest.h>
+#include <blazetest/mathtest/RandomMaximum.h>
+#include <blazetest/mathtest/RandomMinimum.h>
 
 
 namespace blazetest {
@@ -245,7 +247,7 @@ void AlignedTest::testAssignment()
 
       VT vec1( 64UL );
       VT vec2( 64UL );
-      randomize( vec1, -10, 10 );
+      randomize( vec1, int(randmin), int(randmax) );
       vec2 = vec1;
 
       ASVT sv1 = subvector<aligned>  ( vec1, 8UL, 16UL );
@@ -305,7 +307,7 @@ void AlignedTest::testAssignment()
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 16UL );
-      randomize( vec, -10, 10 );
+      randomize( vec, int(randmin), int(randmax) );
 
       sv1 = vec;
       sv2 = vec;
@@ -338,7 +340,7 @@ void AlignedTest::testAssignment()
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 16UL );
-      randomize( vec, 6UL, -10, 10 );
+      randomize( vec, 6UL, int(randmin), int(randmax) );
 
       sv1 = vec;
       sv2 = vec;
@@ -387,7 +389,7 @@ void AlignedTest::testAddAssign()
 
       VT vec1( 64UL );
       VT vec2( 64UL );
-      randomize( vec1, -10, 10 );
+      randomize( vec1, int(randmin), int(randmax) );
       vec2 = vec1;
 
       ASVT sv1 = subvector<aligned>  ( vec1, 8UL, 16UL );
@@ -447,7 +449,7 @@ void AlignedTest::testAddAssign()
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 16UL, 0 );
-      randomize( vec, -10, 10 );
+      randomize( vec, int(randmin), int(randmax) );
 
       sv1 += vec;
       sv2 += vec;
@@ -480,7 +482,7 @@ void AlignedTest::testAddAssign()
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 16UL );
-      randomize( vec, 6UL, -10, 10 );
+      randomize( vec, 6UL, int(randmin), int(randmax) );
 
       sv1 += vec;
       sv2 += vec;
@@ -529,7 +531,7 @@ void AlignedTest::testSubAssign()
 
       VT vec1( 64UL );
       VT vec2( 64UL );
-      randomize( vec1, -10, 10 );
+      randomize( vec1, int(randmin), int(randmax) );
       vec2 = vec1;
 
       ASVT sv1 = subvector<aligned>  ( vec1, 8UL, 16UL );
@@ -589,7 +591,7 @@ void AlignedTest::testSubAssign()
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 16UL, 0 );
-      randomize( vec, -10, 10 );
+      randomize( vec, int(randmin), int(randmax) );
 
       sv1 -= vec;
       sv2 -= vec;
@@ -622,7 +624,7 @@ void AlignedTest::testSubAssign()
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 16UL );
-      randomize( vec, 6UL, -10, 10 );
+      randomize( vec, 6UL, int(randmin), int(randmax) );
 
       sv1 -= vec;
       sv2 -= vec;
@@ -671,7 +673,7 @@ void AlignedTest::testMultAssign()
 
       VT vec1( 64UL );
       VT vec2( 64UL );
-      randomize( vec1, -10, 10 );
+      randomize( vec1, int(randmin), int(randmax) );
       vec2 = vec1;
 
       ASVT sv1 = subvector<aligned>  ( vec1, 8UL, 16UL );
@@ -731,7 +733,7 @@ void AlignedTest::testMultAssign()
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 16UL, 0 );
-      randomize( vec, -10, 10 );
+      randomize( vec, int(randmin), int(randmax) );
 
       sv1 *= vec;
       sv2 *= vec;
@@ -764,7 +766,7 @@ void AlignedTest::testMultAssign()
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 16UL );
-      randomize( vec, 6UL, -10, 10 );
+      randomize( vec, 6UL, int(randmin), int(randmax) );
 
       sv1 -= vec;
       sv2 -= vec;
@@ -1822,7 +1824,7 @@ void AlignedTest::testSubvector()
 void AlignedTest::initialize()
 {
    // Initializing the dynamic row vectors
-   randomize( vec1_, -10, 10 );
+   randomize( vec1_, int(randmin), int(randmax) );
    vec2_ = vec1_;
 }
 //*************************************************************************************************

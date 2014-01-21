@@ -42,6 +42,8 @@
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/Views.h>
 #include <blazetest/mathtest/densesubmatrix/AlignedTest.h>
+#include <blazetest/mathtest/RandomMaximum.h>
+#include <blazetest/mathtest/RandomMinimum.h>
 
 
 namespace blazetest {
@@ -485,7 +487,7 @@ void AlignedTest::testAssignment()
 
       MT mat1( 64UL, 64UL );
       MT mat2( 64UL, 64UL );
-      randomize( mat1, -10, 10 );
+      randomize( mat1, int(randmin), int(randmax) );
       mat2 = mat1;
 
       ASMT sm1 = submatrix<aligned>  ( mat1, 8UL, 16UL, 8UL, 16UL );
@@ -549,7 +551,7 @@ void AlignedTest::testAssignment()
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 8UL, 16UL );
-      randomize( mat, -10, 10 );
+      randomize( mat, int(randmin), int(randmax) );
 
       sm1 = mat;
       sm2 = mat;
@@ -579,7 +581,7 @@ void AlignedTest::testAssignment()
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 8UL, 16UL );
-      randomize( mat, -10, 10 );
+      randomize( mat, int(randmin), int(randmax) );
 
       sm1 = mat;
       sm2 = mat;
@@ -614,7 +616,7 @@ void AlignedTest::testAssignment()
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 8UL, 16UL );
-      randomize( mat, 30UL, -10, 10 );
+      randomize( mat, 30UL, int(randmin), int(randmax) );
 
       sm1 = mat;
       sm2 = mat;
@@ -644,7 +646,7 @@ void AlignedTest::testAssignment()
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 8UL, 16UL );
-      randomize( mat, 30UL, -10, 10 );
+      randomize( mat, 30UL, int(randmin), int(randmax) );
 
       sm1 = mat;
       sm2 = mat;
@@ -734,7 +736,7 @@ void AlignedTest::testAssignment()
 
       TMT mat1( 64UL, 64UL );
       TMT mat2( 64UL, 64UL );
-      randomize( mat1, -10, 10 );
+      randomize( mat1, int(randmin), int(randmax) );
       mat2 = mat1;
 
       ATSMT sm1 = submatrix<aligned>  ( mat1, 16UL, 8UL, 16UL, 8UL );
@@ -798,7 +800,7 @@ void AlignedTest::testAssignment()
       UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 16UL, 8UL );
-      randomize( mat, -10, 10 );
+      randomize( mat, int(randmin), int(randmax) );
 
       sm1 = mat;
       sm2 = mat;
@@ -828,7 +830,7 @@ void AlignedTest::testAssignment()
       UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 16UL, 8UL );
-      randomize( mat, -10, 10 );
+      randomize( mat, int(randmin), int(randmax) );
 
       sm1 = mat;
       sm2 = mat;
@@ -863,7 +865,7 @@ void AlignedTest::testAssignment()
       UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 16UL, 8UL );
-      randomize( mat, 30UL, -10, 10 );
+      randomize( mat, 30UL, int(randmin), int(randmax) );
 
       sm1 = mat;
       sm2 = mat;
@@ -893,7 +895,7 @@ void AlignedTest::testAssignment()
       UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 16UL, 8UL );
-      randomize( mat, 30UL, -10, 10 );
+      randomize( mat, 30UL, int(randmin), int(randmax) );
 
       sm1 = mat;
       sm2 = mat;
@@ -944,7 +946,7 @@ void AlignedTest::testAddAssign()
 
       MT mat1( 64UL, 64UL );
       MT mat2( 64UL, 64UL );
-      randomize( mat1, -10, 10 );
+      randomize( mat1, int(randmin), int(randmax) );
       mat2 = mat1;
 
       ASMT sm1 = submatrix<aligned>  ( mat1, 8UL, 16UL, 8UL, 16UL );
@@ -1008,7 +1010,7 @@ void AlignedTest::testAddAssign()
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 8UL, 16UL );
-      randomize( mat, -10, 10 );
+      randomize( mat, int(randmin), int(randmax) );
 
       sm1 += mat;
       sm2 += mat;
@@ -1038,7 +1040,7 @@ void AlignedTest::testAddAssign()
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 8UL, 16UL );
-      randomize( mat, -10, 10 );
+      randomize( mat, int(randmin), int(randmax) );
 
       sm1 += mat;
       sm2 += mat;
@@ -1073,7 +1075,7 @@ void AlignedTest::testAddAssign()
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 8UL, 16UL );
-      randomize( mat, 30UL, -10, 10 );
+      randomize( mat, 30UL, int(randmin), int(randmax) );
 
       sm1 += mat;
       sm2 += mat;
@@ -1103,7 +1105,7 @@ void AlignedTest::testAddAssign()
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 8UL, 16UL );
-      randomize( mat, 30UL, -10, 10 );
+      randomize( mat, 30UL, int(randmin), int(randmax) );
 
       sm1 += mat;
       sm2 += mat;
@@ -1136,7 +1138,7 @@ void AlignedTest::testAddAssign()
 
       TMT mat1( 64UL, 64UL );
       TMT mat2( 64UL, 64UL );
-      randomize( mat1, -10, 10 );
+      randomize( mat1, int(randmin), int(randmax) );
       mat2 = mat1;
 
       ATSMT sm1 = submatrix<aligned>  ( mat1, 16UL, 8UL, 16UL, 8UL );
@@ -1200,7 +1202,7 @@ void AlignedTest::testAddAssign()
       UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 16UL, 8UL );
-      randomize( mat, -10, 10 );
+      randomize( mat, int(randmin), int(randmax) );
 
       sm1 += mat;
       sm2 += mat;
@@ -1230,7 +1232,7 @@ void AlignedTest::testAddAssign()
       UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 16UL, 8UL );
-      randomize( mat, -10, 10 );
+      randomize( mat, int(randmin), int(randmax) );
 
       sm1 += mat;
       sm2 += mat;
@@ -1265,7 +1267,7 @@ void AlignedTest::testAddAssign()
       UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 16UL, 8UL );
-      randomize( mat, 30UL, -10, 10 );
+      randomize( mat, 30UL, int(randmin), int(randmax) );
 
       sm1 += mat;
       sm2 += mat;
@@ -1295,7 +1297,7 @@ void AlignedTest::testAddAssign()
       UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 16UL, 8UL );
-      randomize( mat, 30UL, -10, 10 );
+      randomize( mat, 30UL, int(randmin), int(randmax) );
 
       sm1 += mat;
       sm2 += mat;
@@ -1346,7 +1348,7 @@ void AlignedTest::testSubAssign()
 
       MT mat1( 64UL, 64UL );
       MT mat2( 64UL, 64UL );
-      randomize( mat1, -10, 10 );
+      randomize( mat1, int(randmin), int(randmax) );
       mat2 = mat1;
 
       ASMT sm1 = submatrix<aligned>  ( mat1, 8UL, 16UL, 8UL, 16UL );
@@ -1410,7 +1412,7 @@ void AlignedTest::testSubAssign()
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 8UL, 16UL );
-      randomize( mat, -10, 10 );
+      randomize( mat, int(randmin), int(randmax) );
 
       sm1 -= mat;
       sm2 -= mat;
@@ -1440,7 +1442,7 @@ void AlignedTest::testSubAssign()
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 8UL, 16UL );
-      randomize( mat, -10, 10 );
+      randomize( mat, int(randmin), int(randmax) );
 
       sm1 -= mat;
       sm2 -= mat;
@@ -1475,7 +1477,7 @@ void AlignedTest::testSubAssign()
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 8UL, 16UL );
-      randomize( mat, 30UL, -10, 10 );
+      randomize( mat, 30UL, int(randmin), int(randmax) );
 
       sm1 -= mat;
       sm2 -= mat;
@@ -1505,7 +1507,7 @@ void AlignedTest::testSubAssign()
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 8UL, 16UL );
-      randomize( mat, 30UL, -10, 10 );
+      randomize( mat, 30UL, int(randmin), int(randmax) );
 
       sm1 -= mat;
       sm2 -= mat;
@@ -1538,7 +1540,7 @@ void AlignedTest::testSubAssign()
 
       TMT mat1( 64UL, 64UL );
       TMT mat2( 64UL, 64UL );
-      randomize( mat1, -10, 10 );
+      randomize( mat1, int(randmin), int(randmax) );
       mat2 = mat1;
 
       ATSMT sm1 = submatrix<aligned>  ( mat1, 16UL, 8UL, 16UL, 8UL );
@@ -1602,7 +1604,7 @@ void AlignedTest::testSubAssign()
       UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 16UL, 8UL );
-      randomize( mat, -10, 10 );
+      randomize( mat, int(randmin), int(randmax) );
 
       sm1 -= mat;
       sm2 -= mat;
@@ -1632,7 +1634,7 @@ void AlignedTest::testSubAssign()
       UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 16UL, 8UL );
-      randomize( mat, -10, 10 );
+      randomize( mat, int(randmin), int(randmax) );
 
       sm1 -= mat;
       sm2 -= mat;
@@ -1667,7 +1669,7 @@ void AlignedTest::testSubAssign()
       UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 16UL, 8UL );
-      randomize( mat, 30UL, -10, 10 );
+      randomize( mat, 30UL, int(randmin), int(randmax) );
 
       sm1 -= mat;
       sm2 -= mat;
@@ -1697,7 +1699,7 @@ void AlignedTest::testSubAssign()
       UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 16UL, 8UL );
-      randomize( mat, 30UL, -10, 10 );
+      randomize( mat, 30UL, int(randmin), int(randmax) );
 
       sm1 -= mat;
       sm2 -= mat;
@@ -1748,7 +1750,7 @@ void AlignedTest::testMultAssign()
 
       MT mat1( 64UL, 64UL );
       MT mat2( 64UL, 64UL );
-      randomize( mat1, -10, 10 );
+      randomize( mat1, int(randmin), int(randmax) );
       mat2 = mat1;
 
       ASMT sm1 = submatrix<aligned>  ( mat1, 16UL, 16UL, 8UL, 8UL );
@@ -1812,7 +1814,7 @@ void AlignedTest::testMultAssign()
       USMT sm2 = submatrix<unaligned>( mat2_, 16UL, 16UL, 8UL, 8UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 8UL, 8UL );
-      randomize( mat, -10, 10 );
+      randomize( mat, int(randmin), int(randmax) );
 
       sm1 *= mat;
       sm2 *= mat;
@@ -1842,7 +1844,7 @@ void AlignedTest::testMultAssign()
       USMT sm2 = submatrix<unaligned>( mat2_, 16UL, 16UL, 8UL, 8UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 8UL, 8UL );
-      randomize( mat, -10, 10 );
+      randomize( mat, int(randmin), int(randmax) );
 
       sm1 *= mat;
       sm2 *= mat;
@@ -1877,7 +1879,7 @@ void AlignedTest::testMultAssign()
       USMT sm2 = submatrix<unaligned>( mat2_, 16UL, 16UL, 8UL, 8UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 8UL, 8UL );
-      randomize( mat, 30UL, -10, 10 );
+      randomize( mat, 30UL, int(randmin), int(randmax) );
 
       sm1 *= mat;
       sm2 *= mat;
@@ -1907,7 +1909,7 @@ void AlignedTest::testMultAssign()
       USMT sm2 = submatrix<unaligned>( mat2_, 16UL, 16UL, 8UL, 8UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 8UL, 8UL );
-      randomize( mat, 30UL, -10, 10 );
+      randomize( mat, 30UL, int(randmin), int(randmax) );
 
       sm1 *= mat;
       sm2 *= mat;
@@ -1999,7 +2001,7 @@ void AlignedTest::testMultAssign()
 
       TMT mat1( 64UL, 64UL );
       TMT mat2( 64UL, 64UL );
-      randomize( mat1, -10, 10 );
+      randomize( mat1, int(randmin), int(randmax) );
       mat2 = mat1;
 
       ATSMT sm1 = submatrix<aligned>  ( mat1, 16UL, 16UL, 8UL, 8UL );
@@ -2063,7 +2065,7 @@ void AlignedTest::testMultAssign()
       UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 16UL, 8UL, 8UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 8UL, 8UL );
-      randomize( mat, -10, 10 );
+      randomize( mat, int(randmin), int(randmax) );
 
       sm1 *= mat;
       sm2 *= mat;
@@ -2093,7 +2095,7 @@ void AlignedTest::testMultAssign()
       UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 16UL, 8UL, 8UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 8UL, 8UL );
-      randomize( mat, -10, 10 );
+      randomize( mat, int(randmin), int(randmax) );
 
       sm1 *= mat;
       sm2 *= mat;
@@ -2128,7 +2130,7 @@ void AlignedTest::testMultAssign()
       UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 16UL, 8UL, 8UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 8UL, 8UL );
-      randomize( mat, 30UL, -10, 10 );
+      randomize( mat, 30UL, int(randmin), int(randmax) );
 
       sm1 *= mat;
       sm2 *= mat;
@@ -2158,7 +2160,7 @@ void AlignedTest::testMultAssign()
       UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 16UL, 8UL, 8UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 8UL, 8UL );
-      randomize( mat, 30UL, -10, 10 );
+      randomize( mat, 30UL, int(randmin), int(randmax) );
 
       sm1 *= mat;
       sm2 *= mat;
@@ -4735,11 +4737,11 @@ void AlignedTest::testColumn()
 void AlignedTest::initialize()
 {
    // Initializing the row-major dynamic matrices
-   randomize( mat1_, -10, 10 );
+   randomize( mat1_, int(randmin), int(randmax) );
    mat2_ = mat1_;
 
    // Initializing the column-major dynamic matrices
-   randomize( tmat1_, -10, 10 );
+   randomize( tmat1_, int(randmin), int(randmax) );
    tmat2_ = tmat1_;
 }
 //*************************************************************************************************
