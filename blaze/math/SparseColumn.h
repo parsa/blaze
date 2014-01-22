@@ -40,9 +40,185 @@
 // Includes
 //*************************************************************************************************
 
+#include <stdexcept>
 #include <blaze/math/views/Column.h>
 #include <blaze/math/views/Row.h>
 #include <blaze/math/views/SparseColumn.h>
 #include <blaze/math/views/SparseRow.h>
+#include <blaze/util/Random.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  RAND SPECIALIZATION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the Rand class template for SparseColumn.
+// \ingroup random
+//
+// This specialization of the Rand class randomizes instances of SparseColumn.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+class Rand< SparseColumn<MT,SO> >
+{
+ public:
+   //**Randomize functions*************************************************************************
+   /*!\name Randomize functions */
+   //@{
+   inline void randomize( SparseColumn<MT,SO>& column ) const;
+   inline void randomize( SparseColumn<MT,SO>& column, size_t nonzeros ) const;
+
+   template< typename Arg >
+   inline void randomize( SparseColumn<MT,SO>& column, const Arg& min, const Arg& max ) const;
+
+   template< typename Arg >
+   inline void randomize( SparseColumn<MT,SO>& column, size_t nonzeros, const Arg& min, const Arg& max ) const;
+   //@}
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a SparseColumn.
+//
+// \param column The column to be randomized.
+// \return void
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline void Rand< SparseColumn<MT,SO> >::randomize( SparseColumn<MT,SO>& column ) const
+{
+   typedef typename SparseColumn<MT,SO>::ElementType  ElementType;
+
+   const size_t size( column.size() );
+
+   if( size == 0UL ) return;
+
+   const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*size ) ) );
+
+   column.reset();
+   column.reserve( nonzeros );
+
+   while( column.nonZeros() < nonzeros ) {
+      column[ rand<size_t>( 0UL, size-1UL ) ] = rand<ElementType>();
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a SparseColumn.
+//
+// \param column The column to be randomized.
+// \param nonzeros The number of non-zero elements of the random column.
+// \return void
+// \exception std::invalid_argument Invalid number of non-zero elements.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline void Rand< SparseColumn<MT,SO> >::randomize( SparseColumn<MT,SO>& column, size_t nonzeros ) const
+{
+   typedef typename SparseColumn<MT,SO>::ElementType  ElementType;
+
+   const size_t size( column.size() );
+
+   if( nonzeros > size )
+      throw std::invalid_argument( "Invalid number of non-zero elements" );
+
+   if( size == 0UL ) return;
+
+   column.reset();
+   column.reserve( nonzeros );
+
+   while( column.nonZeros() < nonzeros ) {
+      column[ rand<size_t>( 0UL, size-1UL ) ] = rand<ElementType>();
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a SparseColumn.
+//
+// \param column The column to be randomized.
+// \param min The smallest possible value for a column element.
+// \param max The largest possible value for a column element.
+// \return void
+*/
+template< typename MT     // Type of the sparse matrix
+        , bool SO >       // Storage order
+template< typename Arg >  // Min/max argument type
+inline void Rand< SparseColumn<MT,SO> >::randomize( SparseColumn<MT,SO>& column,
+                                                    const Arg& min, const Arg& max ) const
+{
+   typedef typename SparseColumn<MT,SO>::ElementType  ElementType;
+
+   const size_t size( column.size() );
+
+   if( size == 0UL ) return;
+
+   const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*size ) ) );
+
+   column.reset();
+   column.reserve( nonzeros );
+
+   while( column.nonZeros() < nonzeros ) {
+      column[ rand<size_t>( 0UL, size-1UL ) ] = rand<ElementType>( min, max );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a SparseColumn.
+//
+// \param column The column to be randomized.
+// \param nonzeros The number of non-zero elements of the random column.
+// \param min The smallest possible value for a column element.
+// \param max The largest possible value for a column element.
+// \return void
+// \exception std::invalid_argument Invalid number of non-zero elements.
+*/
+template< typename MT     // Type of the sparse matrix
+        , bool SO >       // Storage order
+template< typename Arg >  // Min/max argument type
+inline void Rand< SparseColumn<MT,SO> >::randomize( SparseColumn<MT,SO>& column, size_t nonzeros,
+                                                    const Arg& min, const Arg& max ) const
+{
+   typedef typename SparseColumn<MT,SO>::ElementType  ElementType;
+
+   const size_t size( column.size() );
+
+   if( nonzeros > size )
+      throw std::invalid_argument( "Invalid number of non-zero elements" );
+
+   if( size == 0UL ) return;
+
+   column.reset();
+   column.reserve( nonzeros );
+
+   while( column.nonZeros() < nonzeros ) {
+      column[ rand<size_t>( 0UL, size-1UL ) ] = rand<ElementType>( min, max );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
