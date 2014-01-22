@@ -40,18 +40,13 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/views/AlignmentFlag.h>
-#include <blaze/math/views/Column.h>
-#include <blaze/math/views/DenseColumn.h>
-#include <blaze/math/views/DenseRow.h>
-#include <blaze/math/views/DenseSubmatrix.h>
-#include <blaze/math/views/DenseSubvector.h>
-#include <blaze/math/views/Row.h>
-#include <blaze/math/views/SparseColumn.h>
-#include <blaze/math/views/SparseRow.h>
-#include <blaze/math/views/SparseSubmatrix.h>
-#include <blaze/math/views/SparseSubvector.h>
-#include <blaze/math/views/Submatrix.h>
-#include <blaze/math/views/Subvector.h>
+#include <blaze/math/DenseColumn.h>
+#include <blaze/math/DenseRow.h>
+#include <blaze/math/DenseSubmatrix.h>
+#include <blaze/math/DenseSubvector.h>
+#include <blaze/math/SparseColumn.h>
+#include <blaze/math/SparseRow.h>
+#include <blaze/math/SparseSubmatrix.h>
+#include <blaze/math/SparseSubvector.h>
 
 #endif
