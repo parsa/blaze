@@ -40,9 +40,185 @@
 // Includes
 //*************************************************************************************************
 
+#include <stdexcept>
 #include <blaze/math/views/Column.h>
 #include <blaze/math/views/Row.h>
 #include <blaze/math/views/SparseColumn.h>
 #include <blaze/math/views/SparseRow.h>
+#include <blaze/util/Random.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  RAND SPECIALIZATION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the Rand class template for SparseRow.
+// \ingroup random
+//
+// This specialization of the Rand class randomizes instances of SparseRow.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+class Rand< SparseRow<MT,SO> >
+{
+ public:
+   //**Randomize functions*************************************************************************
+   /*!\name Randomize functions */
+   //@{
+   inline void randomize( SparseRow<MT,SO>& row ) const;
+   inline void randomize( SparseRow<MT,SO>& row, size_t nonzeros ) const;
+
+   template< typename Arg >
+   inline void randomize( SparseRow<MT,SO>& row, const Arg& min, const Arg& max ) const;
+
+   template< typename Arg >
+   inline void randomize( SparseRow<MT,SO>& row, size_t nonzeros, const Arg& min, const Arg& max ) const;
+   //@}
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a SparseRow.
+//
+// \param row The row to be randomized.
+// \return void
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline void Rand< SparseRow<MT,SO> >::randomize( SparseRow<MT,SO>& row ) const
+{
+   typedef typename SparseRow<MT,SO>::ElementType  ElementType;
+
+   const size_t size( row.size() );
+
+   if( size == 0UL ) return;
+
+   const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*size ) ) );
+
+   row.reset();
+   row.reserve( nonzeros );
+
+   while( row.nonZeros() < nonzeros ) {
+      row[ rand<size_t>( 0UL, size-1UL ) ] = rand<ElementType>();
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a SparseRow.
+//
+// \param row The row to be randomized.
+// \param nonzeros The number of non-zero elements of the random row.
+// \return void
+// \exception std::invalid_argument Invalid number of non-zero elements.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline void Rand< SparseRow<MT,SO> >::randomize( SparseRow<MT,SO>& row, size_t nonzeros ) const
+{
+   typedef typename SparseRow<MT,SO>::ElementType  ElementType;
+
+   const size_t size( row.size() );
+
+   if( nonzeros > size )
+      throw std::invalid_argument( "Invalid number of non-zero elements" );
+
+   if( size == 0UL ) return;
+
+   row.reset();
+   row.reserve( nonzeros );
+
+   while( row.nonZeros() < nonzeros ) {
+      row[ rand<size_t>( 0UL, size-1UL ) ] = rand<ElementType>();
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a SparseRow.
+//
+// \param row The row to be randomized.
+// \param min The smallest possible value for a row element.
+// \param max The largest possible value for a row element.
+// \return void
+*/
+template< typename MT     // Type of the sparse matrix
+        , bool SO >       // Storage order
+template< typename Arg >  // Min/max argument type
+inline void Rand< SparseRow<MT,SO> >::randomize( SparseRow<MT,SO>& row,
+                                                 const Arg& min, const Arg& max ) const
+{
+   typedef typename SparseRow<MT,SO>::ElementType  ElementType;
+
+   const size_t size( row.size() );
+
+   if( size == 0UL ) return;
+
+   const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*size ) ) );
+
+   row.reset();
+   row.reserve( nonzeros );
+
+   while( row.nonZeros() < nonzeros ) {
+      row[ rand<size_t>( 0UL, size-1UL ) ] = rand<ElementType>( min, max );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a SparseRow.
+//
+// \param row The row to be randomized.
+// \param nonzeros The number of non-zero elements of the random row.
+// \param min The smallest possible value for a row element.
+// \param max The largest possible value for a row element.
+// \return void
+// \exception std::invalid_argument Invalid number of non-zero elements.
+*/
+template< typename MT     // Type of the sparse matrix
+        , bool SO >       // Storage order
+template< typename Arg >  // Min/max argument type
+inline void Rand< SparseRow<MT,SO> >::randomize( SparseRow<MT,SO>& row, size_t nonzeros,
+                                                 const Arg& min, const Arg& max ) const
+{
+   typedef typename SparseRow<MT,SO>::ElementType  ElementType;
+
+   const size_t size( row.size() );
+
+   if( nonzeros > size )
+      throw std::invalid_argument( "Invalid number of non-zero elements" );
+
+   if( size == 0UL ) return;
+
+   row.reset();
+   row.reserve( nonzeros );
+
+   while( row.nonZeros() < nonzeros ) {
+      row[ rand<size_t>( 0UL, size-1UL ) ] = rand<ElementType>( min, max );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
