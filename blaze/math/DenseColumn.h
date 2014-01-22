@@ -45,4 +45,86 @@
 #include <blaze/math/views/DenseRow.h>
 #include <blaze/math/views/Row.h>
 
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  RAND SPECIALIZATION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the Rand class template for DenseColumn.
+// \ingroup random
+//
+// This specialization of the Rand class randomizes instances of DenseColumn.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+class Rand< DenseColumn<MT,SO> >
+{
+ public:
+   //**Randomize functions*************************************************************************
+   /*!\name Randomize functions */
+   //@{
+   inline void randomize( DenseColumn<MT,SO>& column ) const;
+
+   template< typename Arg >
+   inline void randomize( DenseColumn<MT,SO>& column, const Arg& min, const Arg& max ) const;
+   //@}
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a DenseColumn.
+//
+// \param column The column to be randomized.
+// \return void
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline void Rand< DenseColumn<MT,SO> >::randomize( DenseColumn<MT,SO>& column ) const
+{
+   using blaze::randomize;
+
+   for( size_t i=0UL; i<column.size(); ++i ) {
+      randomize( column[i] );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a DenseColumn.
+//
+// \param column The column to be randomized.
+// \param min The smallest possible value for a column element.
+// \param max The largest possible value for a column element.
+// \return void
+*/
+template< typename MT     // Type of the dense matrix
+        , bool SO >       // Storage order
+template< typename Arg >  // Min/max argument type
+inline void Rand< DenseColumn<MT,SO> >::randomize( DenseColumn<MT,SO>& column,
+                                                   const Arg& min, const Arg& max ) const
+{
+   using blaze::randomize;
+
+   for( size_t i=0UL; i<column.size(); ++i ) {
+      randomize( column[i], min, max );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+} // namespace blaze
+
 #endif
