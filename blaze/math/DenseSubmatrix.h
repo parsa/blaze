@@ -45,5 +45,113 @@
 #include <blaze/math/views/SparseSubmatrix.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/math/views/Subvector.h>
+#include <blaze/util/Random.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  RAND SPECIALIZATION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the Rand class template for DenseSubmatrix.
+// \ingroup random
+//
+// This specialization of the Rand class randomizes instances of DenseSubmatrix.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+class Rand< DenseSubmatrix<MT,AF,SO> >
+{
+ public:
+   //**Randomize functions*************************************************************************
+   /*!\name Randomize functions */
+   //@{
+   inline void randomize( DenseSubmatrix<MT,AF,SO>& submatrix ) const;
+
+   template< typename Arg >
+   inline void randomize( DenseSubmatrix<MT,AF,SO>& submatrix, const Arg& min, const Arg& max ) const;
+   //@}
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a DenseSubmatrix.
+//
+// \param submatrix The submatrix to be randomized.
+// \return void
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline void Rand< DenseSubmatrix<MT,AF,SO> >::randomize( DenseSubmatrix<MT,AF,SO>& submatrix ) const
+{
+   using blaze::randomize;
+
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<submatrix.rows(); ++i ) {
+         for( size_t j=0UL; j<submatrix.columns(); ++j ) {
+            randomize( submatrix(i,j) );
+         }
+      }
+   }
+   else {
+      for( size_t j=0UL; j<submatrix.columns(); ++j ) {
+         for( size_t i=0UL; i<submatrix.rows(); ++i ) {
+            randomize( submatrix(i,j) );
+         }
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a DenseSubmatrix.
+//
+// \param submatrix The submatrix to be randomized.
+// \param min The smallest possible value for a matrix element.
+// \param max The largest possible value for a matrix element.
+// \return void
+*/
+template< typename MT     // Type of the dense matrix
+        , bool AF         // Alignment flag
+        , bool SO >       // Storage order
+template< typename Arg >  // Min/max argument type
+inline void Rand< DenseSubmatrix<MT,AF,SO> >::randomize( DenseSubmatrix<MT,AF,SO>& submatrix,
+                                                         const Arg& min, const Arg& max ) const
+{
+   using blaze::randomize;
+
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<submatrix.rows(); ++i ) {
+         for( size_t j=0UL; j<submatrix.columns(); ++j ) {
+            randomize( submatrix(i,j), min, max );
+         }
+      }
+   }
+   else {
+      for( size_t j=0UL; j<submatrix.columns(); ++j ) {
+         for( size_t i=0UL; i<submatrix.rows(); ++i ) {
+            randomize( submatrix(i,j), min, max );
+         }
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
