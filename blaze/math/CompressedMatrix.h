@@ -156,9 +156,9 @@ inline const CompressedMatrix<Type,SO>
 //
 // \param m The number of rows of the random matrix.
 // \param n The number of columns of the random matrix.
-// \param min The smallest possible value for a vector element.
+// \param min The smallest possible value for a matrix element.
 // \return The generated random matrix.
-// \param max The largest possible value for a vector element.
+// \param max The largest possible value for a matrix element.
 */
 template< typename Type   // Data type of the matrix
         , bool SO >       // Storage order
@@ -182,8 +182,8 @@ inline const CompressedMatrix<Type,SO>
 // \param m The number of rows of the random matrix.
 // \param n The number of columns of the random matrix.
 // \param nonzeros The number of non-zero elements of the random matrix.
-// \param min The smallest possible value for a vector element.
-// \param max The largest possible value for a vector element.
+// \param min The smallest possible value for a matrix element.
+// \param max The largest possible value for a matrix element.
 // \return The generated random matrix.
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
@@ -272,8 +272,8 @@ inline void Rand< CompressedMatrix<Type,SO> >::randomize( CompressedMatrix<Type,
 /*!\brief Randomization of a CompressedMatrix.
 //
 // \param matrix The matrix to be randomized.
-// \param min The smallest possible value for a vector element.
-// \param max The largest possible value for a vector element.
+// \param min The smallest possible value for a matrix element.
+// \param max The largest possible value for a matrix element.
 // \return void
 */
 template< typename Type   // Data type of the matrix
@@ -306,8 +306,8 @@ inline void Rand< CompressedMatrix<Type,SO> >::randomize( CompressedMatrix<Type,
 //
 // \param matrix The matrix to be randomized.
 // \param nonzeros The number of non-zero elements of the random matrix.
-// \param min The smallest possible value for a vector element.
-// \param max The largest possible value for a vector element.
+// \param min The smallest possible value for a matrix element.
+// \param max The largest possible value for a matrix element.
 // \return void
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
