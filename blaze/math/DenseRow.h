@@ -45,4 +45,86 @@
 #include <blaze/math/views/DenseRow.h>
 #include <blaze/math/views/Row.h>
 
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  RAND SPECIALIZATION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the Rand class template for DenseRow.
+// \ingroup random
+//
+// This specialization of the Rand class randomizes instances of DenseRow.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+class Rand< DenseRow<MT,SO> >
+{
+ public:
+   //**Randomize functions*************************************************************************
+   /*!\name Randomize functions */
+   //@{
+   inline void randomize( DenseRow<MT,SO>& row ) const;
+
+   template< typename Arg >
+   inline void randomize( DenseRow<MT,SO>& row, const Arg& min, const Arg& max ) const;
+   //@}
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a DenseRow.
+//
+// \param row The row to be randomized.
+// \return void
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline void Rand< DenseRow<MT,SO> >::randomize( DenseRow<MT,SO>& row ) const
+{
+   using blaze::randomize;
+
+   for( size_t i=0UL; i<row.size(); ++i ) {
+      randomize( row[i] );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a DenseRow.
+//
+// \param row The row to be randomized.
+// \param min The smallest possible value for a row element.
+// \param max The largest possible value for a row element.
+// \return void
+*/
+template< typename MT     // Type of the dense matrix
+        , bool SO >       // Storage order
+template< typename Arg >  // Min/max argument type
+inline void Rand< DenseRow<MT,SO> >::randomize( DenseRow<MT,SO>& row,
+                                                const Arg& min, const Arg& max ) const
+{
+   using blaze::randomize;
+
+   for( size_t i=0UL; i<row.size(); ++i ) {
+      randomize( row[i], min, max );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+} // namespace blaze
+
 #endif
