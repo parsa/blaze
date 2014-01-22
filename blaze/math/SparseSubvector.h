@@ -40,10 +40,191 @@
 // Includes
 //*************************************************************************************************
 
+#include <stdexcept>
 #include <blaze/math/views/DenseSubvector.h>
 #include <blaze/math/views/SparseSubmatrix.h>
 #include <blaze/math/views/SparseSubvector.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/math/views/Subvector.h>
+#include <blaze/util/Random.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  RAND SPECIALIZATION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the Rand class template for SparseSubvector.
+// \ingroup random
+//
+// This specialization of the Rand class randomizes instances of SparseSubvector.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
+class Rand< SparseSubvector<VT,AF,TF> >
+{
+ public:
+   //**Randomize functions*************************************************************************
+   /*!\name Randomize functions */
+   //@{
+   inline void randomize( SparseSubvector<VT,AF,TF>& subvector ) const;
+   inline void randomize( SparseSubvector<VT,AF,TF>& subvector, size_t nonzeros ) const;
+
+   template< typename Arg >
+   inline void randomize( SparseSubvector<VT,AF,TF>& subvector, const Arg& min, const Arg& max ) const;
+
+   template< typename Arg >
+   inline void randomize( SparseSubvector<VT,AF,TF>& subvector, size_t nonzeros, const Arg& min, const Arg& max ) const;
+   //@}
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a SparseSubvector.
+//
+// \param subvector The subvector to be randomized.
+// \return void
+*/
+template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
+inline void Rand< SparseSubvector<VT,AF,TF> >::randomize( SparseSubvector<VT,AF,TF>& subvector ) const
+{
+   typedef typename SparseSubvector<VT,AF,TF>::ElementType  ElementType;
+
+   const size_t size( subvector.size() );
+
+   if( size == 0UL ) return;
+
+   const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*size ) ) );
+
+   subvector.reset();
+   subvector.reserve( nonzeros );
+
+   while( subvector.nonZeros() < nonzeros ) {
+      subvector[ rand<size_t>( 0UL, size-1UL ) ] = rand<ElementType>();
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a SparseSubvector.
+//
+// \param subvector The subvector to be randomized.
+// \param nonzeros The number of non-zero elements of the random subvector.
+// \return void
+// \exception std::invalid_argument Invalid number of non-zero elements.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
+inline void Rand< SparseSubvector<VT,AF,TF> >::randomize( SparseSubvector<VT,AF,TF>& subvector, size_t nonzeros ) const
+{
+   typedef typename SparseSubvector<VT,AF,TF>::ElementType  ElementType;
+
+   const size_t size( subvector.size() );
+
+   if( nonzeros > size )
+      throw std::invalid_argument( "Invalid number of non-zero elements" );
+
+   if( size == 0UL ) return;
+
+   subvector.reset();
+   subvector.reserve( nonzeros );
+
+   while( subvector.nonZeros() < nonzeros ) {
+      subvector[ rand<size_t>( 0UL, size-1UL ) ] = rand<ElementType>();
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a SparseSubvector.
+//
+// \param subvector The subvector to be randomized.
+// \param min The smallest possible value for a subvector element.
+// \param max The largest possible value for a subvector element.
+// \return void
+*/
+template< typename VT     // Type of the sparse vector
+        , bool AF         // Alignment flag
+        , bool TF >       // Transpose flag
+template< typename Arg >  // Min/max argument type
+inline void Rand< SparseSubvector<VT,AF,TF> >::randomize( SparseSubvector<VT,AF,TF>& subvector,
+                                                          const Arg& min, const Arg& max ) const
+{
+   typedef typename SparseSubvector<VT,AF,TF>::ElementType  ElementType;
+
+   const size_t size( subvector.size() );
+
+   if( size == 0UL ) return;
+
+   const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*size ) ) );
+
+   subvector.reset();
+   subvector.reserve( nonzeros );
+
+   while( subvector.nonZeros() < nonzeros ) {
+      subvector[ rand<size_t>( 0UL, size-1UL ) ] = rand<ElementType>( min, max );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a SparseSubvector.
+//
+// \param subvector The subvector to be randomized.
+// \param nonzeros The number of non-zero elements of the random subvector.
+// \param min The smallest possible value for a subvector element.
+// \param max The largest possible value for a subvector element.
+// \return void
+// \exception std::invalid_argument Invalid number of non-zero elements.
+*/
+template< typename VT     // Type of the sparse vector
+        , bool AF         // Alignment flag
+        , bool TF >       // Transpose flag
+template< typename Arg >  // Min/max argument type
+inline void Rand< SparseSubvector<VT,AF,TF> >::randomize( SparseSubvector<VT,AF,TF>& subvector,
+                                                          size_t nonzeros, const Arg& min, const Arg& max ) const
+{
+   typedef typename SparseSubvector<VT,AF,TF>::ElementType  ElementType;
+
+   const size_t size( subvector.size() );
+
+   if( nonzeros > size )
+      throw std::invalid_argument( "Invalid number of non-zero elements" );
+
+   if( size == 0UL ) return;
+
+   subvector.reset();
+   subvector.reserve( nonzeros );
+
+   while( subvector.nonZeros() < nonzeros ) {
+      subvector[ rand<size_t>( 0UL, size-1UL ) ] = rand<ElementType>( min, max );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
