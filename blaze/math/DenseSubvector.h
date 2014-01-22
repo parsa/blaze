@@ -46,5 +46,91 @@
 #include <blaze/math/views/SparseSubvector.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/math/views/Subvector.h>
+#include <blaze/util/Random.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  RAND SPECIALIZATION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the Rand class template for DenseSubvector.
+// \ingroup random
+//
+// This specialization of the Rand class randomizes instances of DenseSubvector.
+*/
+template< typename VT  // Type of the dense vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
+class Rand< DenseSubvector<VT,AF,TF> >
+{
+ public:
+   //**Randomize functions*************************************************************************
+   /*!\name Randomize functions */
+   //@{
+   inline void randomize( DenseSubvector<VT,AF,TF>& subvector ) const;
+
+   template< typename Arg >
+   inline void randomize( DenseSubvector<VT,AF,TF>& subvector, const Arg& min, const Arg& max ) const;
+   //@}
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a DenseSubvector.
+//
+// \param subvector The subvector to be randomized.
+// \return void
+*/
+template< typename VT  // Type of the dense vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
+inline void Rand< DenseSubvector<VT,AF,TF> >::randomize( DenseSubvector<VT,AF,TF>& subvector ) const
+{
+   using blaze::randomize;
+
+   for( size_t i=0UL; i<subvector.size(); ++i ) {
+      randomize( subvector[i] );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a DenseSubvector.
+//
+// \param subvector The subvector to be randomized.
+// \param min The smallest possible value for a subvector element.
+// \param max The largest possible value for a subvector element.
+// \return void
+*/
+template< typename VT     // Type of the dense vector
+        , bool AF         // Alignment flag
+        , bool TF >       // Transpose flag
+template< typename Arg >  // Min/max argument type
+inline void Rand< DenseSubvector<VT,AF,TF> >::randomize( DenseSubvector<VT,AF,TF>& subvector,
+                                                         const Arg& min, const Arg& max ) const
+{
+   using blaze::randomize;
+
+   for( size_t i=0UL; i<subvector.size(); ++i ) {
+      randomize( subvector[i], min, max );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
