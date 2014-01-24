@@ -468,9 +468,9 @@ namespace blaze {}
 // \tableofcontents
 //
 //
-// The \b Blaze library currently offers two dense vector types (\ref vector_types_static_vector
-// and \ref vector_types_dynamic_vector) and one sparse vector type (\ref vector_types_compressed_vector).
-// All vectors can be specified as either column vectors
+// The \b Blaze library currently offers three dense vector types (\ref vector_types_static_vector,
+// \ref vector_types_dynamic_vector and \ref vector_types_hybrid_vector) and one sparse vector type
+// (\ref vector_types_compressed_vector). All vectors can be specified as either column vectors
 
                           \f$\left(\begin{array}{*{1}{c}}
                           1 \\
@@ -3534,7 +3534,7 @@ namespace blaze {}
       blaze::DynamicVector<int,rowVector> d2;
 
       // Creating an archive that reads from the file "vectors.blaze"
-      blaze::Archive<std::ofstream> archive( "vectors.blaze" );
+      blaze::Archive<std::ifstream> archive( "vectors.blaze" );
 
       // Reconstituting the former d vector into d1. Note that it is possible to reconstitute
       // the vector into a differrent kind of vector (StaticVector -> DynamicVector), but that
@@ -3571,7 +3571,7 @@ namespace blaze {}
       blaze::CompressedVector< blaze::DynamicVector< blaze::complex<double> > > vec;
 
       // Creating an archive that reads from the file "vector.blaze"
-      blaze::Archive<std::ofstream> archive( "vector.blaze" );
+      blaze::Archive<std::ifstream> archive( "vector.blaze" );
 
       // Reconstitution of the vector from the archive
       archive >> vec;
@@ -3627,7 +3627,7 @@ namespace blaze {}
       blaze::DynamicMatrix<int,rowMajor> D2;
 
       // Creating an archive that reads from the file "matrices.blaze"
-      blaze::Archive<std::ofstream> archive( "matrices.blaze" );
+      blaze::Archive<std::ifstream> archive( "matrices.blaze" );
 
       // Reconstituting the former D matrix into D1. Note that it is possible to reconstitute
       // the matrix into a differrent kind of matrix (StaticMatrix -> DynamicMatrix), but that
@@ -3664,7 +3664,7 @@ namespace blaze {}
       blaze::CompressedMatrix< blaze::DynamicMatrix< blaze::complex<double> > > mat;
 
       // Creating an archive that reads from the file "matrix.blaze"
-      blaze::Archive<std::ofstream> archive( "matrix.blaze" );
+      blaze::Archive<std::ifstream> archive( "matrix.blaze" );
 
       // Reconstitution of the matrix from the archive
       archive >> mat;
