@@ -49,6 +49,7 @@
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/smp/DenseVector.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -61,6 +62,7 @@
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Restrict.h>
 #include <blaze/system/Streaming.h>
+#include <blaze/system/Thresholds.h>
 #include <blaze/system/TransposeFlag.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
@@ -188,7 +190,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    /*! The \a smpAssignable compilation flag indicates whether the vector can be used in SMP
        (shared memory parallel) assignments (both on the left-hand and right-hand side of the
        assignment). */
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = 1 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -323,6 +325,8 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    //@{
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
+
+   inline bool canSMPAssign() const;
 
    inline IntrinsicType load  ( size_t index ) const;
    inline IntrinsicType loadu ( size_t index ) const;
@@ -597,7 +601,7 @@ inline DynamicVector<Type,TF>::DynamicVector( const Vector<VT,TF>& v )
          v_[i] = Type();
    }
 
-   assign( *this, ~v );
+   smpAssign( *this, ~v );
 }
 //*************************************************************************************************
 
@@ -887,7 +891,7 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const Vector<V
       resize( (~rhs).size(), false );
       if( IsSparseVector<VT>::value )
          reset();
-      assign( *this, ~rhs );
+      smpAssign( *this, ~rhs );
    }
 
    return *this;
@@ -917,10 +921,10 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator+=( const Vector<
 
    if( (~rhs).canAlias( this ) ) {
       typename VT::ResultType tmp( ~rhs );
-      addAssign( *this, tmp );
+      smpAddAssign( *this, tmp );
    }
    else {
-      addAssign( *this, ~rhs );
+      smpAddAssign( *this, ~rhs );
    }
 
    return *this;
@@ -951,10 +955,10 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator-=( const Vector<
 
    if( (~rhs).canAlias( this ) ) {
       typename VT::ResultType tmp( ~rhs );
-      subAssign( *this, tmp );
+      smpSubAssign( *this, tmp );
    }
    else {
-      subAssign( *this, ~rhs );
+      smpSubAssign( *this, ~rhs );
    }
 
    return *this;
@@ -988,7 +992,7 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator*=( const Vector<
       swap( tmp );
    }
    else {
-      assign( *this, *this * (~rhs) );
+      smpAssign( *this, *this * (~rhs) );
    }
 
    return *this;
@@ -1011,7 +1015,7 @@ inline typename EnableIf< IsNumeric<Other>, DynamicVector<Type,TF> >::Type&
 {
    using blaze::assign;
 
-   assign( *this, (*this) * rhs );
+   smpAssign( *this, (*this) * rhs );
    return *this;
 }
 //*************************************************************************************************
@@ -1036,7 +1040,7 @@ inline typename EnableIf< IsNumeric<Other>, DynamicVector<Type,TF> >::Type&
 
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   assign( *this, (*this) / rhs );
+   smpAssign( *this, (*this) / rhs );
    return *this;
 }
 //*************************************************************************************************
@@ -1351,6 +1355,25 @@ template< typename Other >  // Data type of the foreign expression
 inline bool DynamicVector<Type,TF>::isAliased( const Other* alias ) const
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the vector can be used in SMP assignments.
+//
+// \return \a true in case the vector can be used in SMP assignments, \a false if not.
+//
+// This function returns whether the vector can be used in SMP assignments. In contrast to the
+// \a smpAssignable member enumeration, which is based solely on compile time information, this
+// function additionally provides runtime information (as for instance the current size of the
+// vector).
+*/
+template< typename Type     // Data type of the vector
+        , bool TF >         // Transpose flag
+inline bool DynamicVector<Type,TF>::canSMPAssign() const
+{
+   return ( size() > OPENMP_DVECASSGIN_THRESHOLD );
 }
 //*************************************************************************************************
 
