@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <stdexcept>
-#include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Matrix.h>
 #include <blaze/math/dense/DynamicMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
@@ -248,8 +247,11 @@ class MatrixSerializer
    template< typename Archive, typename MT >
    void deserializeHeader( Archive& archive, const MT& mat );
 
-   template< typename MT >
-   typename DisableIf< IsResizable<MT> >::Type prepareMatrix( MT& mat );
+   template< typename MT, bool SO >
+   typename DisableIf< IsResizable<MT> >::Type prepareMatrix( DenseMatrix<MT,SO>& mat );
+
+   template< typename MT, bool SO >
+   typename DisableIf< IsResizable<MT> >::Type prepareMatrix( SparseMatrix<MT,SO>& mat );
 
    template< typename MT >
    typename EnableIf< IsResizable<MT> >::Type prepareMatrix( MT& mat );
@@ -501,8 +503,6 @@ template< typename Archive  // Type of the archive
         , bool SO >         // Storage order
 void MatrixSerializer::deserialize( Archive& archive, Matrix<MT,SO>& mat )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE( MT );
-
    if( !archive ) {
       throw std::invalid_argument( "Faulty archive detected" );
    }
@@ -554,15 +554,32 @@ void MatrixSerializer::deserializeHeader( Archive& archive, const MT& mat )
 
 
 //*************************************************************************************************
-/*!\brief Prepares the given non-resizable matrix for the deserialization process.
+/*!\brief Prepares the given non-resizable dense matrix for the deserialization process.
 //
-// \param mat The matrix to be prepared.
+// \param mat The dense matrix to be prepared.
 // \return void
 */
-template< typename MT >  // Type of the matrix
-typename DisableIf< IsResizable<MT> >::Type MatrixSerializer::prepareMatrix( MT& mat )
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+typename DisableIf< IsResizable<MT> >::Type MatrixSerializer::prepareMatrix( DenseMatrix<MT,SO>& mat )
 {
-   reset( mat );
+   reset( ~mat );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Prepares the given non-resizable sparse matrix for the deserialization process.
+//
+// \param mat The sparse matrix to be prepared.
+// \return void
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+typename DisableIf< IsResizable<MT> >::Type MatrixSerializer::prepareMatrix( SparseMatrix<MT,SO>& mat )
+{
+   (~mat).reserve( number_ );
+   reset( ~mat );
 }
 //*************************************************************************************************
 
