@@ -35,6 +35,12 @@
 
 namespace blaze {
 
+//=================================================================================================
+//
+//  BLAS THRESHOLDS
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*!\brief Row-major dense matrix/dense vector multiplication threshold.
 // \ingroup config
@@ -168,6 +174,329 @@ const size_t TDMATDMATMULT_THRESHOLD = 10000UL;
 // size of \f$ 100 \times 100 \f$).
 */
 const size_t TDMATTDMATMULT_THRESHOLD = 10000UL;
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  OPENMP THRESHOLDS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief OpenMP dense vector assignment threshold.
+// \ingroup config
+//
+// This threshold specifies when an assignment of a plain dense vector can be executed in
+// parallel. In case the number of elements of the target vector is larger or equal to this
+// threshold, the operation is executed in parallel. If the number of elements is below this
+// threshold the operation is executed single-threaded.
+//
+// The default setting for this threshold is 100000. In case the threshold is set to 0, the
+// operation is unconditionally executed in parallel.
+*/
+const size_t OPENMP_DVECASSGIN_THRESHOLD = 100000UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief OpenMP dense vector/dense vector addition threshold.
+// \ingroup config
+//
+// This threshold specifies when a dense vector/dense vector addition can be executed in parallel.
+// In case the number of elements of the target vector is larger or equal to this threshold, the
+// operation is executed in parallel. If the number of elements is below this threshold the
+// operation is executed single-threaded.
+//
+// The default setting for this threshold is 100000. In case the threshold is set to 0, the
+// operation is unconditionally executed in parallel.
+*/
+const size_t OPENMP_DVECDVECADD_THRESHOLD = 100000UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief OpenMP dense vector/dense vector subtraction threshold.
+// \ingroup config
+//
+// This threshold specifies when a dense vector/dense vector subtraction can be executed in
+// parallel. In case the number of elements of the target vector is larger or equal to this
+// threshold, the operation is executed in parallel. If the number of elements is below this
+// threshold the operation is executed single-threaded.
+//
+// The default setting for this threshold is 100000. In case the threshold is set to 0, the
+// operation is unconditionally executed in parallel.
+*/
+const size_t OPENMP_DVECDVECSUB_THRESHOLD = 100000UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief OpenMP dense vector/dense vector multiplication threshold.
+// \ingroup config
+//
+// This threshold specifies when a dense vector/dense vector multiplication can be executed
+// in parallel. In case the number of elements of the target vector is larger or equal to this
+// threshold, the operation is executed in parallel. If the number of elements is below this
+// threshold the operation is executed single-threaded.
+//
+// The default setting for this threshold is 100000. In case the threshold is set to 0, the
+// operation is unconditionally executed in parallel.
+*/
+const size_t OPENMP_DVECDVECMULT_THRESHOLD = 100000UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief OpenMP dense vector/scalar multiplication/division threshold.
+// \ingroup config
+//
+// This threshold specifies when a dense vector/scalar multiplication/division can be executed
+// in parallel. In case the number of elements of the target vector is larger or equal to this
+// threshold, the operation is executed in parallel. If the number of elements is below this
+// threshold the operation is executed single-threaded.
+//
+// The default setting for this threshold is 100000. In case the threshold is set to 0, the
+// operation is unconditionally executed in parallel.
+*/
+const size_t OPENMP_DVECSCALARMULT_THRESHOLD = 100000UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief OpenMP row-major dense matrix/dense vector multiplication threshold.
+// \ingroup config
+//
+// This threshold specifies when a dense matrix/dense vector multiplication can be executed in
+// parallel. This threshold affects both multiplications with row-major and column-major matrices.
+// In case the number of elements of the target vector is larger or equal to this threshold, the
+// operation is executed in parallel. If the number of elements is below this threshold the
+// operation is executed single-threaded.
+//
+// The default setting for this threshold is 450. In case the threshold is set to 0, the operation
+// is unconditionally executed in parallel.
+*/
+const size_t OPENMP_DMATDVECMULT_THRESHOLD = 450UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief OpenMP row-major dense matrix/sparse vector multiplication threshold.
+// \ingroup config
+//
+// This threshold specifies when a dense matrix/sparse vector multiplication can be executed in
+// parallel. This threshold affects both multiplications with row-major and column-major matrices.
+// In case the number of elements of the target vector is larger or equal to this threshold, the
+// operation is executed in parallel. If the number of elements is below this threshold the
+// operation is executed single-threaded.
+//
+// The default setting for this threshold is 450. In case the threshold is set to 0, the operation
+// is unconditionally executed in parallel.
+*/
+const size_t OPENMP_DMATSVECMULT_THRESHOLD = 450UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief OpenMP row-major sparse matrix/dense vector multiplication threshold.
+// \ingroup config
+//
+// This threshold specifies when a sparse matrix/dense vector multiplication can be executed in
+// parallel. This threshold affects both multiplications with row-major and column-major matrices.
+// In case the number of elements of the target vector is larger or equal to this threshold, the
+// operation is executed in parallel. If the number of elements is below this threshold the
+// operation is executed single-threaded.
+//
+// The default setting for this threshold is 450. In case the threshold is set to 0, the operation
+// is unconditionally executed in parallel.
+*/
+const size_t OPENMP_SMATDVECMULT_THRESHOLD = 450UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief OpenMP dense vector/row-major dense matrix multiplication threshold.
+// \ingroup config
+//
+// This threshold specifies when a dense vector/dense matrix multiplication can be executed in
+// parallel. This threshold affects both multiplications with row-major and column-major matrices.
+// In case the number of elements of the target vector is larger or equal to this threshold, the
+// operation is executed in parallel. If the number of elements is below this threshold the
+// operation is executed single-threaded.
+//
+// The default setting for this threshold is 450. In case the threshold is set to 0, the operation
+// is unconditionally executed in parallel.
+*/
+const size_t OPENMP_TDVECDMATMULT_THRESHOLD = 450UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief OpenMP sparse vector/row-major dense matrix multiplication threshold.
+// \ingroup config
+//
+// This threshold specifies when a sparse vector/dense matrix multiplication can be executed in
+// parallel. This threshold affects both multiplications with row-major and column-major matrices.
+// In case the number of elements of the target vector is larger or equal to this threshold, the
+// operation is executed in parallel. If the number of elements is below this threshold the
+// operation is executed single-threaded.
+//
+// The default setting for this threshold is 450. In case the threshold is set to 0, the operation
+// is unconditionally executed in parallel.
+*/
+const size_t OPENMP_TSVECDMATMULT_THRESHOLD = 450UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief OpenMP dense vector/row-major sparse matrix multiplication threshold.
+// \ingroup config
+//
+// This threshold specifies when a dense vector/sparse matrix multiplication can be executed in
+// parallel. This threshold affects both multiplications with row-major and column-major matrices.
+// In case the number of elements of the target vector is larger or equal to this threshold, the
+// operation is executed in parallel. If the number of elements is below this threshold the
+// operation is executed single-threaded.
+//
+// The default setting for this threshold is 450. In case the threshold is set to 0, the operation
+// is unconditionally executed in parallel.
+*/
+const size_t OPENMP_TDVECSMATMULT_THRESHOLD = 450UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief OpenMP dense matrix assignment threshold.
+// \ingroup config
+//
+// This threshold specifies when an assignment with a plain dense matrix can be executed in
+// parallel. In case the number of rows/columns of the target matrix is larger or equal to this
+// threshold, the operation is executed in parallel. If the number of rows/columns is below this
+// threshold the operation is executed single-threaded.
+//
+// The default setting for this threshold is 450. In case the threshold is set to 0, the operation
+// is unconditionally executed in parallel.
+*/
+const size_t OPENMP_DMATASSIGN_THRESHOLD = 450UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief OpenMP dense matrix/dense matrix addition threshold.
+// \ingroup config
+//
+// This threshold specifies when a dense matrix/dense matrix addition can be executed in parallel.
+// This threshold affects all kinds of additions between row-major or column-major dense matrices.
+// In case the number of rows/columns of the target matrix is larger or equal to this threshold,
+// the operation is executed in parallel. If the number of rows/columns is below this threshold
+// the operation is executed single-threaded.
+//
+// The default setting for this threshold is 250. In case the threshold is set to 0, the operation
+// is unconditionally executed in parallel.
+*/
+const size_t OPENMP_DMATDMATADD_THRESHOLD = 250UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief OpenMP dense matrix/dense matrix subtraction threshold.
+// \ingroup config
+//
+// This threshold specifies when a dense matrix/dense matrix subtraction can be executed in
+// parallel. This threshold affects all kinds of subtractions between row-major or column-major
+// dense matrices. In case the number of rows/columns of the target matrix is larger or equal to
+// this threshold, the operation is executed in parallel. If the number of rows/columns is below
+// this threshold the operation is executed single-threaded.
+//
+// The default setting for this threshold is 250. In case the threshold is set to 0, the operation
+// is unconditionally executed in parallel.
+*/
+const size_t OPENMP_DMATDMATSUB_THRESHOLD = 250UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief OpenMP dense matrix/dense matrix multiplication threshold.
+// \ingroup config
+//
+// This threshold specifies when a dense matrix/dense matrix multiplication can be executed in
+// parallel. This threshold affects all kinds of multiplications between row-major or column-major
+// dense matrices. In case the number of rows/columns of the target matrix is larger or equal to
+// this threshold, the operation is executed in parallel. If the number of rows/columns is below
+// this threshold the operation is executed single-threaded.
+//
+// The default setting for this threshold is 80. In case the threshold is set to 0, the operation
+// is unconditionally executed in parallel.
+*/
+const size_t OPENMP_DMATDMATMULT_THRESHOLD = 80UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief OpenMP dense matrix/sparse matrix multiplication threshold.
+// \ingroup config
+//
+// This threshold specifies when a dense matrix/sparse matrix multiplication can be executed in
+// parallel. This threshold affects all kinds of multiplications between row-major or column-major
+// dense and sparse matrices. In case the number of rows/columns of the target matrix is larger or
+// equal to this threshold, the operation is executed in parallel. If the number of rows/columns
+// is below this threshold the operation is executed single-threaded.
+//
+// The default setting for this threshold is 80. In case the threshold is set to 0, the operation
+// is unconditionally executed in parallel.
+*/
+const size_t OPENMP_DMATSMATMULT_THRESHOLD = 80UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief OpenMP sparse matrix/dense matrix multiplication threshold.
+// \ingroup config
+//
+// This threshold specifies when a sparse matrix/dense matrix multiplication can be executed in
+// parallel. This threshold affects all kinds of multiplications between row-major or column-major
+// sparse and dense matrices. In case the number of rows/columns of the target matrix is larger or
+// equal to this threshold, the operation is executed in parallel. If the number of rows/columns
+// is below this threshold the operation is executed single-threaded.
+//
+// The default setting for this threshold is 80. In case the threshold is set to 0, the operation
+// is unconditionally executed in parallel.
+*/
+const size_t OPENMP_SMATDMATMULT_THRESHOLD = 80UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief OpenMP dense matrix/scalar multiplication/division threshold.
+// \ingroup config
+//
+// This threshold specifies when a dense matrix/scalar multiplication or division can be executed
+// in parallel. In case the number of rows/columns of the target matrix is larger or equal to this
+// threshold, the operation is executed in parallel. If the number of rows/columns is below this
+// threshold the operation is executed single-threaded.
+//
+// The default setting for this threshold is 100. In case the threshold is set to 0, the operation
+// is unconditionally executed in parallel.
+*/
+const size_t OPENMP_DMATSCALARMULT_THRESHOLD = 100UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief OpenMP dense vector/dense vector outer product threshold.
+// \ingroup config
+//
+// This threshold specifies when a dense vector/dense vector outer product can be executed in
+// parallel. In case the number of rows/columns of the target matrix is larger or equal to this
+// threshold, the operation is executed in parallel. If the number of rows/columns is below this
+// threshold the operation is executed single-threaded.
+//
+// The default setting for this threshold is 380. In case the threshold is set to 0, the operation
+// is unconditionally executed in parallel.
+*/
+const size_t OPENMP_DVECTDVECMULT_THRESHOLD = 380UL;
 //*************************************************************************************************
 
 } // namespace blaze
