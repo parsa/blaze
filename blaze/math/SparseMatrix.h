@@ -140,7 +140,7 @@ inline bool operator==( const SparseMatrix<T1,false>& lhs, const SparseMatrix<T2
       LhsConstIterator lelem( A.begin(i) );
       RhsConstIterator relem( B.begin(i) );
 
-      while( lelem < lend && relem < rend ) {
+      while( lelem != lend && relem != rend ) {
          if( lelem->index() < relem->index() && !isDefault( (lelem++)->value() ) )
             return false;
          else if( lelem->index() > relem->index() && !isDefault( (relem++)->value() ) )
@@ -149,12 +149,12 @@ inline bool operator==( const SparseMatrix<T1,false>& lhs, const SparseMatrix<T2
             return false;
       }
 
-      while( lelem < lend ) {
+      while( lelem != lend ) {
          if( !isDefault( (lelem++)->value() ) )
             return false;
       }
 
-      while( relem < rend ) {
+      while( relem != rend ) {
          if( !isDefault( (relem++)->value() ) )
             return false;
       }
@@ -200,7 +200,7 @@ inline bool operator==( const SparseMatrix<T1,true>& lhs, const SparseMatrix<T2,
       LhsConstIterator lelem( A.begin(j) );
       RhsConstIterator relem( B.begin(j) );
 
-      while( lelem < lend && relem < rend ) {
+      while( lelem != lend && relem != rend ) {
          if( lelem->index() < relem->index() && !isDefault( (lelem++)->value() ) )
             return false;
          else if( lelem->index() > relem->index() && !isDefault( (relem++)->value() ) )
@@ -209,12 +209,12 @@ inline bool operator==( const SparseMatrix<T1,true>& lhs, const SparseMatrix<T2,
             return false;
       }
 
-      while( lelem < lend ) {
+      while( lelem != lend ) {
          if( !isDefault( (lelem++)->value() ) )
             return false;
       }
 
-      while( relem < rend ) {
+      while( relem != rend ) {
          if( !isDefault( (relem++)->value() ) )
             return false;
       }
