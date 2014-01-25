@@ -45,7 +45,9 @@
 #include <string>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/constraints/Vector.h>
+#include <blaze/math/DenseSubvector.h>
 #include <blaze/math/DynamicVector.h>
+#include <blaze/math/SparseSubvector.h>
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/util/Random.h>
@@ -103,8 +105,14 @@ class ClassTest
    template< typename VT >
    void runDynamicVectorTests( const VT& src );
 
+   template< size_t N, typename VT >
+   void runDenseSubvectorTests( const VT& src );
+
    template< typename VT >
    void runCompressedVectorTests( const VT& src );
+
+   template< size_t N, typename VT >
+   void runSparseSubvectorTests( const VT& src );
 
    template< typename VT1, typename VT2 >
    void runTest( const VT1& src, VT2& dst );
@@ -156,9 +164,11 @@ void ClassTest::runAllTests( const VT& src )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE( VT );
 
-   runStaticVectorTests<N> ( src );
-   runDynamicVectorTests   ( src );
-   runCompressedVectorTests( src );
+   runStaticVectorTests<N>   ( src );
+   runDynamicVectorTests     ( src );
+   runDenseSubvectorTests<N> ( src );
+   runCompressedVectorTests  ( src );
+   runSparseSubvectorTests<N>( src );
 }
 //*************************************************************************************************
 
@@ -236,6 +246,42 @@ void ClassTest::runDynamicVectorTests( const VT& src )
 // \exception std::runtime_error Error detected.
 //
 // This function tests the vector (de-)serialization with the given vector. The vector is
+// serialized and deserialized several times, using instances of DenseSubvector as destination
+// vector type. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< size_t N       // Size of the vector
+        , typename VT >  // Type of the vector
+void ClassTest::runDenseSubvectorTests( const VT& src )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE( VT );
+
+   typedef typename VT::ElementType  ET;
+   typedef blaze::DynamicVector<ET>  DV;
+
+   {
+      DV vec( N );
+      blaze::DenseSubvector<DV> dst( vec, 0UL, N );
+      runTest( src, dst );
+   }
+
+   {
+      DV vec( N );
+      blaze::DenseSubvector<DV> dst( vec, 0UL, N );
+      randomize( dst );
+      runTest( src, dst );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Execution of several (de-)serialization tests with the given source vector.
+//
+// \param src The source vector to be tested.
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function tests the vector (de-)serialization with the given vector. The vector is
 // serialized and deserialized several times, using instances of CompressedVector as destination
 // vector type. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
@@ -253,6 +299,42 @@ void ClassTest::runCompressedVectorTests( const VT& src )
 
    {
       blaze::CompressedVector<ET> dst( 43UL );
+      randomize( dst );
+      runTest( src, dst );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Execution of several (de-)serialization tests with the given source vector.
+//
+// \param src The source vector to be tested.
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function tests the vector (de-)serialization with the given vector. The vector is
+// serialized and deserialized several times, using instances of SparseSubvector as destination
+// vector type. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< size_t N       // Size of the vector
+        , typename VT >  // Type of the vector
+void ClassTest::runSparseSubvectorTests( const VT& src )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE( VT );
+
+   typedef typename VT::ElementType     ET;
+   typedef blaze::CompressedVector<ET>  SV;
+
+   {
+      SV vec( N );
+      blaze::SparseSubvector<SV> dst( vec, 0UL, N );
+      runTest( src, dst );
+   }
+
+   {
+      SV vec( N );
+      blaze::SparseSubvector<SV> dst( vec, 0UL, N );
       randomize( dst );
       runTest( src, dst );
    }

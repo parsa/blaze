@@ -40,6 +40,7 @@
 #include <blaze/math/serialization/MatrixSerializer.h>
 #include <blaze/math/serialization/VectorSerializer.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/Random.h>
 #include <blazetest/mathtest/vectorserializer/ClassTest.h>
 
 
