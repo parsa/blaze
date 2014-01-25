@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <stdexcept>
-#include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Vector.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -244,8 +243,11 @@ class VectorSerializer
    template< typename Archive, typename VT >
    void deserializeHeader( Archive& archive, const VT& vec );
 
-   template< typename VT >
-   typename DisableIf< IsResizable<VT> >::Type prepareVector( VT& vec );
+   template< typename VT, bool TF >
+   typename DisableIf< IsResizable<VT> >::Type prepareVector( DenseVector<VT,TF>& vec );
+
+   template< typename VT, bool TF >
+   typename DisableIf< IsResizable<VT> >::Type prepareVector( SparseVector<VT,TF>& vec );
 
    template< typename VT >
    typename EnableIf< IsResizable<VT> >::Type prepareVector( VT& vec );
@@ -445,8 +447,6 @@ template< typename Archive  // Type of the archive
         , bool TF >         // Transpose flag
 void VectorSerializer::deserialize( Archive& archive, Vector<VT,TF>& vec )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE( VT );
-
    if( !archive ) {
       throw std::invalid_argument( "Faulty archive detected" );
    }
@@ -503,15 +503,32 @@ void VectorSerializer::deserializeHeader( Archive& archive, const VT& vec )
 
 
 //*************************************************************************************************
-/*!\brief Prepares the given non-resizable vector for the deserialization process.
+/*!\brief Prepares the given non-resizable dense vector for the deserialization process.
 //
-// \param vec The vector to be prepared.
+// \param vec The dense vector to be prepared.
 // \return void
 */
-template< typename VT >  // Type of the vector
-typename DisableIf< IsResizable<VT> >::Type VectorSerializer::prepareVector( VT& vec )
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+typename DisableIf< IsResizable<VT> >::Type VectorSerializer::prepareVector( DenseVector<VT,TF>& vec )
 {
-   reset( vec );
+   reset( ~vec );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Prepares the given non-resizable sparse vector for the deserialization process.
+//
+// \param vec The sparse vector to be prepared.
+// \return void
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+typename DisableIf< IsResizable<VT> >::Type VectorSerializer::prepareVector( SparseVector<VT,TF>& vec )
+{
+   (~vec).reserve( number_ );
+   reset( ~vec );
 }
 //*************************************************************************************************
 
