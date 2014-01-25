@@ -37,13 +37,9 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/CompressedMatrix.h>
-#include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/StaticMatrix.h>
 #include <blaze/math/serialization/MatrixSerializer.h>
 #include <blaze/math/serialization/VectorSerializer.h>
 #include <blaze/util/Complex.h>
-#include <blaze/util/Random.h>
 #include <blazetest/mathtest/matrixserializer/ClassTest.h>
 
 

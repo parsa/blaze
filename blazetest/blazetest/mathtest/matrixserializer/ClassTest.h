@@ -43,8 +43,14 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/constraints/Matrix.h>
+#include <blaze/math/DenseSubmatrix.h>
+#include <blaze/math/DynamicMatrix.h>
+#include <blaze/math/SparseSubmatrix.h>
+#include <blaze/math/StaticMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
+#include <blaze/util/Random.h>
 #include <blaze/util/serialization/Archive.h>
 
 
@@ -99,8 +105,14 @@ class ClassTest
    template< typename MT >
    void runDynamicMatrixTests( const MT& src );
 
+   template< size_t M, size_t N, typename MT >
+   void runDenseSubmatrixTests( const MT& src );
+
    template< typename MT >
    void runCompressedMatrixTests( const MT& src );
+
+   template< size_t M, size_t N, typename MT >
+   void runSparseSubmatrixTests( const MT& src );
 
    template< typename MT1, typename MT2 >
    void runTest( const MT1& src, MT2& dst );
@@ -153,9 +165,11 @@ void ClassTest::runAllTests( const MT& src )
 {
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE( MT );
 
-   runStaticMatrixTests<M,N>( src );
-   runDynamicMatrixTests    ( src );
-   runCompressedMatrixTests ( src );
+   runStaticMatrixTests<M,N>   ( src );
+   runDynamicMatrixTests       ( src );
+   runDenseSubmatrixTests<M,N> ( src );
+   runCompressedMatrixTests    ( src );
+   runSparseSubmatrixTests<M,N>( src );
 }
 //*************************************************************************************************
 
@@ -246,6 +260,45 @@ void ClassTest::runDynamicMatrixTests( const MT& src )
 // \exception std::runtime_error Error detected.
 //
 // This function tests the matrix (de-)serialization with the given matrix. The matrix is
+// serialized and deserialized several times, using instances of DenseSubmatrix as destination
+// matrix type. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< size_t M       // Number of rows of the matrix
+        , size_t N       // Number of columns of the matrix
+        , typename MT >  // Type of the matrix
+void ClassTest::runDenseSubmatrixTests( const MT& src )
+{
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE( MT );
+
+   typedef typename MT::ElementType                     ET;
+   typedef blaze::DynamicMatrix<ET,blaze::rowMajor>     RM;
+   typedef blaze::DynamicMatrix<ET,blaze::columnMajor>  CM;
+
+   {
+      RM mat( M, N );
+      blaze::DenseSubmatrix<RM> dst( mat, 0UL, 0UL, M, N );
+      randomize( dst );
+      runTest( src, dst );
+   }
+
+   {
+      CM mat( M, N );
+      blaze::DenseSubmatrix<CM> dst( mat, 0UL, 0UL, M, N );
+      randomize( dst );
+      runTest( src, dst );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Execution of several (de-)serialization tests with the given source matrix.
+//
+// \param src The source matrix to be tested.
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function tests the matrix (de-)serialization with the given matrix. The matrix is
 // serialized and deserialized several times, using instances of CompressedMatrix as destination
 // matrix type. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
@@ -274,6 +327,45 @@ void ClassTest::runCompressedMatrixTests( const MT& src )
 
    {
       blaze::CompressedMatrix<ET,blaze::columnMajor> dst( 37UL, 43UL );
+      randomize( dst );
+      runTest( src, dst );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Execution of several (de-)serialization tests with the given source matrix.
+//
+// \param src The source matrix to be tested.
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function tests the matrix (de-)serialization with the given matrix. The matrix is
+// serialized and deserialized several times, using instances of SparseSubmatrix as destination
+// matrix type. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< size_t M       // Number of rows of the matrix
+        , size_t N       // Number of columns of the matrix
+        , typename MT >  // Type of the matrix
+void ClassTest::runSparseSubmatrixTests( const MT& src )
+{
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE( MT );
+
+   typedef typename MT::ElementType                        ET;
+   typedef blaze::CompressedMatrix<ET,blaze::rowMajor>     RM;
+   typedef blaze::CompressedMatrix<ET,blaze::columnMajor>  CM;
+
+   {
+      RM mat( M, N );
+      blaze::SparseSubmatrix<RM> dst( mat, 0UL, 0UL, M, N );
+      randomize( dst );
+      runTest( src, dst );
+   }
+
+   {
+      CM mat( M, N );
+      blaze::SparseSubmatrix<CM> dst( mat, 0UL, 0UL, M, N );
       randomize( dst );
       runTest( src, dst );
    }
