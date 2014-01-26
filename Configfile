@@ -100,12 +100,16 @@ BOOST_THREAD_LIBRARY=
 # algebraic operations (such as for instance matrix-matrix multiplications). If the BLAS
 # switch is set to 'yes', the library expects the according headers in order to compile
 # properly. In case the BLAS include directory is not set, it is assumed that the header
-# file 'cblas.h' is installed in standard paths (as for instance '/usr/include/cblas.h').
-# Additionally, in case the name of the BLAS include file is not set, it is assumed that
-# the BLAS include file is named 'cblas.h'.
+# file is installed in standard paths (as for instance '/usr/include/'). Additionally, in
+# case the name of the BLAS include file is not set, it is assumed that the BLAS include
+# file is named 'cblas.h'. The BLAS_IS_PARALLEL switch specifies if the given BLAS library
+# is itself parallelized or not. If set to 'yes' Blaze will not perform any additional
+# parallelization attempt, if set to 'no' Blaze will attempt to parallelize the execution
+# of BLAS kernels.
 BLAS="no"
 BLAS_INCLUDE_PATH=
 BLAS_INCLUDE_FILE=
+BLAS_IS_PARALLEL="no"
 
 # Configuration of the MPI library (optional)
 # If set to 'yes' the MPI parallel execution of the Blaze library will be activated. If

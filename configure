@@ -373,6 +373,39 @@ fi
 
 cat >> ./blaze/system/BLAS.h <<EOF
 //*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Compilation switch for the parallel BLAS mode.
+// \ingroup system
+//
+// This compilation switch specifies whether the used BLAS library is itself parallelized or not.
+// In case the given BLAS library is itself parallelized, the Blaze library does not perform any
+// attempt to parallelize the execution of BLAS kernels. If, however, the given BLAS library is
+// not parallelized Blaze will attempt to parallelize the execution of BLAS kernels.
+//
+// Possible settings for the switch:
+//  - BLAS library is not parallelized: \b 0
+//  - BLAS library is parallelized    : \b 1
+//
+// Note that changing the setting of the BLAS mode requires a recompilation of the Blaze library.
+// Also note that this switch is automatically set by the configuration script of the Blaze
+// library.
+*/
+EOF
+
+if test $BLAS = "yes" && test $BLAS_IS_PARALLEL = "yes"; then
+cat >> ./blaze/system/BLAS.h <<EOF
+#define BLAZE_BLAS_IS_PARALLEL 1
+EOF
+else
+cat >> ./blaze/system/BLAS.h <<EOF
+#define BLAZE_BLAS_IS_PARALLEL 0
+EOF
+fi
+
+cat >> ./blaze/system/BLAS.h <<EOF
+//*************************************************************************************************
 EOF
 
 if test $BLAS = "yes"; then
