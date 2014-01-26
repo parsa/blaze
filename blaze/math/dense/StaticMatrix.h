@@ -1653,10 +1653,9 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator=( const StaticMatrix& rhs )
 {
-   for( size_t i=0UL; i<M; ++i )
-      for( size_t j=0UL; j<N; ++j )
-         v_[i*NN+j] = rhs(i,j);
+   using blaze::assign;
 
+   assign( *this, ~rhs );
    return *this;
 }
 //*************************************************************************************************
@@ -1677,10 +1676,9 @@ template< typename Other  // Data type of the foreign matrix
 inline StaticMatrix<Type,M,N,SO>&
    StaticMatrix<Type,M,N,SO>::operator=( const StaticMatrix<Other,M,N,SO2>& rhs )
 {
-   for( size_t i=0UL; i<M; ++i )
-      for( size_t j=0UL; j<N; ++j )
-         v_[i*NN+j] = rhs(i,j);
+   using blaze::assign;
 
+   assign( *this, ~rhs );
    return *this;
 }
 //*************************************************************************************************
@@ -4234,10 +4232,9 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,true>&
    StaticMatrix<Type,M,N,true>::operator=( const StaticMatrix& rhs )
 {
-   for( size_t j=0UL; j<N; ++j )
-      for( size_t i=0UL; i<M; ++i )
-         v_[i+j*MM] = rhs(i,j);
+   using blaze::assign;
 
+   assign( *this, ~rhs );
    return *this;
 }
 /*! \endcond */
@@ -4259,10 +4256,9 @@ template< typename Other  // Data type of the foreign matrix
 inline StaticMatrix<Type,M,N,true>&
    StaticMatrix<Type,M,N,true>::operator=( const StaticMatrix<Other,M,N,SO>& rhs )
 {
-   for( size_t j=0UL; j<N; ++j )
-      for( size_t i=0UL; i<M; ++i )
-         v_[i+j*MM] = rhs(i,j);
+   using blaze::assign;
 
+   assign( *this, ~rhs );
    return *this;
 }
 /*! \endcond */
