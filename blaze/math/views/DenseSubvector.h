@@ -57,6 +57,8 @@
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/smp/DenseVector.h>
+#include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -65,6 +67,7 @@
 #include <blaze/math/views/AlignmentFlag.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Streaming.h>
+#include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/DisableIf.h>
@@ -834,6 +837,8 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
+   inline bool canSMPAssign() const;
+
    inline IntrinsicType load  ( size_t index ) const;
    inline IntrinsicType loadu ( size_t index ) const;
    inline void          store ( size_t index, const IntrinsicType& value );
@@ -1197,8 +1202,6 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator=( const DenseSubvector& rhs )
 {
-   using blaze::assign;
-
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
@@ -1210,10 +1213,10 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator=( const Dens
 
    if( rhs.canAlias( &vector_ ) ) {
       const ResultType tmp( ~rhs );
-      assign( *this, tmp );
+      smpAssign( *this, tmp );
    }
    else {
-      assign( *this, rhs );
+      smpAssign( *this, rhs );
    }
 
    return *this;
@@ -1237,8 +1240,6 @@ template< typename VT     // Type of the dense vector
 template< typename VT2 >  // Type of the right-hand side vector
 inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator=( const Vector<VT2,TF>& rhs )
 {
-   using blaze::assign;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
 
@@ -1247,12 +1248,12 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator=( const Vect
 
    if( (~rhs).canAlias( &vector_ ) ) {
       const typename VT2::ResultType tmp( ~rhs );
-      assign( *this, tmp );
+      smpAssign( *this, tmp );
    }
    else {
       if( IsSparseVector<VT2>::value )
          reset();
-      assign( *this, ~rhs );
+      smpAssign( *this, ~rhs );
    }
 
    return *this;
@@ -1276,8 +1277,6 @@ template< typename VT     // Type of the dense vector
 template< typename VT2 >  // Type of the right-hand side vector
 inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator+=( const Vector<VT2,TF>& rhs )
 {
-   using blaze::addAssign;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
 
@@ -1286,10 +1285,10 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator+=( const Vec
 
    if( (~rhs).canAlias( &vector_ ) ) {
       const typename VT2::ResultType tmp( ~rhs );
-      addAssign( *this, tmp );
+      smpAddAssign( *this, tmp );
    }
    else {
-      addAssign( *this, ~rhs );
+      smpAddAssign( *this, ~rhs );
    }
 
    return *this;
@@ -1313,8 +1312,6 @@ template< typename VT     // Type of the dense vector
 template< typename VT2 >  // Type of the right-hand side vector
 inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator-=( const Vector<VT2,TF>& rhs )
 {
-   using blaze::subAssign;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
 
@@ -1323,10 +1320,10 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator-=( const Vec
 
    if( (~rhs).canAlias( &vector_ ) ) {
       const typename VT2::ResultType tmp( ~rhs );
-      subAssign( *this, tmp );
+      smpSubAssign( *this, tmp );
    }
    else {
-      subAssign( *this, ~rhs );
+      smpSubAssign( *this, ~rhs );
    }
 
    return *this;
@@ -1351,8 +1348,6 @@ template< typename VT     // Type of the dense vector
 template< typename VT2 >  // Type of the right-hand side vector
 inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator*=( const Vector<VT2,TF>& rhs )
 {
-   using blaze::multAssign;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
 
@@ -1361,10 +1356,10 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator*=( const Vec
 
    if( (~rhs).canAlias( &vector_ ) || IsSparseVector<VT2>::value ) {
       const typename VT2::ResultType tmp( ~rhs );
-      multAssign( *this, tmp );
+      smpMultAssign( *this, tmp );
    }
    else {
-      multAssign( *this, ~rhs );
+      smpMultAssign( *this, ~rhs );
    }
 
    return *this;
@@ -1386,7 +1381,8 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubvector<VT,AF,TF> >::Type&
    DenseSubvector<VT,AF,TF>::operator*=( Other rhs )
 {
-   return operator=( (*this) * rhs );
+   smpAssign( *this, (*this) * rhs );
+   return *this;
 }
 //*************************************************************************************************
 
@@ -1409,7 +1405,8 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubvector<VT,AF,TF> >::Type&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   return operator=( (*this) / rhs );
+   smpAssign( *this, (*this) / rhs );
+   return *this;
 }
 //*************************************************************************************************
 
@@ -1563,6 +1560,26 @@ template< typename Other >  // Data type of the foreign expression
 inline bool DenseSubvector<VT,AF,TF>::isAliased( const Other* alias ) const
 {
    return static_cast<const void*>( &vector_ ) == static_cast<const void*>( alias );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the subvector can be used in SMP assignments.
+//
+// \return \a true in case the subvector can be used in SMP assignments, \a false if not.
+//
+// This function returns whether the subvector can be used in SMP assignments. In contrast to the
+// \a smpAssignable member enumeration, which is based solely on compile time information, this
+// function additionally provides runtime information (as for instance the current size of the
+// subvector).
+*/
+template< typename VT  // Type of the dense vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
+inline bool DenseSubvector<VT,AF,TF>::canSMPAssign() const
+{
+   return ( size() > OPENMP_DVECASSGIN_THRESHOLD );
 }
 //*************************************************************************************************
 
@@ -2298,6 +2315,8 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
+   inline bool canSMPAssign() const;
+
    inline IntrinsicType load  ( size_t index ) const;
    inline IntrinsicType loadu ( size_t index ) const;
    inline void          store ( size_t index, const IntrinsicType& value );
@@ -2653,8 +2672,6 @@ template< typename VT  // Type of the dense vector
 inline DenseSubvector<VT,aligned,TF>&
    DenseSubvector<VT,aligned,TF>::operator=( const DenseSubvector& rhs )
 {
-   using blaze::assign;
-
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
@@ -2666,10 +2683,10 @@ inline DenseSubvector<VT,aligned,TF>&
 
    if( rhs.canAlias( &vector_ ) ) {
       const ResultType tmp( ~rhs );
-      assign( *this, tmp );
+      smpAssign( *this, tmp );
    }
    else {
-      assign( *this, rhs );
+      smpAssign( *this, rhs );
    }
 
    return *this;
@@ -2695,8 +2712,6 @@ template< typename VT2 >  // Type of the right-hand side vector
 inline DenseSubvector<VT,aligned,TF>&
    DenseSubvector<VT,aligned,TF>::operator=( const Vector<VT2,TF>& rhs )
 {
-   using blaze::assign;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
 
@@ -2705,12 +2720,12 @@ inline DenseSubvector<VT,aligned,TF>&
 
    if( (~rhs).canAlias( &vector_ ) ) {
       const typename VT2::ResultType tmp( ~rhs );
-      assign( *this, tmp );
+      smpAssign( *this, tmp );
    }
    else {
       if( IsSparseVector<VT2>::value )
          reset();
-      assign( *this, ~rhs );
+      smpAssign( *this, ~rhs );
    }
 
    return *this;
@@ -2736,8 +2751,6 @@ template< typename VT2 >  // Type of the right-hand side vector
 inline DenseSubvector<VT,aligned,TF>&
    DenseSubvector<VT,aligned,TF>::operator+=( const Vector<VT2,TF>& rhs )
 {
-   using blaze::addAssign;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
 
@@ -2746,10 +2759,10 @@ inline DenseSubvector<VT,aligned,TF>&
 
    if( (~rhs).canAlias( &vector_ ) ) {
       const typename VT2::ResultType tmp( ~rhs );
-      addAssign( *this, tmp );
+      smpAddAssign( *this, tmp );
    }
    else {
-      addAssign( *this, ~rhs );
+      smpAddAssign( *this, ~rhs );
    }
 
    return *this;
@@ -2775,8 +2788,6 @@ template< typename VT2 >  // Type of the right-hand side vector
 inline DenseSubvector<VT,aligned,TF>&
    DenseSubvector<VT,aligned,TF>::operator-=( const Vector<VT2,TF>& rhs )
 {
-   using blaze::subAssign;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
 
@@ -2785,10 +2796,10 @@ inline DenseSubvector<VT,aligned,TF>&
 
    if( (~rhs).canAlias( &vector_ ) ) {
       const typename VT2::ResultType tmp( ~rhs );
-      subAssign( *this, tmp );
+      smpSubAssign( *this, tmp );
    }
    else {
-      subAssign( *this, ~rhs );
+      smpSubAssign( *this, ~rhs );
    }
 
    return *this;
@@ -2815,8 +2826,6 @@ template< typename VT2 >  // Type of the right-hand side vector
 inline DenseSubvector<VT,aligned,TF>&
    DenseSubvector<VT,aligned,TF>::operator*=( const Vector<VT2,TF>& rhs )
 {
-   using blaze::multAssign;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
 
@@ -2825,10 +2834,10 @@ inline DenseSubvector<VT,aligned,TF>&
 
    if( (~rhs).canAlias( &vector_ ) || IsSparseVector<VT2>::value ) {
       const typename VT2::ResultType tmp( ~rhs );
-      multAssign( *this, tmp );
+      smpMultAssign( *this, tmp );
    }
    else {
-      multAssign( *this, ~rhs );
+      smpMultAssign( *this, ~rhs );
    }
 
    return *this;
@@ -2851,7 +2860,8 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubvector<VT,aligned,TF> >::Type&
    DenseSubvector<VT,aligned,TF>::operator*=( Other rhs )
 {
-   return operator=( (*this) * rhs );
+   smpAssign( *this, (*this) * rhs );
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2875,7 +2885,8 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubvector<VT,aligned,TF> >::Typ
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   return operator=( (*this) / rhs );
+   smpAssign( *this, (*this) / rhs );
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3036,6 +3047,27 @@ template< typename Other >  // Data type of the foreign expression
 inline bool DenseSubvector<VT,aligned,TF>::isAliased( const Other* alias ) const
 {
    return static_cast<const void*>( &vector_ ) == static_cast<const void*>( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the subvector can be used in SMP assignments.
+//
+// \return \a true in case the subvector can be used in SMP assignments, \a false if not.
+//
+// This function returns whether the subvector can be used in SMP assignments. In contrast to the
+// \a smpAssignable member enumeration, which is based solely on compile time information, this
+// function additionally provides runtime information (as for instance the current size of the
+// subvector).
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline bool DenseSubvector<VT,aligned,TF>::canSMPAssign() const
+{
+   return ( size() > OPENMP_DVECASSGIN_THRESHOLD );
 }
 /*! \endcond */
 //*************************************************************************************************
