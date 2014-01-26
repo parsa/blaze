@@ -120,7 +120,23 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    // returns an iterator to the first non-zero element of column \a i.
    */
    inline ConstIterator begin( size_t i ) const {
-      return ConstIterator( sm_.begin(i) );
+      return sm_.cbegin(i);
+   }
+   //**********************************************************************************************
+
+   //**Cbegin function*****************************************************************************
+   /*!\brief Returns an iterator to the first non-zero element of row/column \a i.
+   //
+   // \param i The row/column index.
+   // \return Iterator to the first non-zero element of row/column \a i.
+   //
+   // This function returns a row/column iterator to the first non-zero element of row/column \a i.
+   // In case the storage order is set to \a rowMajor the function returns an iterator to the first
+   // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
+   // returns an iterator to the first non-zero element of column \a i.
+   */
+   inline ConstIterator cbegin( size_t i ) const {
+      return sm_.cbegin(i);
    }
    //**********************************************************************************************
 
@@ -136,7 +152,23 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    // the function returns an iterator just past the last non-zero element of column \a i.
    */
    inline ConstIterator end( size_t i ) const {
-      return ConstIterator( sm_.end(i) );
+      return sm_.cend(i);
+   }
+   //**********************************************************************************************
+
+   //**Cend function*******************************************************************************
+   /*!\brief Returns an iterator just past the last non-zero element of row/column \a i.
+   //
+   // \param i The row/column index.
+   // \return Iterator just past the last non-zero element of row/column \a i.
+   //
+   // This function returns an row/column iterator just past the last non-zero element of row/column
+   // \a i. In case the storage order is set to \a rowMajor the function returns an iterator just
+   // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
+   // the function returns an iterator just past the last non-zero element of column \a i.
+   */
+   inline ConstIterator cend( size_t i ) const {
+      return sm_.cend(i);
    }
    //**********************************************************************************************
 
@@ -490,7 +522,18 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    // \return Iterator to the first non-zero element of column \a j.
    */
    inline ConstIterator begin( size_t j ) const {
-      return ConstIterator( sm_.begin(j) );
+      return sm_.cbegin(j);
+   }
+   //**********************************************************************************************
+
+   //**Cbegin function*****************************************************************************
+   /*!\brief Returns an iterator to the first non-zero element of column \a j.
+   //
+   // \param j The column index.
+   // \return Iterator to the first non-zero element of column \a j.
+   */
+   inline ConstIterator cbegin( size_t j ) const {
+      return sm_.begin(j);
    }
    //**********************************************************************************************
 
@@ -501,7 +544,18 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    // \return Iterator just past the last non-zero element of column \a j.
    */
    inline ConstIterator end( size_t j ) const {
-      return ConstIterator( sm_.end(j) );
+      return sm_.end(j);
+   }
+   //**********************************************************************************************
+
+   //**Cend function*******************************************************************************
+   /*!\brief Returns an iterator just past the last non-zero element of column \a j.
+   //
+   // \param j The column index.
+   // \return Iterator just past the last non-zero element of column \a j.
+   */
+   inline ConstIterator cend( size_t j ) const {
+      return sm_.end(j);
    }
    //**********************************************************************************************
 
