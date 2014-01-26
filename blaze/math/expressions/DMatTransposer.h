@@ -87,6 +87,8 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    typedef const This&                  CompositeType;   //!< Data type for composite expression templates.
    typedef typename MT::Reference       Reference;       //!< Reference to a non-constant matrix value.
    typedef typename MT::ConstReference  ConstReference;  //!< Reference to a constant matrix value.
+   typedef typename MT::Iterator        Iterator;        //!< Iterator over non-constant elements.
+   typedef typename MT::ConstIterator   ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -128,6 +130,50 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    */
    inline ElementType* data() {
       return dm_.data();
+   }
+   //**********************************************************************************************
+
+   //**Begin function******************************************************************************
+   /*!\brief Returns an iterator to the first non-zero element of row/column \a i.
+   //
+   // \param i The row/column index.
+   // \return Iterator to the first non-zero element of row/column \a i.
+   */
+   inline ConstIterator begin( size_t i ) const {
+      return dm_.cbegin( i );
+   }
+   //**********************************************************************************************
+
+   //**Cbegin function*****************************************************************************
+   /*!\brief Returns an iterator to the first non-zero element of row/column \a i.
+   //
+   // \param i The row/column index.
+   // \return Iterator to the first non-zero element of row/column \a i.
+   */
+   inline ConstIterator cbegin( size_t i ) const {
+      return dm_.cbegin( i );
+   }
+   //**********************************************************************************************
+
+   //**End function********************************************************************************
+   /*!\brief Returns an iterator just past the last non-zero element of row/column \a i.
+   //
+   // \param i The row/column index.
+   // \return Iterator just past the last non-zero element of row/column \a i.
+   */
+   inline ConstIterator end( size_t i ) const {
+      return dm_.cend( i );
+   }
+   //**********************************************************************************************
+
+   //**Cend function*******************************************************************************
+   /*!\brief Returns an iterator just past the last non-zero element of row/column \a i.
+   //
+   // \param i The row/column index.
+   // \return Iterator just past the last non-zero element of row/column \a i.
+   */
+   inline ConstIterator cend( size_t i ) const {
+      return dm_.cend( i );
    }
    //**********************************************************************************************
 
@@ -342,15 +388,15 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
       const size_t n( columns() );
 
       BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ( n & size_t(-2) ), "Invalid end calculation" );
-      const size_t end( n & size_t(-2) );
+      const size_t jend( n & size_t(-2) );
 
       for( size_t i=0UL; i<m; ++i ) {
-         for( size_t j=0UL; j<end; j+=2UL ) {
+         for( size_t j=0UL; j<jend; j+=2UL ) {
             dm_(j    ,i) = (~rhs)(i,j    );
             dm_(j+1UL,i) = (~rhs)(i,j+1UL);
          }
-         if( end < n ) {
-            dm_(end,i) = (~rhs)(i,end);
+         if( jend < n ) {
+            dm_(jend,i) = (~rhs)(i,jend);
          }
       }
    }
@@ -470,16 +516,16 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
       const size_t n( columns() );
 
       BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ( n & size_t(-2) ), "Invalid end calculation" );
-      const size_t end( n & size_t(-2) );
+      const size_t jend( n & size_t(-2) );
 
       for( size_t i=0UL; i<m; ++i ) {
-         for( size_t j=0UL; j<end; j+=2UL ) {
+         for( size_t j=0UL; j<jend; j+=2UL ) {
             dm_(j    ,i) += (~rhs)(i,j    );
             dm_(j+1UL,i) += (~rhs)(i,j+1UL);
 
          }
-         if( end < n ) {
-            dm_(end,i) += (~rhs)(i,end);
+         if( jend < n ) {
+            dm_(jend,i) += (~rhs)(i,jend);
          }
       }
    }
@@ -599,16 +645,16 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
       const size_t n( columns() );
 
       BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ( n & size_t(-2) ), "Invalid end calculation" );
-      const size_t end( n & size_t(-2) );
+      const size_t jend( n & size_t(-2) );
 
       for( size_t i=0UL; i<m; ++i ) {
-         for( size_t j=0UL; j<end; j+=2UL ) {
+         for( size_t j=0UL; j<jend; j+=2UL ) {
             dm_(j    ,i) -= (~rhs)(i,j    );
             dm_(j+1UL,i) -= (~rhs)(i,j+1UL);
 
          }
-         if( end < n ) {
-            dm_(end,i) -= (~rhs)(i,end);
+         if( jend < n ) {
+            dm_(jend,i) -= (~rhs)(i,jend);
          }
       }
    }
@@ -757,6 +803,8 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    typedef const This&                  CompositeType;   //!< Data type for composite expression templates.
    typedef typename MT::Reference       Reference;       //!< Reference to a non-constant matrix value.
    typedef typename MT::ConstReference  ConstReference;  //!< Reference to a constant matrix value.
+   typedef typename MT::Iterator        Iterator;        //!< Iterator over non-constant elements.
+   typedef typename MT::ConstIterator   ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -798,6 +846,70 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    */
    inline ElementType* data() {
       return dm_.data();
+   }
+   //**********************************************************************************************
+
+   //**Begin function******************************************************************************
+   /*!\brief Returns an iterator to the first non-zero element of row/column \a i.
+   //
+   // \param i The row/column index.
+   // \return Iterator to the first non-zero element of row/column \a i.
+   //
+   // This function returns a row/column iterator to the first non-zero element of row/column \a i.
+   // In case the storage order is set to \a rowMajor the function returns an iterator to the first
+   // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
+   // returns an iterator to the first non-zero element of column \a i.
+   */
+   inline ConstIterator begin( size_t i ) const {
+      return dm_.cbegin(i);
+   }
+   //**********************************************************************************************
+
+   //**Cbegin function*****************************************************************************
+   /*!\brief Returns an iterator to the first non-zero element of row/column \a i.
+   //
+   // \param i The row/column index.
+   // \return Iterator to the first non-zero element of row/column \a i.
+   //
+   // This function returns a row/column iterator to the first non-zero element of row/column \a i.
+   // In case the storage order is set to \a rowMajor the function returns an iterator to the first
+   // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
+   // returns an iterator to the first non-zero element of column \a i.
+   */
+   inline ConstIterator cbegin( size_t i ) const {
+      return dm_.cbegin(i);
+   }
+   //**********************************************************************************************
+
+   //**End function********************************************************************************
+   /*!\brief Returns an iterator just past the last non-zero element of row/column \a i.
+   //
+   // \param i The row/column index.
+   // \return Iterator just past the last non-zero element of row/column \a i.
+   //
+   // This function returns an row/column iterator just past the last non-zero element of row/column
+   // \a i. In case the storage order is set to \a rowMajor the function returns an iterator just
+   // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
+   // the function returns an iterator just past the last non-zero element of column \a i.
+   */
+   inline ConstIterator end( size_t i ) const {
+      return dm_.cend(i);
+   }
+   //**********************************************************************************************
+
+   //**Cend function*******************************************************************************
+   /*!\brief Returns an iterator just past the last non-zero element of row/column \a i.
+   //
+   // \param i The row/column index.
+   // \return Iterator just past the last non-zero element of row/column \a i.
+   //
+   // This function returns an row/column iterator just past the last non-zero element of row/column
+   // \a i. In case the storage order is set to \a rowMajor the function returns an iterator just
+   // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
+   // the function returns an iterator just past the last non-zero element of column \a i.
+   */
+   inline ConstIterator cend( size_t i ) const {
+      return dm_.cend(i);
    }
    //**********************************************************************************************
 
@@ -978,15 +1090,15 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
       const size_t n( columns() );
 
       BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == ( m & size_t(-2) ), "Invalid end calculation" );
-      const size_t end( m & size_t(-2) );
+      const size_t iend( m & size_t(-2) );
 
       for( size_t j=0UL; j<n; ++j ) {
-         for( size_t i=0UL; i<end; i+=2UL ) {
+         for( size_t i=0UL; i<iend; i+=2UL ) {
             dm_(j,i    ) = (~rhs)(i    ,j);
             dm_(j,i+1UL) = (~rhs)(i+1UL,j);
          }
-         if( end < m ) {
-            dm_(j,end) = (~rhs)(end,j);
+         if( iend < m ) {
+            dm_(j,iend) = (~rhs)(iend,j);
          }
       }
    }
@@ -1106,15 +1218,15 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
       const size_t n( columns() );
 
       BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == ( m & size_t(-2) ), "Invalid end calculation" );
-      const size_t end( m & size_t(-2) );
+      const size_t iend( m & size_t(-2) );
 
       for( size_t j=0UL; j<n; ++j ) {
-         for( size_t i=0UL; i<end; i+=2UL ) {
+         for( size_t i=0UL; i<iend; i+=2UL ) {
             dm_(j,i    ) += (~rhs)(i    ,j);
             dm_(j,i+1UL) += (~rhs)(i+1UL,j);
          }
-         if( end < m ) {
-            dm_(j,end) += (~rhs)(end,j);
+         if( iend < m ) {
+            dm_(j,iend) += (~rhs)(iend,j);
          }
       }
    }
@@ -1234,15 +1346,15 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
       const size_t n( columns() );
 
       BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == ( m & size_t(-2) ), "Invalid end calculation" );
-      const size_t end( m & size_t(-2) );
+      const size_t iend( m & size_t(-2) );
 
       for( size_t j=0UL; j<n; ++j ) {
-         for( size_t i=0UL; i<end; i+=2UL ) {
+         for( size_t i=0UL; i<iend; i+=2UL ) {
             dm_(j,i    ) -= (~rhs)(i    ,j);
             dm_(j,i+1UL) -= (~rhs)(i+1UL,j);
          }
-         if( end < m ) {
-            dm_(j,end) -= (~rhs)(end,j);
+         if( iend < m ) {
+            dm_(j,iend) -= (~rhs)(iend,j);
          }
       }
    }
