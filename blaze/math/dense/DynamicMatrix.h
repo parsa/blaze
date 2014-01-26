@@ -996,13 +996,12 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const DynamicMatrix& rhs )
 {
+   using blaze::assign;
+
    if( &rhs == this ) return *this;
 
    resize( rhs.m_, rhs.n_, false );
-
-   for( size_t i=0UL; i<m_; ++i )
-      for( size_t j=0UL; j<n_; ++j )
-         v_[i*nn_+j] = rhs(i,j);
+   assign( *this, ~rhs );
 
    return *this;
 }
@@ -3141,13 +3140,12 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( Type rhs )
 template< typename Type >  // Data type of the matrix
 inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const DynamicMatrix& rhs )
 {
+   using blaze::assign;
+
    if( &rhs == this ) return *this;
 
    resize( rhs.m_, rhs.n_, false );
-
-   for( size_t j=0UL; j<n_; ++j )
-      for( size_t i=0UL; i<m_; ++i )
-         v_[i+j*mm_] = rhs(i,j);
+   assign( *this, ~rhs );
 
    return *this;
 }
