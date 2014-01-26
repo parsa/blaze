@@ -874,12 +874,12 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const HybridVector& rhs )
 {
+   using blaze::assign;
+
    BLAZE_INTERNAL_ASSERT( size_ <= N, "Invalid size detected" );
 
    resize( rhs.size() );
-
-   for( size_t i=0UL; i<size_; ++i )
-      v_[i] = rhs.v_[i];
+   assign( *this, ~rhs );
 
    return *this;
 }
