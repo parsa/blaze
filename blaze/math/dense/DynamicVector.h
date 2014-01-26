@@ -1369,8 +1369,8 @@ inline bool DynamicVector<Type,TF>::isAliased( const Other* alias ) const
 // function additionally provides runtime information (as for instance the current size of the
 // vector).
 */
-template< typename Type     // Data type of the vector
-        , bool TF >         // Transpose flag
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
 inline bool DynamicVector<Type,TF>::canSMPAssign() const
 {
    return ( size() > OPENMP_DVECASSGIN_THRESHOLD );
