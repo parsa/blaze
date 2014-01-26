@@ -136,6 +136,46 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    }
    //**********************************************************************************************
 
+   //**Begin function******************************************************************************
+   /*!\brief Returns an iterator to the first element of the dense vector.
+   //
+   // \return Iterator to the first element of the dense vector.
+   */
+   inline ConstIterator begin() const {
+      return dv_.cbegin();
+   }
+   //**********************************************************************************************
+
+   //**Cbegin function*****************************************************************************
+   /*!\brief Returns an iterator to the first element of the dense vector.
+   //
+   // \return Iterator to the first element of the dense vector.
+   */
+   inline ConstIterator cbegin() const {
+      return dv_.cbegin();
+   }
+   //**********************************************************************************************
+
+   //**End function********************************************************************************
+   /*!\brief Returns an iterator just past the last element of the dense vector.
+   //
+   // \return Iterator just past the last element of the dense vector.
+   */
+   inline ConstIterator end() const {
+      return dv_.cend();
+   }
+   //**********************************************************************************************
+
+   //**Cend function*******************************************************************************
+   /*!\brief Returns an iterator just past the last element of the dense vector.
+   //
+   // \return Iterator just past the last element of the dense vector.
+   */
+   inline ConstIterator cend() const {
+      return dv_.cend();
+   }
+   //**********************************************************************************************
+
    //**Multiplication assignment operator**********************************************************
    /*!\brief Multiplication assignment operator for the multiplication between a vector and
    //        a scalar value (\f$ \vec{a}*=s \f$).
@@ -320,14 +360,14 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
       const size_t n( size() );
 
       BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ( n & size_t(-2) ), "Invalid end calculation" );
-      const size_t end( n & size_t(-2) );
+      const size_t iend( n & size_t(-2) );
 
-      for( size_t i=0UL; i<end; i+=2UL ) {
+      for( size_t i=0UL; i<iend; i+=2UL ) {
          dv_[i    ] = (~rhs)[i    ];
          dv_[i+1UL] = (~rhs)[i+1UL];
       }
-      if( end < n )
-         dv_[end] = (~rhs)[end];
+      if( iend < n )
+         dv_[iend] = (~rhs)[iend];
    }
    //**********************************************************************************************
 
@@ -377,14 +417,14 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
       const size_t n( size() );
 
       BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ( n & size_t(-2) ), "Invalid end calculation" );
-      const size_t end( n & size_t(-2) );
+      const size_t iend( n & size_t(-2) );
 
-      for( size_t i=0UL; i<end; i+=2UL ) {
+      for( size_t i=0UL; i<iend; i+=2UL ) {
          dv_[i    ] += (~rhs)[i    ];
          dv_[i+1UL] += (~rhs)[i+1UL];
       }
-      if( end < n )
-         dv_[end] += (~rhs)[end];
+      if( iend < n )
+         dv_[iend] += (~rhs)[iend];
    }
    //**********************************************************************************************
 
@@ -434,14 +474,14 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
       const size_t n( size() );
 
       BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ( n & size_t(-2) ), "Invalid end calculation" );
-      const size_t end( n & size_t(-2) );
+      const size_t iend( n & size_t(-2) );
 
-      for( size_t i=0UL; i<end; i+=2UL ) {
+      for( size_t i=0UL; i<iend; i+=2UL ) {
          dv_[i    ] -= (~rhs)[i    ];
          dv_[i+1UL] -= (~rhs)[i+1UL];
       }
-      if( end < n )
-         dv_[end] -= (~rhs)[end];
+      if( iend < n )
+         dv_[iend] -= (~rhs)[iend];
    }
    //**********************************************************************************************
 
@@ -491,14 +531,14 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
       const size_t n( size() );
 
       BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ( n & size_t(-2) ), "Invalid end calculation" );
-      const size_t end( n & size_t(-2) );
+      const size_t iend( n & size_t(-2) );
 
-      for( size_t i=0UL; i<end; i+=2UL ) {
+      for( size_t i=0UL; i<iend; i+=2UL ) {
          dv_[i    ] *= (~rhs)[i    ];
          dv_[i+1UL] *= (~rhs)[i+1UL];
       }
-      if( end < n )
-         dv_[end] *= (~rhs)[end];
+      if( iend < n )
+         dv_[iend] *= (~rhs)[iend];
    }
    //**********************************************************************************************
 
@@ -523,11 +563,9 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
       typedef typename VT2::ConstIterator  RhsConstIterator;
 
       const VT tmp( dv_ );
-      const RhsConstIterator end( (~rhs).end() );
-
       dv_.reset();
 
-      for( RhsConstIterator element=(~rhs).begin(); element!=end; ++element )
+      for( RhsConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
          dv_[element->index()] = tmp[element->index()] * element->value();
    }
    //**********************************************************************************************
