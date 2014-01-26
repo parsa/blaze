@@ -1431,7 +1431,10 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,AF,SO> >::Type&
    DenseSubmatrix<MT,AF,SO>::operator*=( Other rhs )
 {
-   return operator=( (*this) * rhs );
+   using blaze::assign;
+
+   assign( *this, (*this) * rhs );
+   return *this;
 }
 //*************************************************************************************************
 
@@ -1450,9 +1453,12 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,AF,SO> >::Type&
    DenseSubmatrix<MT,AF,SO>::operator/=( Other rhs )
 {
+   using blaze::assign;
+
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   return operator=( (*this) / rhs );
+   assign( *this, (*this) / rhs );
+   return *this;
 }
 //*************************************************************************************************
 
@@ -3453,7 +3459,10 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,unaligned,true> >::Type&
    DenseSubmatrix<MT,unaligned,true>::operator*=( Other rhs )
 {
-   return operator=( (*this) * rhs );
+   using blaze::assign;
+
+   assign( *this, (*this) * rhs );
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3474,7 +3483,10 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,unaligned,true> >:
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   return operator=( (*this) / rhs );
+   using blaze::assign;
+
+   assign( *this, (*this) / rhs );
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5174,7 +5186,10 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,false> >::Type&
    DenseSubmatrix<MT,aligned,false>::operator*=( Other rhs )
 {
-   return operator=( (*this) * rhs );
+   using blaze::assign;
+
+   assign( *this, (*this) * rhs );
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5195,7 +5210,10 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,false> >::
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   return operator=( (*this) / rhs );
+   using blaze::assign;
+
+   assign( *this, (*this) / rhs );
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -6890,7 +6908,10 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,true> >::Type&
    DenseSubmatrix<MT,aligned,true>::operator*=( Other rhs )
 {
-   return operator=( (*this) * rhs );
+   using blaze::assign;
+
+   assign( *this, (*this) * rhs );
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -6911,7 +6932,10 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,true> >::T
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   return operator=( (*this) / rhs );
+   using blaze::assign;
+
+   assign( *this, (*this) / rhs );
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
