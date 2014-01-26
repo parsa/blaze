@@ -50,6 +50,7 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/smp/DenseVector.h>
+#include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -859,9 +860,7 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const DynamicV
    if( &rhs == this ) return *this;
 
    resize( rhs.size_, false );
-
-   for( size_t i=0UL; i<size_; ++i )
-      v_[i] = rhs.v_[i];
+   smpAssign( *this, ~rhs );
 
    return *this;
 }
@@ -881,8 +880,6 @@ template< typename Type  // Data type of the vector
 template< typename VT >  // Type of the right-hand side vector
 inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const Vector<VT,TF>& rhs )
 {
-   using blaze::assign;
-
    if( (~rhs).canAlias( this ) ) {
       DynamicVector tmp( ~rhs );
       swap( tmp );
@@ -914,8 +911,6 @@ template< typename Type  // Data type of the vector
 template< typename VT >  // Type of the right-hand side vector
 inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator+=( const Vector<VT,TF>& rhs )
 {
-   using blaze::addAssign;
-
    if( (~rhs).size() != size_ )
       throw std::invalid_argument( "Vector sizes do not match" );
 
@@ -948,8 +943,6 @@ template< typename Type  // Data type of the vector
 template< typename VT >  // Type of the right-hand side vector
 inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator-=( const Vector<VT,TF>& rhs )
 {
-   using blaze::subAssign;
-
    if( (~rhs).size() != size_ )
       throw std::invalid_argument( "Vector sizes do not match" );
 
@@ -982,8 +975,6 @@ template< typename Type  // Data type of the vector
 template< typename VT >  // Type of the right-hand side vector
 inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator*=( const Vector<VT,TF>& rhs )
 {
-   using blaze::assign;
-
    if( (~rhs).size() != size_ )
       throw std::invalid_argument( "Vector sizes do not match" );
 
@@ -1013,8 +1004,6 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DynamicVector<Type,TF> >::Type&
    DynamicVector<Type,TF>::operator*=( Other rhs )
 {
-   using blaze::assign;
-
    smpAssign( *this, (*this) * rhs );
    return *this;
 }
@@ -1036,8 +1025,6 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DynamicVector<Type,TF> >::Type&
    DynamicVector<Type,TF>::operator/=( Other rhs )
 {
-   using blaze::assign;
-
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    smpAssign( *this, (*this) / rhs );
