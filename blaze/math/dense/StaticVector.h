@@ -1012,14 +1012,9 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( const StaticVector& rhs )
 {
-   // This implementation was chosen for several reasons:
-   // - it works for all possible element types (even types that could not be copied by 'memcpy')
-   // - it is faster than the synthesized default copy assignment operator
-   // - it is faster than an implementation with the C library function 'memcpy' in combination
-   //   with a protection against self-assignment
-   // - it goes without a protection against self-assignment
-   for( size_t i=0UL; i<N; ++i )
-      v_[i] = rhs.v_[i];
+   using blaze::assign;
+
+   assign( *this, ~rhs );
    return *this;
 }
 //*************************************************************************************************
@@ -1037,14 +1032,9 @@ template< typename Type     // Data type of the vector
 template< typename Other >  // Data type of the foreign vector
 inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( const StaticVector<Other,N,TF>& rhs )
 {
-   // This implementation was chosen for several reasons:
-   // - it works for all possible element types (even types that could not be copied by 'memcpy')
-   // - it is faster than the synthesized default copy assignment operator
-   // - it is faster than an implementation with the C library function 'memcpy' in combination
-   //   with a protection against self-assignment
-   // - it goes without a protection against self-assignment
-   for( size_t i=0UL; i<N; ++i )
-      v_[i] = rhs[i];
+   using blaze::assign;
+
+   assign( *this, ~rhs );
    return *this;
 }
 //*************************************************************************************************
