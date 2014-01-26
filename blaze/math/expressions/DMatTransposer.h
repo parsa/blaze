@@ -138,6 +138,11 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    //
    // \param i The row/column index.
    // \return Iterator to the first non-zero element of row/column \a i.
+   //
+   // This function returns a row/column iterator to the first non-zero element of row/column \a i.
+   // In case the storage order is set to \a rowMajor the function returns an iterator to the first
+   // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
+   // returns an iterator to the first non-zero element of column \a i.
    */
    inline ConstIterator begin( size_t i ) const {
       return dm_.cbegin( i );
@@ -149,6 +154,11 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    //
    // \param i The row/column index.
    // \return Iterator to the first non-zero element of row/column \a i.
+   //
+   // This function returns a row/column iterator to the first non-zero element of row/column \a i.
+   // In case the storage order is set to \a rowMajor the function returns an iterator to the first
+   // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
+   // returns an iterator to the first non-zero element of column \a i.
    */
    inline ConstIterator cbegin( size_t i ) const {
       return dm_.cbegin( i );
@@ -160,6 +170,11 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    //
    // \param i The row/column index.
    // \return Iterator just past the last non-zero element of row/column \a i.
+   //
+   // This function returns an row/column iterator just past the last non-zero element of row/column
+   // \a i. In case the storage order is set to \a rowMajor the function returns an iterator just
+   // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
+   // the function returns an iterator just past the last non-zero element of column \a i.
    */
    inline ConstIterator end( size_t i ) const {
       return dm_.cend( i );
@@ -171,6 +186,11 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    //
    // \param i The row/column index.
    // \return Iterator just past the last non-zero element of row/column \a i.
+   //
+   // This function returns an row/column iterator just past the last non-zero element of row/column
+   // \a i. In case the storage order is set to \a rowMajor the function returns an iterator just
+   // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
+   // the function returns an iterator just past the last non-zero element of column \a i.
    */
    inline ConstIterator cend( size_t i ) const {
       return dm_.cend( i );
@@ -751,6 +771,14 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    }
    //**********************************************************************************************
 
+   //**Transpose multiplication assignment of dense matrices***************************************
+   // No special implementation for the transpose multiplication assignment of dense matrices.
+   //**********************************************************************************************
+
+   //**Transpose multiplication assignment of sparse matrices**************************************
+   // No special implementation for the transpose multiplication assignment of sparse matrices.
+   //**********************************************************************************************
+
  private:
    //**Member variables****************************************************************************
    MT& dm_;  //!< The dense matrix operand.
@@ -850,66 +878,80 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    //**********************************************************************************************
 
    //**Begin function******************************************************************************
-   /*!\brief Returns an iterator to the first non-zero element of row/column \a i.
+   /*!\brief Returns an iterator to the first non-zero element of column \a j.
    //
-   // \param i The row/column index.
-   // \return Iterator to the first non-zero element of row/column \a i.
-   //
-   // This function returns a row/column iterator to the first non-zero element of row/column \a i.
-   // In case the storage order is set to \a rowMajor the function returns an iterator to the first
-   // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
-   // returns an iterator to the first non-zero element of column \a i.
+   // \param j The column index.
+   // \return Iterator to the first non-zero element of column \a i.
    */
-   inline ConstIterator begin( size_t i ) const {
-      return dm_.cbegin(i);
+   inline ConstIterator begin( size_t j ) const {
+      return dm_.cbegin(j);
    }
    //**********************************************************************************************
 
    //**Cbegin function*****************************************************************************
-   /*!\brief Returns an iterator to the first non-zero element of row/column \a i.
+   /*!\brief Returns an iterator to the first non-zero element of column \a j.
    //
-   // \param i The row/column index.
-   // \return Iterator to the first non-zero element of row/column \a i.
-   //
-   // This function returns a row/column iterator to the first non-zero element of row/column \a i.
-   // In case the storage order is set to \a rowMajor the function returns an iterator to the first
-   // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
-   // returns an iterator to the first non-zero element of column \a i.
+   // \param j The column index.
+   // \return Iterator to the first non-zero element of column \a j.
    */
-   inline ConstIterator cbegin( size_t i ) const {
-      return dm_.cbegin(i);
+   inline ConstIterator cbegin( size_t j ) const {
+      return dm_.cbegin(j);
    }
    //**********************************************************************************************
 
    //**End function********************************************************************************
-   /*!\brief Returns an iterator just past the last non-zero element of row/column \a i.
+   /*!\brief Returns an iterator just past the last non-zero element of column \a j.
    //
-   // \param i The row/column index.
-   // \return Iterator just past the last non-zero element of row/column \a i.
-   //
-   // This function returns an row/column iterator just past the last non-zero element of row/column
-   // \a i. In case the storage order is set to \a rowMajor the function returns an iterator just
-   // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
-   // the function returns an iterator just past the last non-zero element of column \a i.
+   // \param j The column index.
+   // \return Iterator just past the last non-zero element of column \a j.
    */
-   inline ConstIterator end( size_t i ) const {
-      return dm_.cend(i);
+   inline ConstIterator end( size_t j ) const {
+      return dm_.cend(j);
    }
    //**********************************************************************************************
 
    //**Cend function*******************************************************************************
-   /*!\brief Returns an iterator just past the last non-zero element of row/column \a i.
+   /*!\brief Returns an iterator just past the last non-zero element of column \a j.
    //
-   // \param i The row/column index.
-   // \return Iterator just past the last non-zero element of row/column \a i.
-   //
-   // This function returns an row/column iterator just past the last non-zero element of row/column
-   // \a i. In case the storage order is set to \a rowMajor the function returns an iterator just
-   // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
-   // the function returns an iterator just past the last non-zero element of column \a i.
+   // \param j The column index.
+   // \return Iterator just past the last non-zero element of column \a j.
    */
-   inline ConstIterator cend( size_t i ) const {
-      return dm_.cend(i);
+   inline ConstIterator cend( size_t j ) const {
+      return dm_.cend(j);
+   }
+   //**********************************************************************************************
+
+   //**Multiplication assignment operator**********************************************************
+   /*!\brief Multiplication assignment operator for the multiplication between a matrix and
+   //        a scalar value (\f$ A*=s \f$).
+   //
+   // \param rhs The right-hand side scalar value for the multiplication.
+   // \return Reference to this DMatTransposer.
+   */
+   template< typename Other >  // Data type of the right-hand side scalar
+   inline typename EnableIf< IsNumeric<Other>, DMatTransposer >::Type& operator*=( Other rhs )
+   {
+      (~dm_) *= rhs;
+      return *this;
+   }
+   //**********************************************************************************************
+
+   //**Division assignment operator****************************************************************
+   /*!\brief Division assignment operator for the division of a matrix by a scalar value
+   //        (\f$ A/=s \f$).
+   //
+   // \param rhs The right-hand side scalar value for the division.
+   // \return Reference to this DMatTransposer.
+   //
+   // \b Note: A division by zero is only checked by an user assert.
+   */
+   template< typename Other >  // Data type of the right-hand side scalar
+   inline typename EnableIf< IsNumeric<Other>, DMatTransposer >::Type& operator/=( Other rhs )
+   {
+      BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
+
+      (~dm_) /= rhs;
+      return *this;
    }
    //**********************************************************************************************
 
