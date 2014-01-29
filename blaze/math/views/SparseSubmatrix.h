@@ -320,7 +320,7 @@ namespace blaze {
 
    typedef blaze::CompressedMatrix<double,blaze::rowMajor>  SparseMatrixType;
 
-   SparseMatrixType x;
+   SparseMatrixType A;
    // ... Resizing and initialization
 
    // Identical creations of an unaligned submatrix of size 8x8, starting in row 0 and column 0
@@ -344,7 +344,7 @@ namespace blaze {
    using blaze::aligned;
 
    // Creating an aligned submatrix of size 8x8, starting in row 0 and column 0
-   blaze::SparseSubmatrix<SparseMatrixType,aligned> sv = submatrix<aligned>( x, 0UL, 0UL, 8UL, 8UL );
+   blaze::SparseSubmatrix<SparseMatrixType,aligned> sv = submatrix<aligned>( A, 0UL, 0UL, 8UL, 8UL );
    \endcode
 
 // In contrast to dense submatrices, which pose several additional alignment restrictions based on

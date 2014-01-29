@@ -289,7 +289,7 @@ namespace blaze {
 
    typedef blaze::DynamicMatrix<double,blaze::rowMajor>  DenseMatrixType;
 
-   DenseMatrixType x;
+   DenseMatrixType A;
    // ... Resizing and initialization
 
    // Identical creations of an unaligned submatrix of size 8x8, starting in row 0 and column 0
@@ -313,7 +313,7 @@ namespace blaze {
    using blaze::aligned;
 
    // Creating an aligned submatrix of size 8x8, starting in row 0 and column 0
-   blaze::DenseSubmatrix<DenseMatrixType,aligned> sv = submatrix<aligned>( x, 0UL, 0UL, 8UL, 8UL );
+   blaze::DenseSubmatrix<DenseMatrixType,aligned> sv = submatrix<aligned>( A, 0UL, 0UL, 8UL, 8UL );
    \endcode
 
 // The alignment restrictions refer to system dependent address restrictions for the used element
