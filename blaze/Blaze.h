@@ -1854,12 +1854,15 @@ namespace blaze {}
 // The type of the dense vector is specified via the template parameter:
 
    \code
-   template< typename VT >
+   template< typename VT, bool AF >
    class DenseSubvector;
    \endcode
 
-// \c VT specifies the type of the dense vector primitive. DenseSubvector can be used with every
-// dense vector primitive or view, but does not work with any vector expression type.
+//  - \c VT: specifies the type of the dense vector primitive. DenseSubvector can be used with
+//           every dense vector primitive or view, but does not work with any vector expression
+//           type.
+//  - \c AF: the alignment flag specifies whether the subvector is aligned (blaze::aligned) or
+//           unaligned (blaze::unaligned). The default value is blaze::unaligned.
 //
 //
 // \n \section views_sparse_subvector SparseSubvector
@@ -1875,13 +1878,15 @@ namespace blaze {}
 // The type of the sparse vector is specified via the template parameter:
 
    \code
-   template< typename VT >
+   template< typename VT, bool AF >
    class SparseSubvector;
    \endcode
 
-// \c VT specifies the type of the sparse vector primitive. As in case of DenseSubvector, a
-// SparseSubvector can be used with every sparse vector primitive or view, but does not work
-// with any vector expression type.
+//  - \c VT: specifies the type of the sparse vector primitive. As in case of DenseSubvector, a
+//           SparseSubvector can be used with every sparse vector primitive or view, but does not
+//           work with any vector expression type.
+//  - \c AF: the alignment flag specifies whether the subvector is aligned (blaze::aligned) or
+//           unaligned (blaze::unaligned). The default value is blaze::unaligned.
 //
 //
 // \n \section views_subvectors_setup Setup of Subvectors
@@ -2118,6 +2123,98 @@ namespace blaze {}
    A = trans( s1 ) * subvector( d1, 4UL, 16UL );  // Outer product between two vectors
    \endcode
 
+// \n \section views_aligned_subvectors Aligned Subvectors
+// <hr>
+//
+// Usually subvectors can be defined anywhere within a vector. They may start at any position and
+// may have an arbitrary size (only restricted by the size of the underlying vector). However, in
+// contrast to vectors themselves, which are always properly aligned in memory and therefore can
+// provide maximum performance, this means that subvectors in general have to be considered to be
+// unaligned. This can be made explicit by the blaze::unaligned flag:
+
+   \code
+   using blaze::unaligned;
+
+   typedef blaze::DynamicVector<double,blaze::rowVector>  DenseVectorType;
+
+   DenseVectorType x;
+   // ... Resizing and initialization
+
+   // Identical creations of an unaligned subvector in the range [8..23]
+   blaze::DenseSubvector<DenseVectorType>           sv1 = subvector           ( x, 8UL, 16UL );
+   blaze::DenseSubvector<DenseVectorType>           sv2 = subvector<unaligned>( x, 8UL, 16UL );
+   blaze::DenseSubvector<DenseVectorType,unaligned> sv3 = subvector           ( x, 8UL, 16UL );
+   blaze::DenseSubvector<DenseVectorType,unaligned> sv4 = subvector<unaligned>( x, 8UL, 16UL );
+   \endcode
+
+// All of these calls to the \c subvector() function are identical. Whether the alignment flag is
+// explicitly specified or not, it always returns an unaligned subvector. Whereas this may provide
+// full flexibility in the creation of subvectors, this might result in performance disadvantages
+// in comparison to vector primitives (even in case the specified subvector could be aligned).
+// Whereas vector primitives are guaranteed to be properly aligned and therefore provide maximum
+// performance in all operations, a general view on a vector might not be properly aligned. This
+// may cause a performance penalty on some platforms and/or for some operations.
+//
+// However, it is also possible to create aligned subvectors. Aligned subvectors are identical to
+// unaligned subvectors in all aspects, except that they may pose additional alignment restrictions
+// and therefore have less flexibility during creation, but don't suffer from performance penalties
+// and provide the same performance as the underlying vector. Aligned subvectors are created by
+// explicitly specifying the blaze::aligned flag:
+
+   \code
+   using blaze::aligned;
+
+   // Creating an aligned dense subvector in the range [8..23]
+   blaze::DenseSubvector<DenseVectorType,aligned> sv = subvector<aligned>( x, 8UL, 16UL );
+   \endcode
+
+// The alignment restrictions refer to system dependent address restrictions for the used element
+// type and the available vectorization mode (SSE, AVX, ...). The following source code gives some
+// examples for a double precision dense vector, assuming that AVX is available, which packs 4
+// \c double values into an intrinsic vector:
+
+   \code
+   using blaze::columnVector;
+
+   typedef blaze::DynamicVector<double,columnVector>  VectorType;
+   typedef blaze::DenseSubvector<VectorType,aligned>  SubvectorType;
+
+   VectorType d( 17UL );
+   // ... Resizing and initialization
+
+   // OK: Starts at the beginning and the size is a multiple of 4
+   SubvectorType dsv1 = subvector<aligned>( d, 0UL, 12UL );
+
+   // OK: Start index and the size are both a multiple of 4
+   SubvectorType dsv2 = subvector<aligned>( d, 4UL, 8UL );
+
+   // OK: The start index is a multiple of 4 and the subvector includes the last element
+   SubvectorType dsv3 = subvector<aligned>( d, 8UL, 9UL );
+
+   // Error: Start index is not a multiple of 4
+   SubvectorType dsv4 = subvector<aligned>( d, 5UL, 8UL );
+
+   // Error: Size is not a multiple of 4 and the subvector does not include the last element
+   SubvectorType dsv5 = subvector<aligned>( d, 8UL, 5UL );
+   \endcode
+
+// Note that the discussed alignment restrictions are only valid for aligned dense subvectors.
+// In contrast, aligned sparse subvectors at this time don't pose any additional restrictions.
+// Therefore aligned and unaligned sparse subvectors are truly fully identical. Still, in case
+// the blaze::aligned flag is specified during setup, an aligned subvector is created:
+
+   \code
+   using blaze::aligned;
+
+   typedef blaze::CompressedVector<double,blaze::rowVector>  SparseVectorType;
+
+   SparseVectorType x;
+   // ... Resizing and initialization
+
+   // Creating an aligned subvector in the range [8..23]
+   blaze::SparseSubvector<SparseVectorType,aligned> sv = subvector<aligned>( x, 8UL, 16UL );
+   \endcode
+
 // \n \section views_subvectors_on_subvectors Subvectors on Subvectors
 // <hr>
 //
@@ -2141,18 +2238,6 @@ namespace blaze {}
    SubvectorType sv2 = subvector( sv1, 1UL, 5UL );
    \endcode
 
-// \n \section views_subvectors_performance_considerations Performance Considerations
-// <hr>
-//
-// As powerful and convenient subvectors can be, in terms of performance they may have some
-// disadvantages in comparison to vector primitives. Whereas vector primitives are guaranteed
-// to be properly aligned and therefore provide maximum performance in all operations, due to
-// its enormous flexibility a view on a vector might not be properly aligned. This may cause
-// a performance penalty on some platforms and/or for some operations. \b Blaze tries to also
-// handle special cases as efficiently as possible, but please remember that some overhead may
-// still occur!
-//
-//
 // \n <center> Previous: \ref matrix_operations &nbsp; &nbsp; Next: \ref views_submatrices </center>
 */
 //*************************************************************************************************
@@ -2191,12 +2276,14 @@ namespace blaze {}
 // The type of the dense matrix is specified via the template parameter:
 
    \code
-   template< typename MT >
+   template< typename MT, bool AF >
    class DenseSubmatrix;
    \endcode
 
-// \c MT specifies the type of the dense matrix primitive. DenseSubmatrix can be used with every
-// dense matrix primitive, but does not work with any matrix expression type.
+//  - \c MT: specifies the type of the dense matrix primitive. DenseSubmatrix can be used with
+//           every dense matrix primitive, but does not work with any matrix expression type.
+//  - \c AF: the alignment flag specifies whether the submatrix is aligned (blaze::aligned) or
+//        unaligned (blaze::unaligned). The default value is blaze::unaligned.
 //
 //
 // \n \section views_sparse_submatrix SparseSubmatrix
@@ -2212,12 +2299,14 @@ namespace blaze {}
 // The type of the sparse matrix is specified via the template parameter:
 
    \code
-   template< typename MT >
+   template< typename MT, bool AF >
    class SparseSubmatrix;
    \endcode
 
-// \c MT specifies the type of the sparse matrix primitive. SparseSubmatrix can be used with
-// every sparse matrix primitive, but does not work with any matrix expression type.
+//  - \c MT: specifies the type of the sparse matrix primitive. SparseSubmatrix can be used with
+//           every sparse matrix primitive, but does not work with any matrix expression type.
+//  - \c AF: the alignment flag specifies whether the submatrix is aligned (blaze::aligned) or
+//           unaligned (blaze::unaligned). The default value is blaze::unaligned.
 //
 //
 // \n \section views_submatrices_setup Setup of Submatrices
@@ -2405,7 +2494,7 @@ namespace blaze {}
    sm.append( 2UL, 10UL, -2.1 );
    \endcode
 
-// \n \section dense_submatrix_arithmetic_operations Arithmetic Operations
+// \n \section views_submatrices_arithmetic_operations Arithmetic Operations
 // <hr>
 //
 // Both dense and sparse submatrices can be used in all arithmetic operations that any other dense
@@ -2448,6 +2537,104 @@ namespace blaze {}
    a = submatrix( D1, 4UL, 4UL, 8UL, 8UL ) * b;  // Dense matrix/sparse vector multiplication
    \endcode
 
+// \n \section views_aligned_submatrices Aligned Submatrices
+// <hr>
+//
+// Usually submatrices can be defined anywhere within a matrix. They may start at any position and
+// may have an arbitrary extension (only restricted by the extension of the underlying matrix).
+// However, in contrast to matrices themselves, which are always properly aligned in memory and
+// therefore can provide maximum performance, this means that submatrices in general have to be
+// considered to be unaligned. This can be made explicit by the blaze::unaligned flag:
+
+   \code
+   using blaze::unaligned;
+
+   typedef blaze::DynamicMatrix<double,blaze::rowMajor>  DenseMatrixType;
+
+   DenseMatrixType A;
+   // ... Resizing and initialization
+
+   // Identical creations of an unaligned submatrix of size 8x8, starting in row 0 and column 0
+   blaze::DenseSubmatrix<DenseMatrixType>           sm1 = submatrix           ( A, 0UL, 0UL, 8UL, 8UL );
+   blaze::DenseSubmatrix<DenseMatrixType>           sm2 = submatrix<unaligned>( A, 0UL, 0UL, 8UL, 8UL );
+   blaze::DenseSubmatrix<DenseMatrixType,unaligned> sm3 = submatrix           ( A, 0UL, 0UL, 8UL, 8UL );
+   blaze::DenseSubmatrix<DenseMatrixType,unaligned> sm4 = submatrix<unaligned>( A, 0UL, 0UL, 8UL, 8UL );
+   \endcode
+
+// All of these calls to the \c submatrix() function are identical. Whether the alignment flag is
+// explicitly specified or not, it always returns an unaligned submatrix. Whereas this may provide
+// full flexibility in the creation of submatrices, this might result in performance disadvantages
+// in comparison to matrix primitives (even in case the specified submatrix could be aligned).
+// Whereas matrix primitives are guaranteed to be properly aligned and therefore provide maximum
+// performance in all operations, a general view on a matrix might not be properly aligned. This
+// may cause a performance penalty on some platforms and/or for some operations.
+//
+// However, it is also possible to create aligned submatrices. Aligned submatrices are identical to
+// unaligned submatrices in all aspects, except that they may pose additional alignment restrictions
+// and therefore have less flexibility during creation, but don't suffer from performance penalties
+// and provide the same performance as the underlying matrix. Aligned submatrices are created by
+// explicitly specifying the blaze::aligned flag:
+
+   \code
+   using blaze::aligned;
+
+   // Creating an aligned submatrix of size 8x8, starting in row 0 and column 0
+   blaze::DenseSubmatrix<DenseMatrixType,aligned> sv = submatrix<aligned>( A, 0UL, 0UL, 8UL, 8UL );
+   \endcode
+
+// The alignment restrictions refer to system dependent address restrictions for the used element
+// type and the available vectorization mode (SSE, AVX, ...). The following source code gives some
+// examples for a double precision dense matrix, assuming that AVX is available, which packs 4
+// \c double values into an intrinsic vector:
+
+   \code
+   using blaze::rowMajor;
+
+   typedef blaze::DynamicMatrix<double,rowMajor>      MatrixType;
+   typedef blaze::DenseSubmatrix<MatrixType,aligned>  SubmatrixType;
+
+   MatrixType D( 13UL, 17UL );
+   // ... Resizing and initialization
+
+   // OK: Starts at position (0,0) and the number of rows and columns are a multiple of 4
+   SubmatrixType dsm1 = submatrix<aligned>( D, 0UL, 0UL, 8UL, 12UL );
+
+   // OK: First row and column and the number of rows and columns are all a multiple of 4
+   SubmatrixType dsm2 = submatrix<aligned>( D, 4UL, 12UL, 8UL, 16UL );
+
+   // OK: First row and column are a multiple of 4 and the submatrix includes the last row and column
+   SubmatrixType dsm3 = submatrix<aligned>( D, 4UL, 0UL, 9UL, 17UL );
+
+   // Error: First row is not a multiple of 4
+   SubmatrixType dsm4 = submatrix<aligned>( D, 2UL, 4UL, 12UL, 12UL );
+
+   // Error: First column is not a multiple of 4
+   SubmatrixType dsm5 = submatrix<aligned>( D, 0UL, 2UL, 8UL, 8UL );
+
+   // Error: The number of rows is not a multiple of 4 and the submatrix does not include the last row
+   SubmatrixType dsm6 = submatrix<aligned>( D, 0UL, 0UL, 7UL, 8UL );
+
+   // Error: The number of columns is not a multiple of 4 and the submatrix does not include the last column
+   SubmatrixType dsm6 = submatrix<aligned>( D, 0UL, 0UL, 8UL, 11UL );
+   \endcode
+
+// Note that the discussed alignment restrictions are only valid for aligned dense submatrices.
+// In contrast, aligned sparse submatrices at this time don't pose any additional restrictions.
+// Therefore aligned and unaligned sparse submatrices are truly fully identical. Still, in case
+// the blaze::aligned flag is specified during setup, an aligned submatrix is created:
+
+   \code
+   using blaze::aligned;
+
+   typedef blaze::CompressedMatrix<double,blaze::rowMajor>  SparseMatrixType;
+
+   SparseMatrixType A;
+   // ... Resizing and initialization
+
+   // Creating an aligned submatrix of size 8x8, starting in row 0 and column 0
+   blaze::SparseSubmatrix<SparseMatrixType,aligned> sv = submatrix<aligned>( A, 0UL, 0UL, 8UL, 8UL );
+   \endcode
+
 // \n \section views_submatrices_on_submatrices Submatrices on Submatrices
 // <hr>
 //
@@ -2471,18 +2658,6 @@ namespace blaze {}
    SubmatrixType sm2 = submatrix( sm1, 1UL, 1UL, 4UL, 8UL );
    \endcode
 
-// \n \section views_submatrices_performance_considerations Performance Considerations
-// <hr>
-//
-// As powerful and convenient submatrices can be, in terms of performance they may have some
-// disadvantages in comparison to matrix primitives. Whereas matrix primitives are guaranteed
-// to be properly aligned and therefore provide maximum performance in all operations, due to
-// its enormous flexibility a view on a matrix might not be properly aligned. This may cause
-// a performance penalty on some platforms and/or for some operations. \b Blaze tries to also
-// handle special cases as efficiently as possible, but please remember that some overhead may
-// still occur!
-//
-//
 // \n <center> Previous: \ref views_subvectors &nbsp; &nbsp; Next: \ref views_rows </center>
 */
 //*************************************************************************************************
@@ -3505,7 +3680,7 @@ namespace blaze {}
 // Sometimes it is necessary to store vector and/or matrices on disk, for instance for storing
 // results or for sharing specific setups with other people. The \b Blaze math serialization
 // module provides the according functionality to create platform independent, portable, binary
-// representations of vectors and matrices that can be used to store the \a Blaze data structures
+// representations of vectors and matrices that can be used to store the \b Blaze data structures
 // without loss of precision and to reliably transfer them from one machine to another.
 //
 // The following example demonstrates the (de-)serialization of dense and sparse vectors:
