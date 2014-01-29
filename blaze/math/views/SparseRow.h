@@ -1918,10 +1918,8 @@ class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
       //*******************************************************************************************
 
       //**Friend declarations**********************************************************************
-      /*! \cond BLAZE_INTERNAL */
       template< typename MatrixType2, typename IteratorType2 > friend class RowIterator;
       template< typename MT2, bool SO2 > friend class SparseRow;
-      /*! \endcond */
       //*******************************************************************************************
    };
    //**********************************************************************************************
@@ -2036,12 +2034,10 @@ class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE      ( MT );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE      ( MT );
-   /*! \endcond */
    //**********************************************************************************************
 };
 /*! \endcond */

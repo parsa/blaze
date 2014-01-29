@@ -1965,9 +1965,7 @@ class DenseColumn<MT,false> : public DenseVector< DenseColumn<MT,false>, false >
       //*******************************************************************************************
 
       //**Friend declarations**********************************************************************
-      /*! \cond BLAZE_INTERNAL */
       template< typename MatrixType2 > friend class ColumnIterator;
-      /*! \endcond */
       //*******************************************************************************************
    };
    //**********************************************************************************************
@@ -2072,12 +2070,10 @@ class DenseColumn<MT,false> : public DenseVector< DenseColumn<MT,false>, false >
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE   ( MT );
-   /*! \endcond */
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -1964,9 +1964,7 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
       //*******************************************************************************************
 
       //**Friend declarations**********************************************************************
-      /*! \cond BLAZE_INTERNAL */
       template< typename MatrixType2 > friend class RowIterator;
-      /*! \endcond */
       //*******************************************************************************************
    };
    //**********************************************************************************************
@@ -2071,12 +2069,10 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE       ( MT );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE      ( MT );
-   /*! \endcond */
    //**********************************************************************************************
 };
 /*! \endcond */
