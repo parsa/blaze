@@ -378,6 +378,11 @@ class SparseRow : public SparseVector< SparseRow<MT,SO>, true >
    typedef typename SelectType< useConst, ConstIterator, typename MT::Iterator >::Type  Iterator;
    //**********************************************************************************************
 
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = 0 };
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -1930,6 +1935,11 @@ class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
 
    //! Iterator over non-constant elements.
    typedef typename SelectType< useConst, ConstIterator, RowIterator<MT,typename MT::Iterator> >::Type  Iterator;
+   //**********************************************************************************************
+
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

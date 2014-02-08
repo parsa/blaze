@@ -379,6 +379,11 @@ class SparseColumn : public SparseVector< SparseColumn<MT,SO>, false >
    typedef typename SelectType< useConst, ConstIterator, typename MT::Iterator >::Type  Iterator;
    //**********************************************************************************************
 
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = 0 };
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -1931,6 +1936,11 @@ class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, fals
 
    //! Iterator over non-constant elements.
    typedef typename SelectType< useConst, ConstIterator, ColumnIterator<MT,typename MT::Iterator> >::Type  Iterator;
+   //**********************************************************************************************
+
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

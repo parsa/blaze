@@ -705,6 +705,11 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
    typedef typename SelectType< useConst, ConstIterator, SubvectorIterator<VT,typename VT::Iterator> >::Type  Iterator;
    //**********************************************************************************************
 
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = 0 };
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
