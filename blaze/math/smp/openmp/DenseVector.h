@@ -118,19 +118,21 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes"      );
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
    if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       assign( ~lhs, ~rhs );
       return;
    }
 
-   typedef typename VT1::ElementType                       ET1;
-   typedef typename VT2::ElementType                       ET2;
-   typedef IntrinsicTrait<typename VT1::ElementType>       IT;
-   typedef typename SubvectorExprTrait<VT1,aligned>::Type  TargetType;
+   typedef typename VT1::ElementType  ET1;
+   typedef typename VT2::ElementType  ET2;
 
-   const bool vectorizable( VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value );
+   enum { vectorizable = VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value };
+   enum { alignment = ( vectorizable )?( aligned ):( unaligned ) };
+
+   typedef IntrinsicTrait<typename VT1::ElementType>         IT;
+   typedef typename SubvectorExprTrait<VT1,alignment>::Type  TargetType;
 
 #pragma omp parallel shared( lhs, rhs )
    {
@@ -147,8 +149,8 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 
          if( index < (~lhs).size() ) {
             const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-            TargetType target( subvector<aligned>( ~lhs, index, size ) );
-            assign( target, subvector<aligned>( ~rhs, index, size ) );
+            TargetType target( subvector<alignment>( ~lhs, index, size ) );
+            assign( target, subvector<alignment>( ~rhs, index, size ) );
          }
       }
    }
@@ -215,19 +217,21 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes"      );
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
    if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       addAssign( ~lhs, ~rhs );
       return;
    }
 
-   typedef typename VT1::ElementType                       ET1;
-   typedef typename VT2::ElementType                       ET2;
-   typedef IntrinsicTrait<typename VT1::ElementType>       IT;
-   typedef typename SubvectorExprTrait<VT1,aligned>::Type  TargetType;
+   typedef typename VT1::ElementType  ET1;
+   typedef typename VT2::ElementType  ET2;
 
-   const bool vectorizable( VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value );
+   enum { vectorizable = VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value };
+   enum { alignment = ( vectorizable )?( aligned ):( unaligned ) };
+
+   typedef IntrinsicTrait<typename VT1::ElementType>         IT;
+   typedef typename SubvectorExprTrait<VT1,alignment>::Type  TargetType;
 
 #pragma omp parallel shared( lhs, rhs )
    {
@@ -244,8 +248,8 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 
          if( index < (~lhs).size() ) {
             const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-            TargetType target( subvector<aligned>( ~lhs, index, size ) );
-            addAssign( target, subvector<aligned>( ~rhs, index, size ) );
+            TargetType target( subvector<alignment>( ~lhs, index, size ) );
+            addAssign( target, subvector<alignment>( ~rhs, index, size ) );
          }
       }
    }
@@ -312,19 +316,21 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes"      );
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
    if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       subAssign( ~lhs, ~rhs );
       return;
    }
 
-   typedef typename VT1::ElementType                       ET1;
-   typedef typename VT2::ElementType                       ET2;
-   typedef IntrinsicTrait<typename VT1::ElementType>       IT;
-   typedef typename SubvectorExprTrait<VT1,aligned>::Type  TargetType;
+   typedef typename VT1::ElementType  ET1;
+   typedef typename VT2::ElementType  ET2;
 
-   const bool vectorizable( VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value );
+   enum { vectorizable = VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value };
+   enum { alignment = ( vectorizable )?( aligned ):( unaligned ) };
+
+   typedef IntrinsicTrait<typename VT1::ElementType>         IT;
+   typedef typename SubvectorExprTrait<VT1,alignment>::Type  TargetType;
 
 #pragma omp parallel shared( lhs, rhs )
    {
@@ -341,8 +347,8 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 
          if( index < (~lhs).size() ) {
             const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-            TargetType target( subvector<aligned>( ~lhs, index, size ) );
-            subAssign( target, subvector<aligned>( ~rhs, index, size ) );
+            TargetType target( subvector<alignment>( ~lhs, index, size ) );
+            subAssign( target, subvector<alignment>( ~rhs, index, size ) );
          }
       }
    }
@@ -409,19 +415,21 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes"      );
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
    if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       multAssign( ~lhs, ~rhs );
       return;
    }
 
-   typedef typename VT1::ElementType                       ET1;
-   typedef typename VT2::ElementType                       ET2;
-   typedef IntrinsicTrait<typename VT1::ElementType>       IT;
-   typedef typename SubvectorExprTrait<VT1,aligned>::Type  TargetType;
+   typedef typename VT1::ElementType  ET1;
+   typedef typename VT2::ElementType  ET2;
 
-   const bool vectorizable( VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value );
+   enum { vectorizable = VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value };
+   enum { alignment = ( vectorizable )?( aligned ):( unaligned ) };
+
+   typedef IntrinsicTrait<typename VT1::ElementType>         IT;
+   typedef typename SubvectorExprTrait<VT1,alignment>::Type  TargetType;
 
 #pragma omp parallel shared( lhs, rhs )
    {
@@ -438,8 +446,8 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 
          if( index < (~lhs).size() ) {
             const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-            TargetType target( subvector<aligned>( ~lhs, index, size ) );
-            multAssign( target, subvector<aligned>( ~rhs, index, size ) );
+            TargetType target( subvector<alignment>( ~lhs, index, size ) );
+            multAssign( target, subvector<alignment>( ~rhs, index, size ) );
          }
       }
    }
