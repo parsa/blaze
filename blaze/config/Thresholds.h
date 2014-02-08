@@ -317,6 +317,23 @@ const size_t OPENMP_SMATDVECMULT_THRESHOLD = 450UL;
 
 
 //*************************************************************************************************
+/*!\brief OpenMP row-major sparse matrix/sparse vector multiplication threshold.
+// \ingroup config
+//
+// This threshold specifies when a sparse matrix/sparse vector multiplication can be executed in
+// parallel. This threshold affects both multiplications with row-major and column-major matrices.
+// In case the number of elements of the target vector is larger or equal to this threshold, the
+// operation is executed in parallel. If the number of elements is below this threshold the
+// operation is executed single-threaded.
+//
+// The default setting for this threshold is 350. In case the threshold is set to 0, the operation
+// is unconditionally executed in parallel.
+*/
+const size_t OPENMP_SMATSVECMULT_THRESHOLD = 350UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief OpenMP dense vector/row-major dense matrix multiplication threshold.
 // \ingroup config
 //
@@ -360,10 +377,27 @@ const size_t OPENMP_TSVECDMATMULT_THRESHOLD = 450UL;
 // operation is executed in parallel. If the number of elements is below this threshold the
 // operation is executed single-threaded.
 //
-// The default setting for this threshold is 450. In case the threshold is set to 0, the operation
+// The default setting for this threshold is 350. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t OPENMP_TDVECSMATMULT_THRESHOLD = 450UL;
+const size_t OPENMP_TDVECSMATMULT_THRESHOLD = 350UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief OpenMP sparse vector/row-major sparse matrix multiplication threshold.
+// \ingroup config
+//
+// This threshold specifies when a sparse vector/sparse matrix multiplication can be executed in
+// parallel. This threshold affects both multiplications with row-major and column-major matrices.
+// In case the number of elements of the target vector is larger or equal to this threshold, the
+// operation is executed in parallel. If the number of elements is below this threshold the
+// operation is executed single-threaded.
+//
+// The default setting for this threshold is 350. In case the threshold is set to 0, the operation
+// is unconditionally executed in parallel.
+*/
+const size_t OPENMP_TSVECSMATMULT_THRESHOLD = 350UL;
 //*************************************************************************************************
 
 
