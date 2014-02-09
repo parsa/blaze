@@ -51,6 +51,8 @@
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/VecScalarMultExpr.h>
 #include <blaze/math/Intrinsics.h>
+#include <blaze/math/smp/DenseVector.h>
+#include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/traits/DivExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
@@ -417,7 +419,7 @@ class DVecScalarMultExpr : public DenseVector< DVecScalarMultExpr<VT,ST,TF>, TF 
                          IntrinsicTrait<ET>::multiplication };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = VT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -534,6 +536,17 @@ class DVecScalarMultExpr : public DenseVector< DVecScalarMultExpr<VT,ST,TF>, TF 
    }
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can be used in SMP assignments.
+   //
+   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const
+   {
+      return vector_.canSMPAssign() || ( size() > OPENMP_DVECSCALARMULT_THRESHOLD );
+   }
+   //**********************************************************************************************
+
  private:
    //**Member variables****************************************************************************
    LeftOperand  vector_;  //!< Left-hand side dense vector of the multiplication expression.
@@ -562,7 +575,7 @@ class DVecScalarMultExpr : public DenseVector< DVecScalarMultExpr<VT,ST,TF>, TF 
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      assign( ~lhs, rhs.vector_ );
+      smpAssign( ~lhs, rhs.vector_ );
       (~lhs) *= rhs.scalar_;
    }
    /*! \endcond */
@@ -590,7 +603,7 @@ class DVecScalarMultExpr : public DenseVector< DVecScalarMultExpr<VT,ST,TF>, TF 
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      assign( ~lhs, rhs.vector_ );
+      smpAssign( ~lhs, rhs.vector_ );
       (~lhs) *= rhs.scalar_;
    }
    /*! \endcond */
@@ -623,7 +636,7 @@ class DVecScalarMultExpr : public DenseVector< DVecScalarMultExpr<VT,ST,TF>, TF 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      addAssign( ~lhs, tmp );
+      smpAddAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -659,7 +672,7 @@ class DVecScalarMultExpr : public DenseVector< DVecScalarMultExpr<VT,ST,TF>, TF 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      subAssign( ~lhs, tmp );
+      smpSubAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -695,7 +708,7 @@ class DVecScalarMultExpr : public DenseVector< DVecScalarMultExpr<VT,ST,TF>, TF 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      multAssign( ~lhs, tmp );
+      smpMultAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
