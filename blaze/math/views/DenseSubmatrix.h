@@ -4710,8 +4710,7 @@ inline DenseSubmatrix<MT,aligned,false>::DenseSubmatrix( MT& matrix, size_t row,
    if( ( row + m > matrix.rows() ) || ( column + n > matrix.columns() ) )
       throw std::invalid_argument( "Invalid submatrix specification" );
 
-   if( row    % IT::size != 0UL || ( row_    + m_ != matrix_.rows()    && m_ % IT::size != 0UL ) ||
-       column % IT::size != 0UL || ( column_ + n_ != matrix_.columns() && n_ % IT::size != 0UL ) )
+   if( column % IT::size != 0UL || ( column_ + n_ != matrix_.columns() && n_ % IT::size != 0UL ) )
       throw std::invalid_argument( "Invalid submatrix alignment" );
 }
 /*! \endcond */
@@ -6462,8 +6461,7 @@ inline DenseSubmatrix<MT,aligned,true>::DenseSubmatrix( MT& matrix, size_t row, 
    if( ( row + m > matrix.rows() ) || ( column + n > matrix.columns() ) )
       throw std::invalid_argument( "Invalid submatrix specification" );
 
-   if( row    % IT::size != 0UL || ( row_    + m_ != matrix_.rows()    && m_ % IT::size != 0UL ) ||
-       column % IT::size != 0UL || ( column_ + n_ != matrix_.columns() && n_ % IT::size != 0UL ) )
+   if( row % IT::size != 0UL || ( row_ + m_ != matrix_.rows() && m_ % IT::size != 0UL ) )
       throw std::invalid_argument( "Invalid submatrix alignment" );
 }
 /*! \endcond */
