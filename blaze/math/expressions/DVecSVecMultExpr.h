@@ -151,6 +151,11 @@ class DVecSVecMultExpr : public SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF >
    typedef typename SelectType< IsExpression<VT2>::value, const VT2, const VT2& >::Type  RightOperand;
    //**********************************************************************************************
 
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = 0 };
+   //**********************************************************************************************
+
    //**ConstIterator class definition**************************************************************
    /*!\brief Iterator over the elements of the dense vector-sparse vector multiplication expression.
    */
