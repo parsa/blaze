@@ -51,6 +51,8 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatVecMultExpr.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/smp/DenseVector.h>
+#include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
@@ -149,7 +151,7 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
    enum { vectorizable = 0 };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = !useAssign };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -252,6 +254,17 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
    }
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can be used in SMP assignments.
+   //
+   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const
+   {
+      return ( size() > OPENMP_DMATSVECMULT_THRESHOLD );
+   }
+   //**********************************************************************************************
+
  private:
    //**Member variables****************************************************************************
    LeftOperand  mat_;  //!< Left-hand side dense matrix of the multiplication expression.
@@ -301,17 +314,7 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size()     , "Invalid vector size"       );
 
       // Performing the dense matrix-sparse vector multiplication
-      const ConstIterator end( x.end() );
-
-      for( size_t i=0UL; i<(~lhs).size(); ++i )
-      {
-         ConstIterator element( x.begin() );
-
-         (~lhs)[i] = A( i, element->index() ) * element->value();
-         ++element;
-         for( ; element!=end; ++element )
-            (~lhs)[i] += A( i, element->index() ) * element->value();
-      }
+      smpAssign( ~lhs, A * x );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -345,7 +348,7 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      assign( ~lhs, tmp );
+      smpAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -390,16 +393,7 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size()     , "Invalid vector size"       );
 
       // Performing the dense matrix-sparse vector multiplication
-      const ConstIterator end( x.end() );
-
-      for( size_t i=0UL; i<(~lhs).size(); ++i )
-      {
-         ConstIterator element( x.begin() );
-
-         for( ; element!=end; ++element ) {
-            (~lhs)[i] += A( i, element->index() ) * element->value();
-         }
-      }
+      smpAddAssign( ~lhs, A * x );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -448,16 +442,7 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size()     , "Invalid vector size"       );
 
       // Performing the dense matrix-sparse vector multiplication
-      const ConstIterator end( x.end() );
-
-      for( size_t i=0UL; i<(~lhs).size(); ++i )
-      {
-         ConstIterator element( x.begin() );
-
-         for( ; element!=end; ++element ) {
-            (~lhs)[i] -= A( i, element->index() ) * element->value();
-         }
-      }
+      smpSubAssign( ~lhs, A * x );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -495,7 +480,7 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      multAssign( ~lhs, tmp );
+      smpMultAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
