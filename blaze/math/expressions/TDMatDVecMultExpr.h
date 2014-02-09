@@ -53,6 +53,8 @@
 #include <blaze/math/expressions/VecScalarMultExpr.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/smp/DenseVector.h>
+#include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
@@ -122,6 +124,18 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense vector expression.
    enum { evaluateVector = IsComputation<VT>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! In case the either the matrix or the vector operand require an intermediate evaluation,
+       the nested \value will be set to 0, otherwise it will be 1. */
+   template< typename T1, typename T2, typename T3 >
+   struct UseSMPAssignKernel {
+      enum { value = evaluateMatrix || evaluateVector };
+   };
+   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -247,10 +261,13 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = 0 };
+   enum { vectorizable = MT::vectorizable && VT::vectorizable &&
+                         IsSame<MET,VET>::value &&
+                         IntrinsicTrait<MET>::addition &&
+                         IntrinsicTrait<MET>::multiplication };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = !evaluateMatrix && !evaluateVector };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -350,6 +367,20 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    }
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can be used in SMP assignments.
+   //
+   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const
+   {
+      return ( !BLAZE_BLAS_IS_PARALLEL ||
+               ( IsComputation<MT>::value && !evaluateMatrix ) ||
+               ( mat_.rows() * mat_.columns() < TDMATDVECMULT_THRESHOLD ) ) &&
+             ( size() > OPENMP_DMATDVECMULT_THRESHOLD );
+   }
+   //**********************************************************************************************
+
  private:
    //**Member variables****************************************************************************
    LeftOperand  mat_;  //!< Left-hand side dense matrix of the multiplication expression.
@@ -393,11 +424,55 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size()     , "Invalid vector size"       );
 
+      TDMatDVecMultExpr::selectAssignKernel( ~lhs, A, x );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Assignment to dense vectors (kernel selection)**********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Selection of the kernel for an assignment of a transpose dense matrix-dense vector
+   //        multiplication to a dense vector (\f$ \vec{y}=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \return void
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2 >  // Type of the right-hand side vector operand
+   static inline typename DisableIf< UseSMPAssignKernel<VT1,MT1,VT2> >::Type
+      selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   {
       if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDMATDVECMULT_THRESHOLD ) )
-         TDMatDVecMultExpr::selectDefaultAssignKernel( ~lhs, A, x );
+         TDMatDVecMultExpr::selectDefaultAssignKernel( y, A, x );
       else
-         TDMatDVecMultExpr::selectBlasAssignKernel( ~lhs, A, x );
+         TDMatDVecMultExpr::selectBlasAssignKernel( y, A, x );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Assignment to dense vectors (kernel selection)**********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Selection of the kernel for an assignment of a transpose dense matrix-dense vector
+   //        multiplication to a dense vector (\f$ \vec{y}=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \return void
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseSMPAssignKernel<VT1,MT1,VT2> >::Type
+      selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   {
+      smpAssign( y, A * x );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -752,7 +827,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      assign( ~lhs, tmp );
+      smpAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -789,11 +864,55 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size()     , "Invalid vector size"       );
 
+      TDMatDVecMultExpr::selectAddAssignKernel( ~lhs, A, x );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Addition assignment to dense vectors (kernel selection)*************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Selection of the kernel for an addition assignment of a transpose dense matrix-dense
+   //        vector multiplication to a dense vector (\f$ \vec{y}+=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \return void
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2 >  // Type of the right-hand side vector operand
+   static inline typename DisableIf< UseSMPAssignKernel<VT1,MT1,VT2> >::Type
+      selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   {
       if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDMATDVECMULT_THRESHOLD ) )
-         TDMatDVecMultExpr::selectDefaultAddAssignKernel( ~lhs, A, x );
+         TDMatDVecMultExpr::selectDefaultAddAssignKernel( y, A, x );
       else
-         TDMatDVecMultExpr::selectBlasAddAssignKernel( ~lhs, A, x );
+         TDMatDVecMultExpr::selectBlasAddAssignKernel( y, A, x );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Addition assignment to dense vectors (kernel selection)*************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Selection of the kernel for an addition assignment of a transpose dense matrix-dense
+   //        vector multiplication to a dense vector (\f$ \vec{y}+=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \return void
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseSMPAssignKernel<VT1,MT1,VT2> >::Type
+      selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   {
+      smpAddAssign( y, A * x );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1169,11 +1288,55 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size()     , "Invalid vector size"       );
 
+      TDMatDVecMultExpr::selectSubAssignKernel( ~lhs, A, x );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Subtraction assignment to dense vectors (kernel selection)**********************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Selection of the kernel for an subtraction assignment of a transpose dense matrix-
+   //        dense vector multiplication to a dense vector (\f$ \vec{y}-=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \return void
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2 >  // Type of the right-hand side vector operand
+   static inline typename DisableIf< UseSMPAssignKernel<VT1,MT1,VT2> >::Type
+      selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   {
       if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDMATDVECMULT_THRESHOLD ) )
-         TDMatDVecMultExpr::selectDefaultSubAssignKernel( ~lhs, A, x );
+         TDMatDVecMultExpr::selectDefaultSubAssignKernel( y, A, x );
       else
-         TDMatDVecMultExpr::selectBlasSubAssignKernel( ~lhs, A, x );
+         TDMatDVecMultExpr::selectBlasSubAssignKernel( y, A, x );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Subtraction assignment to dense vectors (kernel selection)**********************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Selection of the kernel for an subtraction assignment of a transpose dense matrix-
+   //        dense vector multiplication to a dense vector (\f$ \vec{y}-=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \return void
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseSMPAssignKernel<VT1,MT1,VT2> >::Type
+      selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   {
+      smpSubAssign( y, A * x );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1613,6 +1776,16 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
    //**********************************************************************************************
    //! Helper structure for the explicit application of the SFINAE principle.
+   /*! In case the either the matrix or the vector operand require an intermediate evaluation,
+       the nested \value will be set to 0, otherwise it will be 1. */
+   template< typename T1, typename T2, typename T3, typename T4 >
+   struct UseSMPAssignKernel {
+      enum { value = evaluateMatrix || evaluateVector };
+   };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Helper structure for the explicit application of the SFINAE principle.
    /*! In case the data type of the two involved vectors and the matrix is \a float, the scalar
        value is not a complex data type, and the single precision kernel can be used, the nested
        \a value will be set to 1, otherwise it will be 0. */
@@ -1725,10 +1898,14 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = 0 };
+   enum { vectorizable = MT::vectorizable && VT::vectorizable &&
+                         IsSame<MET,VET>::value &&
+                         IsSame<MET,ST>::value &&
+                         IntrinsicTrait<MET>::addition &&
+                         IntrinsicTrait<MET>::multiplication };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = !evaluateMatrix && !evaluateVector };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -1809,6 +1986,22 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    }
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can be used in SMP assignments.
+   //
+   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const
+   {
+      typename MVM::LeftOperand A( vector_.leftOperand() );
+
+      return ( !BLAZE_BLAS_IS_PARALLEL ||
+               ( IsComputation<MT>::value && !evaluateMatrix ) ||
+               ( A.rows() * A.columns() < TDMATDVECMULT_THRESHOLD ) ) &&
+             ( size() > OPENMP_DMATDVECMULT_THRESHOLD );
+   }
+   //**********************************************************************************************
+
  private:
    //**Member variables****************************************************************************
    LeftOperand  vector_;  //!< Left-hand side dense vector of the multiplication expression.
@@ -1853,11 +2046,55 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
       BLAZE_INTERNAL_ASSERT( x.size()    == right.size()  , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size() , "Invalid vector size"       );
 
+      DVecScalarMultExpr::selectAssignKernel( ~lhs, A, x, rhs.scalar_ );
+   }
+   //**********************************************************************************************
+
+   //**Assignment to dense vectors (kernel selection)**********************************************
+   /*!\brief Selection of the kernel for an assignment of a scaled transpose dense matrix-dense
+   //        vector multiplication to a dense vector (\f$ \vec{y}=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseSMPAssignKernel<VT1,MT1,VT2,ST2> >::Type
+      selectAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
+   {
       if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDMATDVECMULT_THRESHOLD ) )
-         DVecScalarMultExpr::selectDefaultAssignKernel( ~lhs, A, x, rhs.scalar_ );
+         DVecScalarMultExpr::selectDefaultAssignKernel( y, A, x, scalar );
       else
-         DVecScalarMultExpr::selectBlasAssignKernel( ~lhs, A, x, rhs.scalar_ );
+         DVecScalarMultExpr::selectBlasAssignKernel( y, A, x, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Assignment to dense vectors (kernel selection)**********************************************
+   /*!\brief Selection of the kernel for an assignment of a scaled transpose dense matrix-dense
+   //        vector multiplication to a dense vector (\f$ \vec{y}=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< UseSMPAssignKernel<VT1,MT1,VT2,ST2> >::Type
+      selectAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
+   {
+      smpAssign( y, A * x * scalar );
    }
    //**********************************************************************************************
 
@@ -2216,7 +2453,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      assign( ~lhs, tmp );
+      smpAssign( ~lhs, tmp );
    }
    //**********************************************************************************************
 
@@ -2254,11 +2491,55 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
       BLAZE_INTERNAL_ASSERT( x.size()    == right.size()  , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size() , "Invalid vector size"       );
 
+      DVecScalarMultExpr::selectAddAssignKernel( ~lhs, A, x, rhs.scalar_ );
+   }
+   //**********************************************************************************************
+
+   //**Addition assignment to dense vectors (kernel selection)*************************************
+   /*!\brief Selection of the kernel for an addition assignment of a scaled transpose dense
+   //        matrix-dense vector multiplication to a dense vector (\f$ \vec{y}+=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseSMPAssignKernel<VT1,MT1,VT2,ST2> >::Type
+      selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
+   {
       if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDMATDVECMULT_THRESHOLD ) )
-         DVecScalarMultExpr::selectDefaultAddAssignKernel( ~lhs, A, x, rhs.scalar_ );
+         DVecScalarMultExpr::selectDefaultAddAssignKernel( y, A, x, scalar );
       else
-         DVecScalarMultExpr::selectBlasAddAssignKernel( ~lhs, A, x, rhs.scalar_ );
+         DVecScalarMultExpr::selectBlasAddAssignKernel( y, A, x, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Addition assignment to dense vectors (kernel selection)*************************************
+   /*!\brief Selection of the kernel for an addition assignment of a scaled transpose dense
+   //        matrix-dense vector multiplication to a dense vector (\f$ \vec{y}+=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< UseSMPAssignKernel<VT1,MT1,VT2,ST2> >::Type
+      selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
+   {
+      smpAddAssign( y, A * x * scalar );
    }
    //**********************************************************************************************
 
@@ -2610,11 +2891,55 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
       BLAZE_INTERNAL_ASSERT( x.size()    == right.size()  , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size() , "Invalid vector size"       );
 
+      DVecScalarMultExpr::selectSubAssignKernel( ~lhs, A, x, rhs.scalar_ );
+   }
+   //**********************************************************************************************
+
+   //**Subtraction assignment to dense vectors (kernel selection)**********************************
+   /*!\brief Selection of the kernel for an subtraction assignment of a scaled transpose dense
+   //        matrix-dense vector multiplication to a dense vector (\f$ \vec{y}-=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseSMPAssignKernel<VT1,MT1,VT2,ST2> >::Type
+      selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
+   {
       if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDMATDVECMULT_THRESHOLD ) )
-         DVecScalarMultExpr::selectDefaultSubAssignKernel( ~lhs, A, x, rhs.scalar_ );
+         DVecScalarMultExpr::selectDefaultSubAssignKernel( y, A, x, scalar );
       else
-         DVecScalarMultExpr::selectBlasSubAssignKernel( ~lhs, A, x, rhs.scalar_ );
+         DVecScalarMultExpr::selectBlasSubAssignKernel( y, A, x, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Subtraction assignment to dense vectors (kernel selection)**********************************
+   /*!\brief Selection of the kernel for an subtraction assignment of a scaled transpose dense
+   //        matrix-dense vector multiplication to a dense vector (\f$ \vec{y}-=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< UseSMPAssignKernel<VT1,MT1,VT2,ST2> >::Type
+      selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
+   {
+      smpSubAssign( y, A * x * scalar );
    }
    //**********************************************************************************************
 
