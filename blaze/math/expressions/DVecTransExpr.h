@@ -49,6 +49,8 @@
 #include <blaze/math/expressions/SVecTransposer.h>
 #include <blaze/math/expressions/VecTransExpr.h>
 #include <blaze/math/Intrinsics.h>
+#include <blaze/math/smp/DenseVector.h>
+#include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -485,6 +487,17 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
    }
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can be used in SMP assignments.
+   //
+   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const
+   {
+      return dv_.canSMPAssign();
+   }
+   //**********************************************************************************************
+
  private:
    //**Member variables****************************************************************************
    Operand dv_;  //!< Dense vector of the transposition expression.
@@ -513,7 +526,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       DVecTransposer<VT2,!TF> tmp( ~lhs );
-      assign( tmp, rhs.dv_ );
+      smpAssign( tmp, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -541,7 +554,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       SVecTransposer<VT2,!TF> tmp( ~lhs );
-      assign( tmp, rhs.dv_ );
+      smpAssign( tmp, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -569,7 +582,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       DVecTransposer<VT2,!TF> tmp( ~lhs );
-      addAssign( tmp, rhs.dv_ );
+      smpAddAssign( tmp, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -601,7 +614,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       DVecTransposer<VT2,!TF> tmp( ~lhs );
-      subAssign( tmp, rhs.dv_ );
+      smpSubAssign( tmp, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -633,7 +646,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       DVecTransposer<VT2,!TF> tmp( ~lhs );
-      multAssign( tmp, rhs.dv_ );
+      smpMultAssign( tmp, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
