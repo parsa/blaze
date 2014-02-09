@@ -49,7 +49,10 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/TVecMatMultExpr.h>
+#include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/smp/DenseVector.h>
+#include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
@@ -104,8 +107,20 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Compilation switch for the composite type of the left-hand side dense matrix expression.
+   //! Compilation switch for the composite type of the left-hand side sparse matrix expression.
    enum { evaluateMatrix = RequiresEvaluation<MT>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! In case the either the vector or the matrix operand require an intermediate evaluation,
+       the nested \value will be set to 0, otherwise it will be 1. */
+   template< typename T1, typename T2, typename T3 >
+   struct UseSMPAssignKernel {
+      enum { value = evaluateVector || evaluateMatrix };
+   };
+   /*! \endcond */
    //**********************************************************************************************
 
  public:
@@ -135,7 +150,7 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
    enum { vectorizable = 0 };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = !evaluateVector && !evaluateMatrix };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -228,101 +243,120 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
    }
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can be used in SMP assignments.
+   //
+   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const
+   {
+      return ( size() > OPENMP_TDVECSMATMULT_THRESHOLD );
+   }
+   //**********************************************************************************************
+
  private:
    //**Member variables****************************************************************************
    LeftOperand  vec_;  //!< Left-hand side dense vector of the multiplication expression.
    RightOperand mat_;  //!< Right-hand side sparse matrix of the multiplication expression.
    //**********************************************************************************************
 
-   //**Default assignment to dense vectors*********************************************************
-   /*!\brief Default assignment of a transpose dense vector-sparse matrix multiplication to a
-   //        dense vector (\f$ \vec{y}^T=\vec{x}^T*A \f$).
+   //**Assignment to dense vectors*****************************************************************
+   /*!\brief Assignment of a transpose dense vector-sparse matrix multiplication to a dense
+   //        vector (\f$ \vec{y}^T=\vec{x}^T*A \f$).
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
    // \param rhs The right-hand side multiplication expression to be assigned.
    // \return void
    //
-   // This function implements the default assignment of a transpose dense vector-sparse matrix
-   // multiplication expression to a dense vector. This assign function is used in case the
-   // element type of the target vector is resizable.
+   // This function implements the performance optimized assignment of a transpose dense vector-
+   // sparse matrix multiplication expression to a dense vector.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< IsResizable<typename VT2::ElementType> >::Type
-      assign( DenseVector<VT2,true>& lhs, const TDVecSMatMultExpr& rhs )
+   friend inline void assign( DenseVector<VT2,true>& lhs, const TDVecSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      if( rhs.mat_.rows() == 0UL ) {
-         reset( ~lhs );
-         return;
-      }
-
-      LT x( rhs.vec_ );  // Evaluation of the left-hand side dense vector operator
-      RT A( rhs.mat_ );  // Evaluation of the right-hand side sparse matrix operator
-
-      BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == rhs.mat_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()     , "Invalid vector size"       );
-
-      for( size_t i=0; i<(~lhs).size(); ++i ) {
-         (~lhs)[i] = x[0UL] * A(0UL,i);
-         for( size_t j=1UL; j<x.size(); ++j ) {
-            (~lhs)[i] += x[j] * A(j,i);
-         }
-      }
-   }
-   //**********************************************************************************************
-
-   //**Optimized assignment to dense vectors*******************************************************
-   /*!\brief Optimized assignment of a transpose dense vector-sparse matrix multiplication to a
-   //        dense vector (\f$ \vec{y}^T=\vec{x}^T*A \f$).
-   // \ingroup dense_vector
-   //
-   // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side multiplication expression to be assigned.
-   // \return void
-   //
-   // This function implements the default assignment of a transpose dense vector-sparse matrix
-   // multiplication expression to a dense vector. This assign function is used in case the
-   // element type of the target vector is not resizable.
-   */
-   template< typename VT2 >  // Type of the target dense vector
-   friend inline typename DisableIf< IsResizable<typename VT2::ElementType> >::Type
-      assign( DenseVector<VT2,true>& lhs, const TDVecSMatMultExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
-
-      if( rhs.mat_.rows() == 0UL ) {
-         reset( ~lhs );
-         return;
-      }
-
-      LT x( rhs.vec_ );  // Evaluation of the left-hand side dense vector operator
-      RT A( rhs.mat_ );  // Evaluation of the right-hand side sparse matrix operator
-
-      BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == rhs.mat_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()     , "Invalid vector size"       );
 
       reset( ~lhs );
 
-      for( size_t i=0UL; i<x.size(); ++i ) {
+      if( rhs.mat_.rows() == 0UL ) return;
+
+      LT x( rhs.vec_ );  // Evaluation of the left-hand side dense vector operator
+      RT A( rhs.mat_ );  // Evaluation of the right-hand side sparse matrix operator
+
+      BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == rhs.mat_.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()     , "Invalid vector size"       );
+
+      TDVecSMatMultExpr::selectAssignKernel( ~lhs, x, A );
+   }
+   //**********************************************************************************************
+
+   //**Serial assignment to dense vectors**********************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Serial assignment of a transpose dense vector-sparse matrix multiplication
+   //        (\f$ \vec{y}^T=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side dense vector operand.
+   // \param A The right-hand side sparse matrix operand.
+   // \return void
+   //
+   // This function implements the serial assignment kernel for the transpose sparse vector-
+   // transpose sparse matrix multiplication.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename DisableIf< UseSMPAssignKernel<VT1,VT2,MT1> >::Type
+      selectAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      typedef typename RemoveReference<MT1>::Type::ConstIterator  ConstIterator;
+
+      for( size_t i=0UL; i<x.size(); ++i )
+      {
          const ConstIterator end( A.end(i) );
          ConstIterator element( A.begin(i) );
+
          for( ; element!=end; ++element ) {
-            (~lhs)[element->index()] += x[i] * element->value();
+            if( IsResizable<typename VT1::ElementType>::value &&
+                isDefault( y[element->index()] ) )
+               y[element->index()] = x[i] * element->value();
+            else
+               y[element->index()] += x[i] * element->value();
          }
       }
    }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP assignment to dense vectors*************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP assignment of a transpose dense vector-sparse matrix multiplication
+   //        (\f$ \vec{y}^T=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side dense vector operand.
+   // \param A The right-hand side sparse matrix operand.
+   // \return void
+   //
+   // This function implements the SMP assignment kernel for the transpose sparse vector-
+   // transpose sparse matrix multiplication.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseSMPAssignKernel<VT1,VT2,MT1> >::Type
+      selectAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      smpAssign( y, x * A );
+   }
+   /*! \endcond */
    //**********************************************************************************************
 
    //**Assignment to sparse vectors****************************************************************
@@ -349,7 +383,7 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      assign( ~lhs, tmp );
+      smpAssign( ~lhs, tmp );
    }
    //**********************************************************************************************
 
@@ -386,14 +420,68 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.mat_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()     , "Invalid vector size"       );
 
-      for( size_t i=0UL; i<x.size(); ++i ) {
+      TDVecSMatMultExpr::selectAddAssignKernel( ~lhs, x, A );
+   }
+   //**********************************************************************************************
+
+   //**Serial addition assignment to dense vectors*************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Serial addition assignment of a transpose dense vector-sparse matrix multiplication
+   //        (\f$ \vec{y}^T+=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side dense vector operand.
+   // \param A The right-hand side sparse matrix operand.
+   // \return void
+   //
+   // This function implements the serial addition assignment kernel for the transpose sparse
+   // vector-transpose sparse matrix multiplication.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename DisableIf< UseSMPAssignKernel<VT1,VT2,MT1> >::Type
+      selectAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      typedef typename RemoveReference<MT1>::Type::ConstIterator  ConstIterator;
+
+      for( size_t i=0UL; i<x.size(); ++i )
+      {
          const ConstIterator end( A.end(i) );
          ConstIterator element( A.begin(i) );
+
          for( ; element!=end; ++element ) {
-            (~lhs)[element->index()] += x[i] * element->value();
+            y[element->index()] += x[i] * element->value();
          }
       }
    }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP addition assignment to dense vectors****************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP addition assignment of a transpose dense vector-sparse matrix multiplication
+   //        (\f$ \vec{y}^T+=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side dense vector operand.
+   // \param A The right-hand side sparse matrix operand.
+   // \return void
+   //
+   // This function implements the SMP addition assignment kernel for the transpose sparse
+   // vector-transpose sparse matrix multiplication.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseSMPAssignKernel<VT1,VT2,MT1> >::Type
+      selectAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      smpAddAssign( y, x * A );
+   }
+   /*! \endcond */
    //**********************************************************************************************
 
    //**Addition assignment to sparse vectors*******************************************************
@@ -433,14 +521,68 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.mat_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()     , "Invalid vector size"       );
 
-      for( size_t i=0UL; i<x.size(); ++i ) {
+      TDVecSMatMultExpr::selectSubAssignKernel( ~lhs, x, A );
+   }
+   //**********************************************************************************************
+
+   //**Serial subtraction assignment to dense vectors**********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Serial subtraction assignment of a transpose dense vector-sparse matrix multiplication
+   //        (\f$ \vec{y}^T-=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side dense vector operand.
+   // \param A The right-hand side sparse matrix operand.
+   // \return void
+   //
+   // This function implements the serial subtraction assignment kernel for the transpose sparse
+   // vector-transpose sparse matrix multiplication.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename DisableIf< UseSMPAssignKernel<VT1,VT2,MT1> >::Type
+      selectSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      typedef typename RemoveReference<MT1>::Type::ConstIterator  ConstIterator;
+
+      for( size_t i=0UL; i<x.size(); ++i )
+      {
          const ConstIterator end( A.end(i) );
          ConstIterator element( A.begin(i) );
+
          for( ; element!=end; ++element ) {
-            (~lhs)[element->index()] -= x[i] * element->value();
+            y[element->index()] -= x[i] * element->value();
          }
       }
    }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to dense vectors*************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP subtraction assignment of a transpose dense vector-sparse matrix multiplication
+   //        (\f$ \vec{y}^T-=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side dense vector operand.
+   // \param A The right-hand side sparse matrix operand.
+   // \return void
+   //
+   // This function implements the SMP subtraction assignment kernel for the transpose sparse
+   // vector-transpose sparse matrix multiplication.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseSMPAssignKernel<VT1,VT2,MT1> >::Type
+      selectSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      smpSubAssign( y, x * A );
+   }
+   /*! \endcond */
    //**********************************************************************************************
 
    //**Subtraction assignment to sparse vectors****************************************************
@@ -471,7 +613,7 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      multAssign( ~lhs, tmp );
+      smpMultAssign( ~lhs, tmp );
    }
    //**********************************************************************************************
 
@@ -524,7 +666,7 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
 
 // The operator returns an expression representing a transpose dense vector of the higher-order
 // element type of the two involved element types \a T1::ElementType and \a T2::ElementType.
-// Both the dense matrix type \a T1 and the dense vector type \a T2 as well as the two element
+// Both the sparse matrix type \a T1 and the dense vector type \a T2 as well as the two element
 // types \a T1::ElementType and \a T2::ElementType have to be supported by the MultTrait class
 // template.\n
 // In case the current size of the vector \a vec doesn't match the current number of rows of
