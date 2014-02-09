@@ -47,6 +47,8 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/VecEvalExpr.h>
+#include <blaze/math/smp/DenseVector.h>
+#include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/traits/DVecEvalExprTrait.h>
 #include <blaze/math/traits/EvalExprTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
@@ -171,6 +173,17 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    template< typename T >
    inline bool isAliased( const T* alias ) const {
       return dv_.isAliased( alias );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can be used in SMP assignments.
+   //
+   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const
+   {
+      return dv_.canSMPAssign();
    }
    //**********************************************************************************************
 
@@ -367,6 +380,198 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       multAssign( ~lhs, rhs.dv_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP assignment to dense vectors*************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP assignment of a dense vector evaluation expression to a dense vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side evaluation expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized SMP assignment of a dense vector
+   // evaluation expression to a dense vector.
+   */
+   template< typename VT2 >  // Type of the target dense vector
+   friend inline void smpAssign( DenseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      smpAssign( ~lhs, rhs.dv_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP assignment to sparse vectors************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP assignment of a dense vector evaluation expression to a sparse vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side sparse vector.
+   // \param rhs The right-hand side evaluation expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized SMP assignment of a dense vector
+   // evaluation expression to a sparse vector.
+   */
+   template< typename VT2 >  // Type of the target sparse vector
+   friend inline void smpAssign( SparseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      smpAssign( ~lhs, rhs.dv_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP addition assignment to dense vectors****************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP addition assignment of a dense vector evaluation expression to a dense vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side evaluation expression to be added.
+   // \return void
+   //
+   // This function implements the performance optimized SMP addition assignment of a dense
+   // vector evaluation expression to a dense vector.
+   */
+   template< typename VT2 >  // Type of the target dense vector
+   friend inline void smpAddAssign( DenseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      smpAddAssign( ~lhs, rhs.dv_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP addition assignment to sparse vectors***************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP addition assignment of a dense vector evaluation expression to a sparse vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side sparse vector.
+   // \param rhs The right-hand side evaluation expression to be added.
+   // \return void
+   //
+   // This function implements the performance optimized SMP addition assignment of a dense
+   // vector evaluation expression to a sparse vector.
+   */
+   template< typename VT2 >  // Type of the target sparse vector
+   friend inline void smpAddAssign( SparseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      smpAddAssign( ~lhs, rhs.dv_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to dense vectors*************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP subtraction assignment of a dense vector evaluation expression to a dense vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side evaluation expression to be subtracted.
+   // \return void
+   //
+   // This function implements the performance optimized SMP subtraction assignment of a dense
+   // vector evaluation expression to a dense vector.
+   */
+   template< typename VT2 >  // Type of the target dense vector
+   friend inline void smpSubAssign( DenseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      smpSubAssign( ~lhs, rhs.dv_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to sparse vectors************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP subtraction assignment of a dense vector evaluation expression to a sparse vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side sparse vector.
+   // \param rhs The right-hand side evaluation expression to be subtracted.
+   // \return void
+   //
+   // This function implements the performance optimized SMP subtraction assignment of a dense
+   // vector evaluation expression to a sparse vector.
+   */
+   template< typename VT2 >  // Type of the target sparse vector
+   friend inline void smpSubAssign( SparseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      smpSubAssign( ~lhs, rhs.dv_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP multiplication assignment to dense vectors**********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP multiplication assignment of a dense vector evaluation expression to a dense vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side evaluation expression to be multiplied.
+   // \return void
+   //
+   // This function implements the performance optimized SMP multiplication assignment of a dense
+   // vector evaluation expression to a dense vector.
+   */
+   template< typename VT2 >  // Type of the target dense vector
+   friend inline void smpMultAssign( DenseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      smpMultAssign( ~lhs, rhs.dv_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP multiplication assignment to sparse vectors*********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP multiplication assignment of a dense vector evaluation expression to a sparse vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side sparse vector.
+   // \param rhs The right-hand side evaluation expression to be multiplied.
+   // \return void
+   //
+   // This function implements the performance optimized SMP multiplication assignment of a dense
+   // vector evaluation expression to a sparse vector.
+   */
+   template< typename VT2 >  // Type of the target sparse vector
+   friend inline void smpMultAssign( SparseVector<VT2,TF>& lhs, const DVecEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      smpMultAssign( ~lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
