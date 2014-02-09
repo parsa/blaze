@@ -52,6 +52,8 @@
 #include <blaze/math/expressions/TVecMatMultExpr.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/smp/DenseVector.h>
+#include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
@@ -117,12 +119,25 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
+   /*! In case the either the vector or the matrix operand require an intermediate evaluation,
+       the nested \value will be set to 0, otherwise it will be 1. */
+   template< typename T1, typename T2, typename T3 >
+   struct UseSMPAssignKernel {
+      enum { value = evaluateVector || evaluateMatrix };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
    /*! In case the matrix type and the two involved vector types are suited for a vectorized
        computation of the vector/matrix multiplication, the nested \value will be set to 1,
        otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseVectorizedKernel {
-      enum { value = T1::vectorizable && T3::vectorizable &&
+      enum { value = !UseSMPAssignKernel<T1,T2,T3>::value &&
+                     T1::vectorizable && T3::vectorizable &&
                      IsSame<typename T1::ElementType,typename T2::ElementType>::value &&
                      IsSame<typename T1::ElementType,typename T3::ElementType>::value &&
                      IntrinsicTrait<typename T1::ElementType>::addition &&
@@ -139,7 +154,8 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
        will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseOptimizedKernel {
-      enum { value = !UseVectorizedKernel<T1,T2,T3>::value &&
+      enum { value = !UseSMPAssignKernel<T1,T2,T3>::value &&
+                     !UseVectorizedKernel<T1,T2,T3>::value &&
                      !IsResizable<typename T1::ElementType>::value &&
                      !IsResizable<VET>::value };
    };
@@ -153,7 +169,8 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
        be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseDefaultKernel {
-      enum { value = !UseVectorizedKernel<T1,T2,T3>::value &&
+      enum { value = !UseSMPAssignKernel<T1,T2,T3>::value &&
+                     !UseVectorizedKernel<T1,T2,T3>::value &&
                      !UseOptimizedKernel<T1,T2,T3>::value };
    };
    /*! \endcond */
@@ -184,10 +201,13 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = 0 };
+   enum { vectorizable = MT::vectorizable &&
+                         IsSame<VET,MET>::value &&
+                         IntrinsicTrait<VET>::addition &&
+                         IntrinsicTrait<VET>::multiplication };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = !evaluateVector && !evaluateMatrix };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -288,6 +308,17 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    template< typename T >
    inline bool isAliased( const T* alias ) const {
       return vec_.isAliased( alias ) || mat_.isAliased( alias );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can be used in SMP assignments.
+   //
+   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const
+   {
+      return ( size() > OPENMP_TSVECDMATMULT_THRESHOLD );
    }
    //**********************************************************************************************
 
@@ -572,6 +603,31 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    /*! \endcond */
    //**********************************************************************************************
 
+   //**SMP assignment to dense vectors*************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP assignment of a transpose sparse vector-dense matrix multiplication
+   //        (\f$ \vec{y}^T=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side sparse vector operand.
+   // \param A The right-hand side dense matrix operand.
+   // \return void
+   //
+   // This function implements the SMP assignment kernel for the transpose sparse vector-dense
+   // matrix multiplication.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseSMPAssignKernel<VT1,VT2,MT1> >::Type
+      selectAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      smpAssign( y, x * A );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**Assignment to sparse vectors****************************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Assignment of a transpose sparse vector-dense matrix multiplication to a sparse
@@ -806,6 +862,31 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    /*! \endcond */
    //**********************************************************************************************
 
+   //**SMP addition assignment to dense vectors****************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP addition assignment of a transpose sparse vector-dense matrix multiplication
+   //        (\f$ \vec{y}^T+=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side sparse vector operand.
+   // \param A The right-hand side dense matrix operand.
+   // \return void
+   //
+   // This function implements the SMP addition assignment kernel for the transpose sparse vector-
+   // dense matrix multiplication.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseSMPAssignKernel<VT1,VT2,MT1> >::Type
+      selectAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      smpAddAssign( y, x * A );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**Addition assignment to sparse vectors*******************************************************
    // No special implementation for the addition assignment to sparse vectors.
    //**********************************************************************************************
@@ -1016,6 +1097,31 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    /*! \endcond */
    //**********************************************************************************************
 
+   //**SMP subtraction assignment to dense vectors*************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP subtraction assignment of a transpose sparse vector-dense matrix multiplication
+   //        (\f$ \vec{y}^T-=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side sparse vector operand.
+   // \param A The right-hand side dense matrix operand.
+   // \return void
+   //
+   // This function implements the SMP subtraction assignment kernel for the transpose sparse
+   // vector-dense matrix multiplication.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseSMPAssignKernel<VT1,VT2,MT1> >::Type
+      selectSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      smpSubAssign( y, x * A );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**Subtraction assignment to sparse vectors****************************************************
    // No special implementation for the subtraction assignment to sparse vectors.
    //**********************************************************************************************
@@ -1044,7 +1150,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      multAssign( ~lhs, tmp );
+      smpMultAssign( ~lhs, tmp );
    }
    //**********************************************************************************************
 
