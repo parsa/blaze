@@ -51,6 +51,8 @@
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/smp/DenseVector.h>
+#include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
@@ -97,6 +99,28 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
    typedef typename VT::CompositeType  VCT;  //!< Composite type of the right-hand side sparse vector expression.
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   //! Compilation switch for the composite type of the left-hand side sparse matrix expression.
+   enum { evaluateMatrix = RequiresEvaluation<MT>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Compilation switch for the composite type of the right-hand side sparse vector expression.
+   enum { evaluateVector = IsComputation<VT>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! In case the either the matrix or the vector operand require an intermediate evaluation,
+       the nested \value will be set to 0, otherwise it will be 1. */
+   template< typename T1, typename T2, typename T3 >
+   struct UseSMPAssignKernel {
+      enum { value = evaluateMatrix || evaluateVector };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    typedef SMatSVecMultExpr<MT,VT>             This;           //!< Type of this SMatSVecMultExpr instance.
@@ -118,12 +142,12 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
    typedef MCT  LT;
 
    //! Type for the assignment of the right-hand side sparse vector operand.
-   typedef typename SelectType< IsComputation<VT>::value, const VRT, VCT >::Type  RT;
+   typedef typename SelectType< evaluateVector, const VRT, VCT >::Type  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = !evaluateMatrix && !evaluateVector };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -328,6 +352,17 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
    }
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can be used in SMP assignments.
+   //
+   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const
+   {
+      return ( size() > OPENMP_SMATSVECMULT_THRESHOLD );
+   }
+   //**********************************************************************************************
+
  private:
    //**Member variables****************************************************************************
    LeftOperand  mat_;  //!< Left-hand side sparse matrix of the multiplication expression.
@@ -353,9 +388,6 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference<LT>::Type::ConstIterator  MatrixIterator;
-      typedef typename RemoveReference<RT>::Type::ConstIterator  VectorIterator;
-
       // Resetting the left-hand side target dense vector
       reset( ~lhs );
 
@@ -373,9 +405,37 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size()     , "Invalid vector size"       );
 
       // Performing the sparse matrix-sparse vector multiplication
+      SMatSVecMultExpr::selectAssignKernel( ~lhs, A, x );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Serial assignment to dense vectors**********************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Serial assignment of a sparse matrix-sparse vector multiplication
+   //        (\f$ \vec{y}=A*\vec{x} \f$).
+   // \ingroup sparse_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side sparse matrix operand.
+   // \param x The right-hand side sparse vector operand.
+   // \return void
+   //
+   // This function implements the serial assignment kernel for the sparse matrix-sparse vector
+   // multiplication.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2 >  // Type of the right-hand side vector operand
+   static inline typename DisableIf< UseSMPAssignKernel<VT1,MT1,VT2> >::Type
+      selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   {
+      typedef typename RemoveReference<LT>::Type::ConstIterator  MatrixIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  VectorIterator;
+
       const VectorIterator vend( x.end() );
 
-      for( size_t i=0UL; i<(~lhs).size(); ++i )
+      for( size_t i=0UL; i<y.size(); ++i )
       {
          const MatrixIterator mend ( A.end(i)   );
          MatrixIterator       melem( A.begin(i) );
@@ -394,7 +454,7 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
                if( velem == vend ) break;
             }
             else {
-               (~lhs)[i] = melem->value() * velem->value();
+               y[i] = melem->value() * velem->value();
                ++melem;
                ++velem;
                break;
@@ -413,7 +473,7 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
                   if( velem == vend ) break;
                }
                else {
-                  (~lhs)[i] += melem->value() * velem->value();
+                  y[i] += melem->value() * velem->value();
                   ++melem;
                   if( melem == mend ) break;
                   ++velem;
@@ -422,6 +482,31 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
             }
          }
       }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP assignment to dense vectors*************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP assignment of a sparse matrix-sparse vector multiplication
+   //        (\f$ \vec{y}=A*\vec{x} \f$).
+   // \ingroup sparse_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side sparse matrix operand.
+   // \param x The right-hand side sparse vector operand.
+   // \return void
+   //
+   // This function implements the SMP assignment kernel for the sparse matrix-sparse vector
+   // multiplication.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseSMPAssignKernel<VT1,MT1,VT2> >::Type
+      selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   {
+      smpAssign( y, A * x );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -536,9 +621,6 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference<LT>::Type::ConstIterator  MatrixIterator;
-      typedef typename RemoveReference<RT>::Type::ConstIterator  VectorIterator;
-
       // Evaluation of the right-hand side sparse vector operand
       RT x( rhs.vec_ );
       if( x.nonZeros() == 0UL ) return;
@@ -553,9 +635,37 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size()     , "Invalid vector size"       );
 
       // Performing the sparse matrix-sparse vector multiplication
+      SMatSVecMultExpr::selectAddAssignKernel( ~lhs, A, x );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Serial addition assignment to dense vectors*************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Serial addition assignment of a sparse matrix-sparse vector multiplication
+   //        (\f$ \vec{y}+=A*\vec{x} \f$).
+   // \ingroup sparse_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side sparse matrix operand.
+   // \param x The right-hand side sparse vector operand.
+   // \return void
+   //
+   // This function implements the serial addition assignment kernel for the sparse matrix-sparse
+   // vector multiplication.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2 >  // Type of the right-hand side vector operand
+   static inline typename DisableIf< UseSMPAssignKernel<VT1,MT1,VT2> >::Type
+      selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   {
+      typedef typename RemoveReference<LT>::Type::ConstIterator  MatrixIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  VectorIterator;
+
       const VectorIterator vend( x.end() );
 
-      for( size_t i=0UL; i<(~lhs).size(); ++i )
+      for( size_t i=0UL; i<y.size(); ++i )
       {
          const MatrixIterator mend ( A.end(i)   );
          MatrixIterator       melem( A.begin(i) );
@@ -574,7 +684,7 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
                if( velem == vend ) break;
             }
             else {
-               (~lhs)[i] += melem->value() * velem->value();
+               y[i] += melem->value() * velem->value();
                ++melem;
                if( melem == mend ) break;
                ++velem;
@@ -582,6 +692,31 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
             }
          }
       }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP addition assignment to dense vectors****************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP addition assignment of a sparse matrix-sparse vector multiplication
+   //        (\f$ \vec{y}+=A*\vec{x} \f$).
+   // \ingroup sparse_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side sparse matrix operand.
+   // \param x The right-hand side sparse vector operand.
+   // \return void
+   //
+   // This function implements the SMP addition assignment kernel for the sparse matrix-sparse
+   // vector multiplication.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseSMPAssignKernel<VT1,MT1,VT2> >::Type
+      selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   {
+      smpAddAssign( y, A * x );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -626,9 +761,37 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size()     , "Invalid vector size"       );
 
       // Performing the sparse matrix-sparse vector multiplication
+      SMatSVecMultExpr::selectSubAssignKernel( ~lhs, A, x );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Serial subtraction assignment to dense vectors**********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Serial subtraction assignment of a sparse matrix-sparse vector multiplication
+   //        (\f$ \vec{y}-=A*\vec{x} \f$).
+   // \ingroup sparse_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side sparse matrix operand.
+   // \param x The right-hand side sparse vector operand.
+   // \return void
+   //
+   // This function implements the serial subtraction assignment kernel for the sparse matrix-
+   // sparse vector multiplication.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2 >  // Type of the right-hand side vector operand
+   static inline typename DisableIf< UseSMPAssignKernel<VT1,MT1,VT2> >::Type
+      selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   {
+      typedef typename RemoveReference<LT>::Type::ConstIterator  MatrixIterator;
+      typedef typename RemoveReference<RT>::Type::ConstIterator  VectorIterator;
+
       const VectorIterator vend( x.end() );
 
-      for( size_t i=0UL; i<(~lhs).size(); ++i )
+      for( size_t i=0UL; i<y.size(); ++i )
       {
          const MatrixIterator mend ( A.end(i)   );
          MatrixIterator       melem( A.begin(i) );
@@ -647,7 +810,7 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
                if( velem == vend ) break;
             }
             else {
-               (~lhs)[i] -= melem->value() * velem->value();
+               y[i] -= melem->value() * velem->value();
                ++melem;
                if( melem == mend ) break;
                ++velem;
@@ -655,6 +818,31 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
             }
          }
       }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to dense vectors*************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP subtraction assignment of a sparse matrix-sparse vector multiplication
+   //        (\f$ \vec{y}-=A*\vec{x} \f$).
+   // \ingroup sparse_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side sparse matrix operand.
+   // \param x The right-hand side sparse vector operand.
+   // \return void
+   //
+   // This function implements the SMP subtraction assignment kernel for the sparse matrix-sparse
+   // vector multiplication.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseSMPAssignKernel<VT1,MT1,VT2> >::Type
+      selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   {
+      smpSubAssign( y, A * x );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -687,7 +875,7 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      multAssign( ~lhs, tmp );
+      smpMultAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
