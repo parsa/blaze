@@ -116,6 +116,11 @@ class TSVecTSMatMultExpr : public SparseVector< TSVecTSMatMultExpr<VT,MT>, true 
    typedef MCT  RT;
    //**********************************************************************************************
 
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = 0 };
+   //**********************************************************************************************
+
    //**Constructor*********************************************************************************
    /*!\brief Constructor for the TSVecTSMatMultExpr class.
    //

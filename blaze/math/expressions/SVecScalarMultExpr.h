@@ -162,6 +162,11 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
    typedef ST  RightOperand;
    //**********************************************************************************************
 
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = 0 };
+   //**********************************************************************************************
+
    //**ConstIterator class definition**************************************************************
    /*!\brief Iterator over the elements of the sparse vector/scalar multiplication expression.
    */

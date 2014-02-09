@@ -102,6 +102,11 @@ class SVecEvalExpr : public SparseVector< SVecEvalExpr<VT,TF>, TF >
    typedef typename SelectType< IsExpression<VT>::value, const VT, const VT& >::Type  Operand;
    //**********************************************************************************************
 
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = VT::smpAssignable };
+   //**********************************************************************************************
+
    //**Constructor*********************************************************************************
    /*!\brief Constructor for the SVecEvalExpr class.
    //
@@ -175,6 +180,17 @@ class SVecEvalExpr : public SparseVector< SVecEvalExpr<VT,TF>, TF >
    template< typename T >
    inline bool isAliased( const T* alias ) const {
       return sv_.isAliased( alias );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can be used in SMP assignments.
+   //
+   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const
+   {
+      return sv_.canSMPAssign();
    }
    //**********************************************************************************************
 

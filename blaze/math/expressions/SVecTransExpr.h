@@ -123,6 +123,11 @@ class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
    typedef typename SelectType< IsExpression<VT>::value, const VT, const VT& >::Type  Operand;
    //**********************************************************************************************
 
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = VT::smpAssignable };
+   //**********************************************************************************************
+
    //**ConstIterator class definition**************************************************************
    /*!\brief Iterator over the elements of the sparse vector absolute value expression.
    */
@@ -339,6 +344,17 @@ class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
    template< typename T >
    inline bool isAliased( const T* alias ) const {
       return sv_.isAliased( alias );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can be used in SMP assignments.
+   //
+   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const
+   {
+      return sv_.canSMPAssign();
    }
    //**********************************************************************************************
 
