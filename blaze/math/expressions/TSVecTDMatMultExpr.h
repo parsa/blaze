@@ -333,7 +333,8 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
    // transpose dense matrix multiplication expression to a sparse vector.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline void assign( SparseVector<VT2,true>& lhs, const TSVecTDMatMultExpr& rhs )
+   friend inline typename EnableIf< UseAssign<VT2> >::Type
+      assign( SparseVector<VT2,true>& lhs, const TSVecTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -362,7 +363,8 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
    // vector-transpose dense matrix multiplication expression to a dense vector.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline void addAssign( DenseVector<VT2,true>& lhs, const TSVecTDMatMultExpr& rhs )
+   friend inline typename EnableIf< UseAssign<VT2> >::Type
+      addAssign( DenseVector<VT2,true>& lhs, const TSVecTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -405,7 +407,8 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
    // sparse vector-transpose dense matrix multiplication expression to a dense vector.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline void subAssign( DenseVector<VT2,true>& lhs, const TSVecTDMatMultExpr& rhs )
+   friend inline typename EnableIf< UseAssign<VT2> >::Type
+      subAssign( DenseVector<VT2,true>& lhs, const TSVecTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -448,7 +451,8 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
    // sparse vector-transpose dense matrix multiplication expression to a dense vector.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline void multAssign( DenseVector<VT2,true>& lhs, const TSVecTDMatMultExpr& rhs )
+   friend inline typename EnableIf< UseAssign<VT2> >::Type
+      multAssign( DenseVector<VT2,true>& lhs, const TSVecTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
