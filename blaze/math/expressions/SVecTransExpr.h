@@ -352,8 +352,7 @@ class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
    //
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
-   inline bool canSMPAssign() const
-   {
+   inline bool canSMPAssign() const {
       return sv_.canSMPAssign();
    }
    //**********************************************************************************************

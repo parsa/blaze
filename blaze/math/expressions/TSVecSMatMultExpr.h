@@ -268,8 +268,7 @@ class TSVecSMatMultExpr : public SparseVector< TSVecSMatMultExpr<VT,MT>, true >
    //
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
-   inline bool canSMPAssign() const
-   {
+   inline bool canSMPAssign() const {
       return ( size() > OPENMP_TSVECSMATMULT_THRESHOLD );
    }
    //**********************************************************************************************
