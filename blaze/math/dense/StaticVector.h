@@ -330,6 +330,8 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
+   inline bool isAligned() const;
+
    inline IntrinsicType load  ( size_t index ) const;
    inline IntrinsicType loadu ( size_t index ) const;
    inline void          store ( size_t index, const IntrinsicType& value );
@@ -1392,6 +1394,25 @@ template< typename Other >  // Data type of the foreign expression
 inline bool StaticVector<Type,N,TF>::isAliased( const Other* alias ) const
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the vector is properly aligned in memory.
+//
+// \return \a true in case the vector is aligned, \a false if not.
+//
+// This function returns whether the vector is guaranteed to be properly aligned in memory, i.e.
+// whether the beginning and the end of the vector are guaranteed to conform to the alignment
+// restrictions of the element type \a Type.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline bool StaticVector<Type,N,TF>::isAligned() const
+{
+   return true;
 }
 //*************************************************************************************************
 
