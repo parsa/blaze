@@ -837,6 +837,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
+   inline bool isAligned   () const;
    inline bool canSMPAssign() const;
 
    inline IntrinsicType load  ( size_t index ) const;
@@ -1560,6 +1561,25 @@ template< typename Other >  // Data type of the foreign expression
 inline bool DenseSubvector<VT,AF,TF>::isAliased( const Other* alias ) const
 {
    return static_cast<const void*>( &vector_ ) == static_cast<const void*>( alias );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the subvector is properly aligned in memory.
+//
+// \return \a true in case the subvector is aligned, \a false if not.
+//
+// This function returns whether the subvector is guaranteed to be properly aligned in memory,
+// i.e. whether the beginning and the end of the subvector are guaranteed to conform to the
+// alignment restrictions of the underlying element type.
+*/
+template< typename VT  // Type of the dense vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
+inline bool DenseSubvector<VT,AF,TF>::isAligned() const
+{
+   return isAligned_;
 }
 //*************************************************************************************************
 
@@ -2315,6 +2335,7 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
+   inline bool isAligned   () const;
    inline bool canSMPAssign() const;
 
    inline IntrinsicType load  ( size_t index ) const;
@@ -3047,6 +3068,26 @@ template< typename Other >  // Data type of the foreign expression
 inline bool DenseSubvector<VT,aligned,TF>::isAliased( const Other* alias ) const
 {
    return static_cast<const void*>( &vector_ ) == static_cast<const void*>( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the subvector is properly aligned in memory.
+//
+// \return \a true in case the subvector is aligned, \a false if not.
+//
+// This function returns whether the subvector is guaranteed to be properly aligned in memory,
+// i.e. whether the beginning and the end of the subvector are guaranteed to conform to the
+// alignment restrictions of the underlying element type.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline bool DenseSubvector<VT,aligned,TF>::isAligned() const
+{
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************

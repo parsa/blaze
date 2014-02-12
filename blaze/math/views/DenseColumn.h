@@ -478,6 +478,8 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO>, false >
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
+   inline bool isAligned() const;
+
    inline IntrinsicType load  ( size_t index ) const;
    inline IntrinsicType loadu ( size_t index ) const;
    inline void          store ( size_t index, const IntrinsicType& value );
@@ -1116,6 +1118,24 @@ template< typename Other >  // Data type of the foreign expression
 inline bool DenseColumn<MT,SO>::isAliased( const Other* alias ) const
 {
    return static_cast<const void*>( &matrix_ ) == static_cast<const void*>( alias );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the dense column is properly aligned in memory.
+//
+// \return \a true in case the dense column is aligned, \a false if not.
+//
+// This function returns whether the dense column is guaranteed to be properly aligned in memory,
+// i.e. whether the beginning and the end of the dense column are guaranteed to conform to the
+// alignment restrictions of the element type \a Type.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline bool DenseColumn<MT,SO>::isAligned() const
+{
+   return matrix_.isAligned();
 }
 //*************************************************************************************************
 
@@ -2047,8 +2067,11 @@ class DenseColumn<MT,false> : public DenseVector< DenseColumn<MT,false>, false >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias  ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased ( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const;
+   template< typename Other > inline bool isAliased( const Other* alias ) const;
+
+   inline bool isAligned() const;
+
    template< typename VT >    inline void assign    ( const DenseVector <VT,false>& rhs );
    template< typename VT >    inline void assign    ( const SparseVector<VT,false>& rhs );
    template< typename VT >    inline void addAssign ( const DenseVector <VT,false>& rhs );
@@ -2668,6 +2691,25 @@ template< typename Other >  // Data type of the foreign expression
 inline bool DenseColumn<MT,false>::isAliased( const Other* alias ) const
 {
    return static_cast<const void*>( &matrix_ ) == static_cast<const void*>( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the dense column is properly aligned in memory.
+//
+// \return \a true in case the dense column is aligned, \a false if not.
+//
+// This function returns whether the dense column is guaranteed to be properly aligned in memory,
+// i.e. whether the beginning and the end of the dense column are guaranteed to conform to the
+// alignment restrictions of the element type \a Type.
+*/
+template< typename MT >  // Type of the dense matrix
+inline bool DenseColumn<MT,false>::isAligned() const
+{
+   return false;
 }
 /*! \endcond */
 //*************************************************************************************************

@@ -831,6 +831,8 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
+   inline bool isAligned() const;
+
    inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
    inline void          store ( size_t i, size_t j, const IntrinsicType& value );
@@ -1731,6 +1733,25 @@ template< typename Other >  // Data type of the foreign expression
 inline bool DenseSubmatrix<MT,AF,SO>::isAliased( const Other* alias ) const
 {
    return static_cast<const void*>( &matrix_ ) == static_cast<const void*>( alias );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the submatrix is properly aligned in memory.
+//
+// \return \a true in case the submatrix is aligned, \a false if not.
+//
+// This function returns whether the submatrix is guaranteed to be properly aligned in memory,
+// i.e. whether the beginning and the end of each row/column of the submatrix are guaranteed to
+// conform to the alignment restrictions of the underlying element type.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline bool DenseSubmatrix<MT,AF,SO>::isAligned() const
+{
+   return isAligned_;
 }
 //*************************************************************************************************
 
@@ -2884,6 +2905,8 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
+   inline bool isAligned() const;
+
    inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
    inline void          store ( size_t i, size_t j, const IntrinsicType& value );
@@ -3749,6 +3772,25 @@ inline bool DenseSubmatrix<MT,unaligned,true>::isAliased( const Other* alias ) c
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the submatrix is properly aligned in memory.
+//
+// \return \a true in case the submatrix is aligned, \a false if not.
+//
+// This function returns whether the submatrix is guaranteed to be properly aligned in memory,
+// i.e. whether the beginning and the end of each column of the submatrix are guaranteed to
+// conform to the alignment restrictions of the underlying element type.
+*/
+template< typename MT >  // Type of the dense matrix
+inline bool DenseSubmatrix<MT,unaligned,true>::isAligned() const
+{
+   return isAligned_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned load of an intrinsic element of the submatrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -4602,6 +4644,8 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    //@{
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
+
+   inline bool isAligned() const;
 
    inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
@@ -5492,6 +5536,25 @@ inline bool DenseSubmatrix<MT,aligned,false>::isAliased( const Other* alias ) co
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the submatrix is properly aligned in memory.
+//
+// \return \a true in case the submatrix is aligned, \a false if not.
+//
+// This function returns whether the submatrix is guaranteed to be properly aligned in memory,
+// i.e. whether the beginning and the end of each row of the submatrix are guaranteed to conform
+// to the alignment restrictions of the underlying element type.
+*/
+template< typename MT >  // Type of the dense matrix
+inline bool DenseSubmatrix<MT,aligned,false>::isAligned() const
+{
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned load of an intrinsic element of the submatrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -6354,6 +6417,8 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
+   inline bool isAligned() const;
+
    inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
    inline void          store ( size_t i, size_t j, const IntrinsicType& value );
@@ -7189,6 +7254,25 @@ template< typename Other >  // Data type of the foreign expression
 inline bool DenseSubmatrix<MT,aligned,true>::isAliased( const Other* alias ) const
 {
    return static_cast<const void*>( &matrix_ ) == static_cast<const void*>( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the submatrix is properly aligned in memory.
+//
+// \return \a true in case the submatrix is aligned, \a false if not.
+//
+// This function returns whether the submatrix is guaranteed to be properly aligned in memory,
+// i.e. whether the beginning and the end of each column of the submatrix are guaranteed to
+// conform to the alignment restrictions of the underlying element type.
+*/
+template< typename MT >  // Type of the dense matrix
+inline bool DenseSubmatrix<MT,aligned,true>::isAligned() const
+{
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************
