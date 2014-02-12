@@ -125,14 +125,15 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
       return;
    }
 
-   typedef typename VT1::ElementType  ET1;
-   typedef typename VT2::ElementType  ET2;
-
-   enum { vectorizable = VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value };
-   enum { alignment = ( vectorizable )?( aligned ):( unaligned ) };
-
+   typedef typename VT1::ElementType                         ET1;
+   typedef typename VT2::ElementType                         ET2;
    typedef IntrinsicTrait<typename VT1::ElementType>         IT;
-   typedef typename SubvectorExprTrait<VT1,alignment>::Type  TargetType;
+   typedef typename SubvectorExprTrait<VT1,aligned>::Type    AlignedTarget;
+   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  UnalignedTarget;
+
+   const bool vectorizable( VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value );
+   const bool lhsAligned  ( (~lhs).isAligned() );
+   const bool rhsAligned  ( (~rhs).isAligned() );
 
 #pragma omp parallel shared( lhs, rhs )
    {
@@ -147,10 +148,26 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
       {
          const size_t index( i*sizePerThread );
 
-         if( index < (~lhs).size() ) {
-            const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-            TargetType target( subvector<alignment>( ~lhs, index, size ) );
-            assign( target, subvector<alignment>( ~rhs, index, size ) );
+         if( index >= (~lhs).size() )
+            continue;
+
+         const size_t size( min( sizePerThread, (~lhs).size() - index ) );
+
+         if( vectorizable && lhsAligned && rhsAligned ) {
+            AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+            assign( target, subvector<aligned>( ~rhs, index, size ) );
+         }
+         else if( vectorizable && lhsAligned ) {
+            AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+            assign( target, subvector<unaligned>( ~rhs, index, size ) );
+         }
+         else if( vectorizable && rhsAligned ) {
+            UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+            assign( target, subvector<aligned>( ~rhs, index, size ) );
+         }
+         else {
+            UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+            assign( target, subvector<unaligned>( ~rhs, index, size ) );
          }
       }
    }
@@ -192,7 +209,7 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 
    typedef typename VT1::ElementType                         ET1;
    typedef typename VT2::ElementType                         ET2;
-   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  TargetType;
+   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  UnalignedTarget;
 
 #pragma omp parallel shared( lhs, rhs )
    {
@@ -205,11 +222,12 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
       {
          const size_t index( i*sizePerThread );
 
-         if( index < (~lhs).size() ) {
-            const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-            TargetType target( subvector<unaligned>( ~lhs, index, size ) );
-            assign( target, subvector<unaligned>( ~rhs, index, size ) );
-         }
+         if( index >= (~lhs).size() )
+            continue;
+
+         const size_t size( min( sizePerThread, (~lhs).size() - index ) );
+         UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+         assign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
    }
 }
@@ -282,14 +300,15 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
       return;
    }
 
-   typedef typename VT1::ElementType  ET1;
-   typedef typename VT2::ElementType  ET2;
-
-   enum { vectorizable = VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value };
-   enum { alignment = ( vectorizable )?( aligned ):( unaligned ) };
-
+   typedef typename VT1::ElementType                         ET1;
+   typedef typename VT2::ElementType                         ET2;
    typedef IntrinsicTrait<typename VT1::ElementType>         IT;
-   typedef typename SubvectorExprTrait<VT1,alignment>::Type  TargetType;
+   typedef typename SubvectorExprTrait<VT1,aligned>::Type    AlignedTarget;
+   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  UnalignedTarget;
+
+   const bool vectorizable( VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value );
+   const bool lhsAligned  ( (~lhs).isAligned() );
+   const bool rhsAligned  ( (~rhs).isAligned() );
 
 #pragma omp parallel shared( lhs, rhs )
    {
@@ -304,10 +323,26 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
       {
          const size_t index( i*sizePerThread );
 
-         if( index < (~lhs).size() ) {
-            const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-            TargetType target( subvector<alignment>( ~lhs, index, size ) );
-            addAssign( target, subvector<alignment>( ~rhs, index, size ) );
+         if( index >= (~lhs).size() )
+            continue;
+
+         const size_t size( min( sizePerThread, (~lhs).size() - index ) );
+
+         if( vectorizable && lhsAligned && rhsAligned ) {
+            AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+            addAssign( target, subvector<aligned>( ~rhs, index, size ) );
+         }
+         else if( vectorizable && lhsAligned ) {
+            AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+            addAssign( target, subvector<unaligned>( ~rhs, index, size ) );
+         }
+         else if( vectorizable && rhsAligned ) {
+            UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+            addAssign( target, subvector<aligned>( ~rhs, index, size ) );
+         }
+         else {
+            UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+            addAssign( target, subvector<unaligned>( ~rhs, index, size ) );
          }
       }
    }
@@ -351,7 +386,7 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 
    typedef typename VT1::ElementType                         ET1;
    typedef typename VT2::ElementType                         ET2;
-   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  TargetType;
+   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  UnalignedTarget;
 
 #pragma omp parallel shared( lhs, rhs )
    {
@@ -364,11 +399,12 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
       {
          const size_t index( i*sizePerThread );
 
-         if( index < (~lhs).size() ) {
-            const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-            TargetType target( subvector<unaligned>( ~lhs, index, size ) );
-            addAssign( target, subvector<unaligned>( ~rhs, index, size ) );
-         }
+         if( index >= (~lhs).size() )
+            continue;
+
+         const size_t size( min( sizePerThread, (~lhs).size() - index ) );
+         UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+         addAssign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
    }
 }
@@ -441,14 +477,15 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
       return;
    }
 
-   typedef typename VT1::ElementType  ET1;
-   typedef typename VT2::ElementType  ET2;
-
-   enum { vectorizable = VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value };
-   enum { alignment = ( vectorizable )?( aligned ):( unaligned ) };
-
+   typedef typename VT1::ElementType                         ET1;
+   typedef typename VT2::ElementType                         ET2;
    typedef IntrinsicTrait<typename VT1::ElementType>         IT;
-   typedef typename SubvectorExprTrait<VT1,alignment>::Type  TargetType;
+   typedef typename SubvectorExprTrait<VT1,aligned>::Type    AlignedTarget;
+   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  UnalignedTarget;
+
+   const bool vectorizable( VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value );
+   const bool lhsAligned  ( (~lhs).isAligned() );
+   const bool rhsAligned  ( (~rhs).isAligned() );
 
 #pragma omp parallel shared( lhs, rhs )
    {
@@ -463,10 +500,26 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
       {
          const size_t index( i*sizePerThread );
 
-         if( index < (~lhs).size() ) {
-            const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-            TargetType target( subvector<alignment>( ~lhs, index, size ) );
-            subAssign( target, subvector<alignment>( ~rhs, index, size ) );
+         if( index >= (~lhs).size() )
+            continue;
+
+         const size_t size( min( sizePerThread, (~lhs).size() - index ) );
+
+         if( vectorizable && lhsAligned && rhsAligned ) {
+            AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+            subAssign( target, subvector<aligned>( ~rhs, index, size ) );
+         }
+         else if( vectorizable && lhsAligned ) {
+            AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+            subAssign( target, subvector<unaligned>( ~rhs, index, size ) );
+         }
+         else if( vectorizable && rhsAligned ) {
+            UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+            subAssign( target, subvector<aligned>( ~rhs, index, size ) );
+         }
+         else {
+            UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+            subAssign( target, subvector<unaligned>( ~rhs, index, size ) );
          }
       }
    }
@@ -510,7 +563,7 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 
    typedef typename VT1::ElementType                         ET1;
    typedef typename VT2::ElementType                         ET2;
-   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  TargetType;
+   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  UnalignedTarget;
 
 #pragma omp parallel shared( lhs, rhs )
    {
@@ -523,11 +576,12 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
       {
          const size_t index( i*sizePerThread );
 
-         if( index < (~lhs).size() ) {
-            const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-            TargetType target( subvector<unaligned>( ~lhs, index, size ) );
-            subAssign( target, subvector<unaligned>( ~rhs, index, size ) );
-         }
+         if( index >= (~lhs).size() )
+            continue;
+
+         const size_t size( min( sizePerThread, (~lhs).size() - index ) );
+         UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+         subAssign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
    }
 }
@@ -600,14 +654,15 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
       return;
    }
 
-   typedef typename VT1::ElementType  ET1;
-   typedef typename VT2::ElementType  ET2;
-
-   enum { vectorizable = VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value };
-   enum { alignment = ( vectorizable )?( aligned ):( unaligned ) };
-
+   typedef typename VT1::ElementType                         ET1;
+   typedef typename VT2::ElementType                         ET2;
    typedef IntrinsicTrait<typename VT1::ElementType>         IT;
-   typedef typename SubvectorExprTrait<VT1,alignment>::Type  TargetType;
+   typedef typename SubvectorExprTrait<VT1,aligned>::Type    AlignedTarget;
+   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  UnalignedTarget;
+
+   const bool vectorizable( VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value );
+   const bool lhsAligned  ( (~lhs).isAligned() );
+   const bool rhsAligned  ( (~rhs).isAligned() );
 
 #pragma omp parallel shared( lhs, rhs )
    {
@@ -622,10 +677,26 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
       {
          const size_t index( i*sizePerThread );
 
-         if( index < (~lhs).size() ) {
-            const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-            TargetType target( subvector<alignment>( ~lhs, index, size ) );
-            multAssign( target, subvector<alignment>( ~rhs, index, size ) );
+         if( index >= (~lhs).size() )
+            continue;
+
+         const size_t size( min( sizePerThread, (~lhs).size() - index ) );
+
+         if( vectorizable && lhsAligned && rhsAligned ) {
+            AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+            multAssign( target, subvector<aligned>( ~rhs, index, size ) );
+         }
+         else if( vectorizable && lhsAligned ) {
+            AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+            multAssign( target, subvector<unaligned>( ~rhs, index, size ) );
+         }
+         else if( vectorizable && rhsAligned ) {
+            UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+            multAssign( target, subvector<aligned>( ~rhs, index, size ) );
+         }
+         else {
+            UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+            multAssign( target, subvector<unaligned>( ~rhs, index, size ) );
          }
       }
    }
@@ -669,7 +740,7 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 
    typedef typename VT1::ElementType                         ET1;
    typedef typename VT2::ElementType                         ET2;
-   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  TargetType;
+   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  UnalignedTarget;
 
 #pragma omp parallel shared( lhs, rhs )
    {
@@ -682,11 +753,12 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
       {
          const size_t index( i*sizePerThread );
 
-         if( index < (~lhs).size() ) {
-            const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-            TargetType target( subvector<unaligned>( ~lhs, index, size ) );
-            multAssign( target, subvector<unaligned>( ~rhs, index, size ) );
-         }
+         if( index >= (~lhs).size() )
+            continue;
+
+         const size_t size( min( sizePerThread, (~lhs).size() - index ) );
+         UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+         multAssign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
    }
 }
