@@ -256,6 +256,17 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    }
    //**********************************************************************************************
 
+   //**IsAligned function**************************************************************************
+   /*!\brief Returns whether the vector is properly aligned in memory.
+   //
+   // \return \a true in case the vector is aligned, \a false if not.
+   */
+   inline bool isAligned() const
+   {
+      return dv_.isAligned();
+   }
+   //**********************************************************************************************
+
    //**Load function*******************************************************************************
    /*!\brief Aligned load of an intrinsic element of the vector.
    //

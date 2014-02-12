@@ -312,12 +312,21 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*!\brief Returns whether the operands of the expression are properly aligned in memory.
+   //
+   // \return \a true in case the operands are aligned, \a false if not.
+   */
+   inline bool isAligned() const {
+      return mat_.isAligned();
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns whether the expression can be used in SMP assignments.
    //
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
-   inline bool canSMPAssign() const
-   {
+   inline bool canSMPAssign() const {
       return ( size() > OPENMP_TSVECDMATMULT_THRESHOLD );
    }
    //**********************************************************************************************
