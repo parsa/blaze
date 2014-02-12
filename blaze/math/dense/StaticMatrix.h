@@ -353,6 +353,8 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
+   inline bool isAligned() const;
+
    inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
    inline void          store ( size_t i, size_t j, const IntrinsicType& value );
@@ -2191,6 +2193,26 @@ inline bool StaticMatrix<Type,M,N,SO>::isAliased( const Other* alias ) const
 
 
 //*************************************************************************************************
+/*!\brief Returns whether the matrix is properly aligned in memory.
+//
+// \return \a true in case the matrix is aligned, \a false if not.
+//
+// This function returns whether the matrix is guaranteed to be properly aligned in memory, i.e.
+// whether the beginning and the end of each row/column of the matrix are guaranteed to conform
+// to the alignment restrictions of the element type \a Type.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline bool StaticMatrix<Type,M,N,SO>::isAligned() const
+{
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Aligned load of an intrinsic element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -2935,6 +2957,8 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    //@{
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
+
+   inline bool isAligned() const;
 
    inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
@@ -4775,6 +4799,27 @@ template< typename Other >  // Data type of the foreign expression
 inline bool StaticMatrix<Type,M,N,true>::isAliased( const Other* alias ) const
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the matrix is properly aligned in memory.
+//
+// \return \a true in case the matrix is aligned, \a false if not.
+//
+// This function returns whether the matrix is guaranteed to be properly aligned in memory, i.e.
+// whether the beginning and the end of each column of the matrix are guaranteed to conform to
+// the alignment restrictions of the element type \a Type.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline bool StaticMatrix<Type,M,N,true>::isAligned() const
+{
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************

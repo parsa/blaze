@@ -334,6 +334,8 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
+   inline bool isAligned() const;
+
    inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
    inline void          store ( size_t i, size_t j, const IntrinsicType& value );
@@ -1631,6 +1633,24 @@ inline bool DynamicMatrix<Type,SO>::isAliased( const Other* alias ) const
 
 
 //*************************************************************************************************
+/*!\brief Returns whether the matrix is properly aligned in memory.
+//
+// \return \a true in case the matrix is aligned, \a false if not.
+//
+// This function returns whether the matrix is guaranteed to be properly aligned in memory, i.e.
+// whether the beginning and the end of each row/column of the matrix are guaranteed to conform
+// to the alignment restrictions of the element type \a Type.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline bool DynamicMatrix<Type,SO>::isAligned() const
+{
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Aligned load of an intrinsic element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -2486,6 +2506,8 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    //@{
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
+
+   inline bool isAligned() const;
 
    inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
@@ -3786,6 +3808,25 @@ template< typename Other >  // Data type of the foreign expression
 inline bool DynamicMatrix<Type,true>::isAliased( const Other* alias ) const
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the matrix is properly aligned in memory.
+//
+// \return \a true in case the matrix is aligned, \a false if not.
+//
+// This function returns whether the matrix is guaranteed to be properly aligned in memory, i.e.
+// whether the beginning and the end of each column of the matrix are guaranteed to conform to
+// the alignment restrictions of the element type \a Type.
+*/
+template< typename Type >  // Data type of the matrix
+inline bool DynamicMatrix<Type,true>::isAligned() const
+{
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************
