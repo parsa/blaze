@@ -106,13 +106,13 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side dense matrix expression.
-   enum { evaluateMatrix = IsComputation<MT>::value && !MT::vectorizable &&
-                           IsSame<VET,MET>::value && IsBlasCompatible<VET>::value };
+   enum { evaluateMatrix = ( IsComputation<MT>::value && IsSame<MET,VET>::value &&
+                             IsBlasCompatible<MET>::value ) || RequiresEvaluation<MT>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense vector expression.
-   enum { evaluateVector = IsComputation<VT>::value };
+   enum { evaluateVector = IsComputation<VT>::value || RequiresEvaluation<VT>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
