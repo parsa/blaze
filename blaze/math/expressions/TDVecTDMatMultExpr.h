@@ -1261,7 +1261,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
 
    //**Subtraction assignment to dense vectors (kernel selection)**********************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Selection of the kernel for an subtraction assignment of a transpose dense vector-
+   /*!\brief Selection of the kernel for a subtraction assignment of a transpose dense vector-
    //        transpose dense matrix multiplication to a dense vector (\f$ \vec{y}^T-=\vec{x}^T*A \f$).
    // \ingroup dense_vector
    //
@@ -1287,7 +1287,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
 
    //**Subtraction assignment to dense vectors (kernel selection)**********************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Selection of the kernel for an subtraction assignment of a transpose dense vector-
+   /*!\brief Selection of the kernel for a subtraction assignment of a transpose dense vector-
    //        transpose dense matrix multiplication to a dense vector (\f$ \vec{y}^T-=\vec{x}^T*A \f$).
    // \ingroup dense_vector
    //
@@ -2824,7 +2824,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    //**********************************************************************************************
 
    //**Subtraction assignment to dense vectors (kernel selection)**********************************
-   /*!\brief Selection of the kernel for an subtraction assignment of a scaled transpose dense vector-
+   /*!\brief Selection of the kernel for a subtraction assignment of a scaled transpose dense vector-
    //        transpose dense matrix multiplication to a dense vector (\f$ \vec{y}^T-=s*\vec{x}^T*A \f$).
    // \ingroup dense_vector
    //
@@ -2850,7 +2850,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    //**********************************************************************************************
 
    //**Subtraction assignment to dense vectors (kernel selection)**********************************
-   /*!\brief Selection of the kernel for an subtraction assignment of a scaled transpose dense vector-
+   /*!\brief Selection of the kernel for a subtraction assignment of a scaled transpose dense vector-
    //        transpose dense matrix multiplication to a dense vector (\f$ \vec{y}^T-=s*\vec{x}^T*A \f$).
    // \ingroup dense_vector
    //

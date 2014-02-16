@@ -1261,7 +1261,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
    //**Subtraction assignment to dense vectors (kernel selection)**********************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Selection of the kernel for an subtraction assignment of a dense matrix-dense vector
+   /*!\brief Selection of the kernel for a subtraction assignment of a dense matrix-dense vector
    //        multiplication to a dense vector (\f$ \vec{y}-=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
@@ -1287,7 +1287,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
    //**Subtraction assignment to dense vectors (kernel selection)**********************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Selection of the kernel for an subtraction assignment of a dense matrix-dense vector
+   /*!\brief Selection of the kernel for a subtraction assignment of a dense matrix-dense vector
    //        multiplication to a dense vector (\f$ \vec{y}-=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
@@ -2817,7 +2817,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
    //**********************************************************************************************
 
    //**Subtraction assignment to dense vectors (kernel selection)**********************************
-   /*!\brief Selection of the kernel for an subtraction assignment of a scaled dense matrix-dense
+   /*!\brief Selection of the kernel for a subtraction assignment of a scaled dense matrix-dense
    //        vector multiplication to a dense vector (\f$ \vec{y}-=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
@@ -2843,7 +2843,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
    //**********************************************************************************************
 
    //**Subtraction assignment to dense vectors (kernel selection)**********************************
-   /*!\brief Selection of the kernel for an subtraction assignment of a scaled dense matrix-dense
+   /*!\brief Selection of the kernel for a subtraction assignment of a scaled dense matrix-dense
    //        vector multiplication to a dense vector (\f$ \vec{y}-=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
