@@ -673,7 +673,7 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
       const size_t sizePerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
 
 #pragma omp for schedule(dynamic,1) nowait
-      for( size_t i=0UL; i<threads; ++i )
+      for( int i=0UL; i<threads; ++i )
       {
          const size_t index( i*sizePerThread );
 

@@ -84,7 +84,7 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline void smpAssign( DenseVector<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline void smpAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -140,14 +140,14 @@ inline void smpAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor>
 
 #pragma omp parallel shared( lhs, rhs )
    {
-      const size_t threads      ( omp_get_num_threads() );
+      const int    threads      ( omp_get_num_threads() );
       const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
       const size_t equalShare   ( (~lhs).rows() / threads + addon );
       const size_t rest         ( equalShare & ( IT::size - 1UL ) );
       const size_t rowsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
 
 #pragma omp for schedule(dynamic,1) nowait
-      for( size_t i=0UL; i<threads; ++i )
+      for( int i=0UL; i<threads; ++i )
       {
          const size_t row( i*rowsPerThread );
 
@@ -223,14 +223,14 @@ inline void smpAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMaj
 
 #pragma omp parallel shared( lhs, rhs )
    {
-      const size_t threads      ( omp_get_num_threads() );
+      const int    threads      ( omp_get_num_threads() );
       const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
       const size_t equalShare   ( (~lhs).columns() / threads + addon );
       const size_t rest         ( equalShare & ( IT::size - 1UL ) );
       const size_t colsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
 
 #pragma omp for schedule(dynamic,1) nowait
-      for( size_t i=0UL; i<threads; ++i )
+      for( int i=0UL; i<threads; ++i )
       {
          const size_t column( i*colsPerThread );
 
@@ -300,12 +300,12 @@ inline void smpAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowMajor
 
 #pragma omp parallel shared( lhs, rhs )
    {
-      const size_t threads      ( omp_get_num_threads() );
+      const int    threads      ( omp_get_num_threads() );
       const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
       const size_t rowsPerThread( (~lhs).rows() / threads + addon );
 
 #pragma omp for schedule(dynamic,1) nowait
-      for( size_t i=0UL; i<threads; ++i )
+      for( int i=0UL; i<threads; ++i )
       {
          const size_t row( i*rowsPerThread );
 
@@ -360,12 +360,12 @@ inline void smpAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,columnMa
 
 #pragma omp parallel shared( lhs, rhs )
    {
-      const size_t threads      ( omp_get_num_threads() );
+      const int    threads      ( omp_get_num_threads() );
       const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
       const size_t colsPerThread( (~lhs).columns() / threads + addon );
 
 #pragma omp for schedule(dynamic,1) nowait
-      for( size_t i=0UL; i<threads; ++i )
+      for( int i=0UL; i<threads; ++i )
       {
          const size_t column( i*colsPerThread );
 
@@ -459,14 +459,14 @@ inline void smpAddAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMaj
 
 #pragma omp parallel shared( lhs, rhs )
    {
-      const size_t threads      ( omp_get_num_threads() );
+      const int    threads      ( omp_get_num_threads() );
       const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
       const size_t equalShare   ( (~lhs).rows() / threads + addon );
       const size_t rest         ( equalShare & ( IT::size - 1UL ) );
       const size_t rowsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
 
 #pragma omp for schedule(dynamic,1) nowait
-      for( size_t i=0UL; i<threads; ++i )
+      for( int i=0UL; i<threads; ++i )
       {
          const size_t row( i*rowsPerThread );
 
@@ -542,14 +542,14 @@ inline void smpAddAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,column
 
 #pragma omp parallel shared( lhs, rhs )
    {
-      const size_t threads      ( omp_get_num_threads() );
+      const int    threads      ( omp_get_num_threads() );
       const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
       const size_t equalShare   ( (~lhs).columns() / threads + addon );
       const size_t rest         ( equalShare & ( IT::size - 1UL ) );
       const size_t colsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
 
 #pragma omp for schedule(dynamic,1) nowait
-      for( size_t i=0UL; i<threads; ++i )
+      for( int i=0UL; i<threads; ++i )
       {
          const size_t column( i*colsPerThread );
 
@@ -619,12 +619,12 @@ inline void smpAddAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowMa
 
 #pragma omp parallel shared( lhs, rhs )
    {
-      const size_t threads      ( omp_get_num_threads() );
+      const int    threads      ( omp_get_num_threads() );
       const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
       const size_t rowsPerThread( (~lhs).rows() / threads + addon );
 
 #pragma omp for schedule(dynamic,1) nowait
-      for( size_t i=0UL; i<threads; ++i )
+      for( int i=0UL; i<threads; ++i )
       {
          const size_t row( i*rowsPerThread );
 
@@ -679,12 +679,12 @@ inline void smpAddAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,colum
 
 #pragma omp parallel shared( lhs, rhs )
    {
-      const size_t threads      ( omp_get_num_threads() );
+      const int    threads      ( omp_get_num_threads() );
       const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
       const size_t colsPerThread( (~lhs).columns() / threads + addon );
 
 #pragma omp for schedule(dynamic,1) nowait
-      for( size_t i=0UL; i<threads; ++i )
+      for( int i=0UL; i<threads; ++i )
       {
          const size_t column( i*colsPerThread );
 
@@ -778,14 +778,14 @@ inline void smpSubAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMaj
 
 #pragma omp parallel shared( lhs, rhs )
    {
-      const size_t threads      ( omp_get_num_threads() );
+      const int    threads      ( omp_get_num_threads() );
       const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
       const size_t equalShare   ( (~lhs).rows() / threads + addon );
       const size_t rest         ( equalShare & ( IT::size - 1UL ) );
       const size_t rowsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
 
 #pragma omp for schedule(dynamic,1) nowait
-      for( size_t i=0UL; i<threads; ++i )
+      for( int i=0UL; i<threads; ++i )
       {
          const size_t row( i*rowsPerThread );
 
@@ -861,14 +861,14 @@ inline void smpSubAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,column
 
 #pragma omp parallel shared( lhs, rhs )
    {
-      const size_t threads      ( omp_get_num_threads() );
+      const int    threads      ( omp_get_num_threads() );
       const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
       const size_t equalShare   ( (~lhs).columns() / threads + addon );
       const size_t rest         ( equalShare & ( IT::size - 1UL ) );
       const size_t colsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
 
 #pragma omp for schedule(dynamic,1) nowait
-      for( size_t i=0UL; i<threads; ++i )
+      for( int i=0UL; i<threads; ++i )
       {
          const size_t column( i*colsPerThread );
 
@@ -938,12 +938,12 @@ inline void smpSubAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowMa
 
 #pragma omp parallel shared( lhs, rhs )
    {
-      const size_t threads      ( omp_get_num_threads() );
+      const int    threads      ( omp_get_num_threads() );
       const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
       const size_t rowsPerThread( (~lhs).rows() / threads + addon );
 
 #pragma omp for schedule(dynamic,1) nowait
-      for( size_t i=0UL; i<threads; ++i )
+      for( int i=0UL; i<threads; ++i )
       {
          const size_t row( i*rowsPerThread );
 
@@ -998,12 +998,12 @@ inline void smpSubAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,colum
 
 #pragma omp parallel shared( lhs, rhs )
    {
-      const size_t threads      ( omp_get_num_threads() );
+      const int    threads      ( omp_get_num_threads() );
       const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
       const size_t colsPerThread( (~lhs).columns() / threads + addon );
 
 #pragma omp for schedule(dynamic,1) nowait
-      for( size_t i=0UL; i<threads; ++i )
+      for( int i=0UL; i<threads; ++i )
       {
          const size_t column( i*colsPerThread );
 
