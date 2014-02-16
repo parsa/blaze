@@ -55,6 +55,8 @@
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/smp/DenseMatrix.h>
+#include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
@@ -722,6 +724,9 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = MT::vectorizable };
+
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -831,7 +836,8 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
-   inline bool isAligned() const;
+   inline bool isAligned   () const;
+   inline bool canSMPAssign() const;
 
    inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
@@ -1244,8 +1250,6 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator=( const DenseSubmatrix& rhs )
 {
-   using blaze::assign;
-
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
@@ -1257,12 +1261,12 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator=( const Dens
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
-      assign( *this, tmp );
+      smpAssign( *this, tmp );
    }
    else {
       if( IsSparseMatrix<MT>::value )
          reset();
-      assign( *this, rhs );
+      smpAssign( *this, rhs );
    }
 
    return *this;
@@ -1287,8 +1291,6 @@ template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
 inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   using blaze::assign;
-
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
@@ -1299,10 +1301,10 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator=( const Matr
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
-      assign( *this, tmp );
+      smpAssign( *this, tmp );
    }
    else {
-      assign( *this, ~rhs );
+      smpAssign( *this, ~rhs );
    }
 
    return *this;
@@ -1327,8 +1329,6 @@ template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
 inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
-   using blaze::addAssign;
-
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
@@ -1336,10 +1336,10 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator+=( const Mat
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
-      addAssign( *this, tmp );
+      smpAddAssign( *this, tmp );
    }
    else {
-      addAssign( *this, ~rhs );
+      smpAddAssign( *this, ~rhs );
    }
 
    return *this;
@@ -1364,8 +1364,6 @@ template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
 inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
-   using blaze::subAssign;
-
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
@@ -1373,10 +1371,10 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator-=( const Mat
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
-      subAssign( *this, tmp );
+      smpSubAssign( *this, tmp );
    }
    else {
-      subAssign( *this, ~rhs );
+      smpSubAssign( *this, ~rhs );
    }
 
    return *this;
@@ -1412,7 +1410,7 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator*=( const Mat
    const MultType tmp( *this * (~rhs) );
    if( IsSparseMatrix<MultType>::value )
       reset();
-   assign( tmp );
+   smpAssign( *this, tmp );
 
    return *this;
 }
@@ -1433,9 +1431,7 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,AF,SO> >::Type&
    DenseSubmatrix<MT,AF,SO>::operator*=( Other rhs )
 {
-   using blaze::assign;
-
-   assign( *this, (*this) * rhs );
+   smpAssign( *this, (*this) * rhs );
    return *this;
 }
 //*************************************************************************************************
@@ -1455,11 +1451,9 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,AF,SO> >::Type&
    DenseSubmatrix<MT,AF,SO>::operator/=( Other rhs )
 {
-   using blaze::assign;
-
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   assign( *this, (*this) / rhs );
+   smpAssign( *this, (*this) / rhs );
    return *this;
 }
 //*************************************************************************************************
@@ -1752,6 +1746,26 @@ template< typename MT  // Type of the dense matrix
 inline bool DenseSubmatrix<MT,AF,SO>::isAligned() const
 {
    return isAligned_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the submatrix can be used in SMP assignments.
+//
+// \return \a true in case the submatrix can be used in SMP assignments, \a false if not.
+//
+// This function returns whether the submatrix can be used in SMP assignments. In contrast to the
+// \a smpAssignable member enumeration, which is based solely on compile time information, this
+// function additionally provides runtime information (as for instance the current number of
+// rows and/or columns of the submatrix).
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline bool DenseSubmatrix<MT,AF,SO>::canSMPAssign() const
+{
+   return ( rows() > OPENMP_DMATASSIGN_THRESHOLD );
 }
 //*************************************************************************************************
 
@@ -2802,6 +2816,9 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = MT::vectorizable };
+
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -2905,7 +2922,8 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
-   inline bool isAligned() const;
+   inline bool isAligned   () const;
+   inline bool canSMPAssign() const;
 
    inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
@@ -3289,8 +3307,6 @@ template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,unaligned,true>&
    DenseSubmatrix<MT,unaligned,true>::operator=( const DenseSubmatrix& rhs )
 {
-   using blaze::assign;
-
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
@@ -3302,12 +3318,12 @@ inline DenseSubmatrix<MT,unaligned,true>&
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
-      assign( *this, tmp );
+      smpAssign( *this, tmp );
    }
    else {
       if( IsSparseMatrix<MT>::value )
          reset();
-      assign( *this, rhs );
+      smpAssign( *this, rhs );
    }
 
    return *this;
@@ -3333,8 +3349,6 @@ template< typename MT2   // Type of the right-hand side matrix
 inline DenseSubmatrix<MT,unaligned,true>&
    DenseSubmatrix<MT,unaligned,true>::operator=( const Matrix<MT2,SO>& rhs )
 {
-   using blaze::assign;
-
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
@@ -3345,10 +3359,10 @@ inline DenseSubmatrix<MT,unaligned,true>&
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
-      assign( *this, tmp );
+      smpAssign( *this, tmp );
    }
    else {
-      assign( *this, ~rhs );
+      smpAssign( *this, ~rhs );
    }
 
    return *this;
@@ -3374,8 +3388,6 @@ template< typename MT2   // Type of the right-hand side matrix
 inline DenseSubmatrix<MT,unaligned,true>&
    DenseSubmatrix<MT,unaligned,true>::operator+=( const Matrix<MT2,SO>& rhs )
 {
-   using blaze::addAssign;
-
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
@@ -3383,10 +3395,10 @@ inline DenseSubmatrix<MT,unaligned,true>&
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
-      addAssign( *this, tmp );
+      smpAddAssign( *this, tmp );
    }
    else {
-      addAssign( *this, ~rhs );
+      smpAddAssign( *this, ~rhs );
    }
 
    return *this;
@@ -3412,8 +3424,6 @@ template< typename MT2   // Type of the right-hand side matrix
 inline DenseSubmatrix<MT,unaligned,true>&
    DenseSubmatrix<MT,unaligned,true>::operator-=( const Matrix<MT2,SO>& rhs )
 {
-   using blaze::subAssign;
-
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
@@ -3421,10 +3431,10 @@ inline DenseSubmatrix<MT,unaligned,true>&
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
-      subAssign( *this, tmp );
+      smpSubAssign( *this, tmp );
    }
    else {
-      subAssign( *this, ~rhs );
+      smpSubAssign( *this, ~rhs );
    }
 
    return *this;
@@ -3461,7 +3471,7 @@ inline DenseSubmatrix<MT,unaligned,true>&
    const MultType tmp( *this * (~rhs) );
    if( IsSparseMatrix<MultType>::value )
       reset();
-   assign( tmp );
+   smpAssign( *this, tmp );
 
    return *this;
 }
@@ -3482,9 +3492,7 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,unaligned,true> >::Type&
    DenseSubmatrix<MT,unaligned,true>::operator*=( Other rhs )
 {
-   using blaze::assign;
-
-   assign( *this, (*this) * rhs );
+   smpAssign( *this, (*this) * rhs );
    return *this;
 }
 /*! \endcond */
@@ -3506,9 +3514,7 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,unaligned,true> >:
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   using blaze::assign;
-
-   assign( *this, (*this) / rhs );
+   smpAssign( *this, (*this) / rhs );
    return *this;
 }
 /*! \endcond */
@@ -3784,6 +3790,26 @@ template< typename MT >  // Type of the dense matrix
 inline bool DenseSubmatrix<MT,unaligned,true>::isAligned() const
 {
    return isAligned_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the submatrix can be used in SMP assignments.
+//
+// \return \a true in case the submatrix can be used in SMP assignments, \a false if not.
+//
+// This function returns whether the submatrix can be used in SMP assignments. In contrast to the
+// \a smpAssignable member enumeration, which is based solely on compile time information, this
+// function additionally provides runtime information (as for instance the current number of
+// rows and/or columns of the submatrix).
+*/
+template< typename MT >  // Type of the dense matrix
+inline bool DenseSubmatrix<MT,unaligned,true>::canSMPAssign() const
+{
+   return ( columns() > OPENMP_DMATASSIGN_THRESHOLD );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4542,6 +4568,9 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = MT::vectorizable };
+
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -4645,7 +4674,8 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
-   inline bool isAligned() const;
+   inline bool isAligned   () const;
+   inline bool canSMPAssign() const;
 
    inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
@@ -5036,8 +5066,6 @@ template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,aligned,false>&
    DenseSubmatrix<MT,aligned,false>::operator=( const DenseSubmatrix& rhs )
 {
-   using blaze::assign;
-
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
@@ -5049,12 +5077,12 @@ inline DenseSubmatrix<MT,aligned,false>&
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
-      assign( *this, tmp );
+      smpAssign( *this, tmp );
    }
    else {
       if( IsSparseMatrix<MT>::value )
          reset();
-      assign( *this, rhs );
+      smpAssign( *this, rhs );
    }
 
    return *this;
@@ -5080,8 +5108,6 @@ template< typename MT2   // Type of the right-hand side matrix
 inline DenseSubmatrix<MT,aligned,false>&
    DenseSubmatrix<MT,aligned,false>::operator=( const Matrix<MT2,SO>& rhs )
 {
-   using blaze::assign;
-
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
@@ -5092,10 +5118,10 @@ inline DenseSubmatrix<MT,aligned,false>&
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
-      assign( *this, tmp );
+      smpAssign( *this, tmp );
    }
    else {
-      assign( *this, ~rhs );
+      smpAssign( *this, ~rhs );
    }
 
    return *this;
@@ -5121,8 +5147,6 @@ template< typename MT2   // Type of the right-hand side matrix
 inline DenseSubmatrix<MT,aligned,false>&
    DenseSubmatrix<MT,aligned,false>::operator+=( const Matrix<MT2,SO>& rhs )
 {
-   using blaze::addAssign;
-
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
@@ -5130,10 +5154,10 @@ inline DenseSubmatrix<MT,aligned,false>&
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
-      addAssign( *this, tmp );
+      smpAddAssign( *this, tmp );
    }
    else {
-      addAssign( *this, ~rhs );
+      smpAddAssign( *this, ~rhs );
    }
 
    return *this;
@@ -5159,8 +5183,6 @@ template< typename MT2   // Type of the right-hand side matrix
 inline DenseSubmatrix<MT,aligned,false>&
    DenseSubmatrix<MT,aligned,false>::operator-=( const Matrix<MT2,SO>& rhs )
 {
-   using blaze::subAssign;
-
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
@@ -5168,10 +5190,10 @@ inline DenseSubmatrix<MT,aligned,false>&
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
-      subAssign( *this, tmp );
+      smpSubAssign( *this, tmp );
    }
    else {
-      subAssign( *this, ~rhs );
+      smpSubAssign( *this, ~rhs );
    }
 
    return *this;
@@ -5208,7 +5230,7 @@ inline DenseSubmatrix<MT,aligned,false>&
    const MultType tmp( *this * (~rhs) );
    if( IsSparseMatrix<MultType>::value )
       reset();
-   assign( tmp );
+   smpAssign( *this, tmp );
 
    return *this;
 }
@@ -5229,9 +5251,7 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,false> >::Type&
    DenseSubmatrix<MT,aligned,false>::operator*=( Other rhs )
 {
-   using blaze::assign;
-
-   assign( *this, (*this) * rhs );
+   smpAssign( *this, (*this) * rhs );
    return *this;
 }
 /*! \endcond */
@@ -5253,9 +5273,7 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,false> >::
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   using blaze::assign;
-
-   assign( *this, (*this) / rhs );
+   smpAssign( *this, (*this) / rhs );
    return *this;
 }
 /*! \endcond */
@@ -5548,6 +5566,26 @@ template< typename MT >  // Type of the dense matrix
 inline bool DenseSubmatrix<MT,aligned,false>::isAligned() const
 {
    return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the submatrix can be used in SMP assignments.
+//
+// \return \a true in case the submatrix can be used in SMP assignments, \a false if not.
+//
+// This function returns whether the submatrix can be used in SMP assignments. In contrast to the
+// \a smpAssignable member enumeration, which is based solely on compile time information, this
+// function additionally provides runtime information (as for instance the current number of
+// rows and/or columns of the submatrix).
+*/
+template< typename MT >  // Type of the dense matrix
+inline bool DenseSubmatrix<MT,aligned,false>::canSMPAssign() const
+{
+   return ( rows() > OPENMP_DMATASSIGN_THRESHOLD );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -6314,6 +6352,9 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = MT::vectorizable };
+
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -6417,7 +6458,8 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
-   inline bool isAligned() const;
+   inline bool isAligned   () const;
+   inline bool canSMPAssign() const;
 
    inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
@@ -6778,8 +6820,6 @@ template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,aligned,true>&
    DenseSubmatrix<MT,aligned,true>::operator=( const DenseSubmatrix& rhs )
 {
-   using blaze::assign;
-
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
@@ -6791,12 +6831,12 @@ inline DenseSubmatrix<MT,aligned,true>&
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
-      assign( *this, tmp );
+      smpAssign( *this, tmp );
    }
    else {
       if( IsSparseMatrix<MT>::value )
          reset();
-      assign( *this, rhs );
+      smpAssign( *this, rhs );
    }
 
    return *this;
@@ -6822,8 +6862,6 @@ template< typename MT2   // Type of the right-hand side matrix
 inline DenseSubmatrix<MT,aligned,true>&
    DenseSubmatrix<MT,aligned,true>::operator=( const Matrix<MT2,SO>& rhs )
 {
-   using blaze::assign;
-
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
@@ -6834,10 +6872,10 @@ inline DenseSubmatrix<MT,aligned,true>&
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
-      assign( *this, tmp );
+      smpAssign( *this, tmp );
    }
    else {
-      assign( *this, ~rhs );
+      smpAssign( *this, ~rhs );
    }
 
    return *this;
@@ -6863,8 +6901,6 @@ template< typename MT2   // Type of the right-hand side matrix
 inline DenseSubmatrix<MT,aligned,true>&
    DenseSubmatrix<MT,aligned,true>::operator+=( const Matrix<MT2,SO>& rhs )
 {
-   using blaze::addAssign;
-
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
@@ -6872,10 +6908,10 @@ inline DenseSubmatrix<MT,aligned,true>&
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
-      addAssign( *this, tmp );
+      smpAddAssign( *this, tmp );
    }
    else {
-      addAssign( *this, ~rhs );
+      smpAddAssign( *this, ~rhs );
    }
 
    return *this;
@@ -6901,8 +6937,6 @@ template< typename MT2   // Type of the right-hand side matrix
 inline DenseSubmatrix<MT,aligned,true>&
    DenseSubmatrix<MT,aligned,true>::operator-=( const Matrix<MT2,SO>& rhs )
 {
-   using blaze::subAssign;
-
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
@@ -6910,10 +6944,10 @@ inline DenseSubmatrix<MT,aligned,true>&
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
-      subAssign( *this, tmp );
+      smpSubAssign( *this, tmp );
    }
    else {
-      subAssign( *this, ~rhs );
+      smpSubAssign( *this, ~rhs );
    }
 
    return *this;
@@ -6950,7 +6984,7 @@ inline DenseSubmatrix<MT,aligned,true>&
    const MultType tmp( *this * (~rhs) );
    if( IsSparseMatrix<MultType>::value )
       reset();
-   assign( tmp );
+   smpAssign( tmp );
 
    return *this;
 }
@@ -6971,9 +7005,7 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,true> >::Type&
    DenseSubmatrix<MT,aligned,true>::operator*=( Other rhs )
 {
-   using blaze::assign;
-
-   assign( *this, (*this) * rhs );
+   smpAssign( *this, (*this) * rhs );
    return *this;
 }
 /*! \endcond */
@@ -6995,9 +7027,7 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,true> >::T
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   using blaze::assign;
-
-   assign( *this, (*this) / rhs );
+   smpAssign( *this, (*this) / rhs );
    return *this;
 }
 /*! \endcond */
@@ -7273,6 +7303,26 @@ template< typename MT >  // Type of the dense matrix
 inline bool DenseSubmatrix<MT,aligned,true>::isAligned() const
 {
    return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the submatrix can be used in SMP assignments.
+//
+// \return \a true in case the submatrix can be used in SMP assignments, \a false if not.
+//
+// This function returns whether the submatrix can be used in SMP assignments. In contrast to the
+// \a smpAssignable member enumeration, which is based solely on compile time information, this
+// function additionally provides runtime information (as for instance the current number of
+// rows and/or columns of the submatrix).
+*/
+template< typename MT >  // Type of the dense matrix
+inline bool DenseSubmatrix<MT,aligned,true>::canSMPAssign() const
+{
+   return ( columns() > OPENMP_DMATASSIGN_THRESHOLD );
 }
 /*! \endcond */
 //*************************************************************************************************
