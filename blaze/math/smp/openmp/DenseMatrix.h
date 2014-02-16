@@ -84,7 +84,7 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline void smpAssign( MatrixVector<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline void smpAssign( DenseVector<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -403,7 +403,7 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline void smpAddAssign( MatrixVector<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline void smpAddAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -564,15 +564,15 @@ inline void smpAddAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,column
          }
          else if( vectorizable && lhsAligned ) {
             AlignedTarget target( submatrix<aligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
-            addAssign target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
+            addAssign( target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
          }
          else if( vectorizable && rhsAligned ) {
             UnalignedTarget target( submatrix<unaligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
-            addAssign target, submatrix<aligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
+            addAssign( target, submatrix<aligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
          }
          else {
             UnalignedTarget target( submatrix<unaligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
-            addAssign target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
+            addAssign( target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
          }
       }
    }
@@ -722,7 +722,7 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline void smpSubAssign( MatrixVector<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline void smpSubAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -883,15 +883,15 @@ inline void smpSubAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,column
          }
          else if( vectorizable && lhsAligned ) {
             AlignedTarget target( submatrix<aligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
-            subAssign target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
+            subAssign( target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
          }
          else if( vectorizable && rhsAligned ) {
             UnalignedTarget target( submatrix<unaligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
-            subAssign target, submatrix<aligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
+            subAssign( target, submatrix<aligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
          }
          else {
             UnalignedTarget target( submatrix<unaligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
-            subAssign target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
+            subAssign( target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
          }
       }
    }
@@ -1041,7 +1041,7 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline void smpMultAssign( MatrixVector<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline void smpMultAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
