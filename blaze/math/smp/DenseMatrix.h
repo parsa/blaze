@@ -40,6 +40,12 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/system/OpenMP.h>
+
+#if BLAZE_OPENMP_PARALLEL_MODE
+#include <blaze/math/smp/openmp/DenseMatrix.h>
+#else
 #include <blaze/math/smp/default/DenseMatrix.h>
+#endif
 
 #endif
