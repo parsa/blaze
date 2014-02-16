@@ -52,7 +52,10 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Row.h>
 #include <blaze/math/Intrinsics.h>
+#include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/smp/DenseVector.h>
+#include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
@@ -360,7 +363,7 @@ class DenseRow : public DenseVector< DenseRow<MT,SO>, true >
    enum { vectorizable = MT::vectorizable };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -477,7 +480,8 @@ class DenseRow : public DenseVector< DenseRow<MT,SO>, true >
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
-   inline bool isAligned() const;
+   inline bool isAligned   () const;
+   inline bool canSMPAssign() const;
 
    inline IntrinsicType load  ( size_t index ) const;
    inline IntrinsicType loadu ( size_t index ) const;
@@ -815,8 +819,6 @@ template< typename MT    // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
 inline DenseRow<MT,SO>& DenseRow<MT,SO>::operator=( const Vector<VT,true>& rhs )
 {
-   using blaze::assign;
-
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
@@ -825,12 +827,12 @@ inline DenseRow<MT,SO>& DenseRow<MT,SO>::operator=( const Vector<VT,true>& rhs )
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename VT::ResultType tmp( ~rhs );
-      assign( *this, tmp );
+      smpAssign( *this, tmp );
    }
    else {
       if( IsSparseVector<VT>::value )
          reset();
-      assign( *this, ~rhs );
+      smpAssign( *this, ~rhs );
    }
 
    return *this;
@@ -853,8 +855,6 @@ template< typename MT    // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
 inline DenseRow<MT,SO>& DenseRow<MT,SO>::operator+=( const Vector<VT,true>& rhs )
 {
-   using blaze::addAssign;
-
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
@@ -863,10 +863,10 @@ inline DenseRow<MT,SO>& DenseRow<MT,SO>::operator+=( const Vector<VT,true>& rhs 
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename VT::ResultType tmp( ~rhs );
-      addAssign( *this, tmp );
+      smpAddAssign( *this, tmp );
    }
    else {
-      addAssign( *this, ~rhs );
+      smpAddAssign( *this, ~rhs );
    }
 
    return *this;
@@ -889,8 +889,6 @@ template< typename MT    // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
 inline DenseRow<MT,SO>& DenseRow<MT,SO>::operator-=( const Vector<VT,true>& rhs )
 {
-   using blaze::subAssign;
-
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
@@ -899,10 +897,10 @@ inline DenseRow<MT,SO>& DenseRow<MT,SO>::operator-=( const Vector<VT,true>& rhs 
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename VT::ResultType tmp( ~rhs );
-      subAssign( *this, tmp );
+      smpSubAssign( *this, tmp );
    }
    else {
-      subAssign( *this, ~rhs );
+      smpSubAssign( *this, ~rhs );
    }
 
    return *this;
@@ -926,8 +924,6 @@ template< typename MT    // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
 inline DenseRow<MT,SO>& DenseRow<MT,SO>::operator*=( const Vector<VT,true>& rhs )
 {
-   using blaze::multAssign;
-
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
@@ -936,10 +932,10 @@ inline DenseRow<MT,SO>& DenseRow<MT,SO>::operator*=( const Vector<VT,true>& rhs 
 
    if( (~rhs).canAlias( &matrix_ ) || IsSparseVector<VT>::value ) {
       const typename VT::ResultType tmp( ~rhs );
-      multAssign( *this, tmp );
+      smpMultAssign( *this, tmp );
    }
    else {
-      multAssign( *this, ~rhs );
+      smpMultAssign( *this, ~rhs );
    }
 
    return *this;
@@ -1135,6 +1131,25 @@ template< typename MT  // Type of the dense matrix
 inline bool DenseRow<MT,SO>::isAligned() const
 {
    return matrix_.isAligned();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the dense row can be used in SMP assignments.
+//
+// \return \a true in case the dense row can be used in SMP assignments, \a false if not.
+//
+// This function returns whether the dense row can be used in SMP assignments. In contrast to
+// the \a smpAssignable member enumeration, which is based solely on compile time information,
+// this function additionally provides runtime information (as for instance the current size
+// of the dense row).
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline bool DenseRow<MT,SO>::canSMPAssign() const
+{
+   return ( size() > OPENMP_DVECASSIGN_THRESHOLD );
 }
 //*************************************************************************************************
 
@@ -2002,7 +2017,7 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
    enum { vectorizable = 0 };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -2069,16 +2084,17 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
-   inline bool isAligned() const;
+   inline bool isAligned   () const;
+   inline bool canSMPAssign() const;
 
-   template< typename VT >    inline void assign    ( const DenseVector <VT,true>& rhs );
-   template< typename VT >    inline void assign    ( const SparseVector<VT,true>& rhs );
-   template< typename VT >    inline void addAssign ( const DenseVector <VT,true>& rhs );
-   template< typename VT >    inline void addAssign ( const SparseVector<VT,true>& rhs );
-   template< typename VT >    inline void subAssign ( const DenseVector <VT,true>& rhs );
-   template< typename VT >    inline void subAssign ( const SparseVector<VT,true>& rhs );
-   template< typename VT >    inline void multAssign( const DenseVector <VT,true>& rhs );
-   template< typename VT >    inline void multAssign( const SparseVector<VT,true>& rhs );
+   template< typename VT > inline void assign    ( const DenseVector <VT,true>& rhs );
+   template< typename VT > inline void assign    ( const SparseVector<VT,true>& rhs );
+   template< typename VT > inline void addAssign ( const DenseVector <VT,true>& rhs );
+   template< typename VT > inline void addAssign ( const SparseVector<VT,true>& rhs );
+   template< typename VT > inline void subAssign ( const DenseVector <VT,true>& rhs );
+   template< typename VT > inline void subAssign ( const SparseVector<VT,true>& rhs );
+   template< typename VT > inline void multAssign( const DenseVector <VT,true>& rhs );
+   template< typename VT > inline void multAssign( const SparseVector<VT,true>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -2348,8 +2364,6 @@ template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
 inline DenseRow<MT,false>& DenseRow<MT,false>::operator=( const Vector<VT,true>& rhs )
 {
-   using blaze::assign;
-
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -2359,12 +2373,12 @@ inline DenseRow<MT,false>& DenseRow<MT,false>::operator=( const Vector<VT,true>&
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const ResultType tmp( ~rhs );
-      assign( *this, tmp );
+      smpAssign( *this, tmp );
    }
    else {
       if( IsSparseVector<VT>::value )
          reset();
-      assign( *this, ~rhs );
+      smpAssign( *this, ~rhs );
    }
 
    return *this;
@@ -2388,8 +2402,6 @@ template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
 inline DenseRow<MT,false>& DenseRow<MT,false>::operator+=( const Vector<VT,true>& rhs )
 {
-   using blaze::addAssign;
-
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
@@ -2398,10 +2410,10 @@ inline DenseRow<MT,false>& DenseRow<MT,false>::operator+=( const Vector<VT,true>
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename VT::ResultType tmp( ~rhs );
-      addAssign( *this, tmp );
+      smpAddAssign( *this, tmp );
    }
    else {
-      addAssign( *this, ~rhs );
+      smpAddAssign( *this, ~rhs );
    }
 
    return *this;
@@ -2425,8 +2437,6 @@ template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
 inline DenseRow<MT,false>& DenseRow<MT,false>::operator-=( const Vector<VT,true>& rhs )
 {
-   using blaze::subAssign;
-
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
@@ -2435,10 +2445,10 @@ inline DenseRow<MT,false>& DenseRow<MT,false>::operator-=( const Vector<VT,true>
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename VT::ResultType tmp( ~rhs );
-      subAssign( *this, tmp );
+      smpSubAssign( *this, tmp );
    }
    else {
-      subAssign( *this, ~rhs );
+      smpSubAssign( *this, ~rhs );
    }
 
    return *this;
@@ -2463,8 +2473,6 @@ template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
 inline DenseRow<MT,false>& DenseRow<MT,false>::operator*=( const Vector<VT,true>& rhs )
 {
-   using blaze::multAssign;
-
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
@@ -2473,10 +2481,10 @@ inline DenseRow<MT,false>& DenseRow<MT,false>::operator*=( const Vector<VT,true>
 
    if( (~rhs).canAlias( &matrix_ ) || IsSparseVector<VT>::value ) {
       const typename VT::ResultType tmp( ~rhs );
-      multAssign( *this, tmp );
+      smpMultAssign( *this, tmp );
    }
    else {
-      multAssign( *this, ~rhs );
+      smpMultAssign( *this, ~rhs );
    }
 
    return *this;
@@ -2709,6 +2717,26 @@ template< typename MT >  // Type of the dense matrix
 inline bool DenseRow<MT,false>::isAligned() const
 {
    return false;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the dense row can be used in SMP assignments.
+//
+// \return \a true in case the dense row can be used in SMP assignments, \a false if not.
+//
+// This function returns whether the dense row can be used in SMP assignments. In contrast to
+// the \a smpAssignable member enumeration, which is based solely on compile time information,
+// this function additionally provides runtime information (as for instance the current size
+// of the dense row).
+*/
+template< typename MT >  // Type of the dense matrix
+inline bool DenseRow<MT,false>::canSMPAssign() const
+{
+   return ( size() > OPENMP_DVECASSIGN_THRESHOLD );
 }
 /*! \endcond */
 //*************************************************************************************************
