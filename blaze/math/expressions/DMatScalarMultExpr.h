@@ -413,6 +413,9 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    enum { vectorizable = MT::vectorizable &&
                          IsSame<ET,RightOperand>::value &&
                          IntrinsicTrait<ET>::multiplication };
+
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

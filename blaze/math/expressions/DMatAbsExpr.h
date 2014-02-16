@@ -393,6 +393,9 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = MT::vectorizable &&
                          IntrinsicTrait<ET>::absoluteValue };
+
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

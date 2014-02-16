@@ -136,6 +136,9 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = 0 };
+
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

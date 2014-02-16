@@ -97,6 +97,12 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
        in can be optimized via intrinsics. In case the dense matrix operand is vectorizable, the
        \a vectorizable compilation flag is set to \a true, otherwise it is set to \a false. */
    enum { vectorizable = MT::vectorizable };
+
+   //! Compilation flag for SMP assignments.
+   /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
+       (shared memory parallel) assignments (both on the left-hand and right-hand side of the
+       assignment). */
+   enum { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -841,6 +847,12 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
        in can be optimized via intrinsics. In case the dense matrix operand is vectorizable, the
        \a vectorizable compilation flag is set to \a true, otherwise it is set to \a false. */
    enum { vectorizable = MT::vectorizable };
+
+   //! Compilation flag for SMP assignments.
+   /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
+       (shared memory parallel) assignments (both on the left-hand and right-hand side of the
+       assignment). */
+   enum { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

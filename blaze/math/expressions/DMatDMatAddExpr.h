@@ -408,6 +408,9 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
    enum { vectorizable = MT1::vectorizable && MT2::vectorizable &&
                          IsSame<ET1,ET2>::value &&
                          IntrinsicTrait<ET1>::addition };
+
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
