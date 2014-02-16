@@ -197,7 +197,7 @@ const size_t TDMATTDMATMULT_THRESHOLD = 10000UL;
 // The default setting for this threshold is 100000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
 */
-const size_t OPENMP_DVECASSGIN_THRESHOLD = 100000UL;
+const size_t OPENMP_DVECASSIGN_THRESHOLD = 100000UL;
 //*************************************************************************************************
 
 

@@ -594,8 +594,6 @@ inline DynamicVector<Type,TF>::DynamicVector( const Vector<VT,TF>& v )
    , capacity_( adjustCapacity( size_ ) )      // The maximum capacity of the vector
    , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
 {
-   using blaze::assign;
-
    if( IsNumeric<Type>::value ) {
       if( IsSparseVector<VT>::value )
          reset();
@@ -1379,7 +1377,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline bool DynamicVector<Type,TF>::canSMPAssign() const
 {
-   return ( size() > OPENMP_DVECASSGIN_THRESHOLD );
+   return ( size() > OPENMP_DVECASSIGN_THRESHOLD );
 }
 //*************************************************************************************************
 
