@@ -84,6 +84,14 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    typedef typename MT::ConstIterator   ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
+   //**Compilation flags***************************************************************************
+   //! Compilation flag for SMP assignments.
+   /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
+       (shared memory parallel) assignments (both on the left-hand and right-hand side of the
+       assignment). */
+   enum { smpAssignable = 0 };
+   //**********************************************************************************************
+
    //**Constructor*********************************************************************************
    /*!\brief Constructor for the SMatTransposer class.
    //
@@ -489,6 +497,14 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    typedef typename MT::ConstReference  ConstReference;  //!< Reference to a constant matrix value.
    typedef typename MT::Iterator        Iterator;        //!< Iterator over non-constant elements.
    typedef typename MT::ConstIterator   ConstIterator;   //!< Iterator over constant elements.
+   //**********************************************************************************************
+
+   //**Compilation flags***************************************************************************
+   //! Compilation flag for SMP assignments.
+   /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
+       (shared memory parallel) assignments (both on the left-hand and right-hand side of the
+       assignment). */
+   enum { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

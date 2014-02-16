@@ -193,6 +193,11 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    typedef typename SelectType< IsComputation<VT2>::value, const RT2, CT2 >::Type  RT;
    //**********************************************************************************************
 
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = 0 };
+   //**********************************************************************************************
+
    //**ConstIterator class definition**************************************************************
    /*!\brief Iterator over the elements of the dense vector-sparse vector outer product expression.
    */

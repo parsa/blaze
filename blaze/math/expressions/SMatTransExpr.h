@@ -253,6 +253,11 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
    };
    //**********************************************************************************************
 
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = 0 };
+   //**********************************************************************************************
+
    //**Constructor*********************************************************************************
    /*!\brief Constructor for the SMatTransExpr class.
    //
