@@ -705,6 +705,11 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    typedef typename SelectType< useConst, ConstIterator, SubmatrixIterator<MT,typename MT::Iterator> >::Type  Iterator;
    //**********************************************************************************************
 
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = 0 };
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -2660,6 +2665,11 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
 
    //! Iterator over non-constant elements.
    typedef typename SelectType< useConst, ConstIterator, SubmatrixIterator<MT,typename MT::Iterator> >::Type  Iterator;
+   //**********************************************************************************************
+
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
