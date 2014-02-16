@@ -254,6 +254,14 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
    typedef const Element*              ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
+   //**Compilation flags***************************************************************************
+   //! Compilation flag for SMP assignments.
+   /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
+       (shared memory parallel) assignments (both on the left-hand and right-hand side of the
+       assignment). */
+   enum { smpAssignable = 0 };
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -2377,6 +2385,14 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
    typedef const Type&                   ConstReference;  //!< Reference to a constant matrix value.
    typedef Element*                      Iterator;        //!< Iterator over non-constant elements.
    typedef const Element*                ConstIterator;   //!< Iterator over constant elements.
+   //**********************************************************************************************
+
+   //**Compilation flags***************************************************************************
+   //! Compilation flag for SMP assignments.
+   /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
+       (shared memory parallel) assignments (both on the left-hand and right-hand side of the
+       assignment). */
+   enum { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
