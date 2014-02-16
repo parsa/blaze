@@ -131,7 +131,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    /*! In case the either the matrix or the vector operand require an intermediate evaluation,
-       the nested \value will be set to 0, otherwise it will be 1. */
+       the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseSMPAssignKernel {
       enum { value = evaluateMatrix || evaluateVector };
@@ -1715,7 +1715,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
    //**********************************************************************************************
    //! Helper structure for the explicit application of the SFINAE principle.
    /*! In case the either the matrix or the vector operand require an intermediate evaluation,
-       the nested \value will be set to 0, otherwise it will be 1. */
+       the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
    struct UseSMPAssignKernel {
       enum { value = evaluateMatrix || evaluateVector };
