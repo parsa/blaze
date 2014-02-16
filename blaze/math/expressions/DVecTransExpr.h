@@ -535,7 +535,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       DVecTransposer<VT2,!TF> tmp( ~lhs );
-      smpAssign( tmp, rhs.dv_ );
+      assign( tmp, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -563,7 +563,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       SVecTransposer<VT2,!TF> tmp( ~lhs );
-      smpAssign( tmp, rhs.dv_ );
+      assign( tmp, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -591,7 +591,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       DVecTransposer<VT2,!TF> tmp( ~lhs );
-      smpAddAssign( tmp, rhs.dv_ );
+      addAssign( tmp, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -623,7 +623,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       DVecTransposer<VT2,!TF> tmp( ~lhs );
-      smpSubAssign( tmp, rhs.dv_ );
+      subAssign( tmp, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -655,7 +655,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       DVecTransposer<VT2,!TF> tmp( ~lhs );
-      smpMultAssign( tmp, rhs.dv_ );
+      multAssign( tmp, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************

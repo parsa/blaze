@@ -545,7 +545,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpAssign( ~lhs, rhs.dv_ );
+      assign   ( ~lhs, rhs.dv_ );
       smpAssign( ~lhs, abs( ~lhs ) );
    }
    /*! \endcond */
