@@ -52,7 +52,10 @@
 #include <blaze/math/expressions/Column.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/Intrinsics.h>
+#include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/smp/DenseVector.h>
+#include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
@@ -361,7 +364,7 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO>, false >
    enum { vectorizable = MT::vectorizable };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -478,7 +481,8 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO>, false >
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
-   inline bool isAligned() const;
+   inline bool isAligned   () const;
+   inline bool canSMPAssign() const;
 
    inline IntrinsicType load  ( size_t index ) const;
    inline IntrinsicType loadu ( size_t index ) const;
@@ -816,8 +820,6 @@ template< typename MT    // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
 inline DenseColumn<MT,SO>& DenseColumn<MT,SO>::operator=( const Vector<VT,false>& rhs )
 {
-   using blaze::assign;
-
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
@@ -826,12 +828,12 @@ inline DenseColumn<MT,SO>& DenseColumn<MT,SO>::operator=( const Vector<VT,false>
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename VT::ResultType tmp( ~rhs );
-      assign( *this, tmp );
+      smpAssign( *this, tmp );
    }
    else {
       if( IsSparseVector<VT>::value )
          reset();
-      assign( *this, ~rhs );
+      smpAssign( *this, ~rhs );
    }
 
    return *this;
@@ -854,8 +856,6 @@ template< typename MT    // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
 inline DenseColumn<MT,SO>& DenseColumn<MT,SO>::operator+=( const Vector<VT,false>& rhs )
 {
-   using blaze::addAssign;
-
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
@@ -864,10 +864,10 @@ inline DenseColumn<MT,SO>& DenseColumn<MT,SO>::operator+=( const Vector<VT,false
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename VT::ResultType tmp( ~rhs );
-      addAssign( *this, tmp );
+      smpAddAssign( *this, tmp );
    }
    else {
-      addAssign( *this, ~rhs );
+      smpAddAssign( *this, ~rhs );
    }
 
    return *this;
@@ -890,8 +890,6 @@ template< typename MT    // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
 inline DenseColumn<MT,SO>& DenseColumn<MT,SO>::operator-=( const Vector<VT,false>& rhs )
 {
-   using blaze::subAssign;
-
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
@@ -900,10 +898,10 @@ inline DenseColumn<MT,SO>& DenseColumn<MT,SO>::operator-=( const Vector<VT,false
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename VT::ResultType tmp( ~rhs );
-      subAssign( *this, tmp );
+      smpSubAssign( *this, tmp );
    }
    else {
-      subAssign( *this, ~rhs );
+      smpSubAssign( *this, ~rhs );
    }
 
    return *this;
@@ -927,8 +925,6 @@ template< typename MT    // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
 inline DenseColumn<MT,SO>& DenseColumn<MT,SO>::operator*=( const Vector<VT,false>& rhs )
 {
-   using blaze::multAssign;
-
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
@@ -937,10 +933,10 @@ inline DenseColumn<MT,SO>& DenseColumn<MT,SO>::operator*=( const Vector<VT,false
 
    if( (~rhs).canAlias( &matrix_ ) || IsSparseVector<VT>::value ) {
       const typename VT::ResultType tmp( ~rhs );
-      multAssign( *this, tmp );
+      smpMultAssign( *this, tmp );
    }
    else {
-      multAssign( *this, ~rhs );
+      smpMultAssign( *this, ~rhs );
    }
 
    return *this;
@@ -1136,6 +1132,25 @@ template< typename MT  // Type of the dense matrix
 inline bool DenseColumn<MT,SO>::isAligned() const
 {
    return matrix_.isAligned();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the dense column can be used in SMP assignments.
+//
+// \return \a true in case the dense column can be used in SMP assignments, \a false if not.
+//
+// This function returns whether the dense column can be used in SMP assignments. In contrast
+// to the \a smpAssignable member enumeration, which is based solely on compile time information,
+// this function additionally provides runtime information (as for instance the current size of
+// the dense column).
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline bool DenseColumn<MT,SO>::canSMPAssign() const
+{
+   return ( size() > OPENMP_DVECASSIGN_THRESHOLD );
 }
 //*************************************************************************************************
 
@@ -2003,7 +2018,7 @@ class DenseColumn<MT,false> : public DenseVector< DenseColumn<MT,false>, false >
    enum { vectorizable = 0 };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -2070,16 +2085,17 @@ class DenseColumn<MT,false> : public DenseVector< DenseColumn<MT,false>, false >
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
-   inline bool isAligned() const;
+   inline bool isAligned   () const;
+   inline bool canSMPAssign() const;
 
-   template< typename VT >    inline void assign    ( const DenseVector <VT,false>& rhs );
-   template< typename VT >    inline void assign    ( const SparseVector<VT,false>& rhs );
-   template< typename VT >    inline void addAssign ( const DenseVector <VT,false>& rhs );
-   template< typename VT >    inline void addAssign ( const SparseVector<VT,false>& rhs );
-   template< typename VT >    inline void subAssign ( const DenseVector <VT,false>& rhs );
-   template< typename VT >    inline void subAssign ( const SparseVector<VT,false>& rhs );
-   template< typename VT >    inline void multAssign( const DenseVector <VT,false>& rhs );
-   template< typename VT >    inline void multAssign( const SparseVector<VT,false>& rhs );
+   template< typename VT > inline void assign    ( const DenseVector <VT,false>& rhs );
+   template< typename VT > inline void assign    ( const SparseVector<VT,false>& rhs );
+   template< typename VT > inline void addAssign ( const DenseVector <VT,false>& rhs );
+   template< typename VT > inline void addAssign ( const SparseVector<VT,false>& rhs );
+   template< typename VT > inline void subAssign ( const DenseVector <VT,false>& rhs );
+   template< typename VT > inline void subAssign ( const SparseVector<VT,false>& rhs );
+   template< typename VT > inline void multAssign( const DenseVector <VT,false>& rhs );
+   template< typename VT > inline void multAssign( const SparseVector<VT,false>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -2349,8 +2365,6 @@ template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
 inline DenseColumn<MT,false>& DenseColumn<MT,false>::operator=( const Vector<VT,false>& rhs )
 {
-   using blaze::assign;
-
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -2360,12 +2374,12 @@ inline DenseColumn<MT,false>& DenseColumn<MT,false>::operator=( const Vector<VT,
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const ResultType tmp( ~rhs );
-      assign( *this, tmp );
+      smpAssign( *this, tmp );
    }
    else {
       if( IsSparseVector<VT>::value )
          reset();
-      assign( *this, ~rhs );
+      smpAssign( *this, ~rhs );
    }
 
    return *this;
@@ -2389,8 +2403,6 @@ template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
 inline DenseColumn<MT,false>& DenseColumn<MT,false>::operator+=( const Vector<VT,false>& rhs )
 {
-   using blaze::addAssign;
-
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
@@ -2399,10 +2411,10 @@ inline DenseColumn<MT,false>& DenseColumn<MT,false>::operator+=( const Vector<VT
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename VT::ResultType tmp( ~rhs );
-      addAssign( *this, tmp );
+      smpAddAssign( *this, tmp );
    }
    else {
-      addAssign( *this, ~rhs );
+      smpAddAssign( *this, ~rhs );
    }
 
    return *this;
@@ -2426,8 +2438,6 @@ template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
 inline DenseColumn<MT,false>& DenseColumn<MT,false>::operator-=( const Vector<VT,false>& rhs )
 {
-   using blaze::subAssign;
-
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
@@ -2436,10 +2446,10 @@ inline DenseColumn<MT,false>& DenseColumn<MT,false>::operator-=( const Vector<VT
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename VT::ResultType tmp( ~rhs );
-      subAssign( *this, tmp );
+      smpSubAssign( *this, tmp );
    }
    else {
-      subAssign( *this, ~rhs );
+      smpSubAssign( *this, ~rhs );
    }
 
    return *this;
@@ -2464,8 +2474,6 @@ template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
 inline DenseColumn<MT,false>& DenseColumn<MT,false>::operator*=( const Vector<VT,false>& rhs )
 {
-   using blaze::multAssign;
-
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
@@ -2474,10 +2482,10 @@ inline DenseColumn<MT,false>& DenseColumn<MT,false>::operator*=( const Vector<VT
 
    if( (~rhs).canAlias( &matrix_ ) || IsSparseVector<VT>::value ) {
       const typename VT::ResultType tmp( ~rhs );
-      multAssign( *this, tmp );
+      smpMultAssign( *this, tmp );
    }
    else {
-      multAssign( *this, ~rhs );
+      smpMultAssign( *this, ~rhs );
    }
 
    return *this;
@@ -2710,6 +2718,26 @@ template< typename MT >  // Type of the dense matrix
 inline bool DenseColumn<MT,false>::isAligned() const
 {
    return false;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the dense column can be used in SMP assignments.
+//
+// \return \a true in case the dense column can be used in SMP assignments, \a false if not.
+//
+// This function returns whether the dense column can be used in SMP assignments. In contrast
+// to the \a smpAssignable member enumeration, which is based solely on compile time information,
+// this function additionally provides runtime information (as for instance the current size of
+// the dense column).
+*/
+template< typename MT >  // Type of the dense matrix
+inline bool DenseColumn<MT,false>::canSMPAssign() const
+{
+   return ( size() > OPENMP_DVECASSIGN_THRESHOLD );
 }
 /*! \endcond */
 //*************************************************************************************************
