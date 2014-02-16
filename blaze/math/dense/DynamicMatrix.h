@@ -51,6 +51,8 @@
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/smp/DenseMatrix.h>
+#include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -203,6 +205,12 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
        data type, the \a vectorizable compilation flag is set to \a true, otherwise it is set to
        \a false. */
    enum { vectorizable = IsVectorizable<Type>::value };
+
+   //! Compilation flag for SMP assignments.
+   /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
+       (shared memory parallel) assignments (both on the left-hand and right-hand side of the
+       assignment). */
+   enum { smpAssignable = 1 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -334,7 +342,8 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
-   inline bool isAligned() const;
+   inline bool isAligned   () const;
+   inline bool canSMPAssign() const;
 
    inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
@@ -635,8 +644,6 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( const Matrix<MT,SO2>& m )
    , capacity_( m_*nn_ )                       // The maximum capacity of the matrix
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
 {
-   using blaze::assign;
-
    if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=( IsSparseMatrix<MT>::value )?( 0UL ):( n_ ); j<nn_; ++j )
@@ -644,7 +651,7 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( const Matrix<MT,SO2>& m )
       }
    }
 
-   assign( *this, ~m );
+   smpAssign( *this, ~m );
 }
 //*************************************************************************************************
 
@@ -998,12 +1005,10 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const DynamicMatrix& rhs )
 {
-   using blaze::assign;
-
    if( &rhs == this ) return *this;
 
    resize( rhs.m_, rhs.n_, false );
-   assign( *this, ~rhs );
+   smpAssign( *this, ~rhs );
 
    return *this;
 }
@@ -1025,8 +1030,6 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const Matrix<MT,SO2>& rhs )
 {
-   using blaze::assign;
-
    if( (~rhs).canAlias( this ) ) {
       DynamicMatrix tmp( ~rhs );
       swap( tmp );
@@ -1035,7 +1038,7 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const Matrix<M
       resize( (~rhs).rows(), (~rhs).columns(), false );
       if( IsSparseMatrix<MT>::value )
          reset();
-      assign( *this, ~rhs );
+      smpAssign( *this, ~rhs );
    }
 
    return *this;
@@ -1059,17 +1062,15 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator+=( const Matrix<MT,SO2>& rhs )
 {
-   using blaze::addAssign;
-
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
    if( (~rhs).canAlias( this ) ) {
       typename MT::ResultType tmp( ~rhs );
-      addAssign( *this, tmp );
+      smpAddAssign( *this, tmp );
    }
    else {
-      addAssign( *this, ~rhs );
+      smpAddAssign( *this, ~rhs );
    }
 
    return *this;
@@ -1093,17 +1094,15 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator-=( const Matrix<MT,SO2>& rhs )
 {
-   using blaze::subAssign;
-
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
    if( (~rhs).canAlias( this ) ) {
       typename MT::ResultType tmp( ~rhs );
-      subAssign( *this, tmp );
+      smpSubAssign( *this, tmp );
    }
    else {
-      subAssign( *this, ~rhs );
+      smpSubAssign( *this, ~rhs );
    }
 
    return *this;
@@ -1151,9 +1150,7 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DynamicMatrix<Type,SO> >::Type&
    DynamicMatrix<Type,SO>::operator*=( Other rhs )
 {
-   using blaze::assign;
-
-   assign( *this, (*this) * rhs );
+   smpAssign( *this, (*this) * rhs );
    return *this;
 }
 //*************************************************************************************************
@@ -1172,11 +1169,9 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DynamicMatrix<Type,SO> >::Type&
    DynamicMatrix<Type,SO>::operator/=( Other rhs )
 {
-   using blaze::assign;
-
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   assign( *this, (*this) / rhs );
+   smpAssign( *this, (*this) / rhs );
    return *this;
 }
 //*************************************************************************************************
@@ -1646,6 +1641,25 @@ template< typename Type  // Data type of the matrix
 inline bool DynamicMatrix<Type,SO>::isAligned() const
 {
    return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the matrix can be used in SMP assignments.
+//
+// \return \a true in case the matrix can be used in SMP assignments, \a false if not.
+//
+// This function returns whether the matrix can be used in SMP assignments. In contrast to the
+// \a smpAssignable member enumeration, which is based solely on compile time information, this
+// function additionally provides runtime information (as for instance the current number of
+// rows and/or columns of the matrix).
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline bool DynamicMatrix<Type,SO>::canSMPAssign() const
+{
+   return ( rows() > OPENMP_DMATASSIGN_THRESHOLD );
 }
 //*************************************************************************************************
 
@@ -2382,6 +2396,12 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
        data type, the \a vectorizable compilation flag is set to \a true, otherwise it is set to
        \a false. */
    enum { vectorizable = IsVectorizable<Type>::value };
+
+   //! Compilation flag for SMP assignments.
+   /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
+       (shared memory parallel) assignments (both on the left-hand and right-hand side of the
+       assignment). */
+   enum { smpAssignable = 1 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -2507,7 +2527,8 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
-   inline bool isAligned() const;
+   inline bool isAligned   () const;
+   inline bool canSMPAssign() const;
 
    inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
@@ -2813,8 +2834,6 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( const Matrix<MT,SO>& m )
    , capacity_( mm_*n_ )                       // The maximum capacity of the matrix
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
 {
-   using blaze::assign;
-
    if( IsNumeric<Type>::value ) {
       for( size_t j=0UL; j<n_; ++j )
          for( size_t i=( IsSparseMatrix<MT>::value )?( 0UL ):( m_ ); i<mm_; ++i ) {
@@ -2822,7 +2841,7 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( const Matrix<MT,SO>& m )
       }
    }
 
-   assign( *this, ~m );
+   smpAssign( *this, ~m );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3162,12 +3181,10 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( Type rhs )
 template< typename Type >  // Data type of the matrix
 inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const DynamicMatrix& rhs )
 {
-   using blaze::assign;
-
    if( &rhs == this ) return *this;
 
    resize( rhs.m_, rhs.n_, false );
-   assign( *this, ~rhs );
+   smpAssign( *this, ~rhs );
 
    return *this;
 }
@@ -3190,8 +3207,6 @@ template< typename MT      // Type of the right-hand side matrix
         , bool SO >        // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const Matrix<MT,SO>& rhs )
 {
-   using blaze::assign;
-
    if( (~rhs).canAlias( this ) ) {
       DynamicMatrix tmp( ~rhs );
       swap( tmp );
@@ -3200,7 +3215,7 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const Matr
       resize( (~rhs).rows(), (~rhs).columns(), false );
       if( IsSparseMatrix<MT>::value )
          reset();
-      assign( *this, ~rhs );
+      smpAssign( *this, ~rhs );
    }
 
    return *this;
@@ -3225,17 +3240,15 @@ template< typename MT      // Type of the right-hand side matrix
         , bool SO >        // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator+=( const Matrix<MT,SO>& rhs )
 {
-   using blaze::addAssign;
-
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
    if( (~rhs).canAlias( this ) ) {
       typename MT::ResultType tmp( ~rhs );
-      addAssign( *this, tmp );
+      smpAddAssign( *this, tmp );
    }
    else {
-      addAssign( *this, ~rhs );
+      smpAddAssign( *this, ~rhs );
    }
 
    return *this;
@@ -3260,17 +3273,15 @@ template< typename MT      // Type of the right-hand side matrix
         , bool SO >        // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator-=( const Matrix<MT,SO>& rhs )
 {
-   using blaze::subAssign;
-
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
    if( (~rhs).canAlias( this ) ) {
       typename MT::ResultType tmp( ~rhs );
-      subAssign( *this, tmp );
+      smpSubAssign( *this, tmp );
    }
    else {
-      subAssign( *this, ~rhs );
+      smpSubAssign( *this, ~rhs );
    }
 
    return *this;
@@ -3320,9 +3331,7 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DynamicMatrix<Type,true> >::Type&
    DynamicMatrix<Type,true>::operator*=( Other rhs )
 {
-   using blaze::assign;
-
-   assign( *this, (*this) * rhs );
+   smpAssign( *this, (*this) * rhs );
    return *this;
 }
 /*! \endcond */
@@ -3342,11 +3351,9 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DynamicMatrix<Type,true> >::Type&
    DynamicMatrix<Type,true>::operator/=( Other rhs )
 {
-   using blaze::assign;
-
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   assign( *this, (*this) / rhs );
+   smpAssign( *this, (*this) / rhs );
    return *this;
 }
 /*! \endcond */
@@ -3827,6 +3834,26 @@ template< typename Type >  // Data type of the matrix
 inline bool DynamicMatrix<Type,true>::isAligned() const
 {
    return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the matrix can be used in SMP assignments.
+//
+// \return \a true in case the matrix can be used in SMP assignments, \a false if not.
+//
+// This function returns whether the matrix can be used in SMP assignments. In contrast to the
+// \a smpAssignable member enumeration, which is based solely on compile time information, this
+// function additionally provides runtime information (as for instance the current number of
+// rows and/or columns of the matrix).
+*/
+template< typename Type >  // Data type of the matrix
+inline bool DynamicMatrix<Type,true>::canSMPAssign() const
+{
+   return ( columns() > OPENMP_DMATASSIGN_THRESHOLD );
 }
 /*! \endcond */
 //*************************************************************************************************

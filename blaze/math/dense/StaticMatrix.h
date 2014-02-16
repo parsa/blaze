@@ -211,6 +211,12 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
        data type, the \a vectorizable compilation flag is set to \a true, otherwise it is set to
        \a false. */
    enum { vectorizable = IsVectorizable<Type>::value };
+
+   //! Compilation flag for SMP assignments.
+   /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
+       (shared memory parallel) assignments (both on the left-hand and right-hand side of the
+       assignment). */
+   enum { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -2822,6 +2828,12 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
        data type, the \a vectorizable compilation flag is set to \a true, otherwise it is set to
        \a false. */
    enum { vectorizable = IsVectorizable<Type>::value };
+
+   //! Compilation flag for SMP assignments.
+   /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
+       (shared memory parallel) assignments (both on the left-hand and right-hand side of the
+       assignment). */
+   enum { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
