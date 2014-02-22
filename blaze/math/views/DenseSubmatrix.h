@@ -6985,7 +6985,7 @@ inline DenseSubmatrix<MT,aligned,true>&
    const MultType tmp( *this * (~rhs) );
    if( IsSparseMatrix<MultType>::value )
       reset();
-   smpAssign( tmp );
+   smpAssign( *this, tmp );
 
    return *this;
 }
