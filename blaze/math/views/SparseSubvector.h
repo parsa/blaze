@@ -713,7 +713,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SparseSubvector( VT& vector, size_t index, size_t n );
+   explicit inline SparseSubvector( Operand vector, size_t index, size_t n );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -859,7 +859,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
 template< typename VT  // Type of the sparse vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline SparseSubvector<VT,AF,TF>::SparseSubvector( VT& vector, size_t index, size_t n )
+inline SparseSubvector<VT,AF,TF>::SparseSubvector( Operand vector, size_t index, size_t n )
    : vector_( vector )  // The sparse vector containing the subvector
    , offset_( index  )  // The offset of the subvector within the sparse vector
    , size_  ( n      )  // The size of the subvector

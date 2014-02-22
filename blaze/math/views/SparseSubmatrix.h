@@ -713,7 +713,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SparseSubmatrix( MT& matrix, size_t row, size_t column, size_t m, size_t n );
+   explicit inline SparseSubmatrix( Operand matrix, size_t row, size_t column, size_t m, size_t n );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -871,7 +871,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
 template< typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-inline SparseSubmatrix<MT,AF,SO>::SparseSubmatrix( MT& matrix, size_t row, size_t column, size_t m, size_t n )
+inline SparseSubmatrix<MT,AF,SO>::SparseSubmatrix( Operand matrix, size_t row, size_t column, size_t m, size_t n )
    : matrix_( matrix )  // The sparse matrix containing the submatrix
    , row_   ( row    )  // The first row of the submatrix
    , column_( column )  // The first column of the submatrix
@@ -2675,7 +2675,7 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SparseSubmatrix( MT& matrix, size_t row, size_t column, size_t m, size_t n );
+   explicit inline SparseSubmatrix( Operand matrix, size_t row, size_t column, size_t m, size_t n );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -2830,7 +2830,7 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline SparseSubmatrix<MT,AF,true>::SparseSubmatrix( MT& matrix, size_t row, size_t column, size_t m, size_t n )
+inline SparseSubmatrix<MT,AF,true>::SparseSubmatrix( Operand matrix, size_t row, size_t column, size_t m, size_t n )
    : matrix_( matrix )  // The sparse matrix containing the submatrix
    , row_   ( row    )  // The first row of the submatrix
    , column_( column )  // The first column of the submatrix

@@ -733,7 +733,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline DenseSubmatrix( MT& matrix, size_t row, size_t column, size_t m, size_t n );
+   explicit inline DenseSubmatrix( Operand matrix, size_t row, size_t column, size_t m, size_t n );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -957,7 +957,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
 template< typename MT  // Type of the dense matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-inline DenseSubmatrix<MT,AF,SO>::DenseSubmatrix( MT& matrix, size_t row, size_t column, size_t m, size_t n )
+inline DenseSubmatrix<MT,AF,SO>::DenseSubmatrix( Operand matrix, size_t row, size_t column, size_t m, size_t n )
    : matrix_   ( matrix       )  // The dense matrix containing the submatrix
    , row_      ( row          )  // The first row of the submatrix
    , column_   ( column       )  // The first column of the submatrix
@@ -2825,7 +2825,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline DenseSubmatrix( MT& matrix, size_t row, size_t column, size_t m, size_t n );
+   explicit inline DenseSubmatrix( Operand matrix, size_t row, size_t column, size_t m, size_t n );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -3039,7 +3039,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
 // contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
-inline DenseSubmatrix<MT,unaligned,true>::DenseSubmatrix( MT& matrix, size_t row, size_t column, size_t m, size_t n )
+inline DenseSubmatrix<MT,unaligned,true>::DenseSubmatrix( Operand matrix, size_t row, size_t column, size_t m, size_t n )
    : matrix_   ( matrix       )  // The dense matrix containing the submatrix
    , row_      ( row          )  // The first row of the submatrix
    , column_   ( column       )  // The first column of the submatrix
@@ -4577,7 +4577,7 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline DenseSubmatrix( MT& matrix, size_t row, size_t column, size_t m, size_t n );
+   explicit inline DenseSubmatrix( Operand matrix, size_t row, size_t column, size_t m, size_t n );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -4775,7 +4775,7 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
 // contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
-inline DenseSubmatrix<MT,aligned,false>::DenseSubmatrix( MT& matrix, size_t row, size_t column, size_t m, size_t n )
+inline DenseSubmatrix<MT,aligned,false>::DenseSubmatrix( Operand matrix, size_t row, size_t column, size_t m, size_t n )
    : matrix_( matrix )  // The dense matrix containing the submatrix
    , row_   ( row    )  // The first row of the submatrix
    , column_( column )  // The first column of the submatrix
@@ -6361,7 +6361,7 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline DenseSubmatrix( MT& matrix, size_t row, size_t column, size_t m, size_t n );
+   explicit inline DenseSubmatrix( Operand matrix, size_t row, size_t column, size_t m, size_t n );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -6559,7 +6559,7 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
 // contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
-inline DenseSubmatrix<MT,aligned,true>::DenseSubmatrix( MT& matrix, size_t row, size_t column, size_t m, size_t n )
+inline DenseSubmatrix<MT,aligned,true>::DenseSubmatrix( Operand matrix, size_t row, size_t column, size_t m, size_t n )
    : matrix_( matrix )  // The dense matrix containing the submatrix
    , row_   ( row    )  // The first row of the submatrix
    , column_( column )  // The first column of the submatrix
