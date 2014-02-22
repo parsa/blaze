@@ -503,6 +503,23 @@ const size_t OPENMP_SMATDMATMULT_THRESHOLD = 80UL;
 
 
 //*************************************************************************************************
+/*!\brief OpenMP sparse matrix/sparse matrix multiplication threshold.
+// \ingroup config
+//
+// This threshold specifies when a sparse matrix/sparse matrix multiplication can be executed in
+// parallel. This threshold affects all kinds of multiplications between row-major or column-major
+// sparse matrices. In case the number of rows/columns of the target matrix is larger or equal to
+// this threshold, the operation is executed in parallel. If the number of rows/columns is below
+// this threshold the operation is executed single-threaded.
+//
+// The default setting for this threshold is 80. In case the threshold is set to 0, the operation
+// is unconditionally executed in parallel.
+*/
+const size_t OPENMP_SMATSMATMULT_THRESHOLD = 80UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief OpenMP dense matrix/scalar multiplication/division threshold.
 // \ingroup config
 //
