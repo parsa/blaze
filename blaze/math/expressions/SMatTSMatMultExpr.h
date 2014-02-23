@@ -47,6 +47,8 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/expressions/MatMatMultExpr.h>
+#include <blaze/math/smp/DenseMatrix.h>
+#include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -371,7 +373,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
    //**Assignment to row-major dense matrices******************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Assignment of a sparse matrix-transpose sparse matrix multiplication to a row-major
-   //        dense matrix.
+   //        dense matrix (\f$ C=A*B \f$).
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.
@@ -392,7 +394,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT2::OppositeType );
 
       const typename MT2::OppositeType tmp( rhs.rhs_ );
-      assign( ~lhs, rhs.lhs_ * tmp );
+      smpAssign( ~lhs, rhs.lhs_ * tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -400,7 +402,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
    //**Assignment to column-major dense matrices***************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Assignment of a sparse matrix-transpose sparse matrix multiplication to a
-   //        column-major dense matrix.
+   //        column-major dense matrix (\f$ C=A*B \f$).
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.
@@ -421,7 +423,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT1::OppositeType );
 
       const typename MT1::OppositeType tmp( rhs.lhs_ );
-      assign( ~lhs, tmp * rhs.rhs_ );
+      smpAssign( ~lhs, tmp * rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -429,7 +431,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
    //**Assignment to row-major sparse matrices*****************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Assignment of a sparse matrix-transpose sparse matrix multiplication to a row-major
-   //        sparse matrix.
+   //        sparse matrix (\f$ C=A*B \f$).
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
@@ -450,7 +452,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT2::OppositeType );
 
       const typename MT2::OppositeType tmp( rhs.rhs_ );
-      assign( ~lhs, rhs.lhs_ * tmp );
+      smpAssign( ~lhs, rhs.lhs_ * tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -458,7 +460,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
    //**Assignment to column-major sparse matrices**************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Assignment of a sparse matrix-transpose sparse matrix multiplication to a
-   //        column-major sparse matrix.
+   //        column-major sparse matrix (\f$ C=A*B \f$).
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
@@ -479,7 +481,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT1::OppositeType );
 
       const typename MT1::OppositeType tmp( rhs.lhs_ );
-      assign( ~lhs, tmp * rhs.rhs_ );
+      smpAssign( ~lhs, tmp * rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -487,7 +489,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
    //**Addition assignment to row-major dense matrices*********************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Addition assignment of a sparse matrix-transpose sparse matrix multiplication to a
-   //        row-major dense matrix.
+   //        row-major dense matrix (\f$ C+=A*B \f$).
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.
@@ -508,7 +510,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT2::OppositeType );
 
       const typename MT2::OppositeType tmp( rhs.rhs_ );
-      addAssign( ~lhs, rhs.lhs_ * tmp );
+      smpAddAssign( ~lhs, rhs.lhs_ * tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -516,7 +518,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
    //**Addition assignment to column-major dense matrices******************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Addition assignment of a sparse matrix-transpose sparse matrix multiplication to a
-   //        column-major dense matrix.
+   //        column-major dense matrix (\f$ C+=A*B \f$).
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.
@@ -537,7 +539,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT1::OppositeType );
 
       const typename MT1::OppositeType tmp( rhs.lhs_ );
-      addAssign( ~lhs, tmp * rhs.rhs_ );
+      smpAddAssign( ~lhs, tmp * rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -549,7 +551,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
    //**Subtraction assignment to row-major dense matrices******************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Subtraction assignment of a sparse matrix-transpose sparse matrix multiplication
-   //        to a row-major dense matrix.
+   //        to a row-major dense matrix (\f$ C-=A*B \f$).
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.
@@ -570,7 +572,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT2::OppositeType );
 
       const typename MT2::OppositeType tmp( rhs.rhs_ );
-      subAssign( ~lhs, rhs.lhs_ * tmp );
+      smpSubAssign( ~lhs, rhs.lhs_ * tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -578,7 +580,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
    //**Subtraction assignment to column-major dense matrices***************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Subtraction assignment of a sparse matrix-transpose sparse matrix multiplication
-   //        to a column-major dense matrix.
+   //        to a column-major dense matrix (\f$ C-=A*B \f$).
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.
@@ -599,7 +601,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT1::OppositeType );
 
       const typename MT1::OppositeType tmp( rhs.lhs_ );
-      subAssign( ~lhs, tmp * rhs.rhs_ );
+      smpSubAssign( ~lhs, tmp * rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
