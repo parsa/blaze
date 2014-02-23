@@ -116,7 +116,8 @@ inline void smpAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 template< typename MT1    // Type of the left-hand side dense matrix
         , bool SO         // Storage order of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-inline void smpAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor>& rhs )
+inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
+   smpAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -199,7 +200,8 @@ inline void smpAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor>
 template< typename MT1    // Type of the left-hand side dense matrix
         , bool SO         // Storage order of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-inline void smpAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMajor>& rhs )
+inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
+   smpAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMajor>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -282,7 +284,8 @@ inline void smpAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMaj
 template< typename MT1    // Type of the left-hand side dense matrix
         , bool SO         // Storage order of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-inline void smpAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowMajor>& rhs )
+inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
+   smpAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowMajor>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -342,7 +345,8 @@ inline void smpAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowMajor
 template< typename MT1    // Type of the left-hand side dense matrix
         , bool SO         // Storage order of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-inline void smpAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,columnMajor>& rhs )
+inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
+   smpAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,columnMajor>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -435,7 +439,8 @@ inline void smpAddAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs 
 template< typename MT1    // Type of the left-hand side dense matrix
         , bool SO         // Storage order of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-inline void smpAddAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor>& rhs )
+inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
+   smpAddAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -518,7 +523,8 @@ inline void smpAddAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMaj
 template< typename MT1    // Type of the left-hand side dense matrix
         , bool SO         // Storage order of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-inline void smpAddAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMajor>& rhs )
+inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
+   smpAddAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMajor>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -601,7 +607,8 @@ inline void smpAddAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,column
 template< typename MT1    // Type of the left-hand side dense matrix
         , bool SO         // Storage order of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-inline void smpAddAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowMajor>& rhs )
+inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
+   smpAddAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowMajor>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -661,7 +668,8 @@ inline void smpAddAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowMa
 template< typename MT1    // Type of the left-hand side dense matrix
         , bool SO         // Storage order of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-inline void smpAddAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,columnMajor>& rhs )
+inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
+   smpAddAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,columnMajor>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -754,7 +762,8 @@ inline void smpSubAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs 
 template< typename MT1    // Type of the left-hand side dense matrix
         , bool SO         // Storage order of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-inline void smpSubAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor>& rhs )
+inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
+   smpSubAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -837,7 +846,8 @@ inline void smpSubAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMaj
 template< typename MT1    // Type of the left-hand side dense matrix
         , bool SO         // Storage order of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-inline void smpSubAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMajor>& rhs )
+inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
+   smpSubAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMajor>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -920,7 +930,8 @@ inline void smpSubAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,column
 template< typename MT1    // Type of the left-hand side dense matrix
         , bool SO         // Storage order of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-inline void smpSubAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowMajor>& rhs )
+inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
+   smpSubAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowMajor>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -980,7 +991,8 @@ inline void smpSubAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowMa
 template< typename MT1    // Type of the left-hand side dense matrix
         , bool SO         // Storage order of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-inline void smpSubAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,columnMajor>& rhs )
+inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
+   smpSubAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,columnMajor>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
