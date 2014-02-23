@@ -47,6 +47,8 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatEvalExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/smp/DenseMatrix.h>
+#include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/EvalExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
@@ -106,7 +108,7 @@ class SMatEvalExpr : public SparseMatrix< SMatEvalExpr<MT,SO>, SO >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -205,6 +207,16 @@ class SMatEvalExpr : public SparseMatrix< SMatEvalExpr<MT,SO>, SO >
    template< typename T >
    inline bool isAliased( const T* alias ) const {
       return sm_.isAliased( alias );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can be used in SMP assignments.
+   //
+   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const {
+      return sm_.canSMPAssign();
    }
    //**********************************************************************************************
 
@@ -417,6 +429,216 @@ class SMatEvalExpr : public SparseMatrix< SMatEvalExpr<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       multAssign( ~lhs, rhs.sm_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP assignment to dense matrices************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP assignment of a sparse matrix evaluation expression to a dense matrix.
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side evaluation expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized SMP assignment of a sparse matrix
+   // evaluation expression to a dense matrix.
+   */
+   template< typename MT2  // Type of the target dense matrix
+           , bool SO2 >    // Storage order of the target dense matrix
+   friend inline void smpAssign( DenseMatrix<MT2,SO2>& lhs, const SMatEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      smpAssign( ~lhs, rhs.sm_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP assignment to sparse matrices***********************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP assignment of a sparse matrix evaluation expression to a sparse matrix.
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side sparse matrix.
+   // \param rhs The right-hand side evaluatin expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized SMP assignment of a sparse matrix
+   // evaluation expression to a sparse matrix.
+   */
+   template< typename MT2  // Type of the target sparse matrix
+           , bool SO2 >    // Storage order of the target sparse matrix
+   friend inline void smpAssign( SparseMatrix<MT2,SO2>& lhs, const SMatEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      smpAssign( ~lhs, rhs.sm_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP addition assignment to dense matrices***************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP addition assignment of a sparse matrix evaluation expression to a dense matrix.
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side evaluation expression to be added.
+   // \return void
+   //
+   // This function implements the performance optimized SMP addition assignment of a sparse
+   // matrix evaluation expression to a dense matrix.
+   */
+   template< typename MT2  // Type of the target dense matrix
+           , bool SO2 >    // Storage order of the target dense matrix
+   friend inline void smpAddAssign( DenseMatrix<MT2,SO2>& lhs, const SMatEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      smpAddAssign( ~lhs, rhs.sm_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP addition assignment to sparse matrices**************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP addition assignment of a sparse matrix evaluation expression to a sparse matrix.
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side sparse matrix.
+   // \param rhs The right-hand side evaluation expression to be added.
+   // \return void
+   //
+   // This function implements the performance optimized SMP addition assignment of a sparse
+   // matrix evaluation expression to a sparse matrix.
+   */
+   template< typename MT2  // Type of the target sparse matrix
+           , bool SO2 >    // Storage order of the target sparse matrix
+   friend inline void smpAddAssign( SparseMatrix<MT2,SO2>& lhs, const SMatEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      smpAddAssign( ~lhs, rhs.sm_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to dense matrices************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP subtraction assignment of a sparse matrix evaluation expression to a dense matrix.
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side evaluation expression to be subtracted.
+   // \return void
+   //
+   // This function implements the performance optimized SMP subtraction assignment of a sparse
+   // matrix evaluation expression to a dense matrix.
+   */
+   template< typename MT2  // Type of the target dense matrix
+           , bool SO2 >    // Storage order of the target dense matrix
+   friend inline void smpSubAssign( DenseMatrix<MT2,SO2>& lhs, const SMatEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      smpSubAssign( ~lhs, rhs.sm_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to sparse matrices***********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP subtraction assignment of a sparse matrix evaluation expression to a sparse matrix.
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side sparse matrix.
+   // \param rhs The right-hand side evaluation expression to be subtracted.
+   // \return void
+   //
+   // This function implements the performance optimized SMP subtraction assignment of a sparse
+   // matrix evaluation expression to a sparse matrix.
+   */
+   template< typename MT2  // Type of the target sparse matrix
+           , bool SO2 >    // Storage order of the target sparse matrix
+   friend inline void smpSubAssign( SparseMatrix<MT2,SO2>& lhs, const SMatEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      smpSubAssign( ~lhs, rhs.sm_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP multiplication assignment to dense matrices*********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP multiplication assignment of a sparse matrix evaluation expression to a dense
+   //        matrix.
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side evaluation expression to be multiplied.
+   // \return void
+   //
+   // This function implements the performance optimized SMP multiplication assignment of a sparse
+   // matrix evaluation expression to a dense matrix.
+   */
+   template< typename MT2  // Type of the target dense matrix
+           , bool SO2 >    // Storage order of the target dense matrix
+   friend inline void smpMultAssign( DenseMatrix<MT2,SO2>& lhs, const SMatEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      smpMultAssign( ~lhs, rhs.sm_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP multiplication assignment to sparse matrices********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP multiplication assignment of a sparse matrix evaluation expression to a sparse
+   //        matrix.
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side sparse matrix.
+   // \param rhs The right-hand side evaluation expression to be multiplied.
+   // \return void
+   //
+   // This function implements the performance optimized SMP multiplication assignment of a sparse
+   // matrix evaluation expression to a sparse matrix.
+   */
+   template< typename MT2  // Type of the target sparse matrix
+           , bool SO2 >    // Storage order of the target sparse matrix
+   friend inline void smpMultAssign( SparseMatrix<MT2,SO2>& lhs, const SMatEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      smpMultAssign( ~lhs, rhs.sm_ );
    }
    /*! \endcond */
    //**********************************************************************************************

@@ -48,6 +48,8 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatAbsExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/smp/DenseMatrix.h>
+#include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/AbsExprTrait.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
@@ -280,7 +282,7 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -405,6 +407,16 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    }
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can be used in SMP assignments.
+   //
+   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const {
+      return sm_.canSMPAssign();
+   }
+   //**********************************************************************************************
+
  private:
    //**Member variables****************************************************************************
    Operand sm_;  //!< Sparse matrix of the absolute value expression.
@@ -436,16 +448,8 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      assign( ~lhs, rhs.sm_ );
-
-      const size_t m( rhs.rows()    );
-      const size_t n( rhs.columns() );
-
-      for( size_t i=0UL; i<m; ++i ) {
-         for( size_t j=0UL; j<n; ++j ) {
-            (~lhs)(i,j) = abs( (~lhs)(i,j) );
-         }
-      }
+      assign   ( ~lhs, rhs.sm_ );
+      smpAssign( ~lhs, abs( ~lhs ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -560,7 +564,7 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( rhs );
-      addAssign( ~lhs, tmp );
+      smpAddAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -597,7 +601,7 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( rhs );
-      subAssign( ~lhs, tmp );
+      smpSubAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
