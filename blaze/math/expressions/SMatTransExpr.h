@@ -255,7 +255,7 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -365,6 +365,16 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
    template< typename T >
    inline bool isAliased( const T* alias ) const {
       return sm_.isAliased( alias );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can be used in SMP assignments.
+   //
+   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const {
+      return sm_.canSMPAssign();
    }
    //**********************************************************************************************
 
