@@ -47,6 +47,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatScalarMultExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/smp/DenseMatrix.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/DivExprTrait.h>
@@ -524,7 +525,7 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( rhs );
-      addAssign( ~lhs, tmp );
+      smpAddAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -561,7 +562,7 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( rhs );
-      subAssign( ~lhs, tmp );
+      smpSubAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
