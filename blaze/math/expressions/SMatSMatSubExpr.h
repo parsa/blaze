@@ -48,6 +48,7 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/expressions/MatMatSubExpr.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/smp/DenseMatrix.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
@@ -524,8 +525,8 @@ class SMatSMatSubExpr : public SparseMatrix< SMatSMatSubExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      addAssign( ~lhs, rhs.lhs_ );
-      subAssign( ~lhs, rhs.rhs_ );
+      smpAddAssign( ~lhs, rhs.lhs_ );
+      smpSubAssign( ~lhs, rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -555,8 +556,8 @@ class SMatSMatSubExpr : public SparseMatrix< SMatSMatSubExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      subAssign( ~lhs, rhs.lhs_ );
-      addAssign( ~lhs, rhs.rhs_ );
+      smpSubAssign( ~lhs, rhs.lhs_ );
+      smpAddAssign( ~lhs, rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
