@@ -662,7 +662,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      assign( ~lhs, tmp );
+      smpAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
