@@ -2519,7 +2519,6 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    /*! In case the either of the two matrix operands requires an intermediate evaluation, the
        nested \value will be set to 1, otherwise it will be 0. */
@@ -2527,7 +2526,6 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
    struct UseSMPAssignKernel {
       enum { value = evaluateLeft || evaluateRight };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
