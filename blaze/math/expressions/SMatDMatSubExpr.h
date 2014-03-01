@@ -48,6 +48,8 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatMatSubExpr.h>
+#include <blaze/math/smp/DenseMatrix.h>
+#include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
@@ -260,8 +262,8 @@ class SMatDMatSubExpr : public DenseMatrix< SMatDMatSubExpr<MT1,MT2,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      assign   ( ~lhs, -rhs.rhs_ );
-      addAssign( ~lhs,  rhs.lhs_ );
+      smpAssign   ( ~lhs, -rhs.rhs_ );
+      smpAddAssign( ~lhs,  rhs.lhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -297,7 +299,7 @@ class SMatDMatSubExpr : public DenseMatrix< SMatDMatSubExpr<MT1,MT2,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const TmpType tmp( rhs );
-      assign( ~lhs, tmp );
+      smpAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -323,8 +325,8 @@ class SMatDMatSubExpr : public DenseMatrix< SMatDMatSubExpr<MT1,MT2,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      subAssign( ~lhs, rhs.rhs_ );
-      addAssign( ~lhs, rhs.lhs_ );
+      smpSubAssign( ~lhs, rhs.rhs_ );
+      smpAddAssign( ~lhs, rhs.lhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -354,8 +356,8 @@ class SMatDMatSubExpr : public DenseMatrix< SMatDMatSubExpr<MT1,MT2,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      addAssign( ~lhs, rhs.rhs_ );
-      subAssign( ~lhs, rhs.lhs_ );
+      smpAddAssign( ~lhs, rhs.rhs_ );
+      smpSubAssign( ~lhs, rhs.lhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
