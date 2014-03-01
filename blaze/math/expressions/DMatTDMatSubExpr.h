@@ -47,6 +47,8 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatMatSubExpr.h>
+#include <blaze/math/smp/DenseMatrix.h>
+#include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
@@ -132,7 +134,7 @@ class DMatTDMatSubExpr : public DenseMatrix< DMatTDMatSubExpr<MT1,MT2>, false >
    enum { vectorizable = 0 };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = MT1::smpAssignable && MT2::smpAssignable };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -229,6 +231,27 @@ class DMatTDMatSubExpr : public DenseMatrix< DMatTDMatSubExpr<MT1,MT2>, false >
    }
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*!\brief Returns whether the operands of the expression are properly aligned in memory.
+   //
+   // \return \a true in case the operands are aligned, \a false if not.
+   */
+   inline bool isAligned() const {
+      return lhs_.isAligned() && rhs_.isAligned();
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can be used in SMP assignments.
+   //
+   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const {
+      return lhs_.canSMPAssign() || rhs_.canSMPAssign() ||
+             ( rows() > OPENMP_DMATDMATADD_THRESHOLD );
+   }
+   //**********************************************************************************************
+
  private:
    //**Member variables****************************************************************************
    LeftOperand  lhs_;  //!< Left-hand side dense matrix of the subtraction expression.
@@ -281,11 +304,11 @@ class DMatTDMatSubExpr : public DenseMatrix< DMatTDMatSubExpr<MT1,MT2>, false >
       // expression is evaluated in a one- or two-step approach (depending on whether any
       // of the operands is aliased with the target matrix).
       else if( !IsExpression<MT1>::value && (~lhs).isAliased( &rhs.lhs_ ) ) {
-         subAssign( ~lhs, rhs.rhs_ );
+         smpSubAssign( ~lhs, rhs.rhs_ );
       }
       else {
-         assign   ( ~lhs, rhs.lhs_ );
-         subAssign( ~lhs, rhs.rhs_ );
+         smpAssign   ( ~lhs, rhs.lhs_ );
+         smpSubAssign( ~lhs, rhs.rhs_ );
       }
    }
    /*! \endcond */
@@ -322,7 +345,7 @@ class DMatTDMatSubExpr : public DenseMatrix< DMatTDMatSubExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const TmpType tmp( rhs );
-      assign( ~lhs, tmp );
+      smpAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -374,8 +397,8 @@ class DMatTDMatSubExpr : public DenseMatrix< DMatTDMatSubExpr<MT1,MT2>, false >
       // expression is evaluated in a two-step approach.
       else
       {
-         addAssign( ~lhs, rhs.lhs_ );
-         subAssign( ~lhs, rhs.rhs_ );
+         smpAddAssign( ~lhs, rhs.lhs_ );
+         smpSubAssign( ~lhs, rhs.rhs_ );
       }
    }
    /*! \endcond */
@@ -432,8 +455,8 @@ class DMatTDMatSubExpr : public DenseMatrix< DMatTDMatSubExpr<MT1,MT2>, false >
       // expression is evaluated in a two-step approach.
       else
       {
-         subAssign( ~lhs, rhs.lhs_ );
-         addAssign( ~lhs, rhs.rhs_ );
+         smpSubAssign( ~lhs, rhs.lhs_ );
+         smpAddAssign( ~lhs, rhs.rhs_ );
       }
    }
    /*! \endcond */
