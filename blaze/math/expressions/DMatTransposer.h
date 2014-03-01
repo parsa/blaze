@@ -40,8 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseMatrix.h>
-#include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/intrinsics/IntrinsicTrait.h>
@@ -300,6 +300,17 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    inline bool isAliased( const Other* alias ) const
    {
       return dm_.isAliased( alias );
+   }
+   //**********************************************************************************************
+
+   //**IsAligned function**************************************************************************
+   /*!\brief Returns whether the matrix is properly aligned in memory.
+   //
+   // \return \a true in case the matrix is aligned, \a false if not.
+   */
+   inline bool isAligned() const
+   {
+      return dm_.isAligned();
    }
    //**********************************************************************************************
 
@@ -794,7 +805,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -1030,6 +1041,17 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    inline bool isAliased( const Other* alias ) const
    {
       return dm_.isAliased( alias );
+   }
+   //**********************************************************************************************
+
+   //**IsAligned function**************************************************************************
+   /*!\brief Returns whether the matrix is properly aligned in memory.
+   //
+   // \return \a true in case the matrix is aligned, \a false if not.
+   */
+   inline bool isAligned() const
+   {
+      return dm_.isAligned();
    }
    //**********************************************************************************************
 
@@ -1522,7 +1544,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
    /*! \endcond */
    //**********************************************************************************************
 };
