@@ -51,6 +51,8 @@
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/smp/DenseMatrix.h>
+#include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -110,10 +112,32 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    //**Type definitions****************************************************************************
    typedef typename MT1::ResultType     RT1;  //!< Result type of the left-hand side dense matrix expression.
    typedef typename MT2::ResultType     RT2;  //!< Result type of the right-hand side sparse matrix expression.
-   typedef typename MT1::ElementType    ET1;  //!< Element type of the left-hand side dense matrix expression.
-   typedef typename MT2::ElementType    ET2;  //!< Element type of the right-hand side sparse matrix expression.
+   typedef typename RT1::ElementType    ET1;  //!< Element type of the left-hand side dense matrix expression.
+   typedef typename RT2::ElementType    ET2;  //!< Element type of the right-hand side sparse matrix expression.
    typedef typename MT1::CompositeType  CT1;  //!< Composite type of the left-hand side dense matrix expression.
    typedef typename MT2::CompositeType  CT2;  //!< Composite type of the right-hand side sparse matrix expression.
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Compilation switch for the composite type of the left-hand side dense matrix expression.
+   enum { evaluateLeft = IsComputation<MT1>::value || RequiresEvaluation<MT1>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Compilation switch for the composite type of the right-hand side sparse matrix expression.
+   enum { evaluateRight = IsComputation<MT2>::value || RequiresEvaluation<MT2>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! In case the either of the two matrix operands requires an intermediate evaluation, the
+       nested \value will be set to 1, otherwise it will be 0. */
+   template< typename T1, typename T2, typename T3 >
+   struct UseSMPAssignKernel {
+      enum { value = evaluateLeft || evaluateRight };
+   };
+   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -123,7 +147,8 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
        matrix multiplication, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseVectorizedKernel {
-      enum { value = T1::vectorizable && T2::vectorizable &&
+      enum { value = !UseSMPAssignKernel<T1,T2,T3>::value &&
+                     T1::vectorizable && T2::vectorizable &&
                      IsColumnMajorMatrix<T1>::value &&
                      IsSame<typename T1::ElementType,typename T2::ElementType>::value &&
                      IsSame<typename T1::ElementType,typename T3::ElementType>::value &&
@@ -142,7 +167,8 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
        it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseOptimizedKernel {
-      enum { value = !UseVectorizedKernel<T1,T2,T3>::value &&
+      enum { value = !UseSMPAssignKernel<T1,T2,T3>::value &&
+                     !UseVectorizedKernel<T1,T2,T3>::value &&
                      !IsResizable<typename T1::ElementType>::value &&
                      !IsResizable<ET1>::value };
    };
@@ -156,7 +182,8 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
        be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseDefaultKernel {
-      enum { value = !UseVectorizedKernel<T1,T2,T3>::value &&
+      enum { value = !UseSMPAssignKernel<T1,T2,T3>::value &&
+                     !UseVectorizedKernel<T1,T2,T3>::value &&
                      !UseOptimizedKernel<T1,T2,T3>::value };
    };
    /*! \endcond */
@@ -180,18 +207,21 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    typedef typename SelectType< IsExpression<MT2>::value, const MT2, const MT2& >::Type  RightOperand;
 
    //! Type for the assignment of the left-hand side dense matrix operand.
-   typedef typename SelectType< IsComputation<MT1>::value, const RT1, CT1 >::Type  LT;
+   typedef typename SelectType< evaluateLeft, const RT1, CT1 >::Type  LT;
 
    //! Type for the assignment of the right-hand side sparse matrix operand.
-   typedef typename SelectType< IsComputation<MT2>::value, const RT2, CT2 >::Type  RT;
+   typedef typename SelectType< evaluateRight, const RT2, CT2 >::Type  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = 0 };
+   enum { vectorizable = MT1::vectorizable &&
+                         IsSame<ET1,ET2>::value &&
+                         IntrinsicTrait<ET1>::addition &&
+                         IntrinsicTrait<ET1>::multiplication };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = !evaluateLeft && !evaluateRight };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -322,6 +352,26 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    }
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*!\brief Returns whether the operands of the expression are properly aligned in memory.
+   //
+   // \return \a true in case the operands are aligned, \a false if not.
+   */
+   inline bool isAligned() const {
+      return lhs_.isAligned();
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can be used in SMP assignments.
+   //
+   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const {
+      return ( columns() > OPENMP_DMATSMATMULT_THRESHOLD );
+   }
+   //**********************************************************************************************
+
  private:
    //**Member variables****************************************************************************
    LeftOperand  lhs_;  //!< Left-hand side dense matrix of the multiplication expression.
@@ -368,7 +418,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    //**Default assignment to row-major dense matrices**********************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Default assignment of a transpose dense matrix-transpose sparse matrix multiplication
-   //        to row-major matrices (\f$ A=B*C \f$).
+   //        to row-major dense matrices (\f$ A=B*C \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -382,10 +432,10 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline void
+   static inline typename DisableIf< UseSMPAssignKernel<MT3,MT4,MT5> >::Type
       selectAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
-      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
+      typedef typename MT5::ConstIterator  ConstIterator;
 
       const size_t iend( A.rows() & size_t(-4) );
       BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
@@ -442,7 +492,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    //**Default assignment to column-major dense matrices*******************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Default assignment of a transpose dense matrix-transpose sparse matrix multiplication
-   //        to column-major matrices (\f$ A=B*C \f$).
+   //        to column-major dense matrices (\f$ A=B*C \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -459,7 +509,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5> >::Type
       selectAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
+      typedef typename MT5::ConstIterator  ConstIterator;
 
       for( size_t j=0UL; j<B.columns(); ++j ) {
          for( size_t i=0UL; i<(~C).rows(); ++i ) {
@@ -483,7 +533,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    //**Optimized assignment to column-major dense matrices*****************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Optimized assignment of a transpose dense matrix-transpose sparse matrix multiplication
-   //        to column-major matrices (\f$ A=B*C \f$).
+   //        to column-major dense matrices (\f$ A=B*C \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -500,7 +550,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    static inline typename EnableIf< UseOptimizedKernel<MT3,MT4,MT5> >::Type
       selectAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
+      typedef typename MT5::ConstIterator  ConstIterator;
 
       const size_t iend( A.rows() & size_t(-4) );
       BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
@@ -558,7 +608,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    //**Vectorized assignment to column-major dense matrices****************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Vectorized assignment of a transpose dense matrix-transpose sparse matrix
-   //        multiplication to column-major matrices (\f$ A=B*C \f$).
+   //        multiplication to column-major dense matrices (\f$ A=B*C \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -576,7 +626,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
       selectAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
       typedef IntrinsicTrait<ElementType>  IT;
-      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
+      typedef typename MT5::ConstIterator  ConstIterator;
 
       const size_t M( A.rows() );
 
@@ -621,6 +671,31 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    /*! \endcond */
    //**********************************************************************************************
 
+   //**SMP assignment to dense matrices************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP assignment of a transpose dense matrix-transpose sparse matrix multiplication
+   //        to dense matrices (\f$ A=B*C \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side dense matrix operand.
+   // \param B The right-hand side sparse matrix operand.
+   // \return void
+   //
+   // This function implements the SMP assignment kernel for the transpose dense matrix-transpose
+   // sparse matrix multiplication.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseSMPAssignKernel<MT3,MT4,MT5> >::Type
+      selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      smpAssign( C, A * B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**Assignment to sparse matrices***************************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Assignment of a transpose dense matrix-sparse matrix multiplication to a sparse matrix.
@@ -652,7 +727,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const TmpType tmp( rhs );
-      assign( ~lhs, tmp );
+      smpAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -697,7 +772,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    //**Default addition assignment to row-major dense matrices*************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Default addition assignment of a transpose dense matrix-transpose sparse matrix
-   //        multiplication to row-major matrices (\f$ A+=B*C \f$).
+   //        multiplication to row-major dense matrices (\f$ A+=B*C \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -711,10 +786,10 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline void
+   static inline typename DisableIf< UseSMPAssignKernel<MT3,MT4,MT5> >::Type
       selectAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
-      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
+      typedef typename MT5::ConstIterator  ConstIterator;
 
       const size_t iend( A.rows() & size_t(-4) );
       BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
@@ -751,7 +826,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    //**Default addition assignment to column-major dense matrices**********************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Default addition assignment of a transpose dense matrix-transpose sparse matrix
-   //        multiplication to column-major matrices (\f$ A+=B*C \f$).
+   //        multiplication to column-major dense matrices (\f$ A+=B*C \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -768,7 +843,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5> >::Type
       selectAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
+      typedef typename MT5::ConstIterator  ConstIterator;
 
       for( size_t j=0UL; j<B.columns(); ++j ) {
          ConstIterator element( B.begin(j) );
@@ -789,7 +864,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    //**Optimized addition assignment to column-major dense matrices********************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Optimized addition assignment of a transpose dense matrix-transpose sparse matrix
-   //        multiplication to column-major matrices (\f$ A+=B*C \f$).
+   //        multiplication to column-major dense matrices (\f$ A+=B*C \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -806,7 +881,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    static inline typename EnableIf< UseOptimizedKernel<MT3,MT4,MT5> >::Type
       selectAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
+      typedef typename MT5::ConstIterator  ConstIterator;
 
       const size_t iend( A.rows() & size_t(-4) );
       BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
@@ -862,7 +937,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    //**Vectorized addition assignment to column-major dense matrices*******************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Vectorized addition assignment of a transpose dense matrix-transpose sparse matrix
-   //        multiplication to column-major matrices (\f$ A+=B*C \f$).
+   //        multiplication to column-major dense matrices (\f$ A+=B*C \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -880,7 +955,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
       selectAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
       typedef IntrinsicTrait<ElementType>  IT;
-      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
+      typedef typename MT5::ConstIterator  ConstIterator;
 
       const size_t M( A.rows() );
 
@@ -919,6 +994,31 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
             }
          }
       }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP addition assignment to dense matrices***************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP addition assignment of a transpose dense matrix-transpose sparse matrix
+   //        multiplication to dense matrices (\f$ A+=B*C \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side dense matrix operand.
+   // \param B The right-hand side sparse matrix operand.
+   // \return void
+   //
+   // This function implements the SMP addition assignment kernel for the transpose dense matrix-
+   // transpose sparse matrix multiplication to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseVectorizedKernel<MT3,MT4,MT5> >::Type
+      selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      smpAddAssign( C, A, B );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -984,7 +1084,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    static inline void
       selectSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
-      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
+      typedef typename MT5::ConstIterator  ConstIterator;
 
       const size_t iend( A.rows() & size_t(-4) );
       BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
@@ -1038,7 +1138,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5> >::Type
       selectSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
+      typedef typename MT5::ConstIterator  ConstIterator;
 
       for( size_t j=0UL; j<B.columns(); ++j ) {
          ConstIterator element( B.begin(j) );
@@ -1076,7 +1176,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    static inline typename EnableIf< UseOptimizedKernel<MT3,MT4,MT5> >::Type
       selectSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
+      typedef typename MT5::ConstIterator  ConstIterator;
 
       const size_t iend( A.rows() & size_t(-4) );
       BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
@@ -1150,7 +1250,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
       selectSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
       typedef IntrinsicTrait<ElementType>  IT;
-      typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
+      typedef typename MT5::ConstIterator  ConstIterator;
 
       const size_t M( A.rows() );
 
@@ -1189,6 +1289,31 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
             }
          }
       }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to dense matrices************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP subtraction assignment of a transpose dense matrix-transpose sparse matrix
+   //        multiplication to dense matrices (\f$ A+=B*C \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side dense matrix operand.
+   // \param B The right-hand side sparse matrix operand.
+   // \return void
+   //
+   // This function implements the SMP subtraction assignment kernel for the transpose dense
+   // matrix-transpose sparse matrix multiplication to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseVectorizedKernel<MT3,MT4,MT5> >::Type
+      selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      smpSubAssign( C, A, B );
    }
    /*! \endcond */
    //**********************************************************************************************
