@@ -87,7 +87,6 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
 
 
