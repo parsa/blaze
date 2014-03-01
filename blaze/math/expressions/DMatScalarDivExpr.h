@@ -48,6 +48,8 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatScalarDivExpr.h>
 #include <blaze/math/Intrinsics.h>
+#include <blaze/math/smp/DenseMatrix.h>
+#include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/DivExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -413,7 +415,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
                          IntrinsicTrait<ET>::division };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -547,6 +549,27 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    }
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*!\brief Returns whether the operands of the expression are properly aligned in memory.
+   //
+   // \return \a true in case the operands are aligned, \a false if not.
+   */
+   inline bool isAligned() const {
+      return matrix_.isAligned();
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can be used in SMP assignments.
+   //
+   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const {
+      return matrix_.canSMPAssign() ||
+             ( ( ( SO == rowMajor ) ? rows() : columns() ) > OPENMP_DMATSCALARMULT_THRESHOLD );
+   }
+   //**********************************************************************************************
+
  private:
    //**Member variables****************************************************************************
    LeftOperand  matrix_;  //!< Left-hand side dense matrix of the division expression.
@@ -642,7 +665,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( rhs );
-      addAssign( ~lhs, tmp );
+      smpAddAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -680,7 +703,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( rhs );
-      subAssign( ~lhs, tmp );
+      smpSubAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
