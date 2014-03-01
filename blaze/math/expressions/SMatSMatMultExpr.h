@@ -578,7 +578,7 @@ class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
 
       const ResultType tmp( rhs );
       (~lhs).reserve( tmp.nonZeros() );
-      assign( ~lhs, tmp );
+      smpAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
