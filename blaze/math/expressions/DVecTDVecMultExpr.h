@@ -49,6 +49,8 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/Intrinsics.h>
+#include <blaze/math/smp/DenseMatrix.h>
+#include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -77,7 +79,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\brief Expression object for outer products between two dense vectors.
-// \ingroup dense_vector_expression
+// \ingroup dense_matrix_expression
 //
 // The DVecTDVecMultExpr class represents the compile time expression for outer products
 // between dense vectors.
@@ -92,12 +94,22 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    //**Type definitions****************************************************************************
    typedef typename VT1::ResultType     RT1;  //!< Result type of the left-hand side dense vector expression.
    typedef typename VT2::ResultType     RT2;  //!< Result type of the right-hand side dense vector expression.
+   typedef typename RT1::ElementType    ET1;  //!< Element type of the left-hand side dense vector expression.
+   typedef typename RT2::ElementType    ET2;  //!< Element type of the right-hand side dense vector expression.
    typedef typename VT1::ReturnType     RN1;  //!< Return type of the left-hand side dense vector expression.
    typedef typename VT2::ReturnType     RN2;  //!< Return type of the right-hand side dense vector expression.
    typedef typename VT1::CompositeType  CT1;  //!< Composite type of the left-hand side dense vector expression.
    typedef typename VT2::CompositeType  CT2;  //!< Composite type of the right-hand side dense vector expression.
-   typedef typename VT1::ElementType    ET1;  //!< Element type of the left-hand side dense vector expression.
-   typedef typename VT2::ElementType    ET2;  //!< Element type of the right-hand side dense vector expression.
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Compilation switch for the composite type of the left-hand side dense vector expression.
+   enum { evaluateLeft = IsComputation<VT1>::value || RequiresEvaluation<VT1>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Compilation switch for the composite type of the right-hand side dense vector expression.
+   enum { evaluateRight = IsComputation<VT2>::value || RequiresEvaluation<VT2>::value };
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -117,11 +129,11 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    //! Compilation switch for the evaluation strategy of the outer product expression.
    /*! The \a useAssign compile time constant expression represents a compilation switch
        for the evaluation strategy of the outer product expression. In case either of the
-       two dense vector operands is an expression, \a useAssign will be set to \a true and
-       the outer product expression will be evaluated via the \a assign function family.
+       two dense vector operands requires an evaluation, \a useAssign will be set to \a true
+       and the outer product expression will be evaluated via the \a assign function family.
        Otherwise \a useAssign will be set to \a false and the expression will be evaluated
        via the function call operator. */
-   enum { useAssign = ( IsComputation<VT1>::value || IsComputation<VT2>::value ) };
+   enum { useAssign = ( evaluateLeft || evaluateRight ) };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
@@ -135,11 +147,24 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
+   /*! In case the the right-hand side vector operand requires an intermediate evaluation, the
+       nested \value will be set to 1, otherwise it will be 0. */
+   template< typename T1, typename T2, typename T3 >
+   struct UseSMPAssignKernel {
+      enum { value = evaluateRight };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
    /*! In case all three involved data types are suited for a vectorized computation of the
        outer product, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseVectorizedKernel {
-      enum { value = T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+      enum { value = !UseSMPAssignKernel<T1,T2,T3>::value &&
+                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsSame<typename T1::ElementType,typename T2::ElementType>::value &&
                      IsSame<typename T1::ElementType,typename T3::ElementType>::value &&
                      IntrinsicTrait<typename T1::ElementType>::multiplication };
@@ -154,7 +179,8 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
        otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseDefaultKernel {
-      enum { value = !UseVectorizedKernel<T1,T2,T3>::value };
+      enum { value = !UseSMPAssignKernel<T1,T2,T3>::value &&
+                     !UseVectorizedKernel<T1,T2,T3>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -181,10 +207,10 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    typedef typename SelectType< IsExpression<VT2>::value, const VT2, const VT2& >::Type  RightOperand;
 
    //! Type for the assignment of the left-hand side dense vector operand.
-   typedef typename SelectType< IsComputation<VT1>::value, const RT1, CT1 >::Type  LT;
+   typedef typename SelectType< evaluateLeft, const RT1, CT1 >::Type  LT;
 
    //! Type for the assignment of the right-hand side dense vector operand.
-   typedef typename SelectType< IsComputation<VT2>::value, const RT2, CT2 >::Type  RT;
+   typedef typename SelectType< evaluateRight, const RT2, CT2 >::Type  RT;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -440,7 +466,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
                          IntrinsicTrait<ET1>::multiplication };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = !evaluateRight };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -576,6 +602,26 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    }
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*!\brief Returns whether the operands of the expression are properly aligned in memory.
+   //
+   // \return \a true in case the operands are aligned, \a false if not.
+   */
+   inline bool isAligned() const {
+      return lhs_.isAligned() && rhs_.isAligned();
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can be used in SMP assignments.
+   //
+   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const {
+      return ( rows() > OPENMP_DVECTDVECMULT_THRESHOLD );
+   }
+   //**********************************************************************************************
+
  private:
    //**Member variables****************************************************************************
    LeftOperand  lhs_;  //!< Left-hand side dense vector of the multiplication expression.
@@ -622,7 +668,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Default assignment of a dense vector-dense vector outer product to a row-major dense
    //        matrix (\f$ A=\vec{x}*\vec{y}^T \f$).
-   // \ingroup dense_vector
+   // \ingroup dense_matrix
    //
    // \param A The target left-hand side dense matrix.
    // \param x The left-hand side dense vector operand.
@@ -661,7 +707,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Vectorized assignment of a dense vector-dense vector outer product to a row-major
    //        dense matrix (\f$ A=\vec{x}*\vec{y}^T \f$).
-   // \ingroup dense_vector
+   // \ingroup dense_matrix
    //
    // \param A The target left-hand side dense matrix.
    // \param x The left-hand side dense vector operand.
@@ -690,6 +736,31 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
             (~A).store( i, j, x1 * y.load(j) );
          }
       }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP assignment to row-major dense matrices**************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP assignment of a dense vector-dense vector outer product to a row-major dense
+   //        matrix (\f$ A=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_matrix
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side dense vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the SMP assignment kernel for the dense vector-dense vector
+   // outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseSMPAssignKernel<MT,VT3,VT4> >::Type
+      selectAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
+   {
+      smpAssign( A, x * y );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -731,7 +802,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Default assignment of a dense vector-dense vector outer product to a column-major
    //        dense matrix (\f$ A=\vec{x}*\vec{y}^T \f$).
-   // \ingroup dense_vector
+   // \ingroup dense_matrix
    //
    // \param A The target left-hand side dense matrix.
    // \param x The left-hand side dense vector operand.
@@ -770,7 +841,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Vectorized assignment of a dense vector-dense vector outer product to a column-major
    //        dense matrix (\f$ A=\vec{x}*\vec{y}^T \f$).
-   // \ingroup dense_vector
+   // \ingroup dense_matrix
    //
    // \param A The target left-hand side dense matrix.
    // \param x The left-hand side dense vector operand.
@@ -799,6 +870,31 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
             (~A).store( i, j, x.load(i) * y1 );
          }
       }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP assignment to column-major dense matrices***********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP assignment of a dense vector-dense vector outer product to a column-major dense
+   //        matrix (\f$ A=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_matrix
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side dense vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the SMP assignment kernel for the dense vector-dense vector
+   // outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseSMPAssignKernel<MT,VT3,VT4> >::Type
+      selectAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
+   {
+      smpAssign( A, x * y );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -834,7 +930,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const TmpType tmp( rhs );
-      assign( ~lhs, tmp );
+      smpAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -880,7 +976,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Default addition assignment of a dense vector-dense vector outer product to a
    //        row-major dense matrix (\f$ A+=\vec{x}*\vec{y}^T \f$).
-   // \ingroup dense_vector
+   // \ingroup dense_matrix
    //
    // \param A The target left-hand side dense matrix.
    // \param x The left-hand side dense vector operand.
@@ -919,15 +1015,15 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Vectorized addition assignment of a dense vector-dense vector outer product to a
    //        row-major dense matrix (\f$ A+=\vec{x}*\vec{y}^T \f$).
-   // \ingroup dense_vector
+   // \ingroup dense_matrix
    //
    // \param A The target left-hand side dense matrix.
    // \param x The left-hand side dense vector operand.
    // \param y The right-hand side dense vector operand.
    // \return void
    //
-   // This function implements the vectorized addition assignment kernel for the dense vector-dense
-   // vector outer product.
+   // This function implements the vectorized addition assignment kernel for the dense vector-
+   // dense vector outer product.
    */
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
@@ -948,6 +1044,31 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
             (~A).store( i, j, (~A).load(i,j) + x1 * y.load(j) );
          }
       }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP addition assignment to row-major dense matrices*****************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP addition assignment of a dense vector-dense vector outer product to a row-major
+   //        dense matrix (\f$ A=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_matrix
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side dense vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the SMP addition assignment kernel for the dense vector-dense
+   // vector outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseSMPAssignKernel<MT,VT3,VT4> >::Type
+      selectAddAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
+   {
+      smpAddAssign( A, x * y );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -990,7 +1111,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Default addition assignment of a dense vector-dense vector outer product to a
    //        column-major dense matrix (\f$ A+=\vec{x}*\vec{y}^T \f$).
-   // \ingroup dense_vector
+   // \ingroup dense_matrix
    //
    // \param A The target left-hand side dense matrix.
    // \param x The left-hand side dense vector operand.
@@ -1029,7 +1150,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Vectorized addition assignment of a dense vector-dense vector outer product to a
    //        column-major dense matrix (\f$ A+=\vec{x}*\vec{y}^T \f$).
-   // \ingroup dense_vector
+   // \ingroup dense_matrix
    //
    // \param A The target left-hand side dense matrix.
    // \param x The left-hand side dense vector operand.
@@ -1058,6 +1179,31 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
             (~A).store( i, j, (~A).load(i,j) + x.load(i) * y1 );
          }
       }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP addition assignment to column-major dense matrices**************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP addition assignment of a dense vector-dense vector outer product to a
+   //        column-major dense matrix (\f$ A=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_matrix
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side dense vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the SMP addition assignment kernel for the dense vector-dense
+   // vector outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseSMPAssignKernel<MT,VT3,VT4> >::Type
+      selectAddAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
+   {
+      smpAddAssign( A, x * y );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1107,7 +1253,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Default subtraction assignment of a dense vector-dense vector outer product to a
    //        row-major dense matrix (\f$ A-=\vec{x}*\vec{y}^T \f$).
-   // \ingroup dense_vector
+   // \ingroup dense_matrix
    //
    // \param A The target left-hand side dense matrix.
    // \param x The left-hand side dense vector operand.
@@ -1146,15 +1292,15 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Vectorized subtraction assignment of a dense vector-dense vector outer product to a
    //        row-major dense matrix (\f$ A-=\vec{x}*\vec{y}^T \f$).
-   // \ingroup dense_vector
+   // \ingroup dense_matrix
    //
    // \param A The target left-hand side dense matrix.
    // \param x The left-hand side dense vector operand.
    // \param y The right-hand side dense vector operand.
    // \return void
    //
-   // This function implements the vectorized subtraction assignment kernel for the dense vector-dense
-   // vector outer product.
+   // This function implements the vectorized subtraction assignment kernel for the dense vector-
+   // dense vector outer product.
    */
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
@@ -1175,6 +1321,31 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
             (~A).store( i, j, (~A).load(i,j) - x1 * y.load(j) );
          }
       }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to row-major dense matrices**************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP subtraction assignment of a dense vector-dense vector outer product to a
+   //        row-major dense matrix (\f$ A=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_matrix
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side dense vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the SMP subtraction assignment kernel for the dense vector-dense
+   // vector outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseSMPAssignKernel<MT,VT3,VT4> >::Type
+      selectSubAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
+   {
+      smpSubAssign( A, x * y );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1217,15 +1388,15 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Default subtraction assignment of a dense vector-dense vector outer product to a
    //        column-major dense matrix (\f$ A-=\vec{x}*\vec{y}^T \f$).
-   // \ingroup dense_vector
+   // \ingroup dense_matrix
    //
    // \param A The target left-hand side dense matrix.
    // \param x The left-hand side dense vector operand.
    // \param y The right-hand side dense vector operand.
    // \return void
    //
-   // This function implements the default subtraction assignment kernel for the dense vector-dense
-   // vector outer product.
+   // This function implements the default subtraction assignment kernel for the dense vector-
+   // dense vector outer product.
    */
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
@@ -1256,7 +1427,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Vectorized subtraction assignment of a dense vector-dense vector outer product to a
    //        column-major dense matrix (\f$ A-=\vec{x}*\vec{y}^T \f$).
-   // \ingroup dense_vector
+   // \ingroup dense_matrix
    //
    // \param A The target left-hand side dense matrix.
    // \param x The left-hand side dense vector operand.
@@ -1285,6 +1456,31 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
             (~A).store( i, j, (~A).load(i,j) - x.load(i) * y1 );
          }
       }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to column-major dense matrices***********************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP subtraction assignment of a dense vector-dense vector outer product to a
+   //        column-major dense matrix (\f$ A=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_matrix
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side dense vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the SMP subtraction assignment kernel for the dense vector-dense
+   // vector outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseSMPAssignKernel<MT,VT3,VT4> >::Type
+      selectSubAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
+   {
+      smpSubAssign( A, x * y );
    }
    /*! \endcond */
    //**********************************************************************************************
