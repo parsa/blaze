@@ -51,6 +51,8 @@
 #include <blaze/math/expressions/MatScalarMultExpr.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/smp/DenseMatrix.h>
+#include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/DMatDVecMultExprTrait.h>
 #include <blaze/math/traits/DMatSVecMultExprTrait.h>
@@ -119,8 +121,32 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    //**Type definitions****************************************************************************
    typedef typename MT1::ResultType     RT1;  //!< Result type of the left-hand side dense matrix expression.
    typedef typename MT2::ResultType     RT2;  //!< Result type of the right-hand side dense matrix expression.
+   typedef typename RT1::ElementType    ET1;  //!< Element type of the left-hand side dense matrix expression.
+   typedef typename RT2::ElementType    ET2;  //!< Element type of the right-hand side dense matrix expression.
    typedef typename MT1::CompositeType  CT1;  //!< Composite type of the left-hand side dense matrix expression.
    typedef typename MT2::CompositeType  CT2;  //!< Composite type of the right-hand side dense matrix expression.
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Compilation switch for the composite type of the left-hand side dense matrix expression.
+   enum { evaluateLeft = IsComputation<MT1>::value || RequiresEvaluation<MT1>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Compilation switch for the composite type of the right-hand side dense matrix expression.
+   enum { evaluateRight = IsComputation<MT2>::value || RequiresEvaluation<MT2>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! In case the either of the two matrix operands requires an intermediate evaluation, the
+       nested \value will be set to 1, otherwise it will be 0. */
+   template< typename T1, typename T2, typename T3 >
+   struct UseSMPAssignKernel {
+      enum { value = evaluateLeft || evaluateRight };
+   };
+   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -232,18 +258,21 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    typedef typename SelectType< IsExpression<MT2>::value, const MT2, const MT2& >::Type  RightOperand;
 
    //! Type for the assignment of the left-hand side dense matrix operand.
-   typedef typename SelectType< IsComputation<MT1>::value, const RT1, CT1 >::Type  LT;
+   typedef typename SelectType< evaluateLeft, const RT1, CT1 >::Type  LT;
 
    //! Type for the assignment of the right-hand side dense matrix operand.
-   typedef typename SelectType< IsComputation<MT2>::value, const RT2, CT2 >::Type  RT;
+   typedef typename SelectType< evaluateRight, const RT2, CT2 >::Type  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = 0 };
+   enum { vectorizable = MT1::vectorizable && MT2::vectorizable &&
+                         IsSame<ET1,ET2>::value &&
+                         IntrinsicTrait<ET1>::addition &&
+                         IntrinsicTrait<ET1>::multiplication };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = !evaluateLeft && !evaluateRight };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -356,6 +385,26 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    }
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*!\brief Returns whether the operands of the expression are properly aligned in memory.
+   //
+   // \return \a true in case the operands are aligned, \a false if not.
+   */
+   inline bool isAligned() const {
+      return lhs_.isAligned() && rhs_.isAligned();
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can be used in SMP assignments.
+   //
+   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const {
+      return ( rows() > OPENMP_DMATDMATMULT_THRESHOLD );
+   }
+   //**********************************************************************************************
+
  private:
    //**Member variables****************************************************************************
    LeftOperand  lhs_;  //!< Left-hand side dense matrix of the multiplication expression.
@@ -364,7 +413,8 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
    //**Assignment to dense matrices****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a dense matrix-transpose dense matrix multiplication to a dense matrix.
+   /*!\brief Assignment of a dense matrix-transpose dense matrix multiplication to a dense matrix
+   //        (\f$ C=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.
@@ -398,10 +448,54 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
-      if( (~lhs).rows() * (~lhs).columns() < DMATTDMATMULT_THRESHOLD )
-         DMatTDMatMultExpr::selectDefaultAssignKernel( ~lhs, A, B );
+      DMatTDMatMultExpr::selectAssignKernel( ~lhs, A, B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Assignment to dense matrices (kernel selection)*********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Selection of the kernel for an assignment of a dense matrix-transpose dense matrix
+   //        multiplication to a dense matrix (\f$ C=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename DisableIf< UseSMPAssignKernel<MT3,MT4,MT5> >::Type
+      selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      if( C.rows() * C.columns() < DMATTDMATMULT_THRESHOLD )
+         DMatTDMatMultExpr::selectDefaultAssignKernel( C, A, B );
       else
-         DMatTDMatMultExpr::selectBlasAssignKernel( ~lhs, A, B );
+         DMatTDMatMultExpr::selectBlasAssignKernel( C, A, B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Assignment to dense matrices (kernel selection)*********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Selection of the kernel for an assignment of a dense matrix-transpose dense matrix
+   //        multiplication to a dense matrix (\f$ C=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseSMPAssignKernel<MT3,MT4,MT5> >::Type
+      selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      smpAssign( C, A * B );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -931,7 +1025,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const TmpType tmp( rhs );
-      assign( ~lhs, tmp );
+      smpAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -972,10 +1066,54 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
-      if( (~lhs).rows() * (~lhs).columns() < DMATTDMATMULT_THRESHOLD )
-         DMatTDMatMultExpr::selectDefaultAddAssignKernel( ~lhs, A, B );
+      DMatTDMatMultExpr::selectAddAssignKernel( ~lhs, A, B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Addition assignment to dense matrices (kernel selection)************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Selection of the kernel for an addition assignment of a dense matrix-transpose dense
+   //        matrix multiplication to a dense matrix (\f$ C+=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename DisableIf< UseSMPAssignKernel<MT3,MT4,MT5> >::Type
+      selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      if( C.rows() * C.columns() < DMATTDMATMULT_THRESHOLD )
+         DMatTDMatMultExpr::selectDefaultAddAssignKernel( C, A, B );
       else
-         DMatTDMatMultExpr::selectBlasAddAssignKernel( ~lhs, A, B );
+         DMatTDMatMultExpr::selectBlasAddAssignKernel( C, A, B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Addition assignment to dense matrices (kernel selection)************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Selection of the kernel for an addition assignment of a dense matrix-transpose dense
+   //        matrix multiplication to a dense matrix (\f$ C+=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseSMPAssignKernel<MT3,MT4,MT5> >::Type
+      selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      smpAddAssign( C, A * B );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1518,10 +1656,54 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
-      if( (~lhs).rows() * (~lhs).columns() < DMATTDMATMULT_THRESHOLD )
-         DMatTDMatMultExpr::selectDefaultSubAssignKernel( ~lhs, A, B );
+      DMatTDMatMultExpr::selectSubAssignKernel( ~lhs, A, B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Subtraction assignment to dense matrices (kernel selection)*********************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Selection of the kernel for a subtraction assignment of a dense matrix-transpose
+   //        dense matrix multiplication to a dense matrix (\f$ C-=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename DisableIf< UseSMPAssignKernel<MT3,MT4,MT5> >::Type
+      selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      if( C.rows() * C.columns() < DMATTDMATMULT_THRESHOLD )
+         DMatTDMatMultExpr::selectDefaultSubAssignKernel( C, A, B );
       else
-         DMatTDMatMultExpr::selectBlasSubAssignKernel( ~lhs, A, B );
+         DMatTDMatMultExpr::selectBlasSubAssignKernel( C, A, B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Subtraction assignment to dense matrices (kernel selection)*********************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Selection of the kernel for a subtraction assignment of a dense matrix-transpose
+   //        dense matrix multiplication to a dense matrix (\f$ C-=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseSMPAssignKernel<MT3,MT4,MT5> >::Type
+      selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      smpSubAssign( C, A * B );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -2078,8 +2260,32 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    typedef typename MMM::ResultType     RES;  //!< Result type of the dense matrix multiplication expression.
    typedef typename MT1::ResultType     RT1;  //!< Result type of the left-hand side dense matrix expression.
    typedef typename MT2::ResultType     RT2;  //!< Result type of the right-hand side dense matrix expression.
+   typedef typename RT1::ElementType    ET1;  //!< Element type of the left-hand side dense matrix expression.
+   typedef typename RT2::ElementType    ET2;  //!< Element type of the right-hand side dense matrix expression.
    typedef typename MT1::CompositeType  CT1;  //!< Composite type of the left-hand side dense matrix expression.
    typedef typename MT2::CompositeType  CT2;  //!< Composite type of the right-hand side dense matrix expression.
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Compilation switch for the composite type of the left-hand side dense matrix expression.
+   enum { evaluateLeft = IsComputation<MT1>::value || RequiresEvaluation<MT1>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Compilation switch for the composite type of the right-hand side dense matrix expression.
+   enum { evaluateRight = IsComputation<MT2>::value || RequiresEvaluation<MT2>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! In case the either of the two matrix operands requires an intermediate evaluation, the
+       nested \value will be set to 1, otherwise it will be 0. */
+   template< typename T1, typename T2, typename T3, typename T4 >
+   struct UseSMPAssignKernel {
+      enum { value = evaluateLeft || evaluateRight };
+   };
+   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -2184,18 +2390,22 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    typedef ST  RightOperand;
 
    //! Type for the assignment of the left-hand side dense matrix operand.
-   typedef typename SelectType< IsComputation<MT1>::value, const RT1, CT1 >::Type  LT;
+   typedef typename SelectType< evaluateLeft, const RT1, CT1 >::Type  LT;
 
    //! Type for the assignment of the right-hand side dense matrix operand.
-   typedef typename SelectType< IsComputation<MT2>::value, const RT2, CT2 >::Type  RT;
+   typedef typename SelectType< evaluateRight, const RT2, CT2 >::Type  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = 0 };
+   enum { vectorizable = MT1::vectorizable && MT2::vectorizable &&
+                         IsSame<ET1,ET2>::value &&
+                         IsSame<ET1,ST>::value &&
+                         IntrinsicTrait<ET1>::addition &&
+                         IntrinsicTrait<ET1>::multiplication };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = !evaluateLeft && !evaluateRight };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -2288,6 +2498,27 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    }
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*!\brief Returns whether the operands of the expression are properly aligned in memory.
+   //
+   // \return \a true in case the operands are aligned, \a false if not.
+   */
+   inline bool isAligned() const {
+      return matrix_.isAligned();
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can be used in SMP assignments.
+   //
+   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const {
+      typename MMM::LeftOperand A( matrix_.leftOperand() );
+      return ( A.rows() > OPENMP_DMATDMATMULT_THRESHOLD );
+   }
+   //**********************************************************************************************
+
  private:
    //**Member variables****************************************************************************
    LeftOperand  matrix_;  //!< Left-hand side dense matrix of the multiplication expression.
@@ -2333,10 +2564,54 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns(), "Invalid number of columns" );
 
-      if( (~lhs).rows() * (~lhs).columns() < DMATTDMATMULT_THRESHOLD )
-         DMatScalarMultExpr::selectDefaultAssignKernel( ~lhs, A, B, rhs.scalar_ );
+      DMatScalarMultExpr::selectAssignKernel( ~lhs, A, B, rhs.scalar_ );
+   }
+   //**********************************************************************************************
+
+   //**Assignment to dense matrices (kernel selection)*********************************************
+   /*!\brief Selection of the kernel for an assignment of a scaled dense matrix-transpose dense
+   //        matrix multiplication to a dense matrix (\f$ C=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseSMPAssignKernel<MT3,MT4,MT5,ST2> >::Type
+      selectAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      if( C.rows() * C.columns() < DMATTDMATMULT_THRESHOLD )
+         DMatScalarMultExpr::selectDefaultAssignKernel( C, A, B, scalar );
       else
-         DMatScalarMultExpr::selectBlasAssignKernel( ~lhs, A, B, rhs.scalar_ );
+         DMatScalarMultExpr::selectBlasAssignKernel( C, A, B, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Assignment to dense matrices (kernel selection)*********************************************
+   /*!\brief Selection of the kernel for an assignment of a scaled dense matrix-transpose dense
+   //        matrix multiplication to a dense matrix (\f$ C=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< UseSMPAssignKernel<MT3,MT4,MT5,ST2> >::Type
+      selectAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      smpAssign( C, A * B * scalar );
    }
    //**********************************************************************************************
 
@@ -2864,7 +3139,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const TmpType tmp( rhs );
-      assign( ~lhs, tmp );
+      smpAssign( ~lhs, tmp );
    }
    //**********************************************************************************************
 
@@ -2906,10 +3181,54 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns(), "Invalid number of columns" );
 
-      if( (~lhs).rows() * (~lhs).columns() < DMATTDMATMULT_THRESHOLD )
-         DMatScalarMultExpr::selectDefaultAddAssignKernel( ~lhs, A, B, rhs.scalar_ );
+      DMatScalarMultExpr::selectAddAssignKernel( ~lhs, A, B, rhs.scalar_ );
+   }
+   //**********************************************************************************************
+
+   //**Addition assignment to dense matrices (kernel selection)************************************
+   /*!\brief Selection of the kernel for an addition assignment of a scaled dense matrix-
+   //        transpose dense matrix multiplication to a dense matrix (\f$ C+=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseSMPAssignKernel<MT3,MT4,MT5,ST2> >::Type
+      selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      if( C.rows() * C.columns() < DMATTDMATMULT_THRESHOLD )
+         DMatScalarMultExpr::selectDefaultAddAssignKernel( C, A, B, scalar );
       else
-         DMatScalarMultExpr::selectBlasAddAssignKernel( ~lhs, A, B, rhs.scalar_ );
+         DMatScalarMultExpr::selectBlasAddAssignKernel( C, A, B, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Addition assignment to dense matrices (kernel selection)************************************
+   /*!\brief Selection of the kernel for an addition assignment of a scaled dense matrix-
+   //        transpose dense matrix multiplication to a dense matrix (\f$ C+=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< UseSMPAssignKernel<MT3,MT4,MT5,ST2> >::Type
+      selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      smpAddAssign( C, A * B * scalar );
    }
    //**********************************************************************************************
 
@@ -3437,10 +3756,54 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns(), "Invalid number of columns" );
 
-      if( (~lhs).rows() * (~lhs).columns() < DMATTDMATMULT_THRESHOLD )
-         DMatScalarMultExpr::selectDefaultSubAssignKernel( ~lhs, A, B, rhs.scalar_ );
+      DMatScalarMultExpr::selectSubAssignKernel( ~lhs, A, B, rhs.scalar_ );
+   }
+   //**********************************************************************************************
+
+   //**Subtraction assignment to dense matrices (kernel selection)*********************************
+   /*!\brief Selection of the kernel for a subtraction assignment of a scaled dense matrix-
+   //        transpose dense matrix multiplication to a dense matrix (\f$ C-=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseSMPAssignKernel<MT3,MT4,MT5,ST2> >::Type
+      selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      if( C.rows() * C.columns() < DMATTDMATMULT_THRESHOLD )
+         DMatScalarMultExpr::selectDefaultSubAssignKernel( C, A, B, scalar );
       else
-         DMatScalarMultExpr::selectBlasSubAssignKernel( ~lhs, A, B, rhs.scalar_ );
+         DMatScalarMultExpr::selectBlasSubAssignKernel( C, A, B, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Subtraction assignment to dense matrices (kernel selection)*********************************
+   /*!\brief Selection of the kernel for a subtraction assignment of a scaled dense matrix-
+   //        transpose dense matrix multiplication to a dense matrix (\f$ C-=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< UseSMPAssignKernel<MT3,MT4,MT5,ST2> >::Type
+      selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      smpSubAssign( C, A * B * scalar );
    }
    //**********************************************************************************************
 
