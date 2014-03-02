@@ -166,6 +166,36 @@ struct MathTrait
 
 //=================================================================================================
 //
+//  MATHTRAIT SPECIALIZATION FOR IDENTICAL TYPES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization for two identical types.
+// \ingroup math
+//
+// This specialization of the MathTrait class template handles the special case that the two
+// given types are identical. In this case, the nested types \a HighType and \a LowType are
+// set to the given type \a T (ignoring \a const and \a volatile qualifiers and reference
+// modifiers).
+*/
+template< typename T >
+struct MathTrait<T,T>
+{
+   //**********************************************************************************************
+   typedef typename RemoveReference< typename RemoveCV<T>::Type >::Type  HighType;
+   typedef HighType                                                      LowType;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  MATHTRAIT SPECIALIZATION MACRO
 //
 //=================================================================================================
