@@ -1015,10 +1015,10 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseVectorizedKernel<MT3,MT4,MT5> >::Type
+   static inline typename EnableIf< UseSMPAssignKernel<MT3,MT4,MT5> >::Type
       selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      smpAddAssign( C, A, B );
+      smpAddAssign( C, A * B );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1081,7 +1081,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline void
+   static inline typename DisableIf< UseSMPAssignKernel<MT3,MT4,MT5> >::Type
       selectSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
       typedef typename MT5::ConstIterator  ConstIterator;
@@ -1310,10 +1310,10 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseVectorizedKernel<MT3,MT4,MT5> >::Type
+   static inline typename EnableIf< UseSMPAssignKernel<MT3,MT4,MT5> >::Type
       selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      smpSubAssign( C, A, B );
+      smpSubAssign( C, A * B );
    }
    /*! \endcond */
    //**********************************************************************************************
