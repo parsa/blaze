@@ -46,6 +46,7 @@
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/intrinsics/IntrinsicTrait.h>
+#include <blaze/math/smp/SerialSection.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/system/OpenMP.h>
 #include <blaze/util/Assert.h>
@@ -120,7 +121,7 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
+   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       assign( ~lhs, ~rhs );
       return;
    }
@@ -202,7 +203,7 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
+   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       assign( ~lhs, ~rhs );
       return;
    }
@@ -295,7 +296,7 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
+   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       addAssign( ~lhs, ~rhs );
       return;
    }
@@ -379,7 +380,7 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
+   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       addAssign( ~lhs, ~rhs );
       return;
    }
@@ -472,7 +473,7 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
+   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       subAssign( ~lhs, ~rhs );
       return;
    }
@@ -556,7 +557,7 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
+   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       subAssign( ~lhs, ~rhs );
       return;
    }
@@ -649,7 +650,7 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
+   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       multAssign( ~lhs, ~rhs );
       return;
    }
@@ -733,7 +734,7 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
+   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       multAssign( ~lhs, ~rhs );
       return;
    }

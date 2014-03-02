@@ -46,6 +46,7 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/intrinsics/IntrinsicTrait.h>
+#include <blaze/math/smp/SerialSection.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/system/OpenMP.h>
@@ -124,7 +125,7 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
+   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       assign( ~lhs, ~rhs );
       return;
    }
@@ -208,7 +209,7 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
+   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       assign( ~lhs, ~rhs );
       return;
    }
@@ -292,7 +293,7 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
+   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       assign( ~lhs, ~rhs );
       return;
    }
@@ -353,7 +354,7 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
+   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       assign( ~lhs, ~rhs );
       return;
    }
@@ -447,7 +448,7 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
+   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       addAssign( ~lhs, ~rhs );
       return;
    }
@@ -531,7 +532,7 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
+   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       addAssign( ~lhs, ~rhs );
       return;
    }
@@ -615,7 +616,7 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
+   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       addAssign( ~lhs, ~rhs );
       return;
    }
@@ -676,7 +677,7 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
+   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       addAssign( ~lhs, ~rhs );
       return;
    }
@@ -770,7 +771,7 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
+   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       subAssign( ~lhs, ~rhs );
       return;
    }
@@ -854,7 +855,7 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
+   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       subAssign( ~lhs, ~rhs );
       return;
    }
@@ -938,7 +939,7 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
+   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       subAssign( ~lhs, ~rhs );
       return;
    }
@@ -999,7 +1000,7 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   if( omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
+   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
       subAssign( ~lhs, ~rhs );
       return;
    }
