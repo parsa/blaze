@@ -156,7 +156,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
       //**Constructor******************************************************************************
       /*!\brief Constructor for the ConstIterator class.
       //
-      // \param iterator Iterator to the initial left-hand side element.
+      // \param iterator Iterator to the initial element.
       */
       explicit inline ConstIterator( IteratorType iterator )
          : iterator_( iterator )  // Iterator to the current element
