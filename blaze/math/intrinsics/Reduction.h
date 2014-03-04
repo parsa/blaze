@@ -152,8 +152,7 @@ inline double sum( const sse_double_t& a )
    return _mm512_reduce_add_pd( a.value );
 #elif BLAZE_AVX_MODE
    const sse_double_t b( _mm256_hadd_pd( a.value, a.value ) );
-   const sse_double_t c( _mm256_hadd_pd( b.value, b.value ) );
-   return c[0];
+   return b[0] + b[2];
 #elif BLAZE_SSE3_MODE
    const sse_double_t b( _mm_hadd_pd( a.value, a.value ) );
    return b[0];
