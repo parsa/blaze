@@ -193,10 +193,7 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = MT2::vectorizable &&
-                         IsSame<ET1,ET2>::value &&
-                         IntrinsicTrait<ET1>::addition &&
-                         IntrinsicTrait<ET1>::multiplication };
+   enum { vectorizable = 0 };
 
    //! Compilation switch for the expression template assignment strategy.
    enum { smpAssignable = !evaluateLeft && !evaluateRight };
