@@ -41,9 +41,9 @@
 //*************************************************************************************************
 
 #include <blaze/system/Alignment.h>
+#include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Volatile.h>
 
