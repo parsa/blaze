@@ -402,7 +402,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
    inline bool canSMPAssign() const {
-      return ( rows() > OPENMP_DMATDMATMULT_THRESHOLD );
+      return ( !BLAZE_BLAS_IS_PARALLEL ||
+               ( rows() * columns() < DMATDMATMULT_THRESHOLD ) ) &&
+             ( rows() > OPENMP_DMATDMATMULT_THRESHOLD );
    }
    //**********************************************************************************************
 
@@ -2389,7 +2391,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    */
    inline bool canSMPAssign() const {
       typename MMM::LeftOperand A( matrix_.leftOperand() );
-      return ( A.rows() > OPENMP_DMATDMATMULT_THRESHOLD );
+      return ( !BLAZE_BLAS_IS_PARALLEL ||
+               ( rows() * columns() < DMATDMATMULT_THRESHOLD ) ) &&
+             ( A.rows() > OPENMP_DMATDMATMULT_THRESHOLD );
    }
    //**********************************************************************************************
 
