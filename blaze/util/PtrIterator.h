@@ -109,7 +109,7 @@ class PtrIterator
 {
  public:
    //**Type definitions****************************************************************************
-   // pe naming convention
+   // blaze naming convention
    typedef std::random_access_iterator_tag  IteratorCategory;   //!< The iterator category.
    typedef Type*                            ValueType;          //!< Type of the underlying pointers.
    typedef Type*                            PointerType;        //!< Pointer return type.
