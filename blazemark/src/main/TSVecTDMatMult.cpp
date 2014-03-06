@@ -213,7 +213,7 @@ void tsvectdmatmult( std::vector<Run>& runs, Benchmarks benchmarks )
             const size_t F    ( run->getNonZeros() );
             const size_t steps( run->getSteps()    );
             run->setBlazeResult( blazemark::blaze::tsvectdmatmult( N, F, steps ) );
-            const double mflops( run->getSteps() * steps / run->getBlazeResult() / 1E6 );
+            const double mflops( run->getFlops() * steps / run->getBlazeResult() / 1E6 );
             std::cout << "     " << std::setw(12) << N << mflops << std::endl;
          }
       }
@@ -230,7 +230,7 @@ void tsvectdmatmult( std::vector<Run>& runs, Benchmarks benchmarks )
             const size_t F    ( run->getNonZeros() );
             const size_t steps( run->getSteps()    );
             run->setBoostResult( blazemark::boost::tsvectdmatmult( N, F, steps ) );
-            const double mflops( run->getSteps() * steps / run->getBoostResult() / 1E6 );
+            const double mflops( run->getFlops() * steps / run->getBoostResult() / 1E6 );
             std::cout << "     " << std::setw(12) << N << mflops << std::endl;
          }
       }
@@ -252,7 +252,8 @@ void tsvectdmatmult( std::vector<Run>& runs, Benchmarks benchmarks )
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief The main function for the transpose sparse vector/dense matrix multiplication benchmark.
+/*!\brief The main function for the transpose sparse vector/transpose dense matrix multiplication
+//        benchmark.
 //
 // \param argc The total number of command line arguments.
 // \param argv The array of command line arguments.
@@ -260,7 +261,7 @@ void tsvectdmatmult( std::vector<Run>& runs, Benchmarks benchmarks )
 */
 int main( int argc, char** argv )
 {
-   std::cout << "\n Transpose Sparse Vector/Dense Matrix Multiplication:\n";
+   std::cout << "\n Transpose Sparse Vector/Transpose Dense Matrix Multiplication:\n";
 
    Benchmarks benchmarks;
 
