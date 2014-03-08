@@ -44,13 +44,10 @@
 #  include <malloc.h>
 #endif
 #include <cstdlib>
-#include <new>
 #include <stdexcept>
-#include <boost/checked_delete.hpp>
 #include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/Null.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsVectorizable.h>
 
 
 namespace blaze {
@@ -63,16 +60,16 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\brief Aligned array allocation.
+// \ingroup util
 //
 // \param size The number of elements of the given type to allocate.
 // \return Pointer to the first element of the aligned array.
 //
 // The allocate function provides the functionality to allocate memory based on the alignment
-// restrictions of the given data type. In case the given type is a fundamental, built-in data
-// type and in case SSE vectorization is possible, the returned memory is guaranteed to be at
-// least 16-byte aligned. In case AVX in active, the memory is even guaranteed to be 32-byte
-// aligned. For all other, non-builtin data types, the system-specific alignment strategy is
-// used.
+// restrictions of the given data type. For instance, in case the given type is a fundamental,
+// built-in data type and in case SSE vectorization is possible, the returned memory is guaranteed
+// to be at least 16-byte aligned. In case AVX is active, the memory is even guaranteed to be at
+// least 32-byte aligned.
 //
 // Examples:
 
@@ -84,44 +81,39 @@ namespace blaze {
 template< typename T >
 T* allocate( size_t size )
 {
-   if( IsVectorizable<T>::value )
-   {
-      void* tmp( NULL );
-      const size_t alignment( AlignmentTrait<T>::value );
+   void* tmp( NULL );
+   const size_t alignment( AlignmentTrait<T>::value );
 
 #if defined(_MSC_VER)
-      tmp = _aligned_malloc( size*sizeof(T), alignment );
-      if( tmp != NULL )
+   tmp = _aligned_malloc( size*sizeof(T), alignment );
+   if( tmp != NULL )
 #else
-      if( !posix_memalign( &tmp, alignment, size*sizeof(T) ) )
+   if( !posix_memalign( &tmp, alignment, size*sizeof(T) ) )
 #endif
-         return reinterpret_cast<T*>( tmp );
-      else throw std::bad_alloc();
-   }
-   else return new T[size];
+      return reinterpret_cast<T*>( tmp );
+   else throw std::bad_alloc();
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*!\brief Deallocation of memory.
+// \ingroup util
 //
 // \param address The address of the first element of the array to be deallocated.
 // \return void
+//
+// This function deallocates the given memory that was previously allocated via the allocate()
+// function.
 */
 template< typename T >
 void deallocate( T* address )
 {
-   if( IsVectorizable<T>::value && address != NULL ) {
 #if defined(_MSC_VER)
-      _aligned_free( address );
+   _aligned_free( address );
 #else
-      free( address );
+   free( address );
 #endif
-   }
-   else {
-      boost::checked_array_delete( address );
-   }
 }
 //*************************************************************************************************
 
