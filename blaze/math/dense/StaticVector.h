@@ -149,6 +149,28 @@ namespace blaze {
 
    A = a * trans( b );  // Outer product between two vectors
    \endcode
+
+// In order to provide maximum performance StaticVector is guaranteed to be properly aligned in
+// memory based on the alignment restrictions of the specified element type. Note however that
+// this enforced alignment can cause problems when StaticVector is used in conjunction with a
+// std::vector or a similar container:
+
+   \code
+   typedef blaze::StaticVector<double,3UL>  VectorType;
+
+   std::vector< VectorType > vec( 10 );  // Potentially causes segmentation faults
+   \endcode
+
+// The core problem is that the allocated dynamic memory of the container potentially does not
+// satisfy the alignment restrictions of the StaticVector. For that reason, the AlignedAllocator
+// can be used:
+
+   \code
+   typedef blaze::StaticVector<double,3UL>      VectorType;
+   typedef blaze::AlignedAllocator<VectorType>  AllocatorType;
+
+   std::vector< VectorType, AllocatorType > vec( 10 );  // Guaranteed to work
+   \endcode
 */
 template< typename Type                     // Data type of the vector
         , size_t N                          // Number of elements
