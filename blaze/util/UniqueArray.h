@@ -380,7 +380,7 @@ template< typename T1    // Resource type of the left-hand side unique array
         , typename D2 >  // Deleter type of the right-hand side unique array
 inline bool operator==( const UniqueArray<T1,D1>& lhs, const UniqueArray<T2,D2>& rhs )
 {
-    return lhs.get() == rhs.get();
+   return lhs.get() == rhs.get();
 }
 //*************************************************************************************************
 
@@ -398,7 +398,7 @@ template< typename T1    // Resource type of the left-hand side unique array
         , typename D2 >  // Deleter type of the right-hand side unique array
 inline bool operator!=( const UniqueArray<T1,D1>& lhs, const UniqueArray<T2,D2>& rhs )
 {
-    return lhs.get() != rhs.get();
+   return lhs.get() != rhs.get();
 }
 //*************************************************************************************************
 

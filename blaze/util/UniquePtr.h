@@ -397,7 +397,7 @@ template< typename T1    // Resource type of the left-hand side unique pointer
         , typename D2 >  // Deleter type of the right-hand side unique pointer
 inline bool operator==( const UniquePtr<T1,D1>& lhs, const UniquePtr<T2,D2>& rhs )
 {
-    return lhs.get() == rhs.get();
+   return lhs.get() == rhs.get();
 }
 //*************************************************************************************************
 
@@ -415,7 +415,7 @@ template< typename T1    // Resource type of the left-hand side unique pointer
         , typename D2 >  // Deleter type of the right-hand side unique pointer
 inline bool operator!=( const UniquePtr<T1,D1>& lhs, const UniquePtr<T2,D2>& rhs )
 {
-    return lhs.get() != rhs.get();
+   return lhs.get() != rhs.get();
 }
 //*************************************************************************************************
 
