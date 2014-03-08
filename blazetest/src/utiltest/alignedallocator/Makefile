@@ -1,8 +1,8 @@
 #==================================================================================================
 #
-#  Makefile for the utiltest module of the Blaze test suite
+#  Makefile for the unique pointer module of the Blaze test suite
 #
-#  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
+#  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved - All Rights Reserved
 #
 #  This file is part of the Blaze library. You can redistribute it and/or modify it under
 #  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -32,36 +32,45 @@
 #==================================================================================================
 
 
+# Including the compiler and library settings
+ifneq ($(MAKECMDGOALS),clean)
+-include ../../Makeconfig
+endif
+
+
+# Setting the source, object and dependency files
+SRC = $(wildcard ./*.cpp)
+DEP = $(SRC:.cpp=.d)
+OBJ = $(SRC:.cpp=.o)
+BIN = $(SRC:.cpp=)
+
+
 # General rules
 default: all
+all: $(BIN)
+essential: $(BIN)
 
-all: alignedallocator uniqueptr uniquearray
 
-essential: alignedallocator uniqueptr uniquearray
-
-alignedallocator:
-	@echo
-	@echo "Building the aligned allocator tests..."
-	@$(MAKE) --no-print-directory -C ./alignedallocator $(MAKECMDGOALS)
-
-uniqueptr:
-	@echo
-	@echo "Building the unique pointer tests..."
-	@$(MAKE) --no-print-directory -C ./uniqueptr $(MAKECMDGOALS)
-
-uniquearray:
-	@echo
-	@echo "Building the unique array tests..."
-	@$(MAKE) --no-print-directory -C ./uniquearray $(MAKECMDGOALS)
+# Build rules
+ClassTest: ClassTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 
 # Cleanup
 clean:
-	@$(MAKE) --no-print-directory -C ./alignedallocator clean
-	@$(MAKE) --no-print-directory -C ./uniqueptr clean
-	@$(MAKE) --no-print-directory -C ./uniquearray clean
-	@$(RM) $(OBJ) $(DEP)
+	@$(RM) $(DEP) $(OBJ) $(BIN)
+
+
+# Makefile includes
+ifneq ($(MAKECMDGOALS),clean)
+-include $(DEP)
+endif
+
+
+# Makefile generation
+%.d: %.cpp
+	@$(CXX) -MM -MP -MT "$*.o $*.d" -MF $@ $(CXXFLAGS) $<
 
 
 # Setting the independent commands
-.PHONY: default clean alignedallocator uniqueptr uniquearray
+.PHONY: default clean
