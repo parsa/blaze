@@ -157,7 +157,7 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
       //**Constructor******************************************************************************
       /*!\brief Constructor for the ConstIterator class.
       //
-      // \param left Iterator to the initial element.
+      // \param iterator Iterator to the initial element.
       */
       explicit inline ConstIterator( IteratorType iterator )
          : iterator_( iterator )  // Iterator to the current element
