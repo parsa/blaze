@@ -171,6 +171,28 @@ namespace blaze {
    E -= A + C;    // Subtraction assignment
    F *= A * D;    // Multiplication assignment
    \endcode
+
+// In order to provide maximum performance StaticMatrix is guaranteed to be properly aligned in
+// memory based on the alignment restrictions of the specified element type. Note however that
+// this enforced alignment can cause problems when StaticMatrix is used in conjunction with a
+// std::vector or a similar container:
+
+   \code
+   typedef blaze::StaticMatrix<double,3UL,3UL>  MatrixType;
+
+   std::vector< MatrixType > vec( 10 );  // Potentially causes segmentation faults
+   \endcode
+
+// The core problem is that the allocated dynamic memory of the container potentially does not
+// satisfy the alignment restrictions of the StaticMatrix. For that reason, the AlignedAllocator
+// can be used:
+
+   \code
+   typedef blaze::StaticMatrix<double,3UL,3UL>  MatrixType;
+   typedef blaze::AlignedAllocator<MatrixType>  AllocatorType;
+
+   std::vector< MatrixType, AllocatorType > vec( 10 );  // Guaranteed to work
+   \endcode
 */
 template< typename Type                    // Data type of the matrix
         , size_t M                         // Number of rows
@@ -180,7 +202,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef IntrinsicTrait<Type>  IT;  //!< Intrinsic trait for the vector element type.
+   typedef IntrinsicTrait<Type>  IT;  //!< Intrinsic trait for the matrix element type.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -206,8 +228,8 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for intrinsic optimization.
-   /*! The \a vectorizable compilation flag indicates whether expressions the vector is involved
-       in can be optimized via intrinsics. In case the element type of the vector is a vectorizable
+   /*! The \a vectorizable compilation flag indicates whether expressions the matrix is involved
+       in can be optimized via intrinsics. In case the element type of the matrix is a vectorizable
        data type, the \a vectorizable compilation flag is set to \a true, otherwise it is set to
        \a false. */
    enum { vectorizable = IsVectorizable<Type>::value };
@@ -2160,7 +2182,7 @@ inline void StaticMatrix<Type,M,N,SO>::swap( StaticMatrix& m ) /* throw() */
 // \param alias The alias to be checked.
 // \return \a true in case the alias corresponds to this matrix, \a false if not.
 //
-// This function returns whether the given address can alias with the vector. In contrast
+// This function returns whether the given address can alias with the matrix. In contrast
 // to the isAliased() function this function is allowed to use compile time expressions
 // to optimize the evaluation.
 */
@@ -2182,7 +2204,7 @@ inline bool StaticMatrix<Type,M,N,SO>::canAlias( const Other* alias ) const
 // \param alias The alias to be checked.
 // \return \a true in case the alias corresponds to this matrix, \a false if not.
 //
-// This function returns whether the given address is aliased with the vector. In contrast
+// This function returns whether the given address is aliased with the matrix. In contrast
 // to the conAlias() function this function is not allowed to use compile time expressions
 // to optimize the evaluation.
 */
@@ -2797,7 +2819,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
 {
  private:
    //**Type definitions****************************************************************************
-   typedef IntrinsicTrait<Type>  IT;  //!< Intrinsic trait for the vector element type.
+   typedef IntrinsicTrait<Type>  IT;  //!< Intrinsic trait for the matrix element type.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -2823,8 +2845,8 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for intrinsic optimization.
-   /*! The \a vectorizable compilation flag indicates whether expressions the vector is involved
-       in can be optimized via intrinsics. In case the element type of the vector is a vectorizable
+   /*! The \a vectorizable compilation flag indicates whether expressions the matrix is involved
+       in can be optimized via intrinsics. In case the element type of the matrix is a vectorizable
        data type, the \a vectorizable compilation flag is set to \a true, otherwise it is set to
        \a false. */
    enum { vectorizable = IsVectorizable<Type>::value };
@@ -4777,7 +4799,7 @@ inline void StaticMatrix<Type,M,N,true>::swap( StaticMatrix& m ) /* throw() */
 // \param alias The alias to be checked.
 // \return \a true in case the alias corresponds to this matrix, \a false if not.
 //
-// This function returns whether the given address can alias with the vector. In contrast
+// This function returns whether the given address can alias with the matrix. In contrast
 // to the isAliased() function this function is allowed to use compile time expressions
 // to optimize the evaluation.
 */
@@ -4800,7 +4822,7 @@ inline bool StaticMatrix<Type,M,N,true>::canAlias( const Other* alias ) const
 // \param alias The alias to be checked.
 // \return \a true in case the alias corresponds to this matrix, \a false if not.
 //
-// This function returns whether the given address is aliased with the vector. In contrast
+// This function returns whether the given address is aliased with the matrix. In contrast
 // to the conAlias() function this function is not allowed to use compile time expressions
 // to optimize the evaluation.
 */
