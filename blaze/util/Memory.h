@@ -44,6 +44,7 @@
 #  include <malloc.h>
 #endif
 #include <cstdlib>
+#include <new>
 #include <stdexcept>
 #include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/Null.h>
@@ -84,14 +85,17 @@ T* allocate( size_t size )
    void* tmp( NULL );
    const size_t alignment( AlignmentTrait<T>::value );
 
+   if( alignment >= 8UL ) {
 #if defined(_MSC_VER)
-   tmp = _aligned_malloc( size*sizeof(T), alignment );
-   if( tmp != NULL )
+      tmp = _aligned_malloc( size*sizeof(T), alignment );
+      if( tmp != NULL )
 #else
-   if( !posix_memalign( &tmp, alignment, size*sizeof(T) ) )
+      if( !posix_memalign( &tmp, alignment, size*sizeof(T) ) )
 #endif
-      return reinterpret_cast<T*>( tmp );
-   else throw std::bad_alloc();
+         return reinterpret_cast<T*>( tmp );
+      else throw std::bad_alloc();
+   }
+   else return ::new T[size];
 }
 //*************************************************************************************************
 
@@ -109,11 +113,16 @@ T* allocate( size_t size )
 template< typename T >
 void deallocate( T* address )
 {
+   const size_t alignment( AlignmentTrait<T>::value );
+
+   if( alignment >= 8UL ) {
 #if defined(_MSC_VER)
-   _aligned_free( address );
+      _aligned_free( address );
 #else
-   free( address );
+      free( address );
 #endif
+   }
+   else delete[] address;
 }
 //*************************************************************************************************
 
