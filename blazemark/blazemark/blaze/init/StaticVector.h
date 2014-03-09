@@ -62,8 +62,8 @@ namespace blaze {
 template< typename Type, size_t N, bool TF >
 void init( ::blaze::StaticVector<Type,N,TF>& v );
 
-template< typename Type, size_t N, bool TF >
-void init( ::std::vector< ::blaze::StaticVector<Type,N,TF> >& v );
+template< typename Type, size_t N, bool TF, typename A >
+void init( ::std::vector< ::blaze::StaticVector<Type,N,TF>, A >& v );
 //@}
 //*************************************************************************************************
 
@@ -98,8 +98,9 @@ void init( ::blaze::StaticVector<Type,N,TF>& v )
 */
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
-        , bool TF >      // Transpose flag
-void init( ::std::vector< ::blaze::StaticVector<Type,N,TF> >& v )
+        , bool TF        // Transpose flag
+        , typename A >   // Type of the allocator
+void init( ::std::vector< ::blaze::StaticVector<Type,N,TF>, A >& v )
 {
    const size_t size( v.size() );
 

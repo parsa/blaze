@@ -47,6 +47,7 @@
 #include <blaze/math/Infinity.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/util/AlignedAllocator.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/armadillo/TVec3TMat3Mult.h>
@@ -116,12 +117,17 @@ void estimateSteps( Run& run )
    using blaze::rowVector;
    using blaze::columnMajor;
 
-   ::blaze::setSeed( ::blazemark::seed );
+   typedef blaze::StaticVector<element_t,3UL,rowVector>        VectorType;
+   typedef blaze::StaticMatrix<element_t,3UL,3UL,columnMajor>  MatrixType;
+   typedef blaze::AlignedAllocator<VectorType>                 VectorAllocatorType;
+   typedef blaze::AlignedAllocator<MatrixType>                 MatrixAllocatorType;
+
+   blaze::setSeed( blazemark::seed );
 
    const size_t N( run.getNumber() );
 
-   std::vector< blaze::StaticVector<element_t,3UL,rowVector> > a( N ), b( N );
-   std::vector< blaze::StaticMatrix<element_t,3UL,3UL,columnMajor> > A( N );
+   std::vector< VectorType, VectorAllocatorType > a( N ), b( N );
+   std::vector< MatrixType, MatrixAllocatorType > A( N );
    blaze::timing::WcTimer timer;
    double wct( 0.0 );
    size_t steps( 1UL );

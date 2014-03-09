@@ -40,6 +40,7 @@
 #include <iostream>
 #include <vector>
 #include <blaze/math/StaticMatrix.h>
+#include <blaze/util/AlignedAllocator.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blaze/init/StaticMatrix.h>
 #include <blazemark/blaze/Mat6TMat6Mult.h>
@@ -72,10 +73,15 @@ double mat6tmat6mult( size_t N, size_t steps )
    using ::blaze::rowMajor;
    using ::blaze::columnMajor;
 
+   typedef ::blaze::StaticMatrix<element_t,6UL,6UL,rowMajor>     RowMajorMatrixType;
+   typedef ::blaze::StaticMatrix<element_t,6UL,6UL,columnMajor>  ColumnMajorMatrixType;
+   typedef ::blaze::AlignedAllocator<RowMajorMatrixType>         RowMajorAllocatorType;
+   typedef ::blaze::AlignedAllocator<ColumnMajorMatrixType>      ColumnMajorAllocatorType;
+
    ::blaze::setSeed( seed );
 
-   ::std::vector< ::blaze::StaticMatrix<element_t,6UL,6UL,rowMajor> > A( N ), C( N );
-   ::std::vector< ::blaze::StaticMatrix<element_t,6UL,6UL,columnMajor> > B( N );
+   ::std::vector< RowMajorMatrixType, RowMajorAllocatorType > A( N ), C( N );
+   ::std::vector< ColumnMajorMatrixType, ColumnMajorAllocatorType > B( N );
    ::blaze::timing::WcTimer timer;
 
    for( size_t i=0UL; i<N; ++i ) {

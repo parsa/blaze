@@ -65,8 +65,8 @@ void init( ::blaze::StaticMatrix<Type,M,N,::blaze::rowMajor>& m );
 template< typename Type, size_t M, size_t N >
 void init( ::blaze::StaticMatrix<Type,M,N,::blaze::columnMajor>& m );
 
-template< typename Type, size_t M, size_t N, bool SO >
-void init( ::std::vector< ::blaze::StaticMatrix<Type,M,N,SO> >& v );
+template< typename Type, size_t M, size_t N, bool SO, typename A >
+void init( ::std::vector< ::blaze::StaticMatrix<Type,M,N,SO>, A >& v );
 //@}
 //*************************************************************************************************
 
@@ -126,8 +126,9 @@ void init( ::blaze::StaticMatrix<Type,M,N,::blaze::columnMajor>& m )
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
-        , bool SO >      // Storage order
-void init( ::std::vector< ::blaze::StaticMatrix<Type,M,N,SO> >& v )
+        , bool SO        // Storage order
+        , typename A >   // Type of the allocator
+void init( ::std::vector< ::blaze::StaticMatrix<Type,M,N,SO>, A >& v )
 {
    const size_t size( v.size() );
 

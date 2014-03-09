@@ -41,6 +41,7 @@
 #include <vector>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/util/AlignedAllocator.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blaze/init/StaticMatrix.h>
 #include <blazemark/blaze/init/StaticVector.h>
@@ -74,10 +75,15 @@ double tvec3mat3mult( size_t N, size_t steps )
    using ::blaze::rowVector;
    using ::blaze::rowMajor;
 
+   typedef ::blaze::StaticVector<element_t,3UL,rowVector>     VectorType;
+   typedef ::blaze::StaticMatrix<element_t,3UL,3UL,rowMajor>  MatrixType;
+   typedef ::blaze::AlignedAllocator<VectorType>              VectorAllocatorType;
+   typedef ::blaze::AlignedAllocator<MatrixType>              MatrixAllocatorType;
+
    ::blaze::setSeed( seed );
 
-   ::std::vector< ::blaze::StaticVector<element_t,3UL,rowVector> > a( N ), b( N );
-   ::std::vector< ::blaze::StaticMatrix<element_t,3UL,3UL,rowMajor> > A( N );
+   ::std::vector< VectorType, VectorAllocatorType > a( N ), b( N );
+   ::std::vector< MatrixType, MatrixAllocatorType > A( N );
    ::blaze::timing::WcTimer timer;
 
    for( size_t i=0UL; i<N; ++i ) {

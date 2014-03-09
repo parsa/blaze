@@ -41,6 +41,7 @@
 #include <vector>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/util/AlignedAllocator.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blaze/SVecDVecCross.h>
 #include <blazemark/blaze/init/CompressedVector.h>
@@ -74,10 +75,13 @@ double svecdveccross( size_t N, size_t F, size_t steps )
    using ::blazemark::element_t;
    using ::blaze::columnVector;
 
+   typedef ::blaze::StaticVector<element_t,3UL,columnVector>  VectorType;
+   typedef ::blaze::AlignedAllocator<VectorType>              AllocatorType;
+
    ::blaze::setSeed( seed );
 
    ::std::vector< ::blaze::CompressedVector<element_t,columnVector> > a( N );
-   ::std::vector< ::blaze::StaticVector<element_t,3UL,columnVector> > b( N ), c( N );
+   ::std::vector< VectorType, AllocatorType > b( N ), c( N );
    ::blaze::timing::WcTimer timer;
 
    for( size_t i=0UL; i<N; ++i ) {

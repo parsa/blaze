@@ -46,6 +46,7 @@
 #include <blaze/math/Functions.h>
 #include <blaze/math/Infinity.h>
 #include <blaze/math/StaticMatrix.h>
+#include <blaze/util/AlignedAllocator.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blaze/init/StaticMatrix.h>
@@ -116,12 +117,17 @@ void estimateSteps( Run& run )
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-   ::blaze::setSeed( ::blazemark::seed );
+   typedef blaze::StaticMatrix<element_t,3UL,3UL,columnMajor>  ColumnMajorMatrixType;
+   typedef blaze::StaticMatrix<element_t,3UL,3UL,rowMajor>     RowMajorMatrixType;
+   typedef blaze::AlignedAllocator<ColumnMajorMatrixType>      ColumnMajorAllocatorType;
+   typedef blaze::AlignedAllocator<RowMajorMatrixType>         RowMajorAllocatorType;
+
+   blaze::setSeed( blazemark::seed );
 
    const size_t N( run.getNumber() );
 
-   std::vector< blaze::StaticMatrix<element_t,3UL,3UL,columnMajor> > A( N ), C( N );
-   std::vector< blaze::StaticMatrix<element_t,3UL,3UL,rowMajor> > B( N );
+   std::vector< ColumnMajorMatrixType, ColumnMajorAllocatorType > A( N ), C( N );
+   std::vector< RowMajorMatrixType, RowMajorAllocatorType > B( N );
    blaze::timing::WcTimer timer;
    double wct( 0.0 );
    size_t steps( 1UL );

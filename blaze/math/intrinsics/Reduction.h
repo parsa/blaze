@@ -111,6 +111,28 @@ inline int32_t sum( const sse_int32_t& a )
 
 
 //*************************************************************************************************
+/*!\brief Returns the sum of all elements in the 64-bit integral intrinsic vector.
+// \ingroup intrinsics
+//
+// \param a The vector to be sumed up.
+// \return The sum of all vector elements.
+*/
+inline int64_t sum( const sse_int64_t& a )
+{
+#if BLAZE_MIC_MODE
+   return _mm512_reduce_add_epi64( a.value );
+#elif BLAZE_AVX2_MODE
+   return a[0] + a[1] + a[2] + a[3];
+#elif BLAZE_SSE2_MODE
+   return a[0] + a[1];
+#else
+   return a.value;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns the sum of all elements in the single precision floating point intrinsic vector.
 // \ingroup intrinsics
 //

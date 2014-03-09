@@ -40,6 +40,7 @@
 #include <iostream>
 #include <vector>
 #include <blaze/math/StaticVector.h>
+#include <blaze/util/AlignedAllocator.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blaze/init/StaticVector.h>
 #include <blazemark/blaze/Vec3Vec3Add.h>
@@ -71,9 +72,12 @@ double vec3vec3add( size_t N, size_t steps )
    using ::blazemark::element_t;
    using ::blaze::columnVector;
 
+   typedef ::blaze::StaticVector<element_t,3UL,columnVector>  VectorType;
+   typedef ::blaze::AlignedAllocator<VectorType>              AllocatorType;
+
    ::blaze::setSeed( seed );
 
-   ::std::vector< ::blaze::StaticVector<element_t,3UL,columnVector> > a( N ), b( N ), c( N );
+   ::std::vector< VectorType, AllocatorType > a( N ), b( N ), c( N );
    ::blaze::timing::WcTimer timer;
 
    for( size_t i=0UL; i<N; ++i ) {

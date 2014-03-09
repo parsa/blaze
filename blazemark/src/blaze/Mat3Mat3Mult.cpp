@@ -40,6 +40,7 @@
 #include <iostream>
 #include <vector>
 #include <blaze/math/StaticMatrix.h>
+#include <blaze/util/AlignedAllocator.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blaze/init/StaticMatrix.h>
 #include <blazemark/blaze/Mat3Mat3Mult.h>
@@ -71,9 +72,12 @@ double mat3mat3mult( size_t N, size_t steps )
    using ::blazemark::element_t;
    using ::blaze::rowMajor;
 
+   typedef ::blaze::StaticMatrix<element_t,3UL,3UL,rowMajor>  MatrixType;
+   typedef ::blaze::AlignedAllocator<MatrixType>              AllocatorType;
+
    ::blaze::setSeed( seed );
 
-   ::std::vector< ::blaze::StaticMatrix<element_t,3UL,3UL,rowMajor> > A( N ), B( N ), C( N );
+   ::std::vector< MatrixType, AllocatorType > A( N ), B( N ), C( N );
    ::blaze::timing::WcTimer timer;
 
    for( size_t i=0UL; i<N; ++i ) {

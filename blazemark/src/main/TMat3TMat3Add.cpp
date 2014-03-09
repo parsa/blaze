@@ -46,6 +46,7 @@
 #include <blaze/math/Functions.h>
 #include <blaze/math/Infinity.h>
 #include <blaze/math/StaticMatrix.h>
+#include <blaze/util/AlignedAllocator.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/armadillo/TMat3TMat3Add.h>
@@ -119,11 +120,14 @@ void estimateSteps( Run& run )
    using blazemark::element_t;
    using blaze::columnMajor;
 
-   ::blaze::setSeed( ::blazemark::seed );
+   typedef blaze::StaticMatrix<element_t,3UL,3UL,columnMajor>  MatrixType;
+   typedef blaze::AlignedAllocator<MatrixType>                 AllocatorType;
+
+   blaze::setSeed( blazemark::seed );
 
    const size_t N( run.getNumber() );
 
-   std::vector< blaze::StaticMatrix<element_t,3UL,3UL,columnMajor> > A( N ), B( N ), C( N );
+   std::vector< MatrixType, AllocatorType > A( N ), B( N ), C( N );
    blaze::timing::WcTimer timer;
    double wct( 0.0 );
    size_t steps( 1UL );

@@ -47,6 +47,7 @@
 #include <blaze/math/Functions.h>
 #include <blaze/math/Infinity.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/util/AlignedAllocator.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blaze/DVecSVecCross.h>
@@ -109,13 +110,16 @@ void estimateSteps( Run& run )
    using blazemark::element_t;
    using blaze::columnVector;
 
-   ::blaze::setSeed( ::blazemark::seed );
+   typedef blaze::StaticVector<element_t,3UL,columnVector>  VectorType;
+   typedef blaze::AlignedAllocator<VectorType>              AllocatorType;
+
+   blaze::setSeed( blazemark::seed );
 
    const size_t N( run.getNumber() );
    const size_t F( run.getNonZeros() );
 
    blaze::CompressedVector<element_t,columnVector> tmp( 3UL, F );
-   std::vector< blaze::StaticVector<element_t,3UL,columnVector> > a( N ), c( N );
+   std::vector< VectorType, AllocatorType > a( N ), c( N );
    std::vector< blaze::CompressedVector<element_t,columnVector> > b( N, tmp );
    blaze::timing::WcTimer timer;
    double wct( 0.0 );
