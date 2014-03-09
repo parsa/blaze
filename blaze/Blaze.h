@@ -1851,7 +1851,7 @@ namespace blaze {}
    #include <blaze/math/DenseSubvector.h>
    \endcode
 
-// The type of the dense vector is specified via the template parameter:
+// The type of the dense vector is specified two template parameters:
 
    \code
    template< typename VT, bool AF >
@@ -1875,7 +1875,7 @@ namespace blaze {}
    #include <blaze/math/SparseSubvector.h>
    \endcode
 
-// The type of the sparse vector is specified via the template parameter:
+// The type of the sparse vector is specified via two template parameters:
 
    \code
    template< typename VT, bool AF >
@@ -2273,7 +2273,7 @@ namespace blaze {}
    #include <blaze/math/DenseSubmatrix.h>
    \endcode
 
-// The type of the dense matrix is specified via the template parameter:
+// The type of the dense matrix is specified via two template parameters:
 
    \code
    template< typename MT, bool AF >
@@ -2296,7 +2296,7 @@ namespace blaze {}
    #include <blaze/math/SparseSubmatrix.h>
    \endcode
 
-// The type of the sparse matrix is specified via the template parameter:
+// The type of the sparse matrix is specified via two template parameters:
 
    \code
    template< typename MT, bool AF >
