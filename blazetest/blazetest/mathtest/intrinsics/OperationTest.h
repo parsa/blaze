@@ -45,6 +45,7 @@
 #include <string>
 #include <typeinfo>
 #include <blaze/math/Intrinsics.h>
+#include <blaze/math/shims/Equal.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/NonCopyable.h>
@@ -100,9 +101,10 @@ class OperationTest : private blaze::NonCopyable
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
-   void testStore ();
-   void testStream();
-   void testStoreu( size_t offset );
+   void testStore    ();
+   void testStream   ();
+   void testStoreu   ( size_t offset );
+   void testReduction();
    //@}
    //**********************************************************************************************
 
@@ -164,6 +166,8 @@ OperationTest<T>::OperationTest()
    for( size_t offset=0UL; offset<IT::size; ++offset ) {
       testStoreu( offset );
    }
+
+   testReduction();
 }
 //*************************************************************************************************
 
@@ -257,6 +261,49 @@ void OperationTest<T>::testStoreu( size_t offset )
    }
 
    compare( a_+offset, b_+offset );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the reduction operation.
+//
+// \return void
+// \exception std::runtime_error Reduction error detected.
+//
+// This function tests the reduction operation by comparing the results of a vectorized and a
+// scalar reduction. In case any error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename T >  // Data type of the intrinsic test
+void OperationTest<T>::testReduction()
+{
+   using blaze::load;
+   using blaze::sum;
+
+   test_ = "sum() operation";
+
+   initialize();
+
+   T ssum = T();
+   for( size_t i=0UL; i<N; ++i ) {
+      ssum += a_[i];
+   }
+
+   T vsum = T();
+   for( size_t i=0UL; i<N; i+=IT::size ) {
+      vsum += sum( load( a_+i ) );
+   }
+
+   if( !blaze::equal( ssum, vsum ) ) {
+      std::ostringstream oss;
+      oss.precision( 20 );
+      oss << " Test : " << test_ << "\n"
+          << " Error: Failed reduction operation\n"
+          << " Details:\n"
+          << "   ssum = " << ssum << "\n"
+          << "   vsum = " << vsum << "\n";
+      throw std::runtime_error( oss.str() );
+   }
 }
 //*************************************************************************************************
 
