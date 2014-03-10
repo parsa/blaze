@@ -122,9 +122,13 @@ DOCDIR="\$(INSTALL_PATH)/doc"
 # Generating the Makefile
 
 if test $VERSION = "debug"; then
-   CXXFLAGS="$CXXFLAGS -g"
+   if [[ ! "$CXXFLAGS" =~ "-g" ]]; then
+      CXXFLAGS="$CXXFLAGS -g"
+   fi
 else
-   CXXFLAGS="$CXXFLAGS -DNDEBUG"
+   if [[ ! "$CXXFLAGS" =~ "-DNDEBUG" ]]; then
+      CXXFLAGS="$CXXFLAGS -DNDEBUG"
+   fi
 fi
 if test $LIBRARY = "shared" || test $LIBRARY = "both"; then
    CXXFLAGS="$CXXFLAGS -fPIC"
