@@ -41,7 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/util/Memory.h>
-#include <blaze/util/NULL.h>
+#include <blaze/util/Null.h>
 #include <blaze/util/Unused.h>
 
 
