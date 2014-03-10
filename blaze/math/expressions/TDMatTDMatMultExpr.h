@@ -401,7 +401,7 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    inline bool canSMPAssign() const {
       return ( !BLAZE_BLAS_IS_PARALLEL ||
                ( rows() * columns() < TDMATTDMATMULT_THRESHOLD ) ) &&
-             ( columns() > OPENMP_DMATDMATMULT_THRESHOLD );
+             ( columns() > OPENMP_TDMATTDMATMULT_THRESHOLD );
    }
    //**********************************************************************************************
 
@@ -2393,7 +2393,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
       typename MMM::RightOperand B( matrix_.rightOperand() );
       return ( !BLAZE_BLAS_IS_PARALLEL ||
                ( rows() * columns() < TDMATTDMATMULT_THRESHOLD ) ) &&
-             ( B.columns() > OPENMP_DMATDMATMULT_THRESHOLD );
+             ( B.columns() > OPENMP_TDMATTDMATMULT_THRESHOLD );
    }
    //**********************************************************************************************
 

@@ -368,7 +368,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
    inline bool canSMPAssign() const {
-      return ( columns() > OPENMP_DMATSMATMULT_THRESHOLD );
+      return ( columns() > OPENMP_TDMATTSMATMULT_THRESHOLD );
    }
    //**********************************************************************************************
 

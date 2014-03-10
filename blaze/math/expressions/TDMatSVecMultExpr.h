@@ -326,7 +326,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
    inline bool canSMPAssign() const {
-      return ( size() > OPENMP_DMATSVECMULT_THRESHOLD );
+      return ( size() > OPENMP_TDMATSVECMULT_THRESHOLD );
    }
    //**********************************************************************************************
 
