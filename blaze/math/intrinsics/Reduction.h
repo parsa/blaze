@@ -146,8 +146,9 @@ inline float sum( const sse_float_t& a )
 #elif BLAZE_AVX_MODE
    const sse_float_t b( _mm256_hadd_ps( a.value, a.value ) );
    const sse_float_t c( _mm256_hadd_ps( b.value, b.value ) );
-   const sse_float_t d( _mm256_hadd_ps( c.value, c.value ) );
-   return d[0];
+   const __m128 d = _mm_add_ps( _mm256_extractf128_ps( c.value, 1 )
+                              , _mm256_castps256_ps128( c.value ) );
+   return *reinterpret_cast<const float*>( &d );
 #elif BLAZE_SSE3_MODE
    const sse_float_t b( _mm_hadd_ps( a.value, a.value ) );
    const sse_float_t c( _mm_hadd_ps( b.value, b.value ) );
