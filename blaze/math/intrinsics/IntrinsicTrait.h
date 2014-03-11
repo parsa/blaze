@@ -261,6 +261,106 @@ struct IntrinsicTraitBase
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IntrinsicTraitBase class template for 'char'.
+// \ingroup intrinsics
+*/
+template<>
+struct IntrinsicTraitBase<char>
+{
+ private:
+   typedef IntrinsicTraitHelper<sizeof(char)>  Helper;
+
+ public:
+   typedef Helper::Type  Type;
+   enum { size           = Helper::size,
+          alignment      = AlignmentTrait<char>::value,
+          addition       = Helper::addition,
+          subtraction    = Helper::subtraction,
+          multiplication = Helper::multiplication,
+          division       = Helper::division,
+          absoluteValue  = Helper::absoluteValue };
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IntrinsicTraitBase class template for 'signed char'.
+// \ingroup intrinsics
+*/
+template<>
+struct IntrinsicTraitBase<signed char>
+{
+ private:
+   typedef IntrinsicTraitHelper<sizeof(signed char)>  Helper;
+
+ public:
+   typedef Helper::Type  Type;
+   enum { size           = Helper::size,
+          alignment      = AlignmentTrait<signed char>::value,
+          addition       = Helper::addition,
+          subtraction    = Helper::subtraction,
+          multiplication = Helper::multiplication,
+          division       = Helper::division,
+          absoluteValue  = Helper::absoluteValue };
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IntrinsicTraitBase class template for 'unsigned char'.
+// \ingroup intrinsics
+*/
+template<>
+struct IntrinsicTraitBase<unsigned char>
+{
+ private:
+   typedef IntrinsicTraitHelper<sizeof(unsigned char)>  Helper;
+
+ public:
+   typedef Helper::Type  Type;
+   enum { size           = Helper::size,
+          alignment      = AlignmentTrait<unsigned char>::value,
+          addition       = Helper::addition,
+          subtraction    = Helper::subtraction,
+          multiplication = Helper::multiplication,
+          division       = Helper::division,
+          absoluteValue  = Helper::absoluteValue };
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IntrinsicTraitBase class template for 'wchar_t'.
+// \ingroup intrinsics
+*/
+template<>
+struct IntrinsicTraitBase<wchar_t>
+{
+ private:
+   typedef IntrinsicTraitHelper<sizeof(wchar_t)>  Helper;
+
+ public:
+   typedef Helper::Type  Type;
+   enum { size           = Helper::size,
+          alignment      = AlignmentTrait<wchar_t>::value,
+          addition       = Helper::addition,
+          subtraction    = Helper::subtraction,
+          multiplication = Helper::multiplication,
+          division       = Helper::division,
+          absoluteValue  = Helper::absoluteValue };
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'short'.
 // \ingroup intrinsics
 */
