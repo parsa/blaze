@@ -207,7 +207,6 @@ inline typename EnableIf< TDVecDVecMultExprHelper<T1,T2>,
    Rhs right( ~rhs );
 
    typename IT::Type xmm1, xmm2, xmm3, xmm4;
-   MultType sp( 0 );
 
    const size_t N  ( left.size() );
    const size_t end( N - N % (IT::size*4UL) );
@@ -219,11 +218,8 @@ inline typename EnableIf< TDVecDVecMultExprHelper<T1,T2>,
       xmm4 = xmm4 + ( left.load(i+IT::size*3UL) * right.load(i+IT::size*3UL) );
    }
 
-   MultType array[IT::size];
-   store( array, xmm1 + xmm2 + xmm3 + xmm4 );
+   MultType sp( sum( xmm1 + xmm2 + xmm3 + xmm4 ) );
 
-   for( size_t i=0UL; i<IT::size; ++i )
-      sp += array[i];
    for( size_t i=end; i<N; ++i )
       sp += left[i] * right[i];
 
