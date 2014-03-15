@@ -68,18 +68,18 @@ namespace dynamicmatrix {
 */
 ClassTest::ClassTest()
 {
-   testAlignment< signed char          >( "signed char"          );
-   testAlignment< unsigned char        >( "unsigned char"        );
-   testAlignment< short                >( "short"                );
-   testAlignment< unsigned short       >( "unsigned short"       );
-   testAlignment< int                  >( "int"                  );
-   testAlignment< unsigned int         >( "unsigned int"         );
-   testAlignment< float                >( "float"                );
-   testAlignment< double               >( "double"               );
-   testAlignment< long double          >( "long double"          );
-   testAlignment< complex<float>       >( "complex<float>"       );
-   testAlignment< complex<double>      >( "complex<double>"      );
-   testAlignment< complex<long double> >( "complex<long double>" );
+   testAlignment< char            >( "char"            );
+   testAlignment< signed char     >( "signed char"     );
+   testAlignment< unsigned char   >( "unsigned char"   );
+   testAlignment< wchar_t         >( "wchar_t"         );
+   testAlignment< short           >( "short"           );
+   testAlignment< unsigned short  >( "unsigned short"  );
+   testAlignment< int             >( "int"             );
+   testAlignment< unsigned int    >( "unsigned int"    );
+   testAlignment< float           >( "float"           );
+   testAlignment< double          >( "double"          );
+   testAlignment< complex<float>  >( "complex<float>"  );
+   testAlignment< complex<double> >( "complex<double>" );
 
    testConstructors();
    testAssignment();
