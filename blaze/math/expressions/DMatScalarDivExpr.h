@@ -66,6 +66,7 @@
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/FloatingPoint.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -566,7 +567,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    */
    inline bool canSMPAssign() const {
       return matrix_.canSMPAssign() ||
-             ( ( ( SO == rowMajor ) ? rows() : columns() ) > OPENMP_DMATSCALARMULT_THRESHOLD );
+             ( ( ( SO == rowMajor ) ? rows() : columns() ) > SMP_DMATSCALARMULT_THRESHOLD );
    }
    //**********************************************************************************************
 

@@ -60,6 +60,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
@@ -618,7 +619,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
    inline bool canSMPAssign() const {
-      return ( rows() > OPENMP_DVECTDVECMULT_THRESHOLD );
+      return ( rows() > SMP_DVECTDVECMULT_THRESHOLD );
    }
    //**********************************************************************************************
 

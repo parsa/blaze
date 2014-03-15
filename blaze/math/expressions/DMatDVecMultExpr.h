@@ -387,7 +387,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       return ( !BLAZE_BLAS_IS_PARALLEL ||
                ( IsComputation<MT>::value && !evaluateMatrix ) ||
                ( mat_.rows() * mat_.columns() < DMATDVECMULT_THRESHOLD ) ) &&
-             ( size() > OPENMP_DMATDVECMULT_THRESHOLD );
+             ( size() > SMP_DMATDVECMULT_THRESHOLD );
    }
    //**********************************************************************************************
 
@@ -1944,7 +1944,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       return ( !BLAZE_BLAS_IS_PARALLEL ||
                ( IsComputation<MT>::value && !evaluateMatrix ) ||
                ( A.rows() * A.columns() < DMATDVECMULT_THRESHOLD ) ) &&
-             ( size() > OPENMP_DMATDVECMULT_THRESHOLD );
+             ( size() > SMP_DMATDVECMULT_THRESHOLD );
    }
    //**********************************************************************************************
 

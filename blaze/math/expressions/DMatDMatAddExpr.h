@@ -566,7 +566,7 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
    */
    inline bool canSMPAssign() const {
       return lhs_.canSMPAssign() || rhs_.canSMPAssign() ||
-             ( ( ( SO == rowMajor ) ? rows() : columns() ) > OPENMP_DMATDMATADD_THRESHOLD );
+             ( ( ( SO == rowMajor ) ? rows() : columns() ) > SMP_DMATDMATADD_THRESHOLD );
    }
    //**********************************************************************************************
 

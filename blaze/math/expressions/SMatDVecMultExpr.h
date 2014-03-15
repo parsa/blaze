@@ -312,7 +312,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
    inline bool canSMPAssign() const {
-      return ( size() > OPENMP_SMATDVECMULT_THRESHOLD );
+      return ( size() > SMP_SMATDVECMULT_THRESHOLD );
    }
    //**********************************************************************************************
 

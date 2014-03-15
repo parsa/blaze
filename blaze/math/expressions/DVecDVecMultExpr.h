@@ -548,7 +548,7 @@ class DVecDVecMultExpr : public DenseVector< DVecDVecMultExpr<VT1,VT2,TF>, TF >
    */
    inline bool canSMPAssign() const {
       return lhs_.canSMPAssign() || rhs_.canSMPAssign() ||
-             ( size() > OPENMP_DVECDVECMULT_THRESHOLD );
+             ( size() > SMP_DVECDVECMULT_THRESHOLD );
    }
    //**********************************************************************************************
 

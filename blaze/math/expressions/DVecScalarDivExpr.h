@@ -546,7 +546,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
    inline bool canSMPAssign() const {
-      return vector_.canSMPAssign() || ( size() > OPENMP_DVECSCALARMULT_THRESHOLD );
+      return vector_.canSMPAssign() || ( size() > SMP_DVECSCALARMULT_THRESHOLD );
    }
    //**********************************************************************************************
 

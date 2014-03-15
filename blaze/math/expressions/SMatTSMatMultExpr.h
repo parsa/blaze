@@ -72,6 +72,7 @@
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
@@ -361,6 +362,16 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
    template< typename T >
    inline bool isAliased( const T* alias ) const {
       return ( lhs_.isAliased( alias ) || rhs_.isAliased( alias ) );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can be used in SMP assignments.
+   //
+   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const {
+      return ( rows() > SMP_SMATTSMATMULT_THRESHOLD );
    }
    //**********************************************************************************************
 

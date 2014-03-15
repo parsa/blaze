@@ -75,6 +75,7 @@
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
@@ -367,7 +368,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
    inline bool canSMPAssign() const {
-      return ( rows() > OPENMP_SMATDMATMULT_THRESHOLD );
+      return ( rows() > SMP_SMATDMATMULT_THRESHOLD );
    }
    //**********************************************************************************************
 

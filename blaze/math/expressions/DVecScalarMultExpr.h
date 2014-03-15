@@ -71,6 +71,7 @@
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/FloatingPoint.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -552,7 +553,7 @@ class DVecScalarMultExpr : public DenseVector< DVecScalarMultExpr<VT,ST,TF>, TF 
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
    inline bool canSMPAssign() const {
-      return vector_.canSMPAssign() || ( size() > OPENMP_DVECSCALARMULT_THRESHOLD );
+      return vector_.canSMPAssign() || ( size() > SMP_DVECSCALARMULT_THRESHOLD );
    }
    //**********************************************************************************************
 

@@ -57,6 +57,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/logging/FunctionTrace.h>
@@ -248,7 +249,7 @@ class DMatTDMatSubExpr : public DenseMatrix< DMatTDMatSubExpr<MT1,MT2>, false >
    */
    inline bool canSMPAssign() const {
       return lhs_.canSMPAssign() || rhs_.canSMPAssign() ||
-             ( rows() > OPENMP_DMATTDMATSUB_THRESHOLD );
+             ( rows() > SMP_DMATTDMATSUB_THRESHOLD );
    }
    //**********************************************************************************************
 

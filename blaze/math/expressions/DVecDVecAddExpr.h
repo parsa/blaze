@@ -550,7 +550,7 @@ class DVecDVecAddExpr : public DenseVector< DVecDVecAddExpr<VT1,VT2,TF>, TF >
    */
    inline bool canSMPAssign() const {
       return lhs_.canSMPAssign() || rhs_.canSMPAssign() ||
-             ( size() > OPENMP_DVECDVECADD_THRESHOLD );
+             ( size() > SMP_DVECDVECADD_THRESHOLD );
    }
    //**********************************************************************************************
 

@@ -62,6 +62,7 @@
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/DisableIf.h>
@@ -261,7 +262,7 @@ class TSMatDVecMultExpr : public DenseVector< TSMatDVecMultExpr<MT,VT>, false >
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
    inline bool canSMPAssign() const {
-      return ( size() > OPENMP_TSMATDVECMULT_THRESHOLD );
+      return ( size() > SMP_TSMATDVECMULT_THRESHOLD );
    }
    //**********************************************************************************************
 
