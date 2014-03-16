@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/system/OpenMP.h
-//  \brief System settings for the OpenMP parallelization
+//  \file blaze/config/SMP.h
+//  \brief Configuration of the shared-memory parallelization
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,38 +32,19 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_SYSTEM_OPENMP_H_
-#define _BLAZE_SYSTEM_OPENMP_H_
-
 
 //*************************************************************************************************
-// Includes
-//*************************************************************************************************
-
-#include <blaze/config/SMP.h>
-
-
-
-
-//=================================================================================================
+/*!\brief Compilation switch for the (de-)activation of the shared-memory parallelization
+// \ingroup config
 //
-//  OPENMP MODE CONFIGURATION
+// This compilation switch enables/disables the shared-memory parallelization. In case the switch
+// is set to 1 (i.e. in case the shared-memory parallelization is enabled), the Blaze library is
+// allowed to execute operations in parallel. In case the switch is set to 0 (i.e. parallelization
+// is disabled), the Blaze library is restricted from executing operations in parallel.
 //
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Compilation switch for the OpenMP parallelization.
-// \ingroup system
-//
-// This compilation switch enables/disables the OpenMP parallelization. In case OpenMP is enabled
-// during compilation the Blaze library attempts to parallelize all matrix and vector computations.
-// In case OpenMP is not enabled, all computations are performed on a single compute core.
+// Possible settings for the shared-memory parallelization switch:
+//  - Deactivated: \b 0
+//  - Activated  : \b 1 (default)
 */
-#if BLAZE_USE_SHARED_MEMORY_PARALLELIZATION && defined(_OPENMP)
-#define BLAZE_OPENMP_PARALLEL_MODE 1
-#else
-#define BLAZE_OPENMP_PARALLEL_MODE 0
-#endif
+#define BLAZE_USE_SHARED_MEMORY_PARALLELIZATION 1
 //*************************************************************************************************
-
-#endif
