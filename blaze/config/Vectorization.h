@@ -39,7 +39,7 @@
 //
 // This compilation switch enables/disables vectorization of mathematical expressions via
 // the SSE, AVX, and/or MIC instruction sets. In case the switch is set to 1 (i.e. in case
-// vectorization is enabled) ,the Blaze library attempts to vectorize the linear algebra
+// vectorization is enabled), the Blaze library attempts to vectorize the linear algebra
 // operations by SSE, AVX, and/or MIC intrinsics (depending on which instruction set is
 // available on the target platform). In case the switch is set to 0 (i.e. vectorization
 // is disabled), the Blaze library chooses default, non-vectorized functionality for the
