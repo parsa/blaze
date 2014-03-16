@@ -47,6 +47,7 @@
 #include <blaze/math/Functions.h>
 #include <blaze/math/intrinsics/IntrinsicTrait.h>
 #include <blaze/math/smp/SerialSection.h>
+#include <blaze/math/SparseSubmatrix.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/system/OpenMP.h>

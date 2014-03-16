@@ -47,6 +47,7 @@
 #include <blaze/math/Functions.h>
 #include <blaze/math/intrinsics/IntrinsicTrait.h>
 #include <blaze/math/smp/SerialSection.h>
+#include <blaze/math/SparseSubvector.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/system/OpenMP.h>
 #include <blaze/util/Assert.h>
