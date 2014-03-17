@@ -277,8 +277,8 @@ OperationTest<VT,MT>::OperationTest( const Creator<VT>& creator1, const Creator<
    testNegatedOperation();
    testScaledOperation( 2 );
    testScaledOperation( 2UL );
-   testScaledOperation( 1.1F );
-   testScaledOperation( 1.1 );
+   testScaledOperation( 2.0F );
+   testScaledOperation( 2.0 );
    testTransposeOperation();
    testAbsOperation();
    testSubvectorOperation();

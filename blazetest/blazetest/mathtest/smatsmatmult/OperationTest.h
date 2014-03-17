@@ -327,8 +327,8 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testNegatedOperation();
    testScaledOperation( 2 );
    testScaledOperation( 2UL );
-   testScaledOperation( 1.1F );
-   testScaledOperation( 1.1 );
+   testScaledOperation( 2.0F );
+   testScaledOperation( 2.0 );
    testTransposeOperation();
    testAbsOperation();
    testSubmatrixOperation();
