@@ -129,6 +129,20 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    }
    //**********************************************************************************************
 
+   //**Access operator*****************************************************************************
+   /*!\brief 2D-access to the matrix elements.
+   //
+   // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+   // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+   // \return Reference to the accessed value.
+   */
+   inline ConstReference operator()( size_t i, size_t j ) const {
+      BLAZE_INTERNAL_ASSERT( i < dm_.columns(), "Invalid row access index"    );
+      BLAZE_INTERNAL_ASSERT( j < dm_.rows()   , "Invalid column access index" );
+      return dm_(j,i);
+   }
+   //**********************************************************************************************
+
    //**Low-level data access***********************************************************************
    /*!\brief Low-level data access to the matrix elements.
    //
@@ -884,6 +898,20 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    // \return Reference to the accessed value.
    */
    inline Reference operator()( size_t i, size_t j ) {
+      BLAZE_INTERNAL_ASSERT( i < dm_.columns(), "Invalid row access index"    );
+      BLAZE_INTERNAL_ASSERT( j < dm_.rows()   , "Invalid column access index" );
+      return dm_(j,i);
+   }
+   //**********************************************************************************************
+
+   //**Access operator*****************************************************************************
+   /*!\brief 2D-access to the matrix elements.
+   //
+   // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+   // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+   // \return Reference to the accessed value.
+   */
+   inline ConstReference operator()( size_t i, size_t j ) const {
       BLAZE_INTERNAL_ASSERT( i < dm_.columns(), "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < dm_.rows()   , "Invalid column access index" );
       return dm_(j,i);

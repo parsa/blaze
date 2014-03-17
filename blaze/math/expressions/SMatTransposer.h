@@ -110,7 +110,7 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed value.
    */
-   inline Reference operator()( size_t i, size_t j ) const {
+   inline ConstReference operator()( size_t i, size_t j ) const {
       BLAZE_INTERNAL_ASSERT( i < sm_.columns(), "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < sm_.row()    , "Invalid column access index" );
       return sm_(j,i);
@@ -526,7 +526,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed value.
    */
-   inline Reference operator()( size_t i, size_t j ) const {
+   inline ConstReference operator()( size_t i, size_t j ) const {
       BLAZE_INTERNAL_ASSERT( i < sm_.columns(), "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < sm_.row()    , "Invalid column access index" );
       return sm_(j,i);

@@ -109,7 +109,7 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
    // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed value.
    */
-   inline Reference operator[]( size_t index ) {
+   inline ConstReference operator[]( size_t index ) const {
       BLAZE_USER_ASSERT( index < sv_.size(), "Invalid vector access index" );
       return sv_[index];
    }

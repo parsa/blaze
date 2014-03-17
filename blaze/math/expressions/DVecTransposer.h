@@ -126,6 +126,18 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    }
    //**********************************************************************************************
 
+   //**Subscript operator**************************************************************************
+   /*!\brief Subscript operator for the direct access to the vector elements.
+   //
+   // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+   // \return Reference to the accessed value.
+   */
+   inline ConstReference operator[]( size_t index ) const {
+      BLAZE_USER_ASSERT( index < dv_.size(), "Invalid vector access index" );
+      return dv_[index];
+   }
+   //**********************************************************************************************
+
    //**Low-level data access***********************************************************************
    /*!\brief Low-level data access to the vector elements.
    //
