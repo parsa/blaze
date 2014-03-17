@@ -441,12 +441,12 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
       //**Constructor******************************************************************************
       /*!\brief Constructor for the SubvectorElement class.
       //
-      // \param pos Iterator to the current position within the sparse subvector.
-      // \param offset The offset within the according sparse vector.
+      // \param iterator Iterator to the current position within the sparse subvector.
+      // \param index The starting index within the according sparse vector.
       */
-      inline SubvectorElement( IteratorType pos, size_t offset )
-         : pos_   ( pos    )  // Iterator to the current position within the sparse subvector
-         , offset_( offset )  // Offset within the according sparse vector
+      inline SubvectorElement( IteratorType iterator, size_t index )
+         : pos_   ( iterator )  // Iterator to the current position within the sparse subvector
+         , offset_( index    )  // Offset within the according sparse vector
       {}
       //*******************************************************************************************
 
@@ -599,8 +599,8 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
       */
       template< typename VectorType2, typename IteratorType2 >
       inline SubvectorIterator( const SubvectorIterator<VectorType2,IteratorType2>& it )
-         : pos_   ( it.pos_    )  // Iterator to the current sparse element.
-         , offset_( it.offset_ )  // The offset of the subvector within the sparse vector
+         : pos_   ( it.base()   )  // Iterator to the current sparse element.
+         , offset_( it.offset() )  // The offset of the subvector within the sparse vector
       {}
       //*******************************************************************************************
 
@@ -655,7 +655,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
       */
       template< typename VectorType2, typename IteratorType2 >
       inline bool operator==( const SubvectorIterator<VectorType2,IteratorType2>& rhs ) const {
-         return pos_ == rhs.pos_;
+         return base() == rhs.base();
       }
       //*******************************************************************************************
 
@@ -682,17 +682,30 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
       }
       //*******************************************************************************************
 
+      //**Base function****************************************************************************
+      /*!\brief Access to the current position of the submatrix iterator.
+      //
+      // \return The current position of the submatrix iterator.
+      */
+      inline IteratorType base() const {
+         return pos_;
+      }
+      //*******************************************************************************************
+
+      //**Offset function**************************************************************************
+      /*!\brief Access to the offset of the submatrix iterator.
+      //
+      // \return The offset of the submatrix iterator.
+      */
+      inline size_t offset() const {
+         return offset_;
+      }
+      //*******************************************************************************************
+
     private:
       //**Member variables*************************************************************************
       IteratorType pos_;     //!< Iterator to the current sparse element.
       size_t       offset_;  //!< The offset of the subvector within the sparse vector.
-      //*******************************************************************************************
-
-      //**Friend declarations**********************************************************************
-      /*! \cond BLAZE_INTERNAL */
-      template< typename VectorType2, typename IteratorType2 > friend class SubvectorIterator;
-      template< typename VT2, bool AF2, bool TF2 > friend class SparseSubvector;
-      /*! \endcond */
       //*******************************************************************************************
    };
    //**********************************************************************************************
@@ -1453,7 +1466,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline typename SparseSubvector<VT,AF,TF>::Iterator SparseSubvector<VT,AF,TF>::erase( Iterator pos )
 {
-   return Iterator( vector_.erase( pos.pos_ ), offset_ );
+   return Iterator( vector_.erase( pos.base() ), offset_ );
 }
 //*************************************************************************************************
 
@@ -1473,7 +1486,7 @@ template< typename VT  // Type of the sparse vector
 inline typename SparseSubvector<VT,AF,TF>::Iterator
    SparseSubvector<VT,AF,TF>::erase( Iterator first, Iterator last )
 {
-   return Iterator( vector_.erase( first.pos_, last.pos_ ), offset_ );
+   return Iterator( vector_.erase( first.base(), last.base() ), offset_ );
 }
 //*************************************************************************************************
 

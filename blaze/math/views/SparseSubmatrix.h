@@ -583,12 +583,12 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
       //**Constructor******************************************************************************
       /*!\brief Constructor for the SubmatrixIterator class.
       //
-      // \param pos Iterator to the current sparse element.
-      // \param offset The offset within the according row/column of the sparse matrix.
+      // \param iterator Iterator to the current sparse element.
+      // \param index The starting index within the according row/column of the sparse matrix.
       */
-      inline SubmatrixIterator( IteratorType pos, size_t offset )
-         : pos_   ( pos    )  // Iterator to the current sparse element
-         , offset_( offset )  // The offset of the according row/column of the sparse matrix
+      inline SubmatrixIterator( IteratorType iterator, size_t index )
+         : pos_   ( iterator )  // Iterator to the current sparse element
+         , offset_( index    )  // The offset of the according row/column of the sparse matrix
       {}
       //*******************************************************************************************
 
@@ -599,8 +599,8 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
       */
       template< typename MatrixType2, typename IteratorType2 >
       inline SubmatrixIterator( const SubmatrixIterator<MatrixType2,IteratorType2>& it )
-         : pos_   ( it.pos_    )  // Iterator to the current sparse element.
-         , offset_( it.offset_ )  // The offset of the according row/column of the sparse matrix
+         : pos_   ( it.base()   )  // Iterator to the current sparse element.
+         , offset_( it.offset() )  // The offset of the according row/column of the sparse matrix
       {}
       //*******************************************************************************************
 
@@ -655,7 +655,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
       */
       template< typename MatrixType2, typename IteratorType2 >
       inline bool operator==( const SubmatrixIterator<MatrixType2,IteratorType2>& rhs ) const {
-         return pos_ == rhs.pos_;
+         return base() == rhs.base();
       }
       //*******************************************************************************************
 
@@ -682,17 +682,30 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
       }
       //*******************************************************************************************
 
+      //**Base function****************************************************************************
+      /*!\brief Access to the current position of the submatrix iterator.
+      //
+      // \return The current position of the submatrix iterator.
+      */
+      inline IteratorType base() const {
+         return pos_;
+      }
+      //*******************************************************************************************
+
+      //**Offset function**************************************************************************
+      /*!\brief Access to the offset of the submatrix iterator.
+      //
+      // \return The offset of the submatrix iterator.
+      */
+      inline size_t offset() const {
+         return offset_;
+      }
+      //*******************************************************************************************
+
     private:
       //**Member variables*************************************************************************
       IteratorType pos_;     //!< Iterator to the current sparse element.
       size_t       offset_;  //!< The offset of the according row/column of the sparse matrix.
-      //*******************************************************************************************
-
-      //**Friend declarations**********************************************************************
-      /*! \cond BLAZE_INTERNAL */
-      template< typename MatrixType2, typename IteratorType2 > friend class SubmatrixIterator;
-      template< typename MT2, bool AF2, bool SO2 > friend class SparseSubmatrix;
-      /*! \endcond */
       //*******************************************************************************************
    };
    //**********************************************************************************************
@@ -1613,7 +1626,7 @@ inline typename SparseSubmatrix<MT,AF,SO>::Iterator
    SparseSubmatrix<MT,AF,SO>::erase( size_t i, Iterator pos )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
-   return Iterator( matrix_.erase( row_+i, pos.pos_ ), column_ );
+   return Iterator( matrix_.erase( row_+i, pos.base() ), column_ );
 }
 //*************************************************************************************************
 
@@ -1638,7 +1651,7 @@ inline typename SparseSubmatrix<MT,AF,SO>::Iterator
    SparseSubmatrix<MT,AF,SO>::erase( size_t i, Iterator first, Iterator last )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
-   return Iterator( matrix_.erase( row_+i, first.pos_, last.pos_ ), column_ );
+   return Iterator( matrix_.erase( row_+i, first.base(), last.base() ), column_ );
 }
 //*************************************************************************************************
 
@@ -2547,12 +2560,12 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
       //**Constructor******************************************************************************
       /*!\brief Constructor for the SubmatrixIterator class.
       //
-      // \param pos Iterator to the current sparse element.
-      // \param offset The offset within the according row/column of the sparse matrix.
+      // \param iterator Iterator to the current sparse element.
+      // \param index The starting index within the according row/column of the sparse matrix.
       */
-      inline SubmatrixIterator( IteratorType pos, size_t offset )
-         : pos_   ( pos    )  // Iterator to the current sparse element
-         , offset_( offset )  // The offset of the according row/column of the sparse matrix
+      inline SubmatrixIterator( IteratorType iterator, size_t index )
+         : pos_   ( iterator )  // Iterator to the current sparse element
+         , offset_( index    )  // The offset of the according row/column of the sparse matrix
       {}
       //*******************************************************************************************
 
@@ -2563,8 +2576,8 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
       */
       template< typename MatrixType2, typename IteratorType2 >
       inline SubmatrixIterator( const SubmatrixIterator<MatrixType2,IteratorType2>& it )
-         : pos_   ( it.pos_    )  // Iterator to the current sparse element.
-         , offset_( it.offset_ )  // The offset of the according row/column of the sparse matrix
+         : pos_   ( it.base()   )  // Iterator to the current sparse element.
+         , offset_( it.offset() )  // The offset of the according row/column of the sparse matrix
       {}
       //*******************************************************************************************
 
@@ -2619,7 +2632,7 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
       */
       template< typename MatrixType2, typename IteratorType2 >
       inline bool operator==( const SubmatrixIterator<MatrixType2,IteratorType2>& rhs ) const {
-         return pos_ == rhs.pos_;
+         return base() == rhs.base();
       }
       //*******************************************************************************************
 
@@ -2646,15 +2659,30 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
       }
       //*******************************************************************************************
 
+      //**Base function****************************************************************************
+      /*!\brief Access to the current position of the submatrix iterator.
+      //
+      // \return The current position of the submatrix iterator.
+      */
+      inline IteratorType base() const {
+         return pos_;
+      }
+      //*******************************************************************************************
+
+      //**Offset function**************************************************************************
+      /*!\brief Access to the offset of the submatrix iterator.
+      //
+      // \return The offset of the submatrix iterator.
+      */
+      inline size_t offset() const {
+         return offset_;
+      }
+      //*******************************************************************************************
+
     private:
       //**Member variables*************************************************************************
       IteratorType pos_;     //!< Iterator to the current sparse element.
       size_t       offset_;  //!< The offset of the according row/column of the sparse matrix.
-      //*******************************************************************************************
-
-      //**Friend declarations**********************************************************************
-      template< typename MatrixType2, typename IteratorType2 > friend class SubmatrixIterator;
-      template< typename MT2, bool AF2, bool SO2 > friend class SparseSubmatrix;
       //*******************************************************************************************
    };
    //**********************************************************************************************
@@ -3551,7 +3579,7 @@ inline typename SparseSubmatrix<MT,AF,true>::Iterator
    SparseSubmatrix<MT,AF,true>::erase( size_t j, Iterator pos )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
-   return Iterator( matrix_.erase( column_+j, pos.pos_ ), row_ );
+   return Iterator( matrix_.erase( column_+j, pos.base() ), row_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3574,7 +3602,7 @@ inline typename SparseSubmatrix<MT,AF,true>::Iterator
    SparseSubmatrix<MT,AF,true>::erase( size_t j, Iterator first, Iterator last )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
-   return Iterator( matrix_.erase( column_+j, first.pos_, last.pos_ ), row_ );
+   return Iterator( matrix_.erase( column_+j, first.base(), last.base() ), row_ );
 }
 /*! \endcond */
 //*************************************************************************************************
