@@ -441,12 +441,12 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
       //**Constructor******************************************************************************
       /*!\brief Constructor for the SubvectorElement class.
       //
-      // \param iterator Iterator to the current position within the sparse subvector.
-      // \param index The starting index within the according sparse vector.
+      // \param pos Iterator to the current position within the sparse subvector.
+      // \param offset The offset within the according sparse vector.
       */
-      inline SubvectorElement( IteratorType iterator, size_t index )
-         : pos_   ( iterator )  // Iterator to the current position within the sparse subvector
-         , offset_( index    )  // Offset within the according sparse vector
+      inline SubvectorElement( IteratorType pos, size_t offset )
+         : pos_   ( pos    )  // Iterator to the current position within the sparse subvector
+         , offset_( offset )  // Offset within the according sparse vector
       {}
       //*******************************************************************************************
 
@@ -583,12 +583,12 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
       //**Constructor******************************************************************************
       /*!\brief Constructor for the SubvectorIterator class.
       //
-      // \param pos Iterator to the current sparse element.
-      // \param offset The offset of the subvector within the sparse vector.
+      // \param iterator Iterator to the current sparse element.
+      // \param index The starting index of the subvector within the sparse vector.
       */
-      inline SubvectorIterator( IteratorType pos, size_t offset )
-         : pos_   ( pos    )  // Iterator to the current sparse element
-         , offset_( offset )  // The offset of the subvector within the sparse vector
+      inline SubvectorIterator( IteratorType iterator, size_t index )
+         : pos_   ( iterator )  // Iterator to the current sparse element
+         , offset_( index    )  // The offset of the subvector within the sparse vector
       {}
       //*******************************************************************************************
 
