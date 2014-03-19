@@ -71,6 +71,7 @@
 #include <blaze/util/constraints/SameSize.h>
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Memory.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Null.h>
 #include <blaze/util/Types.h>
@@ -492,7 +493,7 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix( size_t m, size_t n, size_t n
    , begin_( new Iterator[2UL*m+2UL] )  // Pointers to the first non-zero element of each row
    , end_  ( begin_+(m+1UL) )           // Pointers one past the last non-zero element of each row
 {
-   begin_[0UL] = new Element[nonzeros];
+   begin_[0UL] = allocate<Element>( nonzeros );
    for( size_t i=1UL; i<(2UL*m_+1UL); ++i )
       begin_[i] = begin_[0UL];
    end_[m_] = begin_[0UL]+nonzeros;
@@ -524,7 +525,7 @@ CompressedMatrix<Type,SO>::CompressedMatrix( size_t m, size_t n, const std::vect
    for( std::vector<size_t>::const_iterator it=nonzeros.begin(); it!=nonzeros.end(); ++it )
       newCapacity += *it;
 
-   begin_[0UL] = end_[0UL] = new Element[newCapacity];
+   begin_[0UL] = end_[0UL] = allocate<Element>( newCapacity );
    for( size_t i=0UL; i<m_; ++i ) {
       begin_[i+1UL] = end_[i+1UL] = begin_[i] + nonzeros[i];
    }
@@ -548,7 +549,7 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix( const CompressedMatrix& sm )
 {
    const size_t nonzeros( sm.nonZeros() );
 
-   begin_[0UL] = new Element[nonzeros];
+   begin_[0UL] = allocate<Element>( nonzeros );
    for( size_t i=0UL; i<m_; ++i )
       begin_[i+1UL] = end_[i] = std::copy( sm.begin(i), sm.end(i), begin_[i] );
    end_[m_] = begin_[0UL]+nonzeros;
@@ -602,7 +603,7 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix( const SparseMatrix<MT,SO2>& 
 
    const size_t nonzeros( (~sm).nonZeros() );
 
-   begin_[0UL] = new Element[nonzeros];
+   begin_[0UL] = allocate<Element>( nonzeros );
    for( size_t i=0UL; i<m_; ++i )
       begin_[i+1UL] = end_[i] = begin_[0UL];
    end_[m_] = begin_[0UL]+nonzeros;
@@ -627,7 +628,7 @@ template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
 inline CompressedMatrix<Type,SO>::~CompressedMatrix()
 {
-   delete [] begin_[0UL];
+   deallocate( begin_[0UL] );
    delete [] begin_;
 }
 //*************************************************************************************************
@@ -849,7 +850,7 @@ inline CompressedMatrix<Type,SO>&
       Iterator* newBegin( new Iterator[2UL*rhs.m_+2UL] );
       Iterator* newEnd  ( newBegin+(rhs.m_+1UL) );
 
-      newBegin[0UL] = new Element[nonzeros];
+      newBegin[0UL] = allocate<Element>( nonzeros );
       for( size_t i=0UL; i<rhs.m_; ++i ) {
          newBegin[i+1UL] = newEnd[i] = std::copy( rhs.begin_[i], rhs.end_[i], newBegin[i] );
       }
@@ -857,7 +858,7 @@ inline CompressedMatrix<Type,SO>&
 
       std::swap( begin_, newBegin );
       end_ = newEnd;
-      delete [] newBegin[0UL];
+      deallocate( newBegin[0UL] );
       delete [] newBegin;
       capacity_ = rhs.m_;
    }
@@ -1308,7 +1309,7 @@ typename CompressedMatrix<Type,SO>::Iterator
       Iterator* newBegin = new Iterator[2UL*capacity_+2UL];
       Iterator* newEnd   = newBegin+capacity_+1UL;
 
-      newBegin[0UL] = new Element[newCapacity];
+      newBegin[0UL] = allocate<Element>( newCapacity );
 
       for( size_t k=0UL; k<i; ++k ) {
          const size_t nonzeros( end_[k] - begin_[k] );
@@ -1334,7 +1335,7 @@ typename CompressedMatrix<Type,SO>::Iterator
 
       std::swap( newBegin, begin_ );
       end_ = newEnd;
-      delete [] newBegin[0UL];
+      deallocate( newBegin[0UL] );
       delete [] newBegin;
 
       return tmp;
@@ -1562,7 +1563,7 @@ void CompressedMatrix<Type,SO>::reserve( size_t i, size_t nonzeros )
       Iterator* newBegin( new Iterator[2UL*m_+2UL] );
       Iterator* newEnd  ( newBegin+m_+1UL );
 
-      newBegin[0UL] = new Element[newCapacity];
+      newBegin[0UL] = allocate<Element>( newCapacity );
       newEnd  [m_ ] = newBegin[0UL]+newCapacity;
 
       for( size_t k=0UL; k<i; ++k ) {
@@ -1579,7 +1580,7 @@ void CompressedMatrix<Type,SO>::reserve( size_t i, size_t nonzeros )
       BLAZE_INTERNAL_ASSERT( newBegin[m_] == newEnd[m_], "Invalid pointer calculations" );
 
       std::swap( newBegin, begin_ );
-      delete [] newBegin[0UL];
+      deallocate( newBegin[0UL] );
       delete [] newBegin;
       end_ = newEnd;
    }
@@ -1754,7 +1755,7 @@ void CompressedMatrix<Type,SO>::reserveElements( size_t nonzeros )
    Iterator* newBegin = new Iterator[2UL*capacity_+2UL];
    Iterator* newEnd   = newBegin+capacity_+1UL;
 
-   newBegin[0UL] = new Element[nonzeros];
+   newBegin[0UL] = allocate<Element>( nonzeros );
 
    for( size_t k=0UL; k<m_; ++k ) {
       BLAZE_INTERNAL_ASSERT( begin_[k] <= end_[k], "Invalid row pointers" );
@@ -1765,7 +1766,7 @@ void CompressedMatrix<Type,SO>::reserveElements( size_t nonzeros )
    newEnd[m_] = newBegin[0UL]+nonzeros;
 
    std::swap( newBegin, begin_ );
-   delete [] newBegin[0UL];
+   deallocate( newBegin[0UL] );
    delete [] newBegin;
    end_ = newEnd;
 }
@@ -2628,7 +2629,7 @@ inline CompressedMatrix<Type,true>::CompressedMatrix( size_t m, size_t n, size_t
    , begin_( new Iterator[2UL*n+2UL] )  // Pointers to the first non-zero element of each column
    , end_  ( begin_+(n+1UL) )           // Pointers one past the last non-zero element of each column
 {
-   begin_[0UL] = new Element[nonzeros];
+   begin_[0UL] = allocate<Element>( nonzeros );
    for( size_t j=1UL; j<(2UL*n_+1UL); ++j )
       begin_[j] = begin_[0UL];
    end_[n_] = begin_[0UL]+nonzeros;
@@ -2661,7 +2662,7 @@ CompressedMatrix<Type,true>::CompressedMatrix( size_t m, size_t n, const std::ve
    for( std::vector<size_t>::const_iterator it=nonzeros.begin(); it!=nonzeros.end(); ++it )
       newCapacity += *it;
 
-   begin_[0UL] = end_[0UL] = new Element[newCapacity];
+   begin_[0UL] = end_[0UL] = allocate<Element>( newCapacity );
    for( size_t j=0UL; j<n_; ++j ) {
       begin_[j+1UL] = end_[j+1UL] = begin_[j] + nonzeros[j];
    }
@@ -2686,7 +2687,7 @@ inline CompressedMatrix<Type,true>::CompressedMatrix( const CompressedMatrix& sm
 {
    const size_t nonzeros( sm.nonZeros() );
 
-   begin_[0UL] = new Element[nonzeros];
+   begin_[0UL] = allocate<Element>( nonzeros );
    for( size_t j=0UL; j<n_; ++j )
       begin_[j+1UL] = end_[j] = std::copy( sm.begin(j), sm.end(j), begin_[j] );
    end_[n_] = begin_[0UL]+nonzeros;
@@ -2742,7 +2743,7 @@ inline CompressedMatrix<Type,true>::CompressedMatrix( const SparseMatrix<MT,SO>&
 
    const size_t nonzeros( (~sm).nonZeros() );
 
-   begin_[0UL] = new Element[nonzeros];
+   begin_[0UL] = allocate<Element>( nonzeros );
    for( size_t j=0UL; j<n_; ++j )
       begin_[j+1UL] = end_[j] = begin_[0UL];
    end_[n_] = begin_[0UL]+nonzeros;
@@ -2768,7 +2769,7 @@ inline CompressedMatrix<Type,true>::CompressedMatrix( const SparseMatrix<MT,SO>&
 template< typename Type >  // Data type of the sparse matrix
 inline CompressedMatrix<Type,true>::~CompressedMatrix()
 {
-   delete [] begin_[0UL];
+   deallocate( begin_[0UL] );
    delete [] begin_;
 }
 /*! \endcond */
@@ -2969,7 +2970,7 @@ inline CompressedMatrix<Type,true>&
       Iterator* newBegin( new Iterator[2UL*rhs.n_+2UL] );
       Iterator* newEnd  ( newBegin+(rhs.n_+1UL) );
 
-      newBegin[0UL] = new Element[nonzeros];
+      newBegin[0UL] = allocate<Element>( nonzeros );
       for( size_t j=0UL; j<rhs.n_; ++j ) {
          newBegin[j+1UL] = newEnd[j] = std::copy( rhs.begin_[j], rhs.end_[j], newBegin[j] );
       }
@@ -2977,7 +2978,7 @@ inline CompressedMatrix<Type,true>&
 
       std::swap( begin_, newBegin );
       end_ = newEnd;
-      delete [] newBegin[0UL];
+      deallocate( newBegin[0UL] );
       delete [] newBegin;
       capacity_ = rhs.n_;
    }
@@ -3432,7 +3433,7 @@ typename CompressedMatrix<Type,true>::Iterator
       Iterator* newBegin = new Iterator[2UL*capacity_+2UL];
       Iterator* newEnd   = newBegin+capacity_+1UL;
 
-      newBegin[0UL] = new Element[newCapacity];
+      newBegin[0UL] = allocate<Element>( newCapacity );
 
       for( size_t k=0UL; k<j; ++k ) {
          const size_t nonzeros( end_[k] - begin_[k] );
@@ -3458,7 +3459,7 @@ typename CompressedMatrix<Type,true>::Iterator
 
       std::swap( newBegin, begin_ );
       end_ = newEnd;
-      delete [] newBegin[0UL];
+      deallocate( newBegin[0UL] );
       delete [] newBegin;
 
       return tmp;
@@ -3685,7 +3686,7 @@ void CompressedMatrix<Type,true>::reserve( size_t j, size_t nonzeros )
       Iterator* newBegin( new Iterator[2UL*n_+2UL] );
       Iterator* newEnd  ( newBegin+n_+1UL );
 
-      newBegin[0UL] = new Element[newCapacity];
+      newBegin[0UL] = allocate<Element>( newCapacity );
       newEnd  [n_ ] = newBegin[0UL]+newCapacity;
 
       for( size_t k=0UL; k<j; ++k ) {
@@ -3702,7 +3703,7 @@ void CompressedMatrix<Type,true>::reserve( size_t j, size_t nonzeros )
       BLAZE_INTERNAL_ASSERT( newBegin[n_] == newEnd[n_], "Invalid pointer calculations" );
 
       std::swap( newBegin, begin_ );
-      delete [] newBegin[0UL];
+      deallocate( newBegin[0UL] );
       delete [] newBegin;
       end_ = newEnd;
    }
@@ -3883,7 +3884,7 @@ void CompressedMatrix<Type,true>::reserveElements( size_t nonzeros )
    Iterator* newBegin = new Iterator[2UL*capacity_+2UL];
    Iterator* newEnd   = newBegin+capacity_+1UL;
 
-   newBegin[0UL] = new Element[nonzeros];
+   newBegin[0UL] = allocate<Element>( nonzeros );
 
    for( size_t k=0UL; k<n_; ++k ) {
       BLAZE_INTERNAL_ASSERT( begin_[k] <= end_[k], "Invalid column pointers" );
@@ -3894,7 +3895,7 @@ void CompressedMatrix<Type,true>::reserveElements( size_t nonzeros )
    newEnd[n_] = newBegin[0UL]+nonzeros;
 
    std::swap( newBegin, begin_ );
-   delete [] newBegin[0UL];
+   deallocate( newBegin[0UL] );
    delete [] newBegin;
    end_ = newEnd;
 }
