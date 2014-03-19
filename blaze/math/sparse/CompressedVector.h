@@ -71,6 +71,7 @@
 #include <blaze/util/constraints/SameSize.h>
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Memory.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Null.h>
 #include <blaze/util/Types.h>
@@ -443,10 +444,10 @@ inline CompressedVector<Type,TF>::CompressedVector( size_t n )
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline CompressedVector<Type,TF>::CompressedVector( size_t n, size_t nonzeros )
-   : size_    ( n )                       // The current size/dimension of the compressed vector
-   , capacity_( nonzeros )                // The maximum capacity of the compressed vector
-   , begin_   ( new Element[capacity_] )  // Pointer to the first non-zero element of the compressed vector
-   , end_     ( begin_ )                  // Pointer to the last non-zero element of the compressed vector
+   : size_    ( n )                               // The current size/dimension of the compressed vector
+   , capacity_( nonzeros )                        // The maximum capacity of the compressed vector
+   , begin_   ( allocate<Element>( capacity_ ) )  // Pointer to the first non-zero element of the compressed vector
+   , end_     ( begin_ )                          // Pointer to the last non-zero element of the compressed vector
 {}
 //*************************************************************************************************
 
@@ -462,10 +463,10 @@ inline CompressedVector<Type,TF>::CompressedVector( size_t n, size_t nonzeros )
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline CompressedVector<Type,TF>::CompressedVector( const CompressedVector& sv )
-   : size_    ( sv.size_ )                // The current size/dimension of the compressed vector
-   , capacity_( sv.nonZeros() )           // The maximum capacity of the compressed vector
-   , begin_   ( new Element[capacity_] )  // Pointer to the first non-zero element of the compressed vector
-   , end_     ( begin_+capacity_ )        // Pointer to the last non-zero element of the compressed vector
+   : size_    ( sv.size_ )                        // The current size/dimension of the compressed vector
+   , capacity_( sv.nonZeros() )                   // The maximum capacity of the compressed vector
+   , begin_   ( allocate<Element>( capacity_ ) )  // Pointer to the first non-zero element of the compressed vector
+   , end_     ( begin_+capacity_ )                // Pointer to the last non-zero element of the compressed vector
 {
    std::copy( sv.begin_, sv.end_, begin_ );
 }
@@ -501,10 +502,10 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 template< typename VT >  // Type of the foreign sparse vector
 inline CompressedVector<Type,TF>::CompressedVector( const SparseVector<VT,TF>& sv )
-   : size_    ( (~sv).size() )            // The current size/dimension of the compressed vector
-   , capacity_( (~sv).nonZeros() )        // The maximum capacity of the compressed vector
-   , begin_   ( new Element[capacity_] )  // Pointer to the first non-zero element of the compressed vector
-   , end_     ( begin_ )                  // Pointer to the last non-zero element of the compressed vector
+   : size_    ( (~sv).size() )                    // The current size/dimension of the compressed vector
+   , capacity_( (~sv).nonZeros() )                // The maximum capacity of the compressed vector
+   , begin_   ( allocate<Element>( capacity_ ) )  // Pointer to the first non-zero element of the compressed vector
+   , end_     ( begin_ )                          // Pointer to the last non-zero element of the compressed vector
 {
    using blaze::assign;
    assign( *this, ~sv );
@@ -527,7 +528,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline CompressedVector<Type,TF>::~CompressedVector()
 {
-   delete [] begin_;
+   deallocate( begin_ );
 }
 //*************************************************************************************************
 
@@ -697,10 +698,10 @@ inline CompressedVector<Type,TF>&
    const size_t nonzeros( rhs.nonZeros() );
 
    if( nonzeros > capacity_ ) {
-      Iterator newBegin( new Element[nonzeros] );
+      Iterator newBegin( allocate<Element>( nonzeros ) );
       end_ = std::copy( rhs.begin_, rhs.end_, newBegin );
       std::swap( begin_, newBegin );
-      delete [] newBegin;
+      deallocate( newBegin );
 
       size_     = rhs.size_;
       capacity_ = nonzeros;
@@ -1043,14 +1044,14 @@ typename CompressedVector<Type,TF>::Iterator
    else {
       size_t newCapacity( extendCapacity() );
 
-      Iterator newBegin = new Element[newCapacity];
+      Iterator newBegin = allocate<Element>( newCapacity );
       Iterator tmp      = std::copy( begin_, pos, newBegin );
       tmp->value_ = value;
       tmp->index_ = index;
       end_ = std::copy( pos, end_, tmp+1 );
 
       std::swap( newBegin, begin_ );
-      delete [] newBegin;
+      deallocate( newBegin );
       capacity_ = newCapacity;
 
       return tmp;
@@ -1171,13 +1172,13 @@ void CompressedVector<Type,TF>::reserve( size_t n )
       const size_t newCapacity( n );
 
       // Allocating a new data and index array
-      Iterator newBegin  = new Element[newCapacity];
+      Iterator newBegin  = allocate<Element>( newCapacity );
 
       // Replacing the old data and index array
       end_ = std::copy( begin_, end_, newBegin );
       std::swap( newBegin, begin_ );
       capacity_ = newCapacity;
-      delete [] newBegin;
+      deallocate( newBegin );
    }
 }
 //*************************************************************************************************
