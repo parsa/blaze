@@ -51,7 +51,9 @@ CXX="g++"
 # In addition to these general flags, it is possible to specify additional architecture
 # specific flags. In order to achieve maximum performance, it is recommended to specify
 # the available architecture specific instruction set (for instance, -mavx for the GNU
-# C++ compiler to active the AVX instruction set).
+# C++ compiler to active the AVX instruction set). Also, in order to enable the OpenMP
+# based shared-memory parallelization it is recommended to use the according OpenMP flag
+# (-fopenmp for the GNU C++ compiler, -openmp for the Intel C++ compiler).
 CXXFLAGS="-Werror -Wall -Wextra -Wshadow -Woverloaded-virtual -ansi -O3 -DNDEBUG"
 
 # Library configuration
