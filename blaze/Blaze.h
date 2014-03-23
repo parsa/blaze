@@ -114,6 +114,12 @@ namespace blaze {}
 //                <li> \ref matrix_matrix_multiplication </li>
 //             </ul>
 //          </li>
+//          <li> Shared-Memory Parallelization
+//             <ul>
+//                <li> \ref openmp_parallelization </li>
+//                <li> \ref serial_execution </li>
+//             </ul>
+//          </li>
 //          <li> Serialization
 //             <ul>
 //                <li> \ref vector_serialization </li>
@@ -122,6 +128,7 @@ namespace blaze {}
 //          </li>
 //       </ul>
 //    </li>
+//    <li> \ref intra_statement_optimization </li>
 //    <li> \ref configuration_files </li>
 // </ul>
 */
@@ -3647,7 +3654,7 @@ namespace blaze {}
 //**Matrix/Matrix Multiplication*******************************************************************
 /*!\page matrix_matrix_multiplication Matrix/Matrix Multiplication
 //
-// <center> Previous: \ref matrix_vector_multiplication &nbsp; &nbsp; Next: \ref vector_serialization </center> \n
+// <center> Previous: \ref matrix_vector_multiplication &nbsp; &nbsp; Next: \ref openmp_parallelization </center> \n
 //
 // The matrix/matrix multiplication can be formulated exactly as in mathematical textbooks:
 
@@ -3667,7 +3674,173 @@ namespace blaze {}
 // are possible. Note however that the highest performance for a multiplication between two dense
 // matrices can be expected for two matrices with the same scalar element type.
 //
-// \n <center> Previous: \ref matrix_vector_multiplication &nbsp; &nbsp; Next: \ref vector_serialization </center>
+// \n <center> Previous: \ref matrix_vector_multiplication &nbsp; &nbsp; Next: \ref openmp_parallelization </center>
+*/
+//*************************************************************************************************
+
+
+//**OpenMP Parallelization*************************************************************************
+/*!\page openmp_parallelization OpenMP Parallelization
+//
+// <center> Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref serial_execution </center> \n
+//
+// One of the main motivations of the \b Blaze 1.x releases was to achieve maximum performance
+// on a single CPU core for all possible operations. However, today's CPUs are not single core
+// anymore, but provide several (homogeneous or heterogeneous) compute cores. In order to fully
+// exploit the performance potential of a multicore CPU, computations have to be parallelized
+// across all available cores of a CPU. Therefore, starting with \b Blaze 2.0, the \b Blaze
+// library provides shared memory parallelization with OpenMP.
+//
+//
+// \n \section openmp_setup OpenMP Setup
+// <hr>
+//
+// To enable OpenMP-based parallelization, all that needs to be done is to explicitly specify
+// the use of OpenMP on the command line:
+
+   \code
+   -fopenmp   // GNU C++ compiler
+   -openmp    // Intel C++ compiler
+   /openmp    // Visual Studio
+   \endcode
+
+// This simple action will cause the \b Blaze library to automatically try to run all operations
+// in parallel with the specified number of threads.
+//
+// As common for OpenMP, the number of threads can be specified either via an environment variable
+
+   \code
+   export OMP_NUM_THREADS=4
+   \endcode
+
+// or via an explicit call to the \c omp_set_num_threads() function:
+
+   \code
+   omp_set_num_threads( 4 );
+   \endcode
+
+// Either way, the best performance can be expected if the specified number of threads matches
+// the available number of cores.
+//
+//
+// \n \section openmp_configuration OpenMP Configuration
+// <hr>
+//
+// Note that \b Blaze is not unconditionally running an operation in parallel. In case \b Blaze
+// deems the parallel execution as counterproductive for the overall performance, the operation
+// is executed serially. One of the main reasons for not executing an operation in parallel is
+// the size of the operands. For instance, a vector addition is only executed in parallel if the
+// size of both vector operands exceeds a certain threshold. Otherwise, the performance could
+// seriously decrease due to the overhead caused by the thread setup. However, in order to be
+// able to adjust the \b Blaze library to a specific system, it is possible to configure these
+// thresholds manually. All OpenMP thresholds are contained within the configuration file
+// <em>./blaze/config/Thresholds.h</em>.
+//
+//
+// \n \section openmp_first_touch First Touch Policy
+// <hr>
+//
+// So far the \b Blaze library does not (yet) automatically initialize dynamic memory according
+// to the first touch principle. Consider for instance the following vector triad example:
+
+   \code
+   using blaze::columnVector;
+
+   const size_t N( 1000000UL );
+
+   blaze::DynamicVector<double,columnVector> a( N ), b( N ), c( N ), d( N );
+
+   // Initialization of the vectors b, c, and d
+   for( size_t i=0UL; i<N; ++i ) {
+      b[i] = rand<double>();
+      c[i] = rand<double>();
+      d[i] = rand<double>();
+   }
+
+   // Performing a vector triad
+   a = b + c * d;
+   \endcode
+
+// If this code, which is prototypical for many OpenMP applications that have not been optimized
+// for ccNUMA architectures, is run across several locality domains (LD), it will not scale
+// beyond the maximum performance achievable on a single LD if the working set does not fit into
+// the cache. This is because the initialization loop is executed by a single thread, writing to
+// \c b, \c c, and \c d for the first time. Hence, all memory pages belonging to those arrays will
+// be mapped into a single LD.
+//
+// As mentioned above, this problem can be solved by performing vector initialization in parallel:
+
+   \code
+   // ...
+
+   // Initialization of the vectors b, c, and d
+   #pragma omp parallel for
+   for( size_t i=0UL; i<N; ++i ) {
+      b[i] = rand<double>();
+      c[i] = rand<double>();
+      d[i] = rand<double>();
+   }
+
+   // ...
+   \endcode
+
+// This simple modification makes a huge difference on ccNUMA in memory-bound situations (as for
+// instance in all BLAS level 1 operations and partially BLAS level 2 operations). Therefore, in
+// order to achieve the maximum possible performance, it is imperative to initialize the memory
+// according to the later use of the data structures.
+//
+// \n <center> Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref serial_execution </center>
+*/
+//*************************************************************************************************
+
+
+//**Serial Execution*******************************************************************************
+/*!\page serial_execution Serial Execution
+//
+// <center> Previous: \ref openmp_parallelization &nbsp; &nbsp; Next: \ref vector_serialization </center> \n
+//
+// Sometimes it may be necessary to enforce the serial execution of specific operations. For this
+// purpose, the \b Blaze library offers two possible options.
+//
+// The first option is the temporary and local enforcement of a serial execution via the
+// \c BLAZE_SERIAL_SECTION:
+
+   \code
+   using blaze::rowMajor;
+   using blaze::columnVector;
+
+   blaze::DynamicMatrix<double,rowMajor> A;
+   blaze::DynamicVector<double,columnVector> b, c, d, x, y, z;
+
+   // ... Resizing and initialization
+
+   // Parallel execution
+   // If possible and beneficial for performance the following operation is executed in parallel.
+   x = A * b;
+
+   // Serial execution
+   // All operations executed within the serial section are guaranteed to be executed in
+   // serial (even if a parallel execution would be possible and/or beneficial).
+   BLAZE_SERIAL_SECTION
+   {
+      y = A * c;
+      z = A * d;
+   }
+
+   // Parallel execution continued
+   // ...
+   \endcode
+
+// Within the scope of the \c BLAZE_SERIAL_SECTION, all operations are guaranteed to run in serial.
+// Outside the scope of the serial section, all operations are run in parallel (if beneficial for
+// the performance).
+//
+// The second option is the general deactivation of the parallel execution (even in case OpenMP
+// is enabled on the command line). This can be achieved via the <em>./blaze/config/SMP.h</em>
+// configuration file: In case the \c BLAZE_ENABLE_PARALLEL_EXECUTION switch is set to 0, the
+// shared-memory parallelization is deactivated altogether.
+//
+// \n <center> Previous: \ref openmp_parallelization &nbsp; &nbsp; Next: \ref vector_serialization </center>
 */
 //*************************************************************************************************
 
@@ -3773,7 +3946,7 @@ namespace blaze {}
 //**Matrix Serialization***************************************************************************
 /*!\page matrix_serialization Matrix Serialization
 //
-// <center> Previous: \ref vector_serialization &nbsp; &nbsp; Next: \ref configuration_files </center> \n
+// <center> Previous: \ref vector_serialization &nbsp; &nbsp; Next: \ref intra_statement_optimization </center> \n
 //
 // The serialization of matrices works in the same manner as the serialization of vectors. The
 // following example demonstrates the (de-)serialization of dense and sparse matrices:
@@ -3859,7 +4032,93 @@ namespace blaze {}
 // In case an error is encountered during (de-)serialization, a \a std::runtime_exception is
 // thrown.
 //
-// \n <center> Previous: \ref vector_serialization &nbsp; &nbsp; Next: \ref configuration_files </center> \n
+// \n <center> Previous: \ref vector_serialization &nbsp; &nbsp; Next: \ref intra_statement_optimization </center> \n
+*/
+//*************************************************************************************************
+
+
+//**Intra-Statement Optimization*******************************************************************
+/*!\page intra_statement_optimization Intra-Statement Optimization
+//
+// <center> Previous: \ref matrix_serialization &nbsp; &nbsp; Next: \ref configuration_files </center> \n
+//
+//
+// One of the prime features of the \b Blaze library is the automatic intra-statement optimization.
+// In order to optimize the overall performance of every single statement \b Blaze attempts to
+// rearrange the operands based on their types. For instance, the following addition of dense and
+// sparse vectors
+
+   \code
+   blaze::DynamicVector<double> d1, d2, d3;
+   blaze::CompressedVector<double> s1;
+
+   // ... Resizing and initialization
+
+   d3 = d1 + s1 + d2;
+   \endcode
+
+// is automatically rearranged and evaluated as
+
+   \code
+   // ...
+   d3 = d1 + d2 + s1;  // <- Note that s1 and d2 have been rearranged
+   \endcode
+
+// This order of operands is highly favorable for the overall performance since the addition of
+// the two dense vectors \c d1 and \c d2 can be handled much more efficiently in a vectorized
+// fashion.
+//
+// This intra-statement optimization can have a tremendous effect on the performance of a statement.
+// Consider for instance the following computation:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   blaze::DynamicVector<double> x, y;
+
+   // ... Resizing and initialization
+
+   y = A * B * x;
+   \endcode
+
+// Since multiplications are evaluated from left to right, this statement would result in a
+// matrix/matrix multiplication, followed by a matrix/vector multiplication. However, if the
+// right subexpression is evaluated first, the performance can be dramatically improved since the
+// matrix/matrix multiplication can be avoided in favor of a second matrix/vector multiplication.
+// The \b Blaze library exploits this by automatically restructuring the expression such that the
+// right multiplication is evaluated first:
+
+   \code
+   // ...
+   y = A * ( B * x );
+   \endcode
+
+// Note however that although this intra-statement optimization may result in a measurable or
+// even significant performance improvement, this behavior may be undesirable for several reasons,
+// for instance because of numerical stability. Therefore, in case the order of evaluation matters,
+// the best solution is to be explicit and to separate a statement into several statements:
+
+   \code
+   blaze::DynamicVector<double> d1, d2, d3;
+   blaze::CompressedVector<double> s1;
+
+   // ... Resizing and initialization
+
+   d3  = d1 + s1;  // Compute the dense vector/sparse vector addition first ...
+   d3 += d2;       // ... and afterwards add the second dense vector
+   \endcode
+
+   \code
+   // ...
+   blaze::DynamicMatrix<double> A, B, C;
+   blaze::DynamicVector<double> x, y;
+
+   // ... Resizing and initialization
+
+   C = A * B;  // Compute the left-hand side matrix-matrix multiplication first ...
+   y = C * x;  // ... before the right-hand side matrix-vector multiplication
+   \endcode
+
+// \n <center> Previous: \ref matrix_serialization &nbsp; &nbsp; Next: \ref configuration_files </center> \n
 */
 //*************************************************************************************************
 
@@ -3867,7 +4126,7 @@ namespace blaze {}
 //**Configuration Files****************************************************************************
 /*!\page configuration_files Configuration Files
 //
-// <center> Previous: \ref matrix_serialization </center> \n
+// <center> Previous: \ref intra_statement_optimization </center> \n
 //
 //
 // \tableofcontents
@@ -3944,8 +4203,9 @@ namespace blaze {}
 // \b Blaze provides several thresholds that can be adapted to the characteristics of the target
 // platform. For instance, the \a DMATDVECMULT_THRESHOLD specifies the threshold between the
 // application of the custom Blaze kernels for small dense matrix/dense vector multiplications
-// and the BLAS kernels for large multiplications. All thresholds are contained within the
-// configuration file <em>./blaze/config/Thresholds.h</em>.
+// and the BLAS kernels for large multiplications. All thresholds, including the thresholds for
+// the OpenMP-based parallelization, are contained within the configuration file
+// <em>./blaze/config/Thresholds.h</em>.
 //
 //
 // \n \section streaming Streaming (Non-Temporal Stores)
@@ -3968,7 +4228,7 @@ namespace blaze {}
 // whether streaming is beneficial or hurtful for performance.
 //
 //
-// \n <center> Previous: \ref matrix_serialization </center>
+// \n <center> Previous: \ref intra_statement_optimization </center>
 */
 //*************************************************************************************************
 
