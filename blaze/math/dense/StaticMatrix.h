@@ -74,6 +74,7 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Memory.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
@@ -332,6 +333,21 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
                               inline StaticMatrix& transpose();
    template< typename Other > inline StaticMatrix& scale( const Other& scalar );
                               inline void          swap( StaticMatrix& m ) /* throw() */;
+   //@}
+   //**********************************************************************************************
+
+   //**Memory functions****************************************************************************
+   /*!\name Memory functions */
+   //@{
+   static inline void* operator new  ( std::size_t size );
+   static inline void* operator new[]( std::size_t size );
+   static inline void* operator new  ( std::size_t size, const std::nothrow_t& );
+   static inline void* operator new[]( std::size_t size, const std::nothrow_t& );
+
+   static inline void operator delete  ( void* ptr );
+   static inline void operator delete[]( void* ptr );
+   static inline void operator delete  ( void* ptr, const std::nothrow_t& );
+   static inline void operator delete[]( void* ptr, const std::nothrow_t& );
    //@}
    //**********************************************************************************************
 
@@ -2172,6 +2188,170 @@ inline void StaticMatrix<Type,M,N,SO>::swap( StaticMatrix& m ) /* throw() */
 
 //=================================================================================================
 //
+//  MEMORY FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Class specific implementation of operator new.
+//
+// \param size The total number of bytes to be allocated.
+// \return Pointer to the newly allocated memory.
+// \exception std::bad_alloc Allocation failed.
+//
+// This class-specific implementation of operator new provides the functionality to allocate
+// dynamic memory based on the alignment restrictions of the StaticMatrix class template.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline void* StaticMatrix<Type,M,N,SO>::operator new( std::size_t size )
+{
+   BLAZE_INTERNAL_ASSERT( size == sizeof( StaticMatrix ), "Invalid number of bytes detected" );
+   return allocate<StaticMatrix>( 1UL );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Class specific implementation of operator new[].
+//
+// \param size The total number of bytes to be allocated.
+// \return Pointer to the newly allocated memory.
+// \exception std::bad_alloc Allocation failed.
+//
+// This class-specific implementation of operator new provides the functionality to allocate
+// dynamic memory based on the alignment restrictions of the StaticMatrix class template.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline void* StaticMatrix<Type,M,N,SO>::operator new[]( std::size_t size )
+{
+   BLAZE_INTERNAL_ASSERT( size >= sizeof( StaticMatrix ), "Invalid number of bytes detected" );
+   return allocate<StaticMatrix>( size/sizeof(StaticMatrix) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Class specific implementation of the no-throw operator new.
+//
+// \param size The total number of bytes to be allocated.
+// \return Pointer to the newly allocated memory.
+// \exception std::bad_alloc Allocation failed.
+//
+// This class-specific implementation of operator new provides the functionality to allocate
+// dynamic memory based on the alignment restrictions of the StaticMatrix class template.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline void* StaticMatrix<Type,M,N,SO>::operator new( std::size_t size, const std::nothrow_t& )
+{
+   BLAZE_INTERNAL_ASSERT( size == sizeof( StaticMatrix ), "Invalid number of bytes detected" );
+   return allocate<StaticMatrix>( 1UL );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Class specific implementation of the no-throw operator new[].
+//
+// \param size The total number of bytes to be allocated.
+// \return Pointer to the newly allocated memory.
+// \exception std::bad_alloc Allocation failed.
+//
+// This class-specific implementation of operator new provides the functionality to allocate
+// dynamic memory based on the alignment restrictions of the StaticMatrix class template.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline void* StaticMatrix<Type,M,N,SO>::operator new[]( std::size_t size, const std::nothrow_t& )
+{
+   BLAZE_INTERNAL_ASSERT( size >= sizeof( StaticMatrix ), "Invalid number of bytes detected" );
+   return allocate<StaticMatrix>( size/sizeof(StaticMatrix) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Class specific implementation of operator delete.
+//
+// \param ptr The memory to be deallocated.
+// \return void
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline void StaticMatrix<Type,M,N,SO>::operator delete( void* ptr )
+{
+   deallocate( static_cast<StaticMatrix*>( ptr ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Class specific implementation of operator delete[].
+//
+// \param ptr The memory to be deallocated.
+// \return void
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline void StaticMatrix<Type,M,N,SO>::operator delete[]( void* ptr )
+{
+   deallocate( static_cast<StaticMatrix*>( ptr ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Class specific implementation of no-throw operator delete.
+//
+// \param ptr The memory to be deallocated.
+// \return void
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline void StaticMatrix<Type,M,N,SO>::operator delete( void* ptr, const std::nothrow_t& )
+{
+   deallocate( static_cast<StaticMatrix*>( ptr ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Class specific implementation of no-throw operator delete[].
+//
+// \param ptr The memory to be deallocated.
+// \return void
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline void StaticMatrix<Type,M,N,SO>::operator delete[]( void* ptr, const std::nothrow_t& )
+{
+   deallocate( static_cast<StaticMatrix*>( ptr ) );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  EXPRESSION TEMPLATE EVALUATION FUNCTIONS
 //
 //=================================================================================================
@@ -2949,6 +3129,21 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
                               inline StaticMatrix& transpose();
    template< typename Other > inline StaticMatrix& scale( const Other& scalar );
                               inline void          swap( StaticMatrix& m ) /* throw() */;
+   //@}
+   //**********************************************************************************************
+
+   //**Memory functions****************************************************************************
+   /*!\name Memory functions */
+   //@{
+   static inline void* operator new  ( std::size_t size );
+   static inline void* operator new[]( std::size_t size );
+   static inline void* operator new  ( std::size_t size, const std::nothrow_t& );
+   static inline void* operator new[]( std::size_t size, const std::nothrow_t& );
+
+   static inline void operator delete  ( void* ptr );
+   static inline void operator delete[]( void* ptr );
+   static inline void operator delete  ( void* ptr, const std::nothrow_t& );
+   static inline void operator delete[]( void* ptr, const std::nothrow_t& );
    //@}
    //**********************************************************************************************
 
@@ -4779,6 +4974,178 @@ inline void StaticMatrix<Type,M,N,true>::swap( StaticMatrix& m ) /* throw() */
          swap( v_[i+j*MM], m(i,j) );
       }
    }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MEMORY FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Class specific implementation of operator new.
+//
+// \param size The total number of bytes to be allocated.
+// \return Pointer to the newly allocated memory.
+// \exception std::bad_alloc Allocation failed.
+//
+// This class-specific implementation of operator new provides the functionality to allocate
+// dynamic memory based on the alignment restrictions of the StaticMatrix class template.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline void* StaticMatrix<Type,M,N,true>::operator new( std::size_t size )
+{
+   BLAZE_INTERNAL_ASSERT( size == sizeof( StaticMatrix ), "Invalid number of bytes detected" );
+   return allocate<StaticMatrix>( 1UL );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Class specific implementation of operator new[].
+//
+// \param size The total number of bytes to be allocated.
+// \return Pointer to the newly allocated memory.
+// \exception std::bad_alloc Allocation failed.
+//
+// This class-specific implementation of operator new provides the functionality to allocate
+// dynamic memory based on the alignment restrictions of the StaticMatrix class template.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline void* StaticMatrix<Type,M,N,true>::operator new[]( std::size_t size )
+{
+   BLAZE_INTERNAL_ASSERT( size >= sizeof( StaticMatrix ), "Invalid number of bytes detected" );
+   return allocate<StaticMatrix>( size/sizeof(StaticMatrix) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Class specific implementation of the no-throw operator new.
+//
+// \param size The total number of bytes to be allocated.
+// \return Pointer to the newly allocated memory.
+// \exception std::bad_alloc Allocation failed.
+//
+// This class-specific implementation of operator new provides the functionality to allocate
+// dynamic memory based on the alignment restrictions of the StaticMatrix class template.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline void* StaticMatrix<Type,M,N,true>::operator new( std::size_t size, const std::nothrow_t& )
+{
+   BLAZE_INTERNAL_ASSERT( size == sizeof( StaticMatrix ), "Invalid number of bytes detected" );
+   return allocate<StaticMatrix>( 1UL );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Class specific implementation of the no-throw operator new[].
+//
+// \param size The total number of bytes to be allocated.
+// \return Pointer to the newly allocated memory.
+// \exception std::bad_alloc Allocation failed.
+//
+// This class-specific implementation of operator new provides the functionality to allocate
+// dynamic memory based on the alignment restrictions of the StaticMatrix class template.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline void* StaticMatrix<Type,M,N,true>::operator new[]( std::size_t size, const std::nothrow_t& )
+{
+   BLAZE_INTERNAL_ASSERT( size >= sizeof( StaticMatrix ), "Invalid number of bytes detected" );
+   return allocate<StaticMatrix>( size/sizeof(StaticMatrix) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Class specific implementation of operator delete.
+//
+// \param ptr The memory to be deallocated.
+// \return void
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline void StaticMatrix<Type,M,N,true>::operator delete( void* ptr )
+{
+   deallocate( static_cast<StaticMatrix*>( ptr ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Class specific implementation of operator delete[].
+//
+// \param ptr The memory to be deallocated.
+// \return void
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline void StaticMatrix<Type,M,N,true>::operator delete[]( void* ptr )
+{
+   deallocate( static_cast<StaticMatrix*>( ptr ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Class specific implementation of no-throw operator delete.
+//
+// \param ptr The memory to be deallocated.
+// \return void
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline void StaticMatrix<Type,M,N,true>::operator delete( void* ptr, const std::nothrow_t& )
+{
+   deallocate( static_cast<StaticMatrix*>( ptr ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Class specific implementation of no-throw operator delete[].
+//
+// \param ptr The memory to be deallocated.
+// \return void
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline void StaticMatrix<Type,M,N,true>::operator delete[]( void* ptr, const std::nothrow_t& )
+{
+   deallocate( static_cast<StaticMatrix*>( ptr ) );
 }
 /*! \endcond */
 //*************************************************************************************************
