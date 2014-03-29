@@ -65,6 +65,7 @@ namespace blaze {
 //
 // \param size The number of elements of the given type to allocate.
 // \return Pointer to the first element of the aligned array.
+// \exception std::bad_alloc Allocation failed.
 //
 // The allocate function provides the functionality to allocate memory based on the alignment
 // restrictions of the given data type. For instance, in case the given type is a fundamental,
