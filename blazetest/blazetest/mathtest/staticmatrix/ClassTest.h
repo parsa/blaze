@@ -43,6 +43,8 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <boost/container/static_vector.hpp>
+#include <boost/container/vector.hpp>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
@@ -174,11 +176,18 @@ class ClassTest
 template< typename Type >
 void ClassTest::testAlignment( const std::string& type )
 {
+   typedef blaze::StaticMatrix<Type,7UL,5UL,blaze::rowMajor>     RowMajorMatrixType;
+   typedef blaze::StaticMatrix<Type,7UL,5UL,blaze::columnMajor>  ColumnMajorMatrixType;
+
    const size_t alignment( blaze::AlignmentTrait<Type>::value );
 
-   // Testing the alignment of the row-major matrix instance
+
+   //=====================================================================================
+   // Single matrix alignment test
+   //=====================================================================================
+
    {
-      blaze::StaticMatrix<Type,7UL,5UL,blaze::rowMajor> mat;
+      const RowMajorMatrixType mat;
 
       for( size_t i=0UL; i<mat.rows(); ++i )
       {
@@ -186,9 +195,10 @@ void ClassTest::testAlignment( const std::string& type )
 
          if( deviation != 0UL ) {
             std::ostringstream oss;
-            oss << " Test: StaticMatrix<" << type << ",7,5,rowMajor> alignment test\n"
+            oss << " Test: Single matrix alignment test (row-major)\n"
                 << " Error: Invalid alignment in row " << i << " detected\n"
                 << " Details:\n"
+                << "   Element type      : " << type << "\n"
                 << "   Expected alignment: " << alignment << "\n"
                 << "   Deviation         : " << deviation << "\n";
             throw std::runtime_error( oss.str() );
@@ -196,9 +206,8 @@ void ClassTest::testAlignment( const std::string& type )
       }
    }
 
-   // Testing the alignment of the column-major matrix instance
    {
-      blaze::StaticMatrix<Type,7UL,5UL,blaze::columnMajor> mat;
+      const ColumnMajorMatrixType mat;
 
       for( size_t j=0UL; j<mat.columns(); ++j )
       {
@@ -206,12 +215,111 @@ void ClassTest::testAlignment( const std::string& type )
 
          if( deviation != 0UL ) {
             std::ostringstream oss;
-            oss << " Test: StaticMatrix<" << type << ",7,5,columnMajor> alignment test\n"
+            oss << " Test: Single matrix alignment test (column-major)\n"
                 << " Error: Invalid alignment in column " << j << " detected\n"
                 << " Details:\n"
+                << "   Element type      : " << type << "\n"
                 << "   Expected alignment: " << alignment << "\n"
                 << "   Deviation         : " << deviation << "\n";
             throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Static array alignment test
+   //=====================================================================================
+
+   {
+      const boost::container::static_vector<RowMajorMatrixType,7UL> mats( 7UL );
+
+      for( size_t i=0UL; i<mats.size(); ++i ) {
+         for( size_t j=0UL; j<mats[i].rows(); ++j )
+         {
+            const size_t deviation( reinterpret_cast<size_t>( &mats[i](j,0UL) ) % alignment );
+
+            if( deviation != 0UL ) {
+               std::ostringstream oss;
+               oss << " Test: Static array alignment test (row-major)\n"
+                   << " Error: Invalid alignment in row " << j << " detected\n"
+                   << " Details:\n"
+                   << "   Element type      : " << type << "\n"
+                   << "   Expected alignment: " << alignment << "\n"
+                   << "   Deviation         : " << deviation << "\n";
+               throw std::runtime_error( oss.str() );
+            }
+         }
+      }
+   }
+
+   {
+      const boost::container::static_vector<ColumnMajorMatrixType,7UL> mats( 7UL );
+
+      for( size_t i=0UL; i<mats.size(); ++i ) {
+         for( size_t j=0UL; j<mats[i].columns(); ++j )
+         {
+            const size_t deviation( reinterpret_cast<size_t>( &mats[i](0UL,j) ) % alignment );
+
+            if( deviation != 0UL ) {
+               std::ostringstream oss;
+               oss << " Test: Static array alignment test (column-major)\n"
+                   << " Error: Invalid alignment in column " << j << " detected\n"
+                   << " Details:\n"
+                   << "   Element type      : " << type << "\n"
+                   << "   Expected alignment: " << alignment << "\n"
+                   << "   Deviation         : " << deviation << "\n";
+               throw std::runtime_error( oss.str() );
+            }
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Dynamic array alignment test
+   //=====================================================================================
+
+   {
+      const boost::container::vector<RowMajorMatrixType> mats( 7UL );
+
+      for( size_t i=0UL; i<mats.size(); ++i ) {
+         for( size_t j=0UL; j<mats[i].rows(); ++j )
+         {
+            const size_t deviation( reinterpret_cast<size_t>( &mats[i](j,0UL) ) % alignment );
+
+            if( deviation != 0UL ) {
+               std::ostringstream oss;
+               oss << " Test: Dynamic array alignment test (row-major)\n"
+                   << " Error: Invalid alignment in row " << j << " detected\n"
+                   << " Details:\n"
+                   << "   Element type      : " << type << "\n"
+                   << "   Expected alignment: " << alignment << "\n"
+                   << "   Deviation         : " << deviation << "\n";
+               throw std::runtime_error( oss.str() );
+            }
+         }
+      }
+   }
+
+   {
+      const boost::container::vector<ColumnMajorMatrixType> mats( 7UL );
+
+      for( size_t i=0UL; i<mats.size(); ++i ) {
+         for( size_t j=0UL; j<mats[i].columns(); ++j )
+         {
+            const size_t deviation( reinterpret_cast<size_t>( &mats[i](0UL,j) ) % alignment );
+
+            if( deviation != 0UL ) {
+               std::ostringstream oss;
+               oss << " Test: Dynamic array alignment test (column-major)\n"
+                   << " Error: Invalid alignment in column " << j << " detected\n"
+                   << " Details:\n"
+                   << "   Element type      : " << type << "\n"
+                   << "   Expected alignment: " << alignment << "\n"
+                   << "   Deviation         : " << deviation << "\n";
+               throw std::runtime_error( oss.str() );
+            }
          }
       }
    }

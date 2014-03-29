@@ -43,6 +43,8 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <boost/container/static_vector.hpp>
+#include <boost/container/vector.hpp>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/HybridVector.h>
 #include <blaze/util/AlignmentTrait.h>
@@ -168,18 +170,82 @@ class ClassTest
 template< typename Type >
 void ClassTest::testAlignment( const std::string& type )
 {
-   blaze::HybridVector<Type,7UL,blaze::rowVector> vec( 7UL );
-   const size_t alignment( blaze::AlignmentTrait<Type>::value );
-   const size_t deviation( reinterpret_cast<size_t>( &vec[0] ) % alignment );
+   typedef blaze::HybridVector<Type,7UL,blaze::rowVector>  VectorType;
 
-   if( deviation != 0UL ) {
-      std::ostringstream oss;
-      oss << " Test: HybridVector" << type << ",rowVector> alignment test\n"
-          << " Error: Invalid alignment detected\n"
-          << " Details:\n"
-          << "   Expected alignment: " << alignment << "\n"
-          << "   Deviation         : " << deviation << "\n";
-      throw std::runtime_error( oss.str() );
+   const size_t alignment( blaze::AlignmentTrait<Type>::value );
+
+
+   //=====================================================================================
+   // Single vector alignment test
+   //=====================================================================================
+
+   {
+      const VectorType vec( 7UL );
+
+      const size_t deviation( reinterpret_cast<size_t>( &vec[0] ) % alignment );
+
+      if( deviation != 0UL ) {
+         std::ostringstream oss;
+         oss << " Test: Vector alignment test\n"
+             << " Error: Invalid alignment detected\n"
+             << " Details:\n"
+             << "   Element type      : " << type << "\n"
+             << "   Expected alignment: " << alignment << "\n"
+             << "   Deviation         : " << deviation << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Static array alignment test
+   //=====================================================================================
+
+   {
+      const VectorType init( 7UL );
+      const boost::container::static_vector<VectorType,7UL> vecs( 7UL, init );
+
+      for( size_t i=0; i<vecs.size(); ++i )
+      {
+         const size_t deviation( reinterpret_cast<size_t>( &vecs[i][0] ) % alignment );
+
+         if( deviation != 0UL ) {
+            std::ostringstream oss;
+            oss << " Test: Static array alignment test\n"
+                << " Error: Invalid alignment detected\n"
+                << " Details:\n"
+                << "   Element type      : " << type << "\n"
+                << "   Expected alignment: " << alignment << "\n"
+                << "   Deviation         : " << deviation << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Dynamic array alignment test
+   //=====================================================================================
+
+   {
+      const VectorType init( 7UL );
+      const boost::container::vector<VectorType> vecs( 7UL, init );
+
+      for( size_t i=0; i<vecs.size(); ++i )
+      {
+         const size_t deviation( reinterpret_cast<size_t>( &vecs[i][0] ) % alignment );
+
+         if( deviation != 0UL ) {
+            std::ostringstream oss;
+            oss << " Test: Dynamic array alignment test\n"
+                << " Error: Invalid alignment detected\n"
+                << " Details:\n"
+                << "   Element type      : " << type << "\n"
+                << "   Expected alignment: " << alignment << "\n"
+                << "   Deviation         : " << deviation << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
    }
 }
 //*************************************************************************************************
