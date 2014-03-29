@@ -60,6 +60,7 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Memory.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
@@ -285,6 +286,21 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
                               inline void          extend( size_t n, bool preserve=true );
    template< typename Other > inline HybridVector& scale( Other scalar );
                               inline void          swap( HybridVector& v ) /* throw() */;
+   //@}
+   //**********************************************************************************************
+
+   //**Memory functions****************************************************************************
+   /*!\name Memory functions */
+   //@{
+   static inline void* operator new  ( std::size_t size );
+   static inline void* operator new[]( std::size_t size );
+   static inline void* operator new  ( std::size_t size, const std::nothrow_t& );
+   static inline void* operator new[]( std::size_t size, const std::nothrow_t& );
+
+   static inline void operator delete  ( void* ptr );
+   static inline void operator delete[]( void* ptr );
+   static inline void operator delete  ( void* ptr, const std::nothrow_t& );
+   static inline void operator delete[]( void* ptr, const std::nothrow_t& );
    //@}
    //**********************************************************************************************
 
@@ -1305,6 +1321,162 @@ inline void HybridVector<Type,N,TF>::swap( HybridVector& v ) /* throw() */
    for( size_t i=0UL; i<maxsize; ++i )
       swap( v_[i], v.v_[i] );
    swap( size_, v.size_ );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MEMORY FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Class specific implementation of operator new.
+//
+// \param size The total number of bytes to be allocated.
+// \return Pointer to the newly allocated memory.
+// \exception std::bad_alloc Allocation failed.
+//
+// This class-specific implementation of operator new provides the functionality to allocate
+// dynamic memory based on the alignment restrictions of the StaticVector class template.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline void* HybridVector<Type,N,TF>::operator new( std::size_t size )
+{
+   BLAZE_INTERNAL_ASSERT( size == sizeof( HybridVector ), "Invalid number of bytes detected" );
+   return allocate<HybridVector>( 1UL );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Class specific implementation of operator new[].
+//
+// \param size The total number of bytes to be allocated.
+// \return Pointer to the newly allocated memory.
+// \exception std::bad_alloc Allocation failed.
+//
+// This class-specific implementation of operator new provides the functionality to allocate
+// dynamic memory based on the alignment restrictions of the HybridVector class template.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline void* HybridVector<Type,N,TF>::operator new[]( std::size_t size )
+{
+   BLAZE_INTERNAL_ASSERT( size >= sizeof( HybridVector ), "Invalid number of bytes detected" );
+   return allocate<HybridVector>( size/sizeof(HybridVector) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Class specific implementation of the no-throw operator new.
+//
+// \param size The total number of bytes to be allocated.
+// \return Pointer to the newly allocated memory.
+// \exception std::bad_alloc Allocation failed.
+//
+// This class-specific implementation of operator new provides the functionality to allocate
+// dynamic memory based on the alignment restrictions of the HybridVector class template.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline void* HybridVector<Type,N,TF>::operator new( std::size_t size, const std::nothrow_t& )
+{
+   BLAZE_INTERNAL_ASSERT( size == sizeof( HybridVector ), "Invalid number of bytes detected" );
+   return allocate<HybridVector>( 1UL );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Class specific implementation of the no-throw operator new[].
+//
+// \param size The total number of bytes to be allocated.
+// \return Pointer to the newly allocated memory.
+// \exception std::bad_alloc Allocation failed.
+//
+// This class-specific implementation of operator new provides the functionality to allocate
+// dynamic memory based on the alignment restrictions of the HybridVector class template.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline void* HybridVector<Type,N,TF>::operator new[]( std::size_t size, const std::nothrow_t& )
+{
+   BLAZE_INTERNAL_ASSERT( size >= sizeof( HybridVector ), "Invalid number of bytes detected" );
+   return allocate<HybridVector>( size/sizeof(HybridVector) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Class specific implementation of operator delete.
+//
+// \param ptr The memory to be deallocated.
+// \return void
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline void HybridVector<Type,N,TF>::operator delete( void* ptr )
+{
+   deallocate( static_cast<HybridVector*>( ptr ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Class specific implementation of operator delete[].
+//
+// \param ptr The memory to be deallocated.
+// \return void
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline void HybridVector<Type,N,TF>::operator delete[]( void* ptr )
+{
+   deallocate( static_cast<HybridVector*>( ptr ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Class specific implementation of no-throw operator delete.
+//
+// \param ptr The memory to be deallocated.
+// \return void
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline void HybridVector<Type,N,TF>::operator delete( void* ptr, const std::nothrow_t& )
+{
+   deallocate( static_cast<HybridVector*>( ptr ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Class specific implementation of no-throw operator delete[].
+//
+// \param ptr The memory to be deallocated.
+// \return void
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline void HybridVector<Type,N,TF>::operator delete[]( void* ptr, const std::nothrow_t& )
+{
+   deallocate( static_cast<HybridVector*>( ptr ) );
 }
 //*************************************************************************************************
 
