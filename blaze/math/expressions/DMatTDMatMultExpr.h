@@ -51,8 +51,6 @@
 #include <blaze/math/expressions/MatScalarMultExpr.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Reset.h>
-#include <blaze/math/smp/DenseMatrix.h>
-#include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/DMatDVecMultExprTrait.h>
 #include <blaze/math/traits/DMatSVecMultExprTrait.h>

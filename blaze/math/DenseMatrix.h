@@ -86,6 +86,8 @@
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
+#include <blaze/math/smp/DenseMatrix.h>
+#include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>

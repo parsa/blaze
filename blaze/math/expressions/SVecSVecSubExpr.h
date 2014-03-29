@@ -49,7 +49,6 @@
 #include <blaze/math/expressions/VecVecSubExpr.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/smp/DenseVector.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>

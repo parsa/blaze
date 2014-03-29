@@ -64,6 +64,8 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/Square.h>
+#include <blaze/math/smp/DenseVector.h>
+#include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/traits/CMathTrait.h>
 #include <blaze/math/TransposeFlag.h>
 #include <blaze/math/Vector.h>

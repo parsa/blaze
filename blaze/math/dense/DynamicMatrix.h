@@ -51,8 +51,6 @@
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
-#include <blaze/math/smp/DenseMatrix.h>
-#include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>

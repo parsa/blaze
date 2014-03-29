@@ -49,8 +49,6 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/Intrinsics.h>
-#include <blaze/math/smp/DenseMatrix.h>
-#include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>

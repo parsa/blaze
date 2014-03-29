@@ -47,8 +47,6 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/VecEvalExpr.h>
-#include <blaze/math/smp/DenseVector.h>
-#include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/traits/DVecEvalExprTrait.h>
 #include <blaze/math/traits/EvalExprTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>

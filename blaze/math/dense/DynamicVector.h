@@ -49,8 +49,6 @@
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
-#include <blaze/math/smp/DenseVector.h>
-#include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>

@@ -40,6 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/smp/DenseVector.h>
+#include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/views/DenseSubmatrix.h>
 #include <blaze/math/views/DenseSubvector.h>
 #include <blaze/math/views/SparseSubmatrix.h>

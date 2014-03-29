@@ -40,6 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/smp/DenseVector.h>
+#include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/views/Column.h>
 #include <blaze/math/views/DenseColumn.h>
 #include <blaze/math/views/DenseRow.h>

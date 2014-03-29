@@ -48,7 +48,6 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/expressions/MatMatSubExpr.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/smp/DenseMatrix.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>

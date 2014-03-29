@@ -48,8 +48,6 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/VecAbsExpr.h>
 #include <blaze/math/Intrinsics.h>
-#include <blaze/math/smp/DenseVector.h>
-#include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/traits/AbsExprTrait.h>
 #include <blaze/math/traits/DVecAbsExprTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>

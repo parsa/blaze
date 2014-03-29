@@ -47,7 +47,6 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/VecScalarDivExpr.h>
-#include <blaze/math/smp/DenseVector.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/DivExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
