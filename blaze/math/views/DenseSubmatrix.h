@@ -71,6 +71,7 @@
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Streaming.h>
 #include <blaze/system/Thresholds.h>
+#include <blaze/util/AlignedArray.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/DisableIf.h>
@@ -581,10 +582,12 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
             return iterator_.loadu();
          }
          else {
-            IntrinsicType value;
+            AlignedArray<ElementType,IT::size> array;
             for( size_t j=0UL; j<rest_; ++j )
-               value[j] = *(iterator_+j);
-            return value;
+               array[j] = *(iterator_+j);
+            for( size_t j=rest_; j<IT::size; ++j )
+               array[j] = ElementType();
+            return blaze::load( array.data() );
          }
       }
       //*******************************************************************************************
@@ -1818,20 +1821,27 @@ template< typename MT  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,AF,SO>::IntrinsicType
    DenseSubmatrix<MT,AF,SO>::loadu( size_t i, size_t j ) const
 {
+   using blaze::load;
+
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
    BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
-   if( isAligned_ || j != final_ ) {
+   if( isAligned_ ) {
+      return matrix_.load( row_+i, column_+j );
+   }
+   else if( j != final_ ) {
       return matrix_.loadu( row_+i, column_+j );
    }
    else {
-      IntrinsicType value;
+      AlignedArray<ElementType,IT::size> array;
       for( size_t k=0UL; k<rest_; ++k )
-         value[k] = matrix_(row_+i,column_+j+k);
-      return value;
+         array[k] = matrix_(row_+i,column_+j+k);
+      for( size_t k=rest_; k<IT::size; ++k )
+         array[k] = ElementType();
+      return load( array.data() );
    }
 }
 //*************************************************************************************************
@@ -1884,18 +1894,25 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline void DenseSubmatrix<MT,AF,SO>::storeu( size_t i, size_t j, const IntrinsicType& value )
 {
+   using blaze::store;
+
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
    BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
-   if( isAligned_ || j != final_ ) {
+   if( isAligned_ ) {
+      matrix_.store( row_+i, column_+j, value );
+   }
+   else if( j != final_ ) {
       matrix_.storeu( row_+i, column_+j, value );
    }
    else {
+      AlignedArray<ElementType,IT::size> array;
+      store( array.data(), value );
       for( size_t k=0UL; k<rest_; ++k )
-         matrix_(row_+i,column_+j+k) = value[k];
+         matrix_(row_+i,column_+j+k) = array[k];
    }
 }
 //*************************************************************************************************
@@ -2673,10 +2690,12 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
             return iterator_.loadu();
          }
          else {
-            IntrinsicType value;
-            for( size_t j=0UL; j<rest_; ++j )
-               value[j] = *(iterator_+j);
-            return value;
+            AlignedArray<ElementType,IT::size> array;
+            for( size_t i=0UL; i<rest_; ++i )
+               array[i] = *(iterator_+i);
+            for( size_t i=rest_; i<IT::size; ++i )
+               array[i] = ElementType();
+            return blaze::load( array.data() );
          }
       }
       //*******************************************************************************************
@@ -3860,20 +3879,27 @@ template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,unaligned,true>::IntrinsicType
    DenseSubmatrix<MT,unaligned,true>::loadu( size_t i, size_t j ) const
 {
+   using blaze::load;
+
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
    BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
 
-   if( isAligned_ || i != final_ ) {
+   if( isAligned_ ) {
+      return matrix_.load( row_+i, column_+j );
+   }
+   else if( i != final_ ) {
       return matrix_.loadu( row_+i, column_+j );
    }
    else {
-      IntrinsicType value;
+      AlignedArray<ElementType,IT::size> array;
       for( size_t k=0UL; k<rest_; ++k )
-         value[k] = matrix_(row_+i+k,column_+j);
-      return value;
+         array[k] = matrix_(row_+i+k,column_+j);
+      for( size_t k=rest_; k<IT::size; ++k )
+         array[k] = ElementType();
+      return load( array.data() );
    }
 }
 /*! \endcond */
@@ -3925,18 +3951,25 @@ inline void DenseSubmatrix<MT,unaligned,true>::store( size_t i, size_t j, const 
 template< typename MT >  // Type of the dense matrix
 inline void DenseSubmatrix<MT,unaligned,true>::storeu( size_t i, size_t j, const IntrinsicType& value )
 {
+   using blaze::store;
+
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
    BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
 
-   if( isAligned_ || i != final_ ) {
+   if( isAligned_ ) {
+      matrix_.store( row_+i, column_+j, value );
+   }
+   else if( i != final_ ) {
       matrix_.storeu( row_+i, column_+j, value );
    }
    else {
+      AlignedArray<ElementType,IT::size> array;
+      store( array.data(), value );
       for( size_t k=0UL; k<rest_; ++k )
-         matrix_(row_+i+k,column_+j) = value[k];
+         matrix_(row_+i+k,column_+j) = array[k];
    }
 }
 /*! \endcond */
