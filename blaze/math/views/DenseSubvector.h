@@ -66,6 +66,7 @@
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Streaming.h>
 #include <blaze/system/Thresholds.h>
+#include <blaze/util/AlignedArray.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/DisableIf.h>
@@ -574,10 +575,12 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
             return iterator_.loadu();
          }
          else {
-            IntrinsicType value;
-            for( size_t j=0UL; j<rest_; ++j )
-               value[j] = *(iterator_+j);
-            return value;
+            AlignedArray<ElementType,IT::size> array;
+            for( size_t i=0UL; i<rest_; ++i )
+               array[i] = *(iterator_+i);
+            for( size_t i=rest_; i<IT::size; ++i )
+               array[i] = ElementType();
+            return blaze::load( array.data() );
          }
       }
       //*******************************************************************************************
@@ -1645,19 +1648,26 @@ template< typename VT  // Type of the dense vector
 inline typename DenseSubvector<VT,AF,TF>::IntrinsicType
    DenseSubvector<VT,AF,TF>::loadu( size_t index ) const
 {
+   using blaze::load;
+
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
    BLAZE_INTERNAL_ASSERT( index < size()         , "Invalid subvector access index" );
    BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid subvector access index" );
 
-   if( isAligned_ || index != final_ ) {
+   if( isAligned_ ) {
+      return vector_.load( offset_+index );
+   }
+   else if( index != final_ ) {
       return vector_.loadu( offset_+index );
    }
    else {
-      IntrinsicType value;
-      for( size_t j=0UL; j<rest_; ++j )
-         value[j] = vector_[offset_+index+j];
-      return value;
+      AlignedArray<ElementType,IT::size> array;
+      for( size_t i=0UL; i<rest_; ++i )
+         array[i] = vector_[offset_+index+i];
+      for( size_t i=rest_; i<IT::size; ++i )
+         array[i] = ElementType();
+      return load( array.data() );
    }
 }
 //*************************************************************************************************
@@ -1706,17 +1716,24 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline void DenseSubvector<VT,AF,TF>::storeu( size_t index, const IntrinsicType& value )
 {
+   using blaze::store;
+
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
    BLAZE_INTERNAL_ASSERT( index < size()         , "Invalid subvector access index" );
    BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid subvector access index" );
 
-   if( isAligned_ || index != final_ ) {
+   if( isAligned_ ) {
+      vector_.store( offset_+index, value );
+   }
+   else if( index != final_ ) {
       vector_.storeu( offset_+index, value );
    }
    else {
-      for( size_t j=0UL; j<rest_; ++j )
-         vector_[offset_+index+j] = value[j];
+      AlignedArray<ElementType,IT::size> array;
+      store( array.data(), value );
+      for( size_t i=0UL; i<rest_; ++i )
+         vector_[offset_+index+i] = array[i];
    }
 }
 //*************************************************************************************************
