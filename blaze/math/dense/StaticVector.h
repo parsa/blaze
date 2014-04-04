@@ -130,7 +130,7 @@ namespace blaze {
    a[1] = 2.0;                  // Initialization of the second element
 
    StaticVector<double,2UL> b( 3.0, 2.0 );  // Directly initialized 2D vector
-   CompressedVector<float>  c( 4.0F );      // Empty single precision vector
+   CompressedVector<float>  c( 2 );         // Empty sparse single precision vector
    StaticVector<double,2UL> d;              // Default constructed static vector
    StaticMatrix<double,2UL,2UL> A;          // Default constructed static row-major matrix
 

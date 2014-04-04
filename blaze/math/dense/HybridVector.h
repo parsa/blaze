@@ -122,14 +122,14 @@ namespace blaze {
    using blaze::CompressedVector;
    using blaze::StaticMatrix;
 
-   HybridVector<double,2UL> a;  // Default initialized 2D vector
-   a[0] = 1.0;                  // Initialization of the first element
-   a[1] = 2.0;                  // Initialization of the second element
+   HybridVector<double,2UL> a( 2 );  // Non-initialized 2D vector of size 2
+   a[0] = 1.0;                       // Initialization of the first element
+   a[1] = 2.0;                       // Initialization of the second element
 
-   HybridVector<double,2UL> b( 3.0, 2.0 );  // Directly initialized 2D vector
-   CompressedVector<float>  c( 4.0F );      // Empty single precision vector
-   HybridVector<double,2UL> d;              // Default constructed hybrid vector
-   StaticMatrix<double,2UL,2UL> A;          // Default constructed static row-major matrix
+   HybridVector<double,2UL> b( 2, 2.0 );  // Directly, homogeneously initialized 2D vector
+   CompressedVector<float>  c( 2 );       // Empty sparse single precision vector
+   HybridVector<double,2UL> d;            // Default constructed hybrid vector
+   StaticMatrix<double,2UL,2UL> A;        // Default constructed static row-major matrix
 
    d = a + b;  // Vector addition between vectors of equal element type
    d = a - c;  // Vector subtraction between a dense and sparse vector with different element types
