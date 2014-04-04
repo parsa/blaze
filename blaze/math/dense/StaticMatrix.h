@@ -1787,7 +1787,7 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator+=( const M
       throw std::invalid_argument( "Matrix sizes do not match" );
 
    if( (~rhs).canAlias( this ) ) {
-      StaticMatrix tmp( ~rhs );
+      typename MT::ResultType tmp( ~rhs );
       addAssign( *this, tmp );
    }
    else {
@@ -1823,7 +1823,7 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator-=( const M
       throw std::invalid_argument( "Matrix sizes do not match" );
 
    if( (~rhs).canAlias( this ) ) {
-      StaticMatrix tmp( ~rhs );
+      typename MT::ResultType tmp( ~rhs );
       subAssign( *this, tmp );
    }
    else {
@@ -4592,7 +4592,7 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator+=( con
       throw std::invalid_argument( "Matrix sizes do not match" );
 
    if( (~rhs).canAlias( this ) ) {
-      StaticMatrix tmp( ~rhs );
+      typename MT::ResultType tmp( ~rhs );
       addAssign( *this, tmp );
    }
    else {
@@ -4629,7 +4629,7 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator-=( con
       throw std::invalid_argument( "Matrix sizes do not match" );
 
    if( (~rhs).canAlias( this ) ) {
-      StaticMatrix tmp( ~rhs );
+      typename MT::ResultType tmp( ~rhs );
       subAssign( *this, tmp );
    }
    else {
