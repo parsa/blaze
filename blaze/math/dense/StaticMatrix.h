@@ -2114,6 +2114,9 @@ inline void StaticMatrix<Type,M,N,SO>::reset( size_t i )
 /*!\brief Transposing the matrix.
 //
 // \return Reference to the transposed matrix.
+//
+// This function transposes the static matrix in-place. Note that this function can only be used
+// for quadratic static matrices, i.e. if \a M is equal to N.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -2122,6 +2125,8 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::transpose()
 {
    using std::swap;
+
+   BLAZE_STATIC_ASSERT( M == N );
 
    for( size_t i=1UL; i<M; ++i )
       for( size_t j=0UL; j<i; ++j )
@@ -4922,6 +4927,9 @@ inline void StaticMatrix<Type,M,N,true>::reset( size_t j )
 /*!\brief Transposing the matrix.
 //
 // \return Reference to the transposed matrix.
+//
+// This function transposes the static matrix in-place. Note that this function can only be used
+// for quadratic static matrices, i.e. if \a M is equal to N.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -4929,6 +4937,8 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::transpose()
 {
    using std::swap;
+
+   BLAZE_STATIC_ASSERT( M == N );
 
    for( size_t j=1UL; j<N; ++j )
       for( size_t i=0UL; i<j; ++i )
