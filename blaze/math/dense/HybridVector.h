@@ -432,7 +432,8 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 inline HybridVector<Type,N,TF>::HybridVector()
-   : size_( 0UL )  // The current size/dimension of the vector
+   : v_   ()       // The statically allocated vector elements
+   , size_( 0UL )  // The current size/dimension of the vector
 {
    if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<NN; ++i )
@@ -456,7 +457,8 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 inline HybridVector<Type,N,TF>::HybridVector( size_t n )
-   : size_( n )  // The current size/dimension of the vector
+   : v_   ()     // The statically allocated vector elements
+   , size_( n )  // The current size/dimension of the vector
 {
    if( n > N )
       throw std::invalid_argument( "Invalid size for hybrid vector" );
@@ -484,7 +486,8 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Type& init )
-   : size_( n )  // The current size/dimension of the vector
+   : v_   ()     // The statically allocated vector elements
+   , size_( n )  // The current size/dimension of the vector
 {
    if( n > N )
       throw std::invalid_argument( "Invalid size for hybrid vector" );
@@ -505,6 +508,7 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Type& init )
 //
 // \param n The size of the vector.
 // \param array Dynamic array for the initialization.
+// \exception std::invalid_argument Invalid size for hybrid vector.
 //
 // This assignment operator offers the option to directly initialize the elements of the vector
 // with a dynamic array:
@@ -527,7 +531,8 @@ template< typename Type     // Data type of the vector
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the initialization array
 inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Other* array )
-   : size_( n )  // The current size/dimension of the vector
+   : v_   ()     // The statically allocated vector elements
+   , size_( n )  // The current size/dimension of the vector
 {
    if( n > N )
       throw std::invalid_argument( "Invalid setup of hybrid vector" );
@@ -567,7 +572,8 @@ template< typename Type   // Data type of the vector
 template< typename Other  // Data type of the initialization array
         , size_t M >      // Number of elements of the initialization array
 inline HybridVector<Type,N,TF>::HybridVector( const Other (&array)[M] )
-   : size_( M )  // The current size/dimension of the vector
+   : v_   ()     // The statically allocated vector elements
+   , size_( M )  // The current size/dimension of the vector
 {
    BLAZE_STATIC_ASSERT( M <= N );
 
@@ -593,7 +599,8 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 inline HybridVector<Type,N,TF>::HybridVector( const HybridVector& v )
-   : size_( v.size_ )  // The current size/dimension of the vector
+   : v_   ()           // The statically allocated vector elements
+   , size_( v.size_ )  // The current size/dimension of the vector
 {
    for( size_t i=0UL; i<size_; ++i )
       v_[i] = v.v_[i];
@@ -621,7 +628,8 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 template< typename VT >  // Type of the foreign vector
 inline HybridVector<Type,N,TF>::HybridVector( const Vector<VT,TF>& v )
-   : size_( (~v).size() )  // The current size/dimension of the vector
+   : v_   ()               // The statically allocated vector elements
+   , size_( (~v).size() )  // The current size/dimension of the vector
 {
    using blaze::assign;
 

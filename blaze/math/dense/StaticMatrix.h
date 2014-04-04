@@ -467,6 +467,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix()
+   : v_()  // The statically allocated matrix elements
 {
    if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<M*NN; ++i )
@@ -486,6 +487,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& init )
+   : v_()  // The statically allocated matrix elements
 {
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; ++j )
@@ -532,6 +534,7 @@ template< typename Type     // Data type of the matrix
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the initialization array
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( size_t m, size_t n, const Other* array )
+   : v_()  // The statically allocated matrix elements
 {
    if( m > M || n > N )
       throw std::invalid_argument( "Invalid setup of static matrix" );
@@ -580,6 +583,7 @@ template< typename Type     // Data type of the matrix
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the initialization array
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Other (&array)[M][N] )
+   : v_()  // The statically allocated matrix elements
 {
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; ++j )
@@ -606,6 +610,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const StaticMatrix& m )
+   : v_()  // The statically allocated matrix elements
 {
    for( size_t i=0UL; i<M*NN; ++i )
       v_[i] = m.v_[i];
@@ -625,6 +630,7 @@ template< typename Type   // Data type of the matrix
 template< typename Other  // Data type of the foreign matrix
         , bool SO2 >      // Storage order of the foreign matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const StaticMatrix<Other,M,N,SO2>& m )
+   : v_()  // The statically allocated matrix elements
 {
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; ++j )
@@ -656,6 +662,7 @@ template< typename Type  // Data type of the matrix
 template< typename MT    // Type of the foreign matrix
         , bool SO2 >     // Storage order of the foreign matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Matrix<MT,SO2>& m )
+   : v_()  // The statically allocated matrix elements
 {
    using blaze::assign;
 
@@ -696,6 +703,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2 )
+   : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 2UL );
 
@@ -744,6 +752,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3 )
+   : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 3UL );
 
@@ -798,6 +807,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2,
                                                 const Type& v3, const Type& v4 )
+   : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 4UL );
 
@@ -861,6 +871,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
                                                 const Type& v4, const Type& v5 )
+   : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 5UL );
 
@@ -922,6 +933,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
                                                 const Type& v4, const Type& v5, const Type& v6 )
+   : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 6UL );
 
@@ -1004,6 +1016,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
                                                 const Type& v4, const Type& v5, const Type& v6,
                                                 const Type& v7 )
+   : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 7UL );
 
@@ -1071,6 +1084,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
                                                 const Type& v4, const Type& v5, const Type& v6,
                                                 const Type& v7, const Type& v8 )
+   : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 8UL );
 
@@ -1166,6 +1180,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
                                                 const Type& v4, const Type& v5, const Type& v6,
                                                 const Type& v7, const Type& v8, const Type& v9 )
+   : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 9UL );
 
@@ -1254,6 +1269,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
                                                 const Type& v4, const Type& v5, const Type& v6,
                                                 const Type& v7, const Type& v8, const Type& v9,
                                                 const Type& v10 )
+   : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 10UL );
 
@@ -3249,6 +3265,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline StaticMatrix<Type,M,N,true>::StaticMatrix()
+   : v_()  // The statically allocated matrix elements
 {
    if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<MM*N; ++i )
@@ -3269,6 +3286,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& init )
+   : v_()  // The statically allocated matrix elements
 {
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; ++i )
@@ -3316,6 +3334,7 @@ template< typename Type     // Data type of the matrix
         , size_t N >        // Number of columns
 template< typename Other >  // Data type of the initialization array
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( size_t m, size_t n, const Other* array )
+   : v_()  // The statically allocated matrix elements
 {
    if( m > M || n > N )
       throw std::invalid_argument( "Invalid setup of static matrix" );
@@ -3365,6 +3384,7 @@ template< typename Type     // Data type of the matrix
         , size_t N >        // Number of columns
 template< typename Other >  // Data type of the initialization array
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Other (&array)[M][N] )
+   : v_()  // The statically allocated matrix elements
 {
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; ++i )
@@ -3392,6 +3412,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const StaticMatrix& m )
+   : v_()  // The statically allocated matrix elements
 {
    for( size_t i=0UL; i<MM*N; ++i )
       v_[i] = m.v_[i];
@@ -3412,6 +3433,7 @@ template< typename Type   // Data type of the matrix
 template< typename Other  // Data type of the foreign matrix
         , bool SO >       // Storage order of the foreign matrix
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const StaticMatrix<Other,M,N,SO>& m )
+   : v_()  // The statically allocated matrix elements
 {
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; ++i )
@@ -3444,6 +3466,7 @@ template< typename Type  // Data type of the matrix
 template< typename MT    // Type of the foreign matrix
         , bool SO >      // Storage order of the foreign matrix
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Matrix<MT,SO>& m )
+   : v_()  // The statically allocated matrix elements
 {
    using blaze::assign;
 
@@ -3485,6 +3508,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2 )
+   : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 2UL );
 
@@ -3534,6 +3558,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3 )
+   : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 3UL );
 
@@ -3589,6 +3614,7 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
                                                   const Type& v4 )
+   : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 4UL );
 
@@ -3653,6 +3679,7 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
                                                   const Type& v4, const Type& v5 )
+   : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 5UL );
 
@@ -3715,6 +3742,7 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
                                                   const Type& v4, const Type& v5, const Type& v6 )
+   : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 6UL );
 
@@ -3798,6 +3826,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
                                                   const Type& v4, const Type& v5, const Type& v6,
                                                   const Type& v7 )
+   : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 7UL );
 
@@ -3867,6 +3896,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
                                                   const Type& v4, const Type& v5, const Type& v6,
                                                   const Type& v7, const Type& v8 )
+   : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 8UL );
 
@@ -3963,6 +3993,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
                                                   const Type& v4, const Type& v5, const Type& v6,
                                                   const Type& v7, const Type& v8, const Type& v9 )
+   : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 9UL );
 
@@ -4052,6 +4083,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
                                                   const Type& v4, const Type& v5, const Type& v6,
                                                   const Type& v7, const Type& v8, const Type& v9,
                                                   const Type& v10 )
+   : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 10UL );
 

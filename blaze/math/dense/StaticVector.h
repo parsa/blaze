@@ -440,6 +440,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 inline StaticVector<Type,N,TF>::StaticVector()
+   : v_()  // The statically allocated vector elements
 {
    if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<NN; ++i )
@@ -458,6 +459,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 inline StaticVector<Type,N,TF>::StaticVector( const Type& init )
+   : v_()  // The statically allocated vector elements
 {
    for( size_t i=0UL; i<N; ++i )
       v_[i] = init;
@@ -497,6 +499,7 @@ template< typename Type     // Data type of the vector
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the initialization array
 inline StaticVector<Type,N,TF>::StaticVector( size_t n, const Other* array )
+   : v_()  // The statically allocated vector elements
 {
    if( n > N )
       throw std::invalid_argument( "Invalid setup of static vector" );
@@ -533,6 +536,7 @@ template< typename Type     // Data type of the vector
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the initialization array
 inline StaticVector<Type,N,TF>::StaticVector( const Other (&array)[N] )
+   : v_()  // The statically allocated vector elements
 {
    for( size_t i=0UL; i<N; ++i )
       v_[i] = array[i];
@@ -556,6 +560,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 inline StaticVector<Type,N,TF>::StaticVector( const StaticVector& v )
+   : v_()  // The statically allocated vector elements
 {
    for( size_t i=0UL; i<NN; ++i )
       v_[i] = v.v_[i];
@@ -573,6 +578,7 @@ template< typename Type     // Data type of the vector
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the foreign vector
 inline StaticVector<Type,N,TF>::StaticVector( const StaticVector<Other,N,TF>& v )
+   : v_()  // The statically allocated vector elements
 {
    for( size_t i=0UL; i<N; ++i )
       v_[i] = v[i];
@@ -600,6 +606,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 template< typename VT >  // Type of the foreign vector
 inline StaticVector<Type,N,TF>::StaticVector( const Vector<VT,TF>& v )
+   : v_()  // The statically allocated vector elements
 {
    using blaze::assign;
 
@@ -632,6 +639,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2 )
+   : v_()  // The statically allocated vector elements
 {
    BLAZE_STATIC_ASSERT( N == 2UL );
 
@@ -663,6 +671,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, const Type& v3 )
+   : v_()  // The statically allocated vector elements
 {
    BLAZE_STATIC_ASSERT( N == 3UL );
 
@@ -697,6 +706,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2,
                                               const Type& v3, const Type& v4 )
+   : v_()  // The statically allocated vector elements
 {
    BLAZE_STATIC_ASSERT( N == 4UL );
 
@@ -733,6 +743,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, const Type& v3,
                                               const Type& v4, const Type& v5 )
+   : v_()  // The statically allocated vector elements
 {
    BLAZE_STATIC_ASSERT( N == 5UL );
 
@@ -771,6 +782,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, const Type& v3,
                                               const Type& v4, const Type& v5, const Type& v6 )
+   : v_()  // The statically allocated vector elements
 {
    BLAZE_STATIC_ASSERT( N == 6UL );
 
