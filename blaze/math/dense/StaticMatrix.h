@@ -172,28 +172,6 @@ namespace blaze {
    E -= A + C;    // Subtraction assignment
    F *= A * D;    // Multiplication assignment
    \endcode
-
-// In order to provide maximum performance StaticMatrix is guaranteed to be properly aligned in
-// memory based on the alignment restrictions of the specified element type. Note however that
-// this enforced alignment can cause problems when StaticMatrix is used in conjunction with a
-// std::vector or a similar container:
-
-   \code
-   typedef blaze::StaticMatrix<double,3UL,3UL>  MatrixType;
-
-   std::vector< MatrixType > vec( 10 );  // Potentially causes segmentation faults
-   \endcode
-
-// The core problem is that the allocated dynamic memory of the container potentially does not
-// satisfy the alignment restrictions of the StaticMatrix. For that reason, the AlignedAllocator
-// can be used:
-
-   \code
-   typedef blaze::StaticMatrix<double,3UL,3UL>  MatrixType;
-   typedef blaze::AlignedAllocator<MatrixType>  AllocatorType;
-
-   std::vector< MatrixType, AllocatorType > vec( 10 );  // Guaranteed to work
-   \endcode
 */
 template< typename Type                    // Data type of the matrix
         , size_t M                         // Number of rows
