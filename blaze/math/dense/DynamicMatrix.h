@@ -3117,12 +3117,12 @@ inline typename DynamicMatrix<Type,true>::ConstIterator
 // This assignment operator offers the option to directly set all elements of the matrix:
 
    \code
-   using blaze::rowMajor;
+   using blaze::columnMajor;
 
    const int init[3][3] = { { 1, 2, 3 },
                             { 4, 5 },
                             { 7, 8, 9 } };
-   blaze::DynamicMatrix<int,rowMajor> A;
+   blaze::DynamicMatrix<int,columnMajor> A;
    A = init;
    \endcode
 

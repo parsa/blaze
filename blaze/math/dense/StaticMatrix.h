@@ -4435,12 +4435,12 @@ inline typename StaticMatrix<Type,M,N,true>::ConstIterator
 // This assignment operator offers the option to directly set all elements of the matrix:
 
    \code
-   using blaze::rowMajor;
+   using blaze::columnMajor;
 
    const real init[3][3] = { { 1, 2, 3 },
                              { 4, 5 },
                              { 7, 8, 9 } };
-   blaze::StaticMatrix<int,3UL,3UL,rowMajor> A;
+   blaze::StaticMatrix<int,3UL,3UL,columnMajor> A;
    A = init;
    \endcode
 
