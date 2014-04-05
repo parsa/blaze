@@ -2229,7 +2229,8 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline void* StaticMatrix<Type,M,N,SO>::operator new[]( std::size_t size )
 {
-   BLAZE_INTERNAL_ASSERT( size >= sizeof( StaticMatrix ), "Invalid number of bytes detected" );
+   BLAZE_INTERNAL_ASSERT( size >= sizeof( StaticMatrix )       , "Invalid number of bytes detected" );
+   BLAZE_INTERNAL_ASSERT( size %  sizeof( StaticMatrix ) == 0UL, "Invalid number of bytes detected" );
    return allocate<StaticMatrix>( size/sizeof(StaticMatrix) );
 }
 //*************************************************************************************************
@@ -2273,7 +2274,8 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline void* StaticMatrix<Type,M,N,SO>::operator new[]( std::size_t size, const std::nothrow_t& )
 {
-   BLAZE_INTERNAL_ASSERT( size >= sizeof( StaticMatrix ), "Invalid number of bytes detected" );
+   BLAZE_INTERNAL_ASSERT( size >= sizeof( StaticMatrix )       , "Invalid number of bytes detected" );
+   BLAZE_INTERNAL_ASSERT( size %  sizeof( StaticMatrix ) == 0UL, "Invalid number of bytes detected" );
    return allocate<StaticMatrix>( size/sizeof(StaticMatrix) );
 }
 //*************************************************************************************************
@@ -5046,7 +5048,8 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 inline void* StaticMatrix<Type,M,N,true>::operator new[]( std::size_t size )
 {
-   BLAZE_INTERNAL_ASSERT( size >= sizeof( StaticMatrix ), "Invalid number of bytes detected" );
+   BLAZE_INTERNAL_ASSERT( size >= sizeof( StaticMatrix )       , "Invalid number of bytes detected" );
+   BLAZE_INTERNAL_ASSERT( size %  sizeof( StaticMatrix ) == 0UL, "Invalid number of bytes detected" );
    return allocate<StaticMatrix>( size/sizeof(StaticMatrix) );
 }
 /*! \endcond */
@@ -5092,7 +5095,8 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 inline void* StaticMatrix<Type,M,N,true>::operator new[]( std::size_t size, const std::nothrow_t& )
 {
-   BLAZE_INTERNAL_ASSERT( size >= sizeof( StaticMatrix ), "Invalid number of bytes detected" );
+   BLAZE_INTERNAL_ASSERT( size >= sizeof( StaticMatrix )       , "Invalid number of bytes detected" );
+   BLAZE_INTERNAL_ASSERT( size %  sizeof( StaticMatrix ) == 0UL, "Invalid number of bytes detected" );
    return allocate<StaticMatrix>( size/sizeof(StaticMatrix) );
 }
 /*! \endcond */

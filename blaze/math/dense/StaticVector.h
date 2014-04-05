@@ -1420,7 +1420,8 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline void* StaticVector<Type,N,TF>::operator new[]( std::size_t size )
 {
-   BLAZE_INTERNAL_ASSERT( size >= sizeof( StaticVector ), "Invalid number of bytes detected" );
+   BLAZE_INTERNAL_ASSERT( size >= sizeof( StaticVector )       , "Invalid number of bytes detected" );
+   BLAZE_INTERNAL_ASSERT( size %  sizeof( StaticVector ) == 0UL, "Invalid number of bytes detected" );
    return allocate<StaticVector>( size/sizeof(StaticVector) );
 }
 //*************************************************************************************************
@@ -1462,7 +1463,8 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline void* StaticVector<Type,N,TF>::operator new[]( std::size_t size, const std::nothrow_t& )
 {
-   BLAZE_INTERNAL_ASSERT( size >= sizeof( StaticVector ), "Invalid number of bytes detected" );
+   BLAZE_INTERNAL_ASSERT( size >= sizeof( StaticVector )       , "Invalid number of bytes detected" );
+   BLAZE_INTERNAL_ASSERT( size %  sizeof( StaticVector ) == 0UL, "Invalid number of bytes detected" );
    return allocate<StaticVector>( size/sizeof(StaticVector) );
 }
 //*************************************************************************************************
