@@ -4728,6 +4728,30 @@ struct AddTrait< StaticMatrix<T1,M,N,SO1>, DynamicMatrix<T2,SO2> >
    typedef StaticMatrix< typename AddTrait<T1,T2>::Type, M, N, false >  Type;
 };
 
+template< typename T1, bool SO, typename T2, size_t M, size_t N >
+struct AddTrait< DynamicMatrix<T1,SO>, HybridMatrix<T2,M,N,SO> >
+{
+   typedef HybridMatrix< typename AddTrait<T1,T2>::Type, M, N, SO >  Type;
+};
+
+template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
+struct AddTrait< DynamicMatrix<T1,SO1>, HybridMatrix<T2,M,N,SO2> >
+{
+   typedef HybridMatrix< typename AddTrait<T1,T2>::Type, M, N, false >  Type;
+};
+
+template< typename T1, size_t M, size_t N, bool SO, typename T2 >
+struct AddTrait< HybridMatrix<T1,M,N,SO>, DynamicMatrix<T2,SO> >
+{
+   typedef HybridMatrix< typename AddTrait<T1,T2>::Type, M, N, SO >  Type;
+};
+
+template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
+struct AddTrait< HybridMatrix<T1,M,N,SO1>, DynamicMatrix<T2,SO2> >
+{
+   typedef HybridMatrix< typename AddTrait<T1,T2>::Type, M, N, false >  Type;
+};
+
 template< typename T1, bool SO, typename T2 >
 struct AddTrait< DynamicMatrix<T1,SO>, DynamicMatrix<T2,SO> >
 {
@@ -4775,6 +4799,30 @@ template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct SubTrait< StaticMatrix<T1,M,N,SO1>, DynamicMatrix<T2,SO2> >
 {
    typedef StaticMatrix< typename SubTrait<T1,T2>::Type, M, N, false >  Type;
+};
+
+template< typename T1, bool SO, typename T2, size_t M, size_t N >
+struct SubTrait< DynamicMatrix<T1,SO>, HybridMatrix<T2,M,N,SO> >
+{
+   typedef HybridMatrix< typename SubTrait<T1,T2>::Type, M, N, SO >  Type;
+};
+
+template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
+struct SubTrait< DynamicMatrix<T1,SO1>, HybridMatrix<T2,M,N,SO2> >
+{
+   typedef HybridMatrix< typename SubTrait<T1,T2>::Type, M, N, false >  Type;
+};
+
+template< typename T1, size_t M, size_t N, bool SO, typename T2 >
+struct SubTrait< HybridMatrix<T1,M,N,SO>, DynamicMatrix<T2,SO> >
+{
+   typedef HybridMatrix< typename SubTrait<T1,T2>::Type, M, N, SO >  Type;
+};
+
+template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
+struct SubTrait< HybridMatrix<T1,M,N,SO1>, DynamicMatrix<T2,SO2> >
+{
+   typedef HybridMatrix< typename SubTrait<T1,T2>::Type, M, N, false >  Type;
 };
 
 template< typename T1, bool SO, typename T2 >
@@ -4872,6 +4920,18 @@ struct MultTrait< DynamicMatrix<T1,SO1>, StaticMatrix<T2,M,N,SO2> >
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct MultTrait< StaticMatrix<T1,M,N,SO1>, DynamicMatrix<T2,SO2> >
+{
+   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO1 >  Type;
+};
+
+template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
+struct MultTrait< DynamicMatrix<T1,SO1>, HybridMatrix<T2,M,N,SO2> >
+{
+   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO1 >  Type;
+};
+
+template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
+struct MultTrait< HybridMatrix<T1,M,N,SO1>, DynamicMatrix<T2,SO2> >
 {
    typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO1 >  Type;
 };
