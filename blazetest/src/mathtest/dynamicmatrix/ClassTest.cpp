@@ -1136,7 +1136,7 @@ void ClassTest::testAssignment()
    }
 
    {
-      test_ = "Row-major DynamicMatrix copy assignment stress test";
+      test_ = "Column-major DynamicMatrix copy assignment stress test";
 
       typedef blaze::DynamicMatrix<int,blaze::columnMajor>  RandomMatrixType;
 
