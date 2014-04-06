@@ -42,7 +42,7 @@
 
 #include <blaze/math/dense/StaticMatrix.h>
 #include <blaze/math/DenseMatrix.h>
-#include <blaze/math/DynamicMatrix.h>
+#include <blaze/math/HybridMatrix.h>
 #include <blaze/math/StaticVector.h>
 #include <blaze/system/Precision.h>
 #include <blaze/util/Random.h>

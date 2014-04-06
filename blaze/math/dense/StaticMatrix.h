@@ -6175,7 +6175,7 @@ struct MathTrait< StaticMatrix<T1,M,N,SO>, StaticMatrix<T2,M,N,SO> >
 template< typename T1, size_t M, size_t N, bool SO >
 struct SubmatrixTrait< StaticMatrix<T1,M,N,SO> >
 {
-   typedef DynamicMatrix<T1,SO>  Type;
+   typedef HybridMatrix<T1,M,N,SO>  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
