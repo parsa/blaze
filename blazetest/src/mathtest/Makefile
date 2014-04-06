@@ -37,7 +37,7 @@ default: all
 
 all: functions intrinsics \
      staticvector hybridvector dynamicvector compressedvector \
-     staticmatrix dynamicmatrix compressedmatrix \
+     staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
      densesubvector sparsesubvector \
      densesubmatrix sparsesubmatrix \
      denserow densecolumn sparserow sparsecolumn \
@@ -90,6 +90,11 @@ staticmatrix:
 	@echo
 	@echo "Building the StaticMatrix tests..."
 	@$(MAKE) --no-print-directory -C ./staticmatrix $(MAKECMDGOALS)
+
+hybridmatrix:
+	@echo
+	@echo "Building the HybridMatrix tests..."
+	@$(MAKE) --no-print-directory -C ./hybridmatrix $(MAKECMDGOALS)
 
 dynamicmatrix:
 	@echo
@@ -381,6 +386,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./dynamicvector clean
 	@$(MAKE) --no-print-directory -C ./compressedvector clean
 	@$(MAKE) --no-print-directory -C ./staticmatrix clean
+	@$(MAKE) --no-print-directory -C ./hybridmatrix clean
 	@$(MAKE) --no-print-directory -C ./dynamicmatrix clean
 	@$(MAKE) --no-print-directory -C ./compressedmatrix clean
 	@$(MAKE) --no-print-directory -C ./densesubvector clean
@@ -444,7 +450,7 @@ clean:
 .PHONY: default all essential clean \
         functions intrinsics \
         staticvector hybridvector dynamicvector compressedvector \
-        staticmatrix dynamicmatrix compressedmatrix \
+        staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
         densesubvector sparsesubvector \
         densesubmatrix sparsesubmatrix \
         denserow densecolumn sparserow sparsecolumn \
