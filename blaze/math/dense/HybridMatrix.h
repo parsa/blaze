@@ -3527,7 +3527,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator+=( con
 {
    using blaze::addAssign;
 
-   if( (~rhs).rows() != M || (~rhs).columns() != N )
+   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
    if( (~rhs).canAlias( this ) ) {
@@ -3564,7 +3564,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator-=( con
 {
    using blaze::subAssign;
 
-   if( (~rhs).rows() != M || (~rhs).columns() != N )
+   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
    if( (~rhs).canAlias( this ) ) {
@@ -3599,7 +3599,7 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO >      // Storage order of the right-hand side matrix
 inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator*=( const Matrix<MT,SO>& rhs )
 {
-   if( M != N || (~rhs).rows() != M || (~rhs).columns() != M )
+   if( n_ != (~rhs).rows() || (~rhs).columns() > N )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
    HybridMatrix tmp( *this * (~rhs) );
