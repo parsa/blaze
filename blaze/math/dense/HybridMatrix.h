@@ -104,7 +104,7 @@ namespace blaze {
 // the blaze::StaticMatrix and the blaze::DynamicMatrix class templates: Similar to the static
 // matrix it uses static stack memory instead of dynamically allocated memory and similar to the
 // dynamic matrix it can be resized (within the extend of the static memory). The type of the
-// elements, the maximum number of rows and columns and the transpose flag of the vector can be
+// elements, the maximum number of rows and columns and the storage order of the matrix can be
 // specified via the four template parameters:
 
    \code
