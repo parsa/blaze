@@ -48,7 +48,7 @@ BIN = $(SRC:.cpp=)
 # General rules
 default: all
 all: $(BIN)
-essential: VCaM3x3a VCaMDa AliasingTest
+essential: VCaM3x3a VCaMHa VCaMDa AliasingTest
 
 
 # Build rules
@@ -84,6 +84,10 @@ VCaMDa: VCaMDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCaMDb: VCaMDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaMHa: VCaMHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaMHb: VCaMHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 VCbM2x2a: VCbM2x2a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
@@ -116,6 +120,10 @@ VCbM16x8b: VCbM16x8b.o
 VCbMDa: VCbMDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbMDb: VCbMDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCbMHa: VCbMHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCbMHb: VCbMHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 AliasingTest: AliasingTest.o
