@@ -1154,10 +1154,10 @@ namespace blaze {}
 // \tableofcontents
 //
 //
-// The \b Blaze library currently offers two dense matrix types (\ref matrix_types_static_matrix
-// and \ref matrix_types_dynamic_matrix) and one sparse matrix type (\ref matrix_types_compressed_matrix).
-// All matrices can either be stored as row-major matrices or column-major matrices. Per default,
-// all matrices in \b Blaze are row-major matrices.
+// The \b Blaze library currently offers three dense matrix types (\ref matrix_types_static_matrix,
+// \ref matrix_types_hybrid_matrix and \ref matrix_types_dynamic_matrix) and one sparse matrix type
+// (\ref matrix_types_compressed_matrix). All matrices can either be stored as row-major matrices
+// or column-major matrices. Per default, all matrices in \b Blaze are row-major matrices.
 //
 //
 // \n \section matrix_types_static_matrix StaticMatrix
@@ -1210,6 +1210,37 @@ namespace blaze {}
 //             non-cv-qualified, non-reference element type.
 //  - \c SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
 //             The default value is blaze::rowMajor.
+//
+//
+// \n \section matrix_types_hybrid_matrix HybridMatrix
+// <hr>
+//
+// The HybridMatrix class template combines the flexibility of a dynamically sized matrix with
+// the efficiency and performance of a fixed-size matrix. It is implemented as a crossing between
+// the blaze::StaticMatrix and the blaze::DynamicMatrix class templates: Similar to the static
+// matrix it uses static stack memory instead of dynamically allocated memory and similar to the
+// dynamic matrix it can be resized (within the extend of the static memory). It can be included
+// via the header file
+
+   \code
+   #include <blaze/math/HybridMatrix.h>
+   \endcode
+
+// The type of the elements, the maximum number of rows and columns and the storage order of the
+// matrix can be specified via the four template parameters:
+
+   \code
+   template< typename Type, size_t M, size_t N, bool SO >
+   class HybridMatrix;
+   \endcode
+
+//  - Type: specifies the type of the matrix elements. HybridMatrix can be used with any
+//          non-cv-qualified, non-reference, non-pointer element type.
+//  - M   : specifies the maximum number of rows of the matrix.
+//  - N   : specifies the maximum number of columns of the matrix. Note that it is expected
+//          that HybridMatrix is only used for tiny and small matrices.
+//  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
+//          The default value is blaze::rowMajor.
 //
 //
 // \n \section matrix_types_compressed_matrix CompressedMatrix
