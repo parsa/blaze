@@ -48,7 +48,7 @@ BIN = $(SRC:.cpp=)
 # General rules
 default: all
 all: $(BIN)
-essential: M3x3aMCa MDaMCa AliasingTest
+essential: M3x3aMCa MHaMCa MDaMCa AliasingTest
 
 
 # Build rules
@@ -122,6 +122,15 @@ MDaMCb: MDaMCb.o
 MDbMCa: MDbMCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MDbMCb: MDbMCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+MHaMCa: MHaMCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MHaMCb: MHaMCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MHbMCa: MHbMCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MHbMCb: MHbMCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 AliasingTest: AliasingTest.o
