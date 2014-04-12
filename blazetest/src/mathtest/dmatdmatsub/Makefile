@@ -48,7 +48,7 @@ BIN = $(SRC:.cpp=)
 # General rules
 default: all
 all: $(BIN)
-essential: M3x3aM3x3a MDaMDa AliasingTest
+essential: M3x3aM3x3a MHaMHa MDaMDa AliasingTest
 
 
 # Build rules
@@ -128,6 +128,10 @@ M6x6aMDa: M6x6aMDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M6x6aMDb: M6x6aMDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M6x6aMHa: M6x6aMHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M6x6aMHb: M6x6aMHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M6x6bM6x6a: M6x6bM6x6a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M6x6bM6x6b: M6x6bM6x6b.o
@@ -135,6 +139,10 @@ M6x6bM6x6b: M6x6bM6x6b.o
 M6x6bMDa: M6x6bMDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M6x6bMDb: M6x6bMDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M6x6bMHa: M6x6bMHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M6x6bMHb: M6x6bMHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 M7x13aM7x13a: M7x13aM7x13a.o
@@ -203,6 +211,10 @@ MDaMDa: MDaMDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MDaMDb: MDaMDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MDaMHa: MDaMHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MDaMHb: MDaMHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MDbM2x2a: MDbM2x2a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MDbM2x2b: MDbM2x2b.o
@@ -234,6 +246,35 @@ MDbM16x8b: MDbM16x8b.o
 MDbMDa: MDbMDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MDbMDb: MDbMDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MDbMHa: MDbMHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MDbMHb: MDbMHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+MHaM6x6a: MHaM6x6a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MHaM6x6b: MHaM6x6b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MHaMDa: MHaMDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MHaMDb: MHaMDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MHaMHa: MHaMHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MHaMHb: MHaMHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MHbM6x6a: MHbM6x6a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MHbM6x6b: MHbM6x6b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MHbMDa: MHbMDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MHbMDb: MHbMDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MHbMHa: MHbMHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MHbMHb: MHbMHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 AliasingTest: AliasingTest.o
