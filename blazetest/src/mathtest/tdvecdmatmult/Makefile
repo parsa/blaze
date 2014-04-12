@@ -48,7 +48,7 @@ BIN = $(SRC:.cpp=)
 # General rules
 default: all
 all: $(BIN)
-essential: V3aM3x3a VHaMDa VDaMDa AliasingTest
+essential: V3aM3x3a VHaMHa VDaMDa AliasingTest
 
 
 # Build rules
@@ -128,6 +128,10 @@ V6aMDa: V6aMDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 V6aMDb: V6aMDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+V6aMHa: V6aMHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+V6aMHb: V6aMHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 V6bM6x6a: V6bM6x6a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 V6bM6x6b: V6bM6x6b.o
@@ -135,6 +139,10 @@ V6bM6x6b: V6bM6x6b.o
 V6bMDa: V6bMDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 V6bMDb: V6bMDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+V6bMHa: V6bMHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+V6bMHb: V6bMHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 V7aM7x13a: V7aM7x13a.o
@@ -187,6 +195,10 @@ VDaMDa: VDaMDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDaMDb: VDaMDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDaMHa: VDaMHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDaMHb: VDaMHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDbM2x2a: VDbM2x2a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDbM2x2b: VDbM2x2b.o
@@ -218,6 +230,10 @@ VDbM16x8b: VDbM16x8b.o
 VDbMDa: VDbMDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDbMDb: VDbMDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDbMHa: VDbMHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDbMHb: VDbMHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 VHaM2x2a: VHaM2x2a.o
@@ -252,6 +268,10 @@ VHaMDa: VHaMDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VHaMDb: VHaMDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VHaMHa: VHaMHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VHaMHb: VHaMHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VHbM2x2a: VHbM2x2a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VHbM2x2b: VHbM2x2b.o
@@ -283,6 +303,10 @@ VHbM16x8b: VHbM16x8b.o
 VHbMDa: VHbMDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VHbMDb: VHbMDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VHbMHa: VHbMHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VHbMHb: VHbMHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 AliasingTest: AliasingTest.o
