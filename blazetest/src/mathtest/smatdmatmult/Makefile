@@ -48,7 +48,7 @@ BIN = $(SRC:.cpp=)
 # General rules
 default: all
 all: $(BIN)
-essential: MCaM3x3a MCaMDa AliasingTest
+essential: MCaM3x3a MCaMHa MCaMDa AliasingTest
 
 
 # Build rules
@@ -84,6 +84,10 @@ MCaMDa: MCaMDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaMDb: MCaMDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCaMHa: MCaMHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCaMHb: MCaMHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 MCbM2x2a: MCbM2x2a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
@@ -116,6 +120,10 @@ MCbM16x8b: MCbM16x8b.o
 MCbMDa: MCbMDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCbMDb: MCbMDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCbMHa: MCbMHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCbMHb: MCbMHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 AliasingTest: AliasingTest.o

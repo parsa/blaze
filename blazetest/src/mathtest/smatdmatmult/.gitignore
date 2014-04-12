@@ -17,6 +17,8 @@ MCaM16x8a
 MCaM16x8b
 MCaMDa
 MCaMDb
+MCaMHa
+MCaMHb
 MCbM2x2a
 MCbM2x2b
 MCbM3x3a
@@ -33,4 +35,6 @@ MCbM16x8a
 MCbM16x8b
 MCbMDa
 MCbMDb
+MCbMHa
+MCbMHb
 
