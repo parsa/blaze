@@ -72,6 +72,7 @@ ClassTest::ClassTest()
    testAddAssign();
    testSubAssign();
    testMultAssign();
+   testDivAssign();
    testSubscript();
    testNonZeros();
    testReset();
