@@ -71,7 +71,7 @@ ClassTest::ClassTest()
    testAddAssign();
    testSubAssign();
    testMultAssign();
-   testDivAssign();
+   testScaling();
    testFunctionCall();
    testNonZeros();
    testReset();
@@ -83,7 +83,6 @@ ClassTest::ClassTest()
    testReserve();
    testTrim();
    testTranspose();
-   testScale();
    testSwap();
    testFind();
    testLowerBound();
@@ -1885,70 +1884,336 @@ void ClassTest::testSubAssign()
 void ClassTest::testMultAssign()
 {
    //=====================================================================================
-   // Row-major scalar multiplication assignment
+   // Row-major dense matrix multiplication assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major scalar multiplication assignment";
+      test_ = "Row-major/row-major CompressedMatrix dense matrix multiplication assignment";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 3UL, 4UL, 0 );
+      mat1(0,1) = 2;
+      mat1(1,0) = 1;
+      mat1(1,1) = 3;
+      mat1(1,3) = 4;
+      mat1(2,3) = 5;
 
-      mat *= 2;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 5UL );
+      mat2(0,0) = 1;
+      mat2(0,2) = 2;
+      mat2(1,1) = 3;
+      mat2(2,0) = 4;
+      mat2(2,2) = 5;
 
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 3UL );
-      checkNonZeros( mat, 3UL );
-      checkNonZeros( mat, 0UL, 0UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 2UL );
+      mat2 *= mat1;
 
-      if( mat(0,0) !=  0 || mat(0,1) != 0 || mat(0,2) != 0 ||
-          mat(1,0) !=  0 || mat(1,1) != 0 || mat(1,2) != 2 ||
-          mat(2,0) != -4 || mat(2,1) != 0 || mat(2,2) != 6 ) {
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 4UL );
+      checkNonZeros( mat2, 7UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) != 2 || mat2(0,2) != 0 || mat2(0,3) != 10 ||
+          mat2(1,0) != 3 || mat2(1,1) != 9 || mat2(1,2) != 0 || mat2(1,3) != 12 ||
+          mat2(2,0) != 0 || mat2(2,1) != 8 || mat2(2,2) != 0 || mat2(2,3) != 25 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n(  0 0 0 )\n(  0 0 2 )\n( -4 0 6 )\n";
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0 2 0 10 )\n( 3 9 0 12 )\n( 0 8 0 25 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix dense matrix multiplication assignment";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 3UL, 4UL, 0 );
+      mat1(0,1) = 2;
+      mat1(1,0) = 1;
+      mat1(1,1) = 3;
+      mat1(1,3) = 4;
+      mat1(2,3) = 5;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 5UL );
+      mat2(0,0) = 1;
+      mat2(0,2) = 2;
+      mat2(1,1) = 3;
+      mat2(2,0) = 4;
+      mat2(2,2) = 5;
+
+      mat2 *= mat1;
+
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 4UL );
+      checkNonZeros( mat2, 7UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) != 2 || mat2(0,2) != 0 || mat2(0,3) != 10 ||
+          mat2(1,0) != 3 || mat2(1,1) != 9 || mat2(1,2) != 0 || mat2(1,3) != 12 ||
+          mat2(2,0) != 0 || mat2(2,1) != 8 || mat2(2,2) != 0 || mat2(2,3) != 25 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0 2 0 10 )\n( 3 9 0 12 )\n( 0 8 0 25 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
 
    //=====================================================================================
-   // Column-major scalar multiplication assignment
+   // Row-major sparse matrix multiplication assignment
    //=====================================================================================
 
    {
-      test_ = "Column-major scalar multiplication assignment";
+      test_ = "Row-major/row-major CompressedMatrix sparse matrix multiplication assignment";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 3UL, 4UL, 5UL );
+      mat1(0,1) = 2;
+      mat1(1,0) = 1;
+      mat1(1,1) = 3;
+      mat1(1,3) = 4;
+      mat1(2,3) = 5;
 
-      mat *= 2;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 5UL );
+      mat2(0,0) = 1;
+      mat2(0,2) = 2;
+      mat2(1,1) = 3;
+      mat2(2,0) = 4;
+      mat2(2,2) = 5;
 
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 3UL );
-      checkNonZeros( mat, 3UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 0UL );
-      checkNonZeros( mat, 2UL, 2UL );
+      mat2 *= mat1;
 
-      if( mat(0,0) !=  0 || mat(0,1) != 0 || mat(0,2) != 0 ||
-          mat(1,0) !=  0 || mat(1,1) != 0 || mat(1,2) != 2 ||
-          mat(2,0) != -4 || mat(2,1) != 0 || mat(2,2) != 6 ) {
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 4UL );
+      checkNonZeros( mat2, 7UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) != 2 || mat2(0,2) != 0 || mat2(0,3) != 10 ||
+          mat2(1,0) != 3 || mat2(1,1) != 9 || mat2(1,2) != 0 || mat2(1,3) != 12 ||
+          mat2(2,0) != 0 || mat2(2,1) != 8 || mat2(2,2) != 0 || mat2(2,3) != 25 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n(  0 0 0 )\n(  0 0 2 )\n( -4 0 6 )\n";
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0 2 0 10 )\n( 3 9 0 12 )\n( 0 8 0 25 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix sparse matrix multiplication assignment";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 3UL, 4UL, 5UL );
+      mat1(0,1) = 2;
+      mat1(1,0) = 1;
+      mat1(1,1) = 3;
+      mat1(1,3) = 4;
+      mat1(2,3) = 5;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 5UL );
+      mat2(0,0) = 1;
+      mat2(0,2) = 2;
+      mat2(1,1) = 3;
+      mat2(2,0) = 4;
+      mat2(2,2) = 5;
+
+      mat2 *= mat1;
+
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 4UL );
+      checkNonZeros( mat2, 7UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) != 2 || mat2(0,2) != 0 || mat2(0,3) != 10 ||
+          mat2(1,0) != 3 || mat2(1,1) != 9 || mat2(1,2) != 0 || mat2(1,3) != 12 ||
+          mat2(2,0) != 0 || mat2(2,1) != 8 || mat2(2,2) != 0 || mat2(2,3) != 25 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0 2 0 10 )\n( 3 9 0 12 )\n( 0 8 0 25 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense matrix multiplication assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major CompressedMatrix dense matrix multiplication assignment";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 3UL, 4UL, 0 );
+      mat1(0,1) = 2;
+      mat1(1,0) = 1;
+      mat1(1,1) = 3;
+      mat1(1,3) = 4;
+      mat1(2,3) = 5;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 5UL );
+      mat2(0,0) = 1;
+      mat2(0,2) = 2;
+      mat2(1,1) = 3;
+      mat2(2,0) = 4;
+      mat2(2,2) = 5;
+
+      mat2 *= mat1;
+
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 4UL );
+      checkNonZeros( mat2, 7UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+      checkNonZeros( mat2, 2UL, 0UL );
+      checkNonZeros( mat2, 3UL, 3UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) != 2 || mat2(0,2) != 0 || mat2(0,3) != 10 ||
+          mat2(1,0) != 3 || mat2(1,1) != 9 || mat2(1,2) != 0 || mat2(1,3) != 12 ||
+          mat2(2,0) != 0 || mat2(2,1) != 8 || mat2(2,2) != 0 || mat2(2,3) != 25 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0 2 0 10 )\n( 3 9 0 12 )\n( 0 8 0 25 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix dense matrix multiplication assignment";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 3UL, 4UL, 0 );
+      mat1(0,1) = 2;
+      mat1(1,0) = 1;
+      mat1(1,1) = 3;
+      mat1(1,3) = 4;
+      mat1(2,3) = 5;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 5UL );
+      mat2(0,0) = 1;
+      mat2(0,2) = 2;
+      mat2(1,1) = 3;
+      mat2(2,0) = 4;
+      mat2(2,2) = 5;
+
+      mat2 *= mat1;
+
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 4UL );
+      checkNonZeros( mat2, 7UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+      checkNonZeros( mat2, 2UL, 0UL );
+      checkNonZeros( mat2, 3UL, 3UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) != 2 || mat2(0,2) != 0 || mat2(0,3) != 10 ||
+          mat2(1,0) != 3 || mat2(1,1) != 9 || mat2(1,2) != 0 || mat2(1,3) != 12 ||
+          mat2(2,0) != 0 || mat2(2,1) != 8 || mat2(2,2) != 0 || mat2(2,3) != 25 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0 2 0 10 )\n( 3 9 0 12 )\n( 0 8 0 25 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix multiplication assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major CompressedMatrix sparse matrix multiplication assignment";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 3UL, 4UL, 5UL );
+      mat1(0,1) = 2;
+      mat1(1,0) = 1;
+      mat1(1,1) = 3;
+      mat1(1,3) = 4;
+      mat1(2,3) = 5;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 5UL );
+      mat2(0,0) = 1;
+      mat2(0,2) = 2;
+      mat2(1,1) = 3;
+      mat2(2,0) = 4;
+      mat2(2,2) = 5;
+
+      mat2 *= mat1;
+
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 4UL );
+      checkNonZeros( mat2, 7UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+      checkNonZeros( mat2, 2UL, 0UL );
+      checkNonZeros( mat2, 3UL, 3UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) != 2 || mat2(0,2) != 0 || mat2(0,3) != 10 ||
+          mat2(1,0) != 3 || mat2(1,1) != 9 || mat2(1,2) != 0 || mat2(1,3) != 12 ||
+          mat2(2,0) != 0 || mat2(2,1) != 8 || mat2(2,2) != 0 || mat2(2,3) != 25 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0 2 0 10 )\n( 3 9 0 12 )\n( 0 8 0 25 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix sparse matrix multiplication assignment";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 3UL, 4UL, 5UL );
+      mat1(0,1) = 2;
+      mat1(1,0) = 1;
+      mat1(1,1) = 3;
+      mat1(1,3) = 4;
+      mat1(2,3) = 5;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 5UL );
+      mat2(0,0) = 1;
+      mat2(0,2) = 2;
+      mat2(1,1) = 3;
+      mat2(2,0) = 4;
+      mat2(2,2) = 5;
+
+      mat2 *= mat1;
+
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 4UL );
+      checkNonZeros( mat2, 7UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+      checkNonZeros( mat2, 2UL, 0UL );
+      checkNonZeros( mat2, 3UL, 3UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) != 2 || mat2(0,2) != 0 || mat2(0,3) != 10 ||
+          mat2(1,0) != 3 || mat2(1,1) != 9 || mat2(1,2) != 0 || mat2(1,3) != 12 ||
+          mat2(2,0) != 0 || mat2(2,1) != 8 || mat2(2,2) != 0 || mat2(2,3) != 25 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0 2 0 10 )\n( 3 9 0 12 )\n( 0 8 0 25 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1957,22 +2222,127 @@ void ClassTest::testMultAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the CompressedMatrix division assignment operators.
+/*!\brief Test of all CompressedMatrix (self-)scaling operations.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the division assignment operators of the CompressedMatrix
+// This function performs a test of all available ways to scale an instance of the CompressedMatrix
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testDivAssign()
+void ClassTest::testScaling()
 {
    //=====================================================================================
-   // Row-major scalar division assignment
+   // Row-major self-scaling (M*=s)
    //=====================================================================================
 
    {
-      test_ = "Row-major scalar division assignment";
+      test_ = "Row-major self-scaling (M*=s)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
+      mat(1,2) =  1;
+      mat(2,0) = -2;
+      mat(2,2) =  3;
+
+      mat *= 2;
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 2UL );
+
+      if( mat(0,0) !=  0 || mat(0,1) != 0 || mat(0,2) != 0 ||
+          mat(1,0) !=  0 || mat(1,1) != 0 || mat(1,2) != 2 ||
+          mat(2,0) != -4 || mat(2,1) != 0 || mat(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 )\n(  0 0 2 )\n( -4 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major self-scaling (M=M*s)
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-scaling (M=M*s)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
+      mat(1,2) =  1;
+      mat(2,0) = -2;
+      mat(2,2) =  3;
+
+      mat = mat * 2;
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 2UL );
+
+      if( mat(0,0) !=  0 || mat(0,1) != 0 || mat(0,2) != 0 ||
+          mat(1,0) !=  0 || mat(1,1) != 0 || mat(1,2) != 2 ||
+          mat(2,0) != -4 || mat(2,1) != 0 || mat(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 )\n(  0 0 2 )\n( -4 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major self-scaling (M=s*M)
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-scaling (M=s*M)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
+      mat(1,2) =  1;
+      mat(2,0) = -2;
+      mat(2,2) =  3;
+
+      mat = 2 * mat;
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 2UL );
+
+      if( mat(0,0) !=  0 || mat(0,1) != 0 || mat(0,2) != 0 ||
+          mat(1,0) !=  0 || mat(1,1) != 0 || mat(1,2) != 2 ||
+          mat(2,0) != -4 || mat(2,1) != 0 || mat(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 )\n(  0 0 2 )\n( -4 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major self-scaling (M/=s)
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-scaling (M/=s)";
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
       mat(1,2) =  2;
@@ -1993,7 +2363,7 @@ void ClassTest::testDivAssign()
           mat(2,0) != -2 || mat(2,1) != 0 || mat(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
              << "   Expected result:\n(  0 0 0 )\n(  0 0 1 )\n( -2 0 3 )\n";
@@ -2003,11 +2373,254 @@ void ClassTest::testDivAssign()
 
 
    //=====================================================================================
-   // Column-major scalar division assignment
+   // Row-major self-scaling (M=M/s)
    //=====================================================================================
 
    {
-      test_ = "Column-major scalar division assignment";
+      test_ = "Row-major self-scaling (M=M/s)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
+      mat(1,2) =  2;
+      mat(2,0) = -4;
+      mat(2,2) =  6;
+
+      mat = mat / 2;
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 2UL );
+
+      if( mat(0,0) !=  0 || mat(0,1) != 0 || mat(0,2) != 0 ||
+          mat(1,0) !=  0 || mat(1,1) != 0 || mat(1,2) != 1 ||
+          mat(2,0) != -2 || mat(2,1) != 0 || mat(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 )\n(  0 0 1 )\n( -2 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major CompressedMatrix::scale()
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CompressedMatrix::scale() (int)";
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 2UL );
+      mat(0,0) = 1;
+      mat(1,0) = 2;
+      mat(2,1) = 3;
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+
+      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,1) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 0 )\n( 2 0 )\n( 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Integral scaling of the matrix
+      mat.scale( 2 );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+
+      if( mat(0,0) != 2 || mat(1,0) != 4 || mat(2,1) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Scale operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 2 0 )\n( 4 0 )\n( 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Floating point scaling of the matrix
+      mat.scale( 0.5 );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+
+      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,1) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Scale operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 0 )\n( 2 0 )\n( 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major CompressedMatrix::scale() (complex)";
+
+      using blaze::complex;
+
+      blaze::CompressedMatrix<complex<float>,blaze::rowMajor> mat( 2UL, 2UL );
+      mat(0,0) = complex<float>( 1.0F, 0.0F );
+      mat(1,1) = complex<float>( 2.0F, 0.0F );
+      mat.scale( complex<float>( 3.0F, 0.0F ) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 2UL );
+      checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+
+      if( mat(0,0) != complex<float>( 3.0F, 0.0F ) || mat(1,1) != complex<float>( 6.0F, 0.0F ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Scale operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( (3,0) (0,0)\n(0,0) (6,0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major self-scaling (M*=s)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-scaling (M*=s)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
+      mat(1,2) =  1;
+      mat(2,0) = -2;
+      mat(2,2) =  3;
+
+      mat *= 2;
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 2UL );
+
+      if( mat(0,0) !=  0 || mat(0,1) != 0 || mat(0,2) != 0 ||
+          mat(1,0) !=  0 || mat(1,1) != 0 || mat(1,2) != 2 ||
+          mat(2,0) != -4 || mat(2,1) != 0 || mat(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 )\n(  0 0 2 )\n( -4 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major self-scaling (M=M*s)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-scaling (M=M*s)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
+      mat(1,2) =  1;
+      mat(2,0) = -2;
+      mat(2,2) =  3;
+
+      mat = mat * 2;
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 2UL );
+
+      if( mat(0,0) !=  0 || mat(0,1) != 0 || mat(0,2) != 0 ||
+          mat(1,0) !=  0 || mat(1,1) != 0 || mat(1,2) != 2 ||
+          mat(2,0) != -4 || mat(2,1) != 0 || mat(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 )\n(  0 0 2 )\n( -4 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major self-scaling (M=s*M)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-scaling (M=s*M)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
+      mat(1,2) =  1;
+      mat(2,0) = -2;
+      mat(2,2) =  3;
+
+      mat = 2 * mat;
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 2UL );
+
+      if( mat(0,0) !=  0 || mat(0,1) != 0 || mat(0,2) != 0 ||
+          mat(1,0) !=  0 || mat(1,1) != 0 || mat(1,2) != 2 ||
+          mat(2,0) != -4 || mat(2,1) != 0 || mat(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 )\n(  0 0 2 )\n( -4 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major self-scaling (M/=s)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-scaling (M/=s)";
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
       mat(1,2) =  2;
@@ -2028,10 +2641,145 @@ void ClassTest::testDivAssign()
           mat(2,0) != -2 || mat(2,1) != 0 || mat(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
              << "   Expected result:\n(  0 0 0 )\n(  0 0 1 )\n( -2 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major self-scaling (M=M/s)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-scaling (M=M/s)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
+      mat(1,2) =  2;
+      mat(2,0) = -4;
+      mat(2,2) =  6;
+
+      mat = mat / 2;
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 2UL );
+
+      if( mat(0,0) !=  0 || mat(0,1) != 0 || mat(0,2) != 0 ||
+          mat(1,0) !=  0 || mat(1,1) != 0 || mat(1,2) != 1 ||
+          mat(2,0) != -2 || mat(2,1) != 0 || mat(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 )\n(  0 0 1 )\n( -2 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major CompressedMatrix::scale()
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CompressedMatrix::scale() (int)";
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 2UL );
+      mat(0,0) = 1;
+      mat(1,0) = 2;
+      mat(2,1) = 3;
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 1UL );
+
+      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,1) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 0 )\n( 2 0 )\n( 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Integral scaling of the matrix
+      mat.scale( 2 );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 1UL );
+
+      if( mat(0,0) != 2 || mat(1,0) != 4 || mat(2,1) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Scale operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 2 0 )\n( 4 0 )\n( 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Floating point scaling of the matrix
+      mat.scale( 0.5 );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 1UL );
+
+      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,1) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Scale operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 0 )\n( 2 0 )\n( 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major CompressedMatrix::scale() (complex)";
+
+      using blaze::complex;
+
+      blaze::CompressedMatrix<complex<float>,blaze::columnMajor> mat( 2UL, 2UL );
+      mat(0,0) = complex<float>( 1.0F, 0.0F );
+      mat(1,1) = complex<float>( 2.0F, 0.0F );
+      mat.scale( complex<float>( 3.0F, 0.0F ) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 2UL );
+      checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+
+      if( mat(0,0) != complex<float>( 3.0F, 0.0F ) || mat(1,1) != complex<float>( 6.0F, 0.0F ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Scale operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( (3,0) (0,0)\n(0,0) (6,0) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -5255,218 +6003,6 @@ void ClassTest::testTranspose()
                 << "   Expected result:\n( 1 0 2 0 3 )\n( 0 4 0 5 0 )\n( 6 0 7 0 8 )\n";
             throw std::runtime_error( oss.str() );
          }
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the scale member function of CompressedMatrix.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the scale member function of CompressedMatrix.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testScale()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major CompressedMatrix::scale()";
-
-      // Initialization check
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 2UL );
-      mat(0,0) = 1;
-      mat(1,0) = 2;
-      mat(2,1) = 3;
-
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 3UL );
-      checkNonZeros( mat, 3UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-
-      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,1) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 0 )\n( 2 0 )\n( 0 3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Integral scaling of the matrix
-      mat.scale( 2 );
-
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 3UL );
-      checkNonZeros( mat, 3UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-
-      if( mat(0,0) != 2 || mat(1,0) != 4 || mat(2,1) != 6 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Scale operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 2 0 )\n( 4 0 )\n( 0 6 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Floating point scaling of the matrix
-      mat.scale( 0.5 );
-
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 3UL );
-      checkNonZeros( mat, 3UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-
-      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,1) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Scale operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 0 )\n( 2 0 )\n( 0 3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      using blaze::complex;
-
-      blaze::CompressedMatrix<complex<float>,blaze::rowMajor> mat( 2UL, 2UL );
-      mat(0,0) = complex<float>( 1.0F, 0.0F );
-      mat(1,1) = complex<float>( 2.0F, 0.0F );
-      mat.scale( complex<float>( 3.0F, 0.0F ) );
-
-      checkRows    ( mat, 2UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 2UL );
-      checkNonZeros( mat, 2UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-
-      if( mat(0,0) != complex<float>( 3.0F, 0.0F ) || mat(1,1) != complex<float>( 6.0F, 0.0F ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Scale operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( (3,0) (0,0)\n(0,0) (6,0) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major CompressedMatrix::scale()";
-
-      // Initialization check
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 2UL );
-      mat(0,0) = 1;
-      mat(1,0) = 2;
-      mat(2,1) = 3;
-
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 3UL );
-      checkNonZeros( mat, 3UL );
-      checkNonZeros( mat, 0UL, 2UL );
-      checkNonZeros( mat, 1UL, 1UL );
-
-      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,1) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 0 )\n( 2 0 )\n( 0 3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Integral scaling of the matrix
-      mat.scale( 2 );
-
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 3UL );
-      checkNonZeros( mat, 3UL );
-      checkNonZeros( mat, 0UL, 2UL );
-      checkNonZeros( mat, 1UL, 1UL );
-
-      if( mat(0,0) != 2 || mat(1,0) != 4 || mat(2,1) != 6 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Scale operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 2 0 )\n( 4 0 )\n( 0 6 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Floating point scaling of the matrix
-      mat.scale( 0.5 );
-
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 3UL );
-      checkNonZeros( mat, 3UL );
-      checkNonZeros( mat, 0UL, 2UL );
-      checkNonZeros( mat, 1UL, 1UL );
-
-      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,1) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Scale operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 0 )\n( 2 0 )\n( 0 3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      using blaze::complex;
-
-      blaze::CompressedMatrix<complex<float>,blaze::columnMajor> mat( 2UL, 2UL );
-      mat(0,0) = complex<float>( 1.0F, 0.0F );
-      mat(1,1) = complex<float>( 2.0F, 0.0F );
-      mat.scale( complex<float>( 3.0F, 0.0F ) );
-
-      checkRows    ( mat, 2UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 2UL );
-      checkNonZeros( mat, 2UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-
-      if( mat(0,0) != complex<float>( 3.0F, 0.0F ) || mat(1,1) != complex<float>( 6.0F, 0.0F ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Scale operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( (3,0) (0,0)\n(0,0) (6,0) )\n";
-         throw std::runtime_error( oss.str() );
       }
    }
 }
