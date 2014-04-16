@@ -72,7 +72,7 @@ ClassTest::ClassTest()
    testAddAssign();
    testSubAssign();
    testMultAssign();
-   testDivAssign();
+   testScaling();
    testSubscript();
    testNonZeros();
    testReset();
@@ -82,7 +82,6 @@ ClassTest::ClassTest()
    testErase();
    testResize();
    testReserve();
-   testScale();
    testSwap();
    testFind();
    testLowerBound();
@@ -638,14 +637,27 @@ void ClassTest::testMultAssign()
          throw std::runtime_error( oss.str() );
       }
    }
+}
+//*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Test of all CompressedVector (self-)scaling operations.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of all available ways to scale an instance of the CompressedVector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testScaling()
+{
    //=====================================================================================
-   // Scalar multiplication assignment
+   // Self-scaling (v*=s)
    //=====================================================================================
 
    {
-      test_ = "CompressedVector scalar multiplication assignment";
+      test_ = "CompressedVector self-scaling (v*=s)";
 
       blaze::CompressedVector<int,blaze::columnVector> vec1( 5UL, 3UL );
       vec1[0] = 1;
@@ -660,34 +672,79 @@ void ClassTest::testMultAssign()
       if( vec1[0] != 2 || vec1[1] != 4 || vec1[2] != 0 || vec1[3] != 8 || vec1[4] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << vec1 << "\n"
              << "   Expected result:\n( 2 4 0 8 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
-}
-//*************************************************************************************************
 
 
-//*************************************************************************************************
-/*!\brief Test of the CompressedVector division assignment operators.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the division assignment operators of the CompressedVector
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testDivAssign()
-{
    //=====================================================================================
-   // Scalar division assignment
+   // Self-scaling (v=v*s)
    //=====================================================================================
 
    {
-      test_ = "CompressedVector scalar division assignment";
+      test_ = "CompressedVector self-scaling (v=v*s)";
+
+      blaze::CompressedVector<int,blaze::columnVector> vec1( 5UL, 3UL );
+      vec1[0] = 1;
+      vec1[1] = 2;
+      vec1[3] = 4;
+
+      vec1 = vec1 * 2;
+
+      checkSize    ( vec1, 5UL );
+      checkNonZeros( vec1, 3UL );
+
+      if( vec1[0] != 2 || vec1[1] != 4 || vec1[2] != 0 || vec1[3] != 8 || vec1[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << vec1 << "\n"
+             << "   Expected result:\n( 2 4 0 8 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Self-scaling (v=s*v)
+   //=====================================================================================
+
+   {
+      test_ = "CompressedVector self-scaling (v=v*s)";
+
+      blaze::CompressedVector<int,blaze::columnVector> vec1( 5UL, 3UL );
+      vec1[0] = 1;
+      vec1[1] = 2;
+      vec1[3] = 4;
+
+      vec1 = 2 * vec1;
+
+      checkSize    ( vec1, 5UL );
+      checkNonZeros( vec1, 3UL );
+
+      if( vec1[0] != 2 || vec1[1] != 4 || vec1[2] != 0 || vec1[3] != 8 || vec1[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << vec1 << "\n"
+             << "   Expected result:\n( 2 4 0 8 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Self-scaling (v/=s)
+   //=====================================================================================
+
+   {
+      test_ = "CompressedVector self-scaling (v/=s)";
 
       blaze::CompressedVector<int,blaze::columnVector> vec1( 5UL, 3UL );
       vec1[0] = 2;
@@ -702,10 +759,127 @@ void ClassTest::testDivAssign()
       if( vec1[0] != 1 || vec1[1] != 2 || vec1[2] != 0 || vec1[3] != 4 || vec1[4] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << vec1 << "\n"
              << "   Expected result:\n( 1 2 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Self-scaling (v=v/s)
+   //=====================================================================================
+
+   {
+      test_ = "CompressedVector self-scaling (v=v/s)";
+
+      blaze::CompressedVector<int,blaze::columnVector> vec1( 5UL, 3UL );
+      vec1[0] = 2;
+      vec1[1] = 4;
+      vec1[3] = 8;
+
+      vec1 = vec1 / 2;
+
+      checkSize    ( vec1, 5UL );
+      checkNonZeros( vec1, 3UL );
+
+      if( vec1[0] != 1 || vec1[1] != 2 || vec1[2] != 0 || vec1[3] != 4 || vec1[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << vec1 << "\n"
+             << "   Expected result:\n( 1 2 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // CompressedVector::scale()
+   //=====================================================================================
+
+   {
+      test_ = "CompressedVector::scale() (int)";
+
+      // Initialization check
+      blaze::CompressedVector<int,blaze::rowVector> vec( 6UL, 3UL );
+      vec[1] = 1;
+      vec[3] = 2;
+      vec[5] = 3;
+
+      checkSize    ( vec, 6UL );
+      checkCapacity( vec, 3UL );
+      checkNonZeros( vec, 3UL );
+
+      if( vec[1] != 1 || vec[3] != 2 || vec[5] != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 1 0 2 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Integral scaling of the vector
+      vec.scale( 2 );
+
+      checkSize    ( vec, 6UL );
+      checkCapacity( vec, 3UL );
+      checkNonZeros( vec, 3UL );
+
+      if( vec[1] != 2 || vec[3] != 4 || vec[5] != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Scale operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 2 0 4 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Floating point scaling of the vector
+      vec.scale( 0.5 );
+
+      checkSize    ( vec, 6UL );
+      checkCapacity( vec, 3UL );
+      checkNonZeros( vec, 3UL );
+
+      if( vec[1] != 1 || vec[3] != 2 || vec[5] != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Scale operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 1 0 2 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "CompressedVector::scale() (complex)";
+
+      using blaze::complex;
+
+      blaze::CompressedVector<complex<float>,blaze::rowVector> vec( 2UL, 2UL );
+      vec[0] = complex<float>( 1.0F, 0.0F );
+      vec[1] = complex<float>( 2.0F, 0.0F );
+      vec.scale( complex<float>( 3.0F, 0.0F ) );
+
+      checkSize    ( vec, 2UL );
+      checkCapacity( vec, 2UL );
+      checkNonZeros( vec, 2UL );
+
+      if( vec[0] != complex<float>( 3.0F, 0.0F ) || vec[1] != complex<float>( 6.0F, 0.0F ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Scale operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( (3,0) (6,0) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1673,101 +1847,6 @@ void ClassTest::testReserve()
    checkSize    ( vec,  0UL );
    checkCapacity( vec, 20UL );
    checkNonZeros( vec,  0UL );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the scale member function of CompressedVector.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the scale member function of CompressedVector.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testScale()
-{
-   test_ = "CompressedVector::scale()";
-
-   {
-      // Initialization check
-      blaze::CompressedVector<int,blaze::rowVector> vec( 6UL, 3UL );
-      vec[1] = 1;
-      vec[3] = 2;
-      vec[5] = 3;
-
-      checkSize    ( vec, 6UL );
-      checkCapacity( vec, 3UL );
-      checkNonZeros( vec, 3UL );
-
-      if( vec[1] != 1 || vec[3] != 2 || vec[5] != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 0 1 0 2 0 3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Integral scaling of the vector
-      vec.scale( 2 );
-
-      checkSize    ( vec, 6UL );
-      checkCapacity( vec, 3UL );
-      checkNonZeros( vec, 3UL );
-
-      if( vec[1] != 2 || vec[3] != 4 || vec[5] != 6 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Scale operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 0 2 0 4 0 6 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Floating point scaling of the vector
-      vec.scale( 0.5 );
-
-      checkSize    ( vec, 6UL );
-      checkCapacity( vec, 3UL );
-      checkNonZeros( vec, 3UL );
-
-      if( vec[1] != 1 || vec[3] != 2 || vec[5] != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Scale operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 0 1 0 2 0 3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      using blaze::complex;
-
-      blaze::CompressedVector<complex<float>,blaze::rowVector> vec( 2UL, 2UL );
-      vec[0] = complex<float>( 1.0F, 0.0F );
-      vec[1] = complex<float>( 2.0F, 0.0F );
-      vec.scale( complex<float>( 3.0F, 0.0F ) );
-
-      checkSize    ( vec, 2UL );
-      checkCapacity( vec, 2UL );
-      checkNonZeros( vec, 2UL );
-
-      if( vec[0] != complex<float>( 3.0F, 0.0F ) || vec[1] != complex<float>( 6.0F, 0.0F ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Scale operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( (3,0) (6,0) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
 }
 //*************************************************************************************************
 

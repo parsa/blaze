@@ -91,7 +91,7 @@ class ClassTest
    void testAddAssign   ();
    void testSubAssign   ();
    void testMultAssign  ();
-   void testDivAssign   ();
+   void testScaling     ();
    void testSubscript   ();
    void testNonZeros    ();
    void testReset       ();
@@ -101,7 +101,6 @@ class ClassTest
    void testErase       ();
    void testResize      ();
    void testReserve     ();
-   void testScale       ();
    void testSwap        ();
    void testFind        ();
    void testLowerBound  ();
