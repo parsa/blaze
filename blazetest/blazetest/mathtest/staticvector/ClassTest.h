@@ -97,11 +97,10 @@ class ClassTest
    void testAddAssign   ();
    void testSubAssign   ();
    void testMultAssign  ();
-   void testDivAssign   ();
+   void testScaling     ();
    void testSubscript   ();
    void testNonZeros    ();
    void testReset       ();
-   void testScale       ();
    void testSwap        ();
    void testIsDefault   ();
    void testIsNan       ();
