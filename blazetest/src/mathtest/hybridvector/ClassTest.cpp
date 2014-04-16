@@ -86,14 +86,13 @@ ClassTest::ClassTest()
    testAddAssign();
    testSubAssign();
    testMultAssign();
-   testDivAssign();
+   testScaling();
    testSubscript();
    testNonZeros();
    testReset();
    testClear();
    testResize();
    testExtend();
-   testScale();
    testSwap();
    testIsDefault();
    testIsNan();
@@ -710,7 +709,10 @@ void ClassTest::testAssignment()
 */
 void ClassTest::testAddAssign()
 {
+   //=====================================================================================
    // Dense vector addition assignment
+   //=====================================================================================
+
    {
       test_ = "HybridVector dense vector addition assignment";
 
@@ -741,7 +743,11 @@ void ClassTest::testAddAssign()
       }
    }
 
+
+   //=====================================================================================
    // Sparse vector addition assignment
+   //=====================================================================================
+
    {
       test_ = "HybridVector sparse vector addition assignment";
 
@@ -786,7 +792,10 @@ void ClassTest::testAddAssign()
 */
 void ClassTest::testSubAssign()
 {
+   //=====================================================================================
    // Dense vector subtraction assignment
+   //=====================================================================================
+
    {
       test_ = "HybridVector dense vector subtraction assignment";
 
@@ -817,7 +826,11 @@ void ClassTest::testSubAssign()
       }
    }
 
+
+   //=====================================================================================
    // Sparse vector subtraction assignment
+   //=====================================================================================
+
    {
       test_ = "HybridVector sparse vector subtraction assignment";
 
@@ -862,7 +875,10 @@ void ClassTest::testSubAssign()
 */
 void ClassTest::testMultAssign()
 {
+   //=====================================================================================
    // Dense vector multiplication assignment
+   //=====================================================================================
+
    {
       test_ = "HybridVector dense vector multiplication assignment";
 
@@ -893,7 +909,11 @@ void ClassTest::testMultAssign()
       }
    }
 
+
+   //=====================================================================================
    // Sparse vector multiplication assignment
+   //=====================================================================================
+
    {
       test_ = "HybridVector sparse vector multiplication assignment";
 
@@ -923,10 +943,27 @@ void ClassTest::testMultAssign()
          throw std::runtime_error( oss.str() );
       }
    }
+}
+//*************************************************************************************************
 
-   // Scalar multiplication assignment
+
+//*************************************************************************************************
+/*!\brief Test of all HybridVector (self-)scaling operations.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of all available ways to scale an instance of the HybridVector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testScaling()
+{
+   //=====================================================================================
+   // Self-scaling (v*=s)
+   //=====================================================================================
+
    {
-      test_ = "HybridVector scalar multiplication assignment";
+      test_ = "HybridVector self-scaling (v*=s)";
 
       blaze::HybridVector<int,8UL,blaze::rowVector> vec( 5UL, 0 );
       vec[0] =  1;
@@ -942,31 +979,81 @@ void ClassTest::testMultAssign()
       if( vec[0] != 2 || vec[1] != 0 || vec[2] != -4 || vec[3] != 6 || vec[4] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
              << "   Expected result:\n( 2 0 -4 6 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
-}
-//*************************************************************************************************
 
 
-//*************************************************************************************************
-/*!\brief Test of the HybridVector division assignment operators.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the division assignment operators of the HybridVector class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testDivAssign()
-{
-   // Scalar division assignment
+   //=====================================================================================
+   // Self-scaling (v=v*s)
+   //=====================================================================================
+
    {
-      test_ = "HybridVector scalar division assignment";
+      test_ = "HybridVector self-scaling (v=v*s)";
+
+      blaze::HybridVector<int,8UL,blaze::rowVector> vec( 5UL, 0 );
+      vec[0] =  1;
+      vec[2] = -2;
+      vec[3] =  3;
+
+      vec = vec * 2;
+
+      checkSize    ( vec, 5UL );
+      checkCapacity( vec, 5UL );
+      checkNonZeros( vec, 3UL );
+
+      if( vec[0] != 2 || vec[1] != 0 || vec[2] != -4 || vec[3] != 6 || vec[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 2 0 -4 6 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Self-scaling (v=s*v)
+   //=====================================================================================
+
+   {
+      test_ = "HybridVector self-scaling (v=s*v)";
+
+      blaze::HybridVector<int,8UL,blaze::rowVector> vec( 5UL, 0 );
+      vec[0] =  1;
+      vec[2] = -2;
+      vec[3] =  3;
+
+      vec = 2 * vec;
+
+      checkSize    ( vec, 5UL );
+      checkCapacity( vec, 5UL );
+      checkNonZeros( vec, 3UL );
+
+      if( vec[0] != 2 || vec[1] != 0 || vec[2] != -4 || vec[3] != 6 || vec[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 2 0 -4 6 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Self-scaling (v/=s)
+   //=====================================================================================
+
+   {
+      test_ = "HybridVector self-scaling (v/=s)";
 
       blaze::HybridVector<int,5UL,blaze::rowVector> vec( 5UL, 0 );
       vec[0] =  2;
@@ -982,10 +1069,129 @@ void ClassTest::testDivAssign()
       if( vec[0] != 1 || vec[1] != 0 || vec[2] != -2 || vec[3] != 3 || vec[4] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
              << "   Expected result:\n( 1 0 -2 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Self-scaling (v/=s)
+   //=====================================================================================
+
+   {
+      test_ = "HybridVector self-scaling (v=v/s)";
+
+      blaze::HybridVector<int,5UL,blaze::rowVector> vec( 5UL, 0 );
+      vec[0] =  2;
+      vec[2] = -4;
+      vec[3] =  6;
+
+      vec = vec / 2;
+
+      checkSize    ( vec, 5UL );
+      checkCapacity( vec, 5UL );
+      checkNonZeros( vec, 3UL );
+
+      if( vec[0] != 1 || vec[1] != 0 || vec[2] != -2 || vec[3] != 3 || vec[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 0 -2 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // HybridVector::scale()
+   //=====================================================================================
+
+   {
+      test_ = "HybridVector::scale() (int)";
+
+      // Initialization check
+      blaze::HybridVector<int,4UL,blaze::rowVector> vec( 4UL );
+      vec[0] = 1;
+      vec[1] = 2;
+      vec[2] = 3;
+      vec[3] = 4;
+
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
+
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 2 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Integral scaling of the vector
+      vec.scale( 2 );
+
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
+
+      if( vec[0] != 2 || vec[1] != 4 || vec[2] != 6 || vec[3] != 8 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Scale operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 2 4 6 8 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Floating point scaling of the vector
+      vec.scale( 0.5 );
+
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
+
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Scale operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 2 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "HybridVector::scale() (complex)";
+
+      using blaze::complex;
+
+      blaze::HybridVector<complex<float>,2UL,blaze::rowVector> vec( 2UL );
+      vec[0] = complex<float>( 1.0F, 0.0F );
+      vec[1] = complex<float>( 2.0F, 0.0F );
+      vec.scale( complex<float>( 3.0F, 0.0F ) );
+
+      checkSize    ( vec, 2UL );
+      checkCapacity( vec, 2UL );
+      checkNonZeros( vec, 2UL );
+
+      if( vec[0] != complex<float>( 3.0F, 0.0F ) || vec[1] != complex<float>( 6.0F, 0.0F ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Scale operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( (3,0) (6,0) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1365,102 +1571,6 @@ void ClassTest::testExtend()
 
    checkSize    ( vec, 15UL );
    checkCapacity( vec, 15UL );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the scale member function of HybridVector.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the scale member function of HybridVector.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testScale()
-{
-   test_ = "HybridVector::scale()";
-
-   {
-      // Initialization check
-      blaze::HybridVector<int,4UL,blaze::rowVector> vec( 4UL );
-      vec[0] = 1;
-      vec[1] = 2;
-      vec[2] = 3;
-      vec[3] = 4;
-
-      checkSize    ( vec, 4UL );
-      checkCapacity( vec, 4UL );
-      checkNonZeros( vec, 4UL );
-
-      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 1 2 3 4 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Integral scaling of the vector
-      vec.scale( 2 );
-
-      checkSize    ( vec, 4UL );
-      checkCapacity( vec, 4UL );
-      checkNonZeros( vec, 4UL );
-
-      if( vec[0] != 2 || vec[1] != 4 || vec[2] != 6 || vec[3] != 8 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Scale operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 2 4 6 8 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Floating point scaling of the vector
-      vec.scale( 0.5 );
-
-      checkSize    ( vec, 4UL );
-      checkCapacity( vec, 4UL );
-      checkNonZeros( vec, 4UL );
-
-      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Scale operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 1 2 3 4 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      using blaze::complex;
-
-      blaze::HybridVector<complex<float>,2UL,blaze::rowVector> vec( 2UL );
-      vec[0] = complex<float>( 1.0F, 0.0F );
-      vec[1] = complex<float>( 2.0F, 0.0F );
-      vec.scale( complex<float>( 3.0F, 0.0F ) );
-
-      checkSize    ( vec, 2UL );
-      checkCapacity( vec, 2UL );
-      checkNonZeros( vec, 2UL );
-
-      if( vec[0] != complex<float>( 3.0F, 0.0F ) || vec[1] != complex<float>( 6.0F, 0.0F ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Scale operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( (3,0) (6,0) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
 }
 //*************************************************************************************************
 
