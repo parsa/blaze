@@ -461,7 +461,7 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       assign( ~lhs, rhs.matrix_ );
-      (~lhs) *= rhs.scalar_;
+      assign( ~lhs, (~lhs) * rhs.scalar_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -476,22 +476,32 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
    // \return void
    //
    // This function implements the performance optimized assignment of a sparse matrix-scalar
-   // multiplication expression to a sparse matrix. Due to the explicit application of the SFINAE
-   // principle, this operator can only be selected by the compiler in case the operand requires
-   // an intermediate evaluation.
+   // multiplication expression to a sparse matrix.
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline typename EnableIf< UseAssign<MT2> >::Type
-      assign( SparseMatrix<MT2,SO2>& lhs, const SMatScalarMultExpr& rhs )
+   friend inline void assign( SparseMatrix<MT2,SO2>& lhs, const SMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      assign( ~lhs, rhs.matrix_ );
-      (~lhs) *= rhs.scalar_;
+      if( useAssign ) {
+         assign( ~lhs, rhs.matrix_ );
+      }
+
+      if( useAssign || ( !IsExpression<MT>::value && (~lhs).isAliased( &rhs.matrix_ ) ) ) {
+         const size_t iend( IsRowMajorMatrix<MT>::value ? (~lhs).rows() : (~lhs).columns() );
+         for( size_t i=0UL; i<iend; ++i ) {
+            const typename MT::Iterator last( (~lhs).end(i) );
+            for( typename MT::Iterator element=(~lhs).begin(i); element!=last; ++element )
+               *element *= rhs.scalar_;
+         }
+      }
+      else {
+         (~lhs).assign( rhs );
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
