@@ -457,7 +457,7 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
       }
 
       if( useAssign || ( !IsExpression<VT>::value && (~lhs).isAliased( &rhs.vector_ ) ) ) {
-         for( typename VT::Iterator element=(~lhs).begin(); element!=(~lhs).end(); ++element )
+         for( typename VT2::Iterator element=(~lhs).begin(); element!=(~lhs).end(); ++element )
             *element /= rhs.scalar_;
       }
       else {

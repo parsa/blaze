@@ -491,8 +491,8 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
       if( useAssign || ( !IsExpression<MT>::value && (~lhs).isAliased( &rhs.matrix_ ) ) ) {
          const size_t iend( IsRowMajorMatrix<MT>::value ? (~lhs).rows() : (~lhs).columns() );
          for( size_t i=0UL; i<iend; ++i ) {
-            const typename MT::Iterator last( (~lhs).end(i) );
-            for( typename MT::Iterator element=(~lhs).begin(i); element!=last; ++element )
+            const typename MT2::Iterator last( (~lhs).end(i) );
+            for( typename MT2::Iterator element=(~lhs).begin(i); element!=last; ++element )
                *element /= rhs.scalar_;
          }
       }
