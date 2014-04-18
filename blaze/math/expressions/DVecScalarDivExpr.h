@@ -577,7 +577,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       assign( ~lhs, rhs.vector_ );
-      (~lhs) /= rhs.scalar_;
+      assign( ~lhs, (~lhs) / rhs.scalar_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -605,7 +605,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       assign( ~lhs, rhs.vector_ );
-      (~lhs) /= rhs.scalar_;
+      assign( ~lhs, (~lhs) / rhs.scalar_ );
    }
    /*! \endcond */
    //**********************************************************************************************
