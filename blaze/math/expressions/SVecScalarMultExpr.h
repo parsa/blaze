@@ -432,7 +432,7 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       assign( ~lhs, rhs.vector_ );
-      (~lhs) *= rhs.scalar_;
+      assign( ~lhs, (~lhs) * rhs.scalar_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -447,20 +447,26 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
    // \return void
    //
    // This function implements the performance optimized assignment of a sparse vector-scalar
-   // multiplication expression to a sparse vector. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the vector
-   // operand requires an intermediate evaluation.
+   // multiplication expression to a sparse vector.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline typename EnableIf< UseAssign<VT2> >::Type
-      assign( SparseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+   friend inline void assign( SparseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      assign( ~lhs, rhs.vector_ );
-      (~lhs) *= rhs.scalar_;
+      if( useAssign ) {
+         assign( ~lhs, rhs.vector_ );
+      }
+
+      if( useAssign || ( !IsExpression<VT>::value && (~lhs).isAliased( &rhs.vector_ ) ) ) {
+         for( typename VT::Iterator element=(~lhs).begin(); element!=(~lhs).end(); ++element )
+            *element *= rhs.scalar_;
+      }
+      else {
+         (~lhs).assign( rhs );
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
