@@ -72,6 +72,7 @@
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/SameType.h>
+#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
@@ -476,22 +477,21 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
    // \return void
    //
    // This function implements the performance optimized assignment of a sparse matrix-scalar
-   // multiplication expression to a sparse matrix.
+   // multiplication expression to a sparse matrix. Due to the explicit application of the SFINAE
+   // principle, this operator can only be selected by the compiler in case the operand does not
+   // require an intermediate evaluation.
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline void assign( SparseMatrix<MT2,SO2>& lhs, const SMatScalarMultExpr& rhs )
+   friend inline typename DisableIf< UseAssign<MT2> >::Type
+      assign( SparseMatrix<MT2,SO2>& lhs, const SMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( useAssign ) {
-         assign( ~lhs, rhs.matrix_ );
-      }
-
-      if( useAssign || ( !IsExpression<MT>::value && (~lhs).isAliased( &rhs.matrix_ ) ) ) {
+      if( !IsExpression<MT>::value && (~lhs).isAliased( &rhs.matrix_ ) ) {
          const size_t iend( IsRowMajorMatrix<MT>::value ? (~lhs).rows() : (~lhs).columns() );
          for( size_t i=0UL; i<iend; ++i ) {
             const typename MT2::Iterator last( (~lhs).end(i) );
@@ -502,6 +502,36 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
       else {
          (~lhs).assign( rhs );
       }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Assignment to sparse matrices***************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Assignment of a sparse matrix-scalar multiplication to a sparse matrix.
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side sparse matrix.
+   // \param rhs The right-hand side multiplication expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized assignment of a sparse matrix-scalar
+   // multiplication expression to a sparse matrix. Due to the explicit application of the SFINAE
+   // principle, this operator can only be selected by the compiler in case the operand requires
+   // an intermediate evaluation.
+   */
+   template< typename MT2  // Type of the target sparse matrix
+           , bool SO2 >    // Storage order of the target sparse matrix
+   friend inline typename EnableIf< UseAssign<MT2> >::Type
+      assign( SparseMatrix<MT2,SO2>& lhs, const SMatScalarMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      assign( ~lhs, rhs.matrix_ );
+      assign( ~lhs, (~lhs) * rhs.scalar_ );
    }
    /*! \endcond */
    //**********************************************************************************************
