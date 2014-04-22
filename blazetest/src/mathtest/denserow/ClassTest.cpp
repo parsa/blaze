@@ -71,12 +71,11 @@ ClassTest::ClassTest()
    testAddAssign();
    testSubAssign();
    testMultAssign();
-   testDivAssign();
+   testScaling();
    testSubscript();
    testIterator();
    testNonZeros();
    testReset();
-   testScale();
    testIsDefault();
    testIsNan();
    testMinimum();
@@ -1565,56 +1564,6 @@ void ClassTest::testMultAssign()
 
 
    //=====================================================================================
-   // Row-major scalar multiplication assignment
-   //=====================================================================================
-
-   {
-      test_ = "Row-major scalar multiplication assignment";
-
-      initialize();
-
-      RT row2 = row( mat_, 2UL );
-
-      row2 *= 3;
-
-      checkSize    ( row2,  4UL );
-      checkCapacity( row2,  4UL );
-      checkNonZeros( row2,  2UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
-
-      if( row2[0] != -6 || row2[1] != 0 || row2[2] != -9 || row2[3] != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -6 0 -9 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -6 || mat_(2,1) !=  0 || mat_(2,2) != -9 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -6  0 -9  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
    // Column-major DenseRow multiplication assignment
    //=====================================================================================
 
@@ -1769,48 +1718,61 @@ void ClassTest::testMultAssign()
          throw std::runtime_error( oss.str() );
       }
    }
+}
+//*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Test of all DenseRow (self-)scaling operations.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of all available ways to scale an instance of the DenseRow
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testScaling()
+{
    //=====================================================================================
-   // Column-major scalar multiplication assignment
+   // Row-major self-scaling (v*=2)
    //=====================================================================================
 
    {
-      test_ = "Column-major scalar multiplication assignment";
+      test_ = "Row-major self-scaling (v*=2)";
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      RT row2 = row( mat_, 2UL );
 
       row2 *= 3;
 
-      checkSize    ( row2 ,  4UL );
-      checkCapacity( row2 ,  4UL );
-      checkNonZeros( row2 ,  2UL );
-      checkRows    ( tmat_,  5UL );
-      checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 10UL );
+      checkSize    ( row2,  4UL );
+      checkCapacity( row2,  4UL );
+      checkNonZeros( row2,  2UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
 
       if( row2[0] != -6 || row2[1] != 0 || row2[2] != -9 || row2[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
              << "   Expected result:\n( -6 0 -9 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -6 || tmat_(2,1) !=  0 || tmat_(2,2) != -9 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != -6 || mat_(2,1) !=  0 || mat_(2,2) != -9 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
-             << "   Result:\n" << tmat_ << "\n"
+             << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
                                      "(  0  1  0  0 )\n"
                                      "( -6  0 -9  0 )\n"
@@ -1819,27 +1781,114 @@ void ClassTest::testMultAssign()
          throw std::runtime_error( oss.str() );
       }
    }
-}
-//*************************************************************************************************
 
 
-//*************************************************************************************************
-/*!\brief Test of the DenseRow division assignment operators.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the division assignment operators of the DenseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testDivAssign()
-{
    //=====================================================================================
-   // Row-major scalar division assignment
+   // Row-major self-scaling (v=v*2)
    //=====================================================================================
 
    {
-      test_ = "Row-major scalar division assignment";
+      test_ = "Row-major self-scaling (v=v*2)";
+
+      initialize();
+
+      RT row2 = row( mat_, 2UL );
+
+      row2 = row2 * 3;
+
+      checkSize    ( row2,  4UL );
+      checkCapacity( row2,  4UL );
+      checkNonZeros( row2,  2UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( row2[0] != -6 || row2[1] != 0 || row2[2] != -9 || row2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( -6 0 -9 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != -6 || mat_(2,1) !=  0 || mat_(2,2) != -9 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0  0 )\n"
+                                     "( -6  0 -9  0 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major self-scaling (v=2*v)
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-scaling (v=2*v)";
+
+      initialize();
+
+      RT row2 = row( mat_, 2UL );
+
+      row2 = 3 * row2;
+
+      checkSize    ( row2,  4UL );
+      checkCapacity( row2,  4UL );
+      checkNonZeros( row2,  2UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( row2[0] != -6 || row2[1] != 0 || row2[2] != -9 || row2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( -6 0 -9 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != -6 || mat_(2,1) !=  0 || mat_(2,2) != -9 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0  0 )\n"
+                                     "( -6  0 -9  0 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major self-scaling (v/=s)
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-scaling (v/=s)";
 
       initialize();
 
@@ -1857,7 +1906,7 @@ void ClassTest::testDivAssign()
       if( row2[0] != -4 || row2[1] != 0 || row2[2] != -6 || row2[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
              << "   Expected result:\n( -4 0 -6 0 )\n";
@@ -1871,7 +1920,7 @@ void ClassTest::testDivAssign()
           mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
@@ -1885,11 +1934,304 @@ void ClassTest::testDivAssign()
 
 
    //=====================================================================================
-   // Column-major scalar division assignment
+   // Row-major self-scaling (v=v/s)
    //=====================================================================================
 
    {
-      test_ = "Column-major scalar division assignment";
+      test_ = "Row-major self-scaling (v=v/s)";
+
+      initialize();
+
+      RT row2 = row( mat_, 2UL );
+
+      row2 = row2 / 0.5;
+
+      checkSize    ( row2,  4UL );
+      checkCapacity( row2,  4UL );
+      checkNonZeros( row2,  2UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( row2[0] != -4 || row2[1] != 0 || row2[2] != -6 || row2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( -4 0 -6 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != -4 || mat_(2,1) !=  0 || mat_(2,2) != -6 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0  0 )\n"
+                                     "( -4  0 -6  0 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major DenseRow::scale()
+   //=====================================================================================
+
+   {
+      test_ = "Row-major DenseRow::scale()";
+
+      initialize();
+
+      // Integral scaling the 3rd row
+      {
+         RT row3 = row( mat_, 3UL );
+         row3.scale( 3 );
+
+         checkSize    ( row3,  4UL );
+         checkCapacity( row3,  4UL );
+         checkNonZeros( row3,  3UL );
+         checkRows    ( mat_,  5UL );
+         checkColumns ( mat_,  4UL );
+         checkNonZeros( mat_, 10UL );
+
+         if( row3[0] != 0 || row3[1] != 12 || row3[2] != 15 || row3[3] != -18 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Integral scale operation of 3rd row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 12 15 -18 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=   0 ||
+             mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=   0 ||
+             mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=   0 ||
+             mat_(3,0) !=  0 || mat_(3,1) != 12 || mat_(3,2) != 15 || mat_(3,3) != -18 ||
+             mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) !=  10 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Integral scale operation of 3rd row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat_ << "\n"
+                << "   Expected result:\n(  0   0   0   0 )\n"
+                                        "(  0   1   0   0 )\n"
+                                        "( -2   0  -3   0 )\n"
+                                        "(  0  12  15 -18 )\n"
+                                        "(  7  -8   9  10 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Floating point scaling the 3rd row
+      {
+         RT row3 = row( mat_, 3UL );
+         row3.scale( 0.5 );
+
+         checkSize    ( row3,  4UL );
+         checkCapacity( row3,  4UL );
+         checkNonZeros( row3,  3UL );
+         checkRows    ( mat_,  5UL );
+         checkColumns ( mat_,  4UL );
+         checkNonZeros( mat_, 10UL );
+
+         if( row3[0] != 0 || row3[1] != 6 || row3[2] != 7 || row3[3] != -9 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Floating point scale operation of 3rd row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 6 7 -9 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+             mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+             mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
+             mat_(3,0) !=  0 || mat_(3,1) !=  6 || mat_(3,2) !=  7 || mat_(3,3) != -9 ||
+             mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Floating point scale operation of 3rd row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat_ << "\n"
+                << "   Expected result:\n(  0   0   0   0 )\n"
+                                        "(  0   1   0   0 )\n"
+                                        "( -2   0  -3   0 )\n"
+                                        "(  0   6   7  -9 )\n"
+                                        "(  7  -8   9  10 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major self-scaling (v*=s)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-scaling (v*=s)";
+
+      initialize();
+
+      TRT row2 = row( tmat_, 2UL );
+
+      row2 *= 3;
+
+      checkSize    ( row2 ,  4UL );
+      checkCapacity( row2 ,  4UL );
+      checkNonZeros( row2 ,  2UL );
+      checkRows    ( tmat_,  5UL );
+      checkColumns ( tmat_,  4UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( row2[0] != -6 || row2[1] != 0 || row2[2] != -9 || row2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( -6 0 -9 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
+          tmat_(2,0) != -6 || tmat_(2,1) !=  0 || tmat_(2,2) != -9 || tmat_(2,3) !=  0 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
+          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0  0 )\n"
+                                     "( -6  0 -9  0 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major self-scaling (v=v*s)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-scaling (v=v*s)";
+
+      initialize();
+
+      TRT row2 = row( tmat_, 2UL );
+
+      row2 = row2 * 3;
+
+      checkSize    ( row2 ,  4UL );
+      checkCapacity( row2 ,  4UL );
+      checkNonZeros( row2 ,  2UL );
+      checkRows    ( tmat_,  5UL );
+      checkColumns ( tmat_,  4UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( row2[0] != -6 || row2[1] != 0 || row2[2] != -9 || row2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( -6 0 -9 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
+          tmat_(2,0) != -6 || tmat_(2,1) !=  0 || tmat_(2,2) != -9 || tmat_(2,3) !=  0 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
+          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0  0 )\n"
+                                     "( -6  0 -9  0 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major self-scaling (v=s*v)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-scaling (v=s*v)";
+
+      initialize();
+
+      TRT row2 = row( tmat_, 2UL );
+
+      row2 = 3 * row2;
+
+      checkSize    ( row2 ,  4UL );
+      checkCapacity( row2 ,  4UL );
+      checkNonZeros( row2 ,  2UL );
+      checkRows    ( tmat_,  5UL );
+      checkColumns ( tmat_,  4UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( row2[0] != -6 || row2[1] != 0 || row2[2] != -9 || row2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( -6 0 -9 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
+          tmat_(2,0) != -6 || tmat_(2,1) !=  0 || tmat_(2,2) != -9 || tmat_(2,3) !=  0 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
+          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0  0 )\n"
+                                     "( -6  0 -9  0 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major self-scaling (v/=s)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-scaling (v/=s)";
 
       initialize();
 
@@ -1907,7 +2249,7 @@ void ClassTest::testDivAssign()
       if( row2[0] != -4 || row2[1] != 0 || row2[2] != -6 || row2[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
              << "   Expected result:\n( -4 0 -6 0 )\n";
@@ -1921,7 +2263,7 @@ void ClassTest::testDivAssign()
           tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
@@ -1930,6 +2272,149 @@ void ClassTest::testDivAssign()
                                      "(  0  4  5 -6 )\n"
                                      "(  7 -8  9 10 )\n";
          throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major self-scaling (v=v/s)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-scaling (v=v/s)";
+
+      initialize();
+
+      TRT row2 = row( tmat_, 2UL );
+
+      row2 = row2 / 0.5;
+
+      checkSize    ( row2 ,  4UL );
+      checkCapacity( row2 ,  4UL );
+      checkNonZeros( row2 ,  2UL );
+      checkRows    ( tmat_,  5UL );
+      checkColumns ( tmat_,  4UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( row2[0] != -4 || row2[1] != 0 || row2[2] != -6 || row2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( -4 0 -6 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
+          tmat_(2,0) != -4 || tmat_(2,1) !=  0 || tmat_(2,2) != -6 || tmat_(2,3) !=  0 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
+          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0  0 )\n"
+                                     "( -4  0 -6  0 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major DenseRow::scale()
+   //=====================================================================================
+
+   {
+      test_ = "Column-major DenseRow::scale()";
+
+      initialize();
+
+      // Integral scaling the 3rd row
+      {
+         TRT row3 = row( tmat_, 3UL );
+         row3.scale( 3 );
+
+         checkSize    ( row3 ,  4UL );
+         checkCapacity( row3 ,  4UL );
+         checkNonZeros( row3 ,  3UL );
+         checkRows    ( tmat_,  5UL );
+         checkColumns ( tmat_,  4UL );
+         checkNonZeros( tmat_, 10UL );
+
+         if( row3[0] != 0 || row3[1] != 12 || row3[2] != 15 || row3[3] != -18 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Integral scale operation of 3rd row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 12 15 -18 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=   0 ||
+             tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=   0 ||
+             tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=   0 ||
+             tmat_(3,0) !=  0 || tmat_(3,1) != 12 || tmat_(3,2) != 15 || tmat_(3,3) != -18 ||
+             tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) !=  10 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Integral scale operation of 3rd row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << tmat_ << "\n"
+                << "   Expected result:\n(  0   0   0   0 )\n"
+                                        "(  0   1   0   0 )\n"
+                                        "( -2   0  -3   0 )\n"
+                                        "(  0  12  15 -18 )\n"
+                                        "(  7  -8   9  10 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Floating point scaling the 3rd row
+      {
+         TRT row3 = row( tmat_, 3UL );
+         row3.scale( 0.5 );
+
+         checkSize    ( row3 ,  4UL );
+         checkCapacity( row3 ,  4UL );
+         checkNonZeros( row3 ,  3UL );
+         checkRows    ( tmat_,  5UL );
+         checkColumns ( tmat_,  4UL );
+         checkNonZeros( tmat_, 10UL );
+
+         if( row3[0] != 0 || row3[1] != 6 || row3[2] != 7 || row3[3] != -9 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Floating point scale operation of 3rd row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 6 7 -9 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+             tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
+             tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
+             tmat_(3,0) !=  0 || tmat_(3,1) !=  6 || tmat_(3,2) !=  7 || tmat_(3,3) != -9 ||
+             tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Integral scale operation of 3rd row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << tmat_ << "\n"
+                << "   Expected result:\n(  0   0   0   0 )\n"
+                                        "(  0   1   0   0 )\n"
+                                        "( -2   0  -3   0 )\n"
+                                        "(  0   6   7  -9 )\n"
+                                        "(  7  -8   9  10 )\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 }
@@ -3383,205 +3868,6 @@ void ClassTest::testReset()
                 << " Details:\n"
                 << "   Result:\n" << row4 << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the scale member function of DenseRow.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the scale member function of DenseRow. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testScale()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major DenseRow::scale()";
-
-      initialize();
-
-      // Integral scaling the 3rd row
-      {
-         RT row3 = row( mat_, 3UL );
-         row3.scale( 3 );
-
-         checkSize    ( row3,  4UL );
-         checkCapacity( row3,  4UL );
-         checkNonZeros( row3,  3UL );
-         checkRows    ( mat_,  5UL );
-         checkColumns ( mat_,  4UL );
-         checkNonZeros( mat_, 10UL );
-
-         if( row3[0] != 0 || row3[1] != 12 || row3[2] != 15 || row3[3] != -18 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Integral scale operation of 3rd row failed\n"
-                << " Details:\n"
-                << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 12 15 -18 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=   0 ||
-             mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=   0 ||
-             mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=   0 ||
-             mat_(3,0) !=  0 || mat_(3,1) != 12 || mat_(3,2) != 15 || mat_(3,3) != -18 ||
-             mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) !=  10 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Integral scale operation of 3rd row failed\n"
-                << " Details:\n"
-                << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n(  0   0   0   0 )\n"
-                                        "(  0   1   0   0 )\n"
-                                        "( -2   0  -3   0 )\n"
-                                        "(  0  12  15 -18 )\n"
-                                        "(  7  -8   9  10 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Floating point scaling the 3rd row
-      {
-         RT row3 = row( mat_, 3UL );
-         row3.scale( 0.5 );
-
-         checkSize    ( row3,  4UL );
-         checkCapacity( row3,  4UL );
-         checkNonZeros( row3,  3UL );
-         checkRows    ( mat_,  5UL );
-         checkColumns ( mat_,  4UL );
-         checkNonZeros( mat_, 10UL );
-
-         if( row3[0] != 0 || row3[1] != 6 || row3[2] != 7 || row3[3] != -9 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Floating point scale operation of 3rd row failed\n"
-                << " Details:\n"
-                << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 6 7 -9 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-             mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-             mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-             mat_(3,0) !=  0 || mat_(3,1) !=  6 || mat_(3,2) !=  7 || mat_(3,3) != -9 ||
-             mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Floating point scale operation of 3rd row failed\n"
-                << " Details:\n"
-                << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n(  0   0   0   0 )\n"
-                                        "(  0   1   0   0 )\n"
-                                        "( -2   0  -3   0 )\n"
-                                        "(  0   6   7  -9 )\n"
-                                        "(  7  -8   9  10 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major DenseRow::scale()";
-
-      initialize();
-
-      // Integral scaling the 3rd row
-      {
-         TRT row3 = row( tmat_, 3UL );
-         row3.scale( 3 );
-
-         checkSize    ( row3 ,  4UL );
-         checkCapacity( row3 ,  4UL );
-         checkNonZeros( row3 ,  3UL );
-         checkRows    ( tmat_,  5UL );
-         checkColumns ( tmat_,  4UL );
-         checkNonZeros( tmat_, 10UL );
-
-         if( row3[0] != 0 || row3[1] != 12 || row3[2] != 15 || row3[3] != -18 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Integral scale operation of 3rd row failed\n"
-                << " Details:\n"
-                << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 12 15 -18 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=   0 ||
-             tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=   0 ||
-             tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=   0 ||
-             tmat_(3,0) !=  0 || tmat_(3,1) != 12 || tmat_(3,2) != 15 || tmat_(3,3) != -18 ||
-             tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) !=  10 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Integral scale operation of 3rd row failed\n"
-                << " Details:\n"
-                << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n(  0   0   0   0 )\n"
-                                        "(  0   1   0   0 )\n"
-                                        "( -2   0  -3   0 )\n"
-                                        "(  0  12  15 -18 )\n"
-                                        "(  7  -8   9  10 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Floating point scaling the 3rd row
-      {
-         TRT row3 = row( tmat_, 3UL );
-         row3.scale( 0.5 );
-
-         checkSize    ( row3 ,  4UL );
-         checkCapacity( row3 ,  4UL );
-         checkNonZeros( row3 ,  3UL );
-         checkRows    ( tmat_,  5UL );
-         checkColumns ( tmat_,  4UL );
-         checkNonZeros( tmat_, 10UL );
-
-         if( row3[0] != 0 || row3[1] != 6 || row3[2] != 7 || row3[3] != -9 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Floating point scale operation of 3rd row failed\n"
-                << " Details:\n"
-                << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 6 7 -9 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-             tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-             tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-             tmat_(3,0) !=  0 || tmat_(3,1) !=  6 || tmat_(3,2) !=  7 || tmat_(3,3) != -9 ||
-             tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Integral scale operation of 3rd row failed\n"
-                << " Details:\n"
-                << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n(  0   0   0   0 )\n"
-                                        "(  0   1   0   0 )\n"
-                                        "( -2   0  -3   0 )\n"
-                                        "(  0   6   7  -9 )\n"
-                                        "(  7  -8   9  10 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
