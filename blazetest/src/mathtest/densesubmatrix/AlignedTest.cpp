@@ -74,12 +74,11 @@ AlignedTest::AlignedTest()
    testAddAssign();
    testSubAssign();
    testMultAssign();
-   testDivAssign();
+   testScaling();
    testFunctionCall();
    testIterator();
    testNonZeros();
    testReset();
-   testScale();
    testIsDefault();
    testIsNan();
    testIsDiagonal();
@@ -1884,65 +1883,6 @@ void AlignedTest::testMultAssign()
 
 
    //=====================================================================================
-   // Row-major scalar multiplication assignment
-   //=====================================================================================
-
-   {
-      test_ = "Row-major scalar multiplication assignment";
-
-      initialize();
-
-      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
-      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
-
-      sm1 *= 3;
-      sm2 *= 3;
-
-      checkRows   ( sm1,  8UL );
-      checkColumns( sm1, 16UL );
-      checkRows   ( sm2,  8UL );
-      checkColumns( sm2, 16UL );
-
-      if( sm1 != sm2 || mat1_ != mat2_ ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm1 << "\n"
-             << "   Expected result:\n" << sm2 << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major scalar multiplication assignment";
-
-      initialize();
-
-      ASMT sm1 = submatrix<aligned>  ( mat1_, 16UL, 8UL, 16UL, 8UL );
-      USMT sm2 = submatrix<unaligned>( mat2_, 16UL, 8UL, 16UL, 8UL );
-
-      sm1 *= 3;
-      sm2 *= 3;
-
-      checkRows   ( sm1, 16UL );
-      checkColumns( sm1,  8UL );
-      checkRows   ( sm2, 16UL );
-      checkColumns( sm2,  8UL );
-
-      if( sm1 != sm2 || mat1_ != mat2_ ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm1 << "\n"
-             << "   Expected result:\n" << sm2 << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
    // Column-major DenseSubmatrix multiplication assignment
    //=====================================================================================
 
@@ -2132,19 +2072,37 @@ void AlignedTest::testMultAssign()
          throw std::runtime_error( oss.str() );
       }
    }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of all DenseSubmatrix (self-)scaling operations.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of all available ways to scale an instance of the DenseSubmatrix
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void AlignedTest::testScaling()
+{
+   using blaze::submatrix;
+   using blaze::aligned;
+   using blaze::unaligned;
 
 
    //=====================================================================================
-   // Column-major scalar multiplication assignment
+   // Row-major self-scaling (M*=s)
    //=====================================================================================
 
    {
-      test_ = "Row-major scalar multiplication assignment";
+      test_ = "Row-major self-scaling (M*=s) (8x16)";
 
       initialize();
 
-      ATSMT sm1 = submatrix<aligned>  ( tmat1_, 8UL, 16UL, 8UL, 16UL );
-      UTSMT sm2 = submatrix<unaligned>( tmat2_, 8UL, 16UL, 8UL, 16UL );
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
 
       sm1 *= 3;
       sm2 *= 3;
@@ -2157,7 +2115,7 @@ void AlignedTest::testMultAssign()
       if( sm1 != sm2 || mat1_ != mat2_ ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sm1 << "\n"
              << "   Expected result:\n" << sm2 << "\n";
@@ -2166,12 +2124,12 @@ void AlignedTest::testMultAssign()
    }
 
    {
-      test_ = "Row-major scalar multiplication assignment";
+      test_ = "Row-major self-scaling (M*=s) (16x8)";
 
       initialize();
 
-      ATSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
-      UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 16UL, 8UL, 16UL, 8UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 16UL, 8UL, 16UL, 8UL );
 
       sm1 *= 3;
       sm2 *= 3;
@@ -2184,39 +2142,139 @@ void AlignedTest::testMultAssign()
       if( sm1 != sm2 || mat1_ != mat2_ ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sm1 << "\n"
              << "   Expected result:\n" << sm2 << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the DenseSubmatrix division assignment operators.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the division assignment operators of the DenseSubmatrix
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void AlignedTest::testDivAssign()
-{
-   using blaze::submatrix;
-   using blaze::aligned;
-   using blaze::unaligned;
 
 
    //=====================================================================================
-   // Row-major scalar division assignment
+   // Row-major self-scaling (M=M*s)
    //=====================================================================================
 
    {
-      test_ = "Row-major scalar division assignment";
+      test_ = "Row-major self-scaling (M=M*s) (8x16)";
+
+      initialize();
+
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
+
+      sm1 = sm1 * 3;
+      sm2 = sm2 * 3;
+
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major self-scaling (M=M*s) (16x8)";
+
+      initialize();
+
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 16UL, 8UL, 16UL, 8UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 16UL, 8UL, 16UL, 8UL );
+
+      sm1 = sm1 * 3;
+      sm2 = sm2 * 3;
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major self-scaling (M=s*M)
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-scaling (M=s*M) (8x16)";
+
+      initialize();
+
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
+
+      sm1 = 3 * sm1;
+      sm2 = 3 * sm2;
+
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major self-scaling (M=s*M) (16x8)";
+
+      initialize();
+
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 16UL, 8UL, 16UL, 8UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 16UL, 8UL, 16UL, 8UL );
+
+      sm1 = 3 * sm1;
+      sm2 = 3 * sm2;
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major self-scaling (M/=s)
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-scaling (M/=s) (8x16)";
 
       initialize();
 
@@ -2234,7 +2292,7 @@ void AlignedTest::testDivAssign()
       if( sm1 != sm2 || mat1_ != mat2_ ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sm1 << "\n"
              << "   Expected result:\n" << sm2 << "\n";
@@ -2243,7 +2301,7 @@ void AlignedTest::testDivAssign()
    }
 
    {
-      test_ = "Row-major scalar division assignment";
+      test_ = "Row-major self-scaling (M/=s) (16x8)";
 
       initialize();
 
@@ -2261,7 +2319,7 @@ void AlignedTest::testDivAssign()
       if( sm1 != sm2 || mat1_ != mat2_ ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sm1 << "\n"
              << "   Expected result:\n" << sm2 << "\n";
@@ -2271,11 +2329,305 @@ void AlignedTest::testDivAssign()
 
 
    //=====================================================================================
-   // Column-major scalar division assignment
+   // Row-major self-scaling (M=M/s)
    //=====================================================================================
 
    {
-      test_ = "Column-major scalar division assignment";
+      test_ = "Row-major self-scaling (M=M/s) (8x16)";
+
+      initialize();
+
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
+
+      sm1 = sm1 / 0.5;
+      sm2 = sm2 / 0.5;
+
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major self-scaling (M=M/s) (16x8)";
+
+      initialize();
+
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 16UL, 8UL, 16UL, 8UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 16UL, 8UL, 16UL, 8UL );
+
+      sm1 = sm1 / 0.5;
+      sm2 = sm2 / 0.5;
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major DenseSubmatrix::scale()
+   //=====================================================================================
+
+   {
+      test_ = "Row-major DenseSubmatrix::scale()";
+
+      initialize();
+
+      // Initialization check
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
+
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
+
+      // Integral scaling of the matrix
+      sm1.scale( 2 );
+      sm2.scale( 2 );
+
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Integral scale operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Floating point scaling of the matrix
+      sm1.scale( 0.5 );
+      sm2.scale( 0.5 );
+
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Floating point scale operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major self-scaling (M*=s)
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-scaling (M*=s) (8x16)";
+
+      initialize();
+
+      ATSMT sm1 = submatrix<aligned>  ( tmat1_, 8UL, 16UL, 8UL, 16UL );
+      UTSMT sm2 = submatrix<unaligned>( tmat2_, 8UL, 16UL, 8UL, 16UL );
+
+      sm1 *= 3;
+      sm2 *= 3;
+
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major self-scaling (M*=s) (16x8)";
+
+      initialize();
+
+      ATSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
+      UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+
+      sm1 *= 3;
+      sm2 *= 3;
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major self-scaling (M=M*s)
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-scaling (M=M*s) (8x16)";
+
+      initialize();
+
+      ATSMT sm1 = submatrix<aligned>  ( tmat1_, 8UL, 16UL, 8UL, 16UL );
+      UTSMT sm2 = submatrix<unaligned>( tmat2_, 8UL, 16UL, 8UL, 16UL );
+
+      sm1 = sm1 * 3;
+      sm2 = sm2 * 3;
+
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major self-scaling (M=M*s) (16x8)";
+
+      initialize();
+
+      ATSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
+      UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+
+      sm1 = sm1 * 3;
+      sm2 = sm2 * 3;
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major self-scaling (M=s*M)
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-scaling (M=s*M) (8x16)";
+
+      initialize();
+
+      ATSMT sm1 = submatrix<aligned>  ( tmat1_, 8UL, 16UL, 8UL, 16UL );
+      UTSMT sm2 = submatrix<unaligned>( tmat2_, 8UL, 16UL, 8UL, 16UL );
+
+      sm1 = 3 * sm1;
+      sm2 = 3 * sm2;
+
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major self-scaling (M=s*M) (16x8)";
+
+      initialize();
+
+      ATSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
+      UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+
+      sm1 = 3 * sm1;
+      sm2 = 3 * sm2;
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major self-scaling (M/=s)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-scaling (M/=s) (8x16)";
 
       initialize();
 
@@ -2293,7 +2645,7 @@ void AlignedTest::testDivAssign()
       if( sm1 != sm2 || mat1_ != mat2_ ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sm1 << "\n"
              << "   Expected result:\n" << sm2 << "\n";
@@ -2302,7 +2654,7 @@ void AlignedTest::testDivAssign()
    }
 
    {
-      test_ = "Column-major scalar division assignment";
+      test_ = "Column-major self-scaling (M/=s) (16x8)";
 
       initialize();
 
@@ -2320,7 +2672,124 @@ void AlignedTest::testDivAssign()
       if( sm1 != sm2 || mat1_ != mat2_ ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major self-scaling (M=M/s)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-scaling (M=M/s) (8x16)";
+
+      initialize();
+
+      ATSMT sm1 = submatrix<aligned>  ( tmat1_, 8UL, 16UL, 8UL, 16UL );
+      UTSMT sm2 = submatrix<unaligned>( tmat2_, 8UL, 16UL, 8UL, 16UL );
+
+      sm1 = sm1 / 0.5;
+      sm2 = sm2 / 0.5;
+
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major self-scaling (M=M/s) (16x8)";
+
+      initialize();
+
+      ATSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
+      UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+
+      sm1 = sm1 / 0.5;
+      sm2 = sm2 / 0.5;
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major DenseSubmatrix::scale()
+   //=====================================================================================
+
+   {
+      test_ = "Column-major DenseSubmatrix::scale()";
+
+      initialize();
+
+      // Initialization check
+      ATSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
+      UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      // Integral scaling of the matrix
+      sm1.scale( 2 );
+      sm2.scale( 2 );
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Integral scale operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Floating point scaling of the matrix
+      sm1.scale( 0.5 );
+      sm2.scale( 0.5 );
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Floating point scale operation failed\n"
              << " Details:\n"
              << "   Result:\n" << sm1 << "\n"
              << "   Expected result:\n" << sm2 << "\n";
@@ -3328,140 +3797,6 @@ void AlignedTest::testReset()
                 << "   Expected result:\n" << sm2 << "\n";
             throw std::runtime_error( oss.str() );
          }
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the scale member function of DenseSubmatrix.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the scale member function of DenseSubmatrix.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void AlignedTest::testScale()
-{
-   using blaze::submatrix;
-   using blaze::aligned;
-   using blaze::unaligned;
-
-
-   //=====================================================================================
-   // Row-major submatrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major DenseSubmatrix::scale()";
-
-      initialize();
-
-      // Initialization check
-      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
-      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
-
-      checkRows   ( sm1,  8UL );
-      checkColumns( sm1, 16UL );
-      checkRows   ( sm2,  8UL );
-      checkColumns( sm2, 16UL );
-
-      // Integral scaling of the matrix
-      sm1.scale( 2 );
-      sm2.scale( 2 );
-
-      checkRows   ( sm1,  8UL );
-      checkColumns( sm1, 16UL );
-      checkRows   ( sm2,  8UL );
-      checkColumns( sm2, 16UL );
-
-      if( sm1 != sm2 || mat1_ != mat2_ ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Integral scale operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm1 << "\n"
-             << "   Expected result:\n" << sm2 << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Floating point scaling of the matrix
-      sm1.scale( 0.5 );
-      sm2.scale( 0.5 );
-
-      checkRows   ( sm1,  8UL );
-      checkColumns( sm1, 16UL );
-      checkRows   ( sm2,  8UL );
-      checkColumns( sm2, 16UL );
-
-      if( sm1 != sm2 || mat1_ != mat2_ ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Floating point scale operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm1 << "\n"
-             << "   Expected result:\n" << sm2 << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major submatrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major DenseSubmatrix::scale()";
-
-      initialize();
-
-      // Initialization check
-      ATSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
-      UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
-
-      checkRows   ( sm1, 16UL );
-      checkColumns( sm1,  8UL );
-      checkRows   ( sm2, 16UL );
-      checkColumns( sm2,  8UL );
-
-      // Integral scaling of the matrix
-      sm1.scale( 2 );
-      sm2.scale( 2 );
-
-      checkRows   ( sm1, 16UL );
-      checkColumns( sm1,  8UL );
-      checkRows   ( sm2, 16UL );
-      checkColumns( sm2,  8UL );
-
-      if( sm1 != sm2 || mat1_ != mat2_ ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Integral scale operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm1 << "\n"
-             << "   Expected result:\n" << sm2 << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Floating point scaling of the matrix
-      sm1.scale( 0.5 );
-      sm2.scale( 0.5 );
-
-      checkRows   ( sm1, 16UL );
-      checkColumns( sm1,  8UL );
-      checkRows   ( sm2, 16UL );
-      checkColumns( sm2,  8UL );
-
-      if( sm1 != sm2 || mat1_ != mat2_ ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Floating point scale operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm1 << "\n"
-             << "   Expected result:\n" << sm2 << "\n";
-         throw std::runtime_error( oss.str() );
       }
    }
 }

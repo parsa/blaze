@@ -70,12 +70,11 @@ UnalignedTest::UnalignedTest()
    testAddAssign();
    testSubAssign();
    testMultAssign();
-   testDivAssign();
+   testScaling();
    testFunctionCall();
    testIterator();
    testNonZeros();
    testReset();
-   testScale();
    testIsDefault();
    testIsNan();
    testIsDiagonal();
@@ -2757,104 +2756,6 @@ void UnalignedTest::testMultAssign()
 
 
    //=====================================================================================
-   // Row-major scalar multiplication assignment
-   //=====================================================================================
-
-   {
-      test_ = "Row-major scalar multiplication assignment";
-
-      initialize();
-
-      SMT sm = submatrix( mat_, 2UL, 0UL, 2UL, 3UL );
-
-      sm *= 3;
-
-      checkRows    ( sm  ,  2UL );
-      checkColumns ( sm  ,  3UL );
-      checkNonZeros( sm  ,  4UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
-
-      if( sm(0,0) != -6 || sm(0,1) !=  0 || sm(0,2) != -9 ||
-          sm(1,0) !=  0 || sm(1,1) != 12 || sm(1,2) != 15 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( -6  0 -9 )\n(  0 12 15 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -6 || mat_(2,1) !=  0 || mat_(2,2) != -9 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) != 12 || mat_(3,2) != 15 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -6  0 -9  0 )\n"
-                                     "(  0 12 15 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major scalar multiplication assignment";
-
-      initialize();
-
-      SMT sm = submatrix( mat_, 2UL, 0UL, 3UL, 2UL );
-
-      sm *= 3;
-
-      checkRows    ( sm  ,  3UL );
-      checkColumns ( sm  ,  2UL );
-      checkNonZeros( sm  ,  4UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
-
-      if( sm(0,0) != -6 || sm(0,1) !=   0 ||
-          sm(1,0) !=  0 || sm(1,1) !=  12 ||
-          sm(2,0) != 21 || sm(2,1) != -24 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( -6   0 )\n(  0  12 )\n( 21 -24 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      if( mat_(0,0) !=  0 || mat_(0,1) !=   0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=   1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -6 || mat_(2,1) !=   0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  12 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) != 21 || mat_(4,1) != -24 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0   0  0  0 )\n"
-                                     "(  0   1  0  0 )\n"
-                                     "( -6   0 -3  0 )\n"
-                                     "(  0  12  5 -6 )\n"
-                                     "( 21 -24  9 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
    // Column-major DenseSubmatrix multiplication assignment
    //=====================================================================================
 
@@ -3162,121 +3063,321 @@ void UnalignedTest::testMultAssign()
          throw std::runtime_error( oss.str() );
       }
    }
-
-
-   //=====================================================================================
-   // Column-major scalar multiplication assignment
-   //=====================================================================================
-
-   {
-      test_ = "Column-major scalar multiplication assignment";
-
-      initialize();
-
-      TSMT sm = submatrix( tmat_, 0UL, 2UL, 3UL, 2UL );
-
-      sm *= 3;
-
-      checkRows    ( sm   ,  3UL );
-      checkColumns ( sm   ,  2UL );
-      checkNonZeros( sm   ,  4UL );
-      checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 10UL );
-
-      if( sm(0,0) != -6 || sm(0,1) !=  0 ||
-          sm(1,0) !=  0 || sm(1,1) != 12 ||
-          sm(2,0) != -9 || sm(2,1) != 15 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( -6  0 )\n(  0 12 )\n( -9 15 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -6 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) != 12 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -9 || tmat_(2,3) != 15 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0 -6  0  7 )\n"
-                                     "( 0  1  0 12 -8 )\n"
-                                     "( 0  0 -9 15  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major scalar multiplication assignment";
-
-      initialize();
-
-      TSMT sm = submatrix( tmat_, 0UL, 2UL, 2UL, 3UL );
-
-      sm *= 3;
-
-      checkRows    ( sm   ,  2UL );
-      checkColumns ( sm   ,  3UL );
-      checkNonZeros( sm   ,  4UL );
-      checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 10UL );
-
-      if( sm(0,0) != -6 || sm(0,1) !=  0 || sm(0,2) !=  21 ||
-          sm(1,0) !=  0 || sm(1,1) != 12 || sm(1,2) != -24 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( -6  0  21 )\n(  0 12 -24 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -6 || tmat_(0,3) !=  0 || tmat_(0,4) !=  21 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) != 12 || tmat_(1,4) != -24 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=   9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) !=  10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0 -6  0  21 )\n"
-                                     "( 0  1  0 12 -24 )\n"
-                                     "( 0  0 -3  5   9 )\n"
-                                     "( 0  0  0 -6  10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseSubmatrix division assignment operators.
+/*!\brief Test of all DenseSubmatrix (self-)scaling operations.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the division assignment operators of the DenseSubmatrix
+// This function performs a test of all available ways to scale an instance of the DenseSubmatrix
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void UnalignedTest::testDivAssign()
+void UnalignedTest::testScaling()
 {
    //=====================================================================================
-   // Row-major scalar division assignment
+   // Row-major self-scaling (M*=s)
    //=====================================================================================
 
    {
-      test_ = "Row-major scalar division assignment";
+      test_ = "Row-major self-scaling (M*=s) (2x3)";
+
+      initialize();
+
+      SMT sm = submatrix( mat_, 2UL, 0UL, 2UL, 3UL );
+
+      sm *= 3;
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( sm(0,0) != -6 || sm(0,1) !=  0 || sm(0,2) != -9 ||
+          sm(1,0) !=  0 || sm(1,1) != 12 || sm(1,2) != 15 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( -6  0 -9 )\n(  0 12 15 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != -6 || mat_(2,1) !=  0 || mat_(2,2) != -9 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) != 12 || mat_(3,2) != 15 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0  0 )\n"
+                                     "( -6  0 -9  0 )\n"
+                                     "(  0 12 15 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major self-scaling (M*=s) (3x2)";
+
+      initialize();
+
+      SMT sm = submatrix( mat_, 2UL, 0UL, 3UL, 2UL );
+
+      sm *= 3;
+
+      checkRows    ( sm  ,  3UL );
+      checkColumns ( sm  ,  2UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( sm(0,0) != -6 || sm(0,1) !=   0 ||
+          sm(1,0) !=  0 || sm(1,1) !=  12 ||
+          sm(2,0) != 21 || sm(2,1) != -24 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( -6   0 )\n(  0  12 )\n( 21 -24 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=   0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=   1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != -6 || mat_(2,1) !=   0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  12 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) != 21 || mat_(4,1) != -24 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0   0  0  0 )\n"
+                                     "(  0   1  0  0 )\n"
+                                     "( -6   0 -3  0 )\n"
+                                     "(  0  12  5 -6 )\n"
+                                     "( 21 -24  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major self-scaling (M=M*s)
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-scaling (M=M*s) (2x3)";
+
+      initialize();
+
+      SMT sm = submatrix( mat_, 2UL, 0UL, 2UL, 3UL );
+
+      sm = sm * 3;
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( sm(0,0) != -6 || sm(0,1) !=  0 || sm(0,2) != -9 ||
+          sm(1,0) !=  0 || sm(1,1) != 12 || sm(1,2) != 15 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( -6  0 -9 )\n(  0 12 15 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != -6 || mat_(2,1) !=  0 || mat_(2,2) != -9 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) != 12 || mat_(3,2) != 15 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0  0 )\n"
+                                     "( -6  0 -9  0 )\n"
+                                     "(  0 12 15 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major self-scaling (M=M*s) (3x2)";
+
+      initialize();
+
+      SMT sm = submatrix( mat_, 2UL, 0UL, 3UL, 2UL );
+
+      sm = sm * 3;
+
+      checkRows    ( sm  ,  3UL );
+      checkColumns ( sm  ,  2UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( sm(0,0) != -6 || sm(0,1) !=   0 ||
+          sm(1,0) !=  0 || sm(1,1) !=  12 ||
+          sm(2,0) != 21 || sm(2,1) != -24 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( -6   0 )\n(  0  12 )\n( 21 -24 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=   0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=   1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != -6 || mat_(2,1) !=   0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  12 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) != 21 || mat_(4,1) != -24 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0   0  0  0 )\n"
+                                     "(  0   1  0  0 )\n"
+                                     "( -6   0 -3  0 )\n"
+                                     "(  0  12  5 -6 )\n"
+                                     "( 21 -24  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major self-scaling (M=s*M)
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-scaling (M=s*M) (2x3)";
+
+      initialize();
+
+      SMT sm = submatrix( mat_, 2UL, 0UL, 2UL, 3UL );
+
+      sm = 3 * sm;
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( sm(0,0) != -6 || sm(0,1) !=  0 || sm(0,2) != -9 ||
+          sm(1,0) !=  0 || sm(1,1) != 12 || sm(1,2) != 15 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( -6  0 -9 )\n(  0 12 15 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != -6 || mat_(2,1) !=  0 || mat_(2,2) != -9 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) != 12 || mat_(3,2) != 15 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0  0 )\n"
+                                     "( -6  0 -9  0 )\n"
+                                     "(  0 12 15 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major self-scaling (M=s*M) (3x2)";
+
+      initialize();
+
+      SMT sm = submatrix( mat_, 2UL, 0UL, 3UL, 2UL );
+
+      sm = 3 * sm;
+
+      checkRows    ( sm  ,  3UL );
+      checkColumns ( sm  ,  2UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( sm(0,0) != -6 || sm(0,1) !=   0 ||
+          sm(1,0) !=  0 || sm(1,1) !=  12 ||
+          sm(2,0) != 21 || sm(2,1) != -24 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( -6   0 )\n(  0  12 )\n( 21 -24 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=   0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=   1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != -6 || mat_(2,1) !=   0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  12 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) != 21 || mat_(4,1) != -24 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0   0  0  0 )\n"
+                                     "(  0   1  0  0 )\n"
+                                     "( -6   0 -3  0 )\n"
+                                     "(  0  12  5 -6 )\n"
+                                     "( 21 -24  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major self-scaling (M/=s)
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-scaling (M/=s) (2x3)";
 
       initialize();
 
@@ -3295,7 +3396,7 @@ void UnalignedTest::testDivAssign()
           sm(1,0) !=  0 || sm(1,1) != 8 || sm(1,2) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( -4  0 -6 )\n(  0  8 10 )\n";
@@ -3309,7 +3410,7 @@ void UnalignedTest::testDivAssign()
           mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
@@ -3322,7 +3423,7 @@ void UnalignedTest::testDivAssign()
    }
 
    {
-      test_ = "Row-major scalar division assignment";
+      test_ = "Row-major self-scaling (M/=s) (3x2)";
 
       initialize();
 
@@ -3342,7 +3443,7 @@ void UnalignedTest::testDivAssign()
           sm(2,0) != 14 || sm(2,1) != -16 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( -4   0 )\n(  0   8 )\n( 14 -16 )\n";
@@ -3356,7 +3457,7 @@ void UnalignedTest::testDivAssign()
           mat_(4,0) != 14 || mat_(4,1) != -16 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0   0  0  0 )\n"
@@ -3370,11 +3471,462 @@ void UnalignedTest::testDivAssign()
 
 
    //=====================================================================================
-   // Column-major scalar division assignment
+   // Row-major self-scaling (M=M/s)
    //=====================================================================================
 
    {
-      test_ = "Column-major scalar division assignment";
+      test_ = "Row-major self-scaling (M=M/s) (2x3)";
+
+      initialize();
+
+      SMT sm = submatrix( mat_, 2UL, 0UL, 2UL, 3UL );
+
+      sm = sm / 0.5;
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( sm(0,0) != -4 || sm(0,1) != 0 || sm(0,2) != -6 ||
+          sm(1,0) !=  0 || sm(1,1) != 8 || sm(1,2) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( -4  0 -6 )\n(  0  8 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != -4 || mat_(2,1) !=  0 || mat_(2,2) != -6 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  8 || mat_(3,2) != 10 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0  0 )\n"
+                                     "( -4  0 -6  0 )\n"
+                                     "(  0  8 10 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major self-scaling (M=M/s) (3x2)";
+
+      initialize();
+
+      SMT sm = submatrix( mat_, 2UL, 0UL, 3UL, 2UL );
+
+      sm = sm / 0.5;
+
+      checkRows    ( sm  ,  3UL );
+      checkColumns ( sm  ,  2UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( sm(0,0) != -4 || sm(0,1) !=   0 ||
+          sm(1,0) !=  0 || sm(1,1) !=   8 ||
+          sm(2,0) != 14 || sm(2,1) != -16 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( -4   0 )\n(  0   8 )\n( 14 -16 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=   0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=   1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != -4 || mat_(2,1) !=   0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=   8 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) != 14 || mat_(4,1) != -16 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0   0  0  0 )\n"
+                                     "(  0   1  0  0 )\n"
+                                     "( -4   0 -3  0 )\n"
+                                     "(  0   8  5 -6 )\n"
+                                     "( 14 -16  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major DenseSubmatrix::scale()
+   //=====================================================================================
+
+   {
+      test_ = "Row-major DenseSubmatrix::scale()";
+
+      initialize();
+
+      // Initialization check
+      SMT sm = submatrix( mat_, 2UL, 1UL, 2UL, 2UL );
+
+      checkRows    ( sm, 2UL );
+      checkColumns ( sm, 2UL );
+      checkNonZeros( sm, 3UL );
+      checkNonZeros( sm, 0UL, 1UL );
+      checkNonZeros( sm, 1UL, 2UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != -3 ||
+          sm(1,0) != 4 || sm(1,1) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 -3 )\n( 4  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Integral scaling of the matrix
+      sm.scale( 2 );
+
+      checkRows    ( sm, 2UL );
+      checkColumns ( sm, 2UL );
+      checkNonZeros( sm, 3UL );
+      checkNonZeros( sm, 0UL, 1UL );
+      checkNonZeros( sm, 1UL, 2UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != -6 ||
+          sm(1,0) != 8 || sm(1,1) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Integral scale operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 -6 )\n( 8 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Floating point scaling of the matrix
+      sm.scale( 0.5 );
+
+      checkRows    ( sm, 2UL );
+      checkColumns ( sm, 2UL );
+      checkNonZeros( sm, 3UL );
+      checkNonZeros( sm, 0UL, 1UL );
+      checkNonZeros( sm, 1UL, 2UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != -3 ||
+          sm(1,0) != 4 || sm(1,1) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Floating point scale operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 -3 )\n( 4  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major self-scaling (M*=s)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-scaling (M*=s) (3x2)";
+
+      initialize();
+
+      TSMT sm = submatrix( tmat_, 0UL, 2UL, 3UL, 2UL );
+
+      sm *= 3;
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( sm(0,0) != -6 || sm(0,1) !=  0 ||
+          sm(1,0) !=  0 || sm(1,1) != 12 ||
+          sm(2,0) != -9 || sm(2,1) != 15 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( -6  0 )\n(  0 12 )\n( -9 15 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -6 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) != 12 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -9 || tmat_(2,3) != 15 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0 -6  0  7 )\n"
+                                     "( 0  1  0 12 -8 )\n"
+                                     "( 0  0 -9 15  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major self-scaling (M*=s) (2x3)";
+
+      initialize();
+
+      TSMT sm = submatrix( tmat_, 0UL, 2UL, 2UL, 3UL );
+
+      sm *= 3;
+
+      checkRows    ( sm   ,  2UL );
+      checkColumns ( sm   ,  3UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( sm(0,0) != -6 || sm(0,1) !=  0 || sm(0,2) !=  21 ||
+          sm(1,0) !=  0 || sm(1,1) != 12 || sm(1,2) != -24 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( -6  0  21 )\n(  0 12 -24 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -6 || tmat_(0,3) !=  0 || tmat_(0,4) !=  21 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) != 12 || tmat_(1,4) != -24 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=   9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) !=  10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0 -6  0  21 )\n"
+                                     "( 0  1  0 12 -24 )\n"
+                                     "( 0  0 -3  5   9 )\n"
+                                     "( 0  0  0 -6  10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major self-scaling (M=M*s)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-scaling (M=M*s) (3x2)";
+
+      initialize();
+
+      TSMT sm = submatrix( tmat_, 0UL, 2UL, 3UL, 2UL );
+
+      sm = sm * 3;
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( sm(0,0) != -6 || sm(0,1) !=  0 ||
+          sm(1,0) !=  0 || sm(1,1) != 12 ||
+          sm(2,0) != -9 || sm(2,1) != 15 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( -6  0 )\n(  0 12 )\n( -9 15 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -6 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) != 12 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -9 || tmat_(2,3) != 15 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0 -6  0  7 )\n"
+                                     "( 0  1  0 12 -8 )\n"
+                                     "( 0  0 -9 15  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major self-scaling (M=M*s) (2x3)";
+
+      initialize();
+
+      TSMT sm = submatrix( tmat_, 0UL, 2UL, 2UL, 3UL );
+
+      sm = sm * 3;
+
+      checkRows    ( sm   ,  2UL );
+      checkColumns ( sm   ,  3UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( sm(0,0) != -6 || sm(0,1) !=  0 || sm(0,2) !=  21 ||
+          sm(1,0) !=  0 || sm(1,1) != 12 || sm(1,2) != -24 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( -6  0  21 )\n(  0 12 -24 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -6 || tmat_(0,3) !=  0 || tmat_(0,4) !=  21 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) != 12 || tmat_(1,4) != -24 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=   9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) !=  10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0 -6  0  21 )\n"
+                                     "( 0  1  0 12 -24 )\n"
+                                     "( 0  0 -3  5   9 )\n"
+                                     "( 0  0  0 -6  10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major self-scaling (M=s*M)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-scaling (M=s*M) (3x2)";
+
+      initialize();
+
+      TSMT sm = submatrix( tmat_, 0UL, 2UL, 3UL, 2UL );
+
+      sm = 3 * sm;
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( sm(0,0) != -6 || sm(0,1) !=  0 ||
+          sm(1,0) !=  0 || sm(1,1) != 12 ||
+          sm(2,0) != -9 || sm(2,1) != 15 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( -6  0 )\n(  0 12 )\n( -9 15 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -6 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) != 12 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -9 || tmat_(2,3) != 15 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0 -6  0  7 )\n"
+                                     "( 0  1  0 12 -8 )\n"
+                                     "( 0  0 -9 15  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major self-scaling (M=s*M) (2x3)";
+
+      initialize();
+
+      TSMT sm = submatrix( tmat_, 0UL, 2UL, 2UL, 3UL );
+
+      sm = 3 * sm;
+
+      checkRows    ( sm   ,  2UL );
+      checkColumns ( sm   ,  3UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( sm(0,0) != -6 || sm(0,1) !=  0 || sm(0,2) !=  21 ||
+          sm(1,0) !=  0 || sm(1,1) != 12 || sm(1,2) != -24 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( -6  0  21 )\n(  0 12 -24 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -6 || tmat_(0,3) !=  0 || tmat_(0,4) !=  21 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) != 12 || tmat_(1,4) != -24 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=   9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) !=  10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0 -6  0  21 )\n"
+                                     "( 0  1  0 12 -24 )\n"
+                                     "( 0  0 -3  5   9 )\n"
+                                     "( 0  0  0 -6  10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major self-scaling (M/=s)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-scaling (M/=s) (3x2)";
 
       initialize();
 
@@ -3394,7 +3946,7 @@ void UnalignedTest::testDivAssign()
           sm(2,0) != -6 || sm(2,1) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( -4  0 )\n(  0  8 )\n( -6 10 )\n";
@@ -3407,7 +3959,7 @@ void UnalignedTest::testDivAssign()
           tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
              << "   Expected result:\n( 0  0 -4  0  7 )\n"
@@ -3419,7 +3971,7 @@ void UnalignedTest::testDivAssign()
    }
 
    {
-      test_ = "Column-major scalar division assignment";
+      test_ = "Column-major self-scaling (M/=s) (2x3)";
 
       initialize();
 
@@ -3438,7 +3990,7 @@ void UnalignedTest::testDivAssign()
           sm(1,0) !=  0 || sm(1,1) != 8 || sm(1,2) != -16 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( -4  0  14 )\n(  0  8 -16 )\n";
@@ -3451,13 +4003,178 @@ void UnalignedTest::testDivAssign()
           tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) !=  10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
              << "   Expected result:\n( 0  0 -4  0  14 )\n"
                                      "( 0  1  0  8 -16 )\n"
                                      "( 0  0 -3  5   9 )\n"
                                      "( 0  0  0 -6  10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major self-scaling (M=M/s)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-scaling (M=M/s) (3x2)";
+
+      initialize();
+
+      TSMT sm = submatrix( tmat_, 0UL, 2UL, 3UL, 2UL );
+
+      sm = sm / 0.5;
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( sm(0,0) != -4 || sm(0,1) !=  0 ||
+          sm(1,0) !=  0 || sm(1,1) !=  8 ||
+          sm(2,0) != -6 || sm(2,1) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( -4  0 )\n(  0  8 )\n( -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -4 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  8 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -6 || tmat_(2,3) != 10 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0 -4  0  7 )\n"
+                                     "( 0  1  0  8 -8 )\n"
+                                     "( 0  0 -6 10  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major self-scaling (M=M/s) (2x3)";
+
+      initialize();
+
+      TSMT sm = submatrix( tmat_, 0UL, 2UL, 2UL, 3UL );
+
+      sm = sm / 0.5;
+
+      checkRows    ( sm   ,  2UL );
+      checkColumns ( sm   ,  3UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( sm(0,0) != -4 || sm(0,1) != 0 || sm(0,2) !=  14 ||
+          sm(1,0) !=  0 || sm(1,1) != 8 || sm(1,2) != -16 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( -4  0  14 )\n(  0  8 -16 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -4 || tmat_(0,3) !=  0 || tmat_(0,4) !=  14 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  8 || tmat_(1,4) != -16 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=   9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) !=  10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0 -4  0  14 )\n"
+                                     "( 0  1  0  8 -16 )\n"
+                                     "( 0  0 -3  5   9 )\n"
+                                     "( 0  0  0 -6  10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major DenseSubmatrix::scale()
+   //=====================================================================================
+
+   {
+      test_ = "Column-major DenseSubmatrix::scale()";
+
+      initialize();
+
+      // Initialization check
+      TSMT sm = submatrix( tmat_, 1UL, 2UL, 2UL, 2UL );
+
+      checkRows    ( sm, 2UL );
+      checkColumns ( sm, 2UL );
+      checkNonZeros( sm, 3UL );
+      checkNonZeros( sm, 0UL, 1UL );
+      checkNonZeros( sm, 1UL, 2UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 4 ||
+          sm(1,0) != -3 || sm(1,1) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0 4 )\n( -3 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Integral scaling of the matrix
+      sm.scale( 2 );
+
+      checkRows    ( sm, 2UL );
+      checkColumns ( sm, 2UL );
+      checkNonZeros( sm, 3UL );
+      checkNonZeros( sm, 0UL, 1UL );
+      checkNonZeros( sm, 1UL, 2UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) !=  8 ||
+          sm(1,0) != -6 || sm(1,1) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Integral scale operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0  8 )\n( -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Floating point scaling of the matrix
+      sm.scale( 0.5 );
+
+      checkRows    ( sm, 2UL );
+      checkColumns ( sm, 2UL );
+      checkNonZeros( sm, 3UL );
+      checkNonZeros( sm, 0UL, 1UL );
+      checkNonZeros( sm, 1UL, 2UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 4 ||
+          sm(1,0) != -3 || sm(1,1) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Floating point scale operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0 4 )\n( -3 5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -4921,161 +5638,6 @@ void UnalignedTest::testReset()
                 << "   Expected result:\n( 0 0 0 )\n( 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the scale member function of DenseSubmatrix.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the scale member function of DenseSubmatrix.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void UnalignedTest::testScale()
-{
-   //=====================================================================================
-   // Row-major submatrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major DenseSubmatrix::scale()";
-
-      initialize();
-
-      // Initialization check
-      SMT sm = submatrix( mat_, 2UL, 1UL, 2UL, 2UL );
-
-      checkRows    ( sm, 2UL );
-      checkColumns ( sm, 2UL );
-      checkNonZeros( sm, 3UL );
-      checkNonZeros( sm, 0UL, 1UL );
-      checkNonZeros( sm, 1UL, 2UL );
-
-      if( sm(0,0) != 0 || sm(0,1) != -3 ||
-          sm(1,0) != 4 || sm(1,1) !=  5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 0 -3 )\n( 4  5 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Integral scaling of the matrix
-      sm.scale( 2 );
-
-      checkRows    ( sm, 2UL );
-      checkColumns ( sm, 2UL );
-      checkNonZeros( sm, 3UL );
-      checkNonZeros( sm, 0UL, 1UL );
-      checkNonZeros( sm, 1UL, 2UL );
-
-      if( sm(0,0) != 0 || sm(0,1) != -6 ||
-          sm(1,0) != 8 || sm(1,1) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Integral scale operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 0 -6 )\n( 8 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Floating point scaling of the matrix
-      sm.scale( 0.5 );
-
-      checkRows    ( sm, 2UL );
-      checkColumns ( sm, 2UL );
-      checkNonZeros( sm, 3UL );
-      checkNonZeros( sm, 0UL, 1UL );
-      checkNonZeros( sm, 1UL, 2UL );
-
-      if( sm(0,0) != 0 || sm(0,1) != -3 ||
-          sm(1,0) != 4 || sm(1,1) !=  5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Floating point scale operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 0 -3 )\n( 4  5 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major submatrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major DenseSubmatrix::scale()";
-
-      initialize();
-
-      // Initialization check
-      TSMT sm = submatrix( tmat_, 1UL, 2UL, 2UL, 2UL );
-
-      checkRows    ( sm, 2UL );
-      checkColumns ( sm, 2UL );
-      checkNonZeros( sm, 3UL );
-      checkNonZeros( sm, 0UL, 1UL );
-      checkNonZeros( sm, 1UL, 2UL );
-
-      if( sm(0,0) !=  0 || sm(0,1) != 4 ||
-          sm(1,0) != -3 || sm(1,1) != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n(  0 4 )\n( -3 5 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Integral scaling of the matrix
-      sm.scale( 2 );
-
-      checkRows    ( sm, 2UL );
-      checkColumns ( sm, 2UL );
-      checkNonZeros( sm, 3UL );
-      checkNonZeros( sm, 0UL, 1UL );
-      checkNonZeros( sm, 1UL, 2UL );
-
-      if( sm(0,0) !=  0 || sm(0,1) !=  8 ||
-          sm(1,0) != -6 || sm(1,1) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Integral scale operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n(  0  8 )\n( -6 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Floating point scaling of the matrix
-      sm.scale( 0.5 );
-
-      checkRows    ( sm, 2UL );
-      checkColumns ( sm, 2UL );
-      checkNonZeros( sm, 3UL );
-      checkNonZeros( sm, 0UL, 1UL );
-      checkNonZeros( sm, 1UL, 2UL );
-
-      if( sm(0,0) !=  0 || sm(0,1) != 4 ||
-          sm(1,0) != -3 || sm(1,1) != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Floating point scale operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n(  0 4 )\n( -3 5 )\n";
-         throw std::runtime_error( oss.str() );
       }
    }
 }

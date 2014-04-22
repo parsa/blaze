@@ -91,13 +91,12 @@ class UnalignedTest
    void testAddAssign   ();
    void testSubAssign   ();
    void testMultAssign  ();
-   void testDivAssign   ();
+   void testScaling     ();
    void testFunctionCall();
    void testIterator    ();
    void testNonZeros    ();
    void testReset       ();
    void testReserve     ();
-   void testScale       ();
    void testIsDefault   ();
    void testIsNan       ();
    void testIsDiagonal  ();
