@@ -91,12 +91,11 @@ class AlignedTest
    void testAddAssign   ();
    void testSubAssign   ();
    void testMultAssign  ();
-   void testDivAssign   ();
+   void testScaling     ();
    void testSubscript   ();
    void testIterator    ();
    void testNonZeros    ();
    void testReset       ();
-   void testScale       ();
    void testIsDefault   ();
    void testIsNan       ();
    void testMinimum     ();

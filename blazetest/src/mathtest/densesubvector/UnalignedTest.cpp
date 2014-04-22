@@ -68,12 +68,11 @@ UnalignedTest::UnalignedTest()
    testAddAssign();
    testSubAssign();
    testMultAssign();
-   testDivAssign();
+   testScaling();
    testSubscript();
    testIterator();
    testNonZeros();
    testReset();
-   testScale();
    testIsDefault();
    testIsNan();
    testMinimum();
@@ -928,14 +927,27 @@ void UnalignedTest::testMultAssign()
          throw std::runtime_error( oss.str() );
       }
    }
+}
+//*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Test of all DenseSubvector (self-)scaling operations.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of all available ways to scale an instance of the DenseSubvector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void UnalignedTest::testScaling()
+{
    //=====================================================================================
-   // Scalar multiplication assignment
+   // Self-scaling (v*=s)
    //=====================================================================================
 
    {
-      test_ = "Scalar multiplication assignment";
+      test_ = "DenseSubvector self-scaling (v*=s)";
 
       initialize();
 
@@ -951,7 +963,7 @@ void UnalignedTest::testMultAssign()
       if( sv[0] != 3 || sv[1] != 0 || sv[2] != -6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 3 0 -6 )\n";
@@ -962,34 +974,103 @@ void UnalignedTest::testMultAssign()
           vec_[4] != -3 || vec_[5] != 0 || vec_[6] != 4 || vec_[7] !=  0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << vec_ << "\n"
              << "   Expected result:\n( 0 3 0 -6 -3 0 4 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
-}
-//*************************************************************************************************
 
 
-//*************************************************************************************************
-/*!\brief Test of the DenseSubvector division assignment operators.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the division assignment operators of the DenseSubvector
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void UnalignedTest::testDivAssign()
-{
    //=====================================================================================
-   // Scalar division assignment
+   // Self-scaling (v=v*s)
    //=====================================================================================
 
    {
-      test_ = "Scalar division assignment";
+      test_ = "DenseSubvector self-scaling (v=v*s)";
+
+      initialize();
+
+      SVT sv = subvector( vec_, 1UL, 3UL );
+
+      sv = sv * 3;
+
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 2UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 4UL );
+
+      if( sv[0] != 3 || sv[1] != 0 || sv[2] != -6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 3 0 -6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec_[0] !=  0 || vec_[1] != 3 || vec_[2] != 0 || vec_[3] != -6 ||
+          vec_[4] != -3 || vec_[5] != 0 || vec_[6] != 4 || vec_[7] !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << vec_ << "\n"
+             << "   Expected result:\n( 0 3 0 -6 -3 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Self-scaling (v=v*s)
+   //=====================================================================================
+
+   {
+      test_ = "DenseSubvector self-scaling (v=v*s)";
+
+      initialize();
+
+      SVT sv = subvector( vec_, 1UL, 3UL );
+
+      sv = 3 * sv;
+
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 2UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 4UL );
+
+      if( sv[0] != 3 || sv[1] != 0 || sv[2] != -6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 3 0 -6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec_[0] !=  0 || vec_[1] != 3 || vec_[2] != 0 || vec_[3] != -6 ||
+          vec_[4] != -3 || vec_[5] != 0 || vec_[6] != 4 || vec_[7] !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << vec_ << "\n"
+             << "   Expected result:\n( 0 3 0 -6 -3 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Self-scaling (v/=s)
+   //=====================================================================================
+
+   {
+      test_ = "DenseSubvector self-scaling (v/=s)";
 
       initialize();
 
@@ -1005,7 +1086,7 @@ void UnalignedTest::testDivAssign()
       if( sv[0] != 2 || sv[1] != 0 || sv[2] != -4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 2 0 -4 )\n";
@@ -1016,10 +1097,122 @@ void UnalignedTest::testDivAssign()
           vec_[4] != -3 || vec_[5] != 0 || vec_[6] != 4 || vec_[7] !=  0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << vec_ << "\n"
              << "   Expected result:\n( 0 2 0 -4 -3 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Self-scaling (v=v/s)
+   //=====================================================================================
+
+   {
+      test_ = "DenseSubvector self-scaling (v/=s)";
+
+      initialize();
+
+      SVT sv = subvector( vec_, 1UL, 3UL );
+
+      sv = sv / 0.5;
+
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 2UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 4UL );
+
+      if( sv[0] != 2 || sv[1] != 0 || sv[2] != -4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 2 0 -4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec_[0] !=  0 || vec_[1] != 2 || vec_[2] != 0 || vec_[3] != -4 ||
+          vec_[4] != -3 || vec_[5] != 0 || vec_[6] != 4 || vec_[7] !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << vec_ << "\n"
+             << "   Expected result:\n( 0 2 0 -4 -3 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // DenseSubvector::scale()
+   //=====================================================================================
+
+   {
+      test_ = "DenseSubvector::scale()";
+
+      initialize();
+
+      SVT sv = subvector( vec_, 1UL, 4UL );
+
+      // Integral scaling of the subvector in the range [1,4]
+      sv.scale( 3 );
+
+      checkSize    ( sv  , 4UL );
+      checkNonZeros( sv  , 3UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 4UL );
+
+      if( sv[0] != 3 || sv[1] != 0 || sv[2] != -6 || sv[3] != -9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Integral scale operation of range [1,4] failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 3 0 -6 -9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec_[0] !=  0 || vec_[1] != 3 || vec_[2] != 0 || vec_[3] != -6 ||
+          vec_[4] != -9 || vec_[5] != 0 || vec_[6] != 4 || vec_[7] !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Integral scale operation of range [1,4] failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec_ << "\n"
+             << "   Expected result:\n( 0 3 0 -6 -9 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Floating point scaling of the subvector in the range [1,4]
+      sv.scale( 0.5 );
+
+      checkSize    ( sv  , 4UL );
+      checkNonZeros( sv  , 3UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 4UL );
+
+      if( sv[0] != 1 || sv[1] != 0 || sv[2] != -3 || sv[3] != -4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Floating point scale operation of range [1,4] failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 1 0 -3 -4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec_[0] !=  0 || vec_[1] != 1 || vec_[2] != 0 || vec_[3] != -3 ||
+          vec_[4] != -4 || vec_[5] != 0 || vec_[6] != 4 || vec_[7] !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Floating point scale operation of range [1,4] failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec_ << "\n"
+             << "   Expected result:\n( 0 1 0 -3 -4 0 4 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1575,84 +1768,6 @@ void UnalignedTest::testReset()
              << "   Expected result:\n( 0 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the scale member function of DenseSubvector.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the scale member function of DenseSubvector. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
-*/
-void UnalignedTest::testScale()
-{
-   test_ = "DenseSubvector::scale()";
-
-   initialize();
-
-   SVT sv = subvector( vec_, 1UL, 4UL );
-
-   // Integral scaling of the subvector in the range [1,4]
-   sv.scale( 3 );
-
-   checkSize    ( sv  , 4UL );
-   checkNonZeros( sv  , 3UL );
-   checkSize    ( vec_, 8UL );
-   checkNonZeros( vec_, 4UL );
-
-   if( sv[0] != 3 || sv[1] != 0 || sv[2] != -6 || sv[3] != -9 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Integral scale operation of range [1,4] failed\n"
-          << " Details:\n"
-          << "   Result:\n" << sv << "\n"
-          << "   Expected result:\n( 3 0 -6 -9 )\n";
-      throw std::runtime_error( oss.str() );
-   }
-
-   if( vec_[0] !=  0 || vec_[1] != 3 || vec_[2] != 0 || vec_[3] != -6 ||
-       vec_[4] != -9 || vec_[5] != 0 || vec_[6] != 4 || vec_[7] !=  0 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Integral scale operation of range [1,4] failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec_ << "\n"
-          << "   Expected result:\n( 0 3 0 -6 -9 0 4 0 )\n";
-      throw std::runtime_error( oss.str() );
-   }
-
-   // Floating point scaling of the subvector in the range [1,4]
-   sv.scale( 0.5 );
-
-   checkSize    ( sv  , 4UL );
-   checkNonZeros( sv  , 3UL );
-   checkSize    ( vec_, 8UL );
-   checkNonZeros( vec_, 4UL );
-
-   if( sv[0] != 1 || sv[1] != 0 || sv[2] != -3 || sv[3] != -4 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Floating point scale operation of range [1,4] failed\n"
-          << " Details:\n"
-          << "   Result:\n" << sv << "\n"
-          << "   Expected result:\n( 1 0 -3 -4 )\n";
-      throw std::runtime_error( oss.str() );
-   }
-
-   if( vec_[0] !=  0 || vec_[1] != 1 || vec_[2] != 0 || vec_[3] != -3 ||
-       vec_[4] != -4 || vec_[5] != 0 || vec_[6] != 4 || vec_[7] !=  0 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Floating point scale operation of range [1,4] failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec_ << "\n"
-          << "   Expected result:\n( 0 1 0 -3 -4 0 4 0 )\n";
-      throw std::runtime_error( oss.str() );
    }
 }
 //*************************************************************************************************

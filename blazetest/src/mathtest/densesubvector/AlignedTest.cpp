@@ -71,12 +71,11 @@ AlignedTest::AlignedTest()
    testAddAssign();
    testSubAssign();
    testMultAssign();
-   testDivAssign();
+   testScaling();
    testSubscript();
    testIterator();
    testNonZeros();
    testReset();
-   testScale();
    testIsDefault();
    testIsNan();
    testMinimum();
@@ -784,14 +783,32 @@ void AlignedTest::testMultAssign()
          throw std::runtime_error( oss.str() );
       }
    }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of all DenseSubvector (self-)scaling operations.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of all available ways to scale an instance of the DenseSubvector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void AlignedTest::testScaling()
+{
+   using blaze::subvector;
+   using blaze::aligned;
+   using blaze::unaligned;
 
 
    //=====================================================================================
-   // Scalar multiplication assignment
+   // Self-scaling (v*=s)
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector scalar multiplication assignment";
+      test_ = "DenseSubvector self-scaling (v*=s)";
 
       initialize();
 
@@ -807,39 +824,81 @@ void AlignedTest::testMultAssign()
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
+             << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sv1 << "\n"
              << "   Expected result:\n" << sv2 << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the DenseSubvector division assignment operators.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the division assignment operators of the DenseSubvector
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void AlignedTest::testDivAssign()
-{
-   using blaze::subvector;
-   using blaze::aligned;
-   using blaze::unaligned;
 
 
    //=====================================================================================
-   // Scalar division assignment
+   // Self-scaling (v=v*s)
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector scalar division assignment";
+      test_ = "DenseSubvector self-scaling (v=v*s)";
+
+      initialize();
+
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+
+      sv1 = sv1 * 3;
+      sv2 = sv2 * 3;
+
+      checkSize( sv1, 16UL );
+      checkSize( sv2, 16UL );
+
+      if( sv1 != sv2 || vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sv1 << "\n"
+             << "   Expected result:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Self-scaling (v=s*v)
+   //=====================================================================================
+
+   {
+      test_ = "DenseSubvector self-scaling (v=s*v)";
+
+      initialize();
+
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+
+      sv1 = 3 * sv1;
+      sv2 = 3 * sv2;
+
+      checkSize( sv1, 16UL );
+      checkSize( sv2, 16UL );
+
+      if( sv1 != sv2 || vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << sv1 << "\n"
+             << "   Expected result:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Self-scaling (v/=s)
+   //=====================================================================================
+
+   {
+      test_ = "DenseSubvector self-scaling (v/=s)";
 
       initialize();
 
@@ -856,6 +915,84 @@ void AlignedTest::testDivAssign()
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv1 << "\n"
+             << "   Expected result:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Self-scaling (v=v/s)
+   //=====================================================================================
+
+   {
+      test_ = "DenseSubvector self-scaling (v/=s)";
+
+      initialize();
+
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+
+      sv1 = sv1 / 0.5;
+      sv2 = sv2 / 0.5;
+
+      checkSize( sv1, 16UL );
+      checkSize( sv2, 16UL );
+
+      if( sv1 != sv2 || vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv1 << "\n"
+             << "   Expected result:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // DenseSubvector::scale()
+   //=====================================================================================
+
+   {
+      test_ = "DenseSubvector::scale()";
+
+      initialize();
+
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+
+      // Integral scaling of the subvector in the range [8,23]
+      sv1.scale( 3 );
+      sv2.scale( 3 );
+
+      checkSize( sv1, 16UL );
+      checkSize( sv2, 16UL );
+
+      if( sv1 != sv2 || vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Integral scale operation of range [8,23] failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv1 << "\n"
+             << "   Expected result:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Floating point scaling of the subvector in the range [8,23]
+      sv1.scale( 0.5 );
+      sv2.scale( 0.5 );
+
+      checkSize( sv1, 16UL );
+      checkSize( sv2, 16UL );
+
+      if( sv1 != sv2 || vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Floating point scale operation of range [8,23] failed\n"
              << " Details:\n"
              << "   Result:\n" << sv1 << "\n"
              << "   Expected result:\n" << sv2 << "\n";
@@ -1370,66 +1507,6 @@ void AlignedTest::testReset()
              << "   Expected result:\n" << sv2 << "\n";
          throw std::runtime_error( oss.str() );
       }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the scale member function of DenseSubvector.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the scale member function of DenseSubvector. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
-*/
-void AlignedTest::testScale()
-{
-   using blaze::subvector;
-   using blaze::aligned;
-   using blaze::unaligned;
-
-
-   test_ = "DenseSubvector::scale()";
-
-   initialize();
-
-   ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-   USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
-
-   // Integral scaling of the subvector in the range [8,23]
-   sv1.scale( 3 );
-   sv2.scale( 3 );
-
-   checkSize( sv1, 16UL );
-   checkSize( sv2, 16UL );
-
-   if( sv1 != sv2 || vec1_ != vec2_ ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Integral scale operation of range [8,23] failed\n"
-          << " Details:\n"
-          << "   Result:\n" << sv1 << "\n"
-          << "   Expected result:\n" << sv2 << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-
-   // Floating point scaling of the subvector in the range [8,23]
-   sv1.scale( 0.5 );
-   sv2.scale( 0.5 );
-
-   checkSize( sv1, 16UL );
-   checkSize( sv2, 16UL );
-
-   if( sv1 != sv2 || vec1_ != vec2_ ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Floating point scale operation of range [8,23] failed\n"
-          << " Details:\n"
-          << "   Result:\n" << sv1 << "\n"
-          << "   Expected result:\n" << sv2 << "\n";
-      throw std::runtime_error( oss.str() );
    }
 }
 //*************************************************************************************************
