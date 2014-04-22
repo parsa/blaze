@@ -501,7 +501,7 @@ template<> struct CYCLIC_LIFETIME_DEPENDENCY_DETECTED<false> { enum { value = 1 
 //     The first template parameter has to be the class itself. The following template parameters
 //     define lifetime dependencies of this class, i.e., specify on which singleton instances the
 //     class depends. It is possible to specify up to 8 lifetime dependencies. The example below
-//     demonstrates this for the World class, which is solely depending on the Logger class,
+//     demonstrates this for the MySingleton class, which is solely depending on the Logger class,
 //     which represents the core of the Blaze logging functionality.
 //  -# The class needs to befriend the Singleton via the blaze::BLAZE_BEFRIEND_SINGLETON macro.
 //     This macro provides a convenient way to express this friendship relation and works both in
@@ -510,13 +510,13 @@ template<> struct CYCLIC_LIFETIME_DEPENDENCY_DETECTED<false> { enum { value = 1 
 //     constructor of the deriving class must be declared in a non-public section of the class
 //     definition. However, in order for the Singleton class to provide the instance() function,
 //     the constructor must be accessible. This is achieved by the blaze::BLAZE_BEFRIEND_SINGLETON
-//     macro. The following example demonstrates this by means of the World class:
+//     macro. The following example demonstrates this by means of the MySingleton class:
 
    \code
-   class World : private Singleton<World,Logger>
+   class MySingleton : private Singleton<MySingleton,Logger>
    {
     private:
-      World();
+      MySingleton();
 
       ...
       BLAZE_BEFRIEND_SINGLETON;
@@ -554,17 +554,17 @@ template<> struct CYCLIC_LIFETIME_DEPENDENCY_DETECTED<false> { enum { value = 1 
 // The only prerequisite for classes deriving from the Singleton class template is the existance
 // of a default constructor. In case no default constructor is available, the Blaze singleton
 // functionality cannot be used!\n
-// Due to the use of the Singleton base class, lifetime dependencies between classes can be
-// expressed very conveniently. The following example demonstrates this by means of the World
-// class, which defines a lifetime dependency on the Logger class, which represents the core
-// of the \b Blaze logging functionality:
+// When using the Singleton base class, lifetime dependencies between classes can be expressed
+// very conveniently. The following example demonstrates this by means of the MySingleton class,
+// which defines a lifetime dependency on the Logger class, which represents the core of the
+// \b Blaze logging functionality:
 
    \code
-   // Definition of the World class
-   class World : private Singleton<World,Logger>
+   // Definition of the MySingleton class
+   class MySingleton : private Singleton<MySingleton,Logger>
    {
     private:
-      World();
+      MySingleton();
 
       ...
       BLAZE_BEFRIEND_SINGLETON;
@@ -582,8 +582,8 @@ template<> struct CYCLIC_LIFETIME_DEPENDENCY_DETECTED<false> { enum { value = 1 
 //     instance.\n
 //     The first template parameter has to be the class itself. The following template parameters
 //     define lifetime dependencies of this class, i.e., specify on which singleton instances the
-//     class depends. It is possible to specify up to 8 lifetime dependencies. The example below
-//     demonstrates this for the World class, which is solely depending on the Logger class,
+//     class depends. It is possible to specify up to 8 lifetime dependencies. The example above
+//     demonstrates this for the MySingleton class, which is solely depending on the Logger class,
 //     which represents the core of the Blaze logging functionality.
 //  -# The class needs to befriend the Singleton via the blaze::BLAZE_BEFRIEND_SINGLETON macro.
 //     This macro provides a convenient way to express this friendship relation and works both in
