@@ -58,6 +58,8 @@
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
+#include <blaze/util/DisableIf.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
@@ -105,6 +107,39 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
 
    //! Expression return type for the subscript operator.
    typedef typename AddExprTrait<RN1,RN2>::Type  ExprReturnType;
+   //**********************************************************************************************
+
+   //**Serial evaluation strategy******************************************************************
+   //! Compilation switch for the serial evaluation strategy of the addition expression.
+   /*! The \a useAssign compile time constant expression represents a compilation switch for
+       the serial evaluation strategy of the addition expression. In case either of the two
+       dense matrix operands requires an intermediate evaluation or the subscript operator
+       can only return by value, \a useAssign will be set to 1 and the addition expression
+       will be evaluated via the \a assign function family. Otherwise \a useAssign will be
+       set to 0 and the expression will be evaluated via the function call operator. */
+   enum { useAssign = RequiresEvaluation<MT1>::value || RequiresEvaluation<MT2>::value || !returnExpr };
+
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   template< typename MT >
+   struct UseAssign {
+      enum { value = useAssign };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Parallel evaluation strategy****************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
+       strategy. In case the target matrix is SMP assignable but at least one of the two matrix
+       operands is not, \a value is set to 1 and the expression specific evaluation strategy is
+       selected. Otherwise \a value is set to 0 and the default strategy is chosen. */
+   template< typename MT >
+   struct UseSMPAssign {
+      enum { value = MT::smpAssignable && ( !MT1::smpAssignable || !MT2::smpAssignable ) };
+   };
+   /*! \endcond */
    //**********************************************************************************************
 
  public:
@@ -267,50 +302,72 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    // \return void
    //
    // This function implements the performance optimized assignment of a dense matrix-transpose
-   // dense matrix addition expression to a dense matrix.
+   // dense matrix addition expression to a dense matrix. Due to the explicit application of the
+   // SFINAE principle, this operator can only be selected by the compiler in case neither of
+   // the two operands requires an intermediate evaluation.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline void assign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatAddExpr& rhs )
+   friend inline typename DisableIf< UseAssign<MT> >::Type
+      assign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      // In case non of the two dense operands requires an intermediate evaluation, the
-      // addition expression is assigned directly in a cache-efficient manner.
-      if( !RequiresEvaluation<MT1>::value && !RequiresEvaluation<MT2>::value )
-      {
-         const size_t m( rhs.rows() );
-         const size_t n( rhs.columns() );
-         const size_t block( 16UL );
+      const size_t m( rhs.rows() );
+      const size_t n( rhs.columns() );
+      const size_t block( 16UL );
 
-         for( size_t ii=0UL; ii<m; ii+=block ) {
-            const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
-            for( size_t jj=0UL; jj<n; jj+=block ) {
-               const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
-               for( size_t i=ii; i<iend; ++i ) {
-                  for( size_t j=jj; j<jend; ++j ) {
-                     (~lhs)(i,j) = rhs.lhs_(i,j) + rhs.rhs_(i,j);
-                  }
+      for( size_t ii=0UL; ii<m; ii+=block ) {
+         const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
+         for( size_t jj=0UL; jj<n; jj+=block ) {
+            const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
+            for( size_t i=ii; i<iend; ++i ) {
+               for( size_t j=jj; j<jend; ++j ) {
+                  (~lhs)(i,j) = rhs.lhs_(i,j) + rhs.rhs_(i,j);
                }
             }
          }
       }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
 
-      // In case either of the two dense operands requires an intermediate evaluation, the
-      // expression is evaluated in a one- or two-step approach (depending on whether any
-      // of the operands is aliased with the target matrix).
-      else if( !IsExpression<MT1>::value && (~lhs).isAliased( &rhs.lhs_ ) ) {
-         smpAddAssign( ~lhs, rhs.rhs_ );
+   //**Assignment to dense matrices****************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Assignment of a dense matrix-transpose dense matrix addition to a dense matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side addition expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized assignment of a dense matrix-transpose
+   // dense matrix addition expression to a dense matrix. Due to the explicit application of the
+   // SFINAE principle, this operator can only be selected by the compiler in case either of the
+   // two operands requires an intermediate evaluation.
+   */
+   template< typename MT  // Type of the target dense matrix
+           , bool SO2 >   // Storage order of the target dense matrix
+   friend inline typename EnableIf< UseAssign<MT> >::Type
+      assign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatAddExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      if( !IsExpression<MT1>::value && (~lhs).isAliased( &rhs.lhs_ ) ) {
+         addAssign( ~lhs, rhs.rhs_ );
       }
       else if( !IsExpression<MT2>::value && (~lhs).isAliased( &rhs.rhs_ ) ) {
-         smpAddAssign( ~lhs, rhs.lhs_ );
+         addAssign( ~lhs, rhs.lhs_ );
       }
       else {
-         smpAssign   ( ~lhs, rhs.lhs_ );
-         smpAddAssign( ~lhs, rhs.rhs_ );
+         assign   ( ~lhs, rhs.lhs_ );
+         addAssign( ~lhs, rhs.rhs_ );
       }
    }
    /*! \endcond */
@@ -347,7 +404,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const TmpType tmp( rhs );
-      smpAssign( ~lhs, tmp );
+      assign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -362,45 +419,65 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    // \return void
    //
    // This function implements the performance optimized addition assignment of a dense matrix-
-   // transpose dense matrix addition expression to a dense matrix.
+   // transpose dense matrix addition expression to a dense matrix. Due to the explicit application
+   // of the SFINAE principle, this operator can only be selected by the compiler in case neither
+   // of the two operands requires an intermediate evaluation.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline void addAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatAddExpr& rhs )
+   friend inline typename DisableIf< UseAssign<MT> >::Type
+      addAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      // In case non of the two dense operands requires an intermediate evaluation, the
-      // addition expression is assigned directly in a cache-efficient manner.
-      if( !RequiresEvaluation<MT1>::value && !RequiresEvaluation<MT2>::value )
-      {
-         const size_t m( rhs.rows() );
-         const size_t n( rhs.columns() );
-         const size_t block( 16UL );
+      const size_t m( rhs.rows() );
+      const size_t n( rhs.columns() );
+      const size_t block( 16UL );
 
-         for( size_t ii=0UL; ii<m; ii+=block ) {
-            const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
-            for( size_t jj=0UL; jj<n; jj+=block ) {
-               const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
-               for( size_t i=ii; i<iend; ++i ) {
-                  for( size_t j=jj; j<jend; ++j ) {
-                     (~lhs)(i,j) += rhs.lhs_(i,j) + rhs.rhs_(i,j);
-                  }
+      for( size_t ii=0UL; ii<m; ii+=block ) {
+         const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
+         for( size_t jj=0UL; jj<n; jj+=block ) {
+            const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
+            for( size_t i=ii; i<iend; ++i ) {
+               for( size_t j=jj; j<jend; ++j ) {
+                  (~lhs)(i,j) += rhs.lhs_(i,j) + rhs.rhs_(i,j);
                }
             }
          }
       }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
 
-      // In case either of the two dense operands requires an intermediate evaluation, the
-      // expression is evaluated in a two-step approach.
-      else
-      {
-         smpAddAssign( ~lhs, rhs.lhs_ );
-         smpAddAssign( ~lhs, rhs.rhs_ );
-      }
+   //**Addition assignment to dense matrices*******************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Addition assignment of a dense matrix-tranpose dense matrix addition to a dense matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side addition expression to be added.
+   // \return void
+   //
+   // This function implements the performance optimized addition assignment of a dense matrix-
+   // transpose dense matrix addition expression to a dense matrix. Due to the explicit application
+   // of the SFINAE principle, this operator can only be selected by the compiler in case either of
+   // the two operands requires an intermediate evaluation.
+   */
+   template< typename MT  // Type of the target dense matrix
+           , bool SO2 >   // Storage order of the target dense matrix
+   friend inline typename EnableIf< UseAssign<MT> >::Type
+      addAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatAddExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      addAssign( ~lhs, rhs.lhs_ );
+      addAssign( ~lhs, rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -419,45 +496,65 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    // \return void
    //
    // This function implements the performance optimized subtraction assignment of a dense matrix-
-   // transpose dense matrix addition expression to a dense matrix.
+   // transpose dense matrix addition expression to a dense matrix. Due to the explicit application
+   // of the SFINAE principle, this operator can only be selected by the compiler in case neither
+   // of the two operands requires an intermediate evaluation.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline void subAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatAddExpr& rhs )
+   friend inline typename DisableIf< UseAssign<MT> >::Type
+      subAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      // In case non of the two dense operands requires an intermediate evaluation, the
-      // addition expression is assigned directly in a cache-efficient manner.
-      if( !RequiresEvaluation<MT1>::value && !RequiresEvaluation<MT2>::value )
-      {
-         const size_t m( rhs.rows() );
-         const size_t n( rhs.columns() );
-         const size_t block( 16UL );
+      const size_t m( rhs.rows() );
+      const size_t n( rhs.columns() );
+      const size_t block( 16UL );
 
-         for( size_t ii=0UL; ii<m; ii+=block ) {
-            const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
-            for( size_t jj=0UL; jj<n; jj+=block ) {
-               const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
-               for( size_t i=ii; i<iend; ++i ) {
-                  for( size_t j=jj; j<jend; ++j ) {
-                     (~lhs)(i,j) -= rhs.lhs_(i,j) + rhs.rhs_(i,j);
-                  }
+      for( size_t ii=0UL; ii<m; ii+=block ) {
+         const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
+         for( size_t jj=0UL; jj<n; jj+=block ) {
+            const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
+            for( size_t i=ii; i<iend; ++i ) {
+               for( size_t j=jj; j<jend; ++j ) {
+                  (~lhs)(i,j) -= rhs.lhs_(i,j) + rhs.rhs_(i,j);
                }
             }
          }
       }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
 
-      // In case either of the two dense operands requires an intermediate evaluation, the
-      // expression is evaluated in a two-step approach.
-      else
-      {
-         smpSubAssign( ~lhs, rhs.lhs_ );
-         smpSubAssign( ~lhs, rhs.rhs_ );
-      }
+   //**Subtraction assignment to dense matrices****************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Subtraction assignment of a dense matrix-transpose dense matrix addition to a dense matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side addition expression to be subtracted.
+   // \return void
+   //
+   // This function implements the performance optimized subtraction assignment of a dense matrix-
+   // transpose dense matrix addition expression to a dense matrix. Due to the explicit application
+   // of the SFINAE principle, this operator can only be selected by the compiler in case either of
+   // the two operands requires an intermediate evaluation.
+   */
+   template< typename MT  // Type of the target dense matrix
+           , bool SO2 >   // Storage order of the target dense matrix
+   friend inline typename EnableIf< UseAssign<MT> >::Type
+      subAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatAddExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      subAssign( ~lhs, rhs.lhs_ );
+      subAssign( ~lhs, rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -472,6 +569,162 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
 
    //**Multiplication assignment to sparse matrices************************************************
    // No special implementation for the multiplication assignment to sparse matrices.
+   //**********************************************************************************************
+
+   //**SMP assignment to dense matrices************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP assignment of a dense matrix-transpose dense matrix addition to a dense matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side addition expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized SMP assignment of a dense matrix-transpose
+   // dense matrix addition expression to a dense matrix. Due to the explicit application of the
+   // SFINAE principle, this operator can only be selected by the compiler in case the target
+   // vector is SMP assignable but at least one of the two matrix operands is not.
+   */
+   template< typename MT  // Type of the target dense matrix
+           , bool SO2 >   // Storage order of the target dense matrix
+   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+      smpAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatAddExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      if( !IsExpression<MT1>::value && (~lhs).isAliased( &rhs.lhs_ ) ) {
+         smpAddAssign( ~lhs, rhs.rhs_ );
+      }
+      else if( !IsExpression<MT2>::value && (~lhs).isAliased( &rhs.rhs_ ) ) {
+         smpAddAssign( ~lhs, rhs.lhs_ );
+      }
+      else {
+         smpAssign   ( ~lhs, rhs.lhs_ );
+         smpAddAssign( ~lhs, rhs.rhs_ );
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP assignment to sparse matrices***********************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP assignment of a dense matrix-transpose dense matrix addition to a sparse matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side sparse matrix.
+   // \param rhs The right-hand side addition expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized SMP assignment of a dense matrix-transpose
+   // dense matrix addition expression to a sparse matrix. Due to the explicit application of the
+   // SFINAE principle, this operator can only be selected by the compiler in case the target
+   // vector is SMP assignable but at least one of the two matrix operands is not.
+   */
+   template< typename MT  // Type of the target sparse matrix
+           , bool SO2 >   // Storage order of the target sparse matrix
+   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+      smpAssign( SparseMatrix<MT,SO2>& lhs, const DMatTDMatAddExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      typedef typename SelectType< SO2, OppositeType, ResultType >::Type  TmpType;
+
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType );
+      BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT, TmpType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename TmpType::CompositeType );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      const TmpType tmp( rhs );
+      smpAssign( ~lhs, tmp );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP addition assignment to dense matrices***************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP addition assignment of a dense matrix-tranpose dense matrix addition to a dense
+   //        matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side addition expression to be added.
+   // \return void
+   //
+   // This function implements the performance optimized SMP addition assignment of a dense matrix-
+   // transpose dense matrix addition expression to a dense matrix. Due to the explicit application
+   // of the SFINAE principle, this operator can only be selected by the compiler in case the
+   // target vector is SMP assignable but at least one of the two matrix operands is not.
+   */
+   template< typename MT  // Type of the target dense matrix
+           , bool SO2 >   // Storage order of the target dense matrix
+   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+      smpAddAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatAddExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      smpAddAssign( ~lhs, rhs.lhs_ );
+      smpAddAssign( ~lhs, rhs.rhs_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP addition assignment to sparse matrices**************************************************
+   // No special implementation for the SMP addition assignment to sparse matrices.
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to dense matrices************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP subtraction assignment of a dense matrix-transpose dense matrix addition to a
+   //        dense matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side addition expression to be subtracted.
+   // \return void
+   //
+   // This function implements the performance optimized SMP subtraction assignment of a dense
+   // matrix-transpose dense matrix addition expression to a dense matrix. Due to the explicit
+   // application of the SFINAE principle, this operator can only be selected by the compiler
+   // in case the target vector is SMP assignable but at least one of the two matrix operands
+   // is not.
+   */
+   template< typename MT  // Type of the target dense matrix
+           , bool SO2 >   // Storage order of the target dense matrix
+   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+      smpSubAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatAddExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      smpSubAssign( ~lhs, rhs.lhs_ );
+      smpSubAssign( ~lhs, rhs.rhs_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to sparse matrices***********************************************
+   // No special implementation for the SMP subtraction assignment to sparse matrices.
+   //**********************************************************************************************
+
+   //**SMP multiplication assignment to dense matrices*********************************************
+   // No special implementation for the SMP multiplication assignment to dense matrices.
+   //**********************************************************************************************
+
+   //**SMP multiplication assignment to sparse matrices********************************************
+   // No special implementation for the SMP multiplication assignment to sparse matrices.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
