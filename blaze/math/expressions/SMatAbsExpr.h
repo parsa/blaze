@@ -113,14 +113,14 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    typedef typename AbsExprTrait<RN>::Type  ExprReturnType;
    //**********************************************************************************************
 
-   //**Evaluation strategy*************************************************************************
-   //! Compilation switch for the evaluation strategy of the absolute value expression.
+   //**Serial evaluation strategy******************************************************************
+   //! Compilation switch for the serial evaluation strategy of the absolute value expression.
    /*! The \a useAssign compile time constant expression represents a compilation switch for
-       the evaluation strategy of the absolute value expression. In case the given sparse matrix
-       expression of type \a MT requires an intermediate evaluation, \a useAssign will be set
-       to 1 and the absolute value expression will be evaluated via the \a assign function
-       family. Otherwise \a useAssign will be set to 0 and the expression will be evaluated
-       via the subscript operator. */
+       the serial evaluation strategy of the absolute value expression. In case the given sparse
+       matrix expression of type \a MT requires an intermediate evaluation, \a useAssign will be
+       set to 1 and the absolute value expression will be evaluated via the \a assign function
+       family. Otherwise \a useAssign will be set to 0 and the expression will be evaluated via
+       the subscript operator. */
    enum { useAssign = RequiresEvaluation<MT>::value };
 
    /*! \cond BLAZE_INTERNAL */
@@ -128,6 +128,20 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    template< typename MT2 >
    struct UseAssign {
       enum { value = useAssign };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Parallel evaluation strategy****************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
+       strategy. In case the target matrix is SMP assignable but the sparse matrix operand is not,
+       \a value is set to 1 and the expression specific evaluation strategy is selected. Otherwise
+       \a value is set to 0 and the default strategy is chosen. */
+   template< typename MT2 >
+   struct UseSMPAssign {
+      enum { value = MT2::smpAssignable && !MT::smpAssignable };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -446,8 +460,8 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      assign   ( ~lhs, rhs.sm_ );
-      smpAssign( ~lhs, abs( ~lhs ) );
+      assign( ~lhs, rhs.sm_ );
+      assign( ~lhs, abs( ~lhs ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -562,7 +576,7 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( rhs );
-      smpAddAssign( ~lhs, tmp );
+      addAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -599,7 +613,7 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( rhs );
-      smpSubAssign( ~lhs, tmp );
+      subAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -614,6 +628,122 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
 
    //**Multiplication assignment to sparse matrices************************************************
    // No special implementation for the multiplication assignment to sparse matrices.
+   //**********************************************************************************************
+
+   //**SMP assignment to dense matrices************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP assignment of a sparse matrix abs expression to a dense matrix.
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side abs expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized SMP assignment of a sparse matrix abs
+   // expression to a dense matrix. Due to the explicit application of the SFINAE principle,
+   // this operator can only be selected by the compiler in case the target matrix is SMP
+   // assignable but the sparse matrix operand is not.
+   */
+   template< typename MT2  // Type of the target dense matrix
+           , bool SO2 >    // Storage order of the target dense matrix
+   friend inline typename EnableIf< UseSMPAssign<MT2> >::Type
+      smpAssign( DenseMatrix<MT2,SO2>& lhs, const SMatAbsExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      smpAssign( ~lhs, rhs.sm_ );
+      smpAssign( ~lhs, abs( ~lhs ) );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP assignment to sparse matrices***********************************************************
+   // No special implementation for the SMP assignment to sparse matrices.
+   //**********************************************************************************************
+
+   //**SMP addition assignment to dense matrices***************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP addition assignment of a sparse matrix abs expression to a dense matrix.
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side abs expression to be added.
+   // \return void
+   //
+   // This function implements the performance optimized SMP addition assignment of a sparse
+   // matrix abs expression to a dense matrix. Due to the explicit application of the SFINAE
+   // principle, this operator can only be selected by the compiler in case the target matrix
+   // is SMP assignable but the sparse matrix operand is not.
+   */
+   template< typename MT2  // Type of the target dense matrix
+           , bool SO2 >    // Storage order of the target dense matrix
+   friend inline typename EnableIf< UseSMPAssign<MT2> >::Type
+      smpAddAssign( DenseMatrix<MT2,SO2>& lhs, const SMatAbsExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      const ResultType tmp( rhs );
+      smpAddAssign( ~lhs, tmp );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP addition assignment to sparse matrices**************************************************
+   // No special implementation for the SMP addition assignment to sparse matrices.
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to dense matrices************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP subtraction assignment of a sparse matrix abs expression to a dense matrix.
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side abs expression to be subtracted.
+   // \return void
+   //
+   // This function implements the performance optimized SMP subtraction assignment of a sparse
+   // matrix abs expression to a dense matrix. Due to the explicit application of the SFINAE
+   // principle, this operator can only be selected by the compiler in case the target matrix
+   // is SMP assignable but the sparse matrix operand is not.
+   */
+   template< typename MT2  // Type of the target dense matrix
+           , bool SO2 >    // Storage order of the target sparse matrix
+   friend inline typename EnableIf< UseSMPAssign<MT2> >::Type
+      smpSubAssign( DenseMatrix<MT2,SO2>& lhs, const SMatAbsExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      const ResultType tmp( rhs );
+      smpSubAssign( ~lhs, tmp );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to sparse matrices***********************************************
+   // No special implementation for the SMP subtraction assignment to sparse matrices.
+   //**********************************************************************************************
+
+   //**SMP multiplication assignment to dense matrices*********************************************
+   // No special implementation for the SMP multiplication assignment to dense matrices.
+   //**********************************************************************************************
+
+   //**SMP multiplication assignment to sparse matrices********************************************
+   // No special implementation for the SMP multiplication assignment to sparse matrices.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
