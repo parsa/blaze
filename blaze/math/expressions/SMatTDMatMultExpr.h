@@ -131,11 +131,11 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case the either of the two matrix operands requires an intermediate evaluation, the
-       nested \value will be set to 1, otherwise it will be 0. */
-   template< typename T1, typename T2, typename T3 >
-   struct UseSMPAssignKernel {
-      enum { value = evaluateLeft || evaluateRight };
+   /*! In case the target matrix is SMP assignable and either of the two matrix operands requires
+       an intermediate evaluation, the nested \value will be set to 1, otherwise it will be 0. */
+   template< typename MT >
+   struct UseSMPAssign {
+      enum { value = MT::smpAssignable && ( evaluateLeft || evaluateRight ) };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -336,7 +336,7 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
    // \return void
    //
    // This function implements the performance optimized assignment of a sparse matrix-transpose
-   // dense matrix multiplication expression to a sparse matrix.
+   // dense matrix multiplication expression to a dense matrix.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
@@ -379,8 +379,7 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename DisableIf< UseSMPAssignKernel<MT3,MT4,MT5> >::Type
-      selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline void selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       typedef typename MT4::ConstIterator  ConstIterator;
 
@@ -437,31 +436,6 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
    /*! \endcond */
    //**********************************************************************************************
 
-   //**SMP assignment to dense matrices************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP assignment of a sparse matrix-transpose dense matrix multiplication
-   //        (\f$ C=A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \return void
-   //
-   // This function implements the SMP assignment kernel for the dense matrix-transpose sparse
-   // matrix multiplication.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseSMPAssignKernel<MT3,MT4,MT5> >::Type
-      selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
-   {
-      smpAssign( C, A * B );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
    //**Assignment to sparse matrices***************************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Assignment of a sparse matrix-transpose dense matrix multiplication to a sparse matrix.
@@ -493,7 +467,7 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const TmpType tmp( rhs );
-      smpAssign( ~lhs, tmp );
+      assign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -552,8 +526,7 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename DisableIf< UseSMPAssignKernel<MT3,MT4,MT5> >::Type
-      selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline void selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       typedef typename MT4::ConstIterator  ConstIterator;
 
@@ -586,31 +559,6 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
             }
          }
       }
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**SMP addition assignment to dense matrices***************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP addition assignment of a sparse matrix-transpose dense matrix multiplication
-   //        (\f$ C+=A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \return void
-   //
-   // This function implements the SMP addition assignment kernel for the sparse matrix-transpose
-   // dense matrix multiplication.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseSMPAssignKernel<MT3,MT4,MT5> >::Type
-      selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
-   {
-      smpAddAssign( C, A * B );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -673,8 +621,7 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename DisableIf< UseSMPAssignKernel<MT3,MT4,MT5> >::Type
-      selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline void selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       typedef typename MT4::ConstIterator  ConstIterator;
 
@@ -711,31 +658,6 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
    /*! \endcond */
    //**********************************************************************************************
 
-   //**SMP subtraction assignment to dense matrices************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP subtraction assignment of a sparse matrix-transpose dense matrix multiplication
-   //        (\f$ C-=A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \return void
-   //
-   // This function implements the SMP subtraction assignment kernel for the sparse matrix-transpose
-   // dense matrix multiplication.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseSMPAssignKernel<MT3,MT4,MT5> >::Type
-      selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
-   {
-      smpSubAssign( C, A * B );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
    //**Subtraction assignment to sparse matrices***************************************************
    // No special implementation for the subtraction assignment to sparse matrices.
    //**********************************************************************************************
@@ -746,6 +668,186 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
 
    //**Multiplication assignment to sparse matrices************************************************
    // No special implementation for the multiplication assignment to sparse matrices.
+   //**********************************************************************************************
+
+   //**SMP assignment to dense matrices************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP assignment of a sparse matrix-transpose dense matrix multiplication to a dense
+   //        matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side multiplication expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized SMP assignment of a sparse matrix-transpose
+   // dense matrix multiplication expression to a dense matrix. Due to the explicit application of
+   // the SFINAE principle, this operator can only be selected by the compiler in case the target
+   // matrix is SMP assignable and either of the two matrix operands requires an intermediate
+   // evaluation.
+   */
+   template< typename MT  // Type of the target dense matrix
+           , bool SO >    // Storage order of the target dense matrix
+   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+      smpAssign( DenseMatrix<MT,SO>& lhs, const SMatTDMatMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      LT A( rhs.lhs_ );  // Evaluation of the left-hand side sparse matrix operand
+      RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense matrix operand
+
+      BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+
+      smpAssign( ~lhs, A * B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP assignment to sparse matrices***********************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP assignment of a sparse matrix-transpose dense matrix multiplication to a sparse
+   //        matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side sparse matrix.
+   // \param rhs The right-hand side multiplication expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized SMP assignment of a sparse matrix-transpose
+   // dense matrix multiplication expression to a sparse matrix. Due to the explicit application of
+   // the SFINAE principle, this operator can only be selected by the compiler in case the target
+   // matrix is SMP assignable and either of the two matrix operands requires an intermediate
+   // evaluation.
+   */
+   template< typename MT  // Type of the target sparse matrix
+           , bool SO >    // Storage order of the target sparse matrix
+   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+      smpAssign( SparseMatrix<MT,SO>& lhs, const SMatTDMatMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      typedef typename SelectType< SO, OppositeType, ResultType >::Type  TmpType;
+
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType );
+      BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT, TmpType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename TmpType::CompositeType );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      const TmpType tmp( rhs );
+      smpAssign( ~lhs, tmp );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP addition assignment to dense matrices***************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP addition assignment of a sparse matrix-transpose dense matrix multiplication
+   //        to a dense matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side multiplication expression to be added.
+   // \return void
+   //
+   // This function implements the performance optimized SMP addition assignment of a sparse
+   // matrix-transpose dense matrix multiplication expression to a dense matrix. Due to the
+   // explicit application of the SFINAE principle, this operator can only be selected by the
+   // compiler in case the target matrix is SMP assignable and either of the two matrix operands
+   // requires an intermediate evaluation.
+   */
+   template< typename MT  // Type of the target dense matrix
+           , bool SO >    // Storage order of the target dense matrix
+   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+      smpAddAssign( DenseMatrix<MT,SO>& lhs, const SMatTDMatMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      LT A( rhs.lhs_ );  // Evaluation of the left-hand side sparse matrix operand
+      RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense matrix operand
+
+      BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+
+      smpAddAssign( ~lhs, A * B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP addition assignment to sparse matrices**************************************************
+   // No special implementation for the SMP addition assignment to sparse matrices.
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to dense matrices************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP subtraction assignment of a sparse matrix-transpose dense matrix multiplication
+   //        to a dense matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side multiplication expression to be subtracted.
+   // \return void
+   //
+   // This function implements the performance optimized SMP subtraction assignment of a sparse
+   // matrix-transpose dense matrix multiplication expression to a dense matrix. Due to the
+   // explicit application of the SFINAE principle, this operator can only be selected by the
+   // compiler in case the target matrix is SMP assignable and either of the two matrix operands
+   // requires an intermediate evaluation.
+   */
+   template< typename MT  // Type of the target dense matrix
+           , bool SO >    // Storage order of the target dense matrix
+   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+      smpSubAssign( DenseMatrix<MT,SO>& lhs, const SMatTDMatMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      LT A( rhs.lhs_ );  // Evaluation of the left-hand side sparse matrix operand
+      RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense matrix operand
+
+      BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+
+      smpSubAssign( ~lhs, A * B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to sparse matrices***********************************************
+   // No special implementation for the SMP subtraction assignment to sparse matrices.
+   //**********************************************************************************************
+
+   //**SMP multiplication assignment to dense matrices*********************************************
+   // No special implementation for the SMP multiplication assignment to dense matrices.
+   //**********************************************************************************************
+
+   //**SMP multiplication assignment to sparse matrices********************************************
+   // No special implementation for the SMP multiplication assignment to sparse matrices.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
