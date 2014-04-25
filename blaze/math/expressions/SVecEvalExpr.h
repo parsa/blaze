@@ -56,7 +56,6 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
-#include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
@@ -276,7 +275,7 @@ class SVecEvalExpr : public SparseVector< SVecEvalExpr<VT,TF>, TF >
    // \ingroup sparse_vector
    //
    // \param lhs The target left-hand side sparse vector.
-   // \param rhs The right-hand side evaulation expression to be added.
+   // \param rhs The right-hand side evaluation expression to be added.
    // \return void
    //
    // This function implements the performance optimized addition assignment of a sparse vector
