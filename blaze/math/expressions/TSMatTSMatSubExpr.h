@@ -528,8 +528,8 @@ class TSMatTSMatSubExpr : public SparseMatrix< TSMatTSMatSubExpr<MT1,MT2>, true 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      smpAddAssign( ~lhs, rhs.lhs_ );
-      smpSubAssign( ~lhs, rhs.rhs_ );
+      addAssign( ~lhs, rhs.lhs_ );
+      subAssign( ~lhs, rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -560,8 +560,8 @@ class TSMatTSMatSubExpr : public SparseMatrix< TSMatTSMatSubExpr<MT1,MT2>, true 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      smpSubAssign( ~lhs, rhs.lhs_ );
-      smpAddAssign( ~lhs, rhs.rhs_ );
+      subAssign( ~lhs, rhs.lhs_ );
+      addAssign( ~lhs, rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -576,6 +576,86 @@ class TSMatTSMatSubExpr : public SparseMatrix< TSMatTSMatSubExpr<MT1,MT2>, true 
 
    //**Multiplication assignment to sparse matrices************************************************
    // No special implementation for the multiplication assignment to sparse matrices.
+   //**********************************************************************************************
+
+   //**SMP assignment to dense matrices************************************************************
+   // No special implementation for the SMP assignment to dense matrices.
+   //**********************************************************************************************
+
+   //**SMP assignment to sparse matrices***********************************************************
+   // No special implementation for the SMP assignment to sparse matrices.
+   //**********************************************************************************************
+
+   //**SMP addition assignment to dense matrices***************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP addition assignment of a transpose sparse matrix-transpose sparse matrix
+   //        subtraction to a dense matrix.
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side subtraction expression to be added.
+   // \return void
+   //
+   // This function implements the performance optimized SMP addition assignment of a transpose
+   // sparse matrix-transpose sparse matrix subtraction expression to a dense matrix.
+   */
+   template< typename MT  // Type of the target dense matrix
+           , bool SO >    // Storage order of the target dense matrix
+   friend inline void smpAddAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatSubExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      smpAddAssign( ~lhs, rhs.lhs_ );
+      smpSubAssign( ~lhs, rhs.rhs_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP addition assignment to sparse matrices**************************************************
+   // No special implementation for the SMP addition assignment to sparse matrices.
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to dense matrices************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP subtraction assignment of a transpose sparse matrix-transpose sparse matrix
+   //        subtraction to a dense matrix.
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side subtraction expression to be subtracted.
+   // \return void
+   //
+   // This function implements the performance optimized SMP subtraction assignment of a transpose
+   // sparse matrix-transpose sparse matrix subtraction expression to a dense matrix.
+   */
+   template< typename MT  // Type of the target dense matrix
+           , bool SO >    // Storage order of the target dense matrix
+   friend inline void smpSubAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatSubExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      smpSubAssign( ~lhs, rhs.lhs_ );
+      smpAddAssign( ~lhs, rhs.rhs_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to sparse matrices***********************************************
+   // No special implementation for the SMP subtraction assignment to sparse matrices.
+   //**********************************************************************************************
+
+   //**SMP multiplication assignment to dense matrices*********************************************
+   // No special implementation for the SMP multiplication assignment to dense matrices.
+   //**********************************************************************************************
+
+   //**SMP multiplication assignment to sparse matrices********************************************
+   // No special implementation for the SMP multiplication assignment to sparse matrices.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
