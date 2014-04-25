@@ -403,7 +403,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT2::OppositeType );
 
       const typename MT2::OppositeType tmp( rhs.rhs_ );
-      smpAssign( ~lhs, rhs.lhs_ * tmp );
+      assign( ~lhs, rhs.lhs_ * tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -432,7 +432,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT1::OppositeType );
 
       const typename MT1::OppositeType tmp( rhs.lhs_ );
-      smpAssign( ~lhs, tmp * rhs.rhs_ );
+      assign( ~lhs, tmp * rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -461,7 +461,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT2::OppositeType );
 
       const typename MT2::OppositeType tmp( rhs.rhs_ );
-      smpAssign( ~lhs, rhs.lhs_ * tmp );
+      assign( ~lhs, rhs.lhs_ * tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -490,7 +490,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT1::OppositeType );
 
       const typename MT1::OppositeType tmp( rhs.lhs_ );
-      smpAssign( ~lhs, tmp * rhs.rhs_ );
+      assign( ~lhs, tmp * rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -519,7 +519,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT2::OppositeType );
 
       const typename MT2::OppositeType tmp( rhs.rhs_ );
-      smpAddAssign( ~lhs, rhs.lhs_ * tmp );
+      addAssign( ~lhs, rhs.lhs_ * tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -548,7 +548,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT1::OppositeType );
 
       const typename MT1::OppositeType tmp( rhs.lhs_ );
-      smpAddAssign( ~lhs, tmp * rhs.rhs_ );
+      addAssign( ~lhs, tmp * rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -581,7 +581,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT2::OppositeType );
 
       const typename MT2::OppositeType tmp( rhs.rhs_ );
-      smpSubAssign( ~lhs, rhs.lhs_ * tmp );
+      subAssign( ~lhs, rhs.lhs_ * tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -610,7 +610,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT1::OppositeType );
 
       const typename MT1::OppositeType tmp( rhs.lhs_ );
-      smpSubAssign( ~lhs, tmp * rhs.rhs_ );
+      subAssign( ~lhs, tmp * rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -625,6 +625,254 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
 
    //**Multiplication assignment to sparse matrices************************************************
    // No special implementation for the multiplication assignment to sparse matrices.
+   //**********************************************************************************************
+
+   //**SMP assignment to row-major dense matrices**************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP assignment of a sparse matrix-transpose sparse matrix multiplication to a
+   //        row-major dense matrix (\f$ C=A*B \f$).
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side multiplication expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized SMP assignment of a sparse matrix-
+   // transpose sparse matrix multiplication expression to a row-major dense matrix.
+   */
+   template< typename MT >  // Type of the target dense matrix
+   friend inline void smpAssign( DenseMatrix<MT,false>& lhs, const SMatTSMatMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT2::OppositeType );
+
+      const typename MT2::OppositeType tmp( rhs.rhs_ );
+      smpAssign( ~lhs, rhs.lhs_ * tmp );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP assignment to column-major dense matrices***********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP assignment of a sparse matrix-transpose sparse matrix multiplication to a
+   //        column-major dense matrix (\f$ C=A*B \f$).
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side multiplication expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance SMP optimized assignment of a sparse matrix-
+   // transpose sparse matrix multiplication expression to a column-major dense matrix.
+   */
+   template< typename MT >  // Type of the target dense matrix
+   friend inline void smpAssign( DenseMatrix<MT,true>& lhs, const SMatTSMatMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT1::OppositeType );
+
+      const typename MT1::OppositeType tmp( rhs.lhs_ );
+      smpAssign( ~lhs, tmp * rhs.rhs_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP assignment to row-major sparse matrices*************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP assignment of a sparse matrix-transpose sparse matrix multiplication to a
+   //        row-major sparse matrix (\f$ C=A*B \f$).
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side sparse matrix.
+   // \param rhs The right-hand side multiplication expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized SMP assignment of a sparse matrix-
+   // transpose sparse matrix multiplication expression to a row-major sparse matrix.
+   */
+   template< typename MT >  // Type of the target sparse matrix
+   friend inline void smpAssign( SparseMatrix<MT,false>& lhs, const SMatTSMatMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT2::OppositeType );
+
+      const typename MT2::OppositeType tmp( rhs.rhs_ );
+      smpAssign( ~lhs, rhs.lhs_ * tmp );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP assignment to column-major sparse matrices**********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP assignment of a sparse matrix-transpose sparse matrix multiplication to a
+   //        column-major sparse matrix (\f$ C=A*B \f$).
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side sparse matrix.
+   // \param rhs The right-hand side multiplication expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized SMP assignment of a sparse matrix-
+   // transpose sparse matrix multiplication expression to a column-major sparse matrix.
+   */
+   template< typename MT >  // Type of the target sparse matrix
+   friend inline void smpAssign( SparseMatrix<MT,true>& lhs, const SMatTSMatMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT1::OppositeType );
+
+      const typename MT1::OppositeType tmp( rhs.lhs_ );
+      smpAssign( ~lhs, tmp * rhs.rhs_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP addition assignment to row-major dense matrices*****************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP addition assignment of a sparse matrix-transpose sparse matrix multiplication
+   //        to a row-major dense matrix (\f$ C+=A*B \f$).
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side multiplication expression to be added.
+   // \return void
+   //
+   // This function implements the performance optimized SMP addition assignment of a sparse
+   // matrix-transpose sparse matrix multiplication expression to a row-major dense matrix.
+   */
+   template< typename MT >  // Type of the target dense matrix
+   friend inline void smpAddAssign( DenseMatrix<MT,false>& lhs, const SMatTSMatMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT2::OppositeType );
+
+      const typename MT2::OppositeType tmp( rhs.rhs_ );
+      smpAddAssign( ~lhs, rhs.lhs_ * tmp );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP addition assignment to column-major dense matrices**************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP addition assignment of a sparse matrix-transpose sparse matrix multiplication
+   //        to a column-major dense matrix (\f$ C+=A*B \f$).
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side multiplication expression to be added.
+   // \return void
+   //
+   // This function implements the performance optimized SMP addition assignment of a sparse
+   // matrix-transpose sparse matrix multiplication expression to a column-major dense matrix.
+   */
+   template< typename MT >  // Type of the target dense matrix
+   friend inline void smpAddAssign( DenseMatrix<MT,true>& lhs, const SMatTSMatMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT1::OppositeType );
+
+      const typename MT1::OppositeType tmp( rhs.lhs_ );
+      smpAddAssign( ~lhs, tmp * rhs.rhs_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP addition assignment to sparse matrices**************************************************
+   // No special implementation for the SMP addition assignment to sparse matrices.
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to row-major dense matrices**************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP subtraction assignment of a sparse matrix-transpose sparse matrix multiplication
+   //        to a row-major dense matrix (\f$ C-=A*B \f$).
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side multiplication expression to be subtracted.
+   // \return void
+   //
+   // This function implements the performance optimized SMP subtraction assignment of a sparse
+   // matrix-transpose sparse matrix multiplication expression to a row-major dense matrix.
+   */
+   template< typename MT >  // Type of the target dense matrix
+   friend inline void smpSubAssign( DenseMatrix<MT,false>& lhs, const SMatTSMatMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT2::OppositeType );
+
+      const typename MT2::OppositeType tmp( rhs.rhs_ );
+      smpSubAssign( ~lhs, rhs.lhs_ * tmp );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to column-major dense matrices***********************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP subtraction assignment of a sparse matrix-transpose sparse matrix multiplication
+   //        to a column-major dense matrix (\f$ C-=A*B \f$).
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side multiplication expression to be subtracted.
+   // \return void
+   //
+   // This function implements the performance optimized SMP subtraction assignment of a sparse
+   // matrix-transpose sparse matrix multiplication expression to a column-major dense matrix.
+   */
+   template< typename MT >  // Type of the target dense matrix
+   friend inline void smpSubAssign( DenseMatrix<MT,true>& lhs, const SMatTSMatMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT1::OppositeType );
+
+      const typename MT1::OppositeType tmp( rhs.lhs_ );
+      smpSubAssign( ~lhs, tmp * rhs.rhs_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to sparse matrices***********************************************
+   // No special implementation for the SMP subtraction assignment to sparse matrices.
+   //**********************************************************************************************
+
+   //**SMP multiplication assignment to dense matrices*********************************************
+   // No special implementation for the SMP multiplication assignment to dense matrices.
+   //**********************************************************************************************
+
+   //**SMP multiplication assignment to sparse matrices********************************************
+   // No special implementation for the SMP multiplication assignment to sparse matrices.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
