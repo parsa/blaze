@@ -108,14 +108,14 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
    typedef typename AbsExprTrait<RN>::Type  ExprReturnType;
    //**********************************************************************************************
 
-   //**Evaluation strategy*************************************************************************
-   //! Compilation switch for the evaluation strategy of the absolute value expression.
+   //**Serial evaluation strategy******************************************************************
+   //! Compilation switch for the serial evaluation strategy of the absolute value expression.
    /*! The \a useAssign compile time constant expression represents a compilation switch for
-       the evaluation strategy of the absolute value expression. In case the given dense vector
-       expression of type \a VT requires an intermediate evaluation, \a useAssign will be set
-       to 1 and the absolute value expression will be evaluated via the \a assign function
-       family. Otherwise \a useAssign will be set to 0 and the expression will be evaluated
-       via the subscript operator. */
+       the serial evaluation strategy of the absolute value expression. In case the given dense
+       vector expression of type \a VT requires an intermediate evaluation, \a useAssign will be
+       set to 1 and the absolute value expression will be evaluated via the \a assign function
+       family. Otherwise \a useAssign will be set to 0 and the expression will be evaluated via
+       the subscript operator. */
    enum { useAssign = RequiresEvaluation<VT>::value };
 
    /*! \cond BLAZE_INTERNAL */
@@ -123,6 +123,20 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
    template< typename VT2 >
    struct UseAssign {
       enum { value = useAssign };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Parallel evaluation strategy****************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
+       strategy. In case the target vector is SMP assignable but the dense vector operand is not,
+       \a value is set to 1 and the expression specific evaluation strategy is selected. Otherwise
+       \a value is set to 0 and the default strategy is chosen. */
+   template< typename VT2 >
+   struct UseSMPAssign {
+      enum { value = VT2::smpAssignable && !VT::smpAssignable };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -543,8 +557,8 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      assign   ( ~lhs, rhs.dv_ );
-      smpAssign( ~lhs, abs( ~lhs ) );
+      assign( ~lhs, rhs.dv_ );
+      assign( ~lhs, abs( ~lhs ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -576,7 +590,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      smpAssign( ~lhs, tmp );
+      assign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -608,7 +622,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      smpAddAssign( ~lhs, tmp );
+      addAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -644,7 +658,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      smpSubAssign( ~lhs, tmp );
+      subAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -680,13 +694,181 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      smpMultAssign( ~lhs, tmp );
+      multAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
 
    //**Multiplication assignment to sparse vectors*************************************************
    // No special implementation for the multiplication assignment to sparse vectors.
+   //**********************************************************************************************
+
+   //**SMP assignment to dense vectors*************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP assignment of a dense vector abs expression to a dense vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side abs expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized SMP assignment of a dense vector
+   // abs expression to a dense vector. Due to the explicit application of the SFINAE
+   // principle, this operator can only be selected by the compiler in case the target
+   // vector is SMP assignable but the dense vector operand is not.
+   */
+   template< typename VT2 >  // Type of the target dense vector
+   friend inline typename EnableIf< UseSMPAssign<VT2> >::Type
+      smpAssign( DenseVector<VT2,TF>& lhs, const DVecAbsExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      smpAssign( ~lhs, rhs.dv_ );
+      smpAssign( ~lhs, abs( ~lhs ) );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP assignment to sparse vectors************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP assignment of a dense vector abs expression to a sparse vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side sparse vector.
+   // \param rhs The right-hand side abs expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized SMP assignment of a dense vector
+   // abs expression to a sparse vector. Due to the explicit application of the SFINAE
+   // principle, this operator can only be selected by the compiler in case the target
+   // vector is SMP assignable but the dense vector operand is not.
+   */
+   template< typename VT2 >  // Type of the target sparse vector
+   friend inline typename EnableIf< UseSMPAssign<VT2> >::Type
+      smpAssign( SparseVector<VT2,TF>& lhs, const DVecAbsExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      const ResultType tmp( rhs );
+      smpAssign( ~lhs, tmp );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP addition assignment to dense vectors****************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP addition assignment of a dense vector abs expression to a dense vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side abs expression to be added.
+   // \return void
+   //
+   // This function implements the performance optimized SMP addition assignment of a dense
+   // vector abs expression to a dense vector. Due to the explicit application of the SFINAE
+   // principle, this operator can only be selected by the compiler in case the target vector
+   // is SMP assignable but the dense vector operand is not.
+   */
+   template< typename VT2 >  // Type of the target dense vector
+   friend inline typename EnableIf< UseSMPAssign<VT2> >::Type
+      smpAddAssign( DenseVector<VT2,TF>& lhs, const DVecAbsExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      const ResultType tmp( rhs );
+      smpAddAssign( ~lhs, tmp );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP addition assignment to sparse vectors***************************************************
+   // No special implementation for the SMP addition assignment to sparse vectors.
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to dense vectors*************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP subtraction assignment of a dense vector abs expression to a dense vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side abs expression to be subtracted.
+   // \return void
+   //
+   // This function implements the performance optimized SMP subtraction assignment of a dense
+   // vector abs expression to a dense vector. Due to the explicit application of the SFINAE
+   // principle, this operator can only be selected by the compiler in case the target vector
+   // is SMP assignable but the dense vector operand is not.
+   */
+   template< typename VT2 >  // Type of the target dense vector
+   friend inline typename EnableIf< UseSMPAssign<VT2> >::Type
+      smpSubAssign( DenseVector<VT2,TF>& lhs, const DVecAbsExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      const ResultType tmp( rhs );
+      smpSubAssign( ~lhs, tmp );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to sparse vectors************************************************
+   // No special implementation for the SMP subtraction assignment to sparse vectors.
+   //**********************************************************************************************
+
+   //**SMP multiplication assignment to dense vectors**********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP multiplication assignment of a dense vector abs expression to a dense vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side abs expression to be multiplied.
+   // \return void
+   //
+   // This function implements the performance optimized SMP multiplication assignment of a
+   // dense vector abs expression to a dense vector. Due to the explicit application of the
+   // SFINAE principle, this operator can only be selected by the compiler in case the target
+   // vector is SMP assignable but the dense vector operand is not.
+   */
+   template< typename VT2 >  // Type of the target dense vector
+   friend inline typename EnableIf< UseSMPAssign<VT2> >::Type
+      smpMultAssign( DenseVector<VT2,TF>& lhs, const DVecAbsExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      const ResultType tmp( rhs );
+      smpMultAssign( ~lhs, tmp );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP multiplication assignment to sparse vectors*********************************************
+   // No special implementation for the SMP multiplication assignment to sparse vectors.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
