@@ -408,8 +408,8 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpAddAssign( ~lhs, rhs.lhs_ );
-      smpSubAssign( ~lhs, rhs.rhs_ );
+      addAssign( ~lhs, rhs.lhs_ );
+      subAssign( ~lhs, rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -437,8 +437,8 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpSubAssign( ~lhs, rhs.lhs_ );
-      smpAddAssign( ~lhs, rhs.rhs_ );
+      subAssign( ~lhs, rhs.lhs_ );
+      addAssign( ~lhs, rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -471,13 +471,114 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      smpMultAssign( ~lhs, tmp );
+      multAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
 
    //**Multiplication assignment to sparse vectors*************************************************
    // No special implementation for the multiplication assignment to sparse vectors.
+   //**********************************************************************************************
+
+   //**SMP assignment to dense vectors*************************************************************
+   // No special implementation for the SMP assignment to dense vectors.
+   //**********************************************************************************************
+
+   //**SMP assignment to sparse vectors************************************************************
+   // No special implementation for the SMP assignment to sparse vectors.
+   //**********************************************************************************************
+
+   //**SMP addition assignment to dense vectors****************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP addition assignment of a sparse vector-sparse vector subtraction to a dense vector.
+   // \ingroup sparse_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side subtraction expression to be added.
+   // \return void
+   //
+   // This function implements the performance optimized SMP addition assignment of a sparse
+   // vector-sparse vector subtraction expression to a dense vector.
+   */
+   template< typename VT >  // Type of the target dense vector
+   friend inline void smpAddAssign( DenseVector<VT,TF>& lhs, const SVecSVecSubExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      smpAddAssign( ~lhs, rhs.lhs_ );
+      smpSubAssign( ~lhs, rhs.rhs_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP addition assignment to sparse vectors***************************************************
+   // No special implementation for the SMP addition assignment to sparse vectors.
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to dense vectors*************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP subtraction assignment of a sparse vector-sparse vector subtraction to a dense
+   //        vector.
+   // \ingroup sparse_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side subtraction expression to be subtracted.
+   // \return void
+   //
+   // This function implements the performance optimized SMP subtraction assignment of a sparse
+   // vector-sparse vector subtraction expression to a dense vector.
+   */
+   template< typename VT >  // Type of the target dense vector
+   friend inline void smpSubAssign( DenseVector<VT,TF>& lhs, const SVecSVecSubExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      smpSubAssign( ~lhs, rhs.lhs_ );
+      smpAddAssign( ~lhs, rhs.rhs_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to sparse vectors************************************************
+   // No special implementation for the SMP subtraction assignment to sparse vectors.
+   //**********************************************************************************************
+
+   //**SMP multiplication assignment to dense vectors**********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP multiplication assignment of a sparse vector-sparse vector subtraction to a dense
+   //        vector.
+   // \ingroup sparse_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side subtraction expression to be multiplied.
+   // \return void
+   //
+   // This function implements the performance optimized SMP multiplication assignment of a sparse
+   // vector-sparse vector subtraction expression to a dense vector.
+   */
+   template< typename VT >  // Type of the target dense vector
+   friend inline void smpMultAssign( DenseVector<VT,TF>& lhs, const SVecSVecSubExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      const ResultType tmp( rhs );
+      smpMultAssign( ~lhs, tmp );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP multiplication assignment to sparse vectors*********************************************
+   // No special implementation for the SMP multiplication assignment to sparse vectors.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
