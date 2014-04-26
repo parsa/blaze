@@ -82,6 +82,7 @@
 #include <blaze/math/typetraits/IsVecEvalExpr.h>
 #include <blaze/math/typetraits/IsVecScalarDivExpr.h>
 #include <blaze/math/typetraits/IsVecScalarMultExpr.h>
+#include <blaze/math/typetraits/IsVecSerialExpr.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/math/typetraits/IsVecTransExpr.h>
 #include <blaze/math/typetraits/IsVecTVecMultExpr.h>

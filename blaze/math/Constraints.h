@@ -78,6 +78,7 @@
 #include <blaze/math/constraints/VecEvalExpr.h>
 #include <blaze/math/constraints/VecScalarDivExpr.h>
 #include <blaze/math/constraints/VecScalarMultExpr.h>
+#include <blaze/math/constraints/VecSerialExpr.h>
 #include <blaze/math/constraints/Vector.h>
 #include <blaze/math/constraints/VecTransExpr.h>
 #include <blaze/math/constraints/VecTVecMultExpr.h>
