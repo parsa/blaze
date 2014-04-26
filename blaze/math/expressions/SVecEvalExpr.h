@@ -600,7 +600,7 @@ class SVecEvalExpr : public SparseVector< SVecEvalExpr<VT,TF>, TF >
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Forces the evaluation of the given sparse vector expression \a dv.
+/*!\brief Forces the evaluation of the given sparse vector expression \a sv.
 // \ingroup sparse_vector
 //
 // \param sv The input vector.
