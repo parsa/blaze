@@ -371,11 +371,55 @@ class DMatEvalExpr : public DenseMatrix< DMatEvalExpr<MT,SO>, SO >
    //**********************************************************************************************
 
    //**Multiplication assignment to dense matrices*************************************************
-   // No special implementation for the multiplication assignment to dense matrices.
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Multiplication assignment of a dense matrix evaluation expression to a dense matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side evaluation expression to be multiplied.
+   // \return void
+   //
+   // This function implements the performance optimized multiplication assignment of a dense
+   // matrix evaluation expression to a dense matrix.
+   */
+   template< typename MT2  // Type of the target dense matrix
+           , bool SO2 >    // Storage order of the target dense matrix
+   friend inline void multAssign( DenseMatrix<MT2,SO2>& lhs, const DMatEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      multAssign( ~lhs, rhs.dm_ );
+   }
+   /*! \endcond */
    //**********************************************************************************************
 
    //**Multiplication assignment to sparse matrices************************************************
-   // No special implementation for the multiplication assignment to sparse matrices.
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Multiplication assignment of a dense matrix evaluation expression to a sparse matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side sparse matrix.
+   // \param rhs The right-hand side evaluation expression to be multiplied.
+   // \return void
+   //
+   // This function implements the performance optimized multiplication assignment of a dense
+   // matrix evaluation expression to a sparse matrix.
+   */
+   template< typename MT2  // Type of the target sparse matrix
+           , bool SO2 >    // Storage order of the target dense matrix
+   friend inline void multAssign( SparseMatrix<MT2,SO2>& lhs, const DMatEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      multAssign( ~lhs, rhs.dm_ );
+   }
+   /*! \endcond */
    //**********************************************************************************************
 
    //**SMP assignment to dense matrices************************************************************
@@ -534,12 +578,58 @@ class DMatEvalExpr : public DenseMatrix< DMatEvalExpr<MT,SO>, SO >
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Multiplication assignment to dense matrices*************************************************
-   // No special implementation for the multiplication assignment to dense matrices.
+   //**SMP multiplication assignment to dense matrices*********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP multiplication assignment of a dense matrix evaluation expression to a dense
+   //        matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side evaluation expression to be multiplied.
+   // \return void
+   //
+   // This function implements the performance optimized SMP multiplication assignment of a dense
+   // matrix evaluation expression to a dense matrix.
+   */
+   template< typename MT2  // Type of the target dense matrix
+           , bool SO2 >    // Storage order of the target dense matrix
+   friend inline void smpMultAssign( DenseMatrix<MT2,SO2>& lhs, const DMatEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      smpMultAssign( ~lhs, rhs.dm_ );
+   }
+   /*! \endcond */
    //**********************************************************************************************
 
-   //**Multiplication assignment to sparse matrices************************************************
-   // No special implementation for the multiplication assignment to sparse matrices.
+   //**SMP multiplication assignment to sparse matrices********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP multiplication assignment of a dense matrix evaluation expression to a sparse
+   //        matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side sparse matrix.
+   // \param rhs The right-hand side evaluation expression to be multiplied.
+   // \return void
+   //
+   // This function implements the performance optimized SMP multiplication assignment of a dense
+   // matrix evaluation expression to a sparse matrix.
+   */
+   template< typename MT2  // Type of the target sparse matrix
+           , bool SO2 >    // Storage order of the target dense matrix
+   friend inline void smpMultAssign( SparseMatrix<MT2,SO2>& lhs, const DMatEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      smpMultAssign( ~lhs, rhs.dm_ );
+   }
+   /*! \endcond */
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
