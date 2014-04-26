@@ -61,6 +61,7 @@
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsMatScalarDivExpr.h>
 #include <blaze/math/typetraits/IsMatScalarMultExpr.h>
+#include <blaze/math/typetraits/IsMatSerialExpr.h>
 #include <blaze/math/typetraits/IsMatTransExpr.h>
 #include <blaze/math/typetraits/IsMatVecMultExpr.h>
 #include <blaze/math/typetraits/IsMultExpr.h>
