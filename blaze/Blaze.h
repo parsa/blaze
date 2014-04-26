@@ -3831,9 +3831,30 @@ namespace blaze {}
 // <center> Previous: \ref openmp_parallelization &nbsp; &nbsp; Next: \ref vector_serialization </center> \n
 //
 // Sometimes it may be necessary to enforce the serial execution of specific operations. For this
-// purpose, the \b Blaze library offers two possible options.
+// purpose, the \b Blaze library offers three possible options: the serialization of a single
+// expression via the \c serial() function, the serialization of a block of expressions via the
+// \c BLAZE_SERIAL_SECTION, and the general deactivation of the parallel execution.
 //
-// The first option is the temporary and local enforcement of a serial execution via the
+//
+// \n \section serial_execution_serial_expression Option 1: Serialization of a Single Expression
+// <hr>
+//
+// The first option is the serialization of a specific operation via the \c serial() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B, C;
+   // ... Resizing and initialization
+   C = serial( A + B );
+   \endcode
+
+// \c serial() enforces the serial evaluation of the enclosed expression. It can be used on any
+// kind of dense or sparse vector or matrix expression.
+//
+//
+// \n \section serial_execution_serial_section Option 2: Serialization of Multiple Expressions
+// <hr>
+//
+// The second option is the temporary and local enforcement of a serial execution via the
 // \c BLAZE_SERIAL_SECTION:
 
    \code
@@ -3866,10 +3887,20 @@ namespace blaze {}
 // Outside the scope of the serial section, all operations are run in parallel (if beneficial for
 // the performance).
 //
-// The second option is the general deactivation of the parallel execution (even in case OpenMP
-// is enabled on the command line). This can be achieved via the <em>./blaze/config/SMP.h</em>
-// configuration file: In case the \c BLAZE_ENABLE_PARALLEL_EXECUTION switch is set to 0, the
-// shared-memory parallelization is deactivated altogether.
+//
+// \n \section serial_execution_deactivate_parallelism Option 3: Deactivation of Parallel Execution
+// <hr>
+//
+// The third option is the general deactivation of the parallel execution (even in case OpenMP is
+// enabled on the command line). This can be achieved via the \c BLAZE_USE_SHARED_MEMORY_PARALLELIZATION
+// switch in the <em>./blaze/config/SMP.h</em> configuration file:
+
+   \code
+   #define BLAZE_USE_SHARED_MEMORY_PARALLELIZATION 1
+   \endcode
+
+// In case the \c BLAZE_USE_SHARED_MEMORY_PARALLELIZATION switch is set to 0, the shared-memory
+// parallelization is deactivated altogether.
 //
 // \n <center> Previous: \ref openmp_parallelization &nbsp; &nbsp; Next: \ref vector_serialization </center>
 */
