@@ -1039,9 +1039,11 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, CompressedMatrix<Type,SO> >::Type&
    CompressedMatrix<Type,SO>::operator*=( Other rhs )
 {
-   using blaze::assign;
-
-   assign( *this, (*this) * rhs );
+   for( size_t i=0UL; i<m_; ++i ) {
+      const Iterator last( end(i) );
+      for( Iterator element=begin(i); element!=last; ++element )
+         element->value_ *= rhs;
+   }
    return *this;
 }
 //*************************************************************************************************
@@ -1060,11 +1062,29 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, CompressedMatrix<Type,SO> >::Type&
    CompressedMatrix<Type,SO>::operator/=( Other rhs )
 {
-   using blaze::assign;
-
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   assign( *this, (*this) / rhs );
+   typedef typename DivTrait<Type,Other>::Type  DT;
+   typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
+
+   // Depending on the two involved data types, an integer division is applied or a
+   // floating point division is selected.
+   if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
+      const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
+      for( size_t i=0UL; i<m_; ++i ) {
+         const Iterator last( end(i) );
+         for( Iterator element=begin(i); element!=last; ++element )
+            element->value_ *= tmp;
+      }
+   }
+   else {
+      for( size_t i=0UL; i<m_; ++i ) {
+         const Iterator last( end(i) );
+         for( Iterator element=begin(i); element!=last; ++element )
+            element->value_ /= rhs;
+      }
+   }
+
    return *this;
 }
 //*************************************************************************************************
@@ -3143,9 +3163,11 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, CompressedMatrix<Type,true> >::Type&
    CompressedMatrix<Type,true>::operator*=( Other rhs )
 {
-   using blaze::assign;
-
-   assign( *this, (*this) * rhs );
+   for( size_t j=0UL; j<n_; ++j ) {
+      const Iterator last( end(j) );
+      for( Iterator element=begin(j); element!=last; ++element )
+         element->value_ *= rhs;
+   }
    return *this;
 }
 /*! \endcond */
@@ -3165,11 +3187,29 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, CompressedMatrix<Type,true> >::Type&
    CompressedMatrix<Type,true>::operator/=( Other rhs )
 {
-   using blaze::assign;
-
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   assign( *this, (*this) / rhs );
+   typedef typename DivTrait<Type,Other>::Type  DT;
+   typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
+
+   // Depending on the two involved data types, an integer division is applied or a
+   // floating point division is selected.
+   if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
+      const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
+      for( size_t j=0UL; j<n_; ++j ) {
+         const Iterator last( end(j) );
+         for( Iterator element=begin(j); element!=last; ++element )
+            element->value_ *= tmp;
+      }
+   }
+   else {
+      for( size_t j=0UL; j<n_; ++j ) {
+         const Iterator last( end(j) );
+         for( Iterator element=begin(j); element!=last; ++element )
+            element->value_ /= rhs;
+      }
+   }
+
    return *this;
 }
 /*! \endcond */

@@ -429,40 +429,7 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       assign( ~lhs, rhs.vector_ );
-      assign( ~lhs, (~lhs) / rhs.scalar_ );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Assignment to sparse vectors****************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a sparse vector-scalar division to a sparse vector.
-   // \ingroup sparse_vector
-   //
-   // \param lhs The target left-hand side sparse vector.
-   // \param rhs The right-hand side division expression to be assigned.
-   // \return void
-   //
-   // This function implements the performance optimized assignment of a sparse vector-scalar
-   // division expression to a sparse vector. Due to the explicit application of the SFINAE
-   // principle, this operator can only be selected by the compiler in case the vector
-   // operand does not require an intermediate evaluation.
-   */
-   template< typename VT2 >  // Type of the target sparse vector
-   friend inline typename DisableIf< UseAssign<VT2> >::Type
-      assign( SparseVector<VT2,TF>& lhs, const SVecScalarDivExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      if( !IsExpression<VT>::value && (~lhs).isAliased( &rhs.vector_ ) ) {
-         for( typename VT2::Iterator element=(~lhs).begin(); element!=(~lhs).end(); ++element )
-            *element /= rhs.scalar_;
-      }
-      else {
-         (~lhs).assign( rhs );
-      }
+      (~lhs) /= rhs.scalar_;
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -490,7 +457,7 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       assign( ~lhs, rhs.vector_ );
-      assign( ~lhs, (~lhs) / rhs.scalar_ );
+      (~lhs) /= rhs.scalar_;
    }
    /*! \endcond */
    //**********************************************************************************************

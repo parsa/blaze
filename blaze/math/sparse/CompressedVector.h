@@ -878,9 +878,8 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, CompressedVector<Type,TF> >::Type&
    CompressedVector<Type,TF>::operator*=( Other rhs )
 {
-   using blaze::assign;
-
-   assign( *this, (*this) * rhs );
+   for( Iterator element=begin_; element!=end_; ++element )
+      element->value_ *= rhs;
    return *this;
 }
 //*************************************************************************************************
@@ -904,11 +903,23 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, CompressedVector<Type,TF> >::Type&
    CompressedVector<Type,TF>::operator/=( Other rhs )
 {
-   using blaze::assign;
-
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   assign( *this, (*this) / rhs );
+   typedef typename DivTrait<Type,Other>::Type  DT;
+   typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
+
+   // Depending on the two involved data types, an integer division is applied or a
+   // floating point division is selected.
+   if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
+      const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
+      for( Iterator element=begin_; element!=end_; ++element )
+         element->value_ *= tmp;
+   }
+   else {
+      for( Iterator element=begin_; element!=end_; ++element )
+         element->value_ /= rhs;
+   }
+
    return *this;
 }
 //*************************************************************************************************

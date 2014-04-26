@@ -459,46 +459,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       assign( ~lhs, rhs.matrix_ );
-      assign( ~lhs, (~lhs) / rhs.scalar_ );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Assignment to sparse matrices***************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a sparse matrix-scalar division to a sparse matrix.
-   // \ingroup sparse_matrix
-   //
-   // \param lhs The target left-hand side sparse matrix.
-   // \param rhs The right-hand side division expression to be assigned.
-   // \return void
-   //
-   // This function implements the performance optimized assignment of a sparse matrix-scalar
-   // division expression to a sparse matrix. Due to the explicit application of the SFINAE
-   // principle, this operator can only be selected by the compiler in case the operand does
-   // not require an intermediate evaluation.
-   */
-   template< typename MT2  // Type of the target sparse matrix
-           , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline typename DisableIf< UseAssign<MT2> >::Type
-      assign( SparseMatrix<MT2,SO2>& lhs, const SMatScalarDivExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-
-      if( !IsExpression<MT>::value && (~lhs).isAliased( &rhs.matrix_ ) ) {
-         const size_t iend( IsRowMajorMatrix<MT>::value ? (~lhs).rows() : (~lhs).columns() );
-         for( size_t i=0UL; i<iend; ++i ) {
-            const typename MT2::Iterator last( (~lhs).end(i) );
-            for( typename MT2::Iterator element=(~lhs).begin(i); element!=last; ++element )
-               *element /= rhs.scalar_;
-         }
-      }
-      else {
-         (~lhs).assign( rhs );
-      }
+      (~lhs) /= rhs.scalar_;
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -528,7 +489,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       assign( ~lhs, rhs.matrix_ );
-      assign( ~lhs, (~lhs) / rhs.scalar_ );
+      (~lhs) /= rhs.scalar_;
    }
    /*! \endcond */
    //**********************************************************************************************
