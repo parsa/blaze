@@ -1921,7 +1921,6 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    /*! In case the target vector is SMP assignable and either the vector or the matrix operand
        require an intermediate evaluation, the nested \value will be set to 1, otherwise it will
@@ -1930,7 +1929,6 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    struct UseSMPAssign {
       enum { value = T1::smpAssignable && ( evaluateVector || evaluateMatrix ) };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
