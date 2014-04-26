@@ -68,6 +68,7 @@
 #include <blaze/math/typetraits/IsRow.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsSerialExpr.h>
 #include <blaze/math/typetraits/IsSparseElement.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
