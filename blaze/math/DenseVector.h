@@ -50,6 +50,7 @@
 #include <blaze/math/expressions/DVecEvalExpr.h>
 #include <blaze/math/expressions/DVecScalarDivExpr.h>
 #include <blaze/math/expressions/DVecScalarMultExpr.h>
+#include <blaze/math/expressions/DVecSerialExpr.h>
 #include <blaze/math/expressions/DVecSVecAddExpr.h>
 #include <blaze/math/expressions/DVecSVecCrossExpr.h>
 #include <blaze/math/expressions/DVecSVecSubExpr.h>
