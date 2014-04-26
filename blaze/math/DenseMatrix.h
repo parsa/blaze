@@ -49,6 +49,7 @@
 #include <blaze/math/expressions/DMatEvalExpr.h>
 #include <blaze/math/expressions/DMatScalarDivExpr.h>
 #include <blaze/math/expressions/DMatScalarMultExpr.h>
+#include <blaze/math/expressions/DMatSerialExpr.h>
 #include <blaze/math/expressions/DMatSMatAddExpr.h>
 #include <blaze/math/expressions/DMatSMatMultExpr.h>
 #include <blaze/math/expressions/DMatSMatSubExpr.h>
