@@ -54,6 +54,7 @@ template< typename, typename > class DMatDVecMultExpr;
 template< typename, bool > class DMatEvalExpr;
 template< typename, typename, bool > class DMatScalarDivExpr;
 template< typename, typename, bool > class DMatScalarMultExpr;
+template< typename, bool > class DMatSerialExpr;
 template< typename, typename, bool > class DMatSMatAddExpr;
 template< typename, typename > class DMatSMatMultExpr;
 template< typename, typename, bool > class DMatSMatSubExpr;
