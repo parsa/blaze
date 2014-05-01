@@ -169,6 +169,50 @@ typedef double  TypeB;
 
 
 //*************************************************************************************************
+/*!\brief Compilation switch for the eval tests.
+//
+// This compilation switch triggers the eval tests for all test scenarios. In case the eval
+// tests are activated, each operation is tested in combination with an eval operation. The
+// following example demonstrates this by means of the vector addition:
+
+   \code
+   blaze::DynamicVector<double> a, b, c;
+   c = eval( a + b );  // Explicit evaluation of the vector addition
+   \endcode
+
+// The following settings are possible:
+//
+//   - 0: The eval tests are not included in the compilation process and not executed
+//   - 1: The eval tests are included in the compilation process, but not executed
+//   - 2: The eval tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_EVAL_OPERATION 2
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Compilation switch for the serial tests.
+//
+// This compilation switch triggers the serial tests for all test scenarios. In case the serial
+// tests are activated, each operation is tested in combination with an serial operation. The
+// following example demonstrates this by means of the vector addition:
+
+   \code
+   blaze::DynamicVector<double> a, b, c;
+   c = serial( a + b );  // Explicit serialization of the vector addition
+   \endcode
+
+// The following settings are possible:
+//
+//   - 0: The serial tests are not included in the compilation process and not executed
+//   - 1: The serial tests are included in the compilation process, but not executed
+//   - 2: The serial tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION 2
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Compilation switch for the subvector tests.
 //
 // This compilation switch triggers the subvector tests for all test scenarios. In case the
