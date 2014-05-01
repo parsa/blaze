@@ -632,9 +632,9 @@ void AliasingTest::testDMatTDMatAdd()
       initialize();
 
       result_ = ( dA3x4_ * dB4x3_ + dC3x3_ ) + tdD3x3_;
-      tdC3x3_ = ( dA3x4_ * dB4x3_ + dC3x3_ ) + tdD3x3_;
+      dC3x3_  = ( dA3x4_ * dB4x3_ + dC3x3_ ) + tdD3x3_;
 
-      checkResult( tdC3x3_, result_ );
+      checkResult( dC3x3_, result_ );
    }
 
 
@@ -741,9 +741,9 @@ void AliasingTest::testDMatTDMatAdd()
 
       result_ =  tdC3x3_;
       result_ += ( dA3x4_ * dB4x3_ + dC3x3_ ) + tdD3x3_;
-      tdC3x3_ += ( dA3x4_ * dB4x3_ + dC3x3_ ) + tdD3x3_;
+      dC3x3_  += ( dA3x4_ * dB4x3_ + dC3x3_ ) + tdD3x3_;
 
-      checkResult( tdC3x3_, result_ );
+      checkResult( dC3x3_, result_ );
    }
 
 
@@ -850,9 +850,9 @@ void AliasingTest::testDMatTDMatAdd()
 
       result_ =  tdC3x3_;
       result_ -= ( dA3x4_ * dB4x3_ + dC3x3_ ) + tdD3x3_;
-      tdC3x3_ -= ( dA3x4_ * dB4x3_ + dC3x3_ ) + tdD3x3_;
+      dC3x3_  -= ( dA3x4_ * dB4x3_ + dC3x3_ ) + tdD3x3_;
 
-      checkResult( tdC3x3_, result_ );
+      checkResult( dC3x3_, result_ );
    }
 
 
@@ -959,9 +959,9 @@ void AliasingTest::testDMatTDMatAdd()
 
       result_ =  tdC3x3_;
       result_ *= ( dA3x4_ * dB4x3_ + dC3x3_ ) + tdD3x3_;
-      tdC3x3_ *= ( dA3x4_ * dB4x3_ + dC3x3_ ) + tdD3x3_;
+      dC3x3_  *= ( dA3x4_ * dB4x3_ + dC3x3_ ) + tdD3x3_;
 
-      checkResult( tdC3x3_, result_ );
+      checkResult( dC3x3_, result_ );
    }
 }
 //*************************************************************************************************
