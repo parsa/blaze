@@ -163,6 +163,8 @@ class OperationTest
    template< typename T > void testScaledOperation   ( T scalar );
                           void testTransposeOperation();
                           void testAbsOperation      ();
+                          void testEvalOperation     ();
+                          void testSerialOperation   ();
                           void testSubmatrixOperation();
                           void testRowOperation      ();
                           void testColumnOperation   ();
@@ -331,6 +333,8 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testScaledOperation( 2.0 );
    testTransposeOperation();
    testAbsOperation();
+   testEvalOperation();
+   testSerialOperation();
    testSubmatrixOperation();
    testRowOperation();
    testColumnOperation();
@@ -3602,6 +3606,822 @@ void OperationTest<MT1,MT2>::testAbsOperation()
             sres_   -= abs( eval( olhs_ ) - eval( orhs_ ) );
             osres_  -= abs( eval( olhs_ ) - eval( orhs_ ) );
             refres_ -= abs( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the evaluated dense matrix/dense matrix subtraction.
+//
+// \return void
+// \exception std::runtime_error Subtraction error detected.
+//
+// This function tests the evaluated matrix subtraction with plain assignment, addition assignment,
+// and subtraction assignment. In case any error resulting from the subtraction or the subsequent
+// assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testEvalOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_EVAL_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_EVAL_OPERATION > 1 )
+   {
+      //=====================================================================================
+      // Eval subtraction
+      //=====================================================================================
+
+      // Eval subtraction with the given matrices
+      {
+         test_  = "Eval subtraction with the given matrices";
+         error_ = "Failed subtraction operation";
+
+         try {
+            initResults();
+            dres_   = eval( lhs_ - rhs_ );
+            odres_  = eval( lhs_ - rhs_ );
+            sres_   = eval( lhs_ - rhs_ );
+            osres_  = eval( lhs_ - rhs_ );
+            refres_ = eval( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = eval( lhs_ - orhs_ );
+            odres_  = eval( lhs_ - orhs_ );
+            sres_   = eval( lhs_ - orhs_ );
+            osres_  = eval( lhs_ - orhs_ );
+            refres_ = eval( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   = eval( olhs_ - rhs_ );
+            odres_  = eval( olhs_ - rhs_ );
+            sres_   = eval( olhs_ - rhs_ );
+            osres_  = eval( olhs_ - rhs_ );
+            refres_ = eval( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = eval( olhs_ - orhs_ );
+            odres_  = eval( olhs_ - orhs_ );
+            sres_   = eval( olhs_ - orhs_ );
+            osres_  = eval( olhs_ - orhs_ );
+            refres_ = eval( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Eval subtraction with evaluated matrices
+      {
+         test_  = "Eval subtraction with evaluated matrices";
+         error_ = "Failed subtraction operation";
+
+         try {
+            initResults();
+            dres_   = eval( eval( lhs_ ) - eval( rhs_ ) );
+            odres_  = eval( eval( lhs_ ) - eval( rhs_ ) );
+            sres_   = eval( eval( lhs_ ) - eval( rhs_ ) );
+            osres_  = eval( eval( lhs_ ) - eval( rhs_ ) );
+            refres_ = eval( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = eval( eval( lhs_ ) - eval( orhs_ ) );
+            odres_  = eval( eval( lhs_ ) - eval( orhs_ ) );
+            sres_   = eval( eval( lhs_ ) - eval( orhs_ ) );
+            osres_  = eval( eval( lhs_ ) - eval( orhs_ ) );
+            refres_ = eval( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   = eval( eval( olhs_ ) - eval( rhs_ ) );
+            odres_  = eval( eval( olhs_ ) - eval( rhs_ ) );
+            sres_   = eval( eval( olhs_ ) - eval( rhs_ ) );
+            osres_  = eval( eval( olhs_ ) - eval( rhs_ ) );
+            refres_ = eval( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = eval( eval( olhs_ ) - eval( orhs_ ) );
+            odres_  = eval( eval( olhs_ ) - eval( orhs_ ) );
+            sres_   = eval( eval( olhs_ ) - eval( orhs_ ) );
+            osres_  = eval( eval( olhs_ ) - eval( orhs_ ) );
+            refres_ = eval( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Eval subtraction with addition assignment
+      //=====================================================================================
+
+      // Eval subtraction with addition assignment with the given matrices
+      {
+         test_  = "Eval subtraction with addition assignment with the given matrices";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += eval( lhs_ - rhs_ );
+            odres_  += eval( lhs_ - rhs_ );
+            sres_   += eval( lhs_ - rhs_ );
+            osres_  += eval( lhs_ - rhs_ );
+            refres_ += eval( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += eval( lhs_ - orhs_ );
+            odres_  += eval( lhs_ - orhs_ );
+            sres_   += eval( lhs_ - orhs_ );
+            osres_  += eval( lhs_ - orhs_ );
+            refres_ += eval( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   += eval( olhs_ - rhs_ );
+            odres_  += eval( olhs_ - rhs_ );
+            sres_   += eval( olhs_ - rhs_ );
+            osres_  += eval( olhs_ - rhs_ );
+            refres_ += eval( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += eval( olhs_ - orhs_ );
+            odres_  += eval( olhs_ - orhs_ );
+            sres_   += eval( olhs_ - orhs_ );
+            osres_  += eval( olhs_ - orhs_ );
+            refres_ += eval( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Eval subtraction with addition assignment with evaluated matrices
+      {
+         test_  = "Eval subtraction with addition assignment with evaluated matrices";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += eval( eval( lhs_ ) - eval( rhs_ ) );
+            odres_  += eval( eval( lhs_ ) - eval( rhs_ ) );
+            sres_   += eval( eval( lhs_ ) - eval( rhs_ ) );
+            osres_  += eval( eval( lhs_ ) - eval( rhs_ ) );
+            refres_ += eval( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += eval( eval( lhs_ ) - eval( orhs_ ) );
+            odres_  += eval( eval( lhs_ ) - eval( orhs_ ) );
+            sres_   += eval( eval( lhs_ ) - eval( orhs_ ) );
+            osres_  += eval( eval( lhs_ ) - eval( orhs_ ) );
+            refres_ += eval( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   += eval( eval( olhs_ ) - eval( rhs_ ) );
+            odres_  += eval( eval( olhs_ ) - eval( rhs_ ) );
+            sres_   += eval( eval( olhs_ ) - eval( rhs_ ) );
+            osres_  += eval( eval( olhs_ ) - eval( rhs_ ) );
+            refres_ += eval( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += eval( eval( olhs_ ) - eval( orhs_ ) );
+            odres_  += eval( eval( olhs_ ) - eval( orhs_ ) );
+            sres_   += eval( eval( olhs_ ) - eval( orhs_ ) );
+            osres_  += eval( eval( olhs_ ) - eval( orhs_ ) );
+            refres_ += eval( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Eval subtraction with subtraction assignment
+      //=====================================================================================
+
+      // Eval subtraction with subtraction assignment with the given matrices
+      {
+         test_  = "Eval subtraction with subtraction assignment with the given matrices";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= eval( lhs_ - rhs_ );
+            odres_  -= eval( lhs_ - rhs_ );
+            sres_   -= eval( lhs_ - rhs_ );
+            osres_  -= eval( lhs_ - rhs_ );
+            refres_ -= eval( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= eval( lhs_ - orhs_ );
+            odres_  -= eval( lhs_ - orhs_ );
+            sres_   -= eval( lhs_ - orhs_ );
+            osres_  -= eval( lhs_ - orhs_ );
+            refres_ -= eval( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   -= eval( olhs_ - rhs_ );
+            odres_  -= eval( olhs_ - rhs_ );
+            sres_   -= eval( olhs_ - rhs_ );
+            osres_  -= eval( olhs_ - rhs_ );
+            refres_ -= eval( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= eval( olhs_ - orhs_ );
+            odres_  -= eval( olhs_ - orhs_ );
+            sres_   -= eval( olhs_ - orhs_ );
+            osres_  -= eval( olhs_ - orhs_ );
+            refres_ -= eval( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Eval subtraction with subtraction assignment with evaluated matrices
+      {
+         test_  = "Eval subtraction with subtraction assignment with evaluated matrices";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= eval( eval( lhs_ ) - eval( rhs_ ) );
+            odres_  -= eval( eval( lhs_ ) - eval( rhs_ ) );
+            sres_   -= eval( eval( lhs_ ) - eval( rhs_ ) );
+            osres_  -= eval( eval( lhs_ ) - eval( rhs_ ) );
+            refres_ -= eval( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= eval( eval( lhs_ ) - eval( orhs_ ) );
+            odres_  -= eval( eval( lhs_ ) - eval( orhs_ ) );
+            sres_   -= eval( eval( lhs_ ) - eval( orhs_ ) );
+            osres_  -= eval( eval( lhs_ ) - eval( orhs_ ) );
+            refres_ -= eval( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   -= eval( eval( olhs_ ) - eval( rhs_ ) );
+            odres_  -= eval( eval( olhs_ ) - eval( rhs_ ) );
+            sres_   -= eval( eval( olhs_ ) - eval( rhs_ ) );
+            osres_  -= eval( eval( olhs_ ) - eval( rhs_ ) );
+            refres_ -= eval( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= eval( eval( olhs_ ) - eval( orhs_ ) );
+            odres_  -= eval( eval( olhs_ ) - eval( orhs_ ) );
+            sres_   -= eval( eval( olhs_ ) - eval( orhs_ ) );
+            osres_  -= eval( eval( olhs_ ) - eval( orhs_ ) );
+            refres_ -= eval( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the serialized dense matrix/dense matrix subtraction.
+//
+// \return void
+// \exception std::runtime_error Subtraction error detected.
+//
+// This function tests the serialized matrix subtraction with plain assignment, addition assignment,
+// and subtraction assignment. In case any error resulting from the subtraction or the subsequent
+// assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testSerialOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION > 1 )
+   {
+      //=====================================================================================
+      // Serial subtraction
+      //=====================================================================================
+
+      // Serial subtraction with the given matrices
+      {
+         test_  = "Serial subtraction with the given matrices";
+         error_ = "Failed subtraction operation";
+
+         try {
+            initResults();
+            dres_   = serial( lhs_ - rhs_ );
+            odres_  = serial( lhs_ - rhs_ );
+            sres_   = serial( lhs_ - rhs_ );
+            osres_  = serial( lhs_ - rhs_ );
+            refres_ = serial( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = serial( lhs_ - orhs_ );
+            odres_  = serial( lhs_ - orhs_ );
+            sres_   = serial( lhs_ - orhs_ );
+            osres_  = serial( lhs_ - orhs_ );
+            refres_ = serial( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   = serial( olhs_ - rhs_ );
+            odres_  = serial( olhs_ - rhs_ );
+            sres_   = serial( olhs_ - rhs_ );
+            osres_  = serial( olhs_ - rhs_ );
+            refres_ = serial( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = serial( olhs_ - orhs_ );
+            odres_  = serial( olhs_ - orhs_ );
+            sres_   = serial( olhs_ - orhs_ );
+            osres_  = serial( olhs_ - orhs_ );
+            refres_ = serial( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Serial subtraction with evaluated matrices
+      {
+         test_  = "Serial subtraction with evaluated matrices";
+         error_ = "Failed subtraction operation";
+
+         try {
+            initResults();
+            dres_   = serial( eval( lhs_ ) - eval( rhs_ ) );
+            odres_  = serial( eval( lhs_ ) - eval( rhs_ ) );
+            sres_   = serial( eval( lhs_ ) - eval( rhs_ ) );
+            osres_  = serial( eval( lhs_ ) - eval( rhs_ ) );
+            refres_ = serial( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = serial( eval( lhs_ ) - eval( orhs_ ) );
+            odres_  = serial( eval( lhs_ ) - eval( orhs_ ) );
+            sres_   = serial( eval( lhs_ ) - eval( orhs_ ) );
+            osres_  = serial( eval( lhs_ ) - eval( orhs_ ) );
+            refres_ = serial( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   = serial( eval( olhs_ ) - eval( rhs_ ) );
+            odres_  = serial( eval( olhs_ ) - eval( rhs_ ) );
+            sres_   = serial( eval( olhs_ ) - eval( rhs_ ) );
+            osres_  = serial( eval( olhs_ ) - eval( rhs_ ) );
+            refres_ = serial( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = serial( eval( olhs_ ) - eval( orhs_ ) );
+            odres_  = serial( eval( olhs_ ) - eval( orhs_ ) );
+            sres_   = serial( eval( olhs_ ) - eval( orhs_ ) );
+            osres_  = serial( eval( olhs_ ) - eval( orhs_ ) );
+            refres_ = serial( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Serial subtraction with addition assignment
+      //=====================================================================================
+
+      // Serial subtraction with addition assignment with the given matrices
+      {
+         test_  = "Serial subtraction with addition assignment with the given matrices";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += serial( lhs_ - rhs_ );
+            odres_  += serial( lhs_ - rhs_ );
+            sres_   += serial( lhs_ - rhs_ );
+            osres_  += serial( lhs_ - rhs_ );
+            refres_ += serial( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += serial( lhs_ - orhs_ );
+            odres_  += serial( lhs_ - orhs_ );
+            sres_   += serial( lhs_ - orhs_ );
+            osres_  += serial( lhs_ - orhs_ );
+            refres_ += serial( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   += serial( olhs_ - rhs_ );
+            odres_  += serial( olhs_ - rhs_ );
+            sres_   += serial( olhs_ - rhs_ );
+            osres_  += serial( olhs_ - rhs_ );
+            refres_ += serial( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += serial( olhs_ - orhs_ );
+            odres_  += serial( olhs_ - orhs_ );
+            sres_   += serial( olhs_ - orhs_ );
+            osres_  += serial( olhs_ - orhs_ );
+            refres_ += serial( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Serial subtraction with addition assignment with evaluated matrices
+      {
+         test_  = "Serial subtraction with addition assignment with evaluated matrices";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += serial( eval( lhs_ ) - eval( rhs_ ) );
+            odres_  += serial( eval( lhs_ ) - eval( rhs_ ) );
+            sres_   += serial( eval( lhs_ ) - eval( rhs_ ) );
+            osres_  += serial( eval( lhs_ ) - eval( rhs_ ) );
+            refres_ += serial( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += serial( eval( lhs_ ) - eval( orhs_ ) );
+            odres_  += serial( eval( lhs_ ) - eval( orhs_ ) );
+            sres_   += serial( eval( lhs_ ) - eval( orhs_ ) );
+            osres_  += serial( eval( lhs_ ) - eval( orhs_ ) );
+            refres_ += serial( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   += serial( eval( olhs_ ) - eval( rhs_ ) );
+            odres_  += serial( eval( olhs_ ) - eval( rhs_ ) );
+            sres_   += serial( eval( olhs_ ) - eval( rhs_ ) );
+            osres_  += serial( eval( olhs_ ) - eval( rhs_ ) );
+            refres_ += serial( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += serial( eval( olhs_ ) - eval( orhs_ ) );
+            odres_  += serial( eval( olhs_ ) - eval( orhs_ ) );
+            sres_   += serial( eval( olhs_ ) - eval( orhs_ ) );
+            osres_  += serial( eval( olhs_ ) - eval( orhs_ ) );
+            refres_ += serial( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Serial subtraction with subtraction assignment
+      //=====================================================================================
+
+      // Serial subtraction with subtraction assignment with the given matrices
+      {
+         test_  = "Serial subtraction with subtraction assignment with the given matrices";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= serial( lhs_ - rhs_ );
+            odres_  -= serial( lhs_ - rhs_ );
+            sres_   -= serial( lhs_ - rhs_ );
+            osres_  -= serial( lhs_ - rhs_ );
+            refres_ -= serial( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= serial( lhs_ - orhs_ );
+            odres_  -= serial( lhs_ - orhs_ );
+            sres_   -= serial( lhs_ - orhs_ );
+            osres_  -= serial( lhs_ - orhs_ );
+            refres_ -= serial( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   -= serial( olhs_ - rhs_ );
+            odres_  -= serial( olhs_ - rhs_ );
+            sres_   -= serial( olhs_ - rhs_ );
+            osres_  -= serial( olhs_ - rhs_ );
+            refres_ -= serial( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= serial( olhs_ - orhs_ );
+            odres_  -= serial( olhs_ - orhs_ );
+            sres_   -= serial( olhs_ - orhs_ );
+            osres_  -= serial( olhs_ - orhs_ );
+            refres_ -= serial( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Serial subtraction with subtraction assignment with evaluated matrices
+      {
+         test_  = "Serial subtraction with subtraction assignment with evaluated matrices";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= serial( eval( lhs_ ) - eval( rhs_ ) );
+            odres_  -= serial( eval( lhs_ ) - eval( rhs_ ) );
+            sres_   -= serial( eval( lhs_ ) - eval( rhs_ ) );
+            osres_  -= serial( eval( lhs_ ) - eval( rhs_ ) );
+            refres_ -= serial( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= serial( eval( lhs_ ) - eval( orhs_ ) );
+            odres_  -= serial( eval( lhs_ ) - eval( orhs_ ) );
+            sres_   -= serial( eval( lhs_ ) - eval( orhs_ ) );
+            osres_  -= serial( eval( lhs_ ) - eval( orhs_ ) );
+            refres_ -= serial( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   -= serial( eval( olhs_ ) - eval( rhs_ ) );
+            odres_  -= serial( eval( olhs_ ) - eval( rhs_ ) );
+            sres_   -= serial( eval( olhs_ ) - eval( rhs_ ) );
+            osres_  -= serial( eval( olhs_ ) - eval( rhs_ ) );
+            refres_ -= serial( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= serial( eval( olhs_ ) - eval( orhs_ ) );
+            odres_  -= serial( eval( olhs_ ) - eval( orhs_ ) );
+            sres_   -= serial( eval( olhs_ ) - eval( orhs_ ) );
+            osres_  -= serial( eval( olhs_ ) - eval( orhs_ ) );
+            refres_ -= serial( eval( reflhs_ ) - eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT1,OMT2>( ex );
