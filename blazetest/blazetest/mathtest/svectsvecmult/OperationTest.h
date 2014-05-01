@@ -153,6 +153,8 @@ class OperationTest
    template< typename T > void testScaledOperation   ( T scalar );
                           void testTransposeOperation();
                           void testAbsOperation      ();
+                          void testEvalOperation     ();
+                          void testSerialOperation   ();
                           void testSubmatrixOperation();
                           void testRowOperation      ();
                           void testColumnOperation   ();
@@ -303,6 +305,8 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testScaledOperation( 2.0 );
    testTransposeOperation();
    testAbsOperation();
+   testEvalOperation();
+   testSerialOperation();
    testSubmatrixOperation();
    testRowOperation();
    testColumnOperation();
@@ -1642,6 +1646,318 @@ void OperationTest<VT1,VT2>::testAbsOperation()
             sres_   -= abs( eval( lhs_ ) * eval( rhs_ ) );
             osres_  -= abs( eval( lhs_ ) * eval( rhs_ ) );
             refres_ -= abs( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the evaluated sparse vector/sparse vector outer product.
+//
+// \return void
+// \exception std::runtime_error Outer product error detected.
+//
+// This function tests the evaluated outer product with plain assignment, addition assignment,
+// and subtraction assignment. In case any error resulting from the outer product or the
+// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side sparse vector
+void OperationTest<VT1,VT2>::testEvalOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_EVAL_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_EVAL_OPERATION > 1 )
+   {
+      //=====================================================================================
+      // Eval outer product
+      //=====================================================================================
+
+      // Eval outer product with the given vectors
+      {
+         test_  = "Eval outer product with the given vectors";
+         error_ = "Failed outer product operation";
+
+         try {
+            initResults();
+            dres_   = eval( lhs_ * rhs_ );
+            odres_  = eval( lhs_ * rhs_ );
+            sres_   = eval( lhs_ * rhs_ );
+            osres_  = eval( lhs_ * rhs_ );
+            refres_ = eval( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Eval outer product with evaluated vectors
+      {
+         test_  = "Eval outer product with evaluated vectors";
+         error_ = "Failed outer product operation";
+
+         try {
+            initResults();
+            dres_   = eval( eval( lhs_ ) * eval( rhs_ ) );
+            odres_  = eval( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   = eval( eval( lhs_ ) * eval( rhs_ ) );
+            osres_  = eval( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ = eval( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Eval outer product with addition assignment
+      //=====================================================================================
+
+      // Eval outer product with addition assignment with the given vectors
+      {
+         test_  = "Eval outer product with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += eval( lhs_ * rhs_ );
+            odres_  += eval( lhs_ * rhs_ );
+            sres_   += eval( lhs_ * rhs_ );
+            osres_  += eval( lhs_ * rhs_ );
+            refres_ += eval( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Eval outer product with addition assignment with evaluated vectors
+      {
+         test_  = "Eval outer product with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += eval( eval( lhs_ ) * eval( rhs_ ) );
+            odres_  += eval( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   += eval( eval( lhs_ ) * eval( rhs_ ) );
+            osres_  += eval( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ += eval( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Eval outer product with subtraction assignment
+      //=====================================================================================
+
+      // Eval outer product with subtraction assignment with the given vectors
+      {
+         test_  = "Eval outer product with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= eval( lhs_ * rhs_ );
+            odres_  -= eval( lhs_ * rhs_ );
+            sres_   -= eval( lhs_ * rhs_ );
+            osres_  -= eval( lhs_ * rhs_ );
+            refres_ -= eval( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Eval outer product with subtraction assignment with evaluated vectors
+      {
+         test_  = "Eval outer product with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= eval( eval( lhs_ ) * eval( rhs_ ) );
+            odres_  -= eval( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   -= eval( eval( lhs_ ) * eval( rhs_ ) );
+            osres_  -= eval( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ -= eval( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the serialized sparse vector/sparse vector outer product.
+//
+// \return void
+// \exception std::runtime_error Outer product error detected.
+//
+// This function tests the serialized outer product with plain assignment, addition assignment,
+// and subtraction assignment. In case any error resulting from the outer product or the
+// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side sparse vector
+void OperationTest<VT1,VT2>::testSerialOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION > 1 )
+   {
+      //=====================================================================================
+      // Serial outer product
+      //=====================================================================================
+
+      // Serial outer product with the given vectors
+      {
+         test_  = "Serial outer product with the given vectors";
+         error_ = "Failed outer product operation";
+
+         try {
+            initResults();
+            dres_   = serial( lhs_ * rhs_ );
+            odres_  = serial( lhs_ * rhs_ );
+            sres_   = serial( lhs_ * rhs_ );
+            osres_  = serial( lhs_ * rhs_ );
+            refres_ = serial( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Serial outer product with evaluated vectors
+      {
+         test_  = "Serial outer product with evaluated vectors";
+         error_ = "Failed outer product operation";
+
+         try {
+            initResults();
+            dres_   = serial( eval( lhs_ ) * eval( rhs_ ) );
+            odres_  = serial( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   = serial( eval( lhs_ ) * eval( rhs_ ) );
+            osres_  = serial( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ = serial( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Serial outer product with addition assignment
+      //=====================================================================================
+
+      // Serial outer product with addition assignment with the given vectors
+      {
+         test_  = "Serial outer product with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += serial( lhs_ * rhs_ );
+            odres_  += serial( lhs_ * rhs_ );
+            sres_   += serial( lhs_ * rhs_ );
+            osres_  += serial( lhs_ * rhs_ );
+            refres_ += serial( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Serial outer product with addition assignment with evaluated vectors
+      {
+         test_  = "Serial outer product with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += serial( eval( lhs_ ) * eval( rhs_ ) );
+            odres_  += serial( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   += serial( eval( lhs_ ) * eval( rhs_ ) );
+            osres_  += serial( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ += serial( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Serial outer product with subtraction assignment
+      //=====================================================================================
+
+      // Serial outer product with subtraction assignment with the given vectors
+      {
+         test_  = "Serial outer product with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= serial( lhs_ * rhs_ );
+            odres_  -= serial( lhs_ * rhs_ );
+            sres_   -= serial( lhs_ * rhs_ );
+            osres_  -= serial( lhs_ * rhs_ );
+            refres_ -= serial( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Serial outer product with subtraction assignment with evaluated vectors
+      {
+         test_  = "Serial outer product with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= serial( eval( lhs_ ) * eval( rhs_ ) );
+            odres_  -= serial( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   -= serial( eval( lhs_ ) * eval( rhs_ ) );
+            osres_  -= serial( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ -= serial( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException( ex );
