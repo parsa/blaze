@@ -139,6 +139,8 @@ class OperationTest
    template< typename T > void testScaledOperation   ( T scalar );
                           void testTransposeOperation();
                           void testAbsOperation      ();
+                          void testEvalOperation     ();
+                          void testSerialOperation   ();
                           void testSubvectorOperation();
    //@}
    //**********************************************************************************************
@@ -262,6 +264,8 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testScaledOperation( 2.0 );
    testTransposeOperation();
    testAbsOperation();
+   testEvalOperation();
+   testSerialOperation();
    testSubvectorOperation();
 }
 //*************************************************************************************************
@@ -1877,6 +1881,378 @@ void OperationTest<VT1,VT2>::testAbsOperation()
             dres_   *= abs( eval( lhs_ ) % eval( rhs_ ) );
             sres_   *= abs( eval( lhs_ ) % eval( rhs_ ) );
             refres_ *= abs( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the evaluated sparse vector/dense vector cross product.
+//
+// \return void
+// \exception std::runtime_error Cross product error detected.
+//
+// This function tests the evaluated vector cross product with plain assignment, addition
+// assignment, subtraction assignment, and multiplication assignment. In case any error resulting
+// from the cross product or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testEvalOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_EVAL_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_EVAL_OPERATION > 1 )
+   {
+      //=====================================================================================
+      // Eval cross product
+      //=====================================================================================
+
+      // Eval cross product with the given vectors
+      {
+         test_  = "Eval cross product with the given vectors";
+         error_ = "Failed cross product operation";
+
+         try {
+            initResults();
+            dres_   = eval( lhs_ % rhs_ );
+            sres_   = eval( lhs_ % rhs_ );
+            refres_ = eval( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Eval cross product with evaluated vectors
+      {
+         test_  = "Eval cross product with evaluated vectors";
+         error_ = "Failed cross product operation";
+
+         try {
+            initResults();
+            dres_   = eval( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   = eval( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ = eval( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Eval cross product with addition assignment
+      //=====================================================================================
+
+      // Eval cross product with addition assignment with the given vectors
+      {
+         test_  = "Eval cross product with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += eval( lhs_ % rhs_ );
+            sres_   += eval( lhs_ % rhs_ );
+            refres_ += eval( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Eval cross product with addition assignment with evaluated vectors
+      {
+         test_  = "Eval cross product with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += eval( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   += eval( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ += eval( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Eval cross product with subtraction assignment
+      //=====================================================================================
+
+      // Eval cross product with subtraction assignment with the given vectors
+      {
+         test_  = "Eval cross product with subtraction assignment with the given types";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= eval( lhs_ % rhs_ );
+            sres_   -= eval( lhs_ % rhs_ );
+            refres_ -= eval( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Eval cross product with subtraction assignment with evaluated vectors
+      {
+         test_  = "Eval cross product with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= eval( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   -= eval( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ -= eval( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Eval cross product with multiplication assignment
+      //=====================================================================================
+
+      // Eval cross product with multiplication assignment with the given vectors
+      {
+         test_  = "Eval cross product with multiplication assignment with the given vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            dres_   *= eval( lhs_ % rhs_ );
+            sres_   *= eval( lhs_ % rhs_ );
+            refres_ *= eval( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Eval cross product with multiplication assignment with evaluated vectors
+      {
+         test_  = "Eval cross product with multiplication assignment with evaluated vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            dres_   *= eval( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   *= eval( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ *= eval( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the serialized sparse vector/dense vector cross product.
+//
+// \return void
+// \exception std::runtime_error Cross product error detected.
+//
+// This function tests the serialized vector cross product with plain assignment, addition
+// assignment, subtraction assignment, and multiplication assignment. In case any error resulting
+// from the cross product or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testSerialOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION > 1 )
+   {
+      //=====================================================================================
+      // Serial cross product
+      //=====================================================================================
+
+      // Serial cross product with the given vectors
+      {
+         test_  = "Serial cross product with the given vectors";
+         error_ = "Failed cross product operation";
+
+         try {
+            initResults();
+            dres_   = serial( lhs_ % rhs_ );
+            sres_   = serial( lhs_ % rhs_ );
+            refres_ = serial( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Serial cross product with evaluated vectors
+      {
+         test_  = "Serial cross product with evaluated vectors";
+         error_ = "Failed cross product operation";
+
+         try {
+            initResults();
+            dres_   = serial( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   = serial( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ = serial( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Serial cross product with addition assignment
+      //=====================================================================================
+
+      // Serial cross product with addition assignment with the given vectors
+      {
+         test_  = "Serial cross product with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += serial( lhs_ % rhs_ );
+            sres_   += serial( lhs_ % rhs_ );
+            refres_ += serial( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Serial cross product with addition assignment with evaluated vectors
+      {
+         test_  = "Serial cross product with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += serial( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   += serial( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ += serial( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Serial cross product with subtraction assignment
+      //=====================================================================================
+
+      // Serial cross product with subtraction assignment with the given vectors
+      {
+         test_  = "Serial cross product with subtraction assignment with the given types";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= serial( lhs_ % rhs_ );
+            sres_   -= serial( lhs_ % rhs_ );
+            refres_ -= serial( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Serial cross product with subtraction assignment with evaluated vectors
+      {
+         test_  = "Serial cross product with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= serial( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   -= serial( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ -= serial( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Serial cross product with multiplication assignment
+      //=====================================================================================
+
+      // Serial cross product with multiplication assignment with the given vectors
+      {
+         test_  = "Serial cross product with multiplication assignment with the given vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            dres_   *= serial( lhs_ % rhs_ );
+            sres_   *= serial( lhs_ % rhs_ );
+            refres_ *= serial( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Serial cross product with multiplication assignment with evaluated vectors
+      {
+         test_  = "Serial cross product with multiplication assignment with evaluated vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            dres_   *= serial( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   *= serial( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ *= serial( eval( reflhs_ ) % eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException( ex );
