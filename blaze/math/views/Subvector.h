@@ -51,6 +51,7 @@
 #include <blaze/math/typetraits/IsVecEvalExpr.h>
 #include <blaze/math/typetraits/IsVecScalarDivExpr.h>
 #include <blaze/math/typetraits/IsVecScalarMultExpr.h>
+#include <blaze/math/typetraits/IsVecSerialExpr.h>
 #include <blaze/math/typetraits/IsVecTransExpr.h>
 #include <blaze/math/typetraits/IsVecVecAddExpr.h>
 #include <blaze/math/typetraits/IsVecVecMultExpr.h>
@@ -666,6 +667,33 @@ inline typename EnableIf< IsVecEvalExpr<VT>, typename SubvectorExprTrait<VT,AF>:
    BLAZE_FUNCTION_TRACE;
 
    return eval( subvector<AF>( (~vector).operand(), index, size ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given vector serialization operation.
+// \ingroup views
+//
+// \param vector The constant vector serialization operation.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
+// \return View on the specified subvector of the serialization operation.
+//
+// This function returns an expression representing the specified subvector of the given vector
+// serialization operation.
+*/
+template< bool AF      // Alignment flag
+        , typename VT  // Type of the vector
+        , bool TF >    // Transpose flag
+inline typename EnableIf< IsVecSerialExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >::Type
+   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return serial( subvector<AF>( (~vector).operand(), index, size ) );
 }
 /*! \endcond */
 //*************************************************************************************************
