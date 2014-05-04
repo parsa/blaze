@@ -46,11 +46,13 @@
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/intrinsics/IntrinsicTrait.h>
+#include <blaze/math/smp/ParallelSection.h>
 #include <blaze/math/smp/SerialSection.h>
 #include <blaze/math/SparseSubvector.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/system/OpenMP.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/StaticAssert.h>
@@ -61,21 +63,20 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  GLOBAL FUNCTIONS
+//  PLAIN ASSIGNMENT
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP assignment of a vector to a dense vector.
+/*!\brief Default implementation of the OpenMP-based SMP assignment to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side vector to be assigned.
 // \return void
 //
-// This function implements the default OpenMP-based SMP assignment of a vector to a dense
-// vector.\n
+// This function implements the default OpenMP-based SMP assignment to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -85,7 +86,8 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
-inline void smpAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+inline typename DisableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
+   smpAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -98,14 +100,15 @@ inline void smpAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP assignment of a dense vector to a dense vector.
+/*!\brief Backend of the OpenMP-based SMP assignment of a dense vector to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side dense vector to be assigned.
 // \return void
 //
-// This function implements the OpenMP-based SMP assignment of a dense vector to a dense vector.\n
+// This function is the backend implementation of the OpenMP-based SMP assignment of a dense
+// vector to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -115,17 +118,12 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF2 >    // Transpose flag of the right-hand side dense vector
-typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
-   smpAssign( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
+void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
-
-   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
-      assign( ~lhs, ~rhs );
-      return;
-   }
+   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename VT1::ElementType                         ET1;
    typedef typename VT2::ElementType                         ET2;
@@ -137,97 +135,35 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
    const bool lhsAligned  ( (~lhs).isAligned() );
    const bool rhsAligned  ( (~rhs).isAligned() );
 
-#pragma omp parallel shared( lhs, rhs )
-   {
-      const int    threads      ( omp_get_num_threads() );
-      const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
-      const size_t equalShare   ( (~lhs).size() / threads + addon );
-      const size_t rest         ( equalShare & ( IT::size - 1UL ) );
-      const size_t sizePerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
+   const int    threads      ( omp_get_num_threads() );
+   const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare   ( (~lhs).size() / threads + addon );
+   const size_t rest         ( equalShare & ( IT::size - 1UL ) );
+   const size_t sizePerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
 
 #pragma omp for schedule(dynamic,1) nowait
-      for( int i=0UL; i<threads; ++i )
-      {
-         const size_t index( i*sizePerThread );
+   for( int i=0UL; i<threads; ++i )
+   {
+      const size_t index( i*sizePerThread );
 
-         if( index >= (~lhs).size() )
-            continue;
+      if( index >= (~lhs).size() )
+         continue;
 
-         const size_t size( min( sizePerThread, (~lhs).size() - index ) );
+      const size_t size( min( sizePerThread, (~lhs).size() - index ) );
 
-         if( vectorizable && lhsAligned && rhsAligned ) {
-            AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
-            assign( target, subvector<aligned>( ~rhs, index, size ) );
-         }
-         else if( vectorizable && lhsAligned ) {
-            AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
-            assign( target, subvector<unaligned>( ~rhs, index, size ) );
-         }
-         else if( vectorizable && rhsAligned ) {
-            UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
-            assign( target, subvector<aligned>( ~rhs, index, size ) );
-         }
-         else {
-            UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
-            assign( target, subvector<unaligned>( ~rhs, index, size ) );
-         }
+      if( vectorizable && lhsAligned && rhsAligned ) {
+         AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+         assign( target, subvector<aligned>( ~rhs, index, size ) );
       }
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP assignment of a sparse vector to a dense vector.
-// \ingroup smp
-//
-// \param lhs The target left-hand side dense vector.
-// \param rhs The right-hand side sparse vector to be assigned.
-// \return void
-//
-// This function implements the OpenMP-based SMP assignment of a sparse vector to a dense vector.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename VT1  // Type of the left-hand side dense vector
-        , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side dense vector
-        , bool TF2 >    // Transpose flag of the right-hand side dense vector
-typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
-   smpAssign( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
-
-   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
-      assign( ~lhs, ~rhs );
-      return;
-   }
-
-   typedef typename VT1::ElementType                         ET1;
-   typedef typename VT2::ElementType                         ET2;
-   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  UnalignedTarget;
-
-#pragma omp parallel shared( lhs, rhs )
-   {
-      const int    threads      ( omp_get_num_threads() );
-      const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
-      const size_t sizePerThread( (~lhs).size() / threads + addon );
-
-#pragma omp for schedule(dynamic,1) nowait
-      for( int i=0UL; i<threads; ++i )
-      {
-         const size_t index( i*sizePerThread );
-
-         if( index >= (~lhs).size() )
-            continue;
-
-         const size_t size( min( sizePerThread, (~lhs).size() - index ) );
+      else if( vectorizable && lhsAligned ) {
+         AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+         assign( target, subvector<unaligned>( ~rhs, index, size ) );
+      }
+      else if( vectorizable && rhsAligned ) {
+         UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+         assign( target, subvector<aligned>( ~rhs, index, size ) );
+      }
+      else {
          UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
          assign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
@@ -239,16 +175,118 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP addition assignment of a vector to a
-//        dense vector.
+/*!\brief Backend of the OpenMP-based SMP assignment of a sparse vector to a dense vector.
+// \ingroup smp
+//
+// \param lhs The target left-hand side dense vector.
+// \param rhs The right-hand side sparse vector to be assigned.
+// \return void
+//
+// This function is the backend implementation of the OpenMP-based SMP assignment of a sparse
+// vector to a dense vector.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , bool TF1      // Transpose flag of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF2 >    // Transpose flag of the right-hand side dense vector
+void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
+
+   typedef typename VT1::ElementType                         ET1;
+   typedef typename VT2::ElementType                         ET2;
+   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  UnalignedTarget;
+
+   const int    threads      ( omp_get_num_threads() );
+   const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
+   const size_t sizePerThread( (~lhs).size() / threads + addon );
+
+#pragma omp for schedule(dynamic,1) nowait
+   for( int i=0UL; i<threads; ++i )
+   {
+      const size_t index( i*sizePerThread );
+
+      if( index >= (~lhs).size() )
+         continue;
+
+      const size_t size( min( sizePerThread, (~lhs).size() - index ) );
+      UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+      assign( target, subvector<unaligned>( ~rhs, index, size ) );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Implementation of the OpenMP-based SMP assignment to a dense vector.
+// \ingroup smp
+//
+// \param lhs The target left-hand side dense vector.
+// \param rhs The right-hand side sparse vector to be assigned.
+// \return void
+//
+// This function performs the OpenMP-based SMP assignment to a dense vector.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , bool TF1      // Transpose flag of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF2 >    // Transpose flag of the right-hand side dense vector
+inline typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
+   smpAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+
+   BLAZE_PARALLEL_SECTION
+   {
+      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
+         assign( ~lhs, ~rhs );
+      }
+      else if( omp_in_parallel() ) {
+         smpAssign_backend( ~lhs, ~rhs );
+      }
+      else {
+#pragma omp parallel shared( lhs, rhs )
+         smpAssign_backend( ~lhs, ~rhs );
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ADDITION ASSIGNMENT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the OpenMP-based SMP addition assignment to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side vector to be added.
 // \return void
 //
-// This function implements the default OpenMP-based SMP addition assignment of a vector to
-// a dense vector.\n
+// This function implements the default OpenMP-based SMP addition assignment to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -258,7 +296,8 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
-inline void smpAddAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+inline typename DisableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
+   smpAddAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -271,16 +310,15 @@ inline void smpAddAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP addition assignment of a dense vector to a
-//        dense vector.
+/*!\brief Backend of the OpenMP-based SMP addition assignment of a dense vector to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side dense vector to be added.
 // \return void
 //
-// This function implements the OpenMP-based SMP addition assignment of a dense vector to a
-// dense vector.\n
+// This function is the backend implementation the OpenMP-based SMP addition assignment of a
+// dense vector to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -290,17 +328,12 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF2 >    // Transpose flag of the right-hand side dense vector
-typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
-   smpAddAssign( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
+void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
-
-   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
-      addAssign( ~lhs, ~rhs );
-      return;
-   }
+   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename VT1::ElementType                         ET1;
    typedef typename VT2::ElementType                         ET2;
@@ -312,99 +345,35 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
    const bool lhsAligned  ( (~lhs).isAligned() );
    const bool rhsAligned  ( (~rhs).isAligned() );
 
-#pragma omp parallel shared( lhs, rhs )
-   {
-      const int    threads      ( omp_get_num_threads() );
-      const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
-      const size_t equalShare   ( (~lhs).size() / threads + addon );
-      const size_t rest         ( equalShare & ( IT::size - 1UL ) );
-      const size_t sizePerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
+   const int    threads      ( omp_get_num_threads() );
+   const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare   ( (~lhs).size() / threads + addon );
+   const size_t rest         ( equalShare & ( IT::size - 1UL ) );
+   const size_t sizePerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
 
 #pragma omp for schedule(dynamic,1) nowait
-      for( int i=0UL; i<threads; ++i )
-      {
-         const size_t index( i*sizePerThread );
+   for( int i=0UL; i<threads; ++i )
+   {
+      const size_t index( i*sizePerThread );
 
-         if( index >= (~lhs).size() )
-            continue;
+      if( index >= (~lhs).size() )
+         continue;
 
-         const size_t size( min( sizePerThread, (~lhs).size() - index ) );
+      const size_t size( min( sizePerThread, (~lhs).size() - index ) );
 
-         if( vectorizable && lhsAligned && rhsAligned ) {
-            AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
-            addAssign( target, subvector<aligned>( ~rhs, index, size ) );
-         }
-         else if( vectorizable && lhsAligned ) {
-            AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
-            addAssign( target, subvector<unaligned>( ~rhs, index, size ) );
-         }
-         else if( vectorizable && rhsAligned ) {
-            UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
-            addAssign( target, subvector<aligned>( ~rhs, index, size ) );
-         }
-         else {
-            UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
-            addAssign( target, subvector<unaligned>( ~rhs, index, size ) );
-         }
+      if( vectorizable && lhsAligned && rhsAligned ) {
+         AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+         addAssign( target, subvector<aligned>( ~rhs, index, size ) );
       }
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP addition assignment of a sparse vector to a
-//        dense vector.
-// \ingroup smp
-//
-// \param lhs The target left-hand side dense vector.
-// \param rhs The right-hand side sparse vector to be added.
-// \return void
-//
-// This function implements the OpenMP-based SMP addition assignment of a sparse vector to a
-// dense vector.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename VT1  // Type of the left-hand side dense vector
-        , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side dense vector
-        , bool TF2 >    // Transpose flag of the right-hand side dense vector
-typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
-   smpAddAssign( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
-
-   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
-      addAssign( ~lhs, ~rhs );
-      return;
-   }
-
-   typedef typename VT1::ElementType                         ET1;
-   typedef typename VT2::ElementType                         ET2;
-   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  UnalignedTarget;
-
-#pragma omp parallel shared( lhs, rhs )
-   {
-      const int    threads      ( omp_get_num_threads() );
-      const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
-      const size_t sizePerThread( (~lhs).size() / threads + addon );
-
-#pragma omp for schedule(dynamic,1) nowait
-      for( int i=0UL; i<threads; ++i )
-      {
-         const size_t index( i*sizePerThread );
-
-         if( index >= (~lhs).size() )
-            continue;
-
-         const size_t size( min( sizePerThread, (~lhs).size() - index ) );
+      else if( vectorizable && lhsAligned ) {
+         AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+         addAssign( target, subvector<unaligned>( ~rhs, index, size ) );
+      }
+      else if( vectorizable && rhsAligned ) {
+         UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+         addAssign( target, subvector<aligned>( ~rhs, index, size ) );
+      }
+      else {
          UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
          addAssign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
@@ -416,8 +385,111 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP subtraction assignment of a vector to
-//        a dense vector.
+/*!\brief Backend of the OpenMP-based SMP addition assignment of a sparse vector to a dense vector.
+// \ingroup smp
+//
+// \param lhs The target left-hand side dense vector.
+// \param rhs The right-hand side sparse vector to be added.
+// \return void
+//
+// This function is the backend implementation the OpenMP-based SMP addition assignment of a
+// sparse vector to a dense vector.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , bool TF1      // Transpose flag of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF2 >    // Transpose flag of the right-hand side dense vector
+void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
+
+   typedef typename VT1::ElementType                         ET1;
+   typedef typename VT2::ElementType                         ET2;
+   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  UnalignedTarget;
+
+   const int    threads      ( omp_get_num_threads() );
+   const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
+   const size_t sizePerThread( (~lhs).size() / threads + addon );
+
+#pragma omp for schedule(dynamic,1) nowait
+   for( int i=0UL; i<threads; ++i )
+   {
+      const size_t index( i*sizePerThread );
+
+      if( index >= (~lhs).size() )
+         continue;
+
+      const size_t size( min( sizePerThread, (~lhs).size() - index ) );
+      UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+      addAssign( target, subvector<unaligned>( ~rhs, index, size ) );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Implementation of the OpenMP-based SMP addition assignment to a dense vector.
+// \ingroup smp
+//
+// \param lhs The target left-hand side dense vector.
+// \param rhs The right-hand side sparse vector to be added.
+// \return void
+//
+// This function implements the OpenMP-based SMP addition assignment to a dense vector.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , bool TF1      // Transpose flag of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF2 >    // Transpose flag of the right-hand side dense vector
+inline typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
+   smpAddAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+
+   BLAZE_PARALLEL_SECTION
+   {
+      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
+         addAssign( ~lhs, ~rhs );
+      }
+      else if( omp_in_parallel() ) {
+         smpAddAssign_backend( ~lhs, ~rhs );
+      }
+      else {
+#pragma omp parallel shared( lhs, rhs )
+         smpAddAssign_backend( ~lhs, ~rhs );
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBTRACTION ASSIGNMENT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the OpenMP-based SMP subtraction assignment to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
@@ -435,7 +507,8 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
-inline void smpSubAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+inline typename DisableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
+   smpSubAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -448,16 +521,15 @@ inline void smpSubAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP subtraction assignment of a dense vector to a
-//        dense vector.
+/*!\brief Backend of the OpenMP-based SMP subtraction assignment of a dense vector to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side dense vector to be subtracted.
 // \return void
 //
-// This function implements the OpenMP-based SMP subtraction assignment of a dense vector to
-// a dense vector.\n
+// This function is the backend implementation the OpenMP-based SMP subtraction assignment of a
+// dense vector to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -467,17 +539,12 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF2 >    // Transpose flag of the right-hand side dense vector
-typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
-   smpSubAssign( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
+void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
-
-   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
-      subAssign( ~lhs, ~rhs );
-      return;
-   }
+   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename VT1::ElementType                         ET1;
    typedef typename VT2::ElementType                         ET2;
@@ -489,99 +556,35 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
    const bool lhsAligned  ( (~lhs).isAligned() );
    const bool rhsAligned  ( (~rhs).isAligned() );
 
-#pragma omp parallel shared( lhs, rhs )
-   {
-      const int    threads      ( omp_get_num_threads() );
-      const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
-      const size_t equalShare   ( (~lhs).size() / threads + addon );
-      const size_t rest         ( equalShare & ( IT::size - 1UL ) );
-      const size_t sizePerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
+   const int    threads      ( omp_get_num_threads() );
+   const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare   ( (~lhs).size() / threads + addon );
+   const size_t rest         ( equalShare & ( IT::size - 1UL ) );
+   const size_t sizePerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
 
 #pragma omp for schedule(dynamic,1) nowait
-      for( int i=0UL; i<threads; ++i )
-      {
-         const size_t index( i*sizePerThread );
+   for( int i=0UL; i<threads; ++i )
+   {
+      const size_t index( i*sizePerThread );
 
-         if( index >= (~lhs).size() )
-            continue;
+      if( index >= (~lhs).size() )
+         continue;
 
-         const size_t size( min( sizePerThread, (~lhs).size() - index ) );
+      const size_t size( min( sizePerThread, (~lhs).size() - index ) );
 
-         if( vectorizable && lhsAligned && rhsAligned ) {
-            AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
-            subAssign( target, subvector<aligned>( ~rhs, index, size ) );
-         }
-         else if( vectorizable && lhsAligned ) {
-            AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
-            subAssign( target, subvector<unaligned>( ~rhs, index, size ) );
-         }
-         else if( vectorizable && rhsAligned ) {
-            UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
-            subAssign( target, subvector<aligned>( ~rhs, index, size ) );
-         }
-         else {
-            UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
-            subAssign( target, subvector<unaligned>( ~rhs, index, size ) );
-         }
+      if( vectorizable && lhsAligned && rhsAligned ) {
+         AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+         subAssign( target, subvector<aligned>( ~rhs, index, size ) );
       }
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP subtraction assignment of a sparse vector to a
-//        dense vector.
-// \ingroup smp
-//
-// \param lhs The target left-hand side dense vector.
-// \param rhs The right-hand side sparse vector to be subtracted.
-// \return void
-//
-// This function implements the OpenMP-based SMP subtraction assignment of a sparse vector to
-// a dense vector.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename VT1  // Type of the left-hand side dense vector
-        , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side dense vector
-        , bool TF2 >    // Transpose flag of the right-hand side dense vector
-typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
-   smpSubAssign( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
-
-   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
-      subAssign( ~lhs, ~rhs );
-      return;
-   }
-
-   typedef typename VT1::ElementType                         ET1;
-   typedef typename VT2::ElementType                         ET2;
-   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  UnalignedTarget;
-
-#pragma omp parallel shared( lhs, rhs )
-   {
-      const int    threads      ( omp_get_num_threads() );
-      const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
-      const size_t sizePerThread( (~lhs).size() / threads + addon );
-
-#pragma omp for schedule(dynamic,1) nowait
-      for( int i=0UL; i<threads; ++i )
-      {
-         const size_t index( i*sizePerThread );
-
-         if( index >= (~lhs).size() )
-            continue;
-
-         const size_t size( min( sizePerThread, (~lhs).size() - index ) );
+      else if( vectorizable && lhsAligned ) {
+         AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+         subAssign( target, subvector<unaligned>( ~rhs, index, size ) );
+      }
+      else if( vectorizable && rhsAligned ) {
+         UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+         subAssign( target, subvector<aligned>( ~rhs, index, size ) );
+      }
+      else {
          UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
          subAssign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
@@ -593,16 +596,119 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP multiplication assignment of a vector
-//        to a dense vector.
+/*!\brief Backend of the OpenMP-based SMP subtraction assignment of a sparse vector to a dense vector.
+// \ingroup smp
+//
+// \param lhs The target left-hand side dense vector.
+// \param rhs The right-hand side sparse vector to be subtracted.
+// \return void
+//
+// This function is the backend implementation of the OpenMP-based SMP subtraction assignment of
+// a sparse vector to a dense vector.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , bool TF1      // Transpose flag of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF2 >    // Transpose flag of the right-hand side dense vector
+void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
+
+   typedef typename VT1::ElementType                         ET1;
+   typedef typename VT2::ElementType                         ET2;
+   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  UnalignedTarget;
+
+   const int    threads      ( omp_get_num_threads() );
+   const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
+   const size_t sizePerThread( (~lhs).size() / threads + addon );
+
+#pragma omp for schedule(dynamic,1) nowait
+   for( int i=0UL; i<threads; ++i )
+   {
+      const size_t index( i*sizePerThread );
+
+      if( index >= (~lhs).size() )
+         continue;
+
+      const size_t size( min( sizePerThread, (~lhs).size() - index ) );
+      UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+      subAssign( target, subvector<unaligned>( ~rhs, index, size ) );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Implementation of the OpenMP-based SMP subtraction assignment to a dense vector.
+// \ingroup smp
+//
+// \param lhs The target left-hand side dense vector.
+// \param rhs The right-hand side sparse vector to be subtracted.
+// \return void
+//
+// This function implements the OpenMP-based SMP subtraction assignment to a dense vector.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , bool TF1      // Transpose flag of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF2 >    // Transpose flag of the right-hand side dense vector
+inline typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
+   smpSubAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+
+   BLAZE_PARALLEL_SECTION
+   {
+      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
+         subAssign( ~lhs, ~rhs );
+      }
+      else if( omp_in_parallel() ) {
+         smpSubAssign_backend( ~lhs, ~rhs );
+      }
+      else {
+#pragma omp parallel shared( lhs, rhs )
+         smpSubAssign_backend( ~lhs, ~rhs );
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MULTIPLICATION ASSIGNMENT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the OpenMP-based SMP multiplication assignment to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side vector to be multiplied.
 // \return void
 //
-// This function implements the default OpenMP-based SMP multiplication assignment of a vector
-// to a dense vector.\n
+// This function implements the default OpenMP-based SMP multiplication assignment to a dense
+// vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -612,7 +718,8 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
-inline void smpMultAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+inline typename DisableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
+   smpMultAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -625,16 +732,16 @@ inline void smpMultAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP multiplication assignment of a dense vector
-//        to a dense vector.
+/*!\brief Backend of the OpenMP-based SMP multiplication assignment of a dense vector to a
+//        dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side dense vector to be multiplied.
 // \return void
 //
-// This function implements the OpenMP-based SMP multiplication assignment of a dense vector
-// to a dense vector.\n
+// This function is the backend implementation of the OpenMP-based SMP multiplication assignment
+// of a dense vector to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -644,17 +751,12 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF2 >    // Transpose flag of the right-hand side dense vector
-typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
-   smpMultAssign( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
+void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
-
-   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
-      multAssign( ~lhs, ~rhs );
-      return;
-   }
+   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename VT1::ElementType                         ET1;
    typedef typename VT2::ElementType                         ET2;
@@ -666,40 +768,37 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
    const bool lhsAligned  ( (~lhs).isAligned() );
    const bool rhsAligned  ( (~rhs).isAligned() );
 
-#pragma omp parallel shared( lhs, rhs )
-   {
-      const int    threads      ( omp_get_num_threads() );
-      const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
-      const size_t equalShare   ( (~lhs).size() / threads + addon );
-      const size_t rest         ( equalShare & ( IT::size - 1UL ) );
-      const size_t sizePerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
+   const int    threads      ( omp_get_num_threads() );
+   const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare   ( (~lhs).size() / threads + addon );
+   const size_t rest         ( equalShare & ( IT::size - 1UL ) );
+   const size_t sizePerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
 
 #pragma omp for schedule(dynamic,1) nowait
-      for( int i=0UL; i<threads; ++i )
-      {
-         const size_t index( i*sizePerThread );
+   for( int i=0UL; i<threads; ++i )
+   {
+      const size_t index( i*sizePerThread );
 
-         if( index >= (~lhs).size() )
-            continue;
+      if( index >= (~lhs).size() )
+         continue;
 
-         const size_t size( min( sizePerThread, (~lhs).size() - index ) );
+      const size_t size( min( sizePerThread, (~lhs).size() - index ) );
 
-         if( vectorizable && lhsAligned && rhsAligned ) {
-            AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
-            multAssign( target, subvector<aligned>( ~rhs, index, size ) );
-         }
-         else if( vectorizable && lhsAligned ) {
-            AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
-            multAssign( target, subvector<unaligned>( ~rhs, index, size ) );
-         }
-         else if( vectorizable && rhsAligned ) {
-            UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
-            multAssign( target, subvector<aligned>( ~rhs, index, size ) );
-         }
-         else {
-            UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
-            multAssign( target, subvector<unaligned>( ~rhs, index, size ) );
-         }
+      if( vectorizable && lhsAligned && rhsAligned ) {
+         AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+         multAssign( target, subvector<aligned>( ~rhs, index, size ) );
+      }
+      else if( vectorizable && lhsAligned ) {
+         AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+         multAssign( target, subvector<unaligned>( ~rhs, index, size ) );
+      }
+      else if( vectorizable && rhsAligned ) {
+         UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+         multAssign( target, subvector<aligned>( ~rhs, index, size ) );
+      }
+      else {
+         UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+         multAssign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
    }
 }
@@ -709,16 +808,16 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP multiplication assignment of a sparse vector
-//        to a dense vector.
+/*!\brief Backend of the OpenMP-based SMP multiplication assignment of a sparse vector to a
+//        dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side sparse vector to be multiplied.
 // \return void
 //
-// This function implements the OpenMP-based SMP multiplication assignment of a sparse vector
-// to a dense vector.\n
+// This function is the backend implementation of the OpenMP-based SMP multiplication assignment
+// of a sparse vector to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -728,39 +827,75 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF2 >    // Transpose flag of the right-hand side dense vector
-typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
-   smpMultAssign( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs )
+void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
-
-   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
-      multAssign( ~lhs, ~rhs );
-      return;
-   }
+   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename VT1::ElementType                         ET1;
    typedef typename VT2::ElementType                         ET2;
    typedef typename SubvectorExprTrait<VT1,unaligned>::Type  UnalignedTarget;
 
-#pragma omp parallel shared( lhs, rhs )
-   {
-      const int    threads      ( omp_get_num_threads() );
-      const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
-      const size_t sizePerThread( (~lhs).size() / threads + addon );
+   const int    threads      ( omp_get_num_threads() );
+   const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
+   const size_t sizePerThread( (~lhs).size() / threads + addon );
 
 #pragma omp for schedule(dynamic,1) nowait
-      for( int i=0UL; i<threads; ++i )
-      {
-         const size_t index( i*sizePerThread );
+   for( int i=0UL; i<threads; ++i )
+   {
+      const size_t index( i*sizePerThread );
 
-         if( index >= (~lhs).size() )
-            continue;
+      if( index >= (~lhs).size() )
+         continue;
 
-         const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-         UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
-         multAssign( target, subvector<unaligned>( ~rhs, index, size ) );
+      const size_t size( min( sizePerThread, (~lhs).size() - index ) );
+      UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+      multAssign( target, subvector<unaligned>( ~rhs, index, size ) );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Implementation of the OpenMP-based SMP multiplication assignment to a dense vector.
+// \ingroup smp
+//
+// \param lhs The target left-hand side dense vector.
+// \param rhs The right-hand side dense vector to be multiplied.
+// \return void
+//
+// This function implements the OpenMP-based SMP multiplication assignment to a dense vector.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , bool TF1      // Transpose flag of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF2 >    // Transpose flag of the right-hand side dense vector
+inline typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
+   smpMultAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+
+   BLAZE_PARALLEL_SECTION
+   {
+      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
+         multAssign( ~lhs, ~rhs );
+      }
+      else if( omp_in_parallel() ) {
+         smpMultAssign_backend( ~lhs, ~rhs );
+      }
+      else {
+#pragma omp parallel shared( lhs, rhs )
+         smpMultAssign_backend( ~lhs, ~rhs );
       }
    }
 }
@@ -772,7 +907,7 @@ typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 
 //=================================================================================================
 //
-//  COMPILE TIME CONSTRAINT
+//  COMPILE TIME CONSTRAINTS
 //
 //=================================================================================================
 
