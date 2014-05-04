@@ -1289,10 +1289,15 @@ inline size_t DynamicMatrix<Type,SO>::nonZeros() const
 
 
 //*************************************************************************************************
-/*!\brief Returns the number of non-zero elements in the specified row.
+/*!\brief Returns the number of non-zero elements in the specified row/column.
 //
-// \param i The index of the row.
-// \return The number of non-zero elements of row \a i.
+// \param i The index of the row/column.
+// \return The number of non-zero elements of row/column \a i.
+//
+// This function returns the current number of non-zero elements in the specified row/column.
+// In case the storage order is set to \a rowMajor the function returns the number of non-zero
+// elements in row \a i, in case the storage flag is set to \a columnMajor the function returns
+// the number of non-zero elements in column \a i.
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
