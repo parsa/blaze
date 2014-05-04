@@ -46,12 +46,14 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/intrinsics/IntrinsicTrait.h>
+#include <blaze/math/smp/ParallelSection.h>
 #include <blaze/math/smp/SerialSection.h>
 #include <blaze/math/SparseSubmatrix.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/system/OpenMP.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/StaticAssert.h>
@@ -62,21 +64,20 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  GLOBAL FUNCTIONS
+//  PLAIN ASSIGNMENT
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP assignment of a matrix to a dense matrix.
+/*!\brief Default implementation of the OpenMP-based SMP assignment to a dense matrix.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side matrix to be assigned.
 // \return void
 //
-// This function implements the default OpenMP-based SMP assignment of a matrix to a dense
-// matrix.\n
+// This function implements the default OpenMP-based SMP assignment to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -86,7 +87,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline void smpAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline typename DisableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
+   smpAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -100,16 +102,15 @@ inline void smpAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP assignment of a row-major dense matrix to a
-//        dense matrix.
+/*!\brief Backend of the OpenMP-based SMP assignment of a row-major dense matrix to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side row-major dense matrix to be assigned.
 // \return void
 //
-// This function implements the OpenMP-based SMP assignment of a row-major dense matrix to a
-// dense matrix.\n
+// This function is the backend implementation of the OpenMP-based SMP assignment of a row-major
+// dense matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -118,18 +119,13 @@ inline void smpAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 template< typename MT1    // Type of the left-hand side dense matrix
         , bool SO         // Storage order of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
-   smpAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor>& rhs )
+void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-
-   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
-      assign( ~lhs, ~rhs );
-      return;
-   }
+   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
    typedef typename MT2::ElementType                         ET2;
@@ -141,183 +137,35 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
    const bool lhsAligned  ( (~lhs).isAligned() );
    const bool rhsAligned  ( (~rhs).isAligned() );
 
-#pragma omp parallel shared( lhs, rhs )
-   {
-      const int    threads      ( omp_get_num_threads() );
-      const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
-      const size_t equalShare   ( (~lhs).rows() / threads + addon );
-      const size_t rest         ( equalShare & ( IT::size - 1UL ) );
-      const size_t rowsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
+   const int    threads      ( omp_get_num_threads() );
+   const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare   ( (~lhs).rows() / threads + addon );
+   const size_t rest         ( equalShare & ( IT::size - 1UL ) );
+   const size_t rowsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
 
 #pragma omp for schedule(dynamic,1) nowait
-      for( int i=0UL; i<threads; ++i )
-      {
-         const size_t row( i*rowsPerThread );
+   for( int i=0UL; i<threads; ++i )
+   {
+      const size_t row( i*rowsPerThread );
 
-         if( row >= (~lhs).rows() )
-            continue;
+      if( row >= (~lhs).rows() )
+         continue;
 
-         const size_t m( min( rowsPerThread, (~lhs).rows() - row ) );
+      const size_t m( min( rowsPerThread, (~lhs).rows() - row ) );
 
-         if( vectorizable && lhsAligned && rhsAligned ) {
-            AlignedTarget target( submatrix<aligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
-            assign( target, submatrix<aligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
-         }
-         else if( vectorizable && lhsAligned ) {
-            AlignedTarget target( submatrix<aligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
-            assign( target, submatrix<unaligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
-         }
-         else if( vectorizable && rhsAligned ) {
-            UnalignedTarget target( submatrix<unaligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
-            assign( target, submatrix<aligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
-         }
-         else {
-            UnalignedTarget target( submatrix<unaligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
-            assign( target, submatrix<unaligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
-         }
+      if( vectorizable && lhsAligned && rhsAligned ) {
+         AlignedTarget target( submatrix<aligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
+         assign( target, submatrix<aligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
       }
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP assignment of a column-major dense matrix to a
-//        dense matrix.
-// \ingroup math
-//
-// \param lhs The target left-hand side dense matrix.
-// \param rhs The right-hand side column-major dense matrix to be assigned.
-// \return void
-//
-// This function implements the OpenMP-based SMP assignment of a column-major dense matrix to a
-// dense matrix.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT1    // Type of the left-hand side dense matrix
-        , bool SO         // Storage order of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
-inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
-   smpAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMajor>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-
-   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
-      assign( ~lhs, ~rhs );
-      return;
-   }
-
-   typedef typename MT1::ElementType                         ET1;
-   typedef typename MT2::ElementType                         ET2;
-   typedef IntrinsicTrait<typename MT1::ElementType>         IT;
-   typedef typename SubmatrixExprTrait<MT1,aligned>::Type    AlignedTarget;
-   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
-
-   const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
-   const bool lhsAligned  ( (~lhs).isAligned() );
-   const bool rhsAligned  ( (~rhs).isAligned() );
-
-#pragma omp parallel shared( lhs, rhs )
-   {
-      const int    threads      ( omp_get_num_threads() );
-      const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
-      const size_t equalShare   ( (~lhs).columns() / threads + addon );
-      const size_t rest         ( equalShare & ( IT::size - 1UL ) );
-      const size_t colsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
-
-#pragma omp for schedule(dynamic,1) nowait
-      for( int i=0UL; i<threads; ++i )
-      {
-         const size_t column( i*colsPerThread );
-
-         if( column >= (~lhs).columns() )
-            continue;
-
-         const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
-
-         if( vectorizable && lhsAligned && rhsAligned ) {
-            AlignedTarget target( submatrix<aligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
-            assign( target, submatrix<aligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
-         }
-         else if( vectorizable && lhsAligned ) {
-            AlignedTarget target( submatrix<aligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
-            assign( target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
-         }
-         else if( vectorizable && rhsAligned ) {
-            UnalignedTarget target( submatrix<unaligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
-            assign( target, submatrix<aligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
-         }
-         else {
-            UnalignedTarget target( submatrix<unaligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
-            assign( target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
-         }
+      else if( vectorizable && lhsAligned ) {
+         AlignedTarget target( submatrix<aligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
+         assign( target, submatrix<unaligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
       }
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP assignment of a row-major sparse matrix to a
-//        dense matrix.
-// \ingroup math
-//
-// \param lhs The target left-hand side dense matrix.
-// \param rhs The right-hand side row-major sparse matrix to be assigned.
-// \return void
-//
-// This function implements the OpenMP-based SMP assignment of a row-major sparse matrix to a
-// dense matrix.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT1    // Type of the left-hand side dense matrix
-        , bool SO         // Storage order of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side sparse matrix
-inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
-   smpAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowMajor>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-
-   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
-      assign( ~lhs, ~rhs );
-      return;
-   }
-
-   typedef typename MT1::ElementType                         ET1;
-   typedef typename MT2::ElementType                         ET2;
-   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
-
-#pragma omp parallel shared( lhs, rhs )
-   {
-      const int    threads      ( omp_get_num_threads() );
-      const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
-      const size_t rowsPerThread( (~lhs).rows() / threads + addon );
-
-#pragma omp for schedule(dynamic,1) nowait
-      for( int i=0UL; i<threads; ++i )
-      {
-         const size_t row( i*rowsPerThread );
-
-         if( row >= (~lhs).rows() )
-            continue;
-
-         const size_t m( min( rowsPerThread, (~lhs).rows() - row ) );
+      else if( vectorizable && rhsAligned ) {
+         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
+         assign( target, submatrix<aligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
+      }
+      else {
          UnalignedTarget target( submatrix<unaligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
          assign( target, submatrix<unaligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
       }
@@ -329,16 +177,15 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP assignment of a column-major sparse matrix to a
-//        dense matrix.
+/*!\brief Backend of the OpenMP-based SMP assignment of a column-major dense matrix to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
-// \param rhs The right-hand side column-major sparse matrix to be assigned.
+// \param rhs The right-hand side column-major dense matrix to be assigned.
 // \return void
 //
-// This function implements the OpenMP-based SMP assignment of a column-major sparse matrix to
-// a dense matrix.\n
+// This function is the backend implementation of the OpenMP-based SMP assignment of a column-major
+// dense matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -346,39 +193,54 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , bool SO         // Storage order of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side sparse matrix
-inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
-   smpAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,columnMajor>& rhs )
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMajor>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-
-   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
-      assign( ~lhs, ~rhs );
-      return;
-   }
+   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
    typedef typename MT2::ElementType                         ET2;
+   typedef IntrinsicTrait<typename MT1::ElementType>         IT;
+   typedef typename SubmatrixExprTrait<MT1,aligned>::Type    AlignedTarget;
    typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
 
-#pragma omp parallel shared( lhs, rhs )
-   {
-      const int    threads      ( omp_get_num_threads() );
-      const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
-      const size_t colsPerThread( (~lhs).columns() / threads + addon );
+   const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
+   const bool lhsAligned  ( (~lhs).isAligned() );
+   const bool rhsAligned  ( (~rhs).isAligned() );
+
+   const int    threads      ( omp_get_num_threads() );
+   const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare   ( (~lhs).columns() / threads + addon );
+   const size_t rest         ( equalShare & ( IT::size - 1UL ) );
+   const size_t colsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
 
 #pragma omp for schedule(dynamic,1) nowait
-      for( int i=0UL; i<threads; ++i )
-      {
-         const size_t column( i*colsPerThread );
+   for( int i=0UL; i<threads; ++i )
+   {
+      const size_t column( i*colsPerThread );
 
-         if( column >= (~lhs).columns() )
-            continue;
+      if( column >= (~lhs).columns() )
+         continue;
 
-         const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
+      const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
+
+      if( vectorizable && lhsAligned && rhsAligned ) {
+         AlignedTarget target( submatrix<aligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
+         assign( target, submatrix<aligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
+      }
+      else if( vectorizable && lhsAligned ) {
+         AlignedTarget target( submatrix<aligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
+         assign( target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
+      }
+      else if( vectorizable && rhsAligned ) {
+         UnalignedTarget target( submatrix<unaligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
+         assign( target, submatrix<aligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
+      }
+      else {
          UnalignedTarget target( submatrix<unaligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
          assign( target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
       }
@@ -390,16 +252,118 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP addition assignment of a matrix to a
-//        dense matrix.
-// \ingroup smp
+/*!\brief Backend of the OpenMP-based SMP assignment of a row-major sparse matrix to a dense matrix.
+// \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
-// \param rhs The right-hand side matrix to be added.
+// \param rhs The right-hand side row-major sparse matrix to be assigned.
 // \return void
 //
-// This function implements the default OpenMP-based SMP addition assignment of a matrix to a
-// dense matrix.\n
+// This function is the backend implementation of the OpenMP-based SMP assignment of a row-major
+// sparse matrix to a dense matrix.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , bool SO         // Storage order of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowMajor>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
+
+   typedef typename MT1::ElementType                         ET1;
+   typedef typename MT2::ElementType                         ET2;
+   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
+
+   const int    threads      ( omp_get_num_threads() );
+   const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
+   const size_t rowsPerThread( (~lhs).rows() / threads + addon );
+
+#pragma omp for schedule(dynamic,1) nowait
+   for( int i=0UL; i<threads; ++i )
+   {
+      const size_t row( i*rowsPerThread );
+
+      if( row >= (~lhs).rows() )
+         continue;
+
+      const size_t m( min( rowsPerThread, (~lhs).rows() - row ) );
+      UnalignedTarget target( submatrix<unaligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
+      assign( target, submatrix<unaligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the OpenMP-based SMP assignment of a column-major sparse matrix to a dense matrix.
+// \ingroup math
+//
+// \param lhs The target left-hand side dense matrix.
+// \param rhs The right-hand side column-major sparse matrix to be assigned.
+// \return void
+//
+// This function is the backend implementation of the OpenMP-based SMP assignment of a column-major
+// sparse matrix to a dense matrix.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , bool SO         // Storage order of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,columnMajor>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
+
+   typedef typename MT1::ElementType                         ET1;
+   typedef typename MT2::ElementType                         ET2;
+   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
+
+   const int    threads      ( omp_get_num_threads() );
+   const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
+   const size_t colsPerThread( (~lhs).columns() / threads + addon );
+
+#pragma omp for schedule(dynamic,1) nowait
+   for( int i=0UL; i<threads; ++i )
+   {
+      const size_t column( i*colsPerThread );
+
+      if( column >= (~lhs).columns() )
+         continue;
+
+      const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
+      UnalignedTarget target( submatrix<unaligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
+      assign( target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Implementation of the OpenMP-based SMP assignment to a dense matrix.
+// \ingroup math
+//
+// \param lhs The target left-hand side dense matrix.
+// \param rhs The right-hand side column-major sparse matrix to be assigned.
+// \return void
+//
+// This function implements the OpenMP-based SMP assignment to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -409,7 +373,61 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline void smpAddAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
+   smpAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   BLAZE_PARALLEL_SECTION
+   {
+      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
+         assign( ~lhs, ~rhs );
+      }
+      else if( omp_in_parallel() ) {
+         smpAssign_backend( ~lhs, ~rhs );
+      }
+      else {
+#pragma omp parallel shared( lhs, rhs )
+         smpAssign_backend( ~lhs, ~rhs );
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ADDITION ASSIGNMENT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the OpenMP-based SMP addition assignment to a dense matrix.
+// \ingroup smp
+//
+// \param lhs The target left-hand side dense matrix.
+// \param rhs The right-hand side matrix to be added.
+// \return void
+//
+// This function implements the default OpenMP-based SMP addition assignment to a dense matrix.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , bool SO1      // Storage order of the left-hand side matrix
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline typename DisableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
+   smpAddAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -423,7 +441,7 @@ inline void smpAddAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP addition assignment of a row-major dense matrix
+/*!\brief Backend of the OpenMP-based SMP addition assignment of a row-major dense matrix
 //        to a dense matrix.
 // \ingroup math
 //
@@ -431,8 +449,8 @@ inline void smpAddAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs 
 // \param rhs The right-hand side row-major dense matrix to be added.
 // \return void
 //
-// This function implements the OpenMP-based SMP addition assignment of a row-major dense matrix
-// to a dense matrix.\n
+// This function is the backend implementation of the OpenMP-based SMP addition assignment of a
+// row-major dense matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -441,18 +459,13 @@ inline void smpAddAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs 
 template< typename MT1    // Type of the left-hand side dense matrix
         , bool SO         // Storage order of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
-   smpAddAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor>& rhs )
+void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-
-   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
-      addAssign( ~lhs, ~rhs );
-      return;
-   }
+   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
    typedef typename MT2::ElementType                         ET2;
@@ -464,183 +477,35 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
    const bool lhsAligned  ( (~lhs).isAligned() );
    const bool rhsAligned  ( (~rhs).isAligned() );
 
-#pragma omp parallel shared( lhs, rhs )
-   {
-      const int    threads      ( omp_get_num_threads() );
-      const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
-      const size_t equalShare   ( (~lhs).rows() / threads + addon );
-      const size_t rest         ( equalShare & ( IT::size - 1UL ) );
-      const size_t rowsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
+   const int    threads      ( omp_get_num_threads() );
+   const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare   ( (~lhs).rows() / threads + addon );
+   const size_t rest         ( equalShare & ( IT::size - 1UL ) );
+   const size_t rowsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
 
 #pragma omp for schedule(dynamic,1) nowait
-      for( int i=0UL; i<threads; ++i )
-      {
-         const size_t row( i*rowsPerThread );
+   for( int i=0UL; i<threads; ++i )
+   {
+      const size_t row( i*rowsPerThread );
 
-         if( row >= (~lhs).rows() )
-            continue;
+      if( row >= (~lhs).rows() )
+         continue;
 
-         const size_t m( min( rowsPerThread, (~lhs).rows() - row ) );
+      const size_t m( min( rowsPerThread, (~lhs).rows() - row ) );
 
-         if( vectorizable && lhsAligned && rhsAligned ) {
-            AlignedTarget target( submatrix<aligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
-            addAssign( target, submatrix<aligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
-         }
-         else if( vectorizable && lhsAligned ) {
-            AlignedTarget target( submatrix<aligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
-            addAssign( target, submatrix<unaligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
-         }
-         else if( vectorizable && rhsAligned ) {
-            UnalignedTarget target( submatrix<unaligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
-            addAssign( target, submatrix<aligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
-         }
-         else {
-            UnalignedTarget target( submatrix<unaligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
-            addAssign( target, submatrix<unaligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
-         }
+      if( vectorizable && lhsAligned && rhsAligned ) {
+         AlignedTarget target( submatrix<aligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
+         addAssign( target, submatrix<aligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
       }
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP addition assignment of a column-major dense
-//        matrix to a dense matrix.
-// \ingroup math
-//
-// \param lhs The target left-hand side dense matrix.
-// \param rhs The right-hand side column-major dense matrix to be added.
-// \return void
-//
-// This function implements the OpenMP-based SMP addition assignment of a column-major dense
-// matrix to a dense matrix.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT1    // Type of the left-hand side dense matrix
-        , bool SO         // Storage order of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
-inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
-   smpAddAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMajor>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-
-   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
-      addAssign( ~lhs, ~rhs );
-      return;
-   }
-
-   typedef typename MT1::ElementType                         ET1;
-   typedef typename MT2::ElementType                         ET2;
-   typedef IntrinsicTrait<typename MT1::ElementType>         IT;
-   typedef typename SubmatrixExprTrait<MT1,aligned>::Type    AlignedTarget;
-   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
-
-   const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
-   const bool lhsAligned  ( (~lhs).isAligned() );
-   const bool rhsAligned  ( (~rhs).isAligned() );
-
-#pragma omp parallel shared( lhs, rhs )
-   {
-      const int    threads      ( omp_get_num_threads() );
-      const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
-      const size_t equalShare   ( (~lhs).columns() / threads + addon );
-      const size_t rest         ( equalShare & ( IT::size - 1UL ) );
-      const size_t colsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
-
-#pragma omp for schedule(dynamic,1) nowait
-      for( int i=0UL; i<threads; ++i )
-      {
-         const size_t column( i*colsPerThread );
-
-         if( column >= (~lhs).columns() )
-            continue;
-
-         const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
-
-         if( vectorizable && lhsAligned && rhsAligned ) {
-            AlignedTarget target( submatrix<aligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
-            addAssign( target, submatrix<aligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
-         }
-         else if( vectorizable && lhsAligned ) {
-            AlignedTarget target( submatrix<aligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
-            addAssign( target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
-         }
-         else if( vectorizable && rhsAligned ) {
-            UnalignedTarget target( submatrix<unaligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
-            addAssign( target, submatrix<aligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
-         }
-         else {
-            UnalignedTarget target( submatrix<unaligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
-            addAssign( target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
-         }
+      else if( vectorizable && lhsAligned ) {
+         AlignedTarget target( submatrix<aligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
+         addAssign( target, submatrix<unaligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
       }
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP addition assignment of a row-major sparse matrix
-//        to a dense matrix.
-// \ingroup math
-//
-// \param lhs The target left-hand side dense matrix.
-// \param rhs The right-hand side row-major sparse matrix to be added.
-// \return void
-//
-// This function implements the OpenMP-based SMP addition assignment of a row-major sparse matrix
-// to a dense matrix.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT1    // Type of the left-hand side dense matrix
-        , bool SO         // Storage order of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side sparse matrix
-inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
-   smpAddAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowMajor>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-
-   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
-      addAssign( ~lhs, ~rhs );
-      return;
-   }
-
-   typedef typename MT1::ElementType                         ET1;
-   typedef typename MT2::ElementType                         ET2;
-   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
-
-#pragma omp parallel shared( lhs, rhs )
-   {
-      const int    threads      ( omp_get_num_threads() );
-      const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
-      const size_t rowsPerThread( (~lhs).rows() / threads + addon );
-
-#pragma omp for schedule(dynamic,1) nowait
-      for( int i=0UL; i<threads; ++i )
-      {
-         const size_t row( i*rowsPerThread );
-
-         if( row >= (~lhs).rows() )
-            continue;
-
-         const size_t m( min( rowsPerThread, (~lhs).rows() - row ) );
+      else if( vectorizable && rhsAligned ) {
+         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
+         addAssign( target, submatrix<aligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
+      }
+      else {
          UnalignedTarget target( submatrix<unaligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
          addAssign( target, submatrix<unaligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
       }
@@ -652,16 +517,16 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP addition assignment of a column-major sparse
-//        matrix to a dense matrix.
+/*!\brief Backend of the OpenMP-based SMP addition assignment of a column-major dense matrix
+//        to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
-// \param rhs The right-hand side column-major sparse matrix to be added.
+// \param rhs The right-hand side column-major dense matrix to be added.
 // \return void
 //
-// This function implements the OpenMP-based SMP addition assignment of a column-major sparse
-// matrix to a dense matrix.\n
+// This function is the backend implementation of the OpenMP-based SMP addition assignment of a
+// column-major dense matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -669,39 +534,54 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , bool SO         // Storage order of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side sparse matrix
-inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
-   smpAddAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,columnMajor>& rhs )
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMajor>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-
-   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
-      addAssign( ~lhs, ~rhs );
-      return;
-   }
+   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
    typedef typename MT2::ElementType                         ET2;
+   typedef IntrinsicTrait<typename MT1::ElementType>         IT;
+   typedef typename SubmatrixExprTrait<MT1,aligned>::Type    AlignedTarget;
    typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
 
-#pragma omp parallel shared( lhs, rhs )
-   {
-      const int    threads      ( omp_get_num_threads() );
-      const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
-      const size_t colsPerThread( (~lhs).columns() / threads + addon );
+   const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
+   const bool lhsAligned  ( (~lhs).isAligned() );
+   const bool rhsAligned  ( (~rhs).isAligned() );
+
+   const int    threads      ( omp_get_num_threads() );
+   const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare   ( (~lhs).columns() / threads + addon );
+   const size_t rest         ( equalShare & ( IT::size - 1UL ) );
+   const size_t colsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
 
 #pragma omp for schedule(dynamic,1) nowait
-      for( int i=0UL; i<threads; ++i )
-      {
-         const size_t column( i*colsPerThread );
+   for( int i=0UL; i<threads; ++i )
+   {
+      const size_t column( i*colsPerThread );
 
-         if( column >= (~lhs).columns() )
-            continue;
+      if( column >= (~lhs).columns() )
+         continue;
 
-         const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
+      const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
+
+      if( vectorizable && lhsAligned && rhsAligned ) {
+         AlignedTarget target( submatrix<aligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
+         addAssign( target, submatrix<aligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
+      }
+      else if( vectorizable && lhsAligned ) {
+         AlignedTarget target( submatrix<aligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
+         addAssign( target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
+      }
+      else if( vectorizable && rhsAligned ) {
+         UnalignedTarget target( submatrix<unaligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
+         addAssign( target, submatrix<aligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
+      }
+      else {
          UnalignedTarget target( submatrix<unaligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
          addAssign( target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
       }
@@ -713,8 +593,456 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP subtracction assignment of a matrix to a
-//        dense matrix.
+/*!\brief Backend of the OpenMP-based SMP addition assignment of a row-major sparse matrix
+//        to a dense matrix.
+// \ingroup math
+//
+// \param lhs The target left-hand side dense matrix.
+// \param rhs The right-hand side row-major sparse matrix to be added.
+// \return void
+//
+// This function is the backend implementation of the OpenMP-based SMP addition assignment of a
+// row-major sparse matrix to a dense matrix.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , bool SO         // Storage order of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowMajor>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
+
+   typedef typename MT1::ElementType                         ET1;
+   typedef typename MT2::ElementType                         ET2;
+   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
+
+   const int    threads      ( omp_get_num_threads() );
+   const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
+   const size_t rowsPerThread( (~lhs).rows() / threads + addon );
+
+#pragma omp for schedule(dynamic,1) nowait
+   for( int i=0UL; i<threads; ++i )
+   {
+      const size_t row( i*rowsPerThread );
+
+      if( row >= (~lhs).rows() )
+         continue;
+
+      const size_t m( min( rowsPerThread, (~lhs).rows() - row ) );
+      UnalignedTarget target( submatrix<unaligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
+      addAssign( target, submatrix<unaligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the OpenMP-based SMP addition assignment of a column-major sparse matrix
+//        to a dense matrix.
+// \ingroup math
+//
+// \param lhs The target left-hand side dense matrix.
+// \param rhs The right-hand side column-major sparse matrix to be added.
+// \return void
+//
+// This function is the backend implementation of the OpenMP-based SMP addition assignment of a
+// column-major sparse matrix to a dense matrix.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , bool SO         // Storage order of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,columnMajor>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
+
+   typedef typename MT1::ElementType                         ET1;
+   typedef typename MT2::ElementType                         ET2;
+   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
+
+   const int    threads      ( omp_get_num_threads() );
+   const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
+   const size_t colsPerThread( (~lhs).columns() / threads + addon );
+
+#pragma omp for schedule(dynamic,1) nowait
+   for( int i=0UL; i<threads; ++i )
+   {
+      const size_t column( i*colsPerThread );
+
+      if( column >= (~lhs).columns() )
+         continue;
+
+      const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
+      UnalignedTarget target( submatrix<unaligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
+      addAssign( target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Implementation of the OpenMP-based SMP addition assignment to a dense matrix.
+// \ingroup math
+//
+// \param lhs The target left-hand side dense matrix.
+// \param rhs The right-hand side row-major dense matrix to be added.
+// \return void
+//
+// This function implements the OpenMP-based SMP addition assignment to a dense matrix.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , bool SO1      // Storage order of the left-hand side matrix
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
+   smpAddAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   BLAZE_PARALLEL_SECTION
+   {
+      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
+         addAssign( ~lhs, ~rhs );
+      }
+      else if( omp_in_parallel() ) {
+         smpAddAssign_backend( ~lhs, ~rhs );
+      }
+      else {
+#pragma omp parallel shared( lhs, rhs )
+         smpAddAssign_backend( ~lhs, ~rhs );
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBTRACTION ASSIGNMENT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the OpenMP-based SMP subtracction assignment to a dense matrix.
+// \ingroup smp
+//
+// \param lhs The target left-hand side dense matrix.
+// \param rhs The right-hand side matrix to be subtracted.
+// \return void
+//
+// This function implements the default OpenMP-based SMP subtraction assignment to a dense matrix.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , bool SO1      // Storage order of the left-hand side matrix
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline typename DisableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
+   smpSubAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   subAssign( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the OpenMP-based SMP subtraction assignment of a row-major dense matrix
+//        to a dense matrix.
+// \ingroup math
+//
+// \param lhs The target left-hand side dense matrix.
+// \param rhs The right-hand side row-major dense matrix to be subtracted.
+// \return void
+//
+// This function is the backend implementation of the OpenMP-based SMP subtraction assignment
+// of a row-major dense matrix to a dense matrix.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , bool SO         // Storage order of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
+
+   typedef typename MT1::ElementType                         ET1;
+   typedef typename MT2::ElementType                         ET2;
+   typedef IntrinsicTrait<typename MT1::ElementType>         IT;
+   typedef typename SubmatrixExprTrait<MT1,aligned>::Type    AlignedTarget;
+   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
+
+   const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
+   const bool lhsAligned  ( (~lhs).isAligned() );
+   const bool rhsAligned  ( (~rhs).isAligned() );
+
+   const int    threads      ( omp_get_num_threads() );
+   const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare   ( (~lhs).rows() / threads + addon );
+   const size_t rest         ( equalShare & ( IT::size - 1UL ) );
+   const size_t rowsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
+
+#pragma omp for schedule(dynamic,1) nowait
+   for( int i=0UL; i<threads; ++i )
+   {
+      const size_t row( i*rowsPerThread );
+
+      if( row >= (~lhs).rows() )
+         continue;
+
+      const size_t m( min( rowsPerThread, (~lhs).rows() - row ) );
+
+      if( vectorizable && lhsAligned && rhsAligned ) {
+         AlignedTarget target( submatrix<aligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
+         subAssign( target, submatrix<aligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
+      }
+      else if( vectorizable && lhsAligned ) {
+         AlignedTarget target( submatrix<aligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
+         subAssign( target, submatrix<unaligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
+      }
+      else if( vectorizable && rhsAligned ) {
+         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
+         subAssign( target, submatrix<aligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
+      }
+      else {
+         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
+         subAssign( target, submatrix<unaligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the OpenMP-based SMP subtraction assignment of a column-major dense matrix
+//        to a dense matrix.
+// \ingroup math
+//
+// \param lhs The target left-hand side dense matrix.
+// \param rhs The right-hand side column-major dense matrix to be subtracted.
+// \return void
+//
+// This function is the backend implementation of the OpenMP-based SMP subtraction assignment
+// of a column-major dense matrix to a dense matrix.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , bool SO         // Storage order of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMajor>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
+
+   typedef typename MT1::ElementType                         ET1;
+   typedef typename MT2::ElementType                         ET2;
+   typedef IntrinsicTrait<typename MT1::ElementType>         IT;
+   typedef typename SubmatrixExprTrait<MT1,aligned>::Type    AlignedTarget;
+   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
+
+   const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
+   const bool lhsAligned  ( (~lhs).isAligned() );
+   const bool rhsAligned  ( (~rhs).isAligned() );
+
+   const int    threads      ( omp_get_num_threads() );
+   const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare   ( (~lhs).columns() / threads + addon );
+   const size_t rest         ( equalShare & ( IT::size - 1UL ) );
+   const size_t colsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
+
+#pragma omp for schedule(dynamic,1) nowait
+   for( int i=0UL; i<threads; ++i )
+   {
+      const size_t column( i*colsPerThread );
+
+      if( column >= (~lhs).columns() )
+         continue;
+
+      const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
+
+      if( vectorizable && lhsAligned && rhsAligned ) {
+         AlignedTarget target( submatrix<aligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
+         subAssign( target, submatrix<aligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
+      }
+      else if( vectorizable && lhsAligned ) {
+         AlignedTarget target( submatrix<aligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
+         subAssign( target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
+      }
+      else if( vectorizable && rhsAligned ) {
+         UnalignedTarget target( submatrix<unaligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
+         subAssign( target, submatrix<aligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
+      }
+      else {
+         UnalignedTarget target( submatrix<unaligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
+         subAssign( target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the OpenMP-based SMP subtraction assignment of a row-major sparse matrix
+//        to a dense matrix.
+// \ingroup math
+//
+// \param lhs The target left-hand side dense matrix.
+// \param rhs The right-hand side row-major sparse matrix to be subtracted.
+// \return void
+//
+// This function is the backend implementation of the OpenMP-based SMP subtraction assignment
+// of a row-major sparse matrix to a dense matrix.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , bool SO         // Storage order of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowMajor>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
+
+   typedef typename MT1::ElementType                         ET1;
+   typedef typename MT2::ElementType                         ET2;
+   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
+
+   const int    threads      ( omp_get_num_threads() );
+   const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
+   const size_t rowsPerThread( (~lhs).rows() / threads + addon );
+
+#pragma omp for schedule(dynamic,1) nowait
+   for( int i=0UL; i<threads; ++i )
+   {
+      const size_t row( i*rowsPerThread );
+
+      if( row >= (~lhs).rows() )
+         continue;
+
+      const size_t m( min( rowsPerThread, (~lhs).rows() - row ) );
+      UnalignedTarget target( submatrix<unaligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
+      subAssign( target, submatrix<unaligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the OpenMP-based SMP subtraction assignment of a column-major sparse matrix
+//        to a dense matrix.
+// \ingroup math
+//
+// \param lhs The target left-hand side dense matrix.
+// \param rhs The right-hand side column-major sparse matrix to be subtracted.
+// \return void
+//
+// This function is the backend implementation of the OpenMP-based SMP subtraction assignment
+// of a column-major sparse matrix to a dense matrix.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , bool SO         // Storage order of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,columnMajor>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
+
+   typedef typename MT1::ElementType                         ET1;
+   typedef typename MT2::ElementType                         ET2;
+   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
+
+   const int    threads      ( omp_get_num_threads() );
+   const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
+   const size_t colsPerThread( (~lhs).columns() / threads + addon );
+
+#pragma omp for schedule(dynamic,1) nowait
+   for( int i=0UL; i<threads; ++i )
+   {
+      const size_t column( i*colsPerThread );
+
+      if( column >= (~lhs).columns() )
+         continue;
+
+      const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
+      UnalignedTarget target( submatrix<unaligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
+      subAssign( target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Implementation of the OpenMP-based SMP subtracction assignment to a dense matrix.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense matrix.
@@ -732,95 +1060,25 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline void smpSubAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-   subAssign( ~lhs, ~rhs );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP subtraction assignment of a row-major dense
-//        matrix to a dense matrix.
-// \ingroup math
-//
-// \param lhs The target left-hand side dense matrix.
-// \param rhs The right-hand side row-major dense matrix to be subtracted.
-// \return void
-//
-// This function implements the OpenMP-based SMP subtraction assignment of a row-major dense
-// matrix to a dense matrix.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT1    // Type of the left-hand side dense matrix
-        , bool SO         // Storage order of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
 inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
-   smpSubAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor>& rhs )
+   smpSubAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
-      subAssign( ~lhs, ~rhs );
-      return;
-   }
-
-   typedef typename MT1::ElementType                         ET1;
-   typedef typename MT2::ElementType                         ET2;
-   typedef IntrinsicTrait<typename MT1::ElementType>         IT;
-   typedef typename SubmatrixExprTrait<MT1,aligned>::Type    AlignedTarget;
-   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
-
-   const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
-   const bool lhsAligned  ( (~lhs).isAligned() );
-   const bool rhsAligned  ( (~rhs).isAligned() );
-
-#pragma omp parallel shared( lhs, rhs )
+   BLAZE_PARALLEL_SECTION
    {
-      const int    threads      ( omp_get_num_threads() );
-      const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
-      const size_t equalShare   ( (~lhs).rows() / threads + addon );
-      const size_t rest         ( equalShare & ( IT::size - 1UL ) );
-      const size_t rowsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
-
-#pragma omp for schedule(dynamic,1) nowait
-      for( int i=0UL; i<threads; ++i )
-      {
-         const size_t row( i*rowsPerThread );
-
-         if( row >= (~lhs).rows() )
-            continue;
-
-         const size_t m( min( rowsPerThread, (~lhs).rows() - row ) );
-
-         if( vectorizable && lhsAligned && rhsAligned ) {
-            AlignedTarget target( submatrix<aligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
-            subAssign( target, submatrix<aligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
-         }
-         else if( vectorizable && lhsAligned ) {
-            AlignedTarget target( submatrix<aligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
-            subAssign( target, submatrix<unaligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
-         }
-         else if( vectorizable && rhsAligned ) {
-            UnalignedTarget target( submatrix<unaligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
-            subAssign( target, submatrix<aligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
-         }
-         else {
-            UnalignedTarget target( submatrix<unaligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
-            subAssign( target, submatrix<unaligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
-         }
+      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
+         subAssign( ~lhs, ~rhs );
+      }
+      else if( omp_in_parallel() ) {
+         smpSubAssign_backend( ~lhs, ~rhs );
+      }
+      else {
+#pragma omp parallel shared( lhs, rhs )
+         smpSubAssign_backend( ~lhs, ~rhs );
       }
    }
 }
@@ -828,224 +1086,25 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP subtraction assignment of a column-major dense
-//        matrix to a dense matrix.
-// \ingroup math
+
+
+//=================================================================================================
 //
-// \param lhs The target left-hand side dense matrix.
-// \param rhs The right-hand side column-major dense matrix to be subtracted.
-// \return void
+//  MULTIPLICATION ASSIGNMENT
 //
-// This function implements the OpenMP-based SMP subtraction assignment of a column-major dense
-// matrix to a dense matrix.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT1    // Type of the left-hand side dense matrix
-        , bool SO         // Storage order of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
-inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
-   smpSubAssign( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMajor>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-
-   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
-      subAssign( ~lhs, ~rhs );
-      return;
-   }
-
-   typedef typename MT1::ElementType                         ET1;
-   typedef typename MT2::ElementType                         ET2;
-   typedef IntrinsicTrait<typename MT1::ElementType>         IT;
-   typedef typename SubmatrixExprTrait<MT1,aligned>::Type    AlignedTarget;
-   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
-
-   const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
-   const bool lhsAligned  ( (~lhs).isAligned() );
-   const bool rhsAligned  ( (~rhs).isAligned() );
-
-#pragma omp parallel shared( lhs, rhs )
-   {
-      const int    threads      ( omp_get_num_threads() );
-      const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
-      const size_t equalShare   ( (~lhs).columns() / threads + addon );
-      const size_t rest         ( equalShare & ( IT::size - 1UL ) );
-      const size_t colsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
-
-#pragma omp for schedule(dynamic,1) nowait
-      for( int i=0UL; i<threads; ++i )
-      {
-         const size_t column( i*colsPerThread );
-
-         if( column >= (~lhs).columns() )
-            continue;
-
-         const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
-
-         if( vectorizable && lhsAligned && rhsAligned ) {
-            AlignedTarget target( submatrix<aligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
-            subAssign( target, submatrix<aligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
-         }
-         else if( vectorizable && lhsAligned ) {
-            AlignedTarget target( submatrix<aligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
-            subAssign( target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
-         }
-         else if( vectorizable && rhsAligned ) {
-            UnalignedTarget target( submatrix<unaligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
-            subAssign( target, submatrix<aligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
-         }
-         else {
-            UnalignedTarget target( submatrix<unaligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
-            subAssign( target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
-         }
-      }
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
+//=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP subtraction assignment of a row-major sparse
-//        matrix to a dense matrix.
-// \ingroup math
-//
-// \param lhs The target left-hand side dense matrix.
-// \param rhs The right-hand side row-major sparse matrix to be subtracted.
-// \return void
-//
-// This function implements the OpenMP-based SMP subtraction assignment of a row-major sparse
-// matrix to a dense matrix.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT1    // Type of the left-hand side dense matrix
-        , bool SO         // Storage order of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side sparse matrix
-inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
-   smpSubAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowMajor>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-
-   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
-      subAssign( ~lhs, ~rhs );
-      return;
-   }
-
-   typedef typename MT1::ElementType                         ET1;
-   typedef typename MT2::ElementType                         ET2;
-   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
-
-#pragma omp parallel shared( lhs, rhs )
-   {
-      const int    threads      ( omp_get_num_threads() );
-      const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
-      const size_t rowsPerThread( (~lhs).rows() / threads + addon );
-
-#pragma omp for schedule(dynamic,1) nowait
-      for( int i=0UL; i<threads; ++i )
-      {
-         const size_t row( i*rowsPerThread );
-
-         if( row >= (~lhs).rows() )
-            continue;
-
-         const size_t m( min( rowsPerThread, (~lhs).rows() - row ) );
-         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
-         subAssign( target, submatrix<unaligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
-      }
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP subtraction assignment of a column-major sparse
-//        matrix to a dense matrix.
-// \ingroup math
-//
-// \param lhs The target left-hand side dense matrix.
-// \param rhs The right-hand side column-major sparse matrix to be subtracted.
-// \return void
-//
-// This function implements the OpenMP-based SMP subtraction assignment of a column-major sparse
-// matrix to a dense matrix.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT1    // Type of the left-hand side dense matrix
-        , bool SO         // Storage order of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side sparse matrix
-inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
-   smpSubAssign( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,columnMajor>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-
-   if( isSerialSectionActive() || omp_get_num_threads() != 1 || !(~rhs).canSMPAssign() ) {
-      subAssign( ~lhs, ~rhs );
-      return;
-   }
-
-   typedef typename MT1::ElementType                         ET1;
-   typedef typename MT2::ElementType                         ET2;
-   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
-
-#pragma omp parallel shared( lhs, rhs )
-   {
-      const int    threads      ( omp_get_num_threads() );
-      const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
-      const size_t colsPerThread( (~lhs).columns() / threads + addon );
-
-#pragma omp for schedule(dynamic,1) nowait
-      for( int i=0UL; i<threads; ++i )
-      {
-         const size_t column( i*colsPerThread );
-
-         if( column >= (~lhs).columns() )
-            continue;
-
-         const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
-         UnalignedTarget target( submatrix<unaligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
-         subAssign( target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
-      }
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP multiplication assignment of a matrix
-//        to a dense matrix.
+/*!\brief Default implementation of the OpenMP-based SMP multiplication assignment to a dense matrix.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side matrix to be multiplied.
 // \return void
 //
-// This function implements the default OpenMP-based SMP multiplication assignment of a matrix
-// to a dense matrix.\n
+// This function implements the default OpenMP-based SMP multiplication assignment to a dense
+// matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
