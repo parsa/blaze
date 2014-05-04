@@ -827,21 +827,23 @@ namespace blaze {}
 //
 // \subsection vector_operations_size Size of a Vector
 //
-// Via the \c size() function, the current size of a vector can be queried:
+// Via the \c size() (member) function, the current size of a vector can be queried:
 
    \code
    // Instantiating a dynamic vector with size 10
    blaze::DynamicVector<int> v1( 10UL );
-   v1.size();  // Returns 10
+   v1.size();   // Returns 10
+   size( v1 );  // Has the same effect as the member function
 
    // Instantiating a compressed vector with size 12 and capacity for 3 non-zero elements
    blaze::CompressedVector<double> v2( 12UL, 3UL );
-   v2.size();  // Returns 12
+   v2.size();   // Returns 12
+   size( v2 );  // Has the same effect as the member function
    \endcode
 
 // \n \subsection vector_operations_capacity Capacity of a Vector
 //
-// Via the \c capacity() function the internal capacity of a DynamicVector or CompressedVector
+// Via the \c capacity() (member) function the internal capacity of a dense or sparse vector
 // can be queried. Note that the capacity of a vector doesn't have to be equal to the size
 // of a vector. In case of a dense vector the capacity will always be greater or equal than
 // the size of the vector, in case of a sparse vector the capacity may even be less than
@@ -849,14 +851,15 @@ namespace blaze {}
 
    \code
    blaze::DynamicVector<int> v1( 10UL );
-   v1.capacity();  // returns at least 10
+   v1.capacity();   // Returns at least 10
+   capacity( v1 );  // Has the same effect as the member function
    \endcode
 
 // \n \subsection vector_operations_nonzeros Number of Non-Zero Elements
 //
 // For both dense and sparse vectors the number of non-zero elements can be determined via the
-// \c nonZeros() function. Sparse vectors directly return their number of non-zero elements,
-// dense vectors traverse their elements and count the number of non-zero elements.
+// \c nonZeros() (member) function. Sparse vectors directly return their number of non-zero
+// elements, dense vectors traverse their elements and count the number of non-zero elements.
 
    \code
    blaze::DynamicVector<int> v1( 10UL );
@@ -864,8 +867,13 @@ namespace blaze {}
 
    // ... Initializing the vectors
 
-   v1.nonZeros();  // Returns the number of non-zero elements in the dense vector
-   v2.nonZeros();  // Returns the number of non-zero elements in the sparse vector
+   // Returns the number of non-zero elements in the dense vector
+   v1.nonZeros();
+   nonZeros( v1 );
+
+   // Returns the number of non-zero elements in the sparse vector
+   v2.nonZeros();
+   nonZeros( v2 );
    \endcode
 
 // \n \section vector_operations_resize_reserve Resize/Reserve
@@ -1540,35 +1548,39 @@ namespace blaze {}
 //
 // \subsection matrix_operations_rows Number of Rows of a Matrix
 //
-// The current number of rows of a matrix can be acquired via the \c rows() function:
+// The current number of rows of a matrix can be acquired via the \c rows() (member) function:
 
    \code
    // Instantiating a dynamic matrix with 10 rows and 8 columns
    blaze::DynamicMatrix<int> M1( 10UL, 8UL );
-   M1.rows();  // Returns 10
+   M1.rows();   // Returns 10
+   rows( M1 );  // Has the same effect as the member function
 
    // Instantiating a compressed matrix with 5 rows and 12 columns
    blaze::CompressedMatrix<double> M2( 5UL, 12UL );
-   M2.rows();  // Returns 5
+   M2.rows();   // Returns 5
+   rows( M2 );  // Has the same effect as the member function
    \endcode
 
 // \n \subsection matrix_operations_columns Number of Columns of a Matrix
 //
-// The current number of columns of a matrix can be acquired via the \c columns() function:
+// The current number of columns of a matrix can be acquired via the \c columns() (member) function:
 
    \code
    // Instantiating a dynamic matrix with 6 rows and 8 columns
    blaze::DynamicMatrix<int> M1( 6UL, 8UL );
-   M1.columns();  // Returns 8
+   M1.columns();   // Returns 8
+   columns( M1 );  // Has the same effect as the member function
 
    // Instantiating a compressed matrix with 4 rows and 7 columns
    blaze::CompressedMatrix<double> M2( 4UL, 7UL );
-   M2.columns();  // Returns 7
+   M2.columns();   // Returns 7
+   columns( M2 );  // Has the same effect as the member function
    \endcode
 
 // \n \subsection matrix_operations_capacity Capacity of a Matrix
 //
-// The \c capacity() function returns the internal capacity of a DynamicMatrix or CompressedMatrix.
+// The \c capacity() (member) function returns the internal capacity of a dense or sparse matrix.
 // Note that the capacity of a matrix doesn't have to be equal to the size of a matrix. In case of
 // a dense matrix the capacity will always be greater or equal than the total number of elements
 // of the matrix. In case of a sparse matrix, the capacity will usually be much less than the
@@ -1576,29 +1588,46 @@ namespace blaze {}
 
    \code
    blaze::DynamicMatrix<float> M1( 5UL, 7UL );
-   M1.capacity();  // Returns at least 35
+   M1.capacity();   // Returns at least 35
+   capacity( M1 );  // Has the same effect as the member function
    \endcode
 
 // \n \subsection matrix_operations_nonzeros Number of Non-Zero Elements
 //
-// For both dense and sparse matrices the current number of non-zero elements can be queried via
-// the \c nonZeros() function. In case of matrices there are two flavors of the nonZeros() function:
-// One returns the total number of non-zero elements in the matrix, the second returns the number
-// of non-zero elements in a specific row (in case of a row-major matrix) or column (in case of
-// a column-major matrix). Sparse matrices directly return their number of non-zero elements,
-// dense matrices traverse their elements and count the number of non-zero elements.
+// For both dense and sparse matrices the current number of non-zero elements can be queried
+// via the \c nonZeros() (member) function. In case of matrices there are two flavors of the
+// \c nonZeros() function: One returns the total number of non-zero elements in the matrix,
+// the second returns the number of non-zero elements in a specific row (in case of a row-major
+// matrix) or column (in case of a column-major matrix). Sparse matrices directly return their
+// number of non-zero elements, dense matrices traverse their elements and count the number of
+// non-zero elements.
 
    \code
    blaze::DynamicMatrix<int,rowMajor> M1( 3UL, 5UL );
+
+   // ... Initializing the dense matrix
+
+   // Returns the total number of non-zero elements in the dense matrix
+   M1.nonZeros();
+   nonZeros( M1 );
+
+   // Returns the number of non-zero elements in row 2
+   M1.nonZeros( 2 );
+   nonZeros( M1, 2 );
+   \endcode
+
+   \code
    blaze::CompressedMatrix<double,columnMajor> M2( 4UL, 7UL );
 
-   // ... Initializing the matrices
+   // ... Initializing the sparse matrix
 
-   M1.nonZeros();     // Returns the total number of non-zero elements in the dense matrix
-   M1.nonZeros( 2 );  // Returns the number of non-zero elements in row 2
+   // Returns the total number of non-zero elements in the sparse matrix
+   M2.nonZeros();
+   nonZeros( M2 );
 
-   M2.nonZeros();     // Returns the total number of non-zero elements in the sparse matrix
-   M2.nonZeros( 3 );  // Returns the number of non-zero elements in column 3
+   // Returns the number of non-zero elements in column 3
+   M2.nonZeros( 3 );
+   nonZeros( M2, 3 );
    \endcode
 
 // \n \section matrix_operations_resize_reserve Resize/Reserve
