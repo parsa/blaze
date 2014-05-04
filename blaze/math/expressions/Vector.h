@@ -109,6 +109,12 @@ struct Vector
 template< typename VT, bool TF >
 inline size_t size( const Vector<VT,TF>& v );
 
+template< typename VT, bool TF >
+inline size_t capacity( const Vector<VT,TF>& v );
+
+template< typename VT, bool TF >
+inline size_t nonZeros( const Vector<VT,TF>& v );
+
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
 inline void assign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
 
@@ -136,6 +142,41 @@ template< typename VT  // Type of the vector
 inline size_t size( Vector<VT,TF>& v )
 {
    return (~v).size();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the maximum capacity of the vector.
+// \ingroup vector
+//
+// \param v The given vector.
+// \return The capacity of the vector.
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+inline size_t capacity( Vector<VT,TF>& v )
+{
+   return (~v).capacity();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the number of non-zero elements in the vector.
+// \ingroup vector
+//
+// \param v The given vector.
+// \return The number of non-zero elements in the vector.
+//
+// Note that the number of non-zero elements is always less than or equal to the current size
+// of the vector.
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+inline size_t nonZeros( Vector<VT,TF>& v )
+{
+   return (~v).nonZeros();
 }
 //*************************************************************************************************
 
