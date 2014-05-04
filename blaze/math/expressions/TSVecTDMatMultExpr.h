@@ -100,14 +100,24 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
    //**********************************************************************************************
 
    //**********************************************************************************************
+   //! Compilation switch for the composite type of the left-hand side sparse vector expression.
+   enum { evaluateVector = IsComputation<VT>::value || RequiresEvaluation<VT>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Compilation switch for the composite type of the right-hand side dense matrix expression.
+   enum { evaluateMatrix = RequiresEvaluation<MT>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    //! Compilation switch for the evaluation strategy of the multiplication expression.
    /*! The \a useAssign compile time constant expression represents a compilation switch for
-       the evaluation strategy of the multiplication expression. In case the dense matrix
-       expression requires an intermediate evaluation or the sparse vector expression is a
-       compound expression, \a useAssign will be set to \a true and the addition expression
-       will be evaluated via the \a assign function family. Otherwise \a useAssign will be
-       set to \a false and the expression will be evaluated via the subscript operator. */
-   enum { useAssign = ( IsComputation<VT>::value || RequiresEvaluation<MT>::value ) };
+       the evaluation strategy of the multiplication expression. In case either the vector or
+       the matrix operand requires an intermediate evaluation or the sparse vector expression
+       is a compound expression, \a useAssign will be set to \a true and the multiplication
+       expression will be evaluated via the \a assign function family. Otherwise \a useAssign
+       will be set to \a false and the expression will be evaluated via the subscript operator. */
+   enum { useAssign = ( evaluateVector || evaluateMatrix ) };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -151,10 +161,10 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
    typedef typename SelectType< IsExpression<MT>::value, const MT, const MT& >::Type  RightOperand;
 
    //! Type for the assignment of the left-hand side sparse vector operand.
-   typedef typename SelectType< IsComputation<VT>::value, const VRT, VCT >::Type  LT;
+   typedef typename SelectType< evaluateVector, const VRT, VCT >::Type  LT;
 
    //! Type for the assignment of the left-hand side dense matrix operand.
-   typedef MCT  RT;
+   typedef typename SelectType< evaluateMatrix, const MRT, MCT >::Type  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -319,14 +329,14 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
       typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
 
       // Evaluation of the left-hand side sparse vector operand
-      LT x( rhs.vec_ );
+      LT x( serial( rhs.vec_ ) );
       if( x.nonZeros() == 0UL ) {
          reset( ~lhs );
          return;
       }
 
       // Evaluation of the right-hand side dense matrix operand
-      RT A( rhs.mat_ );
+      RT A( serial( rhs.mat_ ) );
 
       // Checking the evaluated operands
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
@@ -368,7 +378,7 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const ResultType tmp( rhs );
+      const ResultType tmp( serial( rhs ) );
       assign( ~lhs, tmp );
    }
    /*! \endcond */
@@ -400,11 +410,11 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
       typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
 
       // Evaluation of the left-hand side sparse vector operand
-      LT x( rhs.vec_ );
+      LT x( serial( rhs.vec_ ) );
       if( x.nonZeros() == 0UL ) return;
 
       // Evaluation of the right-hand side dense matrix operand
-      RT A( rhs.mat_ );
+      RT A( serial( rhs.mat_ ) );
 
       // Checking the evaluated operands
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
@@ -447,11 +457,11 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
       typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
 
       // Evaluation of the left-hand side sparse vector operand
-      LT x( rhs.vec_ );
+      LT x( serial( rhs.vec_ ) );
       if( x.nonZeros() == 0UL ) return;
 
       // Evaluation of the right-hand side dense matrix operand
-      RT A( rhs.mat_ );
+      RT A( serial( rhs.mat_ ) );
 
       // Checking the evaluated operands
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
@@ -495,7 +505,7 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const ResultType tmp( rhs );
+      const ResultType tmp( serial( rhs ) );
       multAssign( ~lhs, tmp );
    }
    //**********************************************************************************************

@@ -439,8 +439,8 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
          return;
       }
 
-      LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
-      RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense matrix operand
+      LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
+      RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense matrix operand
 
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
@@ -540,19 +540,19 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT5::OppositeType );
 
       if( IsResizable<MT4>::value && !IsResizable<MT5>::value ) {
-         const typename MT5::OppositeType tmp( B );
+         const typename MT5::OppositeType tmp( serial( B ) );
          assign( ~C, A * tmp );
       }
       else if( !IsResizable<MT4>::value && IsResizable<MT5>::value ) {
-         const typename MT4::OppositeType tmp( A );
+         const typename MT4::OppositeType tmp( serial( A ) );
          assign( ~C, tmp * B );
       }
       else if( B.rows() * B.columns() <= A.rows() * A.columns() ) {
-         const typename MT5::OppositeType tmp( B );
+         const typename MT5::OppositeType tmp( serial( B ) );
          assign( ~C, A * tmp );
       }
       else {
-         const typename MT4::OppositeType tmp( A );
+         const typename MT4::OppositeType tmp( serial( A ) );
          assign( ~C, tmp * B );
       }
    }
@@ -947,7 +947,7 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const TmpType tmp( rhs );
+      const TmpType tmp( serial( rhs ) );
       assign( ~lhs, tmp );
    }
    /*! \endcond */
@@ -979,8 +979,8 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
          return;
       }
 
-      LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
-      RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense matrix operand
+      LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
+      RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense matrix operand
 
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
@@ -1084,19 +1084,19 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT5::OppositeType );
 
       if( IsResizable<MT4>::value && !IsResizable<MT5>::value ) {
-         const typename MT5::OppositeType tmp( B );
+         const typename MT5::OppositeType tmp( serial( B ) );
          addAssign( ~C, A * tmp );
       }
       else if( !IsResizable<MT4>::value && IsResizable<MT5>::value ) {
-         const typename MT4::OppositeType tmp( A );
+         const typename MT4::OppositeType tmp( serial( A ) );
          addAssign( ~C, tmp * B );
       }
       else if( B.rows() * B.columns() <= A.rows() * A.columns() ) {
-         const typename MT5::OppositeType tmp( B );
+         const typename MT5::OppositeType tmp( serial( B ) );
          addAssign( ~C, A * tmp );
       }
       else {
-         const typename MT4::OppositeType tmp( A );
+         const typename MT4::OppositeType tmp( serial( A ) );
          addAssign( ~C, tmp * B );
       }
    }
@@ -1512,8 +1512,8 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
          return;
       }
 
-      LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
-      RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense matrix operand
+      LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
+      RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense matrix operand
 
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
@@ -1617,19 +1617,19 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT5::OppositeType );
 
       if( IsResizable<MT4>::value && !IsResizable<MT5>::value ) {
-         const typename MT5::OppositeType tmp( B );
+         const typename MT5::OppositeType tmp( serial( B ) );
          subAssign( ~C, A * tmp );
       }
       else if( !IsResizable<MT4>::value && IsResizable<MT5>::value ) {
-         const typename MT4::OppositeType tmp( A );
+         const typename MT4::OppositeType tmp( serial( A ) );
          subAssign( ~C, tmp * B );
       }
       else if( B.rows() * B.columns() <= A.rows() * A.columns() ) {
-         const typename MT5::OppositeType tmp( B );
+         const typename MT5::OppositeType tmp( serial( B ) );
          subAssign( ~C, A * tmp );
       }
       else {
-         const typename MT4::OppositeType tmp( A );
+         const typename MT4::OppositeType tmp( serial( A ) );
          subAssign( ~C, tmp * B );
       }
    }
@@ -2563,8 +2563,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
          return;
       }
 
-      LT A( left  );  // Evaluation of the left-hand side dense matrix operand
-      RT B( right );  // Evaluation of the right-hand side dense matrix operand
+      LT A( serial( left  ) );  // Evaluation of the left-hand side dense matrix operand
+      RT B( serial( right ) );  // Evaluation of the right-hand side dense matrix operand
 
       BLAZE_INTERNAL_ASSERT( A.rows()    == left.rows()     , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == left.columns()  , "Invalid number of columns" );
@@ -2663,19 +2663,19 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT5::OppositeType );
 
       if( IsResizable<MT4>::value && !IsResizable<MT5>::value ) {
-         const typename MT5::OppositeType tmp( B );
+         const typename MT5::OppositeType tmp( serial( B ) );
          assign( ~C, A * tmp * scalar );
       }
       else if( !IsResizable<MT4>::value && IsResizable<MT5>::value ) {
-         const typename MT4::OppositeType tmp( A );
+         const typename MT4::OppositeType tmp( serial( A ) );
          assign( ~C, tmp * B * scalar );
       }
       else if( B.rows() * B.columns() <= A.rows() * A.columns() ) {
-         const typename MT5::OppositeType tmp( B );
+         const typename MT5::OppositeType tmp( serial( B ) );
          assign( ~C, A * tmp * scalar );
       }
       else {
-         const typename MT4::OppositeType tmp( A );
+         const typename MT4::OppositeType tmp( serial( A ) );
          assign( ~C, tmp * B * scalar );
       }
    }
@@ -3070,7 +3070,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const TmpType tmp( rhs );
+      const TmpType tmp( serial( rhs ) );
       assign( ~lhs, tmp );
    }
    //**********************************************************************************************
@@ -3103,8 +3103,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
          return;
       }
 
-      LT A( left  );  // Evaluation of the left-hand side dense matrix operand
-      RT B( right );  // Evaluation of the right-hand side dense matrix operand
+      LT A( serial( left  ) );  // Evaluation of the left-hand side dense matrix operand
+      RT B( serial( right ) );  // Evaluation of the right-hand side dense matrix operand
 
       BLAZE_INTERNAL_ASSERT( A.rows()    == left.rows()     , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == left.columns()  , "Invalid number of columns" );
@@ -3162,7 +3162,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
    static inline typename DisableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
       selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      const ResultType tmp( A * B * scalar );
+      const ResultType tmp( serial( A * B * scalar ) );
       addAssign( C, tmp );
    }
    //**********************************************************************************************
@@ -3192,19 +3192,19 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT5::OppositeType );
 
       if( IsResizable<MT4>::value && !IsResizable<MT5>::value ) {
-         const typename MT5::OppositeType tmp( B );
+         const typename MT5::OppositeType tmp( serial( B ) );
          addAssign( ~C, A * tmp * scalar );
       }
       else if( !IsResizable<MT4>::value && IsResizable<MT5>::value ) {
-         const typename MT4::OppositeType tmp( A );
+         const typename MT4::OppositeType tmp( serial( A ) );
          addAssign( ~C, tmp * B * scalar );
       }
       else if( B.rows() * B.columns() <= A.rows() * A.columns() ) {
-         const typename MT5::OppositeType tmp( B );
+         const typename MT5::OppositeType tmp( serial( B ) );
          addAssign( ~C, A * tmp * scalar );
       }
       else {
-         const typename MT4::OppositeType tmp( A );
+         const typename MT4::OppositeType tmp( serial( A ) );
          addAssign( ~C, tmp * B * scalar );
       }
    }
@@ -3601,8 +3601,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
          return;
       }
 
-      LT A( left  );  // Evaluation of the left-hand side dense matrix operand
-      RT B( right );  // Evaluation of the right-hand side dense matrix operand
+      LT A( serial( left  ) );  // Evaluation of the left-hand side dense matrix operand
+      RT B( serial( right ) );  // Evaluation of the right-hand side dense matrix operand
 
       BLAZE_INTERNAL_ASSERT( A.rows()    == left.rows()     , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == left.columns()  , "Invalid number of columns" );
@@ -3660,7 +3660,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
    static inline typename DisableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
       selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      const ResultType tmp( A * B * scalar );
+      const ResultType tmp( serial( A * B * scalar ) );
       subAssign( C, tmp );
    }
    //**********************************************************************************************
@@ -3690,19 +3690,19 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT5::OppositeType );
 
       if( IsResizable<MT4>::value && !IsResizable<MT5>::value ) {
-         const typename MT5::OppositeType tmp( B );
+         const typename MT5::OppositeType tmp( serial( B ) );
          subAssign( ~C, A * tmp * scalar );
       }
       else if( !IsResizable<MT4>::value && IsResizable<MT5>::value ) {
-         const typename MT4::OppositeType tmp( A );
+         const typename MT4::OppositeType tmp( serial( A ) );
          subAssign( ~C, tmp * B * scalar );
       }
       else if( B.rows() * B.columns() <= A.rows() * A.columns() ) {
-         const typename MT5::OppositeType tmp( B );
+         const typename MT5::OppositeType tmp( serial( B ) );
          subAssign( ~C, A * tmp * scalar );
       }
       else {
-         const typename MT4::OppositeType tmp( A );
+         const typename MT4::OppositeType tmp( serial( A ) );
          subAssign( ~C, tmp * B * scalar );
       }
    }

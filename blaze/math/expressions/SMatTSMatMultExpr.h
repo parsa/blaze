@@ -402,7 +402,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
 
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT2::OppositeType );
 
-      const typename MT2::OppositeType tmp( rhs.rhs_ );
+      const typename MT2::OppositeType tmp( serial( rhs.rhs_ ) );
       assign( ~lhs, rhs.lhs_ * tmp );
    }
    /*! \endcond */
@@ -431,7 +431,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
 
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT1::OppositeType );
 
-      const typename MT1::OppositeType tmp( rhs.lhs_ );
+      const typename MT1::OppositeType tmp( serial( rhs.lhs_ ) );
       assign( ~lhs, tmp * rhs.rhs_ );
    }
    /*! \endcond */
@@ -460,7 +460,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
 
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT2::OppositeType );
 
-      const typename MT2::OppositeType tmp( rhs.rhs_ );
+      const typename MT2::OppositeType tmp( serial( rhs.rhs_ ) );
       assign( ~lhs, rhs.lhs_ * tmp );
    }
    /*! \endcond */
@@ -489,7 +489,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
 
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT1::OppositeType );
 
-      const typename MT1::OppositeType tmp( rhs.lhs_ );
+      const typename MT1::OppositeType tmp( serial( rhs.lhs_ ) );
       assign( ~lhs, tmp * rhs.rhs_ );
    }
    /*! \endcond */
@@ -518,7 +518,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
 
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT2::OppositeType );
 
-      const typename MT2::OppositeType tmp( rhs.rhs_ );
+      const typename MT2::OppositeType tmp( serial( rhs.rhs_ ) );
       addAssign( ~lhs, rhs.lhs_ * tmp );
    }
    /*! \endcond */
@@ -547,7 +547,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
 
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT1::OppositeType );
 
-      const typename MT1::OppositeType tmp( rhs.lhs_ );
+      const typename MT1::OppositeType tmp( serial( rhs.lhs_ ) );
       addAssign( ~lhs, tmp * rhs.rhs_ );
    }
    /*! \endcond */
@@ -580,7 +580,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
 
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT2::OppositeType );
 
-      const typename MT2::OppositeType tmp( rhs.rhs_ );
+      const typename MT2::OppositeType tmp( serial( rhs.rhs_ ) );
       subAssign( ~lhs, rhs.lhs_ * tmp );
    }
    /*! \endcond */
@@ -609,7 +609,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
 
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT1::OppositeType );
 
-      const typename MT1::OppositeType tmp( rhs.lhs_ );
+      const typename MT1::OppositeType tmp( serial( rhs.lhs_ ) );
       subAssign( ~lhs, tmp * rhs.rhs_ );
    }
    /*! \endcond */

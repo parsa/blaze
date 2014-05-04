@@ -183,6 +183,16 @@ class SMatSerialExpr : public SparseMatrix< SMatSerialExpr<MT,SO>, SO >
    }
    //**********************************************************************************************
 
+   //**Conversion operator*************************************************************************
+   /*!\brief Conversion to the type of the sparse matrix operand.
+   //
+   // \return The sparse matrix operand.
+   */
+   inline operator Operand() const {
+      return sm_;
+   }
+   //**********************************************************************************************
+
    //**********************************************************************************************
    /*!\brief Returns whether the expression can alias with the given address \a alias.
    //

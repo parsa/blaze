@@ -496,8 +496,8 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
 
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
-      LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
-      RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
+      LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
+      RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
@@ -537,8 +537,8 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
-      RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
+      LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
+      RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
@@ -650,8 +650,8 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
 
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
-      LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
-      RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
+      LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
+      RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
@@ -696,8 +696,8 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
 
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
-      LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
-      RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
+      LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
+      RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
@@ -746,8 +746,8 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
 
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
-      LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
-      RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
+      LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
+      RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
@@ -787,8 +787,8 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
-      RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
+      LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
+      RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
@@ -905,8 +905,8 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
 
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
-      LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
-      RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
+      LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
+      RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
@@ -946,8 +946,8 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
-      RT y( rhs.rhs_ );  // Evaluation of the right-hand side sparse vector operand
+      LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
+      RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );

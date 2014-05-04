@@ -488,7 +488,7 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const ResultType tmp( rhs );
+      const ResultType tmp( serial( rhs ) );
       addAssign( ~lhs, tmp );
    }
    /*! \endcond */
@@ -524,7 +524,7 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const ResultType tmp( rhs );
+      const ResultType tmp( serial( rhs ) );
       subAssign( ~lhs, tmp );
    }
    /*! \endcond */
@@ -560,7 +560,7 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const ResultType tmp( rhs );
+      const ResultType tmp( serial( rhs ) );
       multAssign( ~lhs, tmp );
    }
    /*! \endcond */

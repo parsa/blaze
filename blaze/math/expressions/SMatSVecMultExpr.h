@@ -139,7 +139,7 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
    typedef typename SelectType< IsExpression<VT>::value, const VT, const VT& >::Type  RightOperand;
 
    //! Type for the assignment of the left-hand side sparse matrix operand.
-   typedef MCT  LT;
+   typedef typename SelectType< evaluateMatrix, const MRT, MCT >::Type  LT;
 
    //! Type for the assignment of the right-hand side sparse vector operand.
    typedef typename SelectType< evaluateVector, const VRT, VCT >::Type  RT;
@@ -391,11 +391,11 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
       reset( ~lhs );
 
       // Evaluation of the right-hand side sparse vector operand
-      RT x( rhs.vec_ );
+      RT x( serial( rhs.vec_ ) );
       if( x.nonZeros() == 0UL ) return;
 
       // Evaluation of the left-hand side sparse matrix operand
-      LT A( rhs.mat_ );
+      LT A( serial( rhs.mat_ ) );
 
       // Checking the evaluated operators
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
@@ -595,11 +595,11 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       // Evaluation of the right-hand side sparse vector operand
-      RT x( rhs.vec_ );
+      RT x( serial( rhs.vec_ ) );
       if( x.nonZeros() == 0UL ) return;
 
       // Evaluation of the left-hand side sparse matrix operand
-      LT A( rhs.mat_ );
+      LT A( serial( rhs.mat_ ) );
 
       // Checking the evaluated operators
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
@@ -695,11 +695,11 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
       typedef typename RemoveReference<RT>::Type::ConstIterator  VectorIterator;
 
       // Evaluation of the right-hand side sparse vector operand
-      RT x( rhs.vec_ );
+      RT x( serial( rhs.vec_ ) );
       if( x.nonZeros() == 0UL ) return;
 
       // Evaluation of the left-hand side sparse matrix operand
-      LT A( rhs.mat_ );
+      LT A( serial( rhs.mat_ ) );
 
       // Checking the evaluated operators
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
@@ -795,7 +795,7 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const ResultType tmp( rhs );
+      const ResultType tmp( serial( rhs ) );
       multAssign( ~lhs, tmp );
    }
    /*! \endcond */

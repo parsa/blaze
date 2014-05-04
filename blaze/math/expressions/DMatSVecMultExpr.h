@@ -100,14 +100,24 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
    //**********************************************************************************************
 
    //**********************************************************************************************
+   //! Compilation switch for the composite type of the left-hand side dense matrix expression.
+   enum { evaluateMatrix = RequiresEvaluation<MT>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Compilation switch for the composite type of the right-hand side sparse vector expression.
+   enum { evaluateVector = IsComputation<VT>::value || RequiresEvaluation<VT>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    //! Compilation switch for the evaluation strategy of the multiplication expression.
    /*! The \a useAssign compile time constant expression represents a compilation switch for
-       the evaluation strategy of the multiplication expression. In case the dense matrix
-       expression requires an intermediate evaluation or the sparse vector expression is a
-       compound expression, \a useAssign will be set to \a true and the addition expression
-       will be evaluated via the \a assign function family. Otherwise \a useAssign will be
-       set to \a false and the expression will be evaluated via the subscript operator. */
-   enum { useAssign = RequiresEvaluation<MT>::value || IsComputation<VT>::value };
+       the evaluation strategy of the multiplication expression. In case either the matrix or
+       the vector operand requires an intermediate evaluation or the sparse vector expression
+       is a compound expression, \a useAssign will be set to \a true and the multiplication
+       expression will be evaluated via the \a assign function family. Otherwise \a useAssign
+       will be set to \a false and the expression will be evaluated via the subscript operator. */
+   enum { useAssign = evaluateMatrix || evaluateVector };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -151,10 +161,10 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
    typedef typename SelectType< IsExpression<VT>::value, const VT, const VT& >::Type  RightOperand;
 
    //! Type for the assignment of the left-hand side dense matrix operand.
-   typedef MCT  LT;
+   typedef typename SelectType< evaluateMatrix, const MRT, MCT >::Type  LT;
 
    //! Type for the assignment of the right-hand side dense matrix operand.
-   typedef typename SelectType< IsComputation<VT>::value, const VRT, VCT >::Type  RT;
+   typedef typename SelectType< evaluateVector, const VRT, VCT >::Type  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -318,14 +328,14 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       // Evaluation of the right-hand side sparse vector operand
-      RT x( rhs.vec_ );
+      RT x( serial( rhs.vec_ ) );
       if( x.nonZeros() == 0UL ) {
          reset( ~lhs );
          return;
       }
 
       // Evaluation of the left-hand side dense matrix operand
-      LT A( rhs.mat_ );
+      LT A( serial( rhs.mat_ ) );
 
       // Checking the evaluated operands
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
@@ -367,7 +377,7 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const ResultType tmp( rhs );
+      const ResultType tmp( serial( rhs ) );
       assign( ~lhs, tmp );
    }
    /*! \endcond */
@@ -400,11 +410,11 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       // Evaluation of the right-hand side sparse vector operand
-      RT x( rhs.vec_ );
+      RT x( serial( rhs.vec_ ) );
       if( x.nonZeros() == 0UL ) return;
 
       // Evaluation of the left-hand side dense matrix operand
-      LT A( rhs.mat_ );
+      LT A( serial( rhs.mat_ ) );
 
       // Checking the evaluated operands
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
@@ -449,11 +459,11 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       // Evaluation of the right-hand side sparse vector operand
-      RT x( rhs.vec_ );
+      RT x( serial( rhs.vec_ ) );
       if( x.nonZeros() == 0UL ) return;
 
       // Evaluation of the left-hand side dense matrix operand
-      LT A( rhs.mat_ );
+      LT A( serial( rhs.mat_ ) );
 
       // Checking the evaluated operands
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
@@ -499,7 +509,7 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const ResultType tmp( rhs );
+      const ResultType tmp( serial( rhs ) );
       multAssign( ~lhs, tmp );
    }
    /*! \endcond */

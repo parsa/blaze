@@ -158,6 +158,16 @@ class SVecSerialExpr : public SparseVector< SVecSerialExpr<VT,TF>, TF >
    }
    //**********************************************************************************************
 
+   //**Conversion operator*************************************************************************
+   /*!\brief Conversion to the type of the sparse vector operand.
+   //
+   // \return The sparse vector operand.
+   */
+   inline operator Operand() const {
+      return sv_;
+   }
+   //**********************************************************************************************
+
    //**********************************************************************************************
    /*!\brief Returns whether the expression can alias with the given address \a alias.
    //

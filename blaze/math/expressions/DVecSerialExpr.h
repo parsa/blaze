@@ -150,6 +150,16 @@ class DVecSerialExpr : public DenseVector< DVecSerialExpr<VT,TF>, TF >
    }
    //**********************************************************************************************
 
+   //**Conversion operator*************************************************************************
+   /*!\brief Conversion to the type of the dense vector operand.
+   //
+   // \return The dense vector operand.
+   */
+   inline operator Operand() const {
+      return dv_;
+   }
+   //**********************************************************************************************
+
    //**********************************************************************************************
    /*!\brief Returns whether the expression can alias with the given address \a alias.
    //

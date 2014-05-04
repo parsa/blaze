@@ -139,7 +139,7 @@ class TSMatDVecMultExpr : public DenseVector< TSMatDVecMultExpr<MT,VT>, false >
    typedef typename SelectType< IsExpression<VT>::value, const VT, const VT& >::Type  RightOperand;
 
    //! Type for the assignment of the left-hand side sparse matrix operand.
-   typedef MCT  LT;
+   typedef typename SelectType< evaluateMatrix, const MRT, MCT >::Type  LT;
 
    //! Type for the assignment of the right-hand side dense vector operand.
    typedef typename SelectType< evaluateVector, const VRT, VCT >::Type  RT;
@@ -295,8 +295,8 @@ class TSMatDVecMultExpr : public DenseVector< TSMatDVecMultExpr<MT,VT>, false >
 
       if( rhs.mat_.columns() == 0UL ) return;
 
-      LT A( rhs.mat_ );  // Evaluation of the left-hand side sparse matrix operand
-      RT x( rhs.vec_ );  // Evaluation of the right-hand side dense vector operand
+      LT A( serial( rhs.mat_ ) );  // Evaluation of the left-hand side sparse matrix operand
+      RT x( serial( rhs.vec_ ) );  // Evaluation of the right-hand side dense vector operand
 
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.mat_.columns(), "Invalid number of columns" );
@@ -370,7 +370,7 @@ class TSMatDVecMultExpr : public DenseVector< TSMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const ResultType tmp( rhs );
+      const ResultType tmp( serial( rhs ) );
       assign( ~lhs, tmp );
    }
    /*! \endcond */
@@ -398,8 +398,8 @@ class TSMatDVecMultExpr : public DenseVector< TSMatDVecMultExpr<MT,VT>, false >
 
       if( rhs.mat_.columns() == 0UL ) return;
 
-      LT A( rhs.mat_ );  // Evaluation of the left-hand side sparse matrix operand
-      RT x( rhs.vec_ );  // Evaluation of the right-hand side dense vector operand
+      LT A( serial( rhs.mat_ ) );  // Evaluation of the left-hand side sparse matrix operand
+      RT x( serial( rhs.vec_ ) );  // Evaluation of the right-hand side dense vector operand
 
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.mat_.columns(), "Invalid number of columns" );
@@ -473,8 +473,8 @@ class TSMatDVecMultExpr : public DenseVector< TSMatDVecMultExpr<MT,VT>, false >
 
       if( rhs.mat_.columns() == 0UL ) return;
 
-      LT A( rhs.mat_ );  // Evaluation of the left-hand side sparse matrix operand
-      RT x( rhs.vec_ );  // Evaluation of the right-hand side dense vector operand
+      LT A( serial( rhs.mat_ ) );  // Evaluation of the left-hand side sparse matrix operand
+      RT x( serial( rhs.vec_ ) );  // Evaluation of the right-hand side dense vector operand
 
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.mat_.columns(), "Invalid number of columns" );
@@ -548,7 +548,7 @@ class TSMatDVecMultExpr : public DenseVector< TSMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const ResultType tmp( rhs );
+      const ResultType tmp( serial( rhs ) );
       multAssign( ~lhs, tmp );
    }
    /*! \endcond */

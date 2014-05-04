@@ -425,8 +425,8 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
          return;
       }
 
-      LT x( rhs.vec_ );  // Evaluation of the left-hand side dense vector operand
-      RT A( rhs.mat_ );  // Evaluation of the right-hand side dense matrix operand
+      LT x( serial( rhs.vec_ ) );  // Evaluation of the left-hand side dense vector operand
+      RT A( serial( rhs.mat_ ) );  // Evaluation of the right-hand side dense matrix operand
 
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
@@ -812,7 +812,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const ResultType tmp( rhs );
+      const ResultType tmp( serial( rhs ) );
       assign( ~lhs, tmp );
    }
    /*! \endcond */
@@ -842,8 +842,8 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
          return;
       }
 
-      LT x( rhs.vec_ );  // Evaluation of the left-hand side dense vector operand
-      RT A( rhs.mat_ );  // Evaluation of the right-hand side dense matrix operand
+      LT x( serial( rhs.vec_ ) );  // Evaluation of the left-hand side dense vector operand
+      RT A( serial( rhs.mat_ ) );  // Evaluation of the right-hand side dense matrix operand
 
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
@@ -1243,8 +1243,8 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
          return;
       }
 
-      LT x( rhs.vec_ );  // Evaluation of the left-hand side dense vector operand
-      RT A( rhs.mat_ );  // Evaluation of the right-hand side dense matrix operand
+      LT x( serial( rhs.vec_ ) );  // Evaluation of the left-hand side dense vector operand
+      RT A( serial( rhs.mat_ ) );  // Evaluation of the right-hand side dense matrix operand
 
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
@@ -1644,7 +1644,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const ResultType tmp( rhs );
+      const ResultType tmp( serial( rhs ) );
       multAssign( ~lhs, tmp );
    }
    /*! \endcond */
@@ -2193,8 +2193,8 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
          return;
       }
 
-      LT x( left  );  // Evaluation of the left-hand side dense vector operand
-      RT A( right );  // Evaluation of the right-hand side dense matrix operand
+      LT x( serial( left  ) );  // Evaluation of the left-hand side dense vector operand
+      RT A( serial( right ) );  // Evaluation of the right-hand side dense matrix operand
 
       BLAZE_INTERNAL_ASSERT( x.size()    == left.size()    , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == right.rows()   , "Invalid number of rows"    );
@@ -2582,7 +2582,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const ResultType tmp( rhs );
+      const ResultType tmp( serial( rhs ) );
       assign( ~lhs, tmp );
    }
    //**********************************************************************************************
@@ -2613,8 +2613,8 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
          return;
       }
 
-      LT x( left  );  // Evaluation of the left-hand side dense vector operand
-      RT A( right );  // Evaluation of the right-hand side dense matrix operand
+      LT x( serial( left  ) );  // Evaluation of the left-hand side dense vector operand
+      RT A( serial( right ) );  // Evaluation of the right-hand side dense matrix operand
 
       BLAZE_INTERNAL_ASSERT( x.size()    == left.size()    , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == right.rows()   , "Invalid number of rows"    );
@@ -2990,8 +2990,8 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
          return;
       }
 
-      LT x( left  );  // Evaluation of the left-hand side dense vector operand
-      RT A( right );  // Evaluation of the right-hand side dense matrix operand
+      LT x( serial( left  ) );  // Evaluation of the left-hand side dense vector operand
+      RT A( serial( right ) );  // Evaluation of the right-hand side dense matrix operand
 
       BLAZE_INTERNAL_ASSERT( x.size()    == left.size()    , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == right.rows()   , "Invalid number of rows"    );
@@ -3364,7 +3364,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const ResultType tmp( rhs );
+      const ResultType tmp( serial( rhs ) );
       multAssign( ~lhs, tmp );
    }
    //**********************************************************************************************

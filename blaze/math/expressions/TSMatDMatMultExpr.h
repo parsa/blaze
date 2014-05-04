@@ -349,8 +349,8 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      LT A( rhs.lhs_ );  // Evaluation of the right-hand side sparse matrix operand
-      RT B( rhs.rhs_ );  // Evaluation of the left-hand side dense matrix operand
+      LT A( serial( rhs.lhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
+      RT B( serial( rhs.rhs_ ) );  // Evaluation of the left-hand side dense matrix operand
 
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
@@ -516,7 +516,7 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const TmpType tmp( rhs );
+      const TmpType tmp( serial( rhs ) );
       assign( ~lhs, tmp );
    }
    /*! \endcond */
@@ -544,8 +544,8 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      LT A( rhs.lhs_ );  // Evaluation of the right-hand side sparse matrix operand
-      RT B( rhs.rhs_ );  // Evaluation of the left-hand side dense matrix operand
+      LT A( serial( rhs.lhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
+      RT B( serial( rhs.rhs_ ) );  // Evaluation of the left-hand side dense matrix operand
 
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
@@ -653,8 +653,8 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      LT A( rhs.lhs_ );  // Evaluation of the right-hand side sparse matrix operand
-      RT B( rhs.rhs_ );  // Evaluation of the left-hand side dense matrix operand
+      LT A( serial( rhs.lhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
+      RT B( serial( rhs.rhs_ ) );  // Evaluation of the left-hand side dense matrix operand
 
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );

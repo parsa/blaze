@@ -309,7 +309,7 @@ class SMatTDMatSubExpr : public DenseMatrix< SMatTDMatSubExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const TmpType tmp( rhs );
+      const TmpType tmp( serial( rhs ) );
       assign( ~lhs, tmp );
    }
    /*! \endcond */

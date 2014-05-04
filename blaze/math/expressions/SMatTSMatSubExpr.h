@@ -285,7 +285,7 @@ class SMatTSMatSubExpr : public SparseMatrix< SMatTSMatSubExpr<MT1,MT2>, false >
       }
       else
       {
-         CT2 B( rhs.rhs_ );  // Evaluation of the right-hand side sparse matrix operand
+         CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
 
          BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
          BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
@@ -331,10 +331,10 @@ class SMatTSMatSubExpr : public SparseMatrix< SMatTSMatSubExpr<MT1,MT2>, false >
       typedef typename RT2::OppositeType::ConstIterator           RightIterator;
 
       // Evaluation of the left-hand side sparse matrix operand
-      CT1 A( rhs.lhs_ );
+      CT1 A( serial( rhs.lhs_ ) );
 
       // Evaluation of the right-hand side sparse matrix operand
-      const typename RT2::OppositeType B( rhs.rhs_ );
+      const typename RT2::OppositeType B( serial( rhs.rhs_ ) );
 
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
@@ -413,10 +413,10 @@ class SMatTSMatSubExpr : public SparseMatrix< SMatTSMatSubExpr<MT1,MT2>, false >
       typedef typename RemoveReference<CT2>::Type::ConstIterator  RightIterator;
 
       // Evaluation of the left-hand side sparse matrix operand
-      const typename RT1::OppositeType A( rhs.lhs_ );
+      const typename RT1::OppositeType A( serial( rhs.lhs_ ) );
 
       // Evaluation of the right-hand side sparse matrix operand
-      CT2 B( rhs.rhs_ );
+      CT2 B( serial( rhs.rhs_ ) );
 
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );

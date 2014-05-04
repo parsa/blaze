@@ -354,14 +354,14 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       // Evaluation of the right-hand side sparse vector operand
-      RT x( rhs.vec_ );
+      RT x( serial( rhs.vec_ ) );
       if( x.nonZeros() == 0UL ) {
          reset( ~lhs );
          return;
       }
 
       // Evaluation of the left-hand side dense matrix operand
-      LT A( rhs.mat_ );
+      LT A( serial( rhs.mat_ ) );
 
       // Checking the evaluated operands
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
@@ -632,7 +632,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const ResultType tmp( rhs );
+      const ResultType tmp( serial( rhs ) );
       assign( ~lhs, tmp );
    }
    /*! \endcond */
@@ -661,11 +661,11 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       // Evaluation of the right-hand side sparse vector operand
-      RT x( rhs.vec_ );
+      RT x( serial( rhs.vec_ ) );
       if( x.nonZeros() == 0UL ) return;
 
       // Evaluation of the left-hand side dense matrix operand
-      LT A( rhs.mat_ );
+      LT A( serial( rhs.mat_ ) );
 
       // Checking the evaluated operands
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
@@ -873,11 +873,11 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       // Evaluation of the right-hand side sparse vector operand
-      RT x( rhs.vec_ );
+      RT x( serial( rhs.vec_ ) );
       if( x.nonZeros() == 0UL ) return;
 
       // Evaluation of the left-hand side dense matrix operand
-      LT A( rhs.mat_ );
+      LT A( serial( rhs.mat_ ) );
 
       // Checking the evaluated operands
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
@@ -1086,7 +1086,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const ResultType tmp( rhs );
+      const ResultType tmp( serial( rhs ) );
       multAssign( ~lhs, tmp );
    }
    /*! \endcond */

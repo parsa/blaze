@@ -286,7 +286,7 @@ class TSMatTSMatAddExpr : public SparseMatrix< TSMatTSMatAddExpr<MT1,MT2>, true 
       }
       else
       {
-         CT2 B( rhs.rhs_ );  // Evaluation of the right-hand side sparse matrix operand
+         CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
 
          BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
          BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
@@ -331,8 +331,8 @@ class TSMatTSMatAddExpr : public SparseMatrix< TSMatTSMatAddExpr<MT1,MT2>, true 
       typedef typename RemoveReference<CT1>::Type::ConstIterator  LeftIterator;
       typedef typename RemoveReference<CT2>::Type::ConstIterator  RightIterator;
 
-      CT1 A( rhs.lhs_ );  // Evaluation of the left-hand side sparse matrix operand
-      CT2 B( rhs.rhs_ );  // Evaluation of the right-hand side sparse matrix operand
+      CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
+      CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
 
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
@@ -451,8 +451,8 @@ class TSMatTSMatAddExpr : public SparseMatrix< TSMatTSMatAddExpr<MT1,MT2>, true 
       typedef typename RemoveReference<CT1>::Type::ConstIterator  LeftIterator;
       typedef typename RemoveReference<CT2>::Type::ConstIterator  RightIterator;
 
-      CT1 A( rhs.lhs_ );  // Evaluation of the left-hand side sparse matrix operand
-      CT2 B( rhs.rhs_ );  // Evaluation of the right-hand side sparse matrix operand
+      CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
+      CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
 
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );

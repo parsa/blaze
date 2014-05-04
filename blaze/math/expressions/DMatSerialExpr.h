@@ -165,6 +165,16 @@ class DMatSerialExpr : public DenseMatrix< DMatSerialExpr<MT,SO>, SO >
    }
    //**********************************************************************************************
 
+   //**Conversion operator*************************************************************************
+   /*!\brief Conversion to the type of the dense matrix operand.
+   //
+   // \return The dense matrix operand.
+   */
+   inline operator Operand() const {
+      return dm_;
+   }
+   //**********************************************************************************************
+
    //**********************************************************************************************
    /*!\brief Returns whether the expression can alias with the given address \a alias.
    //

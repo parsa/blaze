@@ -105,7 +105,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Compilation switch for the composite type of the left-hand side dense vector expression.
+   //! Compilation switch for the composite type of the left-hand side sparse vector expression.
    enum { evaluateVector = IsComputation<VT>::value || RequiresEvaluation<VT>::value };
    //**********************************************************************************************
 
@@ -355,14 +355,14 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       // Evaluation of the left-hand side sparse vector operand
-      LT x( rhs.vec_ );
+      LT x( serial( rhs.vec_ ) );
       if( x.nonZeros() == 0UL ) {
          reset( ~lhs );
          return;
       }
 
       // Evaluation of the right-hand side dense matrix operand
-      RT A( rhs.mat_ );
+      RT A( serial( rhs.mat_ ) );
 
       // Checking the evaluated operands
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
@@ -633,7 +633,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const ResultType tmp( rhs );
+      const ResultType tmp( serial( rhs ) );
       assign( ~lhs, tmp );
    }
    /*! \endcond */
@@ -659,11 +659,11 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       // Evaluation of the left-hand side sparse vector operand
-      LT x( rhs.vec_ );
+      LT x( serial( rhs.vec_ ) );
       if( x.nonZeros() == 0UL ) return;
 
       // Evaluation of the right-hand side dense matrix operand
-      RT A( rhs.mat_ );
+      RT A( serial( rhs.mat_ ) );
 
       // Checking the evaluated operands
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
@@ -869,11 +869,11 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
       typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
 
       // Evaluation of the left-hand side sparse vector operand
-      LT x( rhs.vec_ );
+      LT x( serial( rhs.vec_ ) );
       if( x.nonZeros() == 0UL ) return;
 
       // Evaluation of the right-hand side dense matrix operand
-      RT A( rhs.mat_ );
+      RT A( serial( rhs.mat_ ) );
 
       // Checking the evaluated operands
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
@@ -1080,7 +1080,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const ResultType tmp( rhs );
+      const ResultType tmp( serial( rhs ) );
       multAssign( ~lhs, tmp );
    }
    //**********************************************************************************************

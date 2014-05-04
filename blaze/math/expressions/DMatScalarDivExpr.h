@@ -677,7 +677,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const ResultType tmp( rhs );
+      const ResultType tmp( serial( rhs ) );
       addAssign( ~lhs, tmp );
    }
    /*! \endcond */
@@ -715,7 +715,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const ResultType tmp( rhs );
+      const ResultType tmp( serial( rhs ) );
       subAssign( ~lhs, tmp );
    }
    /*! \endcond */
