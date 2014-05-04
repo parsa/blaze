@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <stdexcept>
+#include <blaze/util/Suffix.h>
 
 
 namespace blaze {
@@ -258,7 +259,7 @@ inline bool isSerialSectionActive()
 // \a std::runtime_error exception is thrown.
 */
 #define BLAZE_SERIAL_SECTION \
-   if( blaze::SerialSection<int> serialSection = true )
+   if( blaze::SerialSection<int> BLAZE_JOIN( serialSection, __LINE__ ) = true )
 //*************************************************************************************************
 
 } // namespace blaze
