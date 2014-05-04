@@ -3768,6 +3768,66 @@ namespace blaze {}
 // <em>./blaze/config/Thresholds.h</em>.
 //
 //
+// \n \section openmp_sections The \c sections Directive
+//
+// OpenMP provides several work-sharing construct to distribute work among threads. One of these
+// constructs is the \c sections directive:
+
+   \code
+   blaze::DynamicVector x, y1, y2;
+   blaze::DynamicMatrix A, B;
+
+   // ... Resizing and initialization
+
+   #pragma omp sections
+   {
+   #pragma omp section
+
+      y1 = A * x;
+
+   #pragma omp section
+
+      y2 = B * x;
+
+   }
+   \endcode
+
+// In this example, two threads are used to compute two distinct matrix/vector multiplications
+// concurrently. Thereby each of the \c sections is executed by exactly one thread.
+//
+// Unfortunately \b Blaze does not support concurrent parallel computations and therefore this
+// approach does not work with the \b Blaze OpenMP parallelization. The OpenMP implementation of
+// \b Blaze is optimized for the parallel computation of an operation within a single thread of
+// execution. This means that \b Blaze tries to use all available OpenMP threads to compute the
+// result of a single operation as efficiently as possible. Therefore, for this special case, it
+// is advisable to disable the \b Blaze OpenMP parallelization and to let \b Blaze compute all
+// operations within a \c sections directive in serial. This can be done by either completely
+// disabling the \b Blaze OpenMP parallelization (see \ref serial_execution) or by selectively
+// serializing all operations within a \c sections directive via the \c serial() function:
+
+   \code
+   blaze::DynamicVector x, y1, y2;
+   blaze::DynamicMatrix A, B;
+
+   // ... Resizing and initialization
+
+   #pragma omp sections
+   {
+   #pragma omp section
+
+      y1 = serial( A * x );
+
+   #pragma omp section
+
+      y2 = serial( B * x );
+
+   }
+   \endcode
+
+// Please note that the use of the \c BLAZE_SERIAL_SECTION (see also \ref serial_execution) does
+// NOT work in this context!
+//
+//
 // \n \section openmp_first_touch First Touch Policy
 // <hr>
 //
@@ -3886,6 +3946,9 @@ namespace blaze {}
 // Within the scope of the \c BLAZE_SERIAL_SECTION, all operations are guaranteed to run in serial.
 // Outside the scope of the serial section, all operations are run in parallel (if beneficial for
 // the performance).
+//
+// Note that the \c BLAZE_SERIAL_SECTION must only be used within a single thread of execution.
+// The use of the serial section within several concurrent threads will result undefined behavior!
 //
 //
 // \n \section serial_execution_deactivate_parallelism Option 3: Deactivation of Parallel Execution
