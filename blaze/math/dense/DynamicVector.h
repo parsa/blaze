@@ -980,7 +980,7 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator*=( const Vector<
       swap( tmp );
    }
    else {
-      smpAssign( *this, *this * (~rhs) );
+      smpMultAssign( *this, ~rhs );
    }
 
    return *this;
