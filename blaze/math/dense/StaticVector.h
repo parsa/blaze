@@ -1191,7 +1191,7 @@ template< typename Type  // Data type of the vector
 template< typename VT >  // Type of the right-hand side vector
 inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator*=( const Vector<VT,TF>& rhs )
 {
-   using blaze::assign;
+   using blaze::multAssign;
 
    if( (~rhs).size() != N )
       throw std::invalid_argument( "Vector sizes do not match" );
@@ -1201,7 +1201,7 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator*=( const Vecto
       this->operator=( tmp );
    }
    else {
-      assign( *this, *this * (~rhs) );
+      multAssign( *this, ~rhs );
    }
 
    return *this;
