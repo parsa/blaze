@@ -111,6 +111,18 @@ inline size_t rows( const Matrix<MT,SO>& m );
 template< typename MT, bool SO >
 inline size_t columns( const Matrix<MT,SO>& m );
 
+template< typename MT, bool SO >
+inline size_t capacity( const Matrix<MT,SO>& m );
+
+template< typename MT, bool SO >
+inline size_t capacity( const Matrix<MT,SO>& m, size_t i );
+
+template< typename MT, bool SO >
+inline size_t nonZeros( const Matrix<MT,SO>& m );
+
+template< typename MT, bool SO >
+inline size_t nonZeros( const Matrix<MT,SO>& m, size_t i );
+
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
 inline void assign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
 
@@ -154,6 +166,82 @@ template< typename MT  // Type of the matrix
 inline size_t columns( const Matrix<MT,SO>& m )
 {
    return (~m).columns();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the maximum capacity of the matrix.
+// \ingroup matrix
+//
+// \param m The given matrix.
+// \return The capacity of the matrix.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline size_t capacity( const Matrix<MT,SO>& m )
+{
+   return (~m).capacity();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the current capacity of the specified row/column.
+// \ingroup matrix
+//
+// \param m The given matrix.
+// \param i The index of the row/column.
+// \return The current capacity of row/column \a i.
+//
+// This function returns the current capacity of the specified row/column. In case the
+// storage order is set to \a rowMajor the function returns the capacity of row \a i,
+// in case the storage flag is set to \a columnMajor the function returns the capacity
+// of column \a i.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline size_t capacity( const Matrix<MT,SO>& m, size_t i )
+{
+   return (~m).capacity( i );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the total number of non-zero elements in the matrix
+// \ingroup matrix
+//
+// \param m The given matrix.
+// \return The number of non-zero elements in the dense matrix.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline size_t nonZeros( const Matrix<MT,SO>& m )
+{
+   return (~m).nonZeros();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the number of non-zero elements in the specified row/column.
+// \ingroup matrix
+//
+// \param m The given matrix.
+// \param i The index of the row/column.
+// \return The number of non-zero elements of row/column \a i.
+//
+// This function returns the current number of non-zero elements in the specified row/column.
+// In case the storage order is set to \a rowMajor the function returns the number of non-zero
+// elements in row \a i, in case the storage flag is set to \a columnMajor the function returns
+// the number of non-zero elements in column \a i.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline size_t nonZeros( const Matrix<MT,SO>& m, size_t i )
+{
+   return (~m).nonZeros( i );
 }
 //*************************************************************************************************
 
