@@ -63,6 +63,7 @@
 #include <blaze/math/constraints/MatVecMultExpr.h>
 #include <blaze/math/constraints/MultExpr.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/Resizable.h>
 #include <blaze/math/constraints/Row.h>
 #include <blaze/math/constraints/SerialExpr.h>
 #include <blaze/math/constraints/SMPAssignable.h>
