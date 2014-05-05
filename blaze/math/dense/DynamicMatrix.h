@@ -60,6 +60,7 @@
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Restrict.h>
@@ -209,7 +210,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
        (shared memory parallel) assignments (both on the left-hand and right-hand side of the
        assignment). */
-   enum { smpAssignable = 1 };
+   enum { smpAssignable = !IsSMPAssignable<Type>::value };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -2405,7 +2406,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
        (shared memory parallel) assignments (both on the left-hand and right-hand side of the
        assignment). */
-   enum { smpAssignable = 1 };
+   enum { smpAssignable = !IsSMPAssignable<Type>::value };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -4694,6 +4695,51 @@ struct IsResizable< const volatile DynamicMatrix<T,SO> > : public TrueType
 {
    enum { value = 1 };
    typedef TrueType  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSMPASSIGNABLE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool SO >
+struct IsSMPAssignable< DynamicMatrix<T,SO> >
+   : public SelectType< DynamicMatrix<T,SO>::smpAssignable, TrueType, FalseType >::Type
+{
+   enum { value = DynamicMatrix<T,SO>::smpAssignable };
+   typedef typename SelectType< value, TrueType, FalseType >::Type  Type;
+};
+
+template< typename T, bool SO >
+struct IsSMPAssignable< const DynamicMatrix<T,SO> >
+   : public SelectType< DynamicMatrix<T,SO>::smpAssignable, TrueType, FalseType >::Type
+{
+   enum { value = 1 };
+   typedef typename SelectType< value, TrueType, FalseType >::Type  Type;
+};
+
+template< typename T, bool SO >
+struct IsSMPAssignable< volatile DynamicMatrix<T,SO> >
+   : public SelectType< DynamicMatrix<T,SO>::smpAssignable, TrueType, FalseType >::Type
+{
+   enum { value = 1 };
+   typedef typename SelectType< value, TrueType, FalseType >::Type  Type;
+};
+
+template< typename T, bool SO >
+struct IsSMPAssignable< const volatile DynamicMatrix<T,SO> >
+   : public SelectType< DynamicMatrix<T,SO>::smpAssignable, TrueType, FalseType >::Type
+{
+   enum { value = 1 };
+   typedef typename SelectType< value, TrueType, FalseType >::Type  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
