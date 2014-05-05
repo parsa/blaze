@@ -65,6 +65,7 @@
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/Row.h>
 #include <blaze/math/constraints/SerialExpr.h>
+#include <blaze/math/constraints/SMPAssignable.h>
 #include <blaze/math/constraints/SparseElement.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
