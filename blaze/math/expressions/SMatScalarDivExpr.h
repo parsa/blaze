@@ -69,7 +69,6 @@
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/SameType.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
@@ -137,6 +136,21 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
    template< typename MT2 >
    struct UseAssign {
       enum { value = useAssign };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Parallel evaluation strategy****************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
+       strategy. In case either the target matrix or the sparse matrix operand is not SMP
+       assignable and the matrix operand requires an intermediate evaluation, \a value is set
+       to 1 and the expression specific evaluation strategy is selected. Otherwise \a value is
+       set to 0 and the default strategy is chosen. */
+   template< typename MT2 >
+   struct UseSMPAssign {
+      enum { value = ( !MT2::smpAssignable || !MT::smpAssignable ) && useAssign };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -594,11 +608,14 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
    // \return void
    //
    // This function implements the performance optimized SMP addition assignment of a sparse
-   // matrix-scalar division expression to a dense matrix.
+   // matrix-scalar division expression to a dense matrix. Due to the explicit application
+   // of the SFINAE principle, this operator can only be selected by the compiler in case the
+   // expression specific parallel evaluation strategy is selected.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline void smpAddAssign( DenseMatrix<MT2,SO2>& lhs, const SMatScalarDivExpr& rhs )
+   friend inline typename EnableIf< UseSMPAssign<MT2> >::Type
+      smpAddAssign( DenseMatrix<MT2,SO2>& lhs, const SMatScalarDivExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -628,11 +645,14 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
    // \return void
    //
    // This function implements the performance optimized SMP subtraction assignment of a sparse
-   // matrix-scalar division expression to a dense matrix.
+   // matrix-scalar division expression to a dense matrix. Due to the explicit application
+   // of the SFINAE principle, this operator can only be selected by the compiler in case the
+   // expression specific parallel evaluation strategy is selected.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline void smpSubAssign( DenseMatrix<MT2,SO2>& lhs, const SMatScalarDivExpr& rhs )
+   friend inline typename EnableIf< UseSMPAssign<MT2> >::Type
+      smpSubAssign( DenseMatrix<MT2,SO2>& lhs, const SMatScalarDivExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
