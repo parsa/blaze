@@ -135,11 +135,12 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case the target matrix is SMP assignable and either of the two matrix operands requires
-       an intermediate evaluation, the nested \value will be set to 1, otherwise it will be 0. */
+   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
+       strategy. In case either of the two matrix operands requires an intermediate evaluation,
+       the nested \value will be set to 1, otherwise it will be 0. */
    template< typename MT >
    struct UseSMPAssign {
-      enum { value = MT::smpAssignable && ( evaluateLeft || evaluateRight ) };
+      enum { value = ( evaluateLeft || evaluateRight ) };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -2279,11 +2280,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
 
    //**********************************************************************************************
    //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case the target matrix is SMP assignable and either of the two matrix operands requires
-       an intermediate evaluation, the nested \value will be set to 1, otherwise it will be 0. */
+   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
+       strategy. In case either of the two matrix operands requires an intermediate evaluation,
+       the nested \value will be set to 1, otherwise it will be 0. */
    template< typename MT >
    struct UseSMPAssign {
-      enum { value = MT::smpAssignable && ( evaluateLeft || evaluateRight ) };
+      enum { value = ( evaluateLeft || evaluateRight ) };
    };
    //**********************************************************************************************
 
