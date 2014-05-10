@@ -1262,9 +1262,8 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    //
    // This function implements the performance optimized SMP assignment of a sparse matrix-dense
    // matrix multiplication expression to a dense matrix. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the target
-   // matrix is SMP assignable and either of the two matrix operands requires an intermediate
-   // evaluation.
+   // SFINAE principle, this operator can only be selected by the compiler in case the expression
+   // specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
@@ -1302,9 +1301,8 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    //
    // This function implements the performance optimized SMP assignment of a sparse matrix-dense
    // matrix multiplication expression to a sparse matrix. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the target
-   // matrix is SMP assignable and either of the two matrix operands requires an intermediate
-   // evaluation.
+   // SFINAE principle, this operator can only be selected by the compiler in case the expression
+   // specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
@@ -1344,8 +1342,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    // This function implements the performance optimized SMP addition assignment of a sparse
    // matrix-dense matrix multiplication expression to a dense matrix. Due to the explicit
    // application of the SFINAE principle, this operator can only be selected by the compiler
-   // in case the target matrix is SMP assignable and either of the two matrix operands
-   // requires an intermediate evaluation.
+   // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
@@ -1389,8 +1386,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    // This function implements the performance optimized SMP subtraction assignment of a sparse
    // matrix-dense matrix multiplication expression to a dense matrix. Due to the explicit
    // application of the SFINAE principle, this operator can only be selected by the compiler
-   // in case the target matrix is SMP assignable and either of the two matrix operands
-   // requires an intermediate evaluation.
+   // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
