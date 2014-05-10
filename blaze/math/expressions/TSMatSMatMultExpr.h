@@ -130,11 +130,11 @@ class TSMatSMatMultExpr : public SparseMatrix< TSMatSMatMultExpr<MT1,MT2>, true 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case the target matrix is SMP assignable and either of the two matrix operands requires
-       an intermediate evaluation, the nested \value will be set to 1, otherwise it will be 0. */
+   /*! In case either of the two matrix operands requires an intermediate evaluation, the nested
+       \value will be set to 1, otherwise it will be 0. */
    template< typename MT >
    struct UseSMPAssign {
-      enum { value = MT::smpAssignable && ( evaluateLeft || evaluateRight ) };
+      enum { value = evaluateLeft || evaluateRight };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -611,8 +611,7 @@ class TSMatSMatMultExpr : public SparseMatrix< TSMatSMatMultExpr<MT1,MT2>, true 
    // This function implements the performance optimized SMP assignment of a transpose sparse
    // matrix-sparse matrix multiplication expression to a dense matrix. Due to the explicit
    // application of the SFINAE principle, this operator can only be selected by the compiler
-   // in case the target matrix is SMP assignable and either of the two matrix operands requires
-   // an intermediate evaluation.
+   // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
@@ -652,8 +651,7 @@ class TSMatSMatMultExpr : public SparseMatrix< TSMatSMatMultExpr<MT1,MT2>, true 
    // This function implements the performance optimized SMP assignment of a transpose sparse
    // matrix-sparse matrix multiplication expression to a sparse matrix. Due to the explicit
    // application of the SFINAE principle, this operator can only be selected by the compiler
-   // in case the target matrix is SMP assignable and either of the two matrix operands requires
-   // an intermediate evaluation.
+   // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
@@ -693,8 +691,7 @@ class TSMatSMatMultExpr : public SparseMatrix< TSMatSMatMultExpr<MT1,MT2>, true 
    // This function implements the performance optimized SMP addition assignment of a transpose
    // sparse matrix-sparse matrix multiplication expression to a dense matrix. Due to the explicit
    // application of the SFINAE principle, this operator can only be selected by the compiler
-   // in case the target matrix is SMP assignable and either of the two matrix operands requires
-   // an intermediate evaluation.
+   // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matarix
@@ -738,8 +735,7 @@ class TSMatSMatMultExpr : public SparseMatrix< TSMatSMatMultExpr<MT1,MT2>, true 
    // This function implements the performance optimized SMP subtraction assignment of a transpose
    // sparse matrix-sparse matrix multiplication expression to a dense matrix. Due to the explicit
    // application of the SFINAE principle, this operator can only be selected by the compiler
-   // in case the target matrix is SMP assignable and either of the two matrix operands requires
-   // an intermediate evaluation.
+   // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
