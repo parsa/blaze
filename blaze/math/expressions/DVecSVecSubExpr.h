@@ -117,12 +117,12 @@ class DVecSVecSubExpr : public DenseVector< DVecSVecSubExpr<VT1,VT2,TF>, TF >
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
-       strategy. In case the target vector is SMP assignable, \a value is set to 1 and the
-       expression specific evaluation strategy is selected. Otherwise \a value is set to 0
-       and the default strategy is chosen. */
+       strategy. In case the target vector is SMP assignable but at least one of the two vector
+       operands is not, \a value is set to 1 and the expression specific evaluation strategy is
+       selected. Otherwise \a value is set to 0 and the default strategy is chosen. */
    template< typename VT >
    struct UseSMPAssign {
-      enum { value = VT::smpAssignable };
+      enum { value = VT::smpAssignable && ( !VT1::smpAssignable || !VT2::smpAssignable ) };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -403,8 +403,8 @@ class DVecSVecSubExpr : public DenseVector< DVecSVecSubExpr<VT1,VT2,TF>, TF >
    //
    // This function implements the performance optimized SMP assignment of a dense vector-sparse
    // vector subtraction expression to a dense vector. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the target
-   // vector is SMP assignable.
+   // SFINAE principle, this operator can only be selected by the compiler in case the expression
+   // specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
    friend inline typename EnableIf< UseSMPAssign<VT> >::Type
@@ -436,8 +436,8 @@ class DVecSVecSubExpr : public DenseVector< DVecSVecSubExpr<VT1,VT2,TF>, TF >
    //
    // This function implements the performance optimized SMP assignment of a dense vector-sparse
    // vector subtraction expression to a sparse vector. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the target
-   // vector is SMP assignable.
+   // SFINAE principle, this operator can only be selected by the compiler in case the expression
+   // specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target sparse vector
    friend inline typename EnableIf< UseSMPAssign<VT> >::Type
@@ -469,7 +469,7 @@ class DVecSVecSubExpr : public DenseVector< DVecSVecSubExpr<VT1,VT2,TF>, TF >
    // This function implements the performance optimized SMP addition assignment of a dense
    // vector-sparse vector subtraction expression to a dense vector. Due to the explicit
    // application of the SFINAE principle, this operator can only be selected by the compiler
-   // in case the target vector is SMP assignable.
+   // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
    friend inline typename EnableIf< UseSMPAssign<VT> >::Type
@@ -502,7 +502,7 @@ class DVecSVecSubExpr : public DenseVector< DVecSVecSubExpr<VT1,VT2,TF>, TF >
    // This function implements the performance optimized SMP subtraction assignment of a dense
    // vector-sparse vector subtraction expression to a dense vector. Due to the explicit
    // application of the SFINAE principle, this operator can only be selected by the compiler
-   // in case the target vector is SMP assignable.
+   // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
    friend inline typename EnableIf< UseSMPAssign<VT> >::Type
@@ -535,7 +535,7 @@ class DVecSVecSubExpr : public DenseVector< DVecSVecSubExpr<VT1,VT2,TF>, TF >
    // This function implements the performance optimized SMP multiplication assignment of a
    // dense vector-sparse vector subtraction expression to a dense vector. Due to the explicit
    // application of the SFINAE principle, this operator can only be selected by the compiler
-   // in case the target vector is SMP assignable.
+   // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
    friend inline typename EnableIf< UseSMPAssign<VT> >::Type
