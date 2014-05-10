@@ -1596,8 +1596,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // This function implements the performance optimized SMP assignment of a transpose dense
    // vector-transpose dense matrix multiplication expression to a dense vector. Due to the
    // explicit application of the SFINAE principle, this operator can only be selected by the
-   // compiler in case the target vector is SMP assignable and either the left-hand side vector
-   // operand or the right-hand side matrix operand requires an intermediate evaluation.
+   // compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
    friend inline typename EnableIf< UseSMPAssign<VT1> >::Type
@@ -1641,8 +1640,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // This function implements the performance optimized SMP assignment of a transpose dense
    // vector-transpose dense matrix multiplication expression to a sparse vector. Due to the
    // explicit application of the SFINAE principle, this operator can only be selected by the
-   // compiler in case the target vector is SMP assignable and either the left-hand side vector
-   // operand or the right-hand side matrix operand requires an intermediate evaluation.
+   // compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target sparse vector
    friend inline typename EnableIf< UseSMPAssign<VT1> >::Type
@@ -1675,8 +1673,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // This function implements the performance optimized SMP addition assignment of a transpose
    // dense vector-transpose dense matrix multiplication expression to a dense vector. Due to
    // the explicit application of the SFINAE principle, this operator can only be selected by
-   // the compiler in case the target vector is SMP assignable and either the left-hand side
-   // vector operand or the right-hand side matrix operand requires an intermediate evaluation.
+   // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
    friend inline typename EnableIf< UseSMPAssign<VT1> >::Type
@@ -1720,8 +1717,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // This function implements the performance optimized SMP subtraction assignment of a transpose
    // dense vector-transpose dense matrix multiplication expression to a dense vector. Due to the
    // explicit application of the SFINAE principle, this operator can only be selected by the
-   // compiler in case the target vector is SMP assignable and either the left-hand side vector
-   // operand or the right-hand side matrix operand requires an intermediate evaluation.
+   // compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
    friend inline typename EnableIf< UseSMPAssign<VT1> >::Type
@@ -1765,8 +1761,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // This function implements the performance optimized SMP subtraction assignment of a transpose
    // dense vector-transpose dense matrix multiplication expression to a dense vector. Due to the
    // explicit application of the SFINAE principle, this operator can only be selected by the
-   // compiler in case the target vector is SMP assignable and either the left-hand side vector
-   // operand or the right-hand side matrix operand requires an intermediate evaluation.
+   // compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
    friend inline typename EnableIf< UseSMPAssign<VT1> >::Type
@@ -3302,8 +3297,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // This function implements the performance optimized SMP assignment of a scaled transpose
    // dense vector-transpose dense matrix multiplication expression to a dense vector. Due to
    // the explicit application of the SFINAE principle, this operator can only be selected by
-   // the compiler in case the target vector is SMP assignable and either the left-hand side
-   // vector operand or the right-hand side matrix operand requires an intermediate evaluation.
+   // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1  // Type of the target dense vector
            , bool TF >     // Transpose flag of the target dense vector
@@ -3349,8 +3343,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // This function implements the performance optimized SMP assignment of a scaled transpose
    // dense vector-transpose dense matrix multiplication expression to a sparse vector. Due to
    // the explicit application of the SFINAE principle, this operator can only be selected by
-   // the compiler in case the target vector is SMP assignable and either the left-hand side
-   // vector operand or the right-hand side matrix operand requires an intermediate evaluation.
+   // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1  // Type of the target sparse vector
            , bool TF >     // Transpose flag of the target sparse vector
@@ -3382,8 +3375,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // This function implements the performance optimized SMP addition assignment of a scaled
    // transpose dense vector-transpose dense matrix multiplication expression to a dense vector.
    // Due to the explicit application of the SFINAE principle, this operator can only be selected
-   // by the compiler in case the target vector is SMP assignable and either the left-hand side
-   // vector operand or the right-hand side matrix operand requires an intermediate evaluation.
+   // by the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1  // Type of the target dense vector
            , bool TF >     // Transpose flag of the target dense vector
@@ -3429,8 +3421,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // This function implements the performance optimized SMP subtraction assignment of a scaled
    // transpose dense vector-transpose dense matrix multiplication expression to a dense vector.
    // Due to the explicit application of the SFINAE principle, this operator can only be selected
-   // by the compiler in case the target vector is SMP assignable and either the left-hand side
-   // vector operand or the right-hand side matrix operand requires an intermediate evaluation.
+   // by the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1  // Type of the target dense vector
            , bool TF >     // Transpose flag of the target dense vector
@@ -3476,8 +3467,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // This function implements the performance optimized SMP subtraction assignment of a scaled
    // transpose dense vector-transpose dense matrix multiplication expression to a dense vector.
    // Due to the explicit application of the SFINAE principle, this operator can only be selected
-   // by the compiler in case the target vector is SMP assignable and either the left-hand side
-   // vector operand or the right-hand side matrix operand requires an intermediate evaluation.
+   // by the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1  // Type of the target dense vector
            , bool TF >     // Transpose flag of the target dense vector
