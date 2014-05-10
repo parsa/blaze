@@ -146,12 +146,13 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
-       strategy. In case the target vector is SMP assignable, \a value is set to 1 and the
-       expression specific evaluation strategy is selected. Otherwise \a value is set to 0
-       and the default strategy is chosen. */
+       strategy. In case either the target vector or the sparse vector operand is not SMP
+       assignable and the vector operand requires an intermediate evaluation, \a value is set
+       to 1 and the expression specific evaluation strategy is selected. Otherwise \a value is
+       set to 0 and the default strategy is chosen. */
    template< typename VT2 >
    struct UseSMPAssign {
-      enum { value = VT2::smpAssignable };
+      enum { value = ( !VT2::smpAssignable || !VT::smpAssignable ) && useAssign };
    };
    /*! \endcond */
    //**********************************************************************************************
