@@ -1699,7 +1699,7 @@ class DenseColumn<MT,false> : public DenseVector< DenseColumn<MT,false>, false >
    typedef typename ResultType::TransposeType  TransposeType;   //!< Transpose type for expression template evaluations.
    typedef typename MT::ElementType            ElementType;     //!< Type of the column elements.
    typedef typename MT::ReturnType             ReturnType;      //!< Return type for expression template evaluations
-   typedef const ResultType                    CompositeType;   //!< Data type for composite expression templates.
+   typedef const DenseColumn&                  CompositeType;   //!< Data type for composite expression templates.
 
    //! Reference to a constant column value.
    typedef typename MT::ConstReference  ConstReference;
