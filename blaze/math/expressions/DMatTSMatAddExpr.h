@@ -113,12 +113,12 @@ class DMatTSMatAddExpr : public DenseMatrix< DMatTSMatAddExpr<MT1,MT2>, false >
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
-       strategy. In case the target matrix is SMP assignable but at least one of the two matrix
-       operands is not, \a value is set to 1 and the expression specific evaluation strategy is
-       selected. Otherwise \a value is set to 0 and the default strategy is chosen. */
+       strategy. In case at least one of the two matrix operands is not SMP assignable, \a value
+       is set to 1 and the expression specific evaluation strategy is selected. Otherwise \a value
+       is set to 0 and the default strategy is chosen. */
    template< typename MT >
    struct UseSMPAssign {
-      enum { value = MT::smpAssignable && ( !MT1::smpAssignable || !MT2::smpAssignable ) };
+      enum { value = ( !MT1::smpAssignable || !MT2::smpAssignable ) };
    };
    /*! \endcond */
    //**********************************************************************************************
