@@ -109,12 +109,12 @@ class TDMatSMatSubExpr : public DenseMatrix< TDMatSMatSubExpr<MT1,MT2>, false >
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
-       strategy. In case the target matrix is SMP assignable, \a value is set to 1 and the
-       expression specific evaluation strategy is selected. Otherwise \a value is set to 0
-       and the default strategy is chosen. */
+       strategy. In case the target matrix is SMP assignable but at least one of the two matrix
+       operands is not, \a value is set to 1 and the expression specific evaluation strategy is
+       selected. Otherwise \a value is set to 0 and the default strategy is chosen. */
    template< typename MT >
    struct UseSMPAssign {
-      enum { value = MT::smpAssignable };
+      enum { value = MT::smpAssignable && ( !MT1::smpAssignable || !MT2::smpAssignable ) };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -398,9 +398,9 @@ class TDMatSMatSubExpr : public DenseMatrix< TDMatSMatSubExpr<MT1,MT2>, false >
    // \return void
    //
    // This function implements the performance optimized SMP assignment of a transpose dense matrix-
-   // sparse matrix subtraction expression to a dense matrix. Due to the explicit application of
-   // the SFINAE principle, this operator can only be selected by the compiler in case the target
-   // matrix is SMP assignable.
+   // sparse matrix subtraction expression to a dense matrix. Due to the explicit application
+   // of the SFINAE principle, this operator can only be selected by the compiler in case the
+   // expression specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
@@ -433,9 +433,9 @@ class TDMatSMatSubExpr : public DenseMatrix< TDMatSMatSubExpr<MT1,MT2>, false >
    // \return void
    //
    // This function implements the performance optimized SMP assignment of a transpose dense matrix-
-   // sparse matrix subtraction expression to a sparse matrix. Due to the explicit application of
-   // the SFINAE principle, this operator can only be selected by the compiler in case the target
-   // matrix is SMP assignable.
+   // sparse matrix subtraction expression to a sparse matrix. Due to the explicit application
+   // of the SFINAE principle, this operator can only be selected by the compiler in case the
+   // expression specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO2 >   // Storage order of the target sparse matrix
@@ -474,8 +474,8 @@ class TDMatSMatSubExpr : public DenseMatrix< TDMatSMatSubExpr<MT1,MT2>, false >
    //
    // This function implements the performance optimized addition assignment of a transpose dense
    // matrix-sparse matrix subtraction expression to a dense matrix. Due to the explicit application
-   // of the SFINAE principle, this operator can only be selected by the compiler in case the target
-   // matrix is SMP assignable.
+   // of the SFINAE principle, this operator can only be selected by the compiler in case the
+   // expression specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
@@ -508,7 +508,9 @@ class TDMatSMatSubExpr : public DenseMatrix< TDMatSMatSubExpr<MT1,MT2>, false >
    // \return void
    //
    // This function implements the performance optimized SMP subtraction assignment of a transpose
-   // dense matrix-sparse matrix subtraction expression to a dense matrix.
+   // dense matrix-sparse matrix subtraction expression to a dense matrix. Due to the explicit
+   // application of the SFINAE principle, this operator can only be selected by the compiler
+   // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
