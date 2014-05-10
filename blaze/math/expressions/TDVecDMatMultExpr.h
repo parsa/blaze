@@ -133,7 +133,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
        evaluation, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1 >
    struct UseSMPAssign {
-      enum { value = evaluateVector || evaluateMatrix };
+      enum { value = ( evaluateVector || evaluateMatrix ) };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -1917,12 +1917,12 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
 
    //**********************************************************************************************
    //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case the target vector is SMP assignable and either the vector or the matrix operand
-       require an intermediate evaluation, the nested \value will be set to 1, otherwise it will
-       be 0. */
+   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
+       strategy. In case either the vector or the matrix operand requires an intermediate
+       evaluation, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1 >
    struct UseSMPAssign {
-      enum { value = T1::smpAssignable && ( evaluateVector || evaluateMatrix ) };
+      enum { value = ( evaluateVector || evaluateMatrix ) };
    };
    //**********************************************************************************************
 

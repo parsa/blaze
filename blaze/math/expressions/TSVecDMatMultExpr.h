@@ -123,7 +123,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
        evaluation, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1 >
    struct UseSMPAssign {
-      enum { value = evaluateVector || evaluateMatrix };
+      enum { value = ( evaluateVector || evaluateMatrix ) };
    };
    /*! \endcond */
    //**********************************************************************************************
