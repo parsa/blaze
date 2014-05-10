@@ -133,11 +133,12 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    //! Helper structure for the explicit application of the SFINAE principle.
    /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
        strategy. In case the target matrix is SMP assignable but at least one of the two matrix
-       operands is not, \a value is set to 1 and the expression specific evaluation strategy is
-       selected. Otherwise \a value is set to 0 and the default strategy is chosen. */
+       operands is not and at least one of the two operands requires an intermediate evaluation,
+       \a value is set to 1 and the expression specific evaluation strategy is selected. Otherwise
+       \a value is set to 0 and the default strategy is chosen. */
    template< typename MT >
    struct UseSMPAssign {
-      enum { value = MT::smpAssignable && ( !MT1::smpAssignable || !MT2::smpAssignable ) };
+      enum { value = MT::smpAssignable && ( !MT1::smpAssignable || !MT2::smpAssignable ) && useAssign };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -582,8 +583,8 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    //
    // This function implements the performance optimized SMP assignment of a dense matrix-transpose
    // dense matrix addition expression to a dense matrix. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the target
-   // vector is SMP assignable but at least one of the two matrix operands is not.
+   // SFINAE principle, this operator can only be selected by the compiler in case the expression
+   // specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
@@ -620,8 +621,8 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    //
    // This function implements the performance optimized SMP assignment of a dense matrix-transpose
    // dense matrix addition expression to a sparse matrix. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the target
-   // vector is SMP assignable but at least one of the two matrix operands is not.
+   // SFINAE principle, this operator can only be selected by the compiler in case the expression
+   // specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO2 >   // Storage order of the target sparse matrix
@@ -661,7 +662,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    // This function implements the performance optimized SMP addition assignment of a dense matrix-
    // transpose dense matrix addition expression to a dense matrix. Due to the explicit application
    // of the SFINAE principle, this operator can only be selected by the compiler in case the
-   // target vector is SMP assignable but at least one of the two matrix operands is not.
+   // expression specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
@@ -696,8 +697,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    // This function implements the performance optimized SMP subtraction assignment of a dense
    // matrix-transpose dense matrix addition expression to a dense matrix. Due to the explicit
    // application of the SFINAE principle, this operator can only be selected by the compiler
-   // in case the target vector is SMP assignable but at least one of the two matrix operands
-   // is not.
+   // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
