@@ -146,11 +146,12 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    //**Parallel evaluation strategy****************************************************************
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case the target vector is SMP assignable and the right-hand side vector operand requires
-       an intermediate evaluation, the nested \value will be set to 1, otherwise it will be 0. */
+   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
+       strategy. In case the right-hand side vector operand requires an intermediate evaluation,
+       the nested \value will be set to 1, otherwise it will be 0. */
    template< typename VT >
    struct UseSMPAssign {
-      enum { value = VT::smpAssignable && evaluateRight };
+      enum { value = evaluateRight };
    };
    /*! \endcond */
    //**********************************************************************************************
