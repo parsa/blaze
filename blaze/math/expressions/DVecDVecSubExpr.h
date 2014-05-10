@@ -135,13 +135,13 @@ class DVecDVecSubExpr : public DenseVector< DVecDVecSubExpr<VT1,VT2,TF>, TF >
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
-       strategy. In case the target vector is SMP assignable but at least one of the two vector
-       operands is not and at least one of the two operands requires an intermediate evaluation,
-       \a value is set to 1 and the expression specific evaluation strategy is selected. Otherwise
-       \a value is set to 0 and the default strategy is chosen. */
+       strategy. In case at least one of the two dense vector operands is not SMP assignable and
+       at least one of the two operands requires an intermediate evaluation, \a value is set to 1
+       and the expression specific evaluation strategy is selected. Otherwise \a value is set to
+       0 and the default strategy is chosen. */
    template< typename VT >
    struct UseSMPAssign {
-      enum { value = VT::smpAssignable && ( !VT1::smpAssignable || !VT2::smpAssignable ) && useAssign };
+      enum { value = ( !VT1::smpAssignable || !VT2::smpAssignable ) && useAssign };
    };
    /*! \endcond */
    //**********************************************************************************************
