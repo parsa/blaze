@@ -148,12 +148,13 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
-       strategy. In case the target matrix is SMP assignable but the dense matrix operand is not,
-       \a value is set to 1 and the expression specific evaluation strategy is selected. Otherwise
-       \a value is set to 0 and the default strategy is chosen. */
+       strategy. In case the target matrix is SMP assignable but the dense matrix operand is not
+       and is a computation expression that requires an intermediate evaluation, \a value is set
+       to 1 and the expression specific evaluation strategy is selected. Otherwise \a value is
+       set to 0 and the default strategy is chosen. */
    template< typename MT2 >
    struct UseSMPAssign {
-      enum { value = MT2::smpAssignable && !MT::smpAssignable };
+      enum { value = MT2::smpAssignable && !MT::smpAssignable && useAssign };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -746,8 +747,8 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    //
    // This function implements the performance optimized SMP assignment of a dense matrix-scalar
    // multiplication expression to a dense matrix. Due to the explicit application of the SFINAE
-   // principle, this operator can only be selected by the compiler in case the target matrix
-   // is SMP assignable but the dense matrix operand is not.
+   // principle, this operator can only be selected by the compiler in case the expression
+   // specific evaluation strategy is selected.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
@@ -776,8 +777,8 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    //
    // This function implements the performance optimized SMP assignment of a dense matrix-scalar
    // multiplication expression to a sparse matrix. Due to the explicit application of the SFINAE
-   // principle, this operator can only be selected by the compiler in case the target matrix
-   // is SMP assignable but the dense matrix operand is not.
+   // principle, this operator can only be selected by the compiler in case the expression
+   // specific evaluation strategy is selected.
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
@@ -807,7 +808,7 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    // This function implements the performance optimized SMP addition assignment of a dense
    // matrix-scalar multiplication expression to a dense matrix. Due to the explicit application
    // of the SFINAE principle, this operator can only be selected by the compiler in case the
-   // target matrix is SMP assignable but the dense matrix operand is not.
+   // expression specific evaluation strategy is selected.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
@@ -845,7 +846,7 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    // This function implements the performance optimized SMP subtraction assignment of a dense
    // matrix-scalar multiplication expression to a dense matrix. Due to the explicit application
    // of the SFINAE principle, this operator can only be selected by the compiler in case the
-   // target matrix is SMP assignable but the dense matrix operand is not.
+   // expression specific evaluation strategy is selected.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
