@@ -3797,7 +3797,108 @@ namespace blaze {}
 // <em>./blaze/config/Thresholds.h</em>.
 //
 //
-// \n \section openmp_sections The \c sections Directive
+// \n \section openmp_first_touch First Touch Policy
+// <hr>
+//
+// So far the \b Blaze library does not (yet) automatically initialize dynamic memory according
+// to the first touch principle. Consider for instance the following vector triad example:
+
+   \code
+   using blaze::columnVector;
+
+   const size_t N( 1000000UL );
+
+   blaze::DynamicVector<double,columnVector> a( N ), b( N ), c( N ), d( N );
+
+   // Initialization of the vectors b, c, and d
+   for( size_t i=0UL; i<N; ++i ) {
+      b[i] = rand<double>();
+      c[i] = rand<double>();
+      d[i] = rand<double>();
+   }
+
+   // Performing a vector triad
+   a = b + c * d;
+   \endcode
+
+// If this code, which is prototypical for many OpenMP applications that have not been optimized
+// for ccNUMA architectures, is run across several locality domains (LD), it will not scale
+// beyond the maximum performance achievable on a single LD if the working set does not fit into
+// the cache. This is because the initialization loop is executed by a single thread, writing to
+// \c b, \c c, and \c d for the first time. Hence, all memory pages belonging to those arrays will
+// be mapped into a single LD.
+//
+// As mentioned above, this problem can be solved by performing vector initialization in parallel:
+
+   \code
+   // ...
+
+   // Initialization of the vectors b, c, and d
+   #pragma omp parallel for
+   for( size_t i=0UL; i<N; ++i ) {
+      b[i] = rand<double>();
+      c[i] = rand<double>();
+      d[i] = rand<double>();
+   }
+
+   // ...
+   \endcode
+
+// This simple modification makes a huge difference on ccNUMA in memory-bound situations (as for
+// instance in all BLAS level 1 operations and partially BLAS level 2 operations). Therefore, in
+// order to achieve the maximum possible performance, it is imperative to initialize the memory
+// according to the later use of the data structures.
+//
+//
+// \n \section openmp_limitations Limitations of the OpenMP Parallelization
+// <hr>
+//
+// There are a few important limitations to the current \b Blaze OpenMP parallelization. The first
+// one involves the explicit use of an OpenMP parallel region (see \ref openmp_parallel), the
+// other one the OpenMP \c sections directive (see \ref openmp_sections).
+//
+//
+// \n \subsection openmp_parallel The Parallel Directive
+//
+// In OpenMP threads are explicitly spawned via the an OpenMP parallel directive:
+
+   \code
+   // Serial region, executed by a single thread
+
+   #pragma omp parallel
+   {
+      // Parallel region, executed by the specified number of threads
+   }
+
+   // Serial region, executed by a single thread
+   \endcode
+
+// Conceptually, the specified number of threads (see \ref openmp_setup) is created every time a
+// parallel directive is encountered. Therefore, from a performance point of view, it seems to be
+// beneficial to use a single OpenMP parallel directive for several operations:
+
+   \code
+   blaze::DynamicVector x, y1, y2;
+   blaze::DynamicMatrix A, B;
+
+   #pragma omp parallel
+   {
+      y1 = A * x;
+      y2 = B * x;
+   }
+   \endcode
+
+// Unfortunately, this optimization approach is not allowed within the \b Blaze library. More
+// explicitly, it is not allowed to put an operation into a parallel region. The reason is that
+// the entire code contained within a parallel region is executed by all threads. Although this
+// appears to just comprise the contained computations, a computation (or more specifically the
+// assignment of an expression to a vector or matrix) can contain additional logic that must not
+// be handled by multiple threads (as for instance memory allocations, setup of temporaries, etc.).
+// Therefore it is not possible to manually start a parallel region for several operations, but
+// \b Blaze will spawn threads automatically, depending on the specifics of the operation at hand
+// and the given operands.
+//
+// \n \subsection openmp_sections The Sections Directive
 //
 // OpenMP provides several work-sharing construct to distribute work among threads. One of these
 // constructs is the \c sections directive:
@@ -3855,59 +3956,6 @@ namespace blaze {}
 
 // Please note that the use of the \c BLAZE_SERIAL_SECTION (see also \ref serial_execution) does
 // NOT work in this context!
-//
-//
-// \n \section openmp_first_touch First Touch Policy
-// <hr>
-//
-// So far the \b Blaze library does not (yet) automatically initialize dynamic memory according
-// to the first touch principle. Consider for instance the following vector triad example:
-
-   \code
-   using blaze::columnVector;
-
-   const size_t N( 1000000UL );
-
-   blaze::DynamicVector<double,columnVector> a( N ), b( N ), c( N ), d( N );
-
-   // Initialization of the vectors b, c, and d
-   for( size_t i=0UL; i<N; ++i ) {
-      b[i] = rand<double>();
-      c[i] = rand<double>();
-      d[i] = rand<double>();
-   }
-
-   // Performing a vector triad
-   a = b + c * d;
-   \endcode
-
-// If this code, which is prototypical for many OpenMP applications that have not been optimized
-// for ccNUMA architectures, is run across several locality domains (LD), it will not scale
-// beyond the maximum performance achievable on a single LD if the working set does not fit into
-// the cache. This is because the initialization loop is executed by a single thread, writing to
-// \c b, \c c, and \c d for the first time. Hence, all memory pages belonging to those arrays will
-// be mapped into a single LD.
-//
-// As mentioned above, this problem can be solved by performing vector initialization in parallel:
-
-   \code
-   // ...
-
-   // Initialization of the vectors b, c, and d
-   #pragma omp parallel for
-   for( size_t i=0UL; i<N; ++i ) {
-      b[i] = rand<double>();
-      c[i] = rand<double>();
-      d[i] = rand<double>();
-   }
-
-   // ...
-   \endcode
-
-// This simple modification makes a huge difference on ccNUMA in memory-bound situations (as for
-// instance in all BLAS level 1 operations and partially BLAS level 2 operations). Therefore, in
-// order to achieve the maximum possible performance, it is imperative to initialize the memory
-// according to the later use of the data structures.
 //
 // \n <center> Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref serial_execution </center>
 */
