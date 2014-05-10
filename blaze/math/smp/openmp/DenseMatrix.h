@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <omp.h>
+#include <blaze/math/constraints/SMPAssignable.h>
 #include <blaze/math/DenseSubmatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
@@ -56,6 +57,8 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/typetraits/IsSame.h>
 
@@ -67,38 +70,6 @@ namespace blaze {
 //  PLAIN ASSIGNMENT
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP assignment to a dense matrix.
-// \ingroup smp
-//
-// \param lhs The target left-hand side dense matrix.
-// \param rhs The right-hand side matrix to be assigned.
-// \return void
-//
-// This function implements the default OpenMP-based SMP assignment to a dense matrix.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT1  // Type of the left-hand side dense matrix
-        , bool SO1      // Storage order of the left-hand side matrix
-        , typename MT2  // Type of the right-hand side matrix
-        , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
-   smpAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-   assign( ~lhs, ~rhs );
-}
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -123,8 +94,9 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
+
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
@@ -198,8 +170,9 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMa
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
+
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
@@ -273,8 +246,9 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowMajo
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
+
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
@@ -325,8 +299,9 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,columnM
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
+
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
@@ -356,14 +331,17 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,columnM
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP assignment to a dense matrix.
-// \ingroup math
+/*!\brief Default implementation of the OpenMP-based SMP assignment to a dense matrix.
+// \ingroup smp
 //
 // \param lhs The target left-hand side dense matrix.
-// \param rhs The right-hand side column-major sparse matrix to be assigned.
+// \param rhs The right-hand side matrix to be assigned.
 // \return void
 //
-// This function implements the OpenMP-based SMP assignment to a dense matrix.\n
+// This function implements the default OpenMP-based SMP assignment to a dense matrix. Due to
+// the explicit application of the SFINAE principle, this function can only be selected by the
+// compiler in case both operands are SMP-assignable and the element types of both operands are
+// not SMP-assignable.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -373,7 +351,51 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
+inline typename DisableIf< And< IsSMPAssignable<MT1>
+                              , IsSMPAssignable<MT2>
+                              , Not< IsSMPAssignable<typename MT1::ElementType> >
+                              , Not< IsSMPAssignable<typename MT2::ElementType> >
+                              > >::Type
+   smpAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   assign( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Implementation of the OpenMP-based SMP assignment to a dense matrix.
+// \ingroup math
+//
+// \param lhs The target left-hand side dense matrix.
+// \param rhs The right-hand side column-major sparse matrix to be assigned.
+// \return void
+//
+// This function implements the OpenMP-based SMP assignment to a dense matrix. Due to the
+// explicit application of the SFINAE principle, this function can only be selected by the
+// compiler in case both operands are SMP-assignable and the element types of both operands
+// are not SMP-assignable.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , bool SO1      // Storage order of the left-hand side matrix
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline typename EnableIf< And< IsSMPAssignable<MT1>
+                             , IsSMPAssignable<MT2>
+                             , Not< IsSMPAssignable<typename MT1::ElementType> >
+                             , Not< IsSMPAssignable<typename MT2::ElementType> >
+                             > >::Type
    smpAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -385,9 +407,6 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
    {
       if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
          assign( ~lhs, ~rhs );
-      }
-      else if( omp_in_parallel() ) {
-         smpAssign_backend( ~lhs, ~rhs );
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
@@ -406,38 +425,6 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
 //  ADDITION ASSIGNMENT
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP addition assignment to a dense matrix.
-// \ingroup smp
-//
-// \param lhs The target left-hand side dense matrix.
-// \param rhs The right-hand side matrix to be added.
-// \return void
-//
-// This function implements the default OpenMP-based SMP addition assignment to a dense matrix.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT1  // Type of the left-hand side dense matrix
-        , bool SO1      // Storage order of the left-hand side matrix
-        , typename MT2  // Type of the right-hand side matrix
-        , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
-   smpAddAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-   addAssign( ~lhs, ~rhs );
-}
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -463,8 +450,9 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMa
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
+
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
@@ -539,8 +527,9 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,colum
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
+
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
@@ -615,8 +604,9 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowM
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
+
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
@@ -668,8 +658,9 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,colu
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
+
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
@@ -699,14 +690,17 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,colu
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP addition assignment to a dense matrix.
-// \ingroup math
+/*!\brief Default implementation of the OpenMP-based SMP addition assignment to a dense matrix.
+// \ingroup smp
 //
 // \param lhs The target left-hand side dense matrix.
-// \param rhs The right-hand side row-major dense matrix to be added.
+// \param rhs The right-hand side matrix to be added.
 // \return void
 //
-// This function implements the OpenMP-based SMP addition assignment to a dense matrix.\n
+// This function implements the default OpenMP-based SMP addition assignment to a dense matrix.
+// Due to the explicit application of the SFINAE principle, this function can only be selected
+// by the compiler in case both operands are SMP-assignable and the element types of both operands
+// are not SMP-assignable.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -716,7 +710,51 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
+inline typename DisableIf< And< IsSMPAssignable<MT1>
+                              , IsSMPAssignable<MT2>
+                              , Not< IsSMPAssignable<typename MT1::ElementType> >
+                              , Not< IsSMPAssignable<typename MT2::ElementType> >
+                              > >::Type
+   smpAddAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   addAssign( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Implementation of the OpenMP-based SMP addition assignment to a dense matrix.
+// \ingroup math
+//
+// \param lhs The target left-hand side dense matrix.
+// \param rhs The right-hand side row-major dense matrix to be added.
+// \return void
+//
+// This function implements the OpenMP-based SMP addition assignment to a dense matrix. Due to
+// the explicit application of the SFINAE principle, this function can only be selected by the
+// compiler in case both operands are SMP-assignable and the element types of both operands are
+// not SMP-assignable.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , bool SO1      // Storage order of the left-hand side matrix
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline typename EnableIf< And< IsSMPAssignable<MT1>
+                             , IsSMPAssignable<MT2>
+                             , Not< IsSMPAssignable<typename MT1::ElementType> >
+                             , Not< IsSMPAssignable<typename MT2::ElementType> >
+                             > >::Type
    smpAddAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -728,9 +766,6 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
    {
       if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
          addAssign( ~lhs, ~rhs );
-      }
-      else if( omp_in_parallel() ) {
-         smpAddAssign_backend( ~lhs, ~rhs );
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
@@ -749,38 +784,6 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
 //  SUBTRACTION ASSIGNMENT
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP subtracction assignment to a dense matrix.
-// \ingroup smp
-//
-// \param lhs The target left-hand side dense matrix.
-// \param rhs The right-hand side matrix to be subtracted.
-// \return void
-//
-// This function implements the default OpenMP-based SMP subtraction assignment to a dense matrix.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT1  // Type of the left-hand side dense matrix
-        , bool SO1      // Storage order of the left-hand side matrix
-        , typename MT2  // Type of the right-hand side matrix
-        , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
-   smpSubAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-   subAssign( ~lhs, ~rhs );
-}
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -806,8 +809,9 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMa
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
+
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
@@ -882,8 +886,9 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,colum
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
+
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
@@ -958,8 +963,9 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowM
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
+
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
@@ -1011,8 +1017,9 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,colu
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
+
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
@@ -1042,15 +1049,17 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,colu
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP subtracction assignment to a dense matrix.
+/*!\brief Default implementation of the OpenMP-based SMP subtracction assignment to a dense matrix.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side matrix to be subtracted.
 // \return void
 //
-// This function implements the default OpenMP-based SMP subtraction assignment of a matrix to
-// a dense matrix.\n
+// This function implements the default OpenMP-based SMP subtraction assignment to a dense matrix.
+// Due to the explicit application of the SFINAE principle, this function can only be selected by
+// the compiler in case both operands are SMP-assignable and the element types of both operands
+// are not SMP-assignable.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -1060,7 +1069,51 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
+inline typename DisableIf< And< IsSMPAssignable<MT1>
+                              , IsSMPAssignable<MT2>
+                              , Not< IsSMPAssignable<typename MT1::ElementType> >
+                              , Not< IsSMPAssignable<typename MT2::ElementType> >
+                              > >::Type
+   smpSubAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   subAssign( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Implementation of the OpenMP-based SMP subtracction assignment to a dense matrix.
+// \ingroup smp
+//
+// \param lhs The target left-hand side dense matrix.
+// \param rhs The right-hand side matrix to be subtracted.
+// \return void
+//
+// This function implements the default OpenMP-based SMP subtraction assignment of a matrix to a
+// dense matrix. Due to the explicit application of the SFINAE principle, this function can only
+// be selected by the compiler in case both operands are SMP-assignable and the element types of
+// both operands are not SMP-assignable.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , bool SO1      // Storage order of the left-hand side matrix
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline typename EnableIf< And< IsSMPAssignable<MT1>
+                             , IsSMPAssignable<MT2>
+                             , Not< IsSMPAssignable<typename MT1::ElementType> >
+                             , Not< IsSMPAssignable<typename MT2::ElementType> >
+                             > >::Type
    smpSubAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1072,9 +1125,6 @@ inline typename EnableIfTrue< MT1::smpAssignable && MT2::smpAssignable >::Type
    {
       if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
          subAssign( ~lhs, ~rhs );
-      }
-      else if( omp_in_parallel() ) {
-         smpSubAssign_backend( ~lhs, ~rhs );
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
@@ -1120,6 +1170,7 @@ inline void smpMultAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs
 
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
    multAssign( ~lhs, ~rhs );
 }
 /*! \endcond */
