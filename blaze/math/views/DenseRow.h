@@ -1698,7 +1698,7 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
    typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename MT::ElementType            ElementType;    //!< Type of the row elements.
    typedef typename MT::ReturnType             ReturnType;     //!< Return type for expression template evaluations
-   typedef const ResultType                    CompositeType;  //!< Data type for composite expression templates.
+   typedef const DenseRow&                     CompositeType;  //!< Data type for composite expression templates.
 
    //! Reference to a constant row value.
    typedef typename MT::ConstReference  ConstReference;
