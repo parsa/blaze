@@ -126,11 +126,12 @@ class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case either of the two matrix operands requires an intermediate evaluation, the nested
-       \value will be set to 1, otherwise it will be 0. */
+   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
+       strategy. In case either of the two matrix operands requires an intermediate evaluation,
+       the nested \value will be set to 1, otherwise it will be 0. */
    template< typename MT >
    struct UseSMPAssign {
-      enum { value = evaluateLeft || evaluateRight };
+      enum { value = ( evaluateLeft || evaluateRight ) };
    };
    /*! \endcond */
    //**********************************************************************************************
