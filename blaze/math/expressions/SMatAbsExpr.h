@@ -136,12 +136,13 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
-       strategy. In case the target matrix is SMP assignable but the sparse matrix operand is not,
-       \a value is set to 1 and the expression specific evaluation strategy is selected. Otherwise
-       \a value is set to 0 and the default strategy is chosen. */
+       strategy. In case either the target matrix or the sparse matrix operand is not SMP
+       assignable or the matrix operand requires an intermediate evaluation, \a value is set to
+       1 and the expression specific evaluation strategy is selected. Otherwise \a value is set
+       to 0 and the default strategy is chosen. */
    template< typename MT2 >
    struct UseSMPAssign {
-      enum { value = MT2::smpAssignable && !MT::smpAssignable };
+      enum { value = ( !MT2::smpAssignable || !MT::smpAssignable ) && useAssign };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -641,8 +642,8 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    //
    // This function implements the performance optimized SMP assignment of a sparse matrix abs
    // expression to a dense matrix. Due to the explicit application of the SFINAE principle,
-   // this operator can only be selected by the compiler in case the target matrix is SMP
-   // assignable but the sparse matrix operand is not.
+   // this operator can only be selected by the compiler in case the the expression specific
+   // parallel evaluation strategy is selected.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
@@ -675,8 +676,8 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    //
    // This function implements the performance optimized SMP addition assignment of a sparse
    // matrix abs expression to a dense matrix. Due to the explicit application of the SFINAE
-   // principle, this operator can only be selected by the compiler in case the target matrix
-   // is SMP assignable but the sparse matrix operand is not.
+   // principle, this operator can only be selected by the compiler in case the expression
+   // specific parallel evaluation strategy is selected.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
@@ -712,8 +713,8 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    //
    // This function implements the performance optimized SMP subtraction assignment of a sparse
    // matrix abs expression to a dense matrix. Due to the explicit application of the SFINAE
-   // principle, this operator can only be selected by the compiler in case the target matrix
-   // is SMP assignable but the sparse matrix operand is not.
+   // principle, this operator can only be selected by the compiler in case the expression
+   // specific parallel evaluation strategy is selected.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target sparse matrix
