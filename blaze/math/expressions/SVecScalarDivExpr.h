@@ -67,7 +67,6 @@
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/SameType.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
@@ -135,6 +134,20 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
    template< typename VT2 >
    struct UseAssign {
       enum { value = useAssign };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Parallel evaluation strategy****************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
+       strategy. In case the target vector is SMP assignable, \a value is set to 1 and the
+       expression specific evaluation strategy is selected. Otherwise \a value is set to 0
+       and the default strategy is chosen. */
+   template< typename VT2 >
+   struct UseSMPAssign {
+      enum { value = VT2::smpAssignable };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -588,10 +601,13 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
    // \return void
    //
    // This function implements the performance optimized SMP addition assignment of a sparse
-   // vector-scalar division expression to a dense vector.
+   // vector-scalar division expression to a dense vector. Due to the explicit application of
+   // the SFINAE principle, this operator can only be selected by the compiler in case the
+   // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline void smpAddAssign( DenseVector<VT2,TF>& lhs, const SVecScalarDivExpr& rhs )
+   friend inline typename EnableIf< UseSMPAssign<VT2> >::Type
+      smpAddAssign( DenseVector<VT2,TF>& lhs, const SVecScalarDivExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -621,10 +637,13 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
    // \return void
    //
    // This function implements the performance optimized SMP subtraction assignment of a sparse
-   // vector-scalar division expression to a dense vector.
+   // vector-scalar division expression to a dense vector. Due to the explicit application of
+   // the SFINAE principle, this operator can only be selected by the compiler in case the
+   // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline void smpSubAssign( DenseVector<VT2,TF>& lhs, const SVecScalarDivExpr& rhs )
+   friend inline typename EnableIf< UseSMPAssign<VT2> >::Type
+      smpSubAssign( DenseVector<VT2,TF>& lhs, const SVecScalarDivExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -654,10 +673,13 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
    // \return void
    //
    // This function implements the performance optimized SMP multiplication assignment of a sparse
-   // vector-scalar division expression to a dense vector.
+   // vector-scalar division expression to a dense vector. Due to the explicit application of the
+   // SFINAE principle, this operator can only be selected by the compiler in case the expression
+   // specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline void smpMultAssign( DenseVector<VT2,TF>& lhs, const SVecScalarDivExpr& rhs )
+   friend inline typename EnableIf< UseSMPAssign<VT2> >::Type
+      smpMultAssign( DenseVector<VT2,TF>& lhs, const SVecScalarDivExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
