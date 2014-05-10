@@ -113,6 +113,20 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
    typedef typename SubExprTrait<RN1,RN2>::Type  ExprReturnType;
    //**********************************************************************************************
 
+   //**Parallel evaluation strategy****************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
+       strategy. In case the target vector is SMP assignable, \a value is set to 1 and the
+       expression specific evaluation strategy is selected. Otherwise \a value is set to 0
+       and the default strategy is chosen. */
+   template< typename VT >
+   struct UseSMPAssign {
+      enum { value = VT::smpAssignable };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    typedef SVecSVecSubExpr<VT1,VT2,TF>         This;           //!< Type of this SVecSVecSubExpr instance.
@@ -498,10 +512,13 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
    // \return void
    //
    // This function implements the performance optimized SMP addition assignment of a sparse
-   // vector-sparse vector subtraction expression to a dense vector.
+   // vector-sparse vector subtraction expression to a dense vector. Due to the explicit application
+   // of the SFINAE principle, this operator can only be selected by the compiler in case the
+   // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline void smpAddAssign( DenseVector<VT,TF>& lhs, const SVecSVecSubExpr& rhs )
+   friend inline typename EnableIf< UseSMPAssign<VT> >::Type
+      smpAddAssign( DenseVector<VT,TF>& lhs, const SVecSVecSubExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -528,10 +545,13 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
    // \return void
    //
    // This function implements the performance optimized SMP subtraction assignment of a sparse
-   // vector-sparse vector subtraction expression to a dense vector.
+   // vector-sparse vector subtraction expression to a dense vector. Due to the explicit application
+   // of the SFINAE principle, this operator can only be selected by the compiler in case the
+   // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline void smpSubAssign( DenseVector<VT,TF>& lhs, const SVecSVecSubExpr& rhs )
+   friend inline typename EnableIf< UseSMPAssign<VT> >::Type
+      smpSubAssign( DenseVector<VT,TF>& lhs, const SVecSVecSubExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -558,10 +578,13 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
    // \return void
    //
    // This function implements the performance optimized SMP multiplication assignment of a sparse
-   // vector-sparse vector subtraction expression to a dense vector.
+   // vector-sparse vector subtraction expression to a dense vector. Due to the explicit application
+   // of the SFINAE principle, this operator can only be selected by the compiler in case the
+   // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline void smpMultAssign( DenseVector<VT,TF>& lhs, const SVecSVecSubExpr& rhs )
+   friend inline typename EnableIf< UseSMPAssign<VT> >::Type
+      smpMultAssign( DenseVector<VT,TF>& lhs, const SVecSVecSubExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
