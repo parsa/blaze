@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <omp.h>
+#include <blaze/math/constraints/SMPAssignable.h>
 #include <blaze/math/DenseSubvector.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -50,11 +51,14 @@
 #include <blaze/math/smp/SerialSection.h>
 #include <blaze/math/SparseSubvector.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
+#include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/system/OpenMP.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/typetraits/IsSame.h>
 
@@ -66,37 +70,6 @@ namespace blaze {
 //  PLAIN ASSIGNMENT
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP assignment to a dense vector.
-// \ingroup smp
-//
-// \param lhs The target left-hand side dense vector.
-// \param rhs The right-hand side vector to be assigned.
-// \return void
-//
-// This function implements the default OpenMP-based SMP assignment to a dense vector.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename VT1  // Type of the left-hand side dense vector
-        , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side vector
-        , bool TF2 >    // Transpose flag of the right-hand side vector
-inline typename DisableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
-   smpAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
-   assign( ~lhs, ~rhs );
-}
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -122,7 +95,9 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& r
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
+
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename VT1::ElementType                         ET1;
@@ -197,7 +172,9 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& 
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
+
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename VT1::ElementType                         ET1;
@@ -227,6 +204,45 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the OpenMP-based SMP assignment to a dense vector.
+// \ingroup smp
+//
+// \param lhs The target left-hand side dense vector.
+// \param rhs The right-hand side vector to be assigned.
+// \return void
+//
+// This function implements the default OpenMP-based SMP assignment to a dense vector. Due to
+// the explicit application of the SFINAE principle, this function can only be selected by the
+// compiler in case both operands are SMP-assignable and the element types of both operands are
+// not SMP-assignable.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , bool TF1      // Transpose flag of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side vector
+        , bool TF2 >    // Transpose flag of the right-hand side vector
+inline typename DisableIf< And< IsSMPAssignable<VT1>
+                              , IsSMPAssignable<VT2>
+                              , Not< IsSMPAssignable<typename VT1::ElementType> >
+                              , Not< IsSMPAssignable<typename VT2::ElementType> >
+                              > >::Type
+   smpAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+
+   assign( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Implementation of the OpenMP-based SMP assignment to a dense vector.
 // \ingroup smp
 //
@@ -234,7 +250,10 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& 
 // \param rhs The right-hand side sparse vector to be assigned.
 // \return void
 //
-// This function performs the OpenMP-based SMP assignment to a dense vector.\n
+// This function performs the OpenMP-based SMP assignment to a dense vector. Due to the
+// explicit application of the SFINAE principle, this function can only be selected by the
+// compiler in case both operands are SMP-assignable and the element types of both operands
+// are not SMP-assignable.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -244,7 +263,11 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF2 >    // Transpose flag of the right-hand side dense vector
-inline typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
+inline typename EnableIf< And< IsSMPAssignable<VT1>
+                             , IsSMPAssignable<VT2>
+                             , Not< IsSMPAssignable<typename VT1::ElementType> >
+                             , Not< IsSMPAssignable<typename VT2::ElementType> >
+                             > >::Type
    smpAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -255,9 +278,6 @@ inline typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
    {
       if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
          assign( ~lhs, ~rhs );
-      }
-      else if( omp_in_parallel() ) {
-         smpAssign_backend( ~lhs, ~rhs );
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
@@ -276,37 +296,6 @@ inline typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 //  ADDITION ASSIGNMENT
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP addition assignment to a dense vector.
-// \ingroup smp
-//
-// \param lhs The target left-hand side dense vector.
-// \param rhs The right-hand side vector to be added.
-// \return void
-//
-// This function implements the default OpenMP-based SMP addition assignment to a dense vector.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename VT1  // Type of the left-hand side dense vector
-        , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side vector
-        , bool TF2 >    // Transpose flag of the right-hand side vector
-inline typename DisableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
-   smpAddAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
-   addAssign( ~lhs, ~rhs );
-}
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -332,7 +321,9 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
+
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename VT1::ElementType                         ET1;
@@ -407,7 +398,9 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
+
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename VT1::ElementType                         ET1;
@@ -437,6 +430,45 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the OpenMP-based SMP addition assignment to a dense vector.
+// \ingroup smp
+//
+// \param lhs The target left-hand side dense vector.
+// \param rhs The right-hand side vector to be added.
+// \return void
+//
+// This function implements the default OpenMP-based SMP addition assignment to a dense vector.
+// Due to the explicit application of the SFINAE principle, this function can only be selected
+// by the compiler in case both operands are SMP-assignable and the element types of both operands
+// are not SMP-assignable.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , bool TF1      // Transpose flag of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side vector
+        , bool TF2 >    // Transpose flag of the right-hand side vector
+inline typename DisableIf< And< IsSMPAssignable<VT1>
+                              , IsSMPAssignable<VT2>
+                              , Not< IsSMPAssignable<typename VT1::ElementType> >
+                              , Not< IsSMPAssignable<typename VT2::ElementType> >
+                              > >::Type
+   smpAddAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+
+   addAssign( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Implementation of the OpenMP-based SMP addition assignment to a dense vector.
 // \ingroup smp
 //
@@ -444,7 +476,10 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
 // \param rhs The right-hand side sparse vector to be added.
 // \return void
 //
-// This function implements the OpenMP-based SMP addition assignment to a dense vector.\n
+// This function implements the OpenMP-based SMP addition assignment to a dense vector. Due to
+// the explicit application of the SFINAE principle, this function can only be selected by the
+// compiler in case both operands are SMP-assignable and the element types of both operands are
+// not SMP-assignable.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -454,7 +489,11 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF2 >    // Transpose flag of the right-hand side dense vector
-inline typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
+inline typename EnableIf< And< IsSMPAssignable<VT1>
+                             , IsSMPAssignable<VT2>
+                             , Not< IsSMPAssignable<typename VT1::ElementType> >
+                             , Not< IsSMPAssignable<typename VT2::ElementType> >
+                             > >::Type
    smpAddAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -465,9 +504,6 @@ inline typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
    {
       if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
          addAssign( ~lhs, ~rhs );
-      }
-      else if( omp_in_parallel() ) {
-         smpAddAssign_backend( ~lhs, ~rhs );
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
@@ -486,38 +522,6 @@ inline typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 //  SUBTRACTION ASSIGNMENT
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP subtraction assignment to a dense vector.
-// \ingroup smp
-//
-// \param lhs The target left-hand side dense vector.
-// \param rhs The right-hand side vector to be subtracted.
-// \return void
-//
-// This function implements the default OpenMP-based SMP subtraction assignment of a vector to
-// a dense vector.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename VT1  // Type of the left-hand side dense vector
-        , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side vector
-        , bool TF2 >    // Transpose flag of the right-hand side vector
-inline typename DisableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
-   smpSubAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
-   subAssign( ~lhs, ~rhs );
-}
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -543,7 +547,9 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
+
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename VT1::ElementType                         ET1;
@@ -618,7 +624,9 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
+
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename VT1::ElementType                         ET1;
@@ -648,6 +656,45 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the OpenMP-based SMP subtraction assignment to a dense vector.
+// \ingroup smp
+//
+// \param lhs The target left-hand side dense vector.
+// \param rhs The right-hand side vector to be subtracted.
+// \return void
+//
+// This function implements the default OpenMP-based SMP subtraction assignment of a vector to
+// a dense vector. Due to the explicit application of the SFINAE principle, this function can
+// only be selected by the compiler in case both operands are SMP-assignable and the element
+// types of both operands are not SMP-assignable.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , bool TF1      // Transpose flag of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side vector
+        , bool TF2 >    // Transpose flag of the right-hand side vector
+inline typename DisableIf< And< IsSMPAssignable<VT1>
+                              , IsSMPAssignable<VT2>
+                              , Not< IsSMPAssignable<typename VT1::ElementType> >
+                              , Not< IsSMPAssignable<typename VT2::ElementType> >
+                              > >::Type
+   smpSubAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+
+   subAssign( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Implementation of the OpenMP-based SMP subtraction assignment to a dense vector.
 // \ingroup smp
 //
@@ -655,7 +702,10 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
 // \param rhs The right-hand side sparse vector to be subtracted.
 // \return void
 //
-// This function implements the OpenMP-based SMP subtraction assignment to a dense vector.\n
+// This function implements the OpenMP-based SMP subtraction assignment to a dense vector. Due
+// to the explicit application of the SFINAE principle, this function can only be selected by
+// the compiler in case both operands are SMP-assignable and the element types of both operands
+// are not SMP-assignable.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -665,7 +715,11 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF2 >    // Transpose flag of the right-hand side dense vector
-inline typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
+inline typename EnableIf< And< IsSMPAssignable<VT1>
+                             , IsSMPAssignable<VT2>
+                             , Not< IsSMPAssignable<typename VT1::ElementType> >
+                             , Not< IsSMPAssignable<typename VT2::ElementType> >
+                             > >::Type
    smpSubAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -676,9 +730,6 @@ inline typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
    {
       if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
          subAssign( ~lhs, ~rhs );
-      }
-      else if( omp_in_parallel() ) {
-         smpSubAssign_backend( ~lhs, ~rhs );
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
@@ -697,38 +748,6 @@ inline typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
 //  MULTIPLICATION ASSIGNMENT
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP multiplication assignment to a dense vector.
-// \ingroup smp
-//
-// \param lhs The target left-hand side dense vector.
-// \param rhs The right-hand side vector to be multiplied.
-// \return void
-//
-// This function implements the default OpenMP-based SMP multiplication assignment to a dense
-// vector.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename VT1  // Type of the left-hand side dense vector
-        , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side vector
-        , bool TF2 >    // Transpose flag of the right-hand side vector
-inline typename DisableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
-   smpMultAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
-   multAssign( ~lhs, ~rhs );
-}
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -755,7 +774,9 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
+
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename VT1::ElementType                         ET1;
@@ -831,7 +852,9 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
+
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename VT1::ElementType                         ET1;
@@ -861,6 +884,45 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the OpenMP-based SMP multiplication assignment to a dense vector.
+// \ingroup smp
+//
+// \param lhs The target left-hand side dense vector.
+// \param rhs The right-hand side vector to be multiplied.
+// \return void
+//
+// This function implements the default OpenMP-based SMP multiplication assignment to a dense
+// vector. Due to the explicit application of the SFINAE principle, this function can only be
+// selected by the compiler in case both operands are SMP-assignable and the element types of
+// both operands are not SMP-assignable.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , bool TF1      // Transpose flag of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side vector
+        , bool TF2 >    // Transpose flag of the right-hand side vector
+inline typename DisableIf< And< IsSMPAssignable<VT1>
+                              , IsSMPAssignable<VT2>
+                              , Not< IsSMPAssignable<typename VT1::ElementType> >
+                              , Not< IsSMPAssignable<typename VT2::ElementType> >
+                              > >::Type
+   smpMultAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+
+   multAssign( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Implementation of the OpenMP-based SMP multiplication assignment to a dense vector.
 // \ingroup smp
 //
@@ -868,7 +930,10 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF
 // \param rhs The right-hand side dense vector to be multiplied.
 // \return void
 //
-// This function implements the OpenMP-based SMP multiplication assignment to a dense vector.\n
+// This function implements the OpenMP-based SMP multiplication assignment to a dense vector.
+// Due to the explicit application of the SFINAE principle, this function can only be selected
+// by the compiler in case both operands are SMP-assignable and the element types of both
+// operands are not SMP-assignable.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -878,7 +943,11 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF2 >    // Transpose flag of the right-hand side dense vector
-inline typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
+inline typename EnableIf< And< IsSMPAssignable<VT1>
+                             , IsSMPAssignable<VT2>
+                             , Not< IsSMPAssignable<typename VT1::ElementType> >
+                             , Not< IsSMPAssignable<typename VT2::ElementType> >
+                             > >::Type
    smpMultAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -889,9 +958,6 @@ inline typename EnableIfTrue< VT1::smpAssignable && VT2::smpAssignable >::Type
    {
       if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
          multAssign( ~lhs, ~rhs );
-      }
-      else if( omp_in_parallel() ) {
-         smpMultAssign_backend( ~lhs, ~rhs );
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
