@@ -109,6 +109,20 @@ class TSMatTSMatAddExpr : public SparseMatrix< TSMatTSMatAddExpr<MT1,MT2>, true 
    typedef typename AddExprTrait<RN1,RN2>::Type  ExprReturnType;
    //**********************************************************************************************
 
+   //**Parallel evaluation strategy****************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
+       strategy. In case the target matrix is SMP assignable, \a value is set to 1 and the
+       expression specific evaluation strategy is selected. Otherwise \a value is set to 0
+       and the default strategy is chosen. */
+   template< typename MT >
+   struct UseSMPAssign {
+      enum { value = MT::smpAssignable };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    typedef TSMatTSMatAddExpr<MT1,MT2>          This;           //!< Type of this TSMatTSMatAddExpr instance.
@@ -597,11 +611,14 @@ class TSMatTSMatAddExpr : public SparseMatrix< TSMatTSMatAddExpr<MT1,MT2>, true 
    // \return void
    //
    // This function implements the performance optimized SMP addition assignment of a transpose
-   // sparse matrix-transpose sparse matrix addition expression to a dense matrix.
+   // sparse matrix-transpose sparse matrix addition expression to a dense matrix. Due to the
+   // explicit application of the SFINAE principle, this operator can only be selected by the
+   // compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline void smpAddAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatAddExpr& rhs )
+   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+      smpAddAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -629,11 +646,14 @@ class TSMatTSMatAddExpr : public SparseMatrix< TSMatTSMatAddExpr<MT1,MT2>, true 
    // \return void
    //
    // This function implements the performance optimized SMP subtraction assignment of a transpose
-   // sparse matrix-transpose sparse matrix addition expression to a dense matrix.
+   // sparse matrix-transpose sparse matrix addition expression to a dense matrix. Due to the
+   // explicit application of the SFINAE principle, this operator can only be selected by the
+   // compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline void smpSubAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatAddExpr& rhs )
+   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+      smpSubAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
