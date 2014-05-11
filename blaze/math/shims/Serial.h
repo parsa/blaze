@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/Shims.h
-//  \brief Header file for the mathematical shims
+//  \file blaze/math/shims/Serial.h
+//  \brief Header file for the serial shim
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,20 +32,36 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SHIMS_H_
-#define _BLAZE_MATH_SHIMS_H_
+#ifndef _BLAZE_MATH_SHIMS_SERIAL_H_
+#define _BLAZE_MATH_SHIMS_SERIAL_H_
 
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  SERIAL SHIM
+//
+//=================================================================================================
 
 //*************************************************************************************************
-// Includes
+/*!\brief Formal serialization of the evaluation of the given argument.
+// \ingroup math_shims
+//
+// \param a The value/object to be evaluated serially.
+// \return The serialized operation.
+//
+// The serial shim represents an abstract interface for the serialization of the evaluation of
+// a value/object of any given data type. For data types that are per default evaluated serially,
+// as for instance built-in data types, the default behavior is not changed.
+*/
+template< typename T >
+inline const T& serial( const T& a )
+{
+   return a;
+}
 //*************************************************************************************************
 
-#include <blaze/math/shims/Clear.h>
-#include <blaze/math/shims/Equal.h>
-#include <blaze/math/shims/Invert.h>
-#include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/Reset.h>
-#include <blaze/math/shims/Serial.h>
-#include <blaze/math/shims/Square.h>
+} // namespace blaze
 
 #endif
