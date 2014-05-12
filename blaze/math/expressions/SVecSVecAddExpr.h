@@ -49,6 +49,7 @@
 #include <blaze/math/expressions/VecVecAddExpr.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>

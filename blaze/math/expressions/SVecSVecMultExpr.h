@@ -48,6 +48,7 @@
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/VecVecMultExpr.h>
 #include <blaze/math/Functions.h>
+#include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
