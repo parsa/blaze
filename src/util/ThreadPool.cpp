@@ -242,7 +242,7 @@ void ThreadPool::createThread()
 //*************************************************************************************************
 /*!\brief Executing a scheduled task.
 //
-// \return void
+// \return \a true in case a task was successfully finished, \a false if not.
 //
 // This function is repeatedly called by every thread to execute one of the scheduled tasks.
 // In case there is no task available, the thread blocks and waits for a new task to be

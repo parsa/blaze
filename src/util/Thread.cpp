@@ -68,8 +68,8 @@ namespace blaze {
 */
 Thread::Thread( ThreadPool* pool )
    : terminated_( false )  // Thread termination flag
-   , pool_      (  pool )  // Handle to the managing thread pool
-   , thread_    (   0   )  // Handle to the thread of execution
+   , pool_      ( pool  )  // Handle to the managing thread pool
+   , thread_    ( 0     )  // Handle to the thread of execution
 {
    thread_.reset( new boost::thread( boost::bind( &Thread::run, this ) ) );
 }

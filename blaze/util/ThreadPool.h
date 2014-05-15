@@ -258,10 +258,10 @@ class ThreadPool : private NonCopyable
    //**Get functions*******************************************************************************
    /*!\name Get functions */
    //@{
-   inline bool   isEmpty()  const;
-   inline size_t size()     const;
-   inline size_t active()   const;
-   inline size_t ready()    const;
+   inline bool   isEmpty() const;
+   inline size_t size()    const;
+   inline size_t active()  const;
+   inline size_t ready()   const;
    //@}
    //**********************************************************************************************
 
