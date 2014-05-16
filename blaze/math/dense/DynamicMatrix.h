@@ -4704,51 +4704,6 @@ struct IsResizable< const volatile DynamicMatrix<T,SO> > : public TrueType
 
 //=================================================================================================
 //
-//  ISSMPASSIGNABLE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct IsSMPAssignable< DynamicMatrix<T,SO> >
-   : public SelectType< DynamicMatrix<T,SO>::smpAssignable, TrueType, FalseType >::Type
-{
-   enum { value = DynamicMatrix<T,SO>::smpAssignable };
-   typedef typename SelectType< value, TrueType, FalseType >::Type  Type;
-};
-
-template< typename T, bool SO >
-struct IsSMPAssignable< const DynamicMatrix<T,SO> >
-   : public SelectType< DynamicMatrix<T,SO>::smpAssignable, TrueType, FalseType >::Type
-{
-   enum { value = 1 };
-   typedef typename SelectType< value, TrueType, FalseType >::Type  Type;
-};
-
-template< typename T, bool SO >
-struct IsSMPAssignable< volatile DynamicMatrix<T,SO> >
-   : public SelectType< DynamicMatrix<T,SO>::smpAssignable, TrueType, FalseType >::Type
-{
-   enum { value = 1 };
-   typedef typename SelectType< value, TrueType, FalseType >::Type  Type;
-};
-
-template< typename T, bool SO >
-struct IsSMPAssignable< const volatile DynamicMatrix<T,SO> >
-   : public SelectType< DynamicMatrix<T,SO>::smpAssignable, TrueType, FalseType >::Type
-{
-   enum { value = 1 };
-   typedef typename SelectType< value, TrueType, FalseType >::Type  Type;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  ADDTRAIT SPECIALIZATIONS
 //
 //=================================================================================================

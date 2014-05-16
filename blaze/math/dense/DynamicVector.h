@@ -2078,51 +2078,6 @@ struct IsResizable< const volatile DynamicVector<T,TF> > : public TrueType
 
 //=================================================================================================
 //
-//  ISSMPASSIGNABLE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF >
-struct IsSMPAssignable< DynamicVector<T,TF> >
-   : public SelectType< DynamicVector<T,TF>::smpAssignable, TrueType, FalseType >::Type
-{
-   enum { value = DynamicVector<T,TF>::smpAssignable };
-   typedef typename SelectType< value, TrueType, FalseType >::Type  Type;
-};
-
-template< typename T, bool TF >
-struct IsSMPAssignable< const DynamicVector<T,TF> >
-   : public SelectType< DynamicVector<T,TF>::smpAssignable, TrueType, FalseType >::Type
-{
-   enum { value = DynamicVector<T,TF>::smpAssignable };
-   typedef typename SelectType< value, TrueType, FalseType >::Type  Type;
-};
-
-template< typename T, bool TF >
-struct IsSMPAssignable< volatile DynamicVector<T,TF> >
-   : public SelectType< DynamicVector<T,TF>::smpAssignable, TrueType, FalseType >::Type
-{
-   enum { value = DynamicVector<T,TF>::smpAssignable };
-   typedef typename SelectType< value, TrueType, FalseType >::Type  Type;
-};
-
-template< typename T, bool TF >
-struct IsSMPAssignable< const volatile DynamicVector<T,TF> >
-   : public SelectType< DynamicVector<T,TF>::smpAssignable, TrueType, FalseType >::Type
-{
-   enum { value = DynamicVector<T,TF>::smpAssignable };
-   typedef typename SelectType< value, TrueType, FalseType >::Type  Type;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  ADDTRAIT SPECIALIZATIONS
 //
 //=================================================================================================

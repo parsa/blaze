@@ -40,7 +40,11 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/typetraits/IsMatrix.h>
+#include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/FalseType.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/TrueType.h>
 
 
@@ -51,6 +55,38 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the IsSMPAssignable type trait.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsSMPAssignableHelper
+{
+ private:
+   //**struct HasNestedMember**********************************************************************
+   template< typename T2 >
+   struct UseNestedMember { enum { value = T2::smpAssignable }; };
+   //**********************************************************************************************
+
+   //**struct NoNestedMember***********************************************************************
+   template< typename T2 >
+   struct NotSMPAssignable { enum { value = 0 }; };
+   //**********************************************************************************************
+
+ public:
+   //**********************************************************************************************
+   enum { value = If< Or< IsVector<T>, IsMatrix<T> >
+                    , UseNestedMember<T>
+                    , NotSMPAssignable<T>
+                    >::Type::value };
+   typedef typename IfTrue<value,TrueType,FalseType>::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Compile time check for data types.
@@ -81,13 +117,13 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsSMPAssignable : public FalseType
+struct IsSMPAssignable : public IsSMPAssignableHelper<T>::Type
 {
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { value = 0 };
-   typedef FalseType  Type;
+   enum { value = IsSMPAssignableHelper<T>::value };
+   typedef typename IsSMPAssignableHelper<T>::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };
