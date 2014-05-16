@@ -58,7 +58,6 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Not.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/typetraits/IsSame.h>
 
@@ -93,9 +92,6 @@ template< typename MT1    // Type of the left-hand side dense matrix
 void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
@@ -170,9 +166,6 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMa
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
-
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
@@ -246,9 +239,6 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowMajo
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
-
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
@@ -299,9 +289,6 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,columnM
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
-
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
@@ -351,11 +338,7 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIf< And< IsSMPAssignable<MT1>
-                              , IsSMPAssignable<MT2>
-                              , Not< IsSMPAssignable<typename MT1::ElementType> >
-                              , Not< IsSMPAssignable<typename MT2::ElementType> >
-                              > >::Type
+inline typename DisableIf< And< IsSMPAssignable<MT1>, IsSMPAssignable<MT2> > >::Type
    smpAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -391,14 +374,13 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< And< IsSMPAssignable<MT1>
-                             , IsSMPAssignable<MT2>
-                             , Not< IsSMPAssignable<typename MT1::ElementType> >
-                             , Not< IsSMPAssignable<typename MT2::ElementType> >
-                             > >::Type
+inline typename EnableIf< And< IsSMPAssignable<MT1>, IsSMPAssignable<MT2> > >::Type
    smpAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -449,9 +431,6 @@ template< typename MT1    // Type of the left-hand side dense matrix
 void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
@@ -527,9 +506,6 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,colum
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
-
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
@@ -604,9 +580,6 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowM
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
-
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
@@ -658,9 +631,6 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,colu
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
-
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
@@ -710,11 +680,7 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIf< And< IsSMPAssignable<MT1>
-                              , IsSMPAssignable<MT2>
-                              , Not< IsSMPAssignable<typename MT1::ElementType> >
-                              , Not< IsSMPAssignable<typename MT2::ElementType> >
-                              > >::Type
+inline typename DisableIf< And< IsSMPAssignable<MT1>, IsSMPAssignable<MT2> > >::Type
    smpAddAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -750,14 +716,13 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< And< IsSMPAssignable<MT1>
-                             , IsSMPAssignable<MT2>
-                             , Not< IsSMPAssignable<typename MT1::ElementType> >
-                             , Not< IsSMPAssignable<typename MT2::ElementType> >
-                             > >::Type
+inline typename EnableIf< And< IsSMPAssignable<MT1>, IsSMPAssignable<MT2> > >::Type
    smpAddAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -808,9 +773,6 @@ template< typename MT1    // Type of the left-hand side dense matrix
 void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
@@ -886,9 +848,6 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,colum
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
-
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
@@ -963,9 +922,6 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowM
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
-
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
@@ -1017,9 +973,6 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,colu
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
-
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename MT1::ElementType                         ET1;
@@ -1069,11 +1022,7 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIf< And< IsSMPAssignable<MT1>
-                              , IsSMPAssignable<MT2>
-                              , Not< IsSMPAssignable<typename MT1::ElementType> >
-                              , Not< IsSMPAssignable<typename MT2::ElementType> >
-                              > >::Type
+inline typename DisableIf< And< IsSMPAssignable<MT1>, IsSMPAssignable<MT2> > >::Type
    smpSubAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1109,14 +1058,13 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< And< IsSMPAssignable<MT1>
-                             , IsSMPAssignable<MT2>
-                             , Not< IsSMPAssignable<typename MT1::ElementType> >
-                             , Not< IsSMPAssignable<typename MT2::ElementType> >
-                             > >::Type
+inline typename EnableIf< And< IsSMPAssignable<MT1>, IsSMPAssignable<MT2> > >::Type
    smpSubAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
