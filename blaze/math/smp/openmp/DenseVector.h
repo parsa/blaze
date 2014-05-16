@@ -58,7 +58,6 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Not.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/typetraits/IsSame.h>
 
@@ -94,9 +93,6 @@ template< typename VT1  // Type of the left-hand side dense vector
 void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
@@ -172,9 +168,6 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& 
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
-
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename VT1::ElementType                         ET1;
@@ -224,11 +217,7 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
-inline typename DisableIf< And< IsSMPAssignable<VT1>
-                              , IsSMPAssignable<VT2>
-                              , Not< IsSMPAssignable<typename VT1::ElementType> >
-                              , Not< IsSMPAssignable<typename VT2::ElementType> >
-                              > >::Type
+inline typename DisableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::Type
    smpAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -263,14 +252,13 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF2 >    // Transpose flag of the right-hand side dense vector
-inline typename EnableIf< And< IsSMPAssignable<VT1>
-                             , IsSMPAssignable<VT2>
-                             , Not< IsSMPAssignable<typename VT1::ElementType> >
-                             , Not< IsSMPAssignable<typename VT2::ElementType> >
-                             > >::Type
+inline typename EnableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::Type
    smpAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -320,9 +308,6 @@ template< typename VT1  // Type of the left-hand side dense vector
 void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
@@ -398,9 +383,6 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
-
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename VT1::ElementType                         ET1;
@@ -450,11 +432,7 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
-inline typename DisableIf< And< IsSMPAssignable<VT1>
-                              , IsSMPAssignable<VT2>
-                              , Not< IsSMPAssignable<typename VT1::ElementType> >
-                              , Not< IsSMPAssignable<typename VT2::ElementType> >
-                              > >::Type
+inline typename DisableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::Type
    smpAddAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -489,14 +467,13 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF2 >    // Transpose flag of the right-hand side dense vector
-inline typename EnableIf< And< IsSMPAssignable<VT1>
-                             , IsSMPAssignable<VT2>
-                             , Not< IsSMPAssignable<typename VT1::ElementType> >
-                             , Not< IsSMPAssignable<typename VT2::ElementType> >
-                             > >::Type
+inline typename EnableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::Type
    smpAddAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -546,9 +523,6 @@ template< typename VT1  // Type of the left-hand side dense vector
 void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
@@ -624,9 +598,6 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
-
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename VT1::ElementType                         ET1;
@@ -676,11 +647,7 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
-inline typename DisableIf< And< IsSMPAssignable<VT1>
-                              , IsSMPAssignable<VT2>
-                              , Not< IsSMPAssignable<typename VT1::ElementType> >
-                              , Not< IsSMPAssignable<typename VT2::ElementType> >
-                              > >::Type
+inline typename DisableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::Type
    smpSubAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -715,14 +682,13 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF2 >    // Transpose flag of the right-hand side dense vector
-inline typename EnableIf< And< IsSMPAssignable<VT1>
-                             , IsSMPAssignable<VT2>
-                             , Not< IsSMPAssignable<typename VT1::ElementType> >
-                             , Not< IsSMPAssignable<typename VT2::ElementType> >
-                             > >::Type
+inline typename EnableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::Type
    smpSubAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -773,9 +739,6 @@ template< typename VT1  // Type of the left-hand side dense vector
 void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
@@ -852,9 +815,6 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
-
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
    typedef typename VT1::ElementType                         ET1;
@@ -904,11 +864,7 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
-inline typename DisableIf< And< IsSMPAssignable<VT1>
-                              , IsSMPAssignable<VT2>
-                              , Not< IsSMPAssignable<typename VT1::ElementType> >
-                              , Not< IsSMPAssignable<typename VT2::ElementType> >
-                              > >::Type
+inline typename DisableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::Type
    smpMultAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -943,14 +899,13 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF2 >    // Transpose flag of the right-hand side dense vector
-inline typename EnableIf< And< IsSMPAssignable<VT1>
-                             , IsSMPAssignable<VT2>
-                             , Not< IsSMPAssignable<typename VT1::ElementType> >
-                             , Not< IsSMPAssignable<typename VT2::ElementType> >
-                             > >::Type
+inline typename EnableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::Type
    smpMultAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
