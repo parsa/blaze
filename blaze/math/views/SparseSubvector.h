@@ -809,6 +809,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
    //@{
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
+
    template< typename VT2 >   inline void assign   ( const DenseVector <VT2,TF>& rhs );
    template< typename VT2 >   inline void assign   ( const SparseVector<VT2,TF>& rhs );
    template< typename VT2 >   inline void addAssign( const DenseVector <VT2,TF>& rhs );
@@ -1760,7 +1761,7 @@ template< typename VT       // Type of the sparse vector
 template< typename Other >  // Data type of the foreign expression
 inline bool SparseSubvector<VT,AF,TF>::canAlias( const Other* alias ) const
 {
-   return static_cast<const void*>( &vector_ ) == static_cast<const void*>( alias );
+   return vector_.isAliased( alias );
 }
 //*************************************************************************************************
 
@@ -1781,7 +1782,7 @@ template< typename VT       // Type of the sparse vector
 template< typename Other >  // Data type of the foreign expression
 inline bool SparseSubvector<VT,AF,TF>::isAliased( const Other* alias ) const
 {
-   return static_cast<const void*>( &vector_ ) == static_cast<const void*>( alias );
+   return vector_.isAliased( alias );
 }
 //*************************************************************************************************
 
