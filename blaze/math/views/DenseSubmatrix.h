@@ -835,8 +835,17 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other >
+   inline bool canAlias( const Other* alias ) const;
+
+   template< typename MT2, bool AF2, bool SO2 >
+   inline bool canAlias( const DenseSubmatrix<MT2,AF2,SO2>* alias ) const;
+
+   template< typename Other >
+   inline bool isAliased( const Other* alias ) const;
+
+   template< typename MT2, bool AF2, bool SO2 >
+   inline bool isAliased( const DenseSubmatrix<MT2,AF2,SO2>* alias ) const;
 
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
@@ -915,6 +924,8 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
 
    //**Friend declarations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
+   template< typename MT2, bool AF2, bool SO2 > friend class DenseSubmatrix;
+
    template< bool AF1, typename MT2, bool AF2, bool SO2 >
    friend const DenseSubmatrix<MT2,AF1,SO2>
       submatrix( const DenseSubmatrix<MT2,AF2,SO2>& dm, size_t row, size_t column, size_t m, size_t n );
@@ -1707,7 +1718,32 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool DenseSubmatrix<MT,AF,SO>::canAlias( const Other* alias ) const
 {
-   return static_cast<const void*>( &matrix_ ) == static_cast<const void*>( alias );
+   return matrix_.isAliased( alias );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the submatrix can alias with the given dense submatrix \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this submatrix, \a false if not.
+//
+// This function returns whether the given address can alias with the submatrix. In contrast
+// to the isAliased() function this function is allowed to use compile time expressions to
+// optimize the evaluation.
+*/
+template< typename MT   // Type of the dense matrix
+        , bool AF       // Alignment flag
+        , bool SO >     // Storage order
+template< typename MT2  // Data type of the foreign dense submatrix
+        , bool AF2      // Alignment flag of the foreign dense submatrix
+        , bool SO2 >    // Storage order of the foreign dense submatrix
+inline bool DenseSubmatrix<MT,AF,SO>::canAlias( const DenseSubmatrix<MT2,AF2,SO2>* alias ) const
+{
+   return ( matrix_.isAliased( &alias->matrix_ ) &&
+            ( row_    + m_ > alias->row_    ) && ( row_    < alias->row_    + alias->m_ ) &&
+            ( column_ + n_ > alias->column_ ) && ( column_ < alias->column_ + alias->n_ ) );
 }
 //*************************************************************************************************
 
@@ -1728,7 +1764,32 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool DenseSubmatrix<MT,AF,SO>::isAliased( const Other* alias ) const
 {
-   return static_cast<const void*>( &matrix_ ) == static_cast<const void*>( alias );
+   return matrix_.isAliased( alias );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the submatrix is aliased with the given dense submatrix \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this submatrix, \a false if not.
+//
+// This function returns whether the given address is aliased with the submatrix. In contrast
+// to the conAlias() function this function is not allowed to use compile time expressions to
+// optimize the evaluation.
+*/
+template< typename MT   // Type of the dense matrix
+        , bool AF       // Alignment flag
+        , bool SO >     // Storage order
+template< typename MT2  // Data type of the foreign dense submatrix
+        , bool AF2      // Alignment flag of the foreign dense submatrix
+        , bool SO2 >    // Storage order of the foreign dense submatrix
+inline bool DenseSubmatrix<MT,AF,SO>::isAliased( const DenseSubmatrix<MT2,AF2,SO2>* alias ) const
+{
+   return ( matrix_.isAliased( &alias->matrix_ ) &&
+            ( row_    + m_ > alias->row_    ) && ( row_    < alias->row_    + alias->m_ ) &&
+            ( column_ + n_ > alias->column_ ) && ( column_ < alias->column_ + alias->n_ ) );
 }
 //*************************************************************************************************
 
@@ -2937,8 +2998,17 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other >
+   inline bool canAlias( const Other* alias ) const;
+
+   template< typename MT2, bool AF2, bool SO2 >
+   inline bool canAlias( const DenseSubmatrix<MT2,AF2,SO2>* alias ) const;
+
+   template< typename Other >
+   inline bool isAliased( const Other* alias ) const;
+
+   template< typename MT2, bool AF2, bool SO2 >
+   inline bool isAliased( const DenseSubmatrix<MT2,AF2,SO2>* alias ) const;
 
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
@@ -3016,6 +3086,8 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
+   template< typename MT2, bool AF2, bool SO2 > friend class DenseSubmatrix;
+
    template< bool AF1, typename MT2, bool AF2, bool SO2 >
    friend const DenseSubmatrix<MT2,AF1,SO2>
       submatrix( const DenseSubmatrix<MT2,AF2,SO2>& dm, size_t row, size_t column, size_t m, size_t n );
@@ -3767,7 +3839,32 @@ template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool DenseSubmatrix<MT,unaligned,true>::canAlias( const Other* alias ) const
 {
-   return static_cast<const void*>( &matrix_ ) == static_cast<const void*>( alias );
+   return matrix_.isAliased( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the submatrix can alias with the given dense submatrix \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this submatrix, \a false if not.
+//
+// This function returns whether the given address can alias with the submatrix. In contrast
+// to the isAliased() function this function is allowed to use compile time expressions to
+// optimize the evaluation.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename MT2   // Data type of the foreign dense submatrix
+        , bool AF2       // Alignment flag of the foreign dense submatrix
+        , bool SO2 >     // Storage order of the foreign dense submatrix
+inline bool DenseSubmatrix<MT,unaligned,true>::canAlias( const DenseSubmatrix<MT2,AF2,SO2>* alias ) const
+{
+   return ( matrix_.isAliased( &alias->matrix_ ) &&
+            ( row_    + m_ > alias->row_    ) && ( row_    < alias->row_    + alias->m_ ) &&
+            ( column_ + n_ > alias->column_ ) && ( column_ < alias->column_ + alias->n_ ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3788,7 +3885,32 @@ template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool DenseSubmatrix<MT,unaligned,true>::isAliased( const Other* alias ) const
 {
-   return static_cast<const void*>( &matrix_ ) == static_cast<const void*>( alias );
+   return matrix_.isAliased( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the submatrix is aliased with the given dense submatrix \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this submatrix, \a false if not.
+//
+// This function returns whether the given address is aliased with the submatrix. In contrast
+// to the conAlias() function this function is not allowed to use compile time expressions to
+// optimize the evaluation.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename MT2   // Data type of the foreign dense submatrix
+        , bool AF2       // Alignment flag of the foreign dense submatrix
+        , bool SO2 >     // Storage order of the foreign dense submatrix
+inline bool DenseSubmatrix<MT,unaligned,true>::isAliased( const DenseSubmatrix<MT2,AF2,SO2>* alias ) const
+{
+   return ( matrix_.isAliased( &alias->matrix_ ) &&
+            ( row_    + m_ > alias->row_    ) && ( row_    < alias->row_    + alias->m_ ) &&
+            ( column_ + n_ > alias->column_ ) && ( column_ < alias->column_ + alias->n_ ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4703,8 +4825,17 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other >
+   inline bool canAlias( const Other* alias ) const;
+
+   template< typename MT2, bool AF2, bool SO2 >
+   inline bool canAlias( const DenseSubmatrix<MT2,AF2,SO2>* alias ) const;
+
+   template< typename Other >
+   inline bool isAliased( const Other* alias ) const;
+
+   template< typename MT2, bool AF2, bool SO2 >
+   inline bool isAliased( const DenseSubmatrix<MT2,AF2,SO2>* alias ) const;
 
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
@@ -4766,6 +4897,8 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
+   template< typename MT2, bool AF2, bool SO2 > friend class DenseSubmatrix;
+
    template< bool AF1, typename MT2, bool AF2, bool SO2 >
    friend const DenseSubmatrix<MT2,AF1,SO2>
       submatrix( const DenseSubmatrix<MT2,AF2,SO2>& dm, size_t row, size_t column, size_t m, size_t n );
@@ -5557,7 +5690,32 @@ template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool DenseSubmatrix<MT,aligned,false>::canAlias( const Other* alias ) const
 {
-   return static_cast<const void*>( &matrix_ ) == static_cast<const void*>( alias );
+   return matrix_.isAliased( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the submatrix can alias with the given dense submatrix \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this submatrix, \a false if not.
+//
+// This function returns whether the given address can alias with the submatrix. In contrast
+// to the isAliased() function this function is allowed to use compile time expressions to
+// optimize the evaluation.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename MT2   // Data type of the foreign dense submatrix
+        , bool AF2       // Alignment flag of the foreign dense submatrix
+        , bool SO2 >     // Storage order of the foreign dense submatrix
+inline bool DenseSubmatrix<MT,aligned,false>::canAlias( const DenseSubmatrix<MT2,AF2,SO2>* alias ) const
+{
+   return ( matrix_.isAliased( &alias->matrix_ ) &&
+            ( row_    + m_ > alias->row_    ) && ( row_    < alias->row_    + alias->m_ ) &&
+            ( column_ + n_ > alias->column_ ) && ( column_ < alias->column_ + alias->n_ ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5578,7 +5736,32 @@ template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool DenseSubmatrix<MT,aligned,false>::isAliased( const Other* alias ) const
 {
-   return static_cast<const void*>( &matrix_ ) == static_cast<const void*>( alias );
+   return matrix_.isAliased( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the submatrix is aliased with the given dense submatrix \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this submatrix, \a false if not.
+//
+// This function returns whether the given address is aliased with the submatrix. In contrast
+// to the conAlias() function this function is not allowed to use compile time expressions to
+// optimize the evaluation.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename MT2   // Data type of the foreign dense submatrix
+        , bool AF2       // Alignment flag of the foreign dense submatrix
+        , bool SO2 >     // Storage order of the foreign dense submatrix
+inline bool DenseSubmatrix<MT,aligned,false>::isAliased( const DenseSubmatrix<MT2,AF2,SO2>* alias ) const
+{
+   return ( matrix_.isAliased( &alias->matrix_ ) &&
+            ( row_    + m_ > alias->row_    ) && ( row_    < alias->row_    + alias->m_ ) &&
+            ( column_ + n_ > alias->column_ ) && ( column_ < alias->column_ + alias->n_ ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -6487,8 +6670,17 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other >
+   inline bool canAlias( const Other* alias ) const;
+
+   template< typename MT2, bool AF2, bool SO2 >
+   inline bool canAlias( const DenseSubmatrix<MT2,AF2,SO2>* alias ) const;
+
+   template< typename Other >
+   inline bool isAliased( const Other* alias ) const;
+
+   template< typename MT2, bool AF2, bool SO2 >
+   inline bool isAliased( const DenseSubmatrix<MT2,AF2,SO2>* alias ) const;
 
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
@@ -6550,6 +6742,8 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
+   template< typename MT2, bool AF2, bool SO2 > friend class DenseSubmatrix;
+
    template< bool AF1, typename MT2, bool AF2, bool SO2 >
    friend const DenseSubmatrix<MT2,AF1,SO2>
       submatrix( const DenseSubmatrix<MT2,AF2,SO2>& dm, size_t row, size_t column, size_t m, size_t n );
@@ -7294,7 +7488,32 @@ template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool DenseSubmatrix<MT,aligned,true>::canAlias( const Other* alias ) const
 {
-   return static_cast<const void*>( &matrix_ ) == static_cast<const void*>( alias );
+   return matrix_.isAliased( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the submatrix can alias with the given dense submatrix \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this submatrix, \a false if not.
+//
+// This function returns whether the given address can alias with the submatrix. In contrast
+// to the isAliased() function this function is allowed to use compile time expressions to
+// optimize the evaluation.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename MT2   // Data type of the foreign dense submatrix
+        , bool AF2       // Alignment flag of the foreign dense submatrix
+        , bool SO2 >     // Storage order of the foreign dense submatrix
+inline bool DenseSubmatrix<MT,aligned,true>::canAlias( const DenseSubmatrix<MT2,AF2,SO2>* alias ) const
+{
+   return ( matrix_.isAliased( &alias->matrix_ ) &&
+            ( row_    + m_ > alias->row_    ) && ( row_    < alias->row_    + alias->m_ ) &&
+            ( column_ + n_ > alias->column_ ) && ( column_ < alias->column_ + alias->n_ ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -7315,7 +7534,32 @@ template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool DenseSubmatrix<MT,aligned,true>::isAliased( const Other* alias ) const
 {
-   return static_cast<const void*>( &matrix_ ) == static_cast<const void*>( alias );
+   return matrix_.isAliased( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the submatrix is aliased with the given dense submatrix \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this submatrix, \a false if not.
+//
+// This function returns whether the given address is aliased with the submatrix. In contrast
+// to the conAlias() function this function is not allowed to use compile time expressions to
+// optimize the evaluation.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename MT2   // Data type of the foreign dense submatrix
+        , bool AF2       // Alignment flag of the foreign dense submatrix
+        , bool SO2 >     // Storage order of the foreign dense submatrix
+inline bool DenseSubmatrix<MT,aligned,true>::isAliased( const DenseSubmatrix<MT2,AF2,SO2>* alias ) const
+{
+   return ( matrix_.isAliased( &alias->matrix_ ) &&
+            ( row_    + m_ > alias->row_    ) && ( row_    < alias->row_    + alias->m_ ) &&
+            ( column_ + n_ > alias->column_ ) && ( column_ < alias->column_ + alias->n_ ) );
 }
 /*! \endcond */
 //*************************************************************************************************
