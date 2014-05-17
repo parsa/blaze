@@ -835,8 +835,17 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other >
+   inline bool canAlias( const Other* alias ) const;
+
+   template< typename VT2, bool AF2, bool TF2 >
+   inline bool canAlias( const DenseSubvector<VT2,AF2,TF2>* alias ) const;
+
+   template< typename Other >
+   inline bool isAliased( const Other* alias ) const;
+
+   template< typename VT2, bool AF2, bool TF2 >
+   inline bool isAliased( const DenseSubvector<VT2,AF2,TF2>* alias ) const;
 
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
@@ -917,6 +926,8 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
 
    //**Friend declarations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
+   template< typename VT2, bool AF2, bool TF2 > friend class DenseSubvector;
+
    template< bool AF1, typename VT2, bool AF2, bool TF2 >
    friend const DenseSubvector<VT2,AF1,TF2>
       subvector( const DenseSubvector<VT2,AF2,TF2>& dv, size_t index, size_t size );
@@ -1540,7 +1551,31 @@ template< typename VT       // Type of the dense vector
 template< typename Other >  // Data type of the foreign expression
 inline bool DenseSubvector<VT,AF,TF>::canAlias( const Other* alias ) const
 {
-   return static_cast<const void*>( &vector_ ) == static_cast<const void*>( alias );
+   return vector_.isAliased( alias );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the dense subvector can alias with the given dense subvector \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this dense subvector, \a false if not.
+//
+// This function returns whether the given address can alias with the dense subvector.
+// In contrast to the isAliased() function this function is allowed to use compile time
+// expressions to optimize the evaluation.
+*/
+template< typename VT   // Type of the dense vector
+        , bool AF       // Alignment flag
+        , bool TF >     // Transpose flag
+template< typename VT2  // Data type of the foreign dense subvector
+        , bool AF2      // Alignment flag of the foreign dense subvector
+        , bool TF2 >    // Transpose flag of the foreign dense subvector
+inline bool DenseSubvector<VT,AF,TF>::canAlias( const DenseSubvector<VT2,AF2,TF2>* alias ) const
+{
+   return ( vector_.isAliased( &alias->vector_ ) &&
+            ( offset_ + size_ > alias->offset_ ) && ( offset_ < alias->offset_ + alias->size_ ) );
 }
 //*************************************************************************************************
 
@@ -1561,7 +1596,31 @@ template< typename VT       // Type of the dense vector
 template< typename Other >  // Data type of the foreign expression
 inline bool DenseSubvector<VT,AF,TF>::isAliased( const Other* alias ) const
 {
-   return static_cast<const void*>( &vector_ ) == static_cast<const void*>( alias );
+   return vector_.isAliased( alias );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the dense subvector is aliased with the given dense subvector \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this dense subvector, \a false if not.
+//
+// This function returns whether the given address is aliased with the dense subvector.
+// In contrast to the canAlias() function this function is not allowed to use compile time
+// expressions to optimize the evaluation.
+*/
+template< typename VT   // Type of the dense vector
+        , bool AF       // Alignment flag
+        , bool TF >     // Transpose flag
+template< typename VT2  // Data type of the foreign dense subvector
+        , bool AF2      // Alignment flag of the foreign dense subvector
+        , bool TF2 >    // Transpose flag of the foreign dense subvector
+inline bool DenseSubvector<VT,AF,TF>::isAliased( const DenseSubvector<VT2,AF2,TF2>* alias ) const
+{
+   return ( vector_.isAliased( &alias->vector_ ) &&
+            ( offset_ + size_ > alias->offset_ ) && ( offset_ < alias->offset_ + alias->size_ ) );
 }
 //*************************************************************************************************
 
@@ -2347,8 +2406,17 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other >
+   inline bool canAlias( const Other* alias ) const;
+
+   template< typename VT2, bool AF2, bool TF2 >
+   inline bool canAlias( const DenseSubvector<VT2,AF2,TF2>* alias ) const;
+
+   template< typename Other >
+   inline bool isAliased( const Other* alias ) const;
+
+   template< typename VT2, bool AF2, bool TF2 >
+   inline bool isAliased( const DenseSubvector<VT2,AF2,TF2>* alias ) const;
 
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
@@ -2412,6 +2480,8 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
+   template< typename VT2, bool AF2, bool TF2 > friend class DenseSubvector;
+
    template< bool AF1, typename VT2, bool AF2, bool TF2 >
    friend const DenseSubvector<VT2,AF1,TF2>
       subvector( const DenseSubvector<VT2,AF2,TF2>& dv, size_t index, size_t size );
@@ -3060,7 +3130,32 @@ template< typename VT       // Type of the dense vector
 template< typename Other >  // Data type of the foreign expression
 inline bool DenseSubvector<VT,aligned,TF>::canAlias( const Other* alias ) const
 {
-   return static_cast<const void*>( &vector_ ) == static_cast<const void*>( alias );
+   return vector_.isAliased( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the dense subvector can alias with the given dense subvector \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this dense subvector, \a false if not.
+//
+// This function returns whether the given address can alias with the dense subvector.
+// In contrast to the isAliased() function this function is allowed to use compile time
+// expressions to optimize the evaluation.
+*/
+template< typename VT   // Type of the dense vector
+        , bool TF >     // Transpose flag
+template< typename VT2  // Data type of the foreign dense subvector
+        , bool AF2      // Alignment flag of the foreign dense subvector
+        , bool TF2 >    // Transpose flag of the foreign dense subvector
+inline bool DenseSubvector<VT,aligned,TF>::canAlias( const DenseSubvector<VT2,AF2,TF2>* alias ) const
+{
+   return ( vector_.isAliased( &alias->vector_ ) &&
+            ( offset_ + size_ > alias->offset_ ) && ( offset_ < alias->offset_ + alias->size_ ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3082,7 +3177,32 @@ template< typename VT       // Type of the dense vector
 template< typename Other >  // Data type of the foreign expression
 inline bool DenseSubvector<VT,aligned,TF>::isAliased( const Other* alias ) const
 {
-   return static_cast<const void*>( &vector_ ) == static_cast<const void*>( alias );
+   return vector_.isAliased( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the dense subvector is aliased with the given dense subvector \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this dense subvector, \a false if not.
+//
+// This function returns whether the given address is aliased with the dense subvector.
+// In contrast to the canAlias() function this function is not allowed to use compile time
+// expressions to optimize the evaluation.
+*/
+template< typename VT   // Type of the dense vector
+        , bool TF >     // Transpose flag
+template< typename VT2  // Data type of the foreign dense subvector
+        , bool AF2      // Alignment flag of the foreign dense subvector
+        , bool TF2 >    // Transpose flag of the foreign dense subvector
+inline bool DenseSubvector<VT,aligned,TF>::isAliased( const DenseSubvector<VT2,AF2,TF2>* alias ) const
+{
+   return ( vector_.isAliased( &alias->vector_ ) &&
+            ( offset_ + size_ > alias->offset_ ) && ( offset_ < alias->offset_ + alias->size_ ) );
 }
 /*! \endcond */
 //*************************************************************************************************
