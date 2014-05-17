@@ -72,6 +72,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/system/BLAS.h>
 #include <blaze/system/Thresholds.h>
@@ -272,7 +273,8 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
                          IntrinsicTrait<ET1>::multiplication };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = !evaluateLeft && !evaluateRight };
+   enum { smpAssignable = !evaluateLeft  && IsSMPAssignable<MT1>::value &&
+                          !evaluateRight && IsSMPAssignable<MT2>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -2531,7 +2533,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
                          IntrinsicTrait<ET1>::multiplication };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = !evaluateLeft && !evaluateRight };
+   enum { smpAssignable = !evaluateLeft  && IsSMPAssignable<MT1>::value &&
+                          !evaluateRight && IsSMPAssignable<MT2>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

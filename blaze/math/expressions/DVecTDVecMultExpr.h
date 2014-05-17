@@ -58,6 +58,7 @@
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
@@ -465,7 +466,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
                          IntrinsicTrait<ET1>::multiplication };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = !evaluateRight };
+   enum { smpAssignable = IsSMPAssignable<VT1>::value && !evaluateRight };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
