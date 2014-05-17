@@ -59,9 +59,9 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
