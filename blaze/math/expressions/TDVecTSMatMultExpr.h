@@ -58,7 +58,6 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
-#include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
@@ -173,8 +172,8 @@ class TDVecTSMatMultExpr : public DenseVector< TDVecTSMatMultExpr<VT,MT>, true >
    enum { vectorizable = 0 };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = !evaluateVector && IsSMPAssignable<VT>::value &&
-                          !evaluateMatrix && IsSMPAssignable<MT>::value };
+   enum { smpAssignable = !evaluateVector && VT::smpAssignable &&
+                          !evaluateMatrix && MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

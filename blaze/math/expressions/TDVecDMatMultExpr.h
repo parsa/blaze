@@ -62,7 +62,6 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
-#include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/system/BLAS.h>
 #include <blaze/system/Thresholds.h>
@@ -269,8 +268,8 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                          IntrinsicTrait<VET>::multiplication };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = !evaluateVector && IsSMPAssignable<VT>::value &&
-                          !evaluateMatrix && IsSMPAssignable<MT>::value };
+   enum { smpAssignable = !evaluateVector && VT::smpAssignable &&
+                          !evaluateMatrix && MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -2050,8 +2049,8 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                          IntrinsicTrait<VET>::multiplication };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = !evaluateVector && IsSMPAssignable<VT>::value &&
-                          !evaluateMatrix && IsSMPAssignable<MT>::value };
+   enum { smpAssignable = !evaluateVector && VT::smpAssignable &&
+                          !evaluateMatrix && MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
