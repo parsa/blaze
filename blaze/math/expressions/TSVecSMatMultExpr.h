@@ -58,6 +58,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
@@ -146,7 +147,8 @@ class TSVecSMatMultExpr : public SparseVector< TSVecSMatMultExpr<VT,MT>, true >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = !evaluateMatrix && !evaluateVector };
+   enum { smpAssignable = !evaluateVector && IsSMPAssignable<VT>::value &&
+                          !evaluateMatrix && IsSMPAssignable<MT>::value };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
