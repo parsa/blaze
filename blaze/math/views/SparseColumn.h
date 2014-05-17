@@ -470,6 +470,7 @@ class SparseColumn : public SparseVector< SparseColumn<MT,SO>, false >
    //@{
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
+
    template< typename VT >    inline void assign   ( const DenseVector <VT,false>& rhs );
    template< typename VT >    inline void assign   ( const SparseVector<VT,false>& rhs );
    template< typename VT >    inline void addAssign( const DenseVector <VT,false>& rhs );
@@ -1355,7 +1356,7 @@ template< typename MT       // Type of the sparse matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool SparseColumn<MT,SO>::canAlias( const Other* alias ) const
 {
-   return static_cast<const void*>( &matrix_ ) == static_cast<const void*>( alias );
+   return matrix_.isAliased( alias );
 }
 //*************************************************************************************************
 
@@ -1375,7 +1376,7 @@ template< typename MT       // Type of the sparse matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool SparseColumn<MT,SO>::isAliased( const Other* alias ) const
 {
-   return static_cast<const void*>( &matrix_ ) == static_cast<const void*>( alias );
+   return matrix_.isAliased( alias );
 }
 //*************************************************************************************************
 
@@ -2028,6 +2029,7 @@ class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, fals
    //@{
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
+
    template< typename VT >    inline void assign   ( const DenseVector <VT,false>& rhs );
    template< typename VT >    inline void assign   ( const SparseVector<VT,false>& rhs );
    template< typename VT >    inline void addAssign( const Vector<VT,false>& rhs );
@@ -2912,7 +2914,7 @@ template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool SparseColumn<MT,false>::canAlias( const Other* alias ) const
 {
-   return static_cast<const void*>( &matrix_ ) == static_cast<const void*>( alias );
+   return matrix_.isAliased( alias );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2929,7 +2931,7 @@ template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool SparseColumn<MT,false>::isAliased( const Other* alias ) const
 {
-   return static_cast<const void*>( &matrix_ ) == static_cast<const void*>( alias );
+   return matrix_.isAliased( alias );
 }
 /*! \endcond */
 //*************************************************************************************************
