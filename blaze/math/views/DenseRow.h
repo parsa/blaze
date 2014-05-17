@@ -476,8 +476,10 @@ class DenseRow : public DenseVector< DenseRow<MT,SO>, true >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other >         inline bool canAlias ( const Other*             alias ) const;
+   template< typename MT2, bool SO2 > inline bool canAlias ( const DenseRow<MT2,SO2>* alias ) const;
+   template< typename Other >         inline bool isAliased( const Other*             alias ) const;
+   template< typename MT2, bool SO2 > inline bool isAliased( const DenseRow<MT2,SO2>* alias ) const;
 
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
@@ -537,6 +539,12 @@ class DenseRow : public DenseVector< DenseRow<MT,SO>, true >
    Operand      matrix_;  //!< The dense matrix containing the row.
    const size_t row_;     //!< The index of the row in the matrix.
    //@}
+   //**********************************************************************************************
+
+   //**Friend declarations*************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   template< typename MT2, bool SO2 > friend class DenseRow;
+   /*! \endcond */
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -1091,7 +1099,28 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool DenseRow<MT,SO>::canAlias( const Other* alias ) const
 {
-   return static_cast<const void*>( &matrix_ ) == static_cast<const void*>( alias );
+   return matrix_.isAliased( alias );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the dense row can alias with the given dense row \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this dense row, \a false if not.
+//
+// This function returns whether the given address can alias with the dense row. In contrast
+// to the isAliased() function this function is allowed to use compile time expressions to
+// optimize the evaluation.
+*/
+template< typename MT   // Type of the dense matrix
+        , bool SO >     // Storage order
+template< typename MT2  // Data type of the foreign dense row
+        , bool SO2 >    // Storage order of the foreign dense row
+inline bool DenseRow<MT,SO>::canAlias( const DenseRow<MT2,SO2>* alias ) const
+{
+   return matrix_.isAliased( &alias->matrix_ ) && ( row_ == alias->row_ );
 }
 //*************************************************************************************************
 
@@ -1111,7 +1140,28 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool DenseRow<MT,SO>::isAliased( const Other* alias ) const
 {
-   return static_cast<const void*>( &matrix_ ) == static_cast<const void*>( alias );
+   return matrix_.isAliased( alias );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the dense row is aliased with the given dense row \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this dense row, \a false if not.
+//
+// This function returns whether the given address is aliased with the dense row. In contrast
+// to the canAlias() function this function is not allowed to use compile time expressions to
+// optimize the evaluation.
+*/
+template< typename MT   // Type of the dense matrix
+        , bool SO >     // Storage order
+template< typename MT2  // Data type of the foreign dense row
+        , bool SO2 >    // Storage order of the foreign dense row
+inline bool DenseRow<MT,SO>::isAliased( const DenseRow<MT2,SO2>* alias ) const
+{
+   return matrix_.isAliased( &alias->matrix_ ) && ( row_ == alias->row_ );
 }
 //*************************************************************************************************
 
@@ -2080,8 +2130,10 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other >         inline bool canAlias ( const Other*             alias ) const;
+   template< typename MT2, bool SO2 > inline bool canAlias ( const DenseRow<MT2,SO2>* alias ) const;
+   template< typename Other >         inline bool isAliased( const Other*             alias ) const;
+   template< typename MT2, bool SO2 > inline bool isAliased( const DenseRow<MT2,SO2>* alias ) const;
 
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
@@ -2104,6 +2156,12 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
    Operand      matrix_;  //!< The dense matrix containing the row.
    const size_t row_;     //!< The index of the row in the matrix.
    //@}
+   //**********************************************************************************************
+
+   //**Friend declarations*************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   template< typename MT2, bool SO2 > friend class DenseRow;
+   /*! \endcond */
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -2675,7 +2733,29 @@ template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool DenseRow<MT,false>::canAlias( const Other* alias ) const
 {
-   return static_cast<const void*>( &matrix_ ) == static_cast<const void*>( alias );
+   return matrix_.isAliased( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the dense row can alias with the given dense row \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this dense row, \a false if not.
+//
+// This function returns whether the given address can alias with the dense row. In contrast
+// to the isAliased() function this function is allowed to use compile time expressions to
+// optimize the evaluation.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename MT2   // Data type of the foreign dense row
+        , bool SO2 >     // Storage order of the foreign dense row
+inline bool DenseRow<MT,false>::canAlias( const DenseRow<MT2,SO2>* alias ) const
+{
+   return matrix_.isAliased( &alias->matrix_ ) && ( row_ == alias->row_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2696,7 +2776,29 @@ template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool DenseRow<MT,false>::isAliased( const Other* alias ) const
 {
-   return static_cast<const void*>( &matrix_ ) == static_cast<const void*>( alias );
+   return matrix_.isAliased( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the dense row is aliased with the given dense row \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this dense row, \a false if not.
+//
+// This function returns whether the given address is aliased with the dense row. In contrast
+// to the canAlias() function this function is not allowed to use compile time expressions to
+// optimize the evaluation.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename MT2   // Data type of the foreign dense row
+        , bool SO2 >     // Storage order of the foreign dense row
+inline bool DenseRow<MT,false>::isAliased( const DenseRow<MT2,SO2>* alias ) const
+{
+   return matrix_.isAliased( &alias->matrix_ ) && ( row_ == alias->row_ );
 }
 /*! \endcond */
 //*************************************************************************************************
