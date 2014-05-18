@@ -42,6 +42,7 @@
 
 #include <blaze/util/Assert.h>
 #include <blaze/util/logging/FunctionTrace.h>
+#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -126,6 +127,9 @@ inline void subAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
 
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
 inline void multAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
+
+template< typename VT1, bool TF1, typename VT2, bool TF2 >
+inline bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>& b );
 //@}
 //*************************************************************************************************
 
@@ -289,6 +293,51 @@ inline void multAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
    (~lhs).multAssign( ~rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the two given vectors represent the same observable state.
+// \ingroup vector
+//
+// \param a The first vector to be tested for its state.
+// \param b The second vector to be tested for its state.
+// \return \a true in case the two vectors share a state, \a false otherwise.
+//
+// The isSame function provides an abstract interface for testing if the two given vectors
+// represent the same observable state. This happens for instance in case \c a and \c b refer
+// to the same vector or in case \c a and \c b are aliases for the same vector. In case both
+// vectors represent the same observable state, the function returns \a true, other it returns
+// \a false.
+
+   \code
+   typedef blaze::DynamicVector<int>          VectorType;
+   typedef blaze::DenseSubvector<VectorType>  SubvectorType;
+
+   VectorType vec1( 4UL );  // Setup of a 4-dimensional dynamic vector
+   VectorType vec2( 4UL );  // Setup of a second 4-dimensional dynamic vector
+
+   SubvectorType sub1 = subvector( vec1, 0UL, 4UL );  // Subvector of vec1 for the entire range
+   SubvectorType sub2 = subvector( vec1, 1UL, 2UL );  // Subvector of vec1 for the range [1..3]
+   SubvectorType sub3 = subvector( vec1, 1UL, 2UL );  // Second subvector of vec1 for the range [1..3]
+
+   isSame( vec1, vec1 );  // returns true since both objects refer to the same vector
+   isSame( vec1, vec2 );  // returns false since vec1 and vec2 are two different vectors
+   isSame( vec1, sub1 );  // returns true since sub1 represents the same observable state as vec1
+   isSame( vec1, sub3 );  // returns false since sub3 only covers part of the range of vec1
+   isSame( sub2, sub3 );  // returns true since sub1 and sub2 refer to exactly the same range of vec1
+   isSame( sub1, sub3 );  // returns false since sub1 and sub3 refer to different ranges of vec1
+   \endcode
+*/
+template< typename VT1  // Type of the left-hand side vector
+        , bool TF1      // Transpose flag of the left-hand side vector
+        , typename VT2  // Type of the right-hand side vector
+        , bool TF2 >    // Transpose flag of the right-hand side vector
+inline bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>& b )
+{
+   return ( IsSame<VT1,VT2>::value &&
+            reinterpret_cast<const void*>( &a ) == reinterpret_cast<const void*>( &b ) );
 }
 //*************************************************************************************************
 
