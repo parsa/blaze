@@ -834,6 +834,15 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
    template< bool AF1, typename VT2, bool AF2, bool TF2 >
    friend const SparseSubvector<VT2,AF1,TF2>
       subvector( const SparseSubvector<VT2,AF2,TF2>& sv, size_t index, size_t size );
+
+   template< typename VT1, bool AF1, bool TF1, typename VT2, bool TF2 >
+   friend bool isSame( const SparseSubvector<VT1,AF1,TF1>& a, const SparseVector<VT2,TF2>& b );
+
+   template< typename VT1, bool TF1, typename VT2, bool AF2, bool TF2 >
+   friend bool isSame( const SparseVector<VT1,TF1>& a, const SparseSubvector<VT2,AF2,TF2>& b );
+
+   template< typename VT1, bool AF1, bool TF1, typename VT2, bool AF2, bool TF2 >
+   friend bool isSame( const SparseSubvector<VT1,AF1,TF1>& a, const SparseSubvector<VT2,AF2,TF2>& b );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -1996,6 +2005,15 @@ inline void clear( SparseSubvector<VT,AF,TF>& sv );
 
 template< typename VT, bool AF, bool TF >
 inline bool isDefault( const SparseSubvector<VT,AF,TF>& sv );
+
+template< typename VT1, bool AF1, bool TF1, typename VT2, bool TF2 >
+inline bool isSame( const SparseSubvector<VT1,AF1,TF1>& a, const SparseVector<VT2,TF2>& b );
+
+template< typename VT1, bool TF1, typename VT2, bool AF2, bool TF2 >
+inline bool isSame( const SparseVector<VT1,TF1>& a, const SparseSubvector<VT2,AF2,TF2>& b );
+
+template< typename VT1, bool AF1, bool TF1, typename VT2, bool AF2, bool TF2 >
+inline bool isSame( const SparseSubvector<VT1,AF1,TF1>& a, const SparseSubvector<VT2,AF2,TF2>& b );
 //@}
 //*************************************************************************************************
 
@@ -2065,6 +2083,66 @@ inline bool isDefault( const SparseSubvector<VT,AF,TF>& sv )
    for( ConstIterator element=sv.begin(); element!=end; ++element )
       if( !isDefault( element->value() ) ) return false;
    return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the given sparse vector and subvector represent the same observable state.
+// \ingroup sparse_subvector
+//
+// \param a The sparse subvector to be tested for its state.
+// \param b The sparse vector to be tested for its state.
+// \return \a true in case the sparse subvector and vector share a state, \a false otherwise.
+//
+// This overload of the isSame function tests if the given subvector refers to the entire range
+// of the given sparse vector and by that represents the same observable state. In this case, the
+// function returns \a true, otherwise it returns \a false.
+*/
+template< typename VT1, bool AF1, bool TF1, typename VT2, bool TF2 >
+inline bool isSame( const SparseSubvector<VT1,AF1,TF1>& a, const SparseVector<VT2,TF2>& b )
+{
+   return ( isSame( a.vector_, ~b ) && ( a.size() == (~b).size() ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the given sparse vector and subvector represent the same observable state.
+// \ingroup sparse_subvector
+//
+// \param a The sparse vector to be tested for its state.
+// \param b The sparse subvector to be tested for its state.
+// \return \a true in case the sparse vector and subvector share a state, \a false otherwise.
+//
+// This overload of the isSame function tests if the given subvector refers to the entire range
+// of the given sparse vector and by that represents the same observable state. In this case, the
+// function returns \a true, otherwise it returns \a false.
+*/
+template< typename VT1, bool TF1, typename VT2, bool AF2, bool TF2 >
+inline bool isSame( const SparseVector<VT1,TF1>& a, const SparseSubvector<VT2,AF2,TF2>& b )
+{
+   return ( isSame( ~a, b.vector_ ) && ( (~a).size() == b.size() ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the two given subvectors represent the same observable state.
+// \ingroup sparse_subvector
+//
+// \param a The first sparse subvector to be tested for its state.
+// \param b The second sparse subvector to be tested for its state.
+// \return \a true in case the two subvectors share a state, \a false otherwise.
+//
+// This overload of the isSame function tests if the two given subvectors refer to exactly the
+// same range of the same sparse vector. In case both subvectors represent the same observable
+// state, the function returns \a true, otherwise it returns \a false.
+*/
+template< typename VT1, bool AF1, bool TF1, typename VT2, bool AF2, bool TF2 >
+inline bool isSame( const SparseSubvector<VT1,AF1,TF1>& a, const SparseSubvector<VT2,AF2,TF2>& b )
+{
+   return ( isSame( a.vector_, b.vector_ ) && ( a.offset_ == b.offset_ ) && ( a.size_ == b.size_ ) );
 }
 //*************************************************************************************************
 
