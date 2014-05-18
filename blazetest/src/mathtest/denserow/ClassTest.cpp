@@ -40,6 +40,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/CompressedVector.h>
+#include <blaze/math/DenseSubmatrix.h>
+#include <blaze/math/DenseSubvector.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/Views.h>
 #include <blazetest/mathtest/denserow/ClassTest.h>
@@ -78,6 +80,7 @@ ClassTest::ClassTest()
    testReset();
    testIsDefault();
    testIsNan();
+   testIsSame();
    testMinimum();
    testMaximum();
    testSubvector();
@@ -4110,6 +4113,481 @@ void ClassTest::testIsNan()
                 << " Error: Invalid isnan evaluation\n"
                 << " Details:\n"
                 << "   Row:\n" << row4 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the isSame function with the DenseRow class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the isSame function with the DenseRow class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testIsSame()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isSame() function";
+
+      // isSame with matching rows
+      {
+         RT row1 = row( mat_, 1UL );
+         RT row2 = row( mat_, 1UL );
+
+         if( blaze::isSame( row1, row2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First row:\n" << row1 << "\n"
+                << "   Second row:\n" << row2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching rows
+      {
+         RT row1 = row( mat_, 1UL );
+         RT row2 = row( mat_, 2UL );
+
+         if( blaze::isSame( row1, row2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First row:\n" << row1 << "\n"
+                << "   Second row:\n" << row2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with row and matching subvector
+      {
+         typedef blaze::DenseSubvector<RT>  SubvectorType;
+
+         RT row1 = row( mat_, 1UL );
+         SubvectorType sv = subvector( row1, 0UL, 4UL );
+
+         if( blaze::isSame( row1, sv ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Dense row:\n" << row1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( sv, row1 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Dense row:\n" << row1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with row and non-matching subvector (different size)
+      {
+         typedef blaze::DenseSubvector<RT>  SubvectorType;
+
+         RT row1 = row( mat_, 1UL );
+         SubvectorType sv = subvector( row1, 0UL, 3UL );
+
+         if( blaze::isSame( row1, sv ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Dense row:\n" << row1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( sv, row1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Dense row:\n" << row1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with row and non-matching subvector (different offset)
+      {
+         typedef blaze::DenseSubvector<RT>  SubvectorType;
+
+         RT row1 = row( mat_, 1UL );
+         SubvectorType sv = subvector( row1, 1UL, 3UL );
+
+         if( blaze::isSame( row1, sv ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Dense row:\n" << row1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( sv, row1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Dense row:\n" << row1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with matching rows on submatrices
+      {
+         typedef blaze::DenseSubmatrix<MT>       SubmatrixType;
+         typedef blaze::DenseRow<SubmatrixType>  RowType;
+
+         SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
+         RowType row1 = row( sm, 1UL );
+         RowType row2 = row( sm, 1UL );
+
+         if( blaze::isSame( row1, row2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First row:\n" << row1 << "\n"
+                << "   Second row:\n" << row2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching rows on submatrices
+      {
+         typedef blaze::DenseSubmatrix<MT>       SubmatrixType;
+         typedef blaze::DenseRow<SubmatrixType>  RowType;
+
+         SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
+         RowType row1 = row( sm, 0UL );
+         RowType row2 = row( sm, 1UL );
+
+         if( blaze::isSame( row1, row2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First row:\n" << row1 << "\n"
+                << "   Second row:\n" << row2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with matching row subvectors on submatrices
+      {
+         typedef blaze::DenseSubmatrix<MT>       SubmatrixType;
+         typedef blaze::DenseRow<SubmatrixType>  RowType;
+         typedef blaze::DenseSubvector<RowType>  SubvectorType;
+
+         SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
+         RowType row1 = row( sm, 1UL );
+         SubvectorType sv1 = subvector( row1, 0UL, 2UL );
+         SubvectorType sv2 = subvector( row1, 0UL, 2UL );
+
+         if( blaze::isSame( sv1, sv2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First subvector:\n" << sv1 << "\n"
+                << "   Second subvector:\n" << sv2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching row subvectors on submatrices (different size)
+      {
+         typedef blaze::DenseSubmatrix<MT>       SubmatrixType;
+         typedef blaze::DenseRow<SubmatrixType>  RowType;
+         typedef blaze::DenseSubvector<RowType>  SubvectorType;
+
+         SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
+         RowType row1 = row( sm, 1UL );
+         SubvectorType sv1 = subvector( row1, 0UL, 2UL );
+         SubvectorType sv2 = subvector( row1, 0UL, 3UL );
+
+         if( blaze::isSame( sv1, sv2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First subvector:\n" << sv1 << "\n"
+                << "   Second subvector:\n" << sv2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching row subvectors on submatrices (different offset)
+      {
+         typedef blaze::DenseSubmatrix<MT>       SubmatrixType;
+         typedef blaze::DenseRow<SubmatrixType>  RowType;
+         typedef blaze::DenseSubvector<RowType>  SubvectorType;
+
+         SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
+         RowType row1 = row( sm, 1UL );
+         SubvectorType sv1 = subvector( row1, 0UL, 2UL );
+         SubvectorType sv2 = subvector( row1, 1UL, 2UL );
+
+         if( blaze::isSame( sv1, sv2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First subvector:\n" << sv1 << "\n"
+                << "   Second subvector:\n" << sv2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isSame() function";
+
+      // isSame with matching rows
+      {
+         TRT row1 = row( tmat_, 1UL );
+         TRT row2 = row( tmat_, 1UL );
+
+         if( blaze::isSame( row1, row2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First row:\n" << row1 << "\n"
+                << "   Second row:\n" << row2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching rows
+      {
+         TRT row1 = row( tmat_, 1UL );
+         TRT row2 = row( tmat_, 2UL );
+
+         if( blaze::isSame( row1, row2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First row:\n" << row1 << "\n"
+                << "   Second row:\n" << row2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with row and matching subvector
+      {
+         typedef blaze::DenseSubvector<TRT>  SubvectorType;
+
+         TRT row1 = row( tmat_, 1UL );
+         SubvectorType sv = subvector( row1, 0UL, 4UL );
+
+         if( blaze::isSame( row1, sv ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Dense row:\n" << row1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( sv, row1 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Dense row:\n" << row1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with row and non-matching subvector (different size)
+      {
+         typedef blaze::DenseSubvector<TRT>  SubvectorType;
+
+         TRT row1 = row( tmat_, 1UL );
+         SubvectorType sv = subvector( row1, 0UL, 3UL );
+
+         if( blaze::isSame( row1, sv ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Dense row:\n" << row1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( sv, row1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Dense row:\n" << row1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with row and non-matching subvector (different offset)
+      {
+         typedef blaze::DenseSubvector<TRT>  SubvectorType;
+
+         TRT row1 = row( tmat_, 1UL );
+         SubvectorType sv = subvector( row1, 1UL, 3UL );
+
+         if( blaze::isSame( row1, sv ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Dense row:\n" << row1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( sv, row1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Dense row:\n" << row1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with matching rows on submatrices
+      {
+         typedef blaze::DenseSubmatrix<TMT>      SubmatrixType;
+         typedef blaze::DenseRow<SubmatrixType>  RowType;
+
+         SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
+         RowType row1 = row( sm, 1UL );
+         RowType row2 = row( sm, 1UL );
+
+         if( blaze::isSame( row1, row2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First row:\n" << row1 << "\n"
+                << "   Second row:\n" << row2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching rows on submatrices
+      {
+         typedef blaze::DenseSubmatrix<TMT>      SubmatrixType;
+         typedef blaze::DenseRow<SubmatrixType>  RowType;
+
+         SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
+         RowType row1 = row( sm, 0UL );
+         RowType row2 = row( sm, 1UL );
+
+         if( blaze::isSame( row1, row2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First row:\n" << row1 << "\n"
+                << "   Second row:\n" << row2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with matching row subvectors on submatrices
+      {
+         typedef blaze::DenseSubmatrix<TMT>      SubmatrixType;
+         typedef blaze::DenseRow<SubmatrixType>  RowType;
+         typedef blaze::DenseSubvector<RowType>  SubvectorType;
+
+         SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
+         RowType row1 = row( sm, 1UL );
+         SubvectorType sv1 = subvector( row1, 0UL, 2UL );
+         SubvectorType sv2 = subvector( row1, 0UL, 2UL );
+
+         if( blaze::isSame( sv1, sv2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First subvector:\n" << sv1 << "\n"
+                << "   Second subvector:\n" << sv2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching row subvectors on submatrices (different size)
+      {
+         typedef blaze::DenseSubmatrix<TMT>      SubmatrixType;
+         typedef blaze::DenseRow<SubmatrixType>  RowType;
+         typedef blaze::DenseSubvector<RowType>  SubvectorType;
+
+         SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
+         RowType row1 = row( sm, 1UL );
+         SubvectorType sv1 = subvector( row1, 0UL, 2UL );
+         SubvectorType sv2 = subvector( row1, 0UL, 3UL );
+
+         if( blaze::isSame( sv1, sv2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First subvector:\n" << sv1 << "\n"
+                << "   Second subvector:\n" << sv2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching row subvectors on submatrices (different offset)
+      {
+         typedef blaze::DenseSubmatrix<TMT>      SubmatrixType;
+         typedef blaze::DenseRow<SubmatrixType>  RowType;
+         typedef blaze::DenseSubvector<RowType>  SubvectorType;
+
+         SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
+         RowType row1 = row( sm, 1UL );
+         SubvectorType sv1 = subvector( row1, 0UL, 2UL );
+         SubvectorType sv2 = subvector( row1, 1UL, 2UL );
+
+         if( blaze::isSame( sv1, sv2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First subvector:\n" << sv1 << "\n"
+                << "   Second subvector:\n" << sv2 << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
