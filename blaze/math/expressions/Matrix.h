@@ -42,6 +42,7 @@
 
 #include <blaze/util/Assert.h>
 #include <blaze/util/logging/FunctionTrace.h>
+#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -134,6 +135,9 @@ inline void subAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
 inline void multAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
+
+template< typename MT1, bool SO1, typename MT2, bool SO2 >
+inline bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>& b );
 //@}
 //*************************************************************************************************
 
@@ -361,6 +365,51 @@ inline void multAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).rows(), "Invalid matrix sizes" );
 
    (~lhs).multAssign( ~rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the two given matrices represent the same observable state.
+// \ingroup matrix
+//
+// \param a The first matrix to be tested for its state.
+// \param b The second matrix to be tested for its state.
+// \return \a true in case the two matrices share a state, \a false otherwise.
+//
+// The isSame function provides an abstract interface for testing if the two given matrices
+// represent the same observable state. This happens for instance in case \c a and \c b refer
+// to the same matrix or in case \c a and \c b are aliases for the same matrix. In case both
+// matrices represent the same observable state, the function returns \a true, other it returns
+// \a false.
+
+   \code
+   typedef blaze::DynamicMatrix<int>          MatrixType;
+   typedef blaze::DenseSubmatrix<MatrixType>  SubmatrixType;
+
+   MatrixType mat1( 4UL, 5UL );  // Setup of a 4x5 dynamic matrix
+   MatrixType mat2( 4UL, 5UL );  // Setup of a second 4x5 dynamic matrix
+
+   SubmatrixType sub1 = submatrix( mat1, 0UL, 0UL, 4UL, 5UL );  // Submatrix fully covering mat1
+   SubmatrixType sub2 = submatrix( mat1, 1UL, 1UL, 2UL, 3UL );  // Submatrix partially covering mat1
+   SubmatrixType sub3 = submatrix( mat1, 1UL, 1UL, 2UL, 3UL );  // Submatrix partially covering mat1
+
+   isSame( mat1, mat1 );  // returns true since both objects refer to the same matrix
+   isSame( mat1, mat2 );  // returns false since mat1 and mat2 are two different matrices
+   isSame( mat1, sub1 );  // returns true since sub1 represents the same observable state as mat1
+   isSame( mat1, sub3 );  // returns false since sub3 only covers part of mat1
+   isSame( sub2, sub3 );  // returns true since sub1 and sub2 refer to exactly the same part of mat1
+   isSame( sub1, sub3 );  // returns false since sub1 and sub3 refer to different parts of mat1
+   \endcode
+*/
+template< typename MT1  // Type of the left-hand side matrix
+        , bool SO1      // Storage order of the left-hand side matrix
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>& b )
+{
+   return ( IsSame<MT1,MT2>::value &&
+            reinterpret_cast<const void*>( &a ) == reinterpret_cast<const void*>( &b ) );
 }
 //*************************************************************************************************
 
