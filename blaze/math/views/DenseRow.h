@@ -544,6 +544,9 @@ class DenseRow : public DenseVector< DenseRow<MT,SO>, true >
    //**Friend declarations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename MT2, bool SO2 > friend class DenseRow;
+
+   template< typename MT1, bool SO1, typename MT2, bool SO2 >
+   friend bool isSame( const DenseRow<MT1,SO1>& a, const DenseRow<MT2,SO2>& b );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -2159,9 +2162,10 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    template< typename MT2, bool SO2 > friend class DenseRow;
-   /*! \endcond */
+
+   template< typename MT1, bool SO1, typename MT2, bool SO2 >
+   friend bool isSame( const DenseRow<MT1,SO1>& a, const DenseRow<MT2,SO2>& b );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -3090,6 +3094,9 @@ inline void clear( DenseRow<MT,SO>& row );
 
 template< typename MT, bool SO >
 inline bool isDefault( const DenseRow<MT,SO>& row );
+
+template< typename MT1, bool SO1, typename MT2, bool SO2 >
+inline bool isSame( const DenseRow<MT1,SO1>& a, const DenseRow<MT2,SO2>& b );
 //@}
 //*************************************************************************************************
 
@@ -3153,6 +3160,26 @@ inline bool isDefault( const DenseRow<MT,SO>& row )
    for( size_t i=0UL; i<row.size(); ++i )
       if( !isDefault( row[i] ) ) return false;
    return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the two given dense rows represent the same observable state.
+// \ingroup dense_row
+//
+// \param a The first dense row to be tested for its state.
+// \param b The second dense row to be tested for its state.
+// \return \a true in case the two rows share a state, \a false otherwise.
+//
+// This overload of the isSame function tests if the two given dense rows refer to exactly the
+// same range of the same dense matrix. In case both rows represent the same observable state,
+// the function returns \a true, otherwise it returns \a false.
+*/
+template< typename MT1, bool SO1, typename MT2, bool SO2 >
+inline bool isSame( const DenseRow<MT1,SO1>& a, const DenseRow<MT2,SO2>& b )
+{
+   return ( isSame( a.matrix_, b.matrix_ ) && ( a.row_ == b.row_ ) );
 }
 //*************************************************************************************************
 
