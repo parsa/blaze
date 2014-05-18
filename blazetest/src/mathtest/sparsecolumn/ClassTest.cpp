@@ -85,6 +85,7 @@ ClassTest::ClassTest()
    testUpperBound();
    testIsDefault();
    testIsNan();
+   testIsSame();
    testMinimum();
    testMaximum();
    testSubvector();
@@ -5420,6 +5421,481 @@ void ClassTest::testIsNan()
                 << " Error: Invalid isnan evaluation\n"
                 << " Details:\n"
                 << "   Column:\n" << col4 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the isSame function with the SparseColumn class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the isSame function with the SparseColumn class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testIsSame()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isSame() function";
+
+      // isSame with matching columns
+      {
+         CT col1 = column( mat_, 1UL );
+         CT col2 = column( mat_, 1UL );
+
+         if( blaze::isSame( col1, col2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching columns
+      {
+         CT col1 = column( mat_, 1UL );
+         CT col2 = column( mat_, 2UL );
+
+         if( blaze::isSame( col1, col2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with column and matching subvector
+      {
+         typedef blaze::SparseSubvector<CT>  SubvectorType;
+
+         CT col1 = column( mat_, 1UL );
+         SubvectorType sv = subvector( col1, 0UL, 4UL );
+
+         if( blaze::isSame( col1, sv ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Sparse column:\n" << col1 << "\n"
+                << "   Sparse subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( sv, col1 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Sparse column:\n" << col1 << "\n"
+                << "   Sparse subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with column and non-matching subvector (different size)
+      {
+         typedef blaze::SparseSubvector<CT>  SubvectorType;
+
+         CT col1 = column( mat_, 1UL );
+         SubvectorType sv = subvector( col1, 0UL, 3UL );
+
+         if( blaze::isSame( col1, sv ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Sparse column:\n" << col1 << "\n"
+                << "   Sparse subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( sv, col1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Sparse column:\n" << col1 << "\n"
+                << "   Sparse subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with column and non-matching subvector (different offset)
+      {
+         typedef blaze::SparseSubvector<CT>  SubvectorType;
+
+         CT col1 = column( mat_, 1UL );
+         SubvectorType sv = subvector( col1, 1UL, 3UL );
+
+         if( blaze::isSame( col1, sv ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Sparse column:\n" << col1 << "\n"
+                << "   Sparse subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( sv, col1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Sparse column:\n" << col1 << "\n"
+                << "   Sparse subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with matching columns on submatrices
+      {
+         typedef blaze::SparseSubmatrix<MT>          SubmatrixType;
+         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
+
+         SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
+         ColumnType col1 = column( sm, 1UL );
+         ColumnType col2 = column( sm, 1UL );
+
+         if( blaze::isSame( col1, col2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching columns on submatrices
+      {
+         typedef blaze::SparseSubmatrix<MT>          SubmatrixType;
+         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
+
+         SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
+         ColumnType col1 = column( sm, 0UL );
+         ColumnType col2 = column( sm, 1UL );
+
+         if( blaze::isSame( col1, col2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with matching column subvectors on submatrices
+      {
+         typedef blaze::SparseSubmatrix<MT>          SubmatrixType;
+         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::SparseSubvector<ColumnType>  SubvectorType;
+
+         SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
+         ColumnType col1 = column( sm, 1UL );
+         SubvectorType sv1 = subvector( col1, 0UL, 2UL );
+         SubvectorType sv2 = subvector( col1, 0UL, 2UL );
+
+         if( blaze::isSame( sv1, sv2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First subvector:\n" << sv1 << "\n"
+                << "   Second subvector:\n" << sv2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching column subvectors on submatrices (different size)
+      {
+         typedef blaze::SparseSubmatrix<MT>          SubmatrixType;
+         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::SparseSubvector<ColumnType>  SubvectorType;
+
+         SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
+         ColumnType col1 = column( sm, 1UL );
+         SubvectorType sv1 = subvector( col1, 0UL, 2UL );
+         SubvectorType sv2 = subvector( col1, 0UL, 3UL );
+
+         if( blaze::isSame( sv1, sv2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First subvector:\n" << sv1 << "\n"
+                << "   Second subvector:\n" << sv2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching column subvectors on submatrices (different offset)
+      {
+         typedef blaze::SparseSubmatrix<MT>          SubmatrixType;
+         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::SparseSubvector<ColumnType>  SubvectorType;
+
+         SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
+         ColumnType col1 = column( sm, 1UL );
+         SubvectorType sv1 = subvector( col1, 0UL, 2UL );
+         SubvectorType sv2 = subvector( col1, 1UL, 2UL );
+
+         if( blaze::isSame( sv1, sv2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First subvector:\n" << sv1 << "\n"
+                << "   Second subvector:\n" << sv2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isSame() function";
+
+      // isSame with matching columns
+      {
+         TCT col1 = column( tmat_, 1UL );
+         TCT col2 = column( tmat_, 1UL );
+
+         if( blaze::isSame( col1, col2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching columns
+      {
+         TCT col1 = column( tmat_, 1UL );
+         TCT col2 = column( tmat_, 2UL );
+
+         if( blaze::isSame( col1, col2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with column and matching subvector
+      {
+         typedef blaze::SparseSubvector<TCT>  SubvectorType;
+
+         TCT col1 = column( tmat_, 1UL );
+         SubvectorType sv = subvector( col1, 0UL, 4UL );
+
+         if( blaze::isSame( col1, sv ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Sparse column:\n" << col1 << "\n"
+                << "   Sparse subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( sv, col1 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Sparse column:\n" << col1 << "\n"
+                << "   Sparse subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with column and non-matching subvector (different size)
+      {
+         typedef blaze::SparseSubvector<TCT>  SubvectorType;
+
+         TCT col1 = column( tmat_, 1UL );
+         SubvectorType sv = subvector( col1, 0UL, 3UL );
+
+         if( blaze::isSame( col1, sv ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Sparse column:\n" << col1 << "\n"
+                << "   Sparse subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( sv, col1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Sparse column:\n" << col1 << "\n"
+                << "   Sparse subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with column and non-matching subvector (different offset)
+      {
+         typedef blaze::SparseSubvector<TCT>  SubvectorType;
+
+         TCT col1 = column( tmat_, 1UL );
+         SubvectorType sv = subvector( col1, 1UL, 3UL );
+
+         if( blaze::isSame( col1, sv ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Sparse column:\n" << col1 << "\n"
+                << "   Sparse subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( sv, col1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Sparse column:\n" << col1 << "\n"
+                << "   Sparse subvector:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with matching columns on submatrices
+      {
+         typedef blaze::SparseSubmatrix<TMT>         SubmatrixType;
+         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
+
+         SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
+         ColumnType col1 = column( sm, 1UL );
+         ColumnType col2 = column( sm, 1UL );
+
+         if( blaze::isSame( col1, col2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching columns on submatrices
+      {
+         typedef blaze::SparseSubmatrix<TMT>         SubmatrixType;
+         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
+
+         SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
+         ColumnType col1 = column( sm, 0UL );
+         ColumnType col2 = column( sm, 1UL );
+
+         if( blaze::isSame( col1, col2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with matching column subvectors on submatrices
+      {
+         typedef blaze::SparseSubmatrix<TMT>         SubmatrixType;
+         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::SparseSubvector<ColumnType>  SubvectorType;
+
+         SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
+         ColumnType col1 = column( sm, 1UL );
+         SubvectorType sv1 = subvector( col1, 0UL, 2UL );
+         SubvectorType sv2 = subvector( col1, 0UL, 2UL );
+
+         if( blaze::isSame( sv1, sv2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First subvector:\n" << sv1 << "\n"
+                << "   Second subvector:\n" << sv2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching column subvectors on submatrices (different size)
+      {
+         typedef blaze::SparseSubmatrix<TMT>         SubmatrixType;
+         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::SparseSubvector<ColumnType>  SubvectorType;
+
+         SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
+         ColumnType col1 = column( sm, 1UL );
+         SubvectorType sv1 = subvector( col1, 0UL, 2UL );
+         SubvectorType sv2 = subvector( col1, 0UL, 3UL );
+
+         if( blaze::isSame( sv1, sv2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First subvector:\n" << sv1 << "\n"
+                << "   Second subvector:\n" << sv2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching column subvectors on submatrices (different offset)
+      {
+         typedef blaze::SparseSubmatrix<TMT>         SubmatrixType;
+         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::SparseSubvector<ColumnType>  SubvectorType;
+
+         SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
+         ColumnType col1 = column( sm, 1UL );
+         SubvectorType sv1 = subvector( col1, 0UL, 2UL );
+         SubvectorType sv2 = subvector( col1, 1UL, 2UL );
+
+         if( blaze::isSame( sv1, sv2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First subvector:\n" << sv1 << "\n"
+                << "   Second subvector:\n" << sv2 << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
