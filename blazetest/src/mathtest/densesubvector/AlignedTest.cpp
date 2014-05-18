@@ -78,6 +78,7 @@ AlignedTest::AlignedTest()
    testReset();
    testIsDefault();
    testIsNan();
+   testIsSame();
    testMinimum();
    testMaximum();
    testSubvector();
@@ -1615,6 +1616,149 @@ void AlignedTest::testIsNan()
              << " Error: Invalid isnan evaluation\n"
              << " Details:\n"
              << "   Subvector:\n" << sv << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the isSame function with the DenseSubvector class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the isSame function with the DenseSubvector class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void AlignedTest::testIsSame()
+{
+   using blaze::subvector;
+   using blaze::aligned;
+
+
+   test_ = "isSame() function";
+
+   // isSame with vector and matching subvector
+   {
+      ASVT sv = subvector<aligned>( vec1_, 0UL, 64UL );
+
+      if( blaze::isSame( sv, vec1_ ) == false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isSame evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec1_ << "\n"
+             << "   Subvector:\n" << sv << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( blaze::isSame( vec1_, sv ) == false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isSame evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec1_ << "\n"
+             << "   Subvector:\n" << sv << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isSame with vector and non-matching subvector (different size)
+   {
+      ASVT sv = subvector<aligned>( vec1_, 0UL, 32UL );
+
+      if( blaze::isSame( sv, vec1_ ) == true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isSame evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec1_ << "\n"
+             << "   Subvector:\n" << sv << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( blaze::isSame( vec1_, sv ) == true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isSame evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec1_ << "\n"
+             << "   Subvector:\n" << sv << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isSame with vector and non-matching subvector (different offset)
+   {
+      ASVT sv = subvector<aligned>( vec1_, 16UL, 48UL );
+
+      if( blaze::isSame( sv, vec1_ ) == true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isSame evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec1_ << "\n"
+             << "   Subvector:\n" << sv << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( blaze::isSame( vec1_, sv ) == true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isSame evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec1_ << "\n"
+             << "   Subvector:\n" << sv << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isSame with matching subvectors
+   {
+      ASVT sv1 = subvector<aligned>( vec1_, 16UL, 32UL );
+      ASVT sv2 = subvector<aligned>( vec1_, 16UL, 32UL );
+
+      if( blaze::isSame( sv1, sv2 ) == false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isSame evaluation\n"
+             << " Details:\n"
+             << "   First subvector:\n" << sv1 << "\n"
+             << "   Second subvector:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isSame with non-matching subvectors (different size)
+   {
+      ASVT sv1 = subvector<aligned>( vec1_, 16UL, 32UL );
+      ASVT sv2 = subvector<aligned>( vec1_, 16UL, 48UL );
+
+      if( blaze::isSame( sv1, sv2 ) == true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isSame evaluation\n"
+             << " Details:\n"
+             << "   First subvector:\n" << sv1 << "\n"
+             << "   Second subvector:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isSame with non-matching subvectors (different offset)
+   {
+      ASVT sv1 = subvector<aligned>( vec1_, 16UL, 32UL );
+      ASVT sv2 = subvector<aligned>( vec1_, 32UL, 32UL );
+
+      if( blaze::isSame( sv1, sv2 ) == true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isSame evaluation\n"
+             << " Details:\n"
+             << "   First subvector:\n" << sv1 << "\n"
+             << "   Second subvector:\n" << sv2 << "\n";
          throw std::runtime_error( oss.str() );
       }
    }

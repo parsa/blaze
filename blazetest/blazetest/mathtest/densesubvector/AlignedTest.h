@@ -98,6 +98,7 @@ class AlignedTest
    void testReset       ();
    void testIsDefault   ();
    void testIsNan       ();
+   void testIsSame      ();
    void testMinimum     ();
    void testMaximum     ();
    void testSubvector   ();
