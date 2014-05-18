@@ -931,6 +931,15 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    template< bool AF1, typename VT2, bool AF2, bool TF2 >
    friend const DenseSubvector<VT2,AF1,TF2>
       subvector( const DenseSubvector<VT2,AF2,TF2>& dv, size_t index, size_t size );
+
+   template< typename VT1, bool AF1, bool TF1, typename VT2, bool TF2 >
+   friend bool isSame( const DenseSubvector<VT1,AF1,TF1>& a, const DenseVector<VT2,TF2>& b );
+
+   template< typename VT1, bool TF1, typename VT2, bool AF2, bool TF2 >
+   friend bool isSame( const DenseVector<VT1,TF1>& a, const DenseSubvector<VT2,AF2,TF2>& b );
+
+   template< typename VT1, bool AF1, bool TF1, typename VT2, bool AF2, bool TF2 >
+   friend bool isSame( const DenseSubvector<VT1,AF1,TF1>& a, const DenseSubvector<VT2,AF2,TF2>& b );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -2485,6 +2494,15 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    template< bool AF1, typename VT2, bool AF2, bool TF2 >
    friend const DenseSubvector<VT2,AF1,TF2>
       subvector( const DenseSubvector<VT2,AF2,TF2>& dv, size_t index, size_t size );
+
+   template< typename VT1, bool AF1, bool TF1, typename VT2, bool TF2 >
+   friend bool isSame( const DenseSubvector<VT1,AF1,TF1>& a, const DenseVector<VT2,TF2>& b );
+
+   template< typename VT1, bool TF1, typename VT2, bool AF2, bool TF2 >
+   friend bool isSame( const DenseVector<VT1,TF1>& a, const DenseSubvector<VT2,AF2,TF2>& b );
+
+   template< typename VT1, bool AF1, bool TF1, typename VT2, bool AF2, bool TF2 >
+   friend bool isSame( const DenseSubvector<VT1,AF1,TF1>& a, const DenseSubvector<VT2,AF2,TF2>& b );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -4351,6 +4369,15 @@ inline void clear( DenseSubvector<VT,AF,TF>& dv );
 
 template< typename VT, bool AF, bool TF >
 inline bool isDefault( const DenseSubvector<VT,AF,TF>& dv );
+
+template< typename VT1, bool AF1, bool TF1, typename VT2, bool TF2 >
+inline bool isSame( const DenseSubvector<VT1,AF1,TF1>& a, const DenseVector<VT2,TF2>& b );
+
+template< typename VT1, bool TF1, typename VT2, bool AF2, bool TF2 >
+inline bool isSame( const DenseVector<VT1,TF1>& a, const DenseSubvector<VT2,AF2,TF2>& b );
+
+template< typename VT1, bool AF1, bool TF1, typename VT2, bool AF2, bool TF2 >
+inline bool isSame( const DenseSubvector<VT1,AF1,TF1>& a, const DenseSubvector<VT2,AF2,TF2>& b );
 //@}
 //*************************************************************************************************
 
@@ -4416,6 +4443,66 @@ inline bool isDefault( const DenseSubvector<VT,AF,TF>& dv )
    for( size_t i=0UL; i<dv.size(); ++i )
       if( !isDefault( dv[i] ) ) return false;
    return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the given dense vector and subvector represent the same observable state.
+// \ingroup dense_subvector
+//
+// \param a The dense subvector to be tested for its state.
+// \param b The dense vector to be tested for its state.
+// \return \a true in case the dense subvector and vector share a state, \a false otherwise.
+//
+// This overload of the isSame function tests if the given subvector refers to the entire range
+// of the given dense vector and by that represents the same observable state. In this case, the
+// function returns \a true, otherwise it returns \a false.
+*/
+template< typename VT1, bool AF1, bool TF1, typename VT2, bool TF2 >
+inline bool isSame( const DenseSubvector<VT1,AF1,TF1>& a, const DenseVector<VT2,TF2>& b )
+{
+   return ( isSame( a.vector_, ~b ) && ( a.size() == (~b).size() ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the given dense vector and subvector represent the same observable state.
+// \ingroup dense_subvector
+//
+// \param a The dense vector to be tested for its state.
+// \param b The dense subvector to be tested for its state.
+// \return \a true in case the dense vector and subvector share a state, \a false otherwise.
+//
+// This overload of the isSame function tests if the given subvector refers to the entire range
+// of the given dense vector and by that represents the same observable state. In this case, the
+// function returns \a true, otherwise it returns \a false.
+*/
+template< typename VT1, bool TF1, typename VT2, bool AF2, bool TF2 >
+inline bool isSame( const DenseVector<VT1,TF1>& a, const DenseSubvector<VT2,AF2,TF2>& b )
+{
+   return ( isSame( ~a, b.vector_ ) && ( (~a).size() == b.size() ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the two given subvectors represent the same observable state.
+// \ingroup dense_subvector
+//
+// \param a The first dense subvector to be tested for its state.
+// \param b The second dense subvector to be tested for its state.
+// \return \a true in case the two subvectors share a state, \a false otherwise.
+//
+// This overload of the isSame function tests if the two given subvectors refer to exactly the
+// same range of the same dense vector. In case both subvectors represent the same observable
+// state, the function returns \a true, otherwise it returns \a false.
+*/
+template< typename VT1, bool AF1, bool TF1, typename VT2, bool AF2, bool TF2 >
+inline bool isSame( const DenseSubvector<VT1,AF1,TF1>& a, const DenseSubvector<VT2,AF2,TF2>& b )
+{
+   return ( isSame( a.vector_, b.vector_ ) && ( a.offset_ == b.offset_ ) && ( a.size_ == b.size_ ) );
 }
 //*************************************************************************************************
 
