@@ -545,6 +545,9 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO>, false >
    //**Friend declarations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename MT2, bool SO2 > friend class DenseColumn;
+
+   template< typename MT1, bool SO1, typename MT2, bool SO2 >
+   friend bool isSame( const DenseColumn<MT1,SO1>& a, const DenseColumn<MT2,SO2>& b );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -2160,9 +2163,10 @@ class DenseColumn<MT,false> : public DenseVector< DenseColumn<MT,false>, false >
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    template< typename MT2, bool SO2 > friend class DenseColumn;
-   /*! \endcond */
+
+   template< typename MT1, bool SO1, typename MT2, bool SO2 >
+   friend bool isSame( const DenseColumn<MT1,SO1>& a, const DenseColumn<MT2,SO2>& b );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -3091,6 +3095,9 @@ inline void clear( DenseColumn<MT,SO>& column );
 
 template< typename MT, bool SO >
 inline bool isDefault( const DenseColumn<MT,SO>& column );
+
+template< typename MT1, bool SO1, typename MT2, bool SO2 >
+inline bool isSame( const DenseColumn<MT1,SO1>& a, const DenseColumn<MT2,SO2>& b );
 //@}
 //*************************************************************************************************
 
@@ -3154,6 +3161,26 @@ inline bool isDefault( const DenseColumn<MT,SO>& column )
    for( size_t i=0UL; i<column.size(); ++i )
       if( !isDefault( column[i] ) ) return false;
    return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the two given dense columns represent the same observable state.
+// \ingroup dense_column
+//
+// \param a The first dense column to be tested for its state.
+// \param b The second dense column to be tested for its state.
+// \return \a true in case the two columns share a state, \a false otherwise.
+//
+// This overload of the isSame function tests if the two given dense columns refer to exactly the
+// same range of the same dense matrix. In case both columns represent the same observable state,
+// the function returns \a true, otherwise it returns \a false.
+*/
+template< typename MT1, bool SO1, typename MT2, bool SO2 >
+inline bool isSame( const DenseColumn<MT1,SO1>& a, const DenseColumn<MT2,SO2>& b )
+{
+   return ( isSame( a.matrix_, b.matrix_ ) && ( a.col_ == b.col_ ) );
 }
 //*************************************************************************************************
 
