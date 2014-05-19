@@ -545,8 +545,8 @@ class DenseRow : public DenseVector< DenseRow<MT,SO>, true >
    /*! \cond BLAZE_INTERNAL */
    template< typename MT2, bool SO2 > friend class DenseRow;
 
-   template< typename MT1, bool SO1, typename MT2, bool SO2 >
-   friend bool isSame( const DenseRow<MT1,SO1>& a, const DenseRow<MT2,SO2>& b );
+   template< typename MT2, bool SO2 >
+   friend bool isSame( const DenseRow<MT2,SO2>& a, const DenseRow<MT2,SO2>& b );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -2164,8 +2164,8 @@ class DenseRow<MT,false> : public DenseVector< DenseRow<MT,false>, true >
    //**Friend declarations*************************************************************************
    template< typename MT2, bool SO2 > friend class DenseRow;
 
-   template< typename MT1, bool SO1, typename MT2, bool SO2 >
-   friend bool isSame( const DenseRow<MT1,SO1>& a, const DenseRow<MT2,SO2>& b );
+   template< typename MT2, bool SO2 >
+   friend bool isSame( const DenseRow<MT2,SO2>& a, const DenseRow<MT2,SO2>& b );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -3095,8 +3095,8 @@ inline void clear( DenseRow<MT,SO>& row );
 template< typename MT, bool SO >
 inline bool isDefault( const DenseRow<MT,SO>& row );
 
-template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline bool isSame( const DenseRow<MT1,SO1>& a, const DenseRow<MT2,SO2>& b );
+template< typename MT, bool SO >
+inline bool isSame( const DenseRow<MT,SO>& a, const DenseRow<MT,SO>& b );
 //@}
 //*************************************************************************************************
 
@@ -3176,8 +3176,8 @@ inline bool isDefault( const DenseRow<MT,SO>& row )
 // same range of the same dense matrix. In case both rows represent the same observable state,
 // the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline bool isSame( const DenseRow<MT1,SO1>& a, const DenseRow<MT2,SO2>& b )
+template< typename MT, bool SO >
+inline bool isSame( const DenseRow<MT,SO>& a, const DenseRow<MT,SO>& b )
 {
    return ( isSame( a.matrix_, b.matrix_ ) && ( a.row_ == b.row_ ) );
 }
