@@ -932,14 +932,14 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    friend const DenseSubvector<VT2,AF1,TF2>
       subvector( const DenseSubvector<VT2,AF2,TF2>& dv, size_t index, size_t size );
 
-   template< typename VT1, bool AF1, bool TF1, typename VT2, bool TF2 >
-   friend bool isSame( const DenseSubvector<VT1,AF1,TF1>& a, const DenseVector<VT2,TF2>& b );
+   template< typename VT2, bool AF2, bool TF2 >
+   friend bool isSame( const DenseSubvector<VT2,AF2,TF2>& a, const DenseVector<VT2,TF2>& b );
 
-   template< typename VT1, bool TF1, typename VT2, bool AF2, bool TF2 >
-   friend bool isSame( const DenseVector<VT1,TF1>& a, const DenseSubvector<VT2,AF2,TF2>& b );
+   template< typename VT2, bool AF2, bool TF2 >
+   friend bool isSame( const DenseVector<VT2,TF2>& a, const DenseSubvector<VT2,AF2,TF2>& b );
 
-   template< typename VT1, bool AF1, bool TF1, typename VT2, bool AF2, bool TF2 >
-   friend bool isSame( const DenseSubvector<VT1,AF1,TF1>& a, const DenseSubvector<VT2,AF2,TF2>& b );
+   template< typename VT2, bool AF2, bool TF2 >
+   friend bool isSame( const DenseSubvector<VT2,AF2,TF2>& a, const DenseSubvector<VT2,AF2,TF2>& b );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -2495,14 +2495,14 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    friend const DenseSubvector<VT2,AF1,TF2>
       subvector( const DenseSubvector<VT2,AF2,TF2>& dv, size_t index, size_t size );
 
-   template< typename VT1, bool AF1, bool TF1, typename VT2, bool TF2 >
-   friend bool isSame( const DenseSubvector<VT1,AF1,TF1>& a, const DenseVector<VT2,TF2>& b );
+   template< typename VT2, bool AF2, bool TF2 >
+   friend bool isSame( const DenseSubvector<VT2,AF2,TF2>& a, const DenseVector<VT2,TF2>& b );
 
-   template< typename VT1, bool TF1, typename VT2, bool AF2, bool TF2 >
-   friend bool isSame( const DenseVector<VT1,TF1>& a, const DenseSubvector<VT2,AF2,TF2>& b );
+   template< typename VT2, bool AF2, bool TF2 >
+   friend bool isSame( const DenseVector<VT2,TF2>& a, const DenseSubvector<VT2,AF2,TF2>& b );
 
-   template< typename VT1, bool AF1, bool TF1, typename VT2, bool AF2, bool TF2 >
-   friend bool isSame( const DenseSubvector<VT1,AF1,TF1>& a, const DenseSubvector<VT2,AF2,TF2>& b );
+   template< typename VT2, bool AF2, bool TF2 >
+   friend bool isSame( const DenseSubvector<VT2,AF2,TF2>& a, const DenseSubvector<VT2,AF2,TF2>& b );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -3950,6 +3950,15 @@ class DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, unaligned, false >
    template< bool AF1, typename VT, bool AF2, bool TF >
    friend const DenseSubvector<VT,AF1,TF>
       subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
+
+   template< typename VT3, bool AF3, bool TF3 >
+   friend bool isSame( const DenseSubvector<VT3,AF3,TF3>& a, const DenseVector<VT3,TF3>& b );
+
+   template< typename VT3, bool AF3, bool TF3 >
+   friend bool isSame( const DenseVector<VT3,TF3>& a, const DenseSubvector<VT3,AF3,TF3>& b );
+
+   template< typename VT3, bool AF3, bool TF3 >
+   friend bool isSame( const DenseSubvector<VT3,AF3,TF3>& a, const DenseSubvector<VT3,AF3,TF3>& b );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -4080,6 +4089,15 @@ class DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, unaligned, false >
    template< bool AF1, typename VT, bool AF2, bool TF >
    friend const DenseSubvector<VT,AF1,TF>
       subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
+
+   template< typename VT3, bool AF3, bool TF3 >
+   friend bool isSame( const DenseSubvector<VT3,AF3,TF3>& a, const DenseVector<VT3,TF3>& b );
+
+   template< typename VT3, bool AF3, bool TF3 >
+   friend bool isSame( const DenseVector<VT3,TF3>& a, const DenseSubvector<VT3,AF3,TF3>& b );
+
+   template< typename VT3, bool AF3, bool TF3 >
+   friend bool isSame( const DenseSubvector<VT3,AF3,TF3>& a, const DenseSubvector<VT3,AF3,TF3>& b );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -4210,6 +4228,15 @@ class DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, unaligned, false >
    template< bool AF1, typename VT, bool AF2, bool TF >
    friend const DenseSubvector<VT,AF1,TF>
       subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
+
+   template< typename VT3, bool AF3, bool TF3 >
+   friend bool isSame( const DenseSubvector<VT3,AF3,TF3>& a, const DenseVector<VT3,TF3>& b );
+
+   template< typename VT3, bool AF3, bool TF3 >
+   friend bool isSame( const DenseVector<VT3,TF3>& a, const DenseSubvector<VT3,AF3,TF3>& b );
+
+   template< typename VT3, bool AF3, bool TF3 >
+   friend bool isSame( const DenseSubvector<VT3,AF3,TF3>& a, const DenseSubvector<VT3,AF3,TF3>& b );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -4340,6 +4367,15 @@ class DenseSubvector< SVecSVecCrossExpr<VT1,VT2>, unaligned, false >
    template< bool AF1, typename VT, bool AF2, bool TF >
    friend const DenseSubvector<VT,AF1,TF>
       subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
+
+   template< typename VT3, bool AF3, bool TF3 >
+   friend bool isSame( const DenseSubvector<VT3,AF3,TF3>& a, const DenseVector<VT3,TF3>& b );
+
+   template< typename VT3, bool AF3, bool TF3 >
+   friend bool isSame( const DenseVector<VT3,TF3>& a, const DenseSubvector<VT3,AF3,TF3>& b );
+
+   template< typename VT3, bool AF3, bool TF3 >
+   friend bool isSame( const DenseSubvector<VT3,AF3,TF3>& a, const DenseSubvector<VT3,AF3,TF3>& b );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -4359,7 +4395,7 @@ class DenseSubvector< SVecSVecCrossExpr<VT1,VT2>, unaligned, false >
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name Subvector operators */
+/*!\name DenseSubvector operators */
 //@{
 template< typename VT, bool AF, bool TF >
 inline void reset( DenseSubvector<VT,AF,TF>& dv );
@@ -4370,14 +4406,14 @@ inline void clear( DenseSubvector<VT,AF,TF>& dv );
 template< typename VT, bool AF, bool TF >
 inline bool isDefault( const DenseSubvector<VT,AF,TF>& dv );
 
-template< typename VT1, bool AF1, bool TF1, typename VT2, bool TF2 >
-inline bool isSame( const DenseSubvector<VT1,AF1,TF1>& a, const DenseVector<VT2,TF2>& b );
+template< typename VT, bool AF, bool TF >
+inline bool isSame( const DenseSubvector<VT,AF,TF>& a, const DenseVector<VT,TF>& b );
 
-template< typename VT1, bool TF1, typename VT2, bool AF2, bool TF2 >
-inline bool isSame( const DenseVector<VT1,TF1>& a, const DenseSubvector<VT2,AF2,TF2>& b );
+template< typename VT, bool AF, bool TF >
+inline bool isSame( const DenseVector<VT,TF>& a, const DenseSubvector<VT,AF,TF>& b );
 
-template< typename VT1, bool AF1, bool TF1, typename VT2, bool AF2, bool TF2 >
-inline bool isSame( const DenseSubvector<VT1,AF1,TF1>& a, const DenseSubvector<VT2,AF2,TF2>& b );
+template< typename VT, bool AF, bool TF >
+inline bool isSame( const DenseSubvector<VT,AF,TF>& a, const DenseSubvector<VT,AF,TF>& b );
 //@}
 //*************************************************************************************************
 
@@ -4459,8 +4495,8 @@ inline bool isDefault( const DenseSubvector<VT,AF,TF>& dv )
 // of the given dense vector and by that represents the same observable state. In this case, the
 // function returns \a true, otherwise it returns \a false.
 */
-template< typename VT1, bool AF1, bool TF1, typename VT2, bool TF2 >
-inline bool isSame( const DenseSubvector<VT1,AF1,TF1>& a, const DenseVector<VT2,TF2>& b )
+template< typename VT, bool AF, bool TF >
+inline bool isSame( const DenseSubvector<VT,AF,TF>& a, const DenseVector<VT,TF>& b )
 {
    return ( isSame( a.vector_, ~b ) && ( a.size() == (~b).size() ) );
 }
@@ -4479,8 +4515,8 @@ inline bool isSame( const DenseSubvector<VT1,AF1,TF1>& a, const DenseVector<VT2,
 // of the given dense vector and by that represents the same observable state. In this case, the
 // function returns \a true, otherwise it returns \a false.
 */
-template< typename VT1, bool TF1, typename VT2, bool AF2, bool TF2 >
-inline bool isSame( const DenseVector<VT1,TF1>& a, const DenseSubvector<VT2,AF2,TF2>& b )
+template< typename VT, bool AF, bool TF >
+inline bool isSame( const DenseVector<VT,TF>& a, const DenseSubvector<VT,AF,TF>& b )
 {
    return ( isSame( ~a, b.vector_ ) && ( (~a).size() == b.size() ) );
 }
@@ -4499,8 +4535,8 @@ inline bool isSame( const DenseVector<VT1,TF1>& a, const DenseSubvector<VT2,AF2,
 // same range of the same dense vector. In case both subvectors represent the same observable
 // state, the function returns \a true, otherwise it returns \a false.
 */
-template< typename VT1, bool AF1, bool TF1, typename VT2, bool AF2, bool TF2 >
-inline bool isSame( const DenseSubvector<VT1,AF1,TF1>& a, const DenseSubvector<VT2,AF2,TF2>& b )
+template< typename VT, bool AF, bool TF >
+inline bool isSame( const DenseSubvector<VT,AF,TF>& a, const DenseSubvector<VT,AF,TF>& b )
 {
    return ( isSame( a.vector_, b.vector_ ) && ( a.offset_ == b.offset_ ) && ( a.size_ == b.size_ ) );
 }
