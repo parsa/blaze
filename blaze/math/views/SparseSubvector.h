@@ -835,14 +835,14 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
    friend const SparseSubvector<VT2,AF1,TF2>
       subvector( const SparseSubvector<VT2,AF2,TF2>& sv, size_t index, size_t size );
 
-   template< typename VT1, bool AF1, bool TF1, typename VT2, bool TF2 >
-   friend bool isSame( const SparseSubvector<VT1,AF1,TF1>& a, const SparseVector<VT2,TF2>& b );
+   template< typename VT2, bool AF2, bool TF2 >
+   friend bool isSame( const SparseSubvector<VT2,AF2,TF2>& a, const SparseVector<VT2,TF2>& b );
 
-   template< typename VT1, bool TF1, typename VT2, bool AF2, bool TF2 >
-   friend bool isSame( const SparseVector<VT1,TF1>& a, const SparseSubvector<VT2,AF2,TF2>& b );
+   template< typename VT2, bool AF2, bool TF2 >
+   friend bool isSame( const SparseVector<VT2,TF2>& a, const SparseSubvector<VT2,AF2,TF2>& b );
 
-   template< typename VT1, bool AF1, bool TF1, typename VT2, bool AF2, bool TF2 >
-   friend bool isSame( const SparseSubvector<VT1,AF1,TF1>& a, const SparseSubvector<VT2,AF2,TF2>& b );
+   template< typename VT2, bool AF2, bool TF2 >
+   friend bool isSame( const SparseSubvector<VT2,AF2,TF2>& a, const SparseSubvector<VT2,AF2,TF2>& b );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -2006,14 +2006,14 @@ inline void clear( SparseSubvector<VT,AF,TF>& sv );
 template< typename VT, bool AF, bool TF >
 inline bool isDefault( const SparseSubvector<VT,AF,TF>& sv );
 
-template< typename VT1, bool AF1, bool TF1, typename VT2, bool TF2 >
-inline bool isSame( const SparseSubvector<VT1,AF1,TF1>& a, const SparseVector<VT2,TF2>& b );
+template< typename VT, bool AF, bool TF >
+inline bool isSame( const SparseSubvector<VT,AF,TF>& a, const SparseVector<VT,TF>& b );
 
-template< typename VT1, bool TF1, typename VT2, bool AF2, bool TF2 >
-inline bool isSame( const SparseVector<VT1,TF1>& a, const SparseSubvector<VT2,AF2,TF2>& b );
+template< typename VT, bool AF, bool TF >
+inline bool isSame( const SparseVector<VT,TF>& a, const SparseSubvector<VT,AF,TF>& b );
 
-template< typename VT1, bool AF1, bool TF1, typename VT2, bool AF2, bool TF2 >
-inline bool isSame( const SparseSubvector<VT1,AF1,TF1>& a, const SparseSubvector<VT2,AF2,TF2>& b );
+template< typename VT, bool AF, bool TF >
+inline bool isSame( const SparseSubvector<VT,AF,TF>& a, const SparseSubvector<VT,AF,TF>& b );
 //@}
 //*************************************************************************************************
 
@@ -2099,8 +2099,8 @@ inline bool isDefault( const SparseSubvector<VT,AF,TF>& sv )
 // of the given sparse vector and by that represents the same observable state. In this case, the
 // function returns \a true, otherwise it returns \a false.
 */
-template< typename VT1, bool AF1, bool TF1, typename VT2, bool TF2 >
-inline bool isSame( const SparseSubvector<VT1,AF1,TF1>& a, const SparseVector<VT2,TF2>& b )
+template< typename VT, bool AF, bool TF >
+inline bool isSame( const SparseSubvector<VT,AF,TF>& a, const SparseVector<VT,TF>& b )
 {
    return ( isSame( a.vector_, ~b ) && ( a.size() == (~b).size() ) );
 }
@@ -2119,8 +2119,8 @@ inline bool isSame( const SparseSubvector<VT1,AF1,TF1>& a, const SparseVector<VT
 // of the given sparse vector and by that represents the same observable state. In this case, the
 // function returns \a true, otherwise it returns \a false.
 */
-template< typename VT1, bool TF1, typename VT2, bool AF2, bool TF2 >
-inline bool isSame( const SparseVector<VT1,TF1>& a, const SparseSubvector<VT2,AF2,TF2>& b )
+template< typename VT, bool AF, bool TF >
+inline bool isSame( const SparseVector<VT,TF>& a, const SparseSubvector<VT,AF,TF>& b )
 {
    return ( isSame( ~a, b.vector_ ) && ( (~a).size() == b.size() ) );
 }
@@ -2139,8 +2139,8 @@ inline bool isSame( const SparseVector<VT1,TF1>& a, const SparseSubvector<VT2,AF
 // same range of the same sparse vector. In case both subvectors represent the same observable
 // state, the function returns \a true, otherwise it returns \a false.
 */
-template< typename VT1, bool AF1, bool TF1, typename VT2, bool AF2, bool TF2 >
-inline bool isSame( const SparseSubvector<VT1,AF1,TF1>& a, const SparseSubvector<VT2,AF2,TF2>& b )
+template< typename VT, bool AF, bool TF >
+inline bool isSame( const SparseSubvector<VT,AF,TF>& a, const SparseSubvector<VT,AF,TF>& b )
 {
    return ( isSame( a.vector_, b.vector_ ) && ( a.offset_ == b.offset_ ) && ( a.size_ == b.size_ ) );
 }
