@@ -930,14 +930,14 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    friend const DenseSubmatrix<MT2,AF1,SO2>
       submatrix( const DenseSubmatrix<MT2,AF2,SO2>& dm, size_t row, size_t column, size_t m, size_t n );
 
-   template< typename MT1, bool AF1, bool SO1, typename MT2, bool SO2 >
-   friend bool isSame( const DenseSubmatrix<MT1,AF1,SO1>& a, const DenseMatrix<MT2,SO2>& b );
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSame( const DenseSubmatrix<MT2,AF2,SO2>& a, const DenseMatrix<MT2,SO2>& b );
 
-   template< typename MT1, bool SO1, typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const DenseMatrix<MT1,SO1>& a, const DenseSubmatrix<MT2,AF2,SO2>& b );
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSame( const DenseMatrix<MT2,SO2>& a, const DenseSubmatrix<MT2,AF2,SO2>& b );
 
-   template< typename MT1, bool AF1, bool SO1, typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const DenseSubmatrix<MT1,AF1,SO1>& a, const DenseSubmatrix<MT2,AF2,SO2>& b );
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSame( const DenseSubmatrix<MT2,AF2,SO2>& a, const DenseSubmatrix<MT2,AF2,SO2>& b );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -3101,14 +3101,14 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    friend const DenseSubmatrix<MT2,AF1,SO2>
       submatrix( const DenseSubmatrix<MT2,AF2,SO2>& dm, size_t row, size_t column, size_t m, size_t n );
 
-   template< typename MT1, bool AF1, bool SO1, typename MT2, bool SO2 >
-   friend bool isSame( const DenseSubmatrix<MT1,AF1,SO1>& a, const DenseMatrix<MT2,SO2>& b );
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSame( const DenseSubmatrix<MT2,AF2,SO2>& a, const DenseMatrix<MT2,SO2>& b );
 
-   template< typename MT1, bool SO1, typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const DenseMatrix<MT1,SO1>& a, const DenseSubmatrix<MT2,AF2,SO2>& b );
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSame( const DenseMatrix<MT2,SO2>& a, const DenseSubmatrix<MT2,AF2,SO2>& b );
 
-   template< typename MT1, bool AF1, bool SO1, typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const DenseSubmatrix<MT1,AF1,SO1>& a, const DenseSubmatrix<MT2,AF2,SO2>& b );
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSame( const DenseSubmatrix<MT2,AF2,SO2>& a, const DenseSubmatrix<MT2,AF2,SO2>& b );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -4921,14 +4921,14 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    friend const DenseSubmatrix<MT2,AF1,SO2>
       submatrix( const DenseSubmatrix<MT2,AF2,SO2>& dm, size_t row, size_t column, size_t m, size_t n );
 
-   template< typename MT1, bool AF1, bool SO1, typename MT2, bool SO2 >
-   friend bool isSame( const DenseSubmatrix<MT1,AF1,SO1>& a, const DenseMatrix<MT2,SO2>& b );
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSame( const DenseSubmatrix<MT2,AF2,SO2>& a, const DenseMatrix<MT2,SO2>& b );
 
-   template< typename MT1, bool SO1, typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const DenseMatrix<MT1,SO1>& a, const DenseSubmatrix<MT2,AF2,SO2>& b );
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSame( const DenseMatrix<MT2,SO2>& a, const DenseSubmatrix<MT2,AF2,SO2>& b );
 
-   template< typename MT1, bool AF1, bool SO1, typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const DenseSubmatrix<MT1,AF1,SO1>& a, const DenseSubmatrix<MT2,AF2,SO2>& b );
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSame( const DenseSubmatrix<MT2,AF2,SO2>& a, const DenseSubmatrix<MT2,AF2,SO2>& b );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -6775,14 +6775,14 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    friend const DenseSubmatrix<MT2,AF1,SO2>
       submatrix( const DenseSubmatrix<MT2,AF2,SO2>& dm, size_t row, size_t column, size_t m, size_t n );
 
-   template< typename MT1, bool AF1, bool SO1, typename MT2, bool SO2 >
-   friend bool isSame( const DenseSubmatrix<MT1,AF1,SO1>& a, const DenseMatrix<MT2,SO2>& b );
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSame( const DenseSubmatrix<MT2,AF2,SO2>& a, const DenseMatrix<MT2,SO2>& b );
 
-   template< typename MT1, bool SO1, typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const DenseMatrix<MT1,SO1>& a, const DenseSubmatrix<MT2,AF2,SO2>& b );
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSame( const DenseMatrix<MT2,SO2>& a, const DenseSubmatrix<MT2,AF2,SO2>& b );
 
-   template< typename MT1, bool AF1, bool SO1, typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const DenseSubmatrix<MT1,AF1,SO1>& a, const DenseSubmatrix<MT2,AF2,SO2>& b );
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSame( const DenseSubmatrix<MT2,AF2,SO2>& a, const DenseSubmatrix<MT2,AF2,SO2>& b );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -8344,14 +8344,14 @@ inline void clear( DenseSubmatrix<MT,AF,SO>& dm );
 template< typename MT, bool AF, bool SO >
 inline bool isDefault( const DenseSubmatrix<MT,AF,SO>& dm );
 
-template< typename MT1, bool AF1, bool SO1, typename MT2, bool SO2 >
-inline bool isSame( const DenseSubmatrix<MT1,AF1,SO1>& a, const DenseMatrix<MT2,SO2>& b );
+template< typename MT, bool AF, bool SO >
+inline bool isSame( const DenseSubmatrix<MT,AF,SO>& a, const DenseMatrix<MT,SO>& b );
 
-template< typename MT1, bool SO1, typename MT2, bool AF2, bool SO2 >
-inline bool isSame( const DenseMatrix<MT1,SO1>& a, const DenseSubmatrix<MT2,AF2,SO2>& b );
+template< typename MT, bool AF, bool SO >
+inline bool isSame( const DenseMatrix<MT,SO>& a, const DenseSubmatrix<MT,AF,SO>& b );
 
-template< typename MT1, bool AF1, bool SO1, typename MT2, bool AF2, bool SO2 >
-inline bool isSame( const DenseSubmatrix<MT1,AF1,SO1>& a, const DenseSubmatrix<MT2,AF2,SO2>& b );
+template< typename MT, bool AF, bool SO >
+inline bool isSame( const DenseSubmatrix<MT,AF,SO>& a, const DenseSubmatrix<MT,AF,SO>& b );
 //@}
 //*************************************************************************************************
 
@@ -8447,8 +8447,8 @@ inline bool isDefault( const DenseSubmatrix<MT,AF,SO>& dm )
 // dense matrix and by that represents the same observable state. In this case, the function
 // returns \a true, otherwise it returns \a false.
 */
-template< typename MT1, bool AF1, bool SO1, typename MT2, bool SO2 >
-inline bool isSame( const DenseSubmatrix<MT1,AF1,SO1>& a, const DenseMatrix<MT2,SO2>& b )
+template< typename MT, bool AF, bool SO >
+inline bool isSame( const DenseSubmatrix<MT,AF,SO>& a, const DenseMatrix<MT,SO>& b )
 {
    return ( isSame( a.matrix_, ~b ) && ( a.rows() == (~b).rows() ) && ( a.columns() == (~b).columns() ) );
 }
@@ -8467,8 +8467,8 @@ inline bool isSame( const DenseSubmatrix<MT1,AF1,SO1>& a, const DenseMatrix<MT2,
 // dense matrix and by that represents the same observable state. In this case, the function
 // returns \a true, otherwise it returns \a false.
 */
-template< typename MT1, bool SO1, typename MT2, bool AF2, bool SO2 >
-inline bool isSame( const DenseMatrix<MT1,SO1>& a, const DenseSubmatrix<MT2,AF2,SO2>& b )
+template< typename MT, bool AF, bool SO >
+inline bool isSame( const DenseMatrix<MT,SO>& a, const DenseSubmatrix<MT,AF,SO>& b )
 {
    return ( isSame( ~a, b.matrix_ ) && ( (~a).rows() == b.rows() ) && ( (~a).columns() == b.columns() ) );
 }
@@ -8487,8 +8487,8 @@ inline bool isSame( const DenseMatrix<MT1,SO1>& a, const DenseSubmatrix<MT2,AF2,
 // same part of the same dense matrix. In case both submatrices represent the same observable
 // state, the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT1, bool AF1, bool SO1, typename MT2, bool AF2, bool SO2 >
-inline bool isSame( const DenseSubmatrix<MT1,AF1,SO1>& a, const DenseSubmatrix<MT2,AF2,SO2>& b )
+template< typename MT, bool AF, bool SO >
+inline bool isSame( const DenseSubmatrix<MT,AF,SO>& a, const DenseSubmatrix<MT,AF,SO>& b )
 {
    return ( isSame( a.matrix_, b.matrix_ ) &&
             ( a.row_ == b.row_ ) && ( a.column_ == b.column_ ) &&
