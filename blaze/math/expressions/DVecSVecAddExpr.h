@@ -262,7 +262,7 @@ class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      if( !IsComputation<VT1>::value && (~lhs).isAliased( &rhs.lhs_ ) ) {
+      if( !IsComputation<VT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
          addAssign( ~lhs, rhs.rhs_ );
       }
       else {
@@ -415,7 +415,7 @@ class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      if( !IsComputation<VT1>::value && (~lhs).isAliased( &rhs.lhs_ ) ) {
+      if( !IsComputation<VT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
          smpAddAssign( ~lhs, rhs.rhs_ );
       }
       else {

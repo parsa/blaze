@@ -614,10 +614,10 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( !IsExpression<MT1>::value && (~lhs).isAliased( &rhs.lhs_ ) ) {
+      if( !IsExpression<MT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
          addAssign( ~lhs, rhs.rhs_ );
       }
-      else if( !IsExpression<MT2>::value && (~lhs).isAliased( &rhs.rhs_ ) ) {
+      else if( !IsExpression<MT2>::value && isSame( ~lhs, rhs.rhs_ ) ) {
          addAssign( ~lhs, rhs.lhs_ );
       }
       else {
@@ -767,10 +767,10 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( !IsExpression<MT1>::value && (~lhs).isAliased( &rhs.lhs_ ) ) {
+      if( !IsExpression<MT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
          smpAddAssign( ~lhs, rhs.rhs_ );
       }
-      else if( !IsExpression<MT2>::value && (~lhs).isAliased( &rhs.rhs_ ) ) {
+      else if( !IsExpression<MT2>::value && isSame( ~lhs, rhs.rhs_ ) ) {
          smpAddAssign( ~lhs, rhs.lhs_ );
       }
       else {
