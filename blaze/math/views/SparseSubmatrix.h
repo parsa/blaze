@@ -846,14 +846,14 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    friend const SparseSubmatrix<MT2,AF1,SO2>
       submatrix( const SparseSubmatrix<MT2,AF2,SO2>& sm, size_t row, size_t column, size_t m, size_t n );
 
-   template< typename MT1, bool AF1, bool SO1, typename MT2, bool SO2 >
-   friend bool isSame( const SparseSubmatrix<MT1,AF1,SO1>& a, const SparseMatrix<MT2,SO2>& b );
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSame( const SparseSubmatrix<MT2,AF2,SO2>& a, const SparseMatrix<MT2,SO2>& b );
 
-   template< typename MT1, bool SO1, typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const SparseMatrix<MT1,SO1>& a, const SparseSubmatrix<MT2,AF2,SO2>& b );
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSame( const SparseMatrix<MT2,SO2>& a, const SparseSubmatrix<MT2,AF2,SO2>& b );
 
-   template< typename MT1, bool AF1, bool SO1, typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const SparseSubmatrix<MT1,AF1,SO1>& a, const SparseSubmatrix<MT2,AF2,SO2>& b );
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSame( const SparseSubmatrix<MT2,AF2,SO2>& a, const SparseSubmatrix<MT2,AF2,SO2>& b );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -2832,14 +2832,14 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    friend const SparseSubmatrix<MT2,AF1,SO2>
       submatrix( const SparseSubmatrix<MT2,AF2,SO2>& sm, size_t row, size_t column, size_t m, size_t n );
 
-   template< typename MT1, bool AF1, bool SO1, typename MT2, bool SO2 >
-   friend bool isSame( const SparseSubmatrix<MT1,AF1,SO1>& a, const SparseMatrix<MT2,SO2>& b );
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSame( const SparseSubmatrix<MT2,AF2,SO2>& a, const SparseMatrix<MT2,SO2>& b );
 
-   template< typename MT1, bool SO1, typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const SparseMatrix<MT1,SO1>& a, const SparseSubmatrix<MT2,AF2,SO2>& b );
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSame( const SparseMatrix<MT2,SO2>& a, const SparseSubmatrix<MT2,AF2,SO2>& b );
 
-   template< typename MT1, bool AF1, bool SO1, typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const SparseSubmatrix<MT1,AF1,SO1>& a, const SparseSubmatrix<MT2,AF2,SO2>& b );
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSame( const SparseSubmatrix<MT2,AF2,SO2>& a, const SparseSubmatrix<MT2,AF2,SO2>& b );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -4345,14 +4345,14 @@ inline void clear( SparseSubmatrix<MT,AF,SO>& sm );
 template< typename MT, bool AF, bool SO >
 inline bool isDefault( const SparseSubmatrix<MT,AF,SO>& sm );
 
-template< typename MT1, bool AF1, bool SO1, typename MT2, bool SO2 >
-inline bool isSame( const SparseSubmatrix<MT1,AF1,SO1>& a, const SparseMatrix<MT2,SO2>& b );
+template< typename MT, bool AF, bool SO >
+inline bool isSame( const SparseSubmatrix<MT,AF,SO>& a, const SparseMatrix<MT,SO>& b );
 
-template< typename MT1, bool SO1, typename MT2, bool AF2, bool SO2 >
-inline bool isSame( const SparseMatrix<MT1,SO1>& a, const SparseSubmatrix<MT2,AF2,SO2>& b );
+template< typename MT, bool AF, bool SO >
+inline bool isSame( const SparseMatrix<MT,SO>& a, const SparseSubmatrix<MT,AF,SO>& b );
 
-template< typename MT1, bool AF1, bool SO1, typename MT2, bool AF2, bool SO2 >
-inline bool isSame( const SparseSubmatrix<MT1,AF1,SO1>& a, const SparseSubmatrix<MT2,AF2,SO2>& b );
+template< typename MT, bool AF, bool SO >
+inline bool isSame( const SparseSubmatrix<MT,AF,SO>& a, const SparseSubmatrix<MT,AF,SO>& b );
 //@}
 //*************************************************************************************************
 
@@ -4444,8 +4444,8 @@ inline bool isDefault( const SparseSubmatrix<MT,AF,SO>& sm )
 // sparse matrix and by that represents the same observable state. In this case, the function
 // returns \a true, otherwise it returns \a false.
 */
-template< typename MT1, bool AF1, bool SO1, typename MT2, bool SO2 >
-inline bool isSame( const SparseSubmatrix<MT1,AF1,SO1>& a, const SparseMatrix<MT2,SO2>& b )
+template< typename MT, bool AF, bool SO >
+inline bool isSame( const SparseSubmatrix<MT,AF,SO>& a, const SparseMatrix<MT,SO>& b )
 {
    return ( isSame( a.matrix_, ~b ) && ( a.rows() == (~b).rows() ) && ( a.columns() == (~b).columns() ) );
 }
@@ -4464,8 +4464,8 @@ inline bool isSame( const SparseSubmatrix<MT1,AF1,SO1>& a, const SparseMatrix<MT
 // sparse matrix and by that represents the same observable state. In this case, the function
 // returns \a true, otherwise it returns \a false.
 */
-template< typename MT1, bool SO1, typename MT2, bool AF2, bool SO2 >
-inline bool isSame( const SparseMatrix<MT1,SO1>& a, const SparseSubmatrix<MT2,AF2,SO2>& b )
+template< typename MT, bool AF, bool SO >
+inline bool isSame( const SparseMatrix<MT,SO>& a, const SparseSubmatrix<MT,AF,SO>& b )
 {
    return ( isSame( ~a, b.matrix_ ) && ( (~a).rows() == b.rows() ) && ( (~a).columns() == b.columns() ) );
 }
@@ -4484,8 +4484,8 @@ inline bool isSame( const SparseMatrix<MT1,SO1>& a, const SparseSubmatrix<MT2,AF
 // same part of the same sparse matrix. In case both submatrices represent the same observable
 // state, the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT1, bool AF1, bool SO1, typename MT2, bool AF2, bool SO2 >
-inline bool isSame( const SparseSubmatrix<MT1,AF1,SO1>& a, const SparseSubmatrix<MT2,AF2,SO2>& b )
+template< typename MT, bool AF, bool SO >
+inline bool isSame( const SparseSubmatrix<MT,AF,SO>& a, const SparseSubmatrix<MT,AF,SO>& b )
 {
    return ( isSame( a.matrix_, b.matrix_ ) &&
             ( a.row_ == b.row_ ) && ( a.column_ == b.column_ ) &&
