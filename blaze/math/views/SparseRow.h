@@ -497,8 +497,8 @@ class SparseRow : public SparseVector< SparseRow<MT,SO>, true >
 
    //**Friend declarations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   template< typename MT1, bool SO1, typename MT2, bool SO2 >
-   friend bool isSame( const SparseRow<MT1,SO1>& a, const SparseRow<MT2,SO2>& b );
+   template< typename MT2, bool SO2 >
+   friend bool isSame( const SparseRow<MT2,SO2>& a, const SparseRow<MT2,SO2>& b );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -2053,8 +2053,8 @@ class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT1, bool SO1, typename MT2, bool SO2 >
-   friend bool isSame( const SparseRow<MT1,SO1>& a, const SparseRow<MT2,SO2>& b );
+   template< typename MT2, bool SO2 >
+   friend bool isSame( const SparseRow<MT2,SO2>& a, const SparseRow<MT2,SO2>& b );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -3091,8 +3091,8 @@ inline void clear( SparseRow<MT,SO>& row );
 template< typename MT, bool SO >
 inline bool isDefault( const SparseRow<MT,SO>& row );
 
-template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline bool isSame( const SparseRow<MT1,SO1>& a, const SparseRow<MT2,SO2>& b );
+template< typename MT, bool SO >
+inline bool isSame( const SparseRow<MT,SO>& a, const SparseRow<MT,SO>& b );
 //@}
 //*************************************************************************************************
 
@@ -3175,8 +3175,8 @@ inline bool isDefault( const SparseRow<MT,SO>& row )
 // same range of the same sparse matrix. In case both rows represent the same observable state,
 // the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline bool isSame( const SparseRow<MT1,SO1>& a, const SparseRow<MT2,SO2>& b )
+template< typename MT, bool SO >
+inline bool isSame( const SparseRow<MT,SO>& a, const SparseRow<MT,SO>& b )
 {
    return ( isSame( a.matrix_, b.matrix_ ) && ( a.row_ == b.row_ ) );
 }
