@@ -498,8 +498,8 @@ class SparseColumn : public SparseVector< SparseColumn<MT,SO>, false >
 
    //**Friend declarations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   template< typename MT1, bool SO1, typename MT2, bool SO2 >
-   friend bool isSame( const SparseColumn<MT1,SO1>& a, const SparseColumn<MT2,SO2>& b );
+   template< typename MT2, bool SO2 >
+   friend bool isSame( const SparseColumn<MT2,SO2>& a, const SparseColumn<MT2,SO2>& b );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -2054,8 +2054,8 @@ class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, fals
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT1, bool SO1, typename MT2, bool SO2 >
-   friend bool isSame( const SparseColumn<MT1,SO1>& a, const SparseColumn<MT2,SO2>& b );
+   template< typename MT2, bool SO2 >
+   friend bool isSame( const SparseColumn<MT2,SO2>& a, const SparseColumn<MT2,SO2>& b );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -3092,8 +3092,8 @@ inline void clear( SparseColumn<MT,SO>& column );
 template< typename MT, bool SO >
 inline bool isDefault( const SparseColumn<MT,SO>& column );
 
-template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline bool isSame( const DenseColumn<MT1,SO1>& a, const DenseColumn<MT2,SO2>& b );
+template< typename MT, bool SO >
+inline bool isSame( const DenseColumn<MT,SO>& a, const DenseColumn<MT,SO>& b );
 //@}
 //*************************************************************************************************
 
@@ -3176,8 +3176,8 @@ inline bool isDefault( const SparseColumn<MT,SO>& column )
 // same range of the same sparse matrix. In case both columns represent the same observable state,
 // the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline bool isSame( const SparseColumn<MT1,SO1>& a, const SparseColumn<MT2,SO2>& b )
+template< typename MT, bool SO >
+inline bool isSame( const SparseColumn<MT,SO>& a, const SparseColumn<MT,SO>& b )
 {
    return ( isSame( a.matrix_, b.matrix_ ) && ( a.col_ == b.col_ ) );
 }
