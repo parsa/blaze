@@ -52,6 +52,7 @@
 #include <blaze/math/SparseSubmatrix.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
+#include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/system/OpenMP.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
