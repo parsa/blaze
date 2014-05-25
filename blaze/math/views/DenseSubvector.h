@@ -2220,7 +2220,7 @@ inline void DenseSubvector<VT,AF,TF>::multAssign( const SparseVector<VT2,TF>& rh
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const ResultType tmp( *this );
+   const ResultType tmp( serial( *this ) );
 
    reset();
 
@@ -3815,7 +3815,7 @@ inline void DenseSubvector<VT,aligned,TF>::multAssign( const SparseVector<VT2,TF
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const ResultType tmp( *this );
+   const ResultType tmp( serial( *this ) );
 
    reset();
 

@@ -1693,7 +1693,7 @@ inline void DenseRow<MT,SO>::multAssign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const ResultType tmp( *this );
+   const ResultType tmp( serial( *this ) );
 
    reset();
 
@@ -3060,7 +3060,7 @@ inline void DenseRow<MT,false>::multAssign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const ResultType tmp( *this );
+   const ResultType tmp( serial( *this ) );
 
    reset();
 
