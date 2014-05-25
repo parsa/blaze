@@ -941,8 +941,8 @@ inline DenseRow<MT,SO>& DenseRow<MT,SO>::operator*=( const Vector<VT,true>& rhs 
       throw std::invalid_argument( "Vector sizes do not match" );
 
    if( (~rhs).canAlias( &matrix_ ) || IsSparseVector<VT>::value ) {
-      const typename VT::ResultType tmp( ~rhs );
-      smpMultAssign( *this, tmp );
+      const ResultType tmp( *this * (~rhs) );
+      smpAssign( *this, tmp );
    }
    else {
       smpMultAssign( *this, ~rhs );
@@ -2541,8 +2541,8 @@ inline DenseRow<MT,false>& DenseRow<MT,false>::operator*=( const Vector<VT,true>
       throw std::invalid_argument( "Vector sizes do not match" );
 
    if( (~rhs).canAlias( &matrix_ ) || IsSparseVector<VT>::value ) {
-      const typename VT::ResultType tmp( ~rhs );
-      smpMultAssign( *this, tmp );
+      const ResultType tmp( *this * (~rhs) );
+      smpAssign( *this, tmp );
    }
    else {
       smpMultAssign( *this, ~rhs );

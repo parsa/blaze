@@ -942,8 +942,8 @@ inline DenseColumn<MT,SO>& DenseColumn<MT,SO>::operator*=( const Vector<VT,false
       throw std::invalid_argument( "Vector sizes do not match" );
 
    if( (~rhs).canAlias( &matrix_ ) || IsSparseVector<VT>::value ) {
-      const typename VT::ResultType tmp( ~rhs );
-      smpMultAssign( *this, tmp );
+      const ResultType tmp( *this * (~rhs) );
+      smpAssign( *this, tmp );
    }
    else {
       smpMultAssign( *this, ~rhs );
@@ -2542,8 +2542,8 @@ inline DenseColumn<MT,false>& DenseColumn<MT,false>::operator*=( const Vector<VT
       throw std::invalid_argument( "Vector sizes do not match" );
 
    if( (~rhs).canAlias( &matrix_ ) || IsSparseVector<VT>::value ) {
-      const typename VT::ResultType tmp( ~rhs );
-      smpMultAssign( *this, tmp );
+      const ResultType tmp( *this * (~rhs) );
+      smpAssign( *this, tmp );
    }
    else {
       smpMultAssign( *this, ~rhs );

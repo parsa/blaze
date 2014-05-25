@@ -1377,8 +1377,8 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator*=( const Vec
       throw std::invalid_argument( "Vector sizes do not match" );
 
    if( (~rhs).canAlias( &vector_ ) || IsSparseVector<VT2>::value ) {
-      const typename VT2::ResultType tmp( ~rhs );
-      smpMultAssign( *this, tmp );
+      const ResultType tmp( *this * (~rhs) );
+      smpAssign( *this, tmp );
    }
    else {
       smpMultAssign( *this, ~rhs );
@@ -2957,8 +2957,8 @@ inline DenseSubvector<VT,aligned,TF>&
       throw std::invalid_argument( "Vector sizes do not match" );
 
    if( (~rhs).canAlias( &vector_ ) || IsSparseVector<VT2>::value ) {
-      const typename VT2::ResultType tmp( ~rhs );
-      smpMultAssign( *this, tmp );
+      const ResultType tmp( *this * (~rhs) );
+      smpAssign( *this, tmp );
    }
    else {
       smpMultAssign( *this, ~rhs );
