@@ -42,7 +42,6 @@
 
 #include <boost/bind.hpp>
 #include <boost/scoped_ptr.hpp>
-#include <boost/thread/thread.hpp>
 #include <blaze/util/Assert.h>
 #include <blaze/util/NonCopyable.h>
 
