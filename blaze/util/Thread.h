@@ -40,8 +40,10 @@
 // Includes
 //*************************************************************************************************
 
+#include <boost/bind.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/thread/thread.hpp>
+#include <blaze/util/Assert.h>
 #include <blaze/util/NonCopyable.h>
 
 
@@ -53,7 +55,7 @@ namespace blaze {
 //
 //=================================================================================================
 
-class ThreadPool;
+template< typename TT, typename MT, typename LT, typename CT > class ThreadPool;
 
 
 
@@ -70,12 +72,51 @@ class ThreadPool;
 //
 // \section thread_general General
 //
-// The Thread class represents a thread of execution for the parallel execution of concurrent
-// tasks. Each Thread object incorporates a single thread of execution, or Not-a-Thread, and
-// at most one Thread object incorporates a given thread of execution since it is not possible
-// to copy a Thread. The implementation of the Thread class is based on the implementation of
-// the boost library. For more information about boost threads, see the current documentation
-// at the boost homepage: www.boost.org.
+// The Thread template represents a thread of execution for the parallel execution of concurrent
+// tasks. Each Thread object incorporates a single thread of execution, or Not-a-Thread, and at
+// most one Thread object incorporates a given thread of execution since it is not possible to
+// copy a Thread.\n
+//
+//
+// \section thread_definition Class Definition
+//
+// The implementation of the Thread class template is based on the implementation of standard
+// threads as provided by the C++11 standard or the Boost library. Via the four template
+// parameters it is possible to configure a Thread instance as either a C++11 thread or as
+// Boost thread:
+
+   \code
+   template< typename TT, typename MT, typename LT, typename CT >
+   class Thread;
+   \endcode
+
+//  - TT: specifies the type of the encapsulated thread. This can either be \c std::thread,
+//        \c boost::thread, or any other standard conforming thread type.
+//  - MT: specifies the type of the used synchronization mutex. This can for instance be
+//        \c std::mutex, \c boost::mutex, or any other standard conforming mutex type.
+//  - LT: specifies the type of lock used in combination with the given mutex type. This
+//        can be any standard conforming lock type, as for instance \c std::unique_lock,
+//        \c boost::unique_lock.
+//  - CT: specifies the type of the used condition variable. This can for instance be
+//        \c std::condition_variable, \c boost::condition_variable, or any other standard
+//        conforming condition variable type.
+//
+// Examples:
+
+   \code
+   typedef blaze::Thread< boost::thread
+                        , boost::mutex
+                        , boost::unique_lock<boost::mutex>
+                        , boost::condition_variable >  BoostThread;
+
+   typedef blaze::Thread< std::thread
+                        , std::mutex
+                        , std::unique_lock<std::mutex>
+                        , std::condition_variable >  StdThread;
+   \endcode
+
+// For more information about the standard thread functionality, see [1] or [2] or the current
+// documentation at the Boost homepage: www.boost.org.
 //
 //
 // \section thread_setup Creating individual threads
@@ -99,7 +140,7 @@ class ThreadPool;
    int main()
    {
       // Creating a new thread executing the zero argument function.
-      blaze::Thread thread1( function0 );
+      StdThread thread1( function0 );
 
       // Waiting for the thread to finish its task
       thread1.join();
@@ -109,7 +150,7 @@ class ThreadPool;
       // up tasks.
 
       // Creating a new thread executing the binary functor.
-      blaze::Thread thread2( Functor2(), 4, 6 );
+      StdThread thread2( Functor2(), 4, 6 );
 
       // Waiting for the second thread to finish its task
       thread2.join();
@@ -140,7 +181,7 @@ class ThreadPool;
    // destruction of the thread are encapsuled inside a try-catch-block, the exception cannot
    // be caught and results in an abortion of the program.
    try {
-      Thread thread( task );
+      StdThread thread( task );
       thread.join();
    }
    catch( ... )
@@ -149,9 +190,10 @@ class ThreadPool;
    }
    \endcode
 
-// The only possible way to transport exceptions between threads is to use the according boost
-// functionality demonstrated in the following example. Note that any function/functor passed
-// to a thread is responsible to handle exceptions in this way!
+// For a detailed explanation how to portably transport exceptions between threads, see [1] or
+// [2]. In case of the Boost library, the according Boost functionality as demonstrated in the
+// following example has to be used. Note that any function/functor passed to a thread is
+// responsible to handle exceptions in this way!
 
    \code
    #include <boost/bind.hpp>
@@ -187,7 +229,7 @@ class ThreadPool;
    {
       boost::exception_ptr error;
 
-      Thread thread( boost::bind( task, boost::ref(error) ) );
+      Thread<boost::thread> thread( boost::bind( task, boost::ref(error) ) );
       thread.join();
 
       if( error ) {
@@ -196,18 +238,29 @@ class ThreadPool;
       }
    }
    \endcode
+
+// \section thread_references References
+//
+// [1] A. Williams: C++ Concurrency in Action, Manning, 2012, ISBN: 978-1933988771\n
+// [2] B. Stroustrup: The C++ Programming Language, Addison-Wesley, 2013, ISBN: 978-0321563842\n
 */
+template< typename TT    // Type of the encapsulated thread
+        , typename MT    // Type of the synchronization mutex
+        , typename LT    // Type of the mutex lock
+        , typename CT >  // Type of the condition variable
 class Thread : private NonCopyable
 {
  private:
    //**Type definitions****************************************************************************
-   typedef boost::scoped_ptr<boost::thread>  ThreadHandle;  //!< Handle for a single thread.
+   typedef TT                             ThreadType;      //!< Type of the encapsulated thread.
+   typedef ThreadPool<TT,MT,LT,CT>        ThreadPoolType;  //!< Type of the managing thread pool.
+   typedef boost::scoped_ptr<ThreadType>  ThreadHandle;    //!< Handle for a single thread.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit Thread( ThreadPool* pool );
+   explicit Thread( ThreadPoolType* pool );
    //@}
    //**********************************************************************************************
 
@@ -268,18 +321,18 @@ class Thread : private NonCopyable
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   volatile bool terminated_;  //!< Thread termination flag.
-                               /*!< This flag value is used by the managing thread
-                                    pool to learn whether the thread has terminated
-                                    its execution. */
-   ThreadPool*   pool_;        //!< Handle to the managing thread pool.
-   ThreadHandle  thread_;      //!< Handle to the thread of execution.
+   volatile bool   terminated_;  //!< Thread termination flag.
+                                 /*!< This flag value is used by the managing thread
+                                      pool to learn whether the thread has terminated
+                                      its execution. */
+   ThreadPoolType* pool_;        //!< Handle to the managing thread pool.
+   ThreadHandle    thread_;      //!< Handle to the thread of execution.
    //@}
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   friend class ThreadPool;
+   friend class ThreadPool<TT,MT,LT,CT>;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -295,6 +348,28 @@ class Thread : private NonCopyable
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Starting a thread in a thread pool.
+//
+// \param pool Handle to the managing thread pool.
+//
+// This function creates a new thread in the given thread pool. The thread is kept alive until
+// explicitly killed by the managing thread pool.
+*/
+template< typename TT    // Type of the encapsulated thread
+        , typename MT    // Type of the synchronization mutex
+        , typename LT    // Type of the mutex lock
+        , typename CT >  // Type of the condition variable
+Thread<TT,MT,LT,CT>::Thread( ThreadPoolType* pool )
+   : terminated_( false )  // Thread termination flag
+   , pool_      ( pool  )  // Handle to the managing thread pool
+   , thread_    ( 0     )  // Handle to the thread of execution
+{
+   thread_.reset( new ThreadType( boost::bind( &Thread::run, this ) ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Starting a thread of execution on the given zero argument function/functor.
 //
 // \param func The given function/functor.
@@ -302,12 +377,16 @@ class Thread : private NonCopyable
 // This function creates a new thread of execution on the given function/functor. The given
 // function/functor must be copyable, must be callable without arguments and must return void.
 */
+template< typename TT          // Type of the encapsulated thread
+        , typename MT          // Type of the synchronization mutex
+        , typename LT          // Type of the mutex lock
+        , typename CT >        // Type of the condition variable
 template< typename Callable >  // Type of the function/functor
-inline Thread::Thread( Callable func )
+inline Thread<TT,MT,LT,CT>::Thread( Callable func )
    : pool_  ( 0 )  // Handle to the managing thread pool
    , thread_( 0 )  // Handle to the thread of execution
 {
-   thread_.reset( new boost::thread( func ) );
+   thread_.reset( new ThreadType( func ) );
 }
 //*************************************************************************************************
 
@@ -322,13 +401,17 @@ inline Thread::Thread( Callable func )
 // function/functor must be copyable, must be callable with a single argument and must return
 // void.
 */
+template< typename TT        // Type of the encapsulated thread
+        , typename MT        // Type of the synchronization mutex
+        , typename LT        // Type of the mutex lock
+        , typename CT >      // Type of the condition variable
 template< typename Callable  // Type of the function/functor
         , typename A1 >      // Type of the first argument
-inline Thread::Thread( Callable func, A1 a1 )
+inline Thread<TT,MT,LT,CT>::Thread( Callable func, A1 a1 )
    : pool_  ( 0 )  // Handle to the managing thread pool
    , thread_( 0 )  // Handle to the thread of execution
 {
-   thread_.reset( new boost::thread( func, a1 ) );
+   thread_.reset( new ThreadType( func, a1 ) );
 }
 //*************************************************************************************************
 
@@ -344,14 +427,18 @@ inline Thread::Thread( Callable func, A1 a1 )
 // function/functor must be copyable, must be callable with two arguments and must return
 // void.
 */
+template< typename TT        // Type of the encapsulated thread
+        , typename MT        // Type of the synchronization mutex
+        , typename LT        // Type of the mutex lock
+        , typename CT >      // Type of the condition variable
 template< typename Callable  // Type of the function/functor
         , typename A1        // Type of the first argument
         , typename A2 >      // Type of the second argument
-inline Thread::Thread( Callable func, A1 a1, A2 a2 )
+inline Thread<TT,MT,LT,CT>::Thread( Callable func, A1 a1, A2 a2 )
    : pool_  ( 0 )  // Handle to the managing thread pool
    , thread_( 0 )  // Handle to the thread of execution
 {
-   thread_.reset( new boost::thread( func, a1, a2 ) );
+   thread_.reset( new ThreadType( func, a1, a2 ) );
 }
 //*************************************************************************************************
 
@@ -368,15 +455,19 @@ inline Thread::Thread( Callable func, A1 a1, A2 a2 )
 // function/functor must be copyable, must be callable with three arguments and must return
 // void.
 */
+template< typename TT        // Type of the encapsulated thread
+        , typename MT        // Type of the synchronization mutex
+        , typename LT        // Type of the mutex lock
+        , typename CT >      // Type of the condition variable
 template< typename Callable  // Type of the function/functor
         , typename A1        // Type of the first argument
         , typename A2        // Type of the second argument
         , typename A3 >      // Type of the third argument
-inline Thread::Thread( Callable func, A1 a1, A2 a2, A3 a3 )
+inline Thread<TT,MT,LT,CT>::Thread( Callable func, A1 a1, A2 a2, A3 a3 )
    : pool_  ( 0 )  // Handle to the managing thread pool
    , thread_( 0 )  // Handle to the thread of execution
 {
-   thread_.reset( new boost::thread( func, a1, a2, a3 ) );
+   thread_.reset( new ThreadType( func, a1, a2, a3 ) );
 }
 //*************************************************************************************************
 
@@ -394,16 +485,20 @@ inline Thread::Thread( Callable func, A1 a1, A2 a2, A3 a3 )
 // function/functor must be copyable, must be callable with four arguments and must return
 // void.
 */
+template< typename TT        // Type of the encapsulated thread
+        , typename MT        // Type of the synchronization mutex
+        , typename LT        // Type of the mutex lock
+        , typename CT >      // Type of the condition variable
 template< typename Callable  // Type of the function/functor
         , typename A1        // Type of the first argument
         , typename A2        // Type of the second argument
         , typename A3        // Type of the third argument
         , typename A4 >      // Type of the fourth argument
-inline Thread::Thread( Callable func, A1 a1, A2 a2, A3 a3, A4 a4 )
+inline Thread<TT,MT,LT,CT>::Thread( Callable func, A1 a1, A2 a2, A3 a3, A4 a4 )
    : pool_  ( 0 )  // Handle to the managing thread pool
    , thread_( 0 )  // Handle to the thread of execution
 {
-   thread_.reset( new boost::thread( func, a1, a2, a3, a4 ) );
+   thread_.reset( new ThreadType( func, a1, a2, a3, a4 ) );
 }
 //*************************************************************************************************
 
@@ -422,18 +517,42 @@ inline Thread::Thread( Callable func, A1 a1, A2 a2, A3 a3, A4 a4 )
 // function/functor must be copyable, must be callable with five arguments and must return
 // void.
 */
+template< typename TT        // Type of the encapsulated thread
+        , typename MT        // Type of the synchronization mutex
+        , typename LT        // Type of the mutex lock
+        , typename CT >      // Type of the condition variable
 template< typename Callable  // Type of the function/functor
         , typename A1        // Type of the first argument
         , typename A2        // Type of the second argument
         , typename A3        // Type of the third argument
         , typename A4        // Type of the fourth argument
         , typename A5 >      // Type of the fifth argument
-inline Thread::Thread( Callable func, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 )
+inline Thread<TT,MT,LT,CT>::Thread( Callable func, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 )
    : pool_  ( 0 )  // Handle to the managing thread pool
    , thread_( 0 )  // Handle to the thread of execution
 {
-   thread_.reset( new boost::thread( func, a1, a2, a3, a4, a5 ) );
+   thread_.reset( new ThreadType( func, a1, a2, a3, a4, a5 ) );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DESTRUCTOR
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Destructor for the Thread class.
+*/
+template< typename TT    // Type of the encapsulated thread
+        , typename MT    // Type of the synchronization mutex
+        , typename LT    // Type of the mutex lock
+        , typename CT >  // Type of the condition variable
+Thread<TT,MT,LT,CT>::~Thread()
+{}
 //*************************************************************************************************
 
 
@@ -454,7 +573,11 @@ inline Thread::Thread( Callable func, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 )
 // already finished the job. In case the thread is still execution, the function returns
 // \a true, else it returns \a false.
 */
-inline bool Thread::joinable() const
+template< typename TT    // Type of the encapsulated thread
+        , typename MT    // Type of the synchronization mutex
+        , typename LT    // Type of the mutex lock
+        , typename CT >  // Type of the condition variable
+inline bool Thread<TT,MT,LT,CT>::joinable() const
 {
    return thread_->joinable();
 }
@@ -469,7 +592,11 @@ inline bool Thread::joinable() const
 // If the thread is still executing the given task, this function blocks until the thread's
 // tasks is completed.
 */
-inline void Thread::join()
+template< typename TT    // Type of the encapsulated thread
+        , typename MT    // Type of the synchronization mutex
+        , typename LT    // Type of the mutex lock
+        , typename CT >  // Type of the condition variable
+inline void Thread<TT,MT,LT,CT>::join()
 {
    thread_->join();
 }
@@ -484,9 +611,44 @@ inline void Thread::join()
 // This function is used by the managing thread pool to learn whether the thread has finished
 // its execution and can be destroyed.
 */
-inline bool Thread::hasTerminated() const
+template< typename TT    // Type of the encapsulated thread
+        , typename MT    // Type of the synchronization mutex
+        , typename LT    // Type of the mutex lock
+        , typename CT >  // Type of the condition variable
+inline bool Thread<TT,MT,LT,CT>::hasTerminated() const
 {
    return terminated_;
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  THREAD EXECUTION FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Execution function for threads in a thread pool.
+//
+// This function is executed by any thread managed by a thread pool.
+*/
+template< typename TT    // Type of the encapsulated thread
+        , typename MT    // Type of the synchronization mutex
+        , typename LT    // Type of the mutex lock
+        , typename CT >  // Type of the condition variable
+void Thread<TT,MT,LT,CT>::run()
+{
+   // Checking the thread pool handle
+   BLAZE_INTERNAL_ASSERT( pool_, "Uninitialized pool handle detected" );
+
+   // Executing scheduled tasks
+   while( pool_->executeTask() ) {}
+
+   // Setting the termination flag
+   terminated_ = true;
 }
 //*************************************************************************************************
 
