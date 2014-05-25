@@ -62,7 +62,6 @@
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
-#include <blaze/system/Precision.h>
 #include <blaze/system/StorageOrder.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
