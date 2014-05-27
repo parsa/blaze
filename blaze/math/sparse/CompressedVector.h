@@ -62,6 +62,7 @@
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
+#include <blaze/system/Thresholds.h>
 #include <blaze/system/TransposeFlag.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
@@ -342,12 +343,15 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    //@{
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
-   template< typename VT >    inline void assign   ( const DenseVector <VT,TF>& rhs );
-   template< typename VT >    inline void assign   ( const SparseVector<VT,TF>& rhs );
-   template< typename VT >    inline void addAssign( const DenseVector <VT,TF>& rhs );
-   template< typename VT >    inline void addAssign( const SparseVector<VT,TF>& rhs );
-   template< typename VT >    inline void subAssign( const DenseVector <VT,TF>& rhs );
-   template< typename VT >    inline void subAssign( const SparseVector<VT,TF>& rhs );
+
+   inline bool canSMPAssign() const;
+
+   template< typename VT > inline void assign   ( const DenseVector <VT,TF>& rhs );
+   template< typename VT > inline void assign   ( const SparseVector<VT,TF>& rhs );
+   template< typename VT > inline void addAssign( const DenseVector <VT,TF>& rhs );
+   template< typename VT > inline void addAssign( const SparseVector<VT,TF>& rhs );
+   template< typename VT > inline void subAssign( const DenseVector <VT,TF>& rhs );
+   template< typename VT > inline void subAssign( const SparseVector<VT,TF>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -1484,6 +1488,25 @@ template< typename Other >  // Data type of the foreign expression
 inline bool CompressedVector<Type,TF>::isAliased( const Other* alias ) const
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the vector can be used in SMP assignments.
+//
+// \return \a true in case the vector can be used in SMP assignments, \a false if not.
+//
+// This function returns whether the vector can be used in SMP assignments. In contrast to the
+// \a smpAssignable member enumeration, which is based solely on compile time information, this
+// function additionally provides runtime information (as for instance the current size of the
+// vector).
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline bool CompressedVector<Type,TF>::canSMPAssign() const
+{
+   return false;
 }
 //*************************************************************************************************
 
