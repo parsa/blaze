@@ -54,6 +54,7 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/expressions/Submatrix.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/Serial.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -2237,7 +2238,7 @@ inline void SparseSubmatrix<MT,AF,SO>::addAssign( const DenseMatrix<MT2,SO2>& rh
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   const AddType tmp( *this + (~rhs) );
+   const AddType tmp( serial( *this + (~rhs) ) );
    reset();
    assign( tmp );
 }
@@ -2270,7 +2271,7 @@ inline void SparseSubmatrix<MT,AF,SO>::addAssign( const SparseMatrix<MT2,SO2>& r
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   const AddType tmp( *this + (~rhs) );
+   const AddType tmp( serial( *this + (~rhs) ) );
    reset();
    assign( tmp );
 }
@@ -2303,7 +2304,7 @@ inline void SparseSubmatrix<MT,AF,SO>::subAssign( const DenseMatrix<MT2,SO2>& rh
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   const SubType tmp( *this - (~rhs) );
+   const SubType tmp( serial( *this - (~rhs) ) );
    reset();
    assign( tmp );
 }
@@ -2336,7 +2337,7 @@ inline void SparseSubmatrix<MT,AF,SO>::subAssign( const SparseMatrix<MT2,SO2>& r
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   const SubType tmp( *this - (~rhs) );
+   const SubType tmp( serial( *this - (~rhs) ) );
    reset();
    assign( tmp );
 }
@@ -4211,7 +4212,7 @@ inline void SparseSubmatrix<MT,AF,true>::addAssign( const DenseMatrix<MT2,SO>& r
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   const AddType tmp( *this + (~rhs) );
+   const AddType tmp( serial( *this + (~rhs) ) );
    reset();
    assign( tmp );
 }
@@ -4245,7 +4246,7 @@ inline void SparseSubmatrix<MT,AF,true>::addAssign( const SparseMatrix<MT2,SO>& 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   const AddType tmp( *this + (~rhs) );
+   const AddType tmp( serial( *this + (~rhs) ) );
    reset();
    assign( tmp );
 }
@@ -4279,7 +4280,7 @@ inline void SparseSubmatrix<MT,AF,true>::subAssign( const DenseMatrix<MT2,SO>& r
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   const SubType tmp( *this - (~rhs) );
+   const SubType tmp( serial( *this - (~rhs) ) );
    reset();
    assign( tmp );
 }
@@ -4313,7 +4314,7 @@ inline void SparseSubmatrix<MT,AF,true>::subAssign( const SparseMatrix<MT2,SO>& 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   const SubType tmp( *this - (~rhs) );
+   const SubType tmp( serial( *this - (~rhs) ) );
    reset();
    assign( tmp );
 }
