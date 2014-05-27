@@ -55,6 +55,7 @@
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -1467,7 +1468,7 @@ inline void SparseRow<MT,SO>::addAssign( const DenseVector<VT,true>& rhs )
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const AddType tmp( *this + (~rhs) );
+   const AddType tmp( serial( *this + (~rhs) ) );
    matrix_.reset( row_ );
    assign( tmp );
 }
@@ -1498,7 +1499,7 @@ inline void SparseRow<MT,SO>::addAssign( const SparseVector<VT,true>& rhs )
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const AddType tmp( *this + (~rhs) );
+   const AddType tmp( serial( *this + (~rhs) ) );
    matrix_.reset  ( row_ );
    matrix_.reserve( row_, tmp.nonZeros() );
    assign( tmp );
@@ -1530,7 +1531,7 @@ inline void SparseRow<MT,SO>::subAssign( const DenseVector<VT,true>& rhs )
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const SubType tmp( *this - (~rhs) );
+   const SubType tmp( serial( *this - (~rhs) ) );
    matrix_.reset  ( row_ );
    assign( tmp );
 }
@@ -1561,7 +1562,7 @@ inline void SparseRow<MT,SO>::subAssign( const SparseVector<VT,true>& rhs )
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const SubType tmp( *this - (~rhs) );
+   const SubType tmp( serial( *this - (~rhs) ) );
    matrix_.reset  ( row_ );
    matrix_.reserve( row_, tmp.nonZeros() );
    assign( tmp );
@@ -3030,7 +3031,7 @@ inline void SparseRow<MT,false>::addAssign( const Vector<VT,true>& rhs )
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const AddType tmp( *this + (~rhs) );
+   const AddType tmp( serial( *this + (~rhs) ) );
    assign( tmp );
 }
 /*! \endcond */
@@ -3060,7 +3061,7 @@ inline void SparseRow<MT,false>::subAssign( const Vector<VT,true>& rhs )
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const SubType tmp( *this - (~rhs) );
+   const SubType tmp( serial( *this - (~rhs) ) );
    assign( tmp );
 }
 /*! \endcond */
