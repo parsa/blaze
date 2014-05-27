@@ -49,6 +49,7 @@
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/MatrixAccessProxy.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -2244,7 +2245,7 @@ inline void CompressedMatrix<Type,SO>::addAssign( const DenseMatrix<MT,SO2>& rhs
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   CompressedMatrix tmp( *this + (~rhs) );
+   CompressedMatrix tmp( serial( *this + (~rhs) ) );
    swap( tmp );
 }
 //*************************************************************************************************
@@ -2270,7 +2271,7 @@ inline void CompressedMatrix<Type,SO>::addAssign( const SparseMatrix<MT,SO2>& rh
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   CompressedMatrix tmp( *this + (~rhs) );
+   CompressedMatrix tmp( serial( *this + (~rhs) ) );
    swap( tmp );
 }
 //*************************************************************************************************
@@ -2296,7 +2297,7 @@ inline void CompressedMatrix<Type,SO>::subAssign( const DenseMatrix<MT,SO2>& rhs
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   CompressedMatrix tmp( *this - (~rhs) );
+   CompressedMatrix tmp( serial( *this - (~rhs) ) );
    swap( tmp );
 }
 //*************************************************************************************************
@@ -2322,7 +2323,7 @@ inline void CompressedMatrix<Type,SO>::subAssign( const SparseMatrix<MT,SO2>& rh
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   CompressedMatrix tmp( *this - (~rhs) );
+   CompressedMatrix tmp( serial( *this - (~rhs) ) );
    swap( tmp );
 }
 //*************************************************************************************************
@@ -4396,7 +4397,7 @@ inline void CompressedMatrix<Type,true>::addAssign( const DenseMatrix<MT,SO>& rh
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   CompressedMatrix tmp( *this + (~rhs) );
+   CompressedMatrix tmp( serial( *this + (~rhs) ) );
    swap( tmp );
 }
 /*! \endcond */
@@ -4423,7 +4424,7 @@ inline void CompressedMatrix<Type,true>::addAssign( const SparseMatrix<MT,SO>& r
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   CompressedMatrix tmp( *this + (~rhs) );
+   CompressedMatrix tmp( serial( *this + (~rhs) ) );
    swap( tmp );
 }
 /*! \endcond */
@@ -4450,7 +4451,7 @@ inline void CompressedMatrix<Type,true>::subAssign( const DenseMatrix<MT,SO>& rh
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   CompressedMatrix tmp( *this - (~rhs) );
+   CompressedMatrix tmp( serial( *this - (~rhs) ) );
    swap( tmp );
 }
 /*! \endcond */
@@ -4477,7 +4478,7 @@ inline void CompressedMatrix<Type,true>::subAssign( const SparseMatrix<MT,SO>& r
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   CompressedMatrix tmp( *this - (~rhs) );
+   CompressedMatrix tmp( serial( *this - (~rhs) ) );
    swap( tmp );
 }
 /*! \endcond */
