@@ -63,6 +63,7 @@
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/system/StorageOrder.h>
+#include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -370,6 +371,9 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
    //@{
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
+
+   inline bool canSMPAssign() const;
+
    template< typename MT, bool SO2 > inline void assign   ( const DenseMatrix<MT,SO2>&  rhs );
    template< typename MT >           inline void assign   ( const SparseMatrix<MT,SO>&  rhs );
    template< typename MT >           inline void assign   ( const SparseMatrix<MT,!SO>& rhs );
@@ -2080,6 +2084,25 @@ inline bool CompressedMatrix<Type,SO>::isAliased( const Other* alias ) const
 
 
 //*************************************************************************************************
+/*!\brief Returns whether the matrix can be used in SMP assignments.
+//
+// \return \a true in case the matrix can be used in SMP assignments, \a false if not.
+//
+// This function returns whether the matrix can be used in SMP assignments. In contrast to the
+// \a smpAssignable member enumeration, which is based solely on compile time information, this
+// function additionally provides runtime information (as for instance the current number of
+// rows and/or columns of the matrix).
+*/
+template< typename Type  // Data type of the sparse matrix
+        , bool SO >      // Storage order
+inline bool CompressedMatrix<Type,SO>::canSMPAssign() const
+{
+   return false;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Default implementation of the assignment of a row-major dense matrix.
 //
 // \param rhs The right-hand side dense matrix to be assigned.
@@ -2502,6 +2525,9 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
    //@{
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
+
+   inline bool canSMPAssign() const;
+
    template< typename MT, bool SO > inline void assign   ( const DenseMatrix<MT,SO>&     rhs );
    template< typename MT >          inline void assign   ( const SparseMatrix<MT,true>&  rhs );
    template< typename MT >          inline void assign   ( const SparseMatrix<MT,false>& rhs );
@@ -4200,6 +4226,26 @@ template< typename Other >  // Data type of the foreign expression
 inline bool CompressedMatrix<Type,true>::isAliased( const Other* alias ) const
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the matrix can be used in SMP assignments.
+//
+// \return \a true in case the matrix can be used in SMP assignments, \a false if not.
+//
+// This function returns whether the matrix can be used in SMP assignments. In contrast to the
+// \a smpAssignable member enumeration, which is based solely on compile time information, this
+// function additionally provides runtime information (as for instance the current number of
+// rows and/or columns of the matrix).
+*/
+template< typename Type >  // Data type of the sparse matrix
+inline bool CompressedMatrix<Type,true>::canSMPAssign() const
+{
+   return false;
 }
 /*! \endcond */
 //*************************************************************************************************
