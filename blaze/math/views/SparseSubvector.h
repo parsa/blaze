@@ -52,6 +52,7 @@
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/Subvector.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -1879,7 +1880,7 @@ inline void SparseSubvector<VT,AF,TF>::addAssign( const DenseVector<VT2,TF>& rhs
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const AddType tmp( *this + (~rhs) );
+   const AddType tmp( serial( *this + (~rhs) ) );
    reset();
    assign( tmp );
 }
@@ -1911,7 +1912,7 @@ inline void SparseSubvector<VT,AF,TF>::addAssign( const SparseVector<VT2,TF>& rh
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const AddType tmp( *this + (~rhs) );
+   const AddType tmp( serial( *this + (~rhs) ) );
    reset();
    assign( tmp );
 }
@@ -1943,7 +1944,7 @@ inline void SparseSubvector<VT,AF,TF>::subAssign( const DenseVector<VT2,TF>& rhs
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const SubType tmp( *this - (~rhs) );
+   const SubType tmp( serial( *this - (~rhs) ) );
    reset();
    assign( tmp );
 }
@@ -1975,7 +1976,7 @@ inline void SparseSubvector<VT,AF,TF>::subAssign( const SparseVector<VT2,TF>& rh
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const SubType tmp( *this - (~rhs) );
+   const SubType tmp( serial( *this - (~rhs) ) );
    reset();
    assign( tmp );
 }
