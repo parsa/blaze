@@ -44,12 +44,14 @@ CXXFLAGS=
 # your system. In case the boost include directory is not set, it is assumed that the
 # boost headers are installed in standard paths (as for instance '/usr/include/boost').
 # Additionally, it is necessary to specify the library path of the boost libraries and
-# the name of the boost thread library (as for instance 'boost_thread-mt'). In case the
-# library path is not specified, it is assumed that the libraries are installed in
-# standard paths (for example '/usr/lib/' or '/usr/lib64/'). If the name of a library
-# is not specified, it is assumed that the library is called 'libboost_thread.*'.
+# the name of the boost system and thread libraries (as for instance 'boost_thread-mt').
+# In case the library path is not explicitly specified, it is assumed that the libraries
+# are installed in standard paths (for example '/usr/lib/' or '/usr/lib64/'). If the
+# name of a library is not specified, it is assumed that the library has a default name
+# ('libboost_system.*' and 'libboost_thread.*', respectively).
 BOOST_INCLUDE_PATH=
 BOOST_LIBRARY_PATH=
+BOOST_SYSTEM_LIBRARY=
 BOOST_THREAD_LIBRARY=
 
 # Configuration of the BLAS library
