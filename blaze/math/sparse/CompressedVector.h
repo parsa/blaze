@@ -50,6 +50,7 @@
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/sparse/VectorAccessProxy.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -1604,7 +1605,7 @@ inline void CompressedVector<Type,TF>::addAssign( const DenseVector<VT,TF>& rhs 
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   const AddType tmp( *this + (~rhs) );
+   const AddType tmp( serial( *this + (~rhs) ) );
    reset();
    assign( tmp );
 }
@@ -1629,7 +1630,7 @@ inline void CompressedVector<Type,TF>::addAssign( const SparseVector<VT,TF>& rhs
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   CompressedVector<Type,TF> tmp( *this + (~rhs) );
+   CompressedVector<Type,TF> tmp( serial( *this + (~rhs) ) );
    swap( tmp );
 }
 //*************************************************************************************************
@@ -1659,7 +1660,7 @@ inline void CompressedVector<Type,TF>::subAssign( const DenseVector<VT,TF>& rhs 
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   const SubType tmp( *this - (~rhs) );
+   const SubType tmp( serial( *this - (~rhs) ) );
    reset();
    assign( tmp );
 }
@@ -1684,7 +1685,7 @@ inline void CompressedVector<Type,TF>::subAssign( const SparseVector<VT,TF>& rhs
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   CompressedVector<Type,TF> tmp( *this - (~rhs) );
+   CompressedVector<Type,TF> tmp( serial( *this - (~rhs) ) );
    swap( tmp );
 }
 //*************************************************************************************************
