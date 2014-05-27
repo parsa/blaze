@@ -41,6 +41,7 @@
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -2021,7 +2022,7 @@ inline void HybridVector<Type,N,TF>::multAssign( const SparseVector<VT,TF>& rhs 
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
-   const HybridVector tmp( *this );
+   const HybridVector tmp( serial( *this ) );
 
    reset();
 
