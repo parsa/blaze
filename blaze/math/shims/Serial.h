@@ -36,6 +36,16 @@
 #define _BLAZE_MATH_SHIMS_SERIAL_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsComplex.h>
+
+
 namespace blaze {
 
 //=================================================================================================
@@ -56,7 +66,8 @@ namespace blaze {
 // as for instance built-in data types, the default behavior is not changed.
 */
 template< typename T >
-inline const T& serial( const T& a )
+inline typename EnableIf< Or< IsBuiltin<T>, IsComplex<T> >, const T& >::Type
+   serial( const T& a )
 {
    return a;
 }
