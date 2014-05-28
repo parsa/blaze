@@ -52,7 +52,7 @@
 #include <blaze/math/SparseSubvector.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
-#include <blaze/system/OpenMP.h>
+#include <blaze/system/SMP.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>

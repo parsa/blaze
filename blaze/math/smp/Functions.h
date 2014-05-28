@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/system/OpenMP.h>
+#include <blaze/system/SMP.h>
 
 #if BLAZE_OPENMP_PARALLEL_MODE
 #include <blaze/math/smp/openmp/Functions.h>
