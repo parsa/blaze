@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/smp/threads/DenseMatrix.h
-//  \brief Header file for the C++11 thread-based dense matrix SMP implementation
+//  \brief Header file for the C++11/Boost thread-based dense matrix SMP implementation
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -73,16 +73,16 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the C++11 thread-based SMP assignment of a row-major dense matrix to a dense
-//        matrix.
+/*!\brief Backend of the C++11/Boost thread-based SMP assignment of a row-major dense matrix to a
+//        dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side row-major dense matrix to be assigned.
 // \return void
 //
-// This function is the backend implementation of the C++11 thread-based SMP assignment of a
-// row-major dense matrix to a dense matrix.\n
+// This function is the backend implementation of the C++11/Boost thread-based SMP assignment
+// of a row-major dense matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -148,16 +148,16 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the C++11 thread-based SMP assignment of a column-major dense matrix to a
-//        dense matrix.
+/*!\brief Backend of the C++11/Boost thread-based SMP assignment of a column-major dense matrix
+//        to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side column-major dense matrix to be assigned.
 // \return void
 //
-// This function is the backend implementation of the C++11 thread-based SMP assignment of a
-// column-major dense matrix to a dense matrix.\n
+// This function is the backend implementation of the C++11/Boost thread-based SMP assignment
+// of a column-major dense matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -223,16 +223,16 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMa
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the C++11 thread-based SMP assignment of a row-major sparse matrix to a
-//        dense matrix.
+/*!\brief Backend of the C++11/Boost thread-based SMP assignment of a row-major sparse matrix
+//        to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side row-major sparse matrix to be assigned.
 // \return void
 //
-// This function is the backend implementation of the C++11 thread-based SMP assignment of a
-// row-major sparse matrix to a dense matrix.\n
+// This function is the backend implementation of the C++11/Boost thread-based SMP assignment
+// of a row-major sparse matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -275,16 +275,16 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowMajo
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the C++11 thread-based SMP assignment of a column-major sparse matrix to a
-//        dense matrix.
+/*!\brief Backend of the C++11/Boost thread-based SMP assignment of a column-major sparse matrix
+//        to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side column-major sparse matrix to be assigned.
 // \return void
 //
-// This function is the backend implementation of the C++11 thread-based SMP assignment of a
-// column-major sparse matrix to a dense matrix.\n
+// This function is the backend implementation of the C++11/Boost thread-based SMP assignment
+// of a column-major sparse matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -327,17 +327,17 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,columnM
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the C++11 thread-based SMP assignment to a dense matrix.
+/*!\brief Default implementation of the C++11/Boost thread-based SMP assignment to a dense matrix.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side matrix to be assigned.
 // \return void
 //
-// This function implements the default C++11 thread-based SMP assignment to a dense matrix. Due
-// to the explicit application of the SFINAE principle, this function can only be selected by the
-// compiler in case both operands are SMP-assignable and the element types of both operands are
-// not SMP-assignable.\n
+// This function implements the default C++11/Boost thread-based SMP assignment to a dense matrix.
+// Due to the explicit application of the SFINAE principle, this function can only be selected by
+// the compiler in case both operands are SMP-assignable and the element types of both operands
+// are not SMP-assignable.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -363,16 +363,16 @@ inline typename DisableIf< And< IsSMPAssignable<MT1>, IsSMPAssignable<MT2> > >::
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the C++11 thread-based SMP assignment to a dense matrix.
+/*!\brief Implementation of the C++11/Boost thread-based SMP assignment to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side column-major sparse matrix to be assigned.
 // \return void
 //
-// This function implements the C++11 thread-based SMP assignment to a dense matrix. Due to
-// the explicit application of the SFINAE principle, this function can only be selected by the
-// compiler in case both operands are SMP-assignable and the element types of both operands
+// This function implements the C++11/Boost thread-based SMP assignment to a dense matrix. Due
+// to the explicit application of the SFINAE principle, this function can only be selected by
+// the compiler in case both operands are SMP-assignable and the element types of both operands
 // are not SMP-assignable.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -418,16 +418,16 @@ inline typename EnableIf< And< IsSMPAssignable<MT1>, IsSMPAssignable<MT2> > >::T
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the C++11 thread-based SMP addition assignment of a row-major dense matrix
-//        to a dense matrix.
+/*!\brief Backend of the C++11/Boost thread-based SMP addition assignment of a row-major dense
+//        matrix to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side row-major dense matrix to be added.
 // \return void
 //
-// This function is the backend implementation of the C++11 thread-based SMP addition assignment
-// of a row-major dense matrix to a dense matrix.\n
+// This function is the backend implementation of the C++11/Boost thread-based SMP addition
+// assignment of a row-major dense matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -493,16 +493,16 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMa
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the C++11 thread-based SMP addition assignment of a column-major dense matrix
-//        to a dense matrix.
+/*!\brief Backend of the C++11/Boost thread-based SMP addition assignment of a column-major dense
+//        matrix to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side column-major dense matrix to be added.
 // \return void
 //
-// This function is the backend implementation of the C++11 thread-based SMP addition assignment
-// of a column-major dense matrix to a dense matrix.\n
+// This function is the backend implementation of the C++11/Boost thread-based SMP addition
+// assignment of a column-major dense matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -568,16 +568,16 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,colum
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the C++11 thread-based SMP addition assignment of a row-major sparse matrix
-//        to a dense matrix.
+/*!\brief Backend of the C++11/Boost thread-based SMP addition assignment of a row-major sparse
+//        matrix to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side row-major sparse matrix to be added.
 // \return void
 //
-// This function is the backend implementation of the C++11 thread-based SMP addition assignment
-// of a row-major sparse matrix to a dense matrix.\n
+// This function is the backend implementation of the C++11/Boost thread-based SMP addition
+// assignment of a row-major sparse matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -620,7 +620,7 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowM
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the C++11 thread-based SMP addition assignment of a column-major sparse
+/*!\brief Backend of the C++11/Boost thread-based SMP addition assignment of a column-major sparse
 //        matrix to a dense matrix.
 // \ingroup math
 //
@@ -628,8 +628,8 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowM
 // \param rhs The right-hand side column-major sparse matrix to be added.
 // \return void
 //
-// This function is the backend implementation of the C++11 thread-based SMP addition assignment
-// of a column-major sparse matrix to a dense matrix.\n
+// This function is the backend implementation of the C++11/Boost thread-based SMP addition
+// assignment of a column-major sparse matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -672,17 +672,17 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,colu
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the C++11 thread-based SMP addition assignment to a dense
-//        matrix.
+/*!\brief Default implementation of the C++11/Boost thread-based SMP addition assignment to a
+//        dense matrix.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side matrix to be added.
 // \return void
 //
-// This function implements the default C++11 thread-based SMP addition assignment to a dense
-// matrix. Due to the explicit application of the SFINAE principle, this function can only be
-// selected by the compiler in case both operands are SMP-assignable and the element types of
+// This function implements the default C++11/Boost thread-based SMP addition assignment to a
+// dense matrix. Due to the explicit application of the SFINAE principle, this function can only
+// be selected by the compiler in case both operands are SMP-assignable and the element types of
 // both operands are not SMP-assignable.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -709,17 +709,17 @@ inline typename DisableIf< And< IsSMPAssignable<MT1>, IsSMPAssignable<MT2> > >::
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the C++11 thread-based SMP addition assignment to a dense matrix.
+/*!\brief Implementation of the C++11/Boost thread-based SMP addition assignment to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side row-major dense matrix to be added.
 // \return void
 //
-// This function implements the C++11 thread-based SMP addition assignment to a dense matrix. Due
-// to the explicit application of the SFINAE principle, this function can only be selected by the
-// compiler in case both operands are SMP-assignable and the element types of both operands are
-// not SMP-assignable.\n
+// This function implements the C++11/Boost thread-based SMP addition assignment to a dense matrix.
+// Due to the explicit application of the SFINAE principle, this function can only be selected by
+// the compiler in case both operands are SMP-assignable and the element types of both operands
+// are not SMP-assignable.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -764,16 +764,16 @@ inline typename EnableIf< And< IsSMPAssignable<MT1>, IsSMPAssignable<MT2> > >::T
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the C++11 thread-based SMP subtraction assignment of a row-major dense matrix
-//        to a dense matrix.
+/*!\brief Backend of the C++11/Boost thread-based SMP subtraction assignment of a row-major dense
+//        matrix to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side row-major dense matrix to be subtracted.
 // \return void
 //
-// This function is the backend implementation of the C++11 thread-based SMP subtraction assignment
-// of a row-major dense matrix to a dense matrix.\n
+// This function is the backend implementation of the C++11/Boost thread-based SMP subtraction
+// assignment of a row-major dense matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -839,16 +839,16 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMa
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the C++11 thread-based SMP subtraction assignment of a column-major dense
-//        matrix to a dense matrix.
+/*!\brief Backend of the C++11/Boost thread-based SMP subtraction assignment of a column-major
+//        dense matrix to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side column-major dense matrix to be subtracted.
 // \return void
 //
-// This function is the backend implementation of the C++11 thread-based SMP subtraction assignment
-// of a column-major dense matrix to a dense matrix.\n
+// This function is the backend implementation of the C++11/Boost thread-based SMP subtraction
+// assignment of a column-major dense matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -914,7 +914,7 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,colum
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the C++11 thread-based SMP subtraction assignment of a row-major sparse
+/*!\brief Backend of the C++11/Boost thread-based SMP subtraction assignment of a row-major sparse
 //        matrix to a dense matrix.
 // \ingroup math
 //
@@ -922,8 +922,8 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,colum
 // \param rhs The right-hand side row-major sparse matrix to be subtracted.
 // \return void
 //
-// This function is the backend implementation of the C++11 thread-based SMP subtraction assignment
-// of a row-major sparse matrix to a dense matrix.\n
+// This function is the backend implementation of the C++11/Boost thread-based SMP subtraction
+// assignment of a row-major sparse matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -966,16 +966,16 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowM
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the C++11 thread-based SMP subtraction assignment of a column-major sparse
-//        matrix to a dense matrix.
+/*!\brief Backend of the C++11/Boost thread-based SMP subtraction assignment of a column-major
+//        sparse matrix to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side column-major sparse matrix to be subtracted.
 // \return void
 //
-// This function is the backend implementation of the C++11 thread-based SMP subtraction assignment
-// of a column-major sparse matrix to a dense matrix.\n
+// This function is the backend implementation of the C++11/Boost thread-based SMP subtraction
+// assignment of a column-major sparse matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -1018,17 +1018,17 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,colu
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the C++11 thread-based SMP subtracction assignment to a dense
-//        matrix.
+/*!\brief Default implementation of the C++11/Boost thread-based SMP subtracction assignment to a
+//        dense matrix.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side matrix to be subtracted.
 // \return void
 //
-// This function implements the default C++11 thread-based SMP subtraction assignment to a dense
-// matrix. Due to the explicit application of the SFINAE principle, this function can only be
-// selected by the compiler in case both operands are SMP-assignable and the element types of
+// This function implements the default C++11/Boost thread-based SMP subtraction assignment to a
+// dense matrix. Due to the explicit application of the SFINAE principle, this function can only
+// be selected by the compiler in case both operands are SMP-assignable and the element types of
 // both operands are not SMP-assignable.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -1055,17 +1055,18 @@ inline typename DisableIf< And< IsSMPAssignable<MT1>, IsSMPAssignable<MT2> > >::
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the C++11 thread-based SMP subtracction assignment to a dense matrix.
+/*!\brief Implementation of the C++11/Boost thread-based SMP subtracction assignment to a dense
+//        matrix.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side matrix to be subtracted.
 // \return void
 //
-// This function implements the default C++11 thread-based SMP subtraction assignment of a matrix
-// to a dense matrix. Due to the explicit application of the SFINAE principle, this function can
-// only be selected by the compiler in case both operands are SMP-assignable and the element types
-// of both operands are not SMP-assignable.\n
+// This function implements the default C++11/Boost thread-based SMP subtraction assignment of a
+// matrix to a dense matrix. Due to the explicit application of the SFINAE principle, this function
+// can only be selected by the compiler in case both operands are SMP-assignable and the element
+// types of both operands are not SMP-assignable.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -1110,16 +1111,16 @@ inline typename EnableIf< And< IsSMPAssignable<MT1>, IsSMPAssignable<MT2> > >::T
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the C++11 thread-based SMP multiplication assignment to a
-//        dense matrix.
+/*!\brief Default implementation of the C++11/Boost thread-based SMP multiplication assignment
+//        to a dense matrix.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side matrix to be multiplied.
 // \return void
 //
-// This function implements the default C++11 thread-based SMP multiplication assignment to a
-// dense matrix.\n
+// This function implements the default C++11/Boost thread-based SMP multiplication assignment
+// to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -1154,7 +1155,7 @@ inline void smpMultAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs
 /*! \cond BLAZE_INTERNAL */
 namespace {
 
-BLAZE_STATIC_ASSERT( BLAZE_CPP_THREADS_PARALLEL_MODE > 0 );
+BLAZE_STATIC_ASSERT( BLAZE_CPP_THREADS_PARALLEL_MODE > 0 || BLAZE_BOOST_THREADS_PARALLEL_MODE > 0 );
 
 }
 /*! \endcond */

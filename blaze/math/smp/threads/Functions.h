@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/smp/threads/Functions.h
-//  \brief Header file for the C++11-based SMP utility functions
+//  \brief Header file for the C++11 and Boost thread-based SMP utility functions
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -107,7 +107,7 @@ inline size_t setNumThreads( size_t number )
 /*! \cond BLAZE_INTERNAL */
 namespace {
 
-BLAZE_STATIC_ASSERT( BLAZE_CPP_THREADS_PARALLEL_MODE > 0 );
+BLAZE_STATIC_ASSERT( BLAZE_CPP_THREADS_PARALLEL_MODE > 0 || BLAZE_BOOST_THREADS_PARALLEL_MODE > 0 );
 
 }
 /*! \endcond */

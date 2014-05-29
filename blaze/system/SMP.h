@@ -57,9 +57,9 @@
 //
 // This compilation switch enables/disables the OpenMP parallelization. In case OpenMP is enabled
 // during compilation the Blaze library attempts to parallelize all matrix and vector computations.
-// Note that the OpenMP-based parallelization has priority over the C++11 thread parallelization
-// and will be preferred in case both parallelizations are activated. In case no parallelization
-// is not enabled, all computations are performed on a single compute core.
+// Note that the OpenMP-based parallelization has priority over the C++11 and Boost thread-based
+// parallelization and will be preferred in case several parallelizations are activated. In case
+// no parallelization is not enabled, all computations are performed on a single compute core.
 */
 #if BLAZE_USE_SHARED_MEMORY_PARALLELIZATION && defined(_OPENMP)
 #define BLAZE_OPENMP_PARALLEL_MODE 1
@@ -84,14 +84,42 @@
 // This compilation switch enables/disables the parallelization based on C++11 threads. In case
 // the \c BLAZE_CPP_THREADS command line argument is specified during compilation the Blaze
 // library attempts to parallelize all matrix and vector computations. Note however that the
-// OpenMP-based parallelization has priority over the C++11 thread parallelization and will be
-// preferred in case both parallelizations are activated. In case no parallelization is enabled,
-// all computations are performed on a single compute core.
+// OpenMP-based parallelization has priority over the C++11 thread parallelization and will
+// be preferred in case both parallelizations are activated. On the other hand, the C++11
+// thread parallelization has priority over the Boost thread-based parallelization. In case
+// no parallelization is enabled, all computations are performed on a single compute core.
 */
 #if BLAZE_USE_SHARED_MEMORY_PARALLELIZATION && defined(BLAZE_CPP_THREADS)
 #define BLAZE_CPP_THREADS_PARALLEL_MODE 1
 #else
 #define BLAZE_CPP_THREADS_PARALLEL_MODE 0
+#endif
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  BOOST THREAD PARALLEL MODE CONFIGURATION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Compilation switch for the Boost parallelization.
+// \ingroup system
+//
+// This compilation switch enables/disables the parallelization based on Boost threads. In case
+// the \c BLAZE_BOOST_THREADS command line argument is specified during compilation the Blaze
+// library attempts to parallelize all matrix and vector computations. Note however that the
+// OpenMP-based and the C++11 thread-based parallelizations have priority over the Boost thread
+// parallelization and will be preferred in case several parallelizations are activated. In case
+// no parallelization is enabled, all computations are performed on a single compute core.
+*/
+#if BLAZE_USE_SHARED_MEMORY_PARALLELIZATION && defined(BLAZE_BOOST_THREADS)
+#define BLAZE_BOOST_THREADS_PARALLEL_MODE 1
+#else
+#define BLAZE_BOOST_THREADS_PARALLEL_MODE 0
 #endif
 //*************************************************************************************************
 

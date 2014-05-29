@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/smp/threads/ThreadBackend.h
-//  \brief Header file for the C++11 threads backend
+//  \brief Header file for the C++11 and Boost thread backend
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -40,10 +40,18 @@
 // Includes
 //*************************************************************************************************
 
-#include <condition_variable>
-#include <mutex>
-#include <thread>
+#if BLAZE_CPP_THREADS_PARALLEL_MODE
+#  include <condition_variable>
+#  include <mutex>
+#  include <thread>
+#elif BLAZE_BOOST_THREADS_PARALLEL_MODE
+#  include <boost/thread/condition.hpp>
+#  include <boost/thread/mutex.hpp>
+#  include <boost/thread/thread.hpp>
+#endif
+
 #include <blaze/math/constraints/Expression.h>
+#include <blaze/system/SMP.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/ThreadPool.h>
 
@@ -58,14 +66,14 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend system for the C++11 thread parallelization.
+/*!\brief Backend system for the C++11 and Boost thread-based parallelization.
 // \ingroup smp
 //
-// The ThreadBackend class template represents the backend system for the C++11-based thread
-// parallelization. It provides the functionality to manage a pool of active threads and to
-// schedule (compound) assignment tasks for execution.\n
-// This class must \b NOT be used explicitly! It is reserved for internal use only. Using this
-// class explicitly might result in erroneous results and/or in undefined behavior.
+// The ThreadBackend class template represents the backend system for the C++11 and Boost
+// thread-based parallelization. It provides the functionality to manage a pool of active
+// threads and to schedule (compound) assignment tasks for execution.\n
+// This class must \b NOT be used explicitly! It is reserved for internal use only. Using
+// this class explicitly might result in erroneous results and/or in undefined behavior.
 */
 template< typename TT    // Type of the encapsulated thread
         , typename MT    // Type of the synchronization mutex
@@ -265,6 +273,13 @@ class ThreadBackend
    };
    //**********************************************************************************************
 
+   //**Initialization functions********************************************************************
+   /*!\name Initialization functions */
+   //@{
+   static inline size_t initPool();
+   //@}
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -278,8 +293,13 @@ class ThreadBackend
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
+#if BLAZE_CPP_THREADS_PARALLEL_MODE
    BLAZE_STATIC_ASSERT( BLAZE_CPP_THREADS >  0UL        );
    BLAZE_STATIC_ASSERT( BLAZE_CPP_THREADS <= maxThreads );
+#elif BLAZE_BOOST_THREADS_PARALLEL_MODE
+   BLAZE_STATIC_ASSERT( BLAZE_BOOST_THREADS >  0UL        );
+   BLAZE_STATIC_ASSERT( BLAZE_BOOST_THREADS <= maxThreads );
+#endif
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -297,7 +317,7 @@ class ThreadBackend
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename TT, typename MT, typename LT, typename CT >
-ThreadPool<TT,MT,LT,CT> ThreadBackend<TT,MT,LT,CT>::threadpool_( BLAZE_CPP_THREADS );
+ThreadPool<TT,MT,LT,CT> ThreadBackend<TT,MT,LT,CT>::threadpool_( initPool() );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -486,6 +506,41 @@ inline void ThreadBackend<TT,MT,LT,CT>::scheduleMultAssign( Target& target, cons
 
 //=================================================================================================
 //
+//  INITIALIZATION FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the initial number of threads of the thread pool.
+//
+// \return The initial number of threads.
+//
+// This function determines the initial number of threads based on the compile time configuration
+// of the thread backend. In case the C++11 thread-based parallelization is selected, the initial
+// number of threads is given by the \c BLAZE_CPP_THREADS command line argument, else it is
+// given by the \c BLAZE_BOOST_THREADS command line argument.
+*/
+template< typename TT    // Type of the encapsulated thread
+        , typename MT    // Type of the synchronization mutex
+        , typename LT    // Type of the mutex lock
+        , typename CT >  // Type of the condition variable
+inline size_t ThreadBackend<TT,MT,LT,CT>::initPool()
+{
+#if BLAZE_CPP_THREADS_PARALLEL_MODE
+   return BLAZE_CPP_THREADS;
+#elif BLAZE_BOOST_THREADS_PARALLEL_MODE
+   return BLAZE_BOOST_THREADS;
+#endif
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  TYPE DEFINITIONS
 //
 //=================================================================================================
@@ -499,11 +554,19 @@ inline void ThreadBackend<TT,MT,LT,CT>::scheduleMultAssign( Target& target, cons
 // manage the active number of threads used to execute operations and to schedule tasks to be
 // executed.
 */
+#if BLAZE_CPP_THREADS_PARALLEL_MODE
 typedef ThreadBackend< std::thread
                      , std::mutex
                      , std::unique_lock< std::mutex >
                      , std::condition_variable
                      >  TheThreadBackend;
+#elif BLAZE_BOOST_THREADS_PARALLEL_MODE
+typedef ThreadBackend< boost::thread
+                     , boost::mutex
+                     , boost::unique_lock< boost::mutex >
+                     , boost::condition_variable
+                     >  TheThreadBackend;
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -520,7 +583,7 @@ typedef ThreadBackend< std::thread
 /*! \cond BLAZE_INTERNAL */
 namespace {
 
-BLAZE_STATIC_ASSERT( BLAZE_CPP_THREADS_PARALLEL_MODE > 0 );
+BLAZE_STATIC_ASSERT( BLAZE_CPP_THREADS_PARALLEL_MODE > 0 || BLAZE_BOOST_THREADS_PARALLEL_MODE > 0 );
 
 }
 /*! \endcond */

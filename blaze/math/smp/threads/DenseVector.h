@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/smp/threads/DenseVector.h
-//  \brief Header file for the C++11 thread-based dense vector SMP implementation
+//  \brief Header file for the C++11/Boost thread-based dense vector SMP implementation
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -72,15 +72,15 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the C++11 thread-based SMP assignment of a dense vector to a dense vector.
+/*!\brief Backend of the C++11/Boost thread-based SMP assignment of a dense vector to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side dense vector to be assigned.
 // \return void
 //
-// This function is the backend implementation of the C++11 thread-based SMP assignment of a
-// dense vector to a dense vector.\n
+// This function is the backend implementation of the C++11/Boost thread-based SMP assignment
+// of a dense vector to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -147,15 +147,16 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& r
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the C++11 thread-based SMP assignment of a sparse vector to a dense vector.
+/*!\brief Backend of the C++11/Boost thread-based SMP assignment of a sparse vector to a dense
+//        vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side sparse vector to be assigned.
 // \return void
 //
-// This function is the backend implementation of the C++11 thread-based SMP assignment of a
-// sparse vector to a dense vector.\n
+// This function is the backend implementation of the C++11/Boost thread-based SMP assignment
+// of a sparse vector to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -199,17 +200,17 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the C++11 thread-based SMP assignment to a dense vector.
+/*!\brief Default implementation of the C++11/Boost thread-based SMP assignment to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side vector to be assigned.
 // \return void
 //
-// This function implements the default C++11 thread-based SMP assignment to a dense vector. Due
-// to the explicit application of the SFINAE principle, this function can only be selected by the
-// compiler in case both operands are SMP-assignable and the element types of both operands are
-// not SMP-assignable.\n
+// This function implements the default C++11/Boost thread-based SMP assignment to a dense vector.
+// Due to the explicit application of the SFINAE principle, this function can only be selected by
+// the compiler in case both operands are SMP-assignable and the element types of both operands
+// are not SMP-assignable.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -234,17 +235,17 @@ inline typename DisableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the C++11 thread-based SMP assignment to a dense vector.
+/*!\brief Implementation of the C++11/Boost thread-based SMP assignment to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side sparse vector to be assigned.
 // \return void
 //
-// This function performs the C++11 thread-based SMP assignment to a dense vector. Due to the
-// explicit application of the SFINAE principle, this function can only be selected by the
-// compiler in case both operands are SMP-assignable and the element types of both operands
-// are not SMP-assignable.\n
+// This function performs the C++11/Boost thread-based SMP assignment to a dense vector. Due to
+// the explicit application of the SFINAE principle, this function can only be selected by the
+// compiler in case both operands are SMP-assignable and the element types of both operands are
+// not SMP-assignable.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -288,16 +289,16 @@ inline typename EnableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::T
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the C++11 thread-based SMP addition assignment of a dense vector to a dense
-//        vector.
+/*!\brief Backend of the C++11/Boost thread-based SMP addition assignment of a dense vector to a
+//        dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side dense vector to be added.
 // \return void
 //
-// This function is the backend implementation of the C++11 thread-based SMP addition assignment
-// of a dense vector to a dense vector.\n
+// This function is the backend implementation of the C++11/Boost thread-based SMP addition
+// assignment of a dense vector to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -364,16 +365,16 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the C++11 thread-based SMP addition assignment of a sparse vector to a dense
-//        vector.
+/*!\brief Backend of the C++11/Boost thread-based SMP addition assignment of a sparse vector to
+//        a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side sparse vector to be added.
 // \return void
 //
-// This function is the backend implementation of the C++11 thread-based SMP addition assignment
-// of a sparse vector to a dense vector.\n
+// This function is the backend implementation of the C++11/Boost thread-based SMP addition
+// assignment of a sparse vector to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -417,17 +418,17 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the C++11 thread-based SMP addition assignment to a dense
-//        vector.
+/*!\brief Default implementation of the C++11/Boost thread-based SMP addition assignment to a
+//        dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side vector to be assigned.
 // \return void
 //
-// This function implements the default C++11 thread-based SMP addition assignment to a dense
-// vector. Due to the explicit application of the SFINAE principle, this function can only be
-// selected by the compiler in case both operands are SMP-assignable and the element types of
+// This function implements the default C++11/Boost thread-based SMP addition assignment to a
+// dense vector. Due to the explicit application of the SFINAE principle, this function can only
+// be selected by the compiler in case both operands are SMP-assignable and the element types of
 // both operands are not SMP-assignable.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -453,17 +454,17 @@ inline typename DisableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the C++11 thread-based SMP addition assignment to a dense vector.
+/*!\brief Implementation of the C++11/Boost thread-based SMP addition assignment to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side sparse vector to be added.
 // \return void
 //
-// This function performs the C++11 thread-based SMP addition assignment to a dense vector. Due
-// to the explicit application of the SFINAE principle, this function can only be selected by the
-// compiler in case both operands are SMP-assignable and the element types of both operands are
-// not SMP-assignable.\n
+// This function performs the C++11/Boost thread-based SMP addition assignment to a dense vector.
+// Due to the explicit application of the SFINAE principle, this function can only be selected by
+// the compiler in case both operands are SMP-assignable and the element types of both operands
+// are not SMP-assignable.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -507,16 +508,16 @@ inline typename EnableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::T
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the C++11 thread-based SMP subtraction assignment of a dense vector to a
-//        dense vector.
+/*!\brief Backend of the C++11/Boost thread-based SMP subtraction assignment of a dense vector
+//        to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side dense vector to be subtracted.
 // \return void
 //
-// This function is the backend implementation of the C++11 thread-based SMP subtraction assignment
-// of a dense vector to a dense vector.\n
+// This function is the backend implementation of the C++11/Boost thread-based SMP subtraction
+// assignment of a dense vector to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -583,16 +584,16 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the C++11 thread-based SMP subtraction assignment of a sparse vector to a
-//        dense vector.
+/*!\brief Backend of the C++11/Boost thread-based SMP subtraction assignment of a sparse vector
+//        to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side sparse vector to be subtracted.
 // \return void
 //
-// This function is the backend implementation of the C++11 thread-based SMP subtraction assignment
-// of a sparse vector to a dense vector.\n
+// This function is the backend implementation of the C++11/Boost thread-based SMP subtraction
+// assignment of a sparse vector to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -636,17 +637,17 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the C++11 thread-based SMP subtraction assignment to a dense
-//        vector.
+/*!\brief Default implementation of the C++11/Boost thread-based SMP subtraction assignment to a
+//        dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side vector to be assigned.
 // \return void
 //
-// This function implements the default C++11 thread-based SMP subtraction assignment to a dense
-// vector. Due to the explicit application of the SFINAE principle, this function can only be
-// selected by the compiler in case both operands are SMP-assignable and the element types of
+// This function implements the default C++11/Boost thread-based SMP subtraction assignment to a
+// dense vector. Due to the explicit application of the SFINAE principle, this function can only
+// be selected by the compiler in case both operands are SMP-assignable and the element types of
 // both operands are not SMP-assignable.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -672,17 +673,18 @@ inline typename DisableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the C++11 thread-based SMP subtraction assignment to a dense vector.
+/*!\brief Implementation of the C++11/Boost thread-based SMP subtraction assignment to a dense
+//        vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side sparse vector to be subtracted.
 // \return void
 //
-// This function performs the C++11 thread-based SMP subtraction assignment to a dense vector.
-// Due to the explicit application of the SFINAE principle, this function can only be selected
-// by the compiler in case both operands are SMP-assignable and the element types of both
-// operands are not SMP-assignable.\n
+// This function performs the C++11/Boost thread-based SMP subtraction assignment to a dense
+// vector. Due to the explicit application of the SFINAE principle, this function can only be
+// selected by the compiler in case both operands are SMP-assignable and the element types of
+// both operands are not SMP-assignable.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -726,15 +728,15 @@ inline typename EnableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::T
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the C++11 thread-based SMP multiplication assignment of a dense vector to a
-//        dense vector.
+/*!\brief Backend of the C++11/Boost thread-based SMP multiplication assignment of a dense vector
+//        to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side dense vector to be multiplied.
 // \return void
 //
-// This function is the backend implementation of the C++11 thread-based SMP multiplication
+// This function is the backend implementation of the C++11/Boost thread-based SMP multiplication
 // assignment of a dense vector to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -802,15 +804,15 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the C++11 thread-based SMP multiplication assignment of a sparse vector to a
-//        dense vector.
+/*!\brief Backend of the C++11/Boost thread-based SMP multiplication assignment of a sparse
+//        vector to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side sparse vector to be multiplied.
 // \return void
 //
-// This function is the backend implementation of the C++11 thread-based SMP multiplication
+// This function is the backend implementation of the C++11/Boost thread-based SMP multiplication
 // assignment of a sparse vector to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -855,16 +857,16 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the C++11 thread-based SMP multiplication assignment to a
-//        dense vector.
+/*!\brief Default implementation of the C++11/Boost thread-based SMP multiplication assignment
+//        to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side vector to be assigned.
 // \return void
 //
-// This function implements the default C++11 thread-based SMP multiplication assignment to a
-// dense vector. Due to the explicit application of the SFINAE principle, this function can only
+// This function implements the default C++11/Boost thread-based SMP multiplication assignment to
+// a dense vector. Due to the explicit application of the SFINAE principle, this function can only
 // be selected by the compiler in case both operands are SMP-assignable and the element types of
 // both operands are not SMP-assignable.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -891,17 +893,18 @@ inline typename DisableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the C++11 thread-based SMP multiplication assignment to a dense vector.
+/*!\brief Implementation of the C++11/Boost thread-based SMP multiplication assignment to a dense
+//        vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side sparse vector to be multiplied.
 // \return void
 //
-// This function performs the C++11 thread-based SMP multiplication assignment to a dense vector.
-// Due to the explicit application of the SFINAE principle, this function can only be selected by
-// the compiler in case both operands are SMP-assignable and the element types of both operands
-// are not SMP-assignable.\n
+// This function performs the C++11/Boost thread-based SMP multiplication assignment to a dense
+// vector. Due to the explicit application of the SFINAE principle, this function can only be
+// selected by the compiler in case both operands are SMP-assignable and the element types of
+// both operands are not SMP-assignable.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in erroneous results and/or in compilation errors. Instead of using this function use the
@@ -947,7 +950,7 @@ inline typename EnableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::T
 /*! \cond BLAZE_INTERNAL */
 namespace {
 
-BLAZE_STATIC_ASSERT( BLAZE_CPP_THREADS_PARALLEL_MODE > 0 );
+BLAZE_STATIC_ASSERT( BLAZE_CPP_THREADS_PARALLEL_MODE > 0 || BLAZE_BOOST_THREADS_PARALLEL_MODE > 0 );
 
 }
 /*! \endcond */

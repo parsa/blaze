@@ -44,7 +44,7 @@
 
 #if BLAZE_OPENMP_PARALLEL_MODE
 #include <blaze/math/smp/openmp/DenseVector.h>
-#elif BLAZE_CPP_THREADS_PARALLEL_MODE
+#elif BLAZE_CPP_THREADS_PARALLEL_MODE || BLAZE_BOOST_THREADS_PARALLEL_MODE
 #include <blaze/math/smp/threads/DenseVector.h>
 #else
 #include <blaze/math/smp/default/DenseVector.h>
