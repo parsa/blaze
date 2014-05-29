@@ -49,6 +49,7 @@ BIN = $(SRC:.cpp=)
 default: all
 all: $(BIN)
 essential: VCaVCa AliasingTest
+single: VCaVCa
 
 
 # Build rules

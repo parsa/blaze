@@ -56,6 +56,8 @@ all: functions intrinsics \
 
 essential: all
 
+single: all
+
 functions:
 	@echo
 	@echo "Building the mathematical functions operation tests..."

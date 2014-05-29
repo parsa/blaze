@@ -200,6 +200,8 @@ all: mathtest utiltest
 
 essential: mathtest utiltest
 
+single: mathtest utiltest
+
 mathtest:
 	@echo
 	@\$(MAKE) --no-print-directory -C $INSTALL_PATH/src/mathtest \$(MAKECMDGOALS)

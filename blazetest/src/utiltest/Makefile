@@ -37,7 +37,9 @@ default: all
 
 all: alignedallocator uniqueptr uniquearray
 
-essential: alignedallocator uniqueptr uniquearray
+essential: all
+
+single: all
 
 alignedallocator:
 	@echo
