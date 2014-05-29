@@ -43,6 +43,7 @@
 #include <stdexcept>
 #include <omp.h>
 #include <blaze/system/SMP.h>
+#include <blaze/util/StaticAssert.h>
 
 
 namespace blaze {
@@ -91,6 +92,25 @@ inline size_t setNumThreads( size_t number )
       throw std::invalid_argument( "Invalid number of threads" );
 
    omp_set_num_threads( number );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  COMPILE TIME CONSTRAINTS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+namespace {
+
+BLAZE_STATIC_ASSERT( BLAZE_OPENMP_PARALLEL_MODE > 0 );
+
 }
 /*! \endcond */
 //*************************************************************************************************
