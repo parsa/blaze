@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/system/SMP.h
-//  \brief System settings for the shared-memory parallelization
+//  \file blaze/math/smp/threads/Functions.h
+//  \brief Header file for the C++11-based SMP utility functions
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,67 +32,87 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_SYSTEM_SMP_H_
-#define _BLAZE_SYSTEM_SMP_H_
+#ifndef _BLAZE_MATH_SMP_THREADS_FUNCTIONS_H_
+#define _BLAZE_MATH_SMP_THREADS_FUNCTIONS_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/config/SMP.h>
+#include <stdexcept>
+#include <blaze/math/smp/threads/ThreadBackend.h>
+#include <blaze/system/SMP.h>
+#include <blaze/util/StaticAssert.h>
 
 
-
+namespace blaze {
 
 //=================================================================================================
 //
-//  OPENMP MODE CONFIGURATION
+//  SMP UTILITY FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Compilation switch for the OpenMP parallelization.
-// \ingroup system
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the number of threads used for thread parallel operations.
+// \ingroup smp
 //
-// This compilation switch enables/disables the OpenMP parallelization. In case OpenMP is enabled
-// during compilation the Blaze library attempts to parallelize all matrix and vector computations.
-// Note that the OpenMP-based parallelization has priority over the C++11 thread parallelization
-// and will be preferred in case both parallelizations are activated. In case no parallelization
-// is not enabled, all computations are performed on a single compute core.
+// \return The number of threads used for thread parallel operations.
+//
+// Via this function the number of threads used for thread parallel operations can be queried.
 */
-#if BLAZE_USE_SHARED_MEMORY_PARALLELIZATION && defined(_OPENMP)
-#define BLAZE_OPENMP_PARALLEL_MODE 1
-#else
-#define BLAZE_OPENMP_PARALLEL_MODE 0
-#endif
+inline size_t getNumThreads()
+{
+   return TheThreadBackend::size();
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
-
-
-//=================================================================================================
-//
-//  C++11 THREAD PARALLEL MODE CONFIGURATION
-//
-//=================================================================================================
-
 //*************************************************************************************************
-/*!\brief Compilation switch for the C++11 parallelization.
-// \ingroup system
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Sets the number of threads to be used for thread parallel operations.
+// \ingroup smp
 //
-// This compilation switch enables/disables the parallelization based on C++11 threads. In case
-// the \c BLAZE_CPP_THREADS command line argument is specified during compilation the Blaze
-// library attempts to parallelize all matrix and vector computations. Note however that the
-// OpenMP-based parallelization has priority over the C++11 thread parallelization and will be
-// preferred in case both parallelizations are activated. In case no parallelization is enabled,
-// all computations are performed on a single compute core.
+// \param number The given number of threads \f$[1..maxThreads]\f$.
+// \return void
+// \exception std::invalid_argument Invalid number of threads.
+//
+// Via this function the maximum number of threads for thread parallel operations can be specified.
+// Note that the given \a number must be in the range \f$[1..maxThreads]\f$. In case an invalid
+// number of threads is specified, a \a std::invalid_argument exception is thrown.
 */
-#if BLAZE_USE_SHARED_MEMORY_PARALLELIZATION && defined(BLAZE_CPP_THREADS)
-#define BLAZE_CPP_THREADS_PARALLEL_MODE 1
-#else
-#define BLAZE_CPP_THREADS_PARALLEL_MODE 0
-#endif
+inline size_t setNumThreads( size_t number )
+{
+   if( number == 0UL || number > maxThreads )
+      throw std::invalid_argument( "Invalid number of threads" );
+
+   TheThreadBackend::resize( number );
+}
+/*! \endcond */
 //*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  COMPILE TIME CONSTRAINTS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+namespace {
+
+BLAZE_STATIC_ASSERT( BLAZE_CPP_THREADS_PARALLEL_MODE > 0 );
+
+}
+/*! \endcond */
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif

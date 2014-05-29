@@ -44,6 +44,8 @@
 
 #if BLAZE_OPENMP_PARALLEL_MODE
 #include <blaze/math/smp/openmp/DenseMatrix.h>
+#elif BLAZE_CPP_THREADS_PARALLEL_MODE
+#include <blaze/math/smp/threads/DenseMatrix.h>
 #else
 #include <blaze/math/smp/default/DenseMatrix.h>
 #endif

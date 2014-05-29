@@ -42,6 +42,7 @@
 
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Matrix.h>
+#include <blaze/system/SMP.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/StaticAssert.h>
@@ -172,7 +173,8 @@ inline void smpSubAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs 
 /*! \cond BLAZE_INTERNAL */
 namespace {
 
-BLAZE_STATIC_ASSERT( BLAZE_OPENMP_PARALLEL_MODE == 0 );
+BLAZE_STATIC_ASSERT( BLAZE_OPENMP_PARALLEL_MODE      == 0 );
+BLAZE_STATIC_ASSERT( BLAZE_CPP_THREADS_PARALLEL_MODE == 0 );
 
 }
 /*! \endcond */

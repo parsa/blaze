@@ -44,6 +44,8 @@
 
 #if BLAZE_OPENMP_PARALLEL_MODE
 #include <blaze/math/smp/openmp/Functions.h>
+#elif BLAZE_CPP_THREADS_PARALLEL_MODE
+#include <blaze/math/smp/threads/Functions.h>
 #else
 #include <blaze/math/smp/default/Functions.h>
 #endif
