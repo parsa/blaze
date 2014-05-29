@@ -42,6 +42,7 @@
 
 #include <blaze/math/smp/DenseMatrix.h>
 #include <blaze/math/smp/DenseVector.h>
+#include <blaze/math/smp/Functions.h>
 #include <blaze/math/smp/SerialSection.h>
 #include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/smp/SparseVector.h>
