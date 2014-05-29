@@ -936,7 +936,7 @@ inline typename EnableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::T
 /*! \cond BLAZE_INTERNAL */
 namespace {
 
-BLAZE_STATIC_ASSERT( BLAZE_OPENMP_PARALLEL_MODE > 0 );
+BLAZE_STATIC_ASSERT( BLAZE_OPENMP_PARALLEL_MODE );
 
 }
 /*! \endcond */

@@ -1138,7 +1138,7 @@ inline void smpMultAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs
 /*! \cond BLAZE_INTERNAL */
 namespace {
 
-BLAZE_STATIC_ASSERT( BLAZE_OPENMP_PARALLEL_MODE > 0 );
+BLAZE_STATIC_ASSERT( BLAZE_OPENMP_PARALLEL_MODE );
 
 }
 /*! \endcond */

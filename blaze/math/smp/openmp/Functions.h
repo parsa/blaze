@@ -109,7 +109,7 @@ inline size_t setNumThreads( size_t number )
 /*! \cond BLAZE_INTERNAL */
 namespace {
 
-BLAZE_STATIC_ASSERT( BLAZE_OPENMP_PARALLEL_MODE > 0 );
+BLAZE_STATIC_ASSERT( BLAZE_OPENMP_PARALLEL_MODE );
 
 }
 /*! \endcond */
