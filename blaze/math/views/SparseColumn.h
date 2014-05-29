@@ -3094,7 +3094,7 @@ template< typename MT, bool SO >
 inline bool isDefault( const SparseColumn<MT,SO>& column );
 
 template< typename MT, bool SO >
-inline bool isSame( const DenseColumn<MT,SO>& a, const DenseColumn<MT,SO>& b );
+inline bool isSame( const SparseColumn<MT,SO>& a, const SparseColumn<MT,SO>& b );
 //@}
 //*************************************************************************************************
 
