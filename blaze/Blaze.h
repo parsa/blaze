@@ -3779,8 +3779,24 @@ namespace blaze {}
    omp_set_num_threads( 4 );
    \endcode
 
+// Alternatively, the number of threads can also be specified via the \c setNumThreads() function
+// provided by the \b Blaze library:
+
+   \code
+   blaze::setNumThreads( 4 );
+   \endcode
+
 // Either way, the best performance can be expected if the specified number of threads matches
-// the available number of cores.
+// the available number of cores.\n
+// In order to query the number of threads used for the parallelization of operations, the
+// \c getNumThreads() function can be used:
+
+   \code
+   size_t threads = blaze::getNumThreads();
+   \endcode
+
+// In the context of OpenMP, the function returns the maximum number of threads OpenMP will use
+// within a parallel region and is therefore equivalent to the \c omp_get_max_threads() function.
 //
 //
 // \n \section openmp_configuration OpenMP Configuration
