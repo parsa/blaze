@@ -791,6 +791,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
                               inline size_t          nonZeros( size_t i ) const;
                               inline void            reset();
                               inline void            reset( size_t i );
+                              inline DenseSubmatrix& transpose();
    template< typename Other > inline DenseSubmatrix& scale( Other scalar );
    //@}
    //**********************************************************************************************
@@ -1675,6 +1676,31 @@ inline void DenseSubmatrix<MT,AF,SO>::reset( size_t i )
    const size_t jend( column_ + n_ );
    for( size_t j=column_; j<jend; ++j )
       reset( matrix_(row_+i,j) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Transposing the submatrix.
+//
+// \return Reference to the transposed submatrix.
+// \exception std::runtime_error Invalid transpose of a non-quadratic submatrix.
+//
+// This function transposes the dense submatrix in-place. Note that this function can only be used
+// for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. The
+// attempt to transpose a non-quadratic submatrix results in a \a std::runtime_error exception.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::transpose()
+{
+   if( rows() != columns() )
+      throw std::runtime_error( "Invalid transpose of a non-quadratic submatrix" );
+
+   const ResultType tmp( trans(*this) );
+   smpAssign( *this, tmp );
+   return *this;
 }
 //*************************************************************************************************
 
@@ -2969,6 +2995,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
                               inline size_t          nonZeros( size_t i ) const;
                               inline void            reset();
                               inline void            reset( size_t i );
+                              inline DenseSubmatrix& transpose();
    template< typename Other > inline DenseSubmatrix& scale( Other scalar );
    //@}
    //**********************************************************************************************
@@ -3805,6 +3832,31 @@ inline void DenseSubmatrix<MT,unaligned,true>::reset( size_t j )
    const size_t iend( row_ + m_ );
    for( size_t i=row_; i<iend; ++i )
       reset( matrix_(i,column_+j) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Transposing the submatrix.
+//
+// \return Reference to the transposed submatrix.
+// \exception std::runtime_error Invalid transpose of a non-quadratic submatrix.
+//
+// This function transposes the dense submatrix in-place. Note that this function can only be used
+// for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. The
+// attempt to transpose a non-quadratic submatrix results in a \a std::runtime_error exception.
+*/
+template< typename MT >  // Type of the dense matrix
+inline DenseSubmatrix<MT,unaligned,true>& DenseSubmatrix<MT,unaligned,true>::transpose()
+{
+   if( rows() != columns() )
+      throw std::runtime_error( "Invalid transpose of a non-quadratic submatrix" );
+
+   const ResultType tmp( trans(*this) );
+   smpAssign( *this, tmp );
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4805,6 +4857,7 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
                               inline size_t          nonZeros( size_t i ) const;
                               inline void            reset();
                               inline void            reset( size_t i );
+                              inline DenseSubmatrix& transpose();
    template< typename Other > inline DenseSubmatrix& scale( Other scalar );
    //@}
    //**********************************************************************************************
@@ -5665,6 +5718,31 @@ inline void DenseSubmatrix<MT,aligned,false>::reset( size_t i )
    const size_t jend( column_ + n_ );
    for( size_t j=column_; j<jend; ++j )
       reset( matrix_(row_+i,j) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Transposing the submatrix.
+//
+// \return Reference to the transposed submatrix.
+// \exception std::runtime_error Invalid transpose of a non-quadratic submatrix.
+//
+// This function transposes the dense submatrix in-place. Note that this function can only be used
+// for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. The
+// attempt to transpose a non-quadratic submatrix results in a \a std::runtime_error exception.
+*/
+template< typename MT >  // Type of the dense matrix
+inline DenseSubmatrix<MT,aligned,false>& DenseSubmatrix<MT,aligned,false>::transpose()
+{
+   if( rows() != columns() )
+      throw std::runtime_error( "Invalid transpose of a non-quadratic submatrix" );
+
+   const ResultType tmp( trans(*this) );
+   smpAssign( *this, tmp );
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -6659,6 +6737,7 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
                               inline size_t          nonZeros( size_t i ) const;
                               inline void            reset();
                               inline void            reset( size_t i );
+                              inline DenseSubmatrix& transpose();
    template< typename Other > inline DenseSubmatrix& scale( Other scalar );
    //@}
    //**********************************************************************************************
@@ -7472,6 +7551,31 @@ inline void DenseSubmatrix<MT,aligned,true>::reset( size_t j )
    const size_t iend( row_ + m_ );
    for( size_t i=row_; i<iend; ++i )
       reset( matrix_(i,column_+j) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Transposing the submatrix.
+//
+// \return Reference to the transposed submatrix.
+// \exception std::runtime_error Invalid transpose of a non-quadratic submatrix.
+//
+// This function transposes the dense submatrix in-place. Note that this function can only be used
+// for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. The
+// attempt to transpose a non-quadratic submatrix results in a \a std::runtime_error exception.
+*/
+template< typename MT >  // Type of the dense matrix
+inline DenseSubmatrix<MT,aligned,true>& DenseSubmatrix<MT,aligned,true>::transpose()
+{
+   if( rows() != columns() )
+      throw std::runtime_error( "Invalid transpose of a non-quadratic submatrix" );
+
+   const ResultType tmp( trans(*this) );
+   smpAssign( *this, tmp );
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
