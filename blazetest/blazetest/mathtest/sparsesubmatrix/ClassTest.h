@@ -101,6 +101,7 @@ class ClassTest
    void testErase       ();
    void testReserve     ();
    void testTrim        ();
+   void testTranspose   ();
    void testFind        ();
    void testLowerBound  ();
    void testUpperBound  ();
