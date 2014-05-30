@@ -79,6 +79,7 @@ AlignedTest::AlignedTest()
    testIterator();
    testNonZeros();
    testReset();
+   testTranspose();
    testIsDefault();
    testIsNan();
    testIsSame();
@@ -3553,13 +3554,13 @@ void AlignedTest::testIterator()
 
 
 //*************************************************************************************************
-/*!\brief Test of the nonZeros member function of DenseSubmatrix.
+/*!\brief Test of the nonZeros member function of the DenseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the nonZeros member function of DenseSubmatrix. In
-// case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the nonZeros member function of the DenseSubmatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void AlignedTest::testNonZeros()
 {
@@ -3663,13 +3664,13 @@ void AlignedTest::testNonZeros()
 
 
 //*************************************************************************************************
-/*!\brief Test of the reset member function of DenseSubmatrix.
+/*!\brief Test of the reset member function of the DenseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the reset member function of DenseSubmatrix. In case
-// an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the reset member function of the DenseSubmatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void AlignedTest::testReset()
 {
@@ -3798,6 +3799,88 @@ void AlignedTest::testReset()
                 << "   Expected result:\n" << sm2 << "\n";
             throw std::runtime_error( oss.str() );
          }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the transpose member function of the DenseSubmatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the transpose member function of the DenseSubmatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void AlignedTest::testTranspose()
+{
+   using blaze::submatrix;
+   using blaze::aligned;
+   using blaze::unaligned;
+
+
+   //=====================================================================================
+   // Row-major submatrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major DenseSubmatrix::transpose()";
+
+      initialize();
+
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 8UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 8UL );
+
+      sm1.transpose();
+      sm2.transpose();
+
+      checkRows   ( sm1, 8UL );
+      checkColumns( sm1, 8UL );
+      checkRows   ( sm2, 8UL );
+      checkColumns( sm2, 8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major submatrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major DenseSubmatrix::transpose()";
+
+      initialize();
+
+      ATSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 8UL, 8UL );
+      UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 8UL, 8UL );
+
+      sm1.transpose();
+      sm2.transpose();
+
+      checkRows   ( sm1, 8UL );
+      checkColumns( sm1, 8UL );
+      checkRows   ( sm2, 8UL );
+      checkColumns( sm2, 8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
       }
    }
 }

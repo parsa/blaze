@@ -96,7 +96,7 @@ class UnalignedTest
    void testIterator    ();
    void testNonZeros    ();
    void testReset       ();
-   void testReserve     ();
+   void testTranspose   ();
    void testIsDefault   ();
    void testIsNan       ();
    void testIsSame      ();
