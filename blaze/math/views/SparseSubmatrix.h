@@ -789,6 +789,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
                                      void             reserve( size_t i, size_t nonzeros );
                               inline void             trim();
                               inline void             trim( size_t i );
+                              inline SparseSubmatrix& transpose();
    template< typename Other > inline SparseSubmatrix& scale( Other scalar );
    //@}
    //**********************************************************************************************
@@ -1760,6 +1761,35 @@ void SparseSubmatrix<MT,AF,SO>::trim( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    matrix_.trim( row_ + i );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Transposing the submatrix.
+//
+// \return Reference to the transposed submatrix.
+// \exception std::runtime_error Invalid transpose of a non-quadratic submatrix.
+//
+// This function transposes the sparse submatrix in-place. Note that this function can only be
+// used for quadratic submatrices, i.e. if the number of rows is equal to the number of columns.
+// The attempt to transpose a non-quadratic submatrix results in a \a std::runtime_error
+// exception.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::transpose()
+{
+   using blaze::assign;
+
+   if( rows() != columns() )
+      throw std::runtime_error( "Invalid transpose of a non-quadratic submatrix" );
+
+   const ResultType tmp( trans(*this) );
+   reset();
+   assign( *this, tmp );
+   return *this;
 }
 //*************************************************************************************************
 
@@ -2776,6 +2806,7 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
                                      void             reserve( size_t i, size_t nonzeros );
                               inline void             trim();
                               inline void             trim( size_t j );
+                              inline SparseSubmatrix& transpose();
    template< typename Other > inline SparseSubmatrix& scale( Other scalar );
    //@}
    //**********************************************************************************************
@@ -3719,6 +3750,36 @@ void SparseSubmatrix<MT,AF,true>::trim( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    matrix_.trim( column_ + j );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Transposing the submatrix.
+//
+// \return Reference to the transposed submatrix.
+// \exception std::runtime_error Invalid transpose of a non-quadratic submatrix.
+//
+// This function transposes the sparse submatrix in-place. Note that this function can only be
+// used for quadratic submatrices, i.e. if the number of rows is equal to the number of columns.
+// The attempt to transpose a non-quadratic submatrix results in a \a std::runtime_error
+// exception.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline SparseSubmatrix<MT,AF,true>& SparseSubmatrix<MT,AF,true>::transpose()
+{
+   using blaze::assign;
+
+   if( rows() != columns() )
+      throw std::runtime_error( "Invalid transpose of a non-quadratic submatrix" );
+
+   const ResultType tmp( trans(*this) );
+   reset();
+   assign( *this, tmp );
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
