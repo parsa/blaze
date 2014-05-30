@@ -4477,6 +4477,26 @@ namespace blaze {}
    y = C * x;  // ... before the right-hand side matrix-vector multiplication
    \endcode
 
+// Alternatively, it is also possible to use the \c eval() function to fix the order of evaluation:
+
+   \code
+   blaze::DynamicVector<double> d1, d2, d3;
+   blaze::CompressedVector<double> s1;
+
+   // ... Resizing and initialization
+
+   d3 = d1 + eval( s1 + d2 );
+   \endcode
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   blaze::DynamicVector<double> x, y;
+
+   // ... Resizing and initialization
+
+   y = eval( A * B ) * x;
+   \endcode
+
 // \n <center> Previous: \ref matrix_serialization &nbsp; &nbsp; Next: \ref configuration_files </center> \n
 */
 //*************************************************************************************************
