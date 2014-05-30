@@ -4205,13 +4205,13 @@ void ClassTest::testFunctionCall()
 
 
 //*************************************************************************************************
-/*!\brief Test of the nonZeros member function of StaticMatrix.
+/*!\brief Test of the \c nonZeros() member function of the StaticMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the nonZeros member function of StaticMatrix. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c nonZeros() member function of the StaticMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testNonZeros()
 {
@@ -4326,13 +4326,13 @@ void ClassTest::testNonZeros()
 
 
 //*************************************************************************************************
-/*!\brief Test of the reset member function of StaticMatrix.
+/*!\brief Test of the \c reset() member function of the StaticMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the reset member function of StaticMatrix. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c reset() member function of the StaticMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testReset()
 {
@@ -4486,13 +4486,14 @@ void ClassTest::testReset()
 
 
 //*************************************************************************************************
-/*!\brief Test of the transpose member function of the StaticMatrix class template.
+/*!\brief Test of the \c transpose() member function of the StaticMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the transpose member function of the StaticMatrix class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c transpose() member function of the StaticMatrix
+// class template. Additionally, it performs a test of self-transpose via the \c trans()
+// function. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testTranspose()
 {
@@ -4501,11 +4502,39 @@ void ClassTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major StaticMatrix::normalize()";
+      test_ = "Row-major self-transpose via StaticMatrix::transpose()";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
 
       mat.transpose();
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 9UL );
+      checkNonZeros( mat, 9UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
+      checkNonZeros( mat, 2UL, 3UL );
+
+      if( mat(0,0) != 1 || mat(0,1) != 4 || mat(0,2) != 7 ||
+          mat(1,0) != 2 || mat(1,1) != 5 || mat(1,2) != 8 ||
+          mat(2,0) != 3 || mat(2,1) != 6 || mat(2,2) != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 4 7 )\n( 2 5 8 )\n( 3 6 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major self-transpose via trans()";
+
+      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
+
+      mat = trans( mat );
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 3UL );
@@ -4534,11 +4563,39 @@ void ClassTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Column-major StaticMatrix::normalize()";
+      test_ = "Column-major self-transpose via StaticMatrix::transpose()";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
 
       mat.transpose();
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 9UL );
+      checkNonZeros( mat, 9UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
+      checkNonZeros( mat, 2UL, 3UL );
+
+      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
+          mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ||
+          mat(2,0) != 7 || mat(2,1) != 8 || mat(2,2) != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n( 7 8 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major self-transpose via trans()";
+
+      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
+
+      mat = trans( mat );
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 3UL );
@@ -4565,12 +4622,12 @@ void ClassTest::testTranspose()
 
 
 //*************************************************************************************************
-/*!\brief Test of the swap functionality of the StaticMatrix class template.
+/*!\brief Test of the \c swap() functionality of the StaticMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the swap function of the StaticMatrix class template.
+// This function performs a test of the \c swap() function of the StaticMatrix class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testSwap()
@@ -4674,13 +4731,13 @@ void ClassTest::testSwap()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isDefault function with the StaticMatrix class template.
+/*!\brief Test of the \c isDefault() function with the StaticMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isDefault function with the StaticMatrix class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c isDefault() function with the StaticMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsDefault()
 {
@@ -4761,12 +4818,12 @@ void ClassTest::testIsDefault()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isnan function with the StaticMatrix class template.
+/*!\brief Test of the \c isnan() function with the StaticMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isnan function with the StaticMatrix class
+// This function performs a test of the \c isnan() function with the StaticMatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsNan()
@@ -4872,12 +4929,12 @@ void ClassTest::testIsNan()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isDiagonal function of the StaticMatrix class template.
+/*!\brief Test of the \c isDiagonal() function of the StaticMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isDiagonal function of the StaticMatrix class
+// This function performs a test of the \c isDiagonal() function of the StaticMatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsDiagonal()
@@ -5083,12 +5140,12 @@ void ClassTest::testIsDiagonal()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isSymmetric function of the StaticMatrix class template.
+/*!\brief Test of the \c isSymmetric() function of the StaticMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isSymmetric function of the StaticMatrix class
+// This function performs a test of the \c isSymmetric() function of the StaticMatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsSymmetric()
@@ -5341,12 +5398,12 @@ void ClassTest::testIsSymmetric()
 
 
 //*************************************************************************************************
-/*!\brief Test of the min function with the StaticMatrix class template.
+/*!\brief Test of the \c min() function with the StaticMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the min function with the StaticMatrix class template.
+// This function performs a test of the \c min() function with the StaticMatrix class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testMinimum()
@@ -5634,12 +5691,12 @@ void ClassTest::testMinimum()
 
 
 //*************************************************************************************************
-/*!\brief Test of the max function with the StaticMatrix class template.
+/*!\brief Test of the \c max() function with the StaticMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the max function with the StaticMatrix class template.
+// This function performs a test of the \c max() function with the StaticMatrix class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testMaximum()

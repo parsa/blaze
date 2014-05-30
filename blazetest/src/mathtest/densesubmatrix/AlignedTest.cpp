@@ -3554,13 +3554,13 @@ void AlignedTest::testIterator()
 
 
 //*************************************************************************************************
-/*!\brief Test of the nonZeros member function of the DenseSubmatrix class template.
+/*!\brief Test of the \c nonZeros() member function of the DenseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the nonZeros member function of the DenseSubmatrix class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c nonZeros() member function of the DenseSubmatrix
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void AlignedTest::testNonZeros()
 {
@@ -3664,12 +3664,12 @@ void AlignedTest::testNonZeros()
 
 
 //*************************************************************************************************
-/*!\brief Test of the reset member function of the DenseSubmatrix class template.
+/*!\brief Test of the \c reset() member function of the DenseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the reset member function of the DenseSubmatrix class
+// This function performs a test of the \c reset() member function of the DenseSubmatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void AlignedTest::testReset()
@@ -3806,13 +3806,14 @@ void AlignedTest::testReset()
 
 
 //*************************************************************************************************
-/*!\brief Test of the transpose member function of the DenseSubmatrix class template.
+/*!\brief Test of the \c transpose() member function of the DenseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the transpose member function of the DenseSubmatrix class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c transpose() member function of the DenseSubmatrix
+// class template. Additionally, it performs a test of self-transpose via the \c trans()
+// function. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void AlignedTest::testTranspose()
 {
@@ -3826,7 +3827,7 @@ void AlignedTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseSubmatrix::transpose()";
+      test_ = "Row-major self-transpose via DenseSubmatrix::transpose()";
 
       initialize();
 
@@ -3852,13 +3853,40 @@ void AlignedTest::testTranspose()
       }
    }
 
+   {
+      test_ = "Row-major self-transpose via trans()";
+
+      initialize();
+
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 8UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 8UL );
+
+      sm1 = trans( sm1 );
+      sm2 = trans( sm2 );
+
+      checkRows   ( sm1, 8UL );
+      checkColumns( sm1, 8UL );
+      checkRows   ( sm2, 8UL );
+      checkColumns( sm2, 8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
 
    //=====================================================================================
    // Column-major submatrix tests
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseSubmatrix::transpose()";
+      test_ = "Column-major self-transpose via DenseSubmatrix::transpose()";
 
       initialize();
 
@@ -3883,17 +3911,44 @@ void AlignedTest::testTranspose()
          throw std::runtime_error( oss.str() );
       }
    }
+
+   {
+      test_ = "Column-major self-transpose via trans()";
+
+      initialize();
+
+      ATSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 8UL, 8UL );
+      UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 8UL, 8UL );
+
+      sm1 = trans( sm1 );
+      sm2 = trans( sm2 );
+
+      checkRows   ( sm1, 8UL );
+      checkColumns( sm1, 8UL );
+      checkRows   ( sm2, 8UL );
+      checkColumns( sm2, 8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Test of the isDefault function with the DenseSubmatrix class template.
+/*!\brief Test of the \c isDefault() function with the DenseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isDefault function with the DenseSubmatrix class
+// This function performs a test of the \c isDefault() function with the DenseSubmatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void AlignedTest::testIsDefault()
@@ -3985,12 +4040,12 @@ void AlignedTest::testIsDefault()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isnan function with the DenseSubmatrix class template.
+/*!\brief Test of the \c isnan() function with the DenseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isnan function with the DenseSubmatrix class
+// This function performs a test of the \c isnan() function with the DenseSubmatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void AlignedTest::testIsNan()
@@ -4102,12 +4157,12 @@ void AlignedTest::testIsNan()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isSame function with the DenseSubmatrix class template.
+/*!\brief Test of the \c isSame() function with the DenseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isSame function with the DenseSubmatrix class
+// This function performs a test of the \c isSame() function with the DenseSubmatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void AlignedTest::testIsSame()
@@ -4547,12 +4602,12 @@ void AlignedTest::testIsSame()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isDiagonal function with the DenseSubmatrix class template.
+/*!\brief Test of the \c isDiagonal() function with the DenseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isDiagonal function with the DenseSubmatrix
+// This function performs a test of the \c isDiagonal() function with the DenseSubmatrix
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void AlignedTest::testIsDiagonal()
@@ -4730,12 +4785,12 @@ void AlignedTest::testIsDiagonal()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isSymmetric function with the DenseSubmatrix class template.
+/*!\brief Test of the \c isSymmetric() function with the DenseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isSymmetric function with the DenseSubmatrix
+// This function performs a test of the \c isSymmetric() function with the DenseSubmatrix
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void AlignedTest::testIsSymmetric()
@@ -4953,12 +5008,12 @@ void AlignedTest::testIsSymmetric()
 
 
 //*************************************************************************************************
-/*!\brief Test of the min function with the DenseSubmatrix class template.
+/*!\brief Test of the \c min() function with the DenseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the min function with the DenseSubmatrix class template.
+// This function performs a test of the \c min() function with the DenseSubmatrix class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void AlignedTest::testMinimum()
@@ -5019,12 +5074,12 @@ void AlignedTest::testMinimum()
 
 
 //*************************************************************************************************
-/*!\brief Test of the max function with the DenseSubmatrix class template.
+/*!\brief Test of the \c max() function with the DenseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the max function with the DenseSubmatrix class template.
+// This function performs a test of the \c max() function with the DenseSubmatrix class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void AlignedTest::testMaximum()
@@ -5085,13 +5140,13 @@ void AlignedTest::testMaximum()
 
 
 //*************************************************************************************************
-/*!\brief Test of the submatrix function with the DenseSubmatrix class template.
+/*!\brief Test of the \c submatrix() function with the DenseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the submatrix function with the DenseSubmatrix class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c submatrix() function with the DenseSubmatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void AlignedTest::testSubmatrix()
 {
@@ -5303,12 +5358,12 @@ void AlignedTest::testSubmatrix()
 
 
 //*************************************************************************************************
-/*!\brief Test of the row function with the DenseSubmatrix class template.
+/*!\brief Test of the \c row() function with the DenseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the row function with the DenseSubmatrix class template.
+// This function performs a test of the \c row() function with the DenseSubmatrix class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void AlignedTest::testRow()
@@ -5419,13 +5474,13 @@ void AlignedTest::testRow()
 
 
 //*************************************************************************************************
-/*!\brief Test of the column function with the DenseSubmatrix class template.
+/*!\brief Test of the \c column() function with the DenseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the column function with the DenseSubmatrix class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c column() function with the DenseSubmatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void AlignedTest::testColumn()
 {

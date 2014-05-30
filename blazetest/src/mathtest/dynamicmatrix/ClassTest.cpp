@@ -3208,13 +3208,13 @@ void ClassTest::testFunctionCall()
 
 
 //*************************************************************************************************
-/*!\brief Test of the nonZeros member function of DynamicMatrix.
+/*!\brief Test of the \c nonZeros() member function of the DynamicMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the nonZeros member function of DynamicMatrix. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c nonZeros() member function of the DynamicMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testNonZeros()
 {
@@ -3337,13 +3337,13 @@ void ClassTest::testNonZeros()
 
 
 //*************************************************************************************************
-/*!\brief Test of the reset member function of DynamicMatrix.
+/*!\brief Test of the \c reset() member function of the DynamicMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the reset member function of DynamicMatrix. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c reset() member function of the DynamicMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testReset()
 {
@@ -3509,13 +3509,13 @@ void ClassTest::testReset()
 
 
 //*************************************************************************************************
-/*!\brief Test of the clear member function of DynamicMatrix.
+/*!\brief Test of the \c clear() member function of the DynamicMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the clear member function of DynamicMatrix. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c clear() member function of the DynamicMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testClear()
 {
@@ -3609,13 +3609,13 @@ void ClassTest::testClear()
 
 
 //*************************************************************************************************
-/*!\brief Test of the resize member function of DynamicMatrix.
+/*!\brief Test of the \c resize() member function of the DynamicMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the resize member function of DynamicMatrix. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c resize() member function of the DynamicMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testResize()
 {
@@ -3806,13 +3806,13 @@ void ClassTest::testResize()
 
 
 //*************************************************************************************************
-/*!\brief Test of the extend member function of DynamicMatrix.
+/*!\brief Test of the \c extend() member function of the DynamicMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the extend member function of DynamicMatrix. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c extend() member function of the DynamicMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testExtend()
 {
@@ -3923,13 +3923,13 @@ void ClassTest::testExtend()
 
 
 //*************************************************************************************************
-/*!\brief Test of the reserve member function of DynamicMatrix.
+/*!\brief Test of the \c reserve() member function of the DynamicMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the reserve member function of DynamicMatrix. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c reserve() member function of the DynamicMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testReserve()
 {
@@ -4000,13 +4000,14 @@ void ClassTest::testReserve()
 
 
 //*************************************************************************************************
-/*!\brief Test of the transpose member function of the DynamicMatrix class template.
+/*!\brief Test of the \c transpose() member function of the DynamicMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the transpose member function of the DynamicMatrix class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c transpose() member function of the DynamicMatrix
+// class template. Additionally, it performs a test of self-transpose via the \c trans()
+// function. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testTranspose()
 {
@@ -4015,7 +4016,7 @@ void ClassTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major DynamicMatrix::transpose()";
+      test_ = "Row-major self-transpose via DynamicMatrix::transpose()";
 
       // Self-transpose of a 3x5 matrix
       {
@@ -4092,13 +4093,91 @@ void ClassTest::testTranspose()
       }
    }
 
+   {
+      test_ = "Row-major self-transpose via trans()";
+
+      // Self-transpose of a 3x5 matrix
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 5UL, 0 );
+         mat(0,0) = 1;
+         mat(0,2) = 2;
+         mat(0,4) = 3;
+         mat(1,1) = 4;
+         mat(1,3) = 5;
+         mat(2,0) = 6;
+         mat(2,2) = 7;
+         mat(2,4) = 8;
+
+         mat = trans( mat );
+
+         checkRows    ( mat,  5UL );
+         checkColumns ( mat,  3UL );
+         checkCapacity( mat, 15UL );
+         checkNonZeros( mat,  8UL );
+         checkNonZeros( mat,  0UL, 2UL );
+         checkNonZeros( mat,  1UL, 1UL );
+         checkNonZeros( mat,  2UL, 2UL );
+         checkNonZeros( mat,  3UL, 1UL );
+         checkNonZeros( mat,  4UL, 2UL );
+
+         if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 6 ||
+             mat(1,0) != 0 || mat(1,1) != 4 || mat(1,2) != 0 ||
+             mat(2,0) != 2 || mat(2,1) != 0 || mat(2,2) != 7 ||
+             mat(3,0) != 0 || mat(3,1) != 5 || mat(3,2) != 0 ||
+             mat(4,0) != 3 || mat(4,1) != 0 || mat(4,2) != 8 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 6 )\n( 0 4 0 )\n( 2 0 7 )\n( 0 5 0 )\n( 3 0 8 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Self-transpose of a 5x3 matrix
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 5UL, 3UL, 0 );
+         mat(0,0) = 1;
+         mat(0,2) = 6;
+         mat(1,1) = 4;
+         mat(2,0) = 2;
+         mat(2,2) = 7;
+         mat(3,1) = 5;
+         mat(4,0) = 3;
+         mat(4,2) = 8;
+
+         mat = trans( mat );
+
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkCapacity( mat, 15UL );
+         checkNonZeros( mat,  8UL );
+         checkNonZeros( mat,  0UL, 3UL );
+         checkNonZeros( mat,  1UL, 2UL );
+         checkNonZeros( mat,  2UL, 3UL );
+
+         if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 2 || mat(0,3) != 0 || mat(0,4) != 3 ||
+             mat(1,0) != 0 || mat(1,1) != 4 || mat(1,2) != 0 || mat(1,3) != 5 || mat(1,4) != 0 ||
+             mat(2,0) != 6 || mat(2,1) != 0 || mat(2,2) != 7 || mat(2,3) != 0 || mat(2,4) != 8 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 2 0 3 )\n( 0 4 0 5 0 )\n( 6 0 7 0 8 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
 
    //=====================================================================================
    // Column-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Column-major DynamicMatrix::transpose()";
+      test_ = "Column-major self-transpose via DynamicMatrix::transpose()";
 
       // Self-transpose of a 3x5 matrix
       {
@@ -4174,17 +4253,95 @@ void ClassTest::testTranspose()
          }
       }
    }
+
+   {
+      test_ = "Column-major self-transpose via trans()";
+
+      // Self-transpose of a 3x5 matrix
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 5UL, 0 );
+         mat(0,0) = 1;
+         mat(0,2) = 2;
+         mat(0,4) = 3;
+         mat(1,1) = 4;
+         mat(1,3) = 5;
+         mat(2,0) = 6;
+         mat(2,2) = 7;
+         mat(2,4) = 8;
+
+         mat = trans( mat );
+
+         checkRows    ( mat,  5UL );
+         checkColumns ( mat,  3UL );
+         checkCapacity( mat, 15UL );
+         checkNonZeros( mat,  8UL );
+         checkNonZeros( mat,  0UL, 3UL );
+         checkNonZeros( mat,  1UL, 2UL );
+         checkNonZeros( mat,  2UL, 3UL );
+
+         if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 6 ||
+             mat(1,0) != 0 || mat(1,1) != 4 || mat(1,2) != 0 ||
+             mat(2,0) != 2 || mat(2,1) != 0 || mat(2,2) != 7 ||
+             mat(3,0) != 0 || mat(3,1) != 5 || mat(3,2) != 0 ||
+             mat(4,0) != 3 || mat(4,1) != 0 || mat(4,2) != 8 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 6 )\n( 0 4 0 )\n( 2 0 7 )\n( 0 5 0 )\n( 3 0 8 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Self-transpose of a 5x3 matrix
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 5UL, 3UL, 0 );
+         mat(0,0) = 1;
+         mat(0,2) = 6;
+         mat(1,1) = 4;
+         mat(2,0) = 2;
+         mat(2,2) = 7;
+         mat(3,1) = 5;
+         mat(4,0) = 3;
+         mat(4,2) = 8;
+
+         mat = trans( mat );
+
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkCapacity( mat, 15UL );
+         checkNonZeros( mat,  8UL );
+         checkNonZeros( mat,  0UL, 2UL );
+         checkNonZeros( mat,  1UL, 1UL );
+         checkNonZeros( mat,  2UL, 2UL );
+         checkNonZeros( mat,  3UL, 1UL );
+         checkNonZeros( mat,  4UL, 2UL );
+
+         if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 2 || mat(0,3) != 0 || mat(0,4) != 3 ||
+             mat(1,0) != 0 || mat(1,1) != 4 || mat(1,2) != 0 || mat(1,3) != 5 || mat(1,4) != 0 ||
+             mat(2,0) != 6 || mat(2,1) != 0 || mat(2,2) != 7 || mat(2,3) != 0 || mat(2,4) != 8 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 2 0 3 )\n( 0 4 0 5 0 )\n( 6 0 7 0 8 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Test of the swap functionality of the DynamicMatrix class template.
+/*!\brief Test of the \c swap() functionality of the DynamicMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the swap function of the DynamicMatrix class template.
+// This function performs a test of the \c swap() function of the DynamicMatrix class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testSwap()
@@ -4306,13 +4463,13 @@ void ClassTest::testSwap()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isDefault function with the StaticMatrix class template.
+/*!\brief Test of the \c isDefault() function with the DynamicMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isDefault function with the StaticMatrix class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c isDefault() function with the DynamicMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsDefault()
 {
@@ -4423,12 +4580,12 @@ void ClassTest::testIsDefault()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isnan function with the DynamicMatrix class template.
+/*!\brief Test of the \c isnan() function with the DynamicMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isnan function with the DynamicMatrix class
+// This function performs a test of the \c isnan() function with the DynamicMatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsNan()
@@ -4570,12 +4727,12 @@ void ClassTest::testIsNan()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isDiagonal function of the DynamicMatrix class template.
+/*!\brief Test of the \c isDiagonal() function of the DynamicMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isDiagonal function of the DynamicMatrix class
+// This function performs a test of the \c isDiagonal() function of the DynamicMatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsDiagonal()
@@ -4795,12 +4952,12 @@ void ClassTest::testIsDiagonal()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isSymmetric function with the DynamicMatrix class template.
+/*!\brief Test of the \c isSymmetric() function with the DynamicMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isSymmetric function with the DynamicMatrix class
+// This function performs a test of the \c isSymmetric() function with the DynamicMatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsSymmetric()
@@ -5077,13 +5234,13 @@ void ClassTest::testIsSymmetric()
 
 
 //*************************************************************************************************
-/*!\brief Test of the min function with the DynamicMatrix class template.
+/*!\brief Test of the \c min() function with the DynamicMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the min function with the DynamicMatrix class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c min() function with the DynamicMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testMinimum()
 {
@@ -5370,13 +5527,13 @@ void ClassTest::testMinimum()
 
 
 //*************************************************************************************************
-/*!\brief Test of the max function with the DynamicMatrix class template.
+/*!\brief Test of the \c max() function with the DynamicMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the max function with the DynamicMatrix class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c max() function with the DynamicMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testMaximum()
 {

@@ -4717,12 +4717,12 @@ void ClassTest::testIterator()
 
 
 //*************************************************************************************************
-/*!\brief Test of the nonZeros member function of the SparseSubmatrix class template.
+/*!\brief Test of the \c nonZeros() member function of the SparseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the nonZeros member function of the SparseSubmatrix class
+// This function performs a test of the \c nonZeros() member function of the SparseSubmatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testNonZeros()
@@ -4875,12 +4875,12 @@ void ClassTest::testNonZeros()
 
 
 //*************************************************************************************************
-/*!\brief Test of the reset member function of the SparseSubmatrix class template.
+/*!\brief Test of the \c reset() member function of the SparseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the reset member function of the SparseSubmatrix class
+// This function performs a test of the \c reset() member function of the SparseSubmatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testReset()
@@ -5153,12 +5153,12 @@ void ClassTest::testReset()
 
 
 //*************************************************************************************************
-/*!\brief Test of the append member function of the SparseSubmatrix class template.
+/*!\brief Test of the \c append() member function of the SparseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the append member function of the SparseSubmatrix class
+// This function performs a test of the \c append() member function of the SparseSubmatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testAppend()
@@ -5528,12 +5528,12 @@ void ClassTest::testAppend()
 
 
 //*************************************************************************************************
-/*!\brief Test of the insert member function of the SparseSubmatrix class template.
+/*!\brief Test of the \c insert() member function of the SparseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the insert member function of the SparseSubmatrix class
+// This function performs a test of the \c insert() member function of the SparseSubmatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testInsert()
@@ -5724,12 +5724,12 @@ void ClassTest::testInsert()
 
 
 //*************************************************************************************************
-/*!\brief Test of the erase member function of the SparseSubmatrix class template.
+/*!\brief Test of the \c erase() member function of the SparseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the erase member function of the SparseSubmatrix class
+// This function performs a test of the \c erase() member function of the SparseSubmatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testErase()
@@ -6523,12 +6523,12 @@ void ClassTest::testErase()
 
 
 //*************************************************************************************************
-/*!\brief Test of the reserve member function of the SparseSubmatrix class template.
+/*!\brief Test of the \c reserve() member function of the SparseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the reserve member function of the SparseSubmatrix class
+// This function performs a test of the \c reserve() member function of the SparseSubmatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testReserve()
@@ -6642,12 +6642,12 @@ void ClassTest::testReserve()
 
 
 //*************************************************************************************************
-/*!\brief Test of the trim member functions of the SparseSubmatrix class template.
+/*!\brief Test of the \c trim() member functions of the SparseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the trim member functions of the SparseSubmatrix class
+// This function performs a test of the \c trim() member functions of the SparseSubmatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testTrim()
@@ -6821,13 +6821,14 @@ void ClassTest::testTrim()
 
 
 //*************************************************************************************************
-/*!\brief Test of the transpose member functions of the SparseSubmatrix class template.
+/*!\brief Test of the \c transpose() member functions of the SparseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the trim member functions of the SparseSubmatrix class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c transpose() member function of the SparseSubmatrix
+// class template. Additionally, it performs a test of self-transpose via the \c trans()
+// function. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testTranspose()
 {
@@ -6836,7 +6837,7 @@ void ClassTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseSubmatrix::transpose()";
+      test_ = "Row-major self-transpose via DenseSubmatrix::transpose()";
 
       initialize();
 
@@ -6882,13 +6883,60 @@ void ClassTest::testTranspose()
       }
    }
 
+   {
+      test_ = "Row-major self-transpose via trans()";
+
+      initialize();
+
+      SMT sm = submatrix( mat_, 1UL, 0UL, 3UL, 3UL );
+
+      sm = trans( sm );
+
+      checkRows    ( sm  ,  3UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  5UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != -2 || sm(0,2) != 0 ||
+          sm(1,0) != 1 || sm(1,1) !=  0 || sm(1,2) != 4 ||
+          sm(2,0) != 0 || sm(2,1) != -3 || sm(2,2) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 -2 0 )\n( 1  0 4 )\n( 0 -3 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) != -2 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != 1 || mat_(2,1) !=  0 || mat_(2,2) != 4 || mat_(2,3) !=  0 ||
+          mat_(3,0) != 0 || mat_(3,1) != -3 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
+          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0 -2  0  0 )\n"
+                                     "(  1  0  4  0 )\n"
+                                     "(  0 -3  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
 
    //=====================================================================================
    // Column-major submatrix tests
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseSubmatrix::transpose()";
+      test_ = "Column-major self-transpose via DenseSubmatrix::transpose()";
 
       initialize();
 
@@ -6931,17 +6979,62 @@ void ClassTest::testTranspose()
          throw std::runtime_error( oss.str() );
       }
    }
+
+   {
+      test_ = "Column-major self-transpose via trans()";
+
+      initialize();
+
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
+
+      sm = trans( sm );
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  3UL );
+      checkNonZeros( sm   ,  5UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 1 || sm(0,2) !=  0 ||
+          sm(1,0) != -2 || sm(1,1) != 0 || sm(1,2) != -3 ||
+          sm(2,0) !=  0 || sm(2,1) != 4 || sm(2,2) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0  1  0 )\n( -2  0 -3 )\n(  0  4  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 1 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != -2 || tmat_(1,2) != 0 || tmat_(1,3) != -3 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 4 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) != 0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0  1  0  7 )\n"
+                                     "(  0 -2  0 -3 -8 )\n"
+                                     "(  0  0  4  5  9 )\n"
+                                     "(  0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Test of the find member function of the SparseSubmatrix class template.
+/*!\brief Test of the \c find() member function of the SparseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the find member function of the SparseSubmatrix class
+// This function performs a test of the \c find() member function of the SparseSubmatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testFind()
@@ -7137,13 +7230,13 @@ void ClassTest::testFind()
 
 
 //*************************************************************************************************
-/*!\brief Test of the lowerBound member function of the SparseSubmatrix class template.
+/*!\brief Test of the \c lowerBound() member function of the SparseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the lowerBound member function of the SparseSubmatrix class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c lowerBound() member function of the SparseSubmatrix
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testLowerBound()
 {
@@ -7324,13 +7417,13 @@ void ClassTest::testLowerBound()
 
 
 //*************************************************************************************************
-/*!\brief Test of the upperBound member function of the SparseSubmatrix class template.
+/*!\brief Test of the \c upperBound() member function of the SparseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the upperBound member function of the SparseSubmatrix class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c upperBound() member function of the SparseSubmatrix
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testUpperBound()
 {
@@ -7487,12 +7580,12 @@ void ClassTest::testUpperBound()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isDefault function with the SparseSubmatrix class template.
+/*!\brief Test of the \c isDefault() function with the SparseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isDefault function with the SparseSubmatrix class
+// This function performs a test of the \c isDefault() function with the SparseSubmatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsDefault()
@@ -7578,12 +7671,12 @@ void ClassTest::testIsDefault()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isnan function with the SparseSubmatrix class template.
+/*!\brief Test of the \c isnan() function with the SparseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isnan function with the SparseSubmatrix class
+// This function performs a test of the \c isnan() function with the SparseSubmatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsNan()
@@ -7699,12 +7792,12 @@ void ClassTest::testIsNan()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isSame function with the SparseSubmatrix class template.
+/*!\brief Test of the \c isSame() function with the SparseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isSame function with the SparseSubmatrix class
+// This function performs a test of the \c isSame() function with the SparseSubmatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsSame()
@@ -8140,12 +8233,12 @@ void ClassTest::testIsSame()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isDiagonal function with the SparseSubmatrix class template.
+/*!\brief Test of the \c isDiagonal() function with the SparseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isDiagonal function with the SparseSubmatrix
+// This function performs a test of the \c isDiagonal() function with the SparseSubmatrix
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsDiagonal()
@@ -8345,12 +8438,12 @@ void ClassTest::testIsDiagonal()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isSymmetric function with the SparseSubmatrix class template.
+/*!\brief Test of the \c isSymmetric() function with the SparseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isSymmetric function with the SparseSubmatrix
+// This function performs a test of the \c isSymmetric() function with the SparseSubmatrix
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsSymmetric()
@@ -8598,13 +8691,13 @@ void ClassTest::testIsSymmetric()
 
 
 //*************************************************************************************************
-/*!\brief Test of the min function with the SparseSubmatrix class template.
+/*!\brief Test of the \c min() function with the SparseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the min function with the SparseSubmatrix class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c min() function with the SparseSubmatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testMinimum()
 {
@@ -8759,13 +8852,13 @@ void ClassTest::testMinimum()
 
 
 //*************************************************************************************************
-/*!\brief Test of the max function with the SparseSubmatrix class template.
+/*!\brief Test of the \c max() function with the SparseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the max function with the SparseSubmatrix class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c max() function with the SparseSubmatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testMaximum()
 {
@@ -8920,13 +9013,13 @@ void ClassTest::testMaximum()
 
 
 //*************************************************************************************************
-/*!\brief Test of the submatrix function with the SparseSubmatrix class template.
+/*!\brief Test of the \c submatrix() function with the SparseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the submatrix function with the SparseSubmatrix class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c submatrix() function with the SparseSubmatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testSubmatrix()
 {
@@ -9109,13 +9202,13 @@ void ClassTest::testSubmatrix()
 
 
 //*************************************************************************************************
-/*!\brief Test of the row function with the SparseSubmatrix class template.
+/*!\brief Test of the \c row() function with the SparseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the row function with the SparseSubmatrix class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c row() function with the SparseSubmatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testRow()
 {
@@ -9194,13 +9287,13 @@ void ClassTest::testRow()
 
 
 //*************************************************************************************************
-/*!\brief Test of the column function with the SparseSubmatrix class template.
+/*!\brief Test of the \c column() function with the SparseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the column function with the SparseSubmatrix class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c column() function with the SparseSubmatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testColumn()
 {
