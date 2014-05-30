@@ -721,7 +721,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = VT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -810,6 +810,8 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
    //@{
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
+
+   inline bool canSMPAssign() const;
 
    template< typename VT2 >   inline void assign   ( const DenseVector <VT2,TF>& rhs );
    template< typename VT2 >   inline void assign   ( const SparseVector<VT2,TF>& rhs );
@@ -1793,6 +1795,26 @@ template< typename Other >  // Data type of the foreign expression
 inline bool SparseSubvector<VT,AF,TF>::isAliased( const Other* alias ) const
 {
    return vector_.isAliased( alias );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the subvector can be used in SMP assignments.
+//
+// \return \a true in case the subvector can be used in SMP assignments, \a false if not.
+//
+// This function returns whether the subvector can be used in SMP assignments. In contrast to the
+// \a smpAssignable member enumeration, which is based solely on compile time information, this
+// function additionally provides runtime information (as for instance the current size of the
+// vector).
+*/
+template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
+inline bool SparseSubvector<VT,AF,TF>::canSMPAssign() const
+{
+   return false;
 }
 //*************************************************************************************************
 
