@@ -721,7 +721,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -819,6 +819,8 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    //@{
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
+
+   inline bool canSMPAssign() const;
 
    template< typename MT2, bool SO2 > inline void assign   ( const DenseMatrix<MT2,SO2>&    rhs );
    template< typename MT2 >           inline void assign   ( const SparseMatrix<MT2,false>& rhs );
@@ -2135,6 +2137,26 @@ inline bool SparseSubmatrix<MT,AF,SO>::isAliased( const Other* alias ) const
 
 
 //*************************************************************************************************
+/*!\brief Returns whether the submatrix can be used in SMP assignments.
+//
+// \return \a true in case the submatrix can be used in SMP assignments, \a false if not.
+//
+// This function returns whether the submatrix can be used in SMP assignments. In contrast to the
+// \a smpAssignable member enumeration, which is based solely on compile time information, this
+// function additionally provides runtime information (as for instance the current number of
+// rows and/or columns of the matrix).
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline bool SparseSubmatrix<MT,AF,SO>::canSMPAssign() const
+{
+   return false;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Default implementation of the assignment of a dense matrix.
 //
 // \param rhs The right-hand side dense matrix to be assigned.
@@ -2738,7 +2760,7 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -2836,6 +2858,8 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    //@{
    template< typename Other > inline bool canAlias ( const Other* alias ) const;
    template< typename Other > inline bool isAliased( const Other* alias ) const;
+
+   inline bool canSMPAssign() const;
 
    template< typename MT2, bool SO > inline void assign   ( const DenseMatrix<MT2,SO>&     rhs );
    template< typename MT2 >          inline void assign   ( const SparseMatrix<MT2,false>& rhs );
@@ -4131,6 +4155,27 @@ template< typename Other >  // Data type of the foreign expression
 inline bool SparseSubmatrix<MT,AF,true>::isAliased( const Other* alias ) const
 {
    return matrix_.isAliased( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the submatrix can be used in SMP assignments.
+//
+// \return \a true in case the submatrix can be used in SMP assignments, \a false if not.
+//
+// This function returns whether the submatrix can be used in SMP assignments. In contrast to the
+// \a smpAssignable member enumeration, which is based solely on compile time information, this
+// function additionally provides runtime information (as for instance the current number of
+// rows and/or columns of the matrix).
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline bool SparseSubmatrix<MT,AF,true>::canSMPAssign() const
+{
+   return false;
 }
 /*! \endcond */
 //*************************************************************************************************
