@@ -3478,13 +3478,13 @@ void ClassTest::testIterator()
 
 
 //*************************************************************************************************
-/*!\brief Test of the nonZeros member function of DenseRow.
+/*!\brief Test of the \c nonZeros() member function of the DenseRow class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the nonZeros member function of DenseRow. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c nonZeros() member function of the DenseRow class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testNonZeros()
 {
@@ -3615,13 +3615,13 @@ void ClassTest::testNonZeros()
 
 
 //*************************************************************************************************
-/*!\brief Test of the reset member function of DenseRow.
+/*!\brief Test of the \c reset() member function of the DenseRow class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the reset member function of DenseRow. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c reset() member function of the DenseRow class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testReset()
 {
@@ -3880,12 +3880,12 @@ void ClassTest::testReset()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isDefault function with the DenseRow class template.
+/*!\brief Test of the \c isDefault() function with the DenseRow class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isDefault function with the DenseRow class template.
+// This function performs a test of the \c isDefault() function with the DenseRow class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsDefault()
@@ -3971,12 +3971,12 @@ void ClassTest::testIsDefault()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isnan function with the DenseRow class template.
+/*!\brief Test of the \c isnan() function with the DenseRow class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isnan function with the DenseRow class template.
+// This function performs a test of the \c isnan() function with the DenseRow class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsNan()
@@ -4122,12 +4122,12 @@ void ClassTest::testIsNan()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isSame function with the DenseRow class template.
+/*!\brief Test of the \c isSame() function with the DenseRow class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isSame function with the DenseRow class template.
+// This function performs a test of the \c isSame() function with the DenseRow class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsSame()
@@ -4597,12 +4597,12 @@ void ClassTest::testIsSame()
 
 
 //*************************************************************************************************
-/*!\brief Test of the min function with the DenseRow class template.
+/*!\brief Test of the \c min() function with the DenseRow class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the min function used with the DenseRow class
+// This function performs a test of the \c min() function used with the DenseRow class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testMinimum()
@@ -4782,12 +4782,12 @@ void ClassTest::testMinimum()
 
 
 //*************************************************************************************************
-/*!\brief Test of the max function with the DenseRow class template.
+/*!\brief Test of the \c max() function with the DenseRow class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the max function used with the DenseRow class
+// This function performs a test of the \c max() function used with the DenseRow class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testMaximum()
@@ -4967,12 +4967,12 @@ void ClassTest::testMaximum()
 
 
 //*************************************************************************************************
-/*!\brief Test of the subvector function with the DenseRow class template.
+/*!\brief Test of the \c subvector() function with the DenseRow class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the subvector function used with the DenseRow class
+// This function performs a test of the \c subvector() function used with the DenseRow class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testSubvector()

@@ -1522,13 +1522,13 @@ void ClassTest::testIterator()
 
 
 //*************************************************************************************************
-/*!\brief Test of the nonZeros member function of SparseSubvector.
+/*!\brief Test of the \c nonZeros() member function of the SparseSubvector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the nonZeros member function of SparseSubvector. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c nonZeros() member function of the SparseSubvector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testNonZeros()
 {
@@ -1594,13 +1594,13 @@ void ClassTest::testNonZeros()
 
 
 //*************************************************************************************************
-/*!\brief Test of the reset member function of SparseSubvector.
+/*!\brief Test of the \c reset() member function of the SparseSubvector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the reset member function of SparseSubvector. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c reset() member function of the SparseSubvector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testReset()
 {
@@ -1654,13 +1654,13 @@ void ClassTest::testReset()
 
 
 //*************************************************************************************************
-/*!\brief Test of the append member function of SparseSubvector.
+/*!\brief Test of the \c append() member function of the SparseSubvector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the append member function of SparseSubvector. In case
-// an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c append() member function of the SparseSubvector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testAppend()
 {
@@ -1713,13 +1713,13 @@ void ClassTest::testAppend()
 
 
 //*************************************************************************************************
-/*!\brief Test of the insert member function of SparseSubvector.
+/*!\brief Test of the \c insert() member function of the SparseSubvector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the insert member function of SparseSubvector. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c insert() member function of the SparseSubvector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testInsert()
 {
@@ -1846,13 +1846,13 @@ void ClassTest::testInsert()
 
 
 //*************************************************************************************************
-/*!\brief Test of the erase member function of SparseSubvector.
+/*!\brief Test of the \c erase() member function of the SparseSubvector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the erase member function of SparseSubvector. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c erase() member function of the SparseSubvector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testErase()
 {
@@ -2235,13 +2235,13 @@ void ClassTest::testErase()
 
 
 //*************************************************************************************************
-/*!\brief Test of the find member function of SparseSubvector.
+/*!\brief Test of the \c find() member function of the SparseSubvector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the find member function of SparseSubvector. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c find() member function of the SparseSubvector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testFind()
 {
@@ -2324,13 +2324,13 @@ void ClassTest::testFind()
 
 
 //*************************************************************************************************
-/*!\brief Test of the lowerBound member function of SparseSubvector.
+/*!\brief Test of the \c lowerBound() member function of the SparseSubvector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the lowerBound member function of SparseSubvector. In case
-// an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c lowerBound() member function of the SparseSubvector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testLowerBound()
 {
@@ -2413,13 +2413,13 @@ void ClassTest::testLowerBound()
 
 
 //*************************************************************************************************
-/*!\brief Test of the upperBound member function of SparseSubvector.
+/*!\brief Test of the \c upperBound() member function of the SparseSubvector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the upperBound member function of SparseSubvector. In case
-// an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c upperBound() member function of the SparseSubvector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testUpperBound()
 {
@@ -2490,13 +2490,13 @@ void ClassTest::testUpperBound()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isDefault function with the SparseSubvector class template.
+/*!\brief Test of the \c isDefault() function with the SparseSubvector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isDefault function with the SparseSubvector class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c isDefault() function with the SparseSubvector class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsDefault()
 {
@@ -2537,13 +2537,13 @@ void ClassTest::testIsDefault()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isnan function with the SparseSubvector class template.
+/*!\brief Test of the \c isnan() function with the SparseSubvector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isnan function with the SparseSubvector class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c isnan() function with the SparseSubvector class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsNan()
 {
@@ -2613,13 +2613,13 @@ void ClassTest::testIsNan()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isSame function with the SparseSubvector class template.
+/*!\brief Test of the \c isSame() function with the SparseSubvector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isSame function with the SparseSubvector class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c isSame() function with the SparseSubvector class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsSame()
 {
@@ -2752,12 +2752,12 @@ void ClassTest::testIsSame()
 
 
 //*************************************************************************************************
-/*!\brief Test of the min function with the SparseSubvector class template.
+/*!\brief Test of the \c min() function with the SparseSubvector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the min function used with the SparseSubvector class
+// This function performs a test of the \c min() function used with the SparseSubvector class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testMinimum()
@@ -2830,12 +2830,12 @@ void ClassTest::testMinimum()
 
 
 //*************************************************************************************************
-/*!\brief Test of the max function with the SparseSubvector class template.
+/*!\brief Test of the \c max() function with the SparseSubvector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the max function used with the SparseSubvector class
+// This function performs a test of the \c max() function used with the SparseSubvector class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testMaximum()
@@ -2908,13 +2908,13 @@ void ClassTest::testMaximum()
 
 
 //*************************************************************************************************
-/*!\brief Test of the subvector function with the SparseSubvector class template.
+/*!\brief Test of the \c subvector() function with the SparseSubvector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the subvector function used with the SparseSubvector class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c subvector() function used with the SparseSubvector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testSubvector()
 {

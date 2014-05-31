@@ -1643,13 +1643,13 @@ void UnalignedTest::testIterator()
 
 
 //*************************************************************************************************
-/*!\brief Test of the nonZeros member function of DenseSubvector.
+/*!\brief Test of the \c nonZeros() member function of the DenseSubvector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the nonZeros member function of DenseSubvector. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c nonZeros() member function of the DenseSubvector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void UnalignedTest::testNonZeros()
 {
@@ -1715,13 +1715,13 @@ void UnalignedTest::testNonZeros()
 
 
 //*************************************************************************************************
-/*!\brief Test of the reset member function of DenseSubvector.
+/*!\brief Test of the \c reset() member function of the DenseSubvector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the reset member function of DenseSubvector. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c reset() member function of the DenseSubvector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void UnalignedTest::testReset()
 {
@@ -1775,13 +1775,13 @@ void UnalignedTest::testReset()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isDefault function with the DenseSubvector class template.
+/*!\brief Test of the \c isDefault() function with the DenseSubvector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isDefault function with the DenseSubvector class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c isDefault() function with the DenseSubvector class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void UnalignedTest::testIsDefault()
 {
@@ -1822,13 +1822,13 @@ void UnalignedTest::testIsDefault()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isnan function with the DenseSubvector class template.
+/*!\brief Test of the \c isnan() function with the DenseSubvector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isnan function with the DenseSubvector class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c isnan() function with the DenseSubvector class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void UnalignedTest::testIsNan()
 {
@@ -1898,13 +1898,13 @@ void UnalignedTest::testIsNan()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isSame function with the DenseSubvector class template.
+/*!\brief Test of the \c isSame() function with the DenseSubvector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isSame function with the DenseSubvector class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c isSame() function with the DenseSubvector class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void UnalignedTest::testIsSame()
 {
@@ -2037,12 +2037,12 @@ void UnalignedTest::testIsSame()
 
 
 //*************************************************************************************************
-/*!\brief Test of the min function with the DenseSubvector class template.
+/*!\brief Test of the \c min() function with the DenseSubvector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the min function used with the DenseSubvector class
+// This function performs a test of the \c min() function used with the DenseSubvector class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void UnalignedTest::testMinimum()
@@ -2115,12 +2115,12 @@ void UnalignedTest::testMinimum()
 
 
 //*************************************************************************************************
-/*!\brief Test of the max function with the DenseSubvector class template.
+/*!\brief Test of the \c max() function with the DenseSubvector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the max function used with the DenseSubvector class
+// This function performs a test of the \c max() function used with the DenseSubvector class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void UnalignedTest::testMaximum()
@@ -2193,13 +2193,13 @@ void UnalignedTest::testMaximum()
 
 
 //*************************************************************************************************
-/*!\brief Test of the subvector function with the DenseSubvector class template.
+/*!\brief Test of the \c subvector() function with the DenseSubvector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the subvector function used with the DenseSubvector class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c subvector() function used with the DenseSubvector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void UnalignedTest::testSubvector()
 {

@@ -1286,13 +1286,13 @@ void ClassTest::testSubscript()
 
 
 //*************************************************************************************************
-/*!\brief Test of the nonZeros member function of HybridVector.
+/*!\brief Test of the \c nonZeros() member function of the HybridVector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the nonZeros member function of HybridVector. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c nonZeros() member function of the HybridVector class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testNonZeros()
 {
@@ -1342,13 +1342,13 @@ void ClassTest::testNonZeros()
 
 
 //*************************************************************************************************
-/*!\brief Test of the reset member function of HybridVector.
+/*!\brief Test of the \c reset() member function of the HybridVector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the reset member function of HybridVector. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c reset() member function of the HybridVector class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testReset()
 {
@@ -1396,13 +1396,13 @@ void ClassTest::testReset()
 
 
 //*************************************************************************************************
-/*!\brief Test of the clear member function of HybridVector.
+/*!\brief Test of the \c clear() member function of the HybridVector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the clear member function of HybridVector. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c clear() member function of the HybridVector class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testClear()
 {
@@ -1440,13 +1440,13 @@ void ClassTest::testClear()
 
 
 //*************************************************************************************************
-/*!\brief Test of the resize member function of HybridVector.
+/*!\brief Test of the \c resize() member function of the HybridVector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the resize member function of HybridVector. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c resize() member function of the HybridVector class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testResize()
 {
@@ -1522,13 +1522,13 @@ void ClassTest::testResize()
 
 
 //*************************************************************************************************
-/*!\brief Test of the extend member function of HybridVector.
+/*!\brief Test of the \c extend() member function of the HybridVector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the extend member function of HybridVector. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c extend() member function of the HybridVector class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testExtend()
 {
@@ -1576,12 +1576,12 @@ void ClassTest::testExtend()
 
 
 //*************************************************************************************************
-/*!\brief Test of the swap functionality of the HybridVector class template.
+/*!\brief Test of the \c swap() functionality of the HybridVector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the swap function of the HybridVector class template.
+// This function performs a test of the \c swap() function of the HybridVector class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testSwap()
@@ -1633,13 +1633,13 @@ void ClassTest::testSwap()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isDefault function with the HybridVector class template.
+/*!\brief Test of the \c isDefault() function with the HybridVector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isDefault function with the HybridVector class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c isDefault() function with the HybridVector class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsDefault()
 {
@@ -1692,12 +1692,12 @@ void ClassTest::testIsDefault()
 
 
 //*************************************************************************************************
-/*!\brief Test of the isnan function with the HybridVector class template.
+/*!\brief Test of the \c isnan() function with the HybridVector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the isnan function with the HybridVector class template.
+// This function performs a test of the \c isnan() function with the HybridVector class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIsNan()
@@ -1754,13 +1754,14 @@ void ClassTest::testIsNan()
 
 
 //*************************************************************************************************
-/*!\brief Test of the length and sqrLength functions with the HybridVector class template.
+/*!\brief Test of the \c length() and \c sqrLength() functions with the HybridVector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the length and sqrLength functions with the HybridVector
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c length() and \c sqrLength() functions with the
+// HybridVector class template. In case an error is detected, a \a std::runtime_error exception
+// is thrown.
 */
 void ClassTest::testLength()
 {
@@ -1864,13 +1865,13 @@ void ClassTest::testLength()
 
 
 //*************************************************************************************************
-/*!\brief Test of the normalize function with the HybridVector class template.
+/*!\brief Test of the \c normalize() function with the HybridVector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the normalize function with the HybridVector class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c normalize() function with the HybridVector class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testNormalize()
 {
@@ -1927,12 +1928,12 @@ void ClassTest::testNormalize()
 
 
 //*************************************************************************************************
-/*!\brief Test of the min function with the HybridVector class template.
+/*!\brief Test of the \c min() function with the HybridVector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the min function with the HybridVector class template.
+// This function performs a test of the \c min() function with the HybridVector class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testMinimum()
@@ -2015,12 +2016,12 @@ void ClassTest::testMinimum()
 
 
 //*************************************************************************************************
-/*!\brief Test of the max function with the HybridVector class template.
+/*!\brief Test of the \c max() function with the HybridVector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the max function with the HybridVector class template.
+// This function performs a test of the \c max() function with the HybridVector class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testMaximum()
