@@ -294,11 +294,9 @@ class ThreadBackend
 
    //**Compile time checks*************************************************************************
 #if BLAZE_CPP_THREADS_PARALLEL_MODE
-   BLAZE_STATIC_ASSERT( BLAZE_CPP_THREADS >  0UL        );
-   BLAZE_STATIC_ASSERT( BLAZE_CPP_THREADS <= maxThreads );
+   BLAZE_STATIC_ASSERT( BLAZE_CPP_THREADS > 0UL );
 #elif BLAZE_BOOST_THREADS_PARALLEL_MODE
-   BLAZE_STATIC_ASSERT( BLAZE_BOOST_THREADS >  0UL        );
-   BLAZE_STATIC_ASSERT( BLAZE_BOOST_THREADS <= maxThreads );
+   BLAZE_STATIC_ASSERT( BLAZE_BOOST_THREADS > 0UL );
 #endif
    //**********************************************************************************************
 };

@@ -51,16 +51,4 @@ namespace blaze {
 #define BLAZE_USE_SHARED_MEMORY_PARALLELIZATION 1
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief The maximum allowed number of threads.
-// \ingroup config
-//
-// This setting specifies the maximum allowed number of threads in the system. The attempt to
-// spawn more threads than this value (either via command line arguments, environment variables,
-// or at runtime) will either result in a compilation error or in a runtime exception.
-*/
-const size_t maxThreads = 256UL;
-//*************************************************************************************************
-
 } // namespace blaze

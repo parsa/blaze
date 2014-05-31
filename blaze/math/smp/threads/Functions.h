@@ -76,17 +76,17 @@ inline size_t getNumThreads()
 /*!\brief Sets the number of threads to be used for thread parallel operations.
 // \ingroup smp
 //
-// \param number The given number of threads \f$[1..maxThreads]\f$.
+// \param number The given number of threads \f$[1..\infty)\f$.
 // \return void
 // \exception std::invalid_argument Invalid number of threads.
 //
 // Via this function the maximum number of threads for thread parallel operations can be specified.
-// Note that the given \a number must be in the range \f$[1..maxThreads]\f$. In case an invalid
+// Note that the given \a number must be in the range \f$[1..\infty)\f$. In case an invalid
 // number of threads is specified, a \a std::invalid_argument exception is thrown.
 */
 inline size_t setNumThreads( size_t number )
 {
-   if( number == 0UL || number > maxThreads )
+   if( number == 0UL )
       throw std::invalid_argument( "Invalid number of threads" );
 
    TheThreadBackend::resize( number );

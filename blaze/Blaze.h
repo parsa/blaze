@@ -3788,12 +3788,10 @@ namespace blaze {}
    blaze::setNumThreads( 4 );
    \endcode
 
-// Note that the \b Blaze library defines an upper limit on the number of threads that can be
-// used. The attempt to use more than \c maxThreads will either result in a compilation error
-// (if possible) or in a runtime error. However, \c maxThreads can be customized to individual
-// requirements within the <em>./blaze/config/SMP.h</em> configuration file. Please note, though,
-// that the best performance can be expected if the specified number of threads matches the
-// available number of cores.
+// Please note that the \b Blaze library does not limit the available number of threads. Therefore
+// it is in YOUR responsibility to choose an appropriate number of threads. The best performance,
+// though, can be expected if the specified number of threads matches the available number of
+// cores.
 //
 // In order to query the number of threads used for the parallelization of operations, the
 // \c getNumThreads() function can be used:
@@ -4018,12 +4016,10 @@ namespace blaze {}
    blaze::setNumThreads( 4 );
    \endcode
 
-// Note that the \b Blaze library defines an upper limit on the number of threads that can be
-// used. The attempt to use more than \c maxThreads will either result in a compilation error
-// (if possible) or in a runtime error. However, \c maxThreads can be customized to individual
-// requirements within the <em>./blaze/config/SMP.h</em> configuration file. Please note, though,
-// that the best performance can be expected if the specified number of threads matches the
-// available number of cores.
+// Please note that the \b Blaze library does not limit the available number of threads. Therefore
+// it is in YOUR responsibility to choose an appropriate number of threads. The best performance,
+// though, can be expected if the specified number of threads matches the available number of
+// cores.
 //
 // In order to query the number of threads used for the parallelization of operations, the
 // \c getNumThreads() function can be used:
@@ -4088,12 +4084,10 @@ namespace blaze {}
    blaze::setNumThreads( 4 );
    \endcode
 
-// Note that the \b Blaze library defines an upper limit on the number of threads that can be
-// used. The attempt to use more than \c maxThreads will either result in a compilation error
-// (if possible) or in a runtime error. However, \c maxThreads can be customized to individual
-// requirements within the <em>./blaze/config/SMP.h</em> configuration file. Please note, though,
-// that the best performance can be expected if the specified number of threads matches the
-// available number of cores.
+// Please note that the \b Blaze library does not limit the available number of threads. Therefore
+// it is in YOUR responsibility to choose an appropriate number of threads. The best performance,
+// though, can be expected if the specified number of threads matches the available number of
+// cores.
 //
 // In order to query the number of threads used for the parallelization of operations, the
 // \c getNumThreads() function can be used:
