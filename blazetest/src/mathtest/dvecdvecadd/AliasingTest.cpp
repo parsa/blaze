@@ -39,6 +39,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <blaze/math/DenseSubvector.h>
 #include <blazetest/mathtest/dvecdvecadd/AliasingTest.h>
 
 
@@ -192,6 +193,20 @@ void AliasingTest::testDVecDVecAdd()
       db3_    = ( dA3x4_ * da4_ + db3_ ) + dc3_;
 
       checkResult( db3_, result_ );
+   }
+
+   // Assignment from subvectors
+   {
+      test_ = "DVecDVecAdd - Assignment from subvectors";
+
+      using blaze::subvector;
+
+      initialize();
+
+      result_ = subvector( da4_, 0UL, 3UL ) + subvector( da4_, 1UL, 3UL );
+      da4_    = subvector( da4_, 0UL, 3UL ) + subvector( da4_, 1UL, 3UL );
+
+      checkResult( da4_, result_ );
    }
 
 
