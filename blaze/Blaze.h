@@ -3814,8 +3814,14 @@ namespace blaze {}
 // size of both vector operands exceeds a certain threshold. Otherwise, the performance could
 // seriously decrease due to the overhead caused by the thread setup. However, in order to be
 // able to adjust the \b Blaze library to a specific system, it is possible to configure these
-// thresholds manually. All OpenMP thresholds are contained within the configuration file
+// thresholds manually. All shared memory thresholds are contained within the configuration file
 // <em>./blaze/config/Thresholds.h</em>.
+//
+// Please note that these thresholds are highly sensitiv to the used system architecture and
+// the shared memory parallelization technique (see also \ref cpp_threads_parallelization and
+// \ref boost_threads_parallelization). Therefore the default values cannot guarantee maximum
+// performance for all possible situations and configurations. They merely provide a reasonable
+// standard for the current CPU generation.
 //
 //
 // \n \section openmp_first_touch First Touch Policy
@@ -4045,6 +4051,13 @@ namespace blaze {}
 // is possible to configure these thresholds manually. All thresholds are contained within the
 // configuration file <em>./blaze/config/Thresholds.h</em>.
 //
+// Please note that these thresholds are highly sensitiv to the used system architecture and
+// the shared memory parallelization technique. Therefore the default values cannot guarantee
+// maximum performance for all possible situations and configurations. They merely provide a
+// reasonable standard for the current CPU generation. Also note that the provided defaults
+// have been determined using the OpenMP parallelization and require individual adaption for
+// the C++11 thread parallelization.
+//
 // \n <center> Previous: \ref openmp_parallelization &nbsp; &nbsp; Next: \ref boost_threads_parallelization </center>
 */
 //*************************************************************************************************
@@ -4107,6 +4120,13 @@ namespace blaze {}
 // an operation in parallel (see \ref openmp_parallelization or \ref cpp_threads_parallelization).
 // All thresholds related to the Boost thread parallelization are also contained within the
 // configuration file <em>./blaze/config/Thresholds.h</em>.
+//
+// Please note that these thresholds are highly sensitiv to the used system architecture and
+// the shared memory parallelization technique. Therefore the default values cannot guarantee
+// maximum performance for all possible situations and configurations. They merely provide a
+// reasonable standard for the current CPU generation. Also note that the provided defaults
+// have been determined using the OpenMP parallelization and require individual adaption for
+// the Boost thread parallelization.
 //
 // \n <center> Previous: \ref cpp_threads_parallelization &nbsp; &nbsp; Next: \ref serial_execution </center>
 */
