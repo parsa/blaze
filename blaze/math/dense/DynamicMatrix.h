@@ -1479,10 +1479,10 @@ inline void DynamicMatrix<Type,SO>::extend( size_t m, size_t n, bool preserve )
 //*************************************************************************************************
 /*!\brief Setting the minimum capacity of the matrix.
 //
-// \param elements The new minimum capacity of the sparse matrix.
+// \param elements The new minimum capacity of the dense matrix.
 // \return void
 //
-// This function increases the capacity of the sparse matrix to at least \a elements elements.
+// This function increases the capacity of the dense matrix to at least \a elements elements.
 // The current values of the matrix elements are preserved.
 */
 template< typename Type  // Data type of the matrix
@@ -2840,8 +2840,8 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( const Matrix<MT,SO>& m )
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
 {
    if( IsNumeric<Type>::value ) {
-      for( size_t j=0UL; j<n_; ++j )
-         for( size_t i=( IsSparseMatrix<MT>::value )?( 0UL ):( m_ ); i<mm_; ++i ) {
+      for( size_t j=0UL; j<n_; ++j ) {
+         for( size_t i=( IsSparseMatrix<MT>::value )?( 0UL ):( m_ ); i<mm_; ++i )
             v_[i+j*mm_] = Type();
       }
    }
@@ -3666,10 +3666,10 @@ inline void DynamicMatrix<Type,true>::extend( size_t m, size_t n, bool preserve 
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Setting the minimum capacity of the matrix.
 //
-// \param elements The new minimum capacity of the sparse matrix.
+// \param elements The new minimum capacity of the dense matrix.
 // \return void
 //
-// This function increases the capacity of the sparse matrix to at least \a elements elements.
+// This function increases the capacity of the dense matrix to at least \a elements elements.
 // The current values of the matrix elements are preserved.
 */
 template< typename Type >  // Data type of the matrix
