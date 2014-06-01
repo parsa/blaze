@@ -1668,7 +1668,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline bool DenseSubvector<VT,AF,TF>::canSMPAssign() const
 {
-   return ( size() > OPENMP_DVECASSIGN_THRESHOLD );
+   return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
 //*************************************************************************************************
 
@@ -3261,7 +3261,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline bool DenseSubvector<VT,aligned,TF>::canSMPAssign() const
 {
-   return ( size() > OPENMP_DVECASSIGN_THRESHOLD );
+   return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
 /*! \endcond */
 //*************************************************************************************************

@@ -1202,7 +1202,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline bool DenseColumn<MT,SO>::canSMPAssign() const
 {
-   return ( size() > OPENMP_DVECASSIGN_THRESHOLD );
+   return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
 //*************************************************************************************************
 
@@ -2842,7 +2842,7 @@ inline bool DenseColumn<MT,false>::isAligned() const
 template< typename MT >  // Type of the dense matrix
 inline bool DenseColumn<MT,false>::canSMPAssign() const
 {
-   return ( size() > OPENMP_DVECASSIGN_THRESHOLD );
+   return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
 /*! \endcond */
 //*************************************************************************************************

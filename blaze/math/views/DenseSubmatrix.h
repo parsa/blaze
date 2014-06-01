@@ -1863,7 +1863,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline bool DenseSubmatrix<MT,AF,SO>::canSMPAssign() const
 {
-   return ( rows() > OPENMP_DMATASSIGN_THRESHOLD );
+   return ( rows() > SMP_DMATASSIGN_THRESHOLD );
 }
 //*************************************************************************************************
 
@@ -4019,7 +4019,7 @@ inline bool DenseSubmatrix<MT,unaligned,true>::isAligned() const
 template< typename MT >  // Type of the dense matrix
 inline bool DenseSubmatrix<MT,unaligned,true>::canSMPAssign() const
 {
-   return ( columns() > OPENMP_DMATASSIGN_THRESHOLD );
+   return ( columns() > SMP_DMATASSIGN_THRESHOLD );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5905,7 +5905,7 @@ inline bool DenseSubmatrix<MT,aligned,false>::isAligned() const
 template< typename MT >  // Type of the dense matrix
 inline bool DenseSubmatrix<MT,aligned,false>::canSMPAssign() const
 {
-   return ( rows() > OPENMP_DMATASSIGN_THRESHOLD );
+   return ( rows() > SMP_DMATASSIGN_THRESHOLD );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -7738,7 +7738,7 @@ inline bool DenseSubmatrix<MT,aligned,true>::isAligned() const
 template< typename MT >  // Type of the dense matrix
 inline bool DenseSubmatrix<MT,aligned,true>::canSMPAssign() const
 {
-   return ( columns() > OPENMP_DMATASSIGN_THRESHOLD );
+   return ( columns() > SMP_DMATASSIGN_THRESHOLD );
 }
 /*! \endcond */
 //*************************************************************************************************

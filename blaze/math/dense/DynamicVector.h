@@ -1377,7 +1377,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline bool DynamicVector<Type,TF>::canSMPAssign() const
 {
-   return ( size() > OPENMP_DVECASSIGN_THRESHOLD );
+   return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
 //*************************************************************************************************
 
