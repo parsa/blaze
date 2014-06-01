@@ -469,7 +469,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix()
    : v_()  // The statically allocated matrix elements
 {
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=0UL; i<M*NN; ++i )
          v_[i] = Type();
    }
@@ -493,7 +493,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& init )
       for( size_t j=0UL; j<N; ++j )
          v_[i*NN+j] = init;
 
-      if( IsNumeric<Type>::value ) {
+      if( IsVectorizable<Type>::value ) {
          for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
       }
@@ -543,13 +543,13 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( size_t m, size_t n, const Other*
       for( size_t j=0UL; j<n; ++j )
          v_[i*NN+j] = array[i*n+j];
 
-      if( IsNumeric<Type>::value ) {
+      if( IsVectorizable<Type>::value ) {
          for( size_t j=n; j<NN; ++j )
             v_[i*NN+j] = Type();
       }
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=m; i<M; ++i ) {
          for( size_t j=0UL; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -591,7 +591,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Other (&array)[M][N] )
       for( size_t j=0UL; j<N; ++j )
          v_[i*NN+j] = array[i][j];
 
-      if( IsNumeric<Type>::value ) {
+      if( IsVectorizable<Type>::value ) {
          for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
       }
@@ -638,7 +638,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const StaticMatrix<Other,M,N,SO2
       for( size_t j=0UL; j<N; ++j )
          v_[i*NN+j] = m(i,j);
 
-      if( IsNumeric<Type>::value ) {
+      if( IsVectorizable<Type>::value ) {
          for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
       }
@@ -671,10 +671,10 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Matrix<MT,SO2>& m )
    if( (~m).rows() != M || (~m).columns() != N )
       throw std::invalid_argument( "Invalid setup of static matrix" );
 
-   if( IsNumeric<Type>::value ) {
-      for( size_t i=0UL; i<M; ++i ) {
-         for( size_t j=( IsSparseMatrix<MT>::value )?( 0UL ):( N ); j<NN; ++j )
-            v_[i*NN+j] = Type();
+   for( size_t i=0UL; i<M; ++i ) {
+      for( size_t j=( IsSparseMatrix<MT>::value   ? 0UL : N );
+                  j<( IsVectorizable<Type>::value ? NN  : N ); ++j ) {
+         v_[i*NN+j] = Type();
       }
    }
 
@@ -721,7 +721,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2 )
       v_[ NN] = v2;
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -772,7 +772,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
       v_[2UL*NN] = v3;
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -837,7 +837,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2,
       v_[3UL*NN] = v4;
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -895,7 +895,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
       v_[4UL*NN] = v5;
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -979,7 +979,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
       v_[5UL*NN] = v6;
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -1044,7 +1044,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
       v_[6UL*NN] = v7;
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -1138,7 +1138,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
       v_[7UL*NN] = v8;
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -1225,7 +1225,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
       v_[8UL*NN] = v9;
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -1331,7 +1331,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
       v_[9UL*NN] = v10;
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -3276,7 +3276,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,true>::StaticMatrix()
    : v_()  // The statically allocated matrix elements
 {
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=0UL; i<MM*N; ++i )
          v_[i] = Type();
    }
@@ -3301,7 +3301,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& init )
       for( size_t i=0UL; i<M; ++i )
          v_[i+j*MM] = init;
 
-      if( IsNumeric<Type>::value ) {
+      if( IsVectorizable<Type>::value ) {
          for( size_t i=M; i<MM; ++i )
             v_[i+j*MM] = Type();
       }
@@ -3352,13 +3352,13 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( size_t m, size_t n, const Othe
       for( size_t i=0UL; i<m; ++i )
          v_[i+j*MM] = array[i+j*m];
 
-      if( IsNumeric<Type>::value ) {
+      if( IsVectorizable<Type>::value ) {
          for( size_t i=m; i<MM; ++i )
             v_[i+j*MM] = Type();
       }
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t j=n; j<N; ++j ) {
          for( size_t i=0UL; i<M; ++i )
             v_[i+j*MM] = Type();
@@ -3401,7 +3401,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Other (&array)[M][N] )
       for( size_t i=0UL; i<M; ++i )
          v_[i+j*MM] = array[i][j];
 
-      if( IsNumeric<Type>::value ) {
+      if( IsVectorizable<Type>::value ) {
          for( size_t i=M; i<MM; ++i )
             v_[i+j*MM] = Type();
       }
@@ -3450,7 +3450,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const StaticMatrix<Other,M,N,S
       for( size_t i=0UL; i<M; ++i )
          v_[i+j*MM] = m(i,j);
 
-      if( IsNumeric<Type>::value ) {
+      if( IsVectorizable<Type>::value ) {
          for( size_t i=M; i<MM; ++i )
             v_[i+j*MM] = Type();
       }
@@ -3484,10 +3484,10 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Matrix<MT,SO>& m )
    if( (~m).rows() != M || (~m).columns() != N )
       throw std::invalid_argument( "Invalid setup of static matrix" );
 
-   if( IsNumeric<Type>::value ) {
-      for( size_t j=0UL; j<N; ++j ) {
-         for( size_t i=( IsSparseMatrix<MT>::value )?( 0UL ):( M ); i<MM; ++i )
-            v_[i+j*MM] = Type();
+   for( size_t j=0UL; j<N; ++j ) {
+      for( size_t i=( IsSparseMatrix<MT>::value   ? 0UL : M );
+                  i<( IsVectorizable<Type>::value ? MM  : M ); ++i ) {
+         v_[i+j*MM] = Type();
       }
    }
 
@@ -3535,7 +3535,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[ MM] = v2;
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t j=0UL; j<N; ++j )
          for( size_t i=M; i<MM; ++i ) {
             v_[i+j*MM] = Type();
@@ -3587,7 +3587,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[2UL*MM] = v3;
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t j=0UL; j<N; ++j )
          for( size_t i=M; i<MM; ++i ) {
             v_[i+j*MM] = Type();
@@ -3653,7 +3653,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[3UL*MM] = v4;
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t j=0UL; j<N; ++j )
          for( size_t i=M; i<MM; ++i ) {
             v_[i+j*MM] = Type();
@@ -3712,7 +3712,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[4UL*MM] = v5;
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t j=0UL; j<N; ++j )
          for( size_t i=M; i<MM; ++i ) {
             v_[i+j*MM] = Type();
@@ -3797,7 +3797,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[5UL*MM] = v6;
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t j=0UL; j<N; ++j )
          for( size_t i=M; i<MM; ++i ) {
             v_[i+j*MM] = Type();
@@ -3863,7 +3863,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[6UL*MM] = v7;
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t j=0UL; j<N; ++j )
          for( size_t i=M; i<MM; ++i ) {
             v_[i+j*MM] = Type();
@@ -3959,7 +3959,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[7UL*MM] = v8;
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t j=0UL; j<N; ++j )
          for( size_t i=M; i<MM; ++i ) {
             v_[i+j*MM] = Type();
@@ -4047,7 +4047,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[8UL*MM] = v9;
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t j=0UL; j<N; ++j )
          for( size_t i=M; i<MM; ++i ) {
             v_[i+j*MM] = Type();
@@ -4154,7 +4154,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[9UL*MM] = v10;
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t j=0UL; j<N; ++j )
          for( size_t i=M; i<MM; ++i ) {
             v_[i+j*MM] = Type();

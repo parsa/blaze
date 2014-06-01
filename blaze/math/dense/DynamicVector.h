@@ -448,7 +448,7 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n )
    , capacity_( adjustCapacity( n ) )          // The maximum capacity of the vector
    , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
 {
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=size_; i<capacity_; ++i )
          v_[i] = Type();
    }
@@ -474,7 +474,7 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Type& init )
    for( size_t i=0UL; i<size_; ++i )
       v_[i] = init;
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=size_; i<capacity_; ++i )
          v_[i] = Type();
    }
@@ -513,7 +513,7 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Other* array )
    for( size_t i=0UL; i<n; ++i )
       v_[i] = array[i];
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=n; i<capacity_; ++i )
          v_[i] = Type();
    }
@@ -550,7 +550,7 @@ inline DynamicVector<Type,TF>::DynamicVector( const Other (&array)[N] )
    for( size_t i=0UL; i<N; ++i )
       v_[i] = array[i];
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=N; i<capacity_; ++i )
          v_[i] = Type();
    }
@@ -594,11 +594,9 @@ inline DynamicVector<Type,TF>::DynamicVector( const Vector<VT,TF>& v )
    , capacity_( adjustCapacity( size_ ) )      // The maximum capacity of the vector
    , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
 {
-   if( IsNumeric<Type>::value ) {
-      if( IsSparseVector<VT>::value )
-         reset();
-      for( size_t i=size_; i<capacity_; ++i )
-         v_[i] = Type();
+   for( size_t i=( IsSparseVector<VT>::value   ? 0UL       : size_ );
+               i<( IsVectorizable<Type>::value ? capacity_ : size_ ); ++i ) {
+      v_[i] = Type();
    }
 
    smpAssign( *this, ~v );
@@ -1166,7 +1164,7 @@ inline void DynamicVector<Type,TF>::resize( size_t n, bool preserve )
          std::copy( v_, v_+size_, tmp );
       }
 
-      if( IsNumeric<Type>::value ) {
+      if( IsVectorizable<Type>::value ) {
          for( size_t i=size_; i<newCapacity; ++i )
             tmp[i] = Type();
       }
@@ -1176,7 +1174,7 @@ inline void DynamicVector<Type,TF>::resize( size_t n, bool preserve )
       deallocate( tmp );
       capacity_ = newCapacity;
    }
-   else if( IsNumeric<Type>::value && n < size_ )
+   else if( IsVectorizable<Type>::value && n < size_ )
    {
       for( size_t i=n; i<size_; ++i )
          v_[i] = Type();
@@ -1230,7 +1228,7 @@ inline void DynamicVector<Type,TF>::reserve( size_t n )
       // Initializing the new array
       std::copy( v_, v_+size_, tmp );
 
-      if( IsNumeric<Type>::value ) {
+      if( IsVectorizable<Type>::value ) {
          for( size_t i=size_; i<newCapacity; ++i )
             tmp[i] = Type();
       }
@@ -1290,7 +1288,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline size_t DynamicVector<Type,TF>::adjustCapacity( size_t minCapacity ) const
 {
-   if( IsNumeric<Type>::value )
+   if( IsVectorizable<Type>::value )
       return minCapacity + ( IT::size - ( minCapacity % IT::size ) ) % IT::size;
    else return minCapacity;
 }

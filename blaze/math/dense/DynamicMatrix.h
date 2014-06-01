@@ -470,7 +470,7 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( size_t m, size_t n )
    , capacity_( m_*nn_ )                       // The maximum capacity of the matrix
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
 {
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=n_; j<nn_; ++j )
             v_[i*nn_+j] = Type();
@@ -502,7 +502,7 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( size_t m, size_t n, const Type& in
       for( size_t j=0UL; j<n_; ++j )
          v_[i*nn_+j] = init;
 
-      if( IsNumeric<Type>::value ) {
+      if( IsVectorizable<Type>::value ) {
          for( size_t j=n_; j<nn_; ++j )
             v_[i*nn_+j] = Type();
       }
@@ -548,7 +548,7 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( size_t m, size_t n, const Other* a
       for( size_t j=0UL; j<n; ++j )
          v_[i*nn_+j] = array[i*n+j];
 
-      if( IsNumeric<Type>::value ) {
+      if( IsVectorizable<Type>::value ) {
          for( size_t j=n; j<nn_; ++j )
             v_[i*nn_+j] = Type();
       }
@@ -594,7 +594,7 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( const Other (&array)[M][N] )
       for( size_t j=0UL; j<N; ++j )
          v_[i*nn_+j] = array[i][j];
 
-      if( IsNumeric<Type>::value ) {
+      if( IsVectorizable<Type>::value ) {
          for( size_t j=N; j<nn_; ++j )
             v_[i*nn_+j] = Type();
       }
@@ -644,10 +644,10 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( const Matrix<MT,SO2>& m )
    , capacity_( m_*nn_ )                       // The maximum capacity of the matrix
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
 {
-   if( IsNumeric<Type>::value ) {
-      for( size_t i=0UL; i<m_; ++i ) {
-         for( size_t j=( IsSparseMatrix<MT>::value )?( 0UL ):( n_ ); j<nn_; ++j )
-            v_[i*nn_+j] = Type();
+   for( size_t i=0UL; i<m_; ++i ) {
+      for( size_t j=( IsSparseMatrix<MT>::value   ? 0UL : n_ );
+                  j<( IsVectorizable<Type>::value ? nn_ : n_ ); ++j ) {
+         v_[i*nn_+j] = Type();
       }
    }
 
@@ -1440,7 +1440,7 @@ void DynamicMatrix<Type,SO>::resize( size_t m, size_t n, bool preserve )
       capacity_ = m*nn;
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=0UL; i<m; ++i )
          for( size_t j=n; j<nn; ++j )
             v_[i*nn+j] = Type();
@@ -1497,7 +1497,7 @@ inline void DynamicMatrix<Type,SO>::reserve( size_t elements )
       // Initializing the new array
       std::copy( v_, v_+capacity_, tmp );
 
-      if( IsNumeric<Type>::value ) {
+      if( IsVectorizable<Type>::value ) {
          for( size_t i=capacity_; i<elements; ++i )
             tmp[i] = Type();
       }
@@ -1577,7 +1577,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline size_t DynamicMatrix<Type,SO>::adjustColumns( size_t minColumns ) const
 {
-   if( IsNumeric<Type>::value )
+   if( IsVectorizable<Type>::value )
       return minColumns + ( IT::size - ( minColumns % IT::size ) ) % IT::size;
    else return minColumns;
 }
@@ -2660,7 +2660,7 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( size_t m, size_t n )
    , capacity_( mm_*n_ )                       // The maximum capacity of the matrix
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
 {
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t j=0UL; j<n_; ++j )
          for( size_t i=m_; i<mm_; ++i ) {
             v_[i+j*mm_] = Type();
@@ -2693,7 +2693,7 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( size_t m, size_t n, const Type& 
       for( size_t i=0UL; i<m_; ++i )
          v_[i+j*mm_] = init;
 
-      if( IsNumeric<Type>::value ) {
+      if( IsVectorizable<Type>::value ) {
          for( size_t i=m_; i<mm_; ++i )
             v_[i+j*mm_] = Type();
       }
@@ -2740,7 +2740,7 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( size_t m, size_t n, const Other*
       for( size_t i=0UL; i<m; ++i )
          v_[i+j*mm_] = array[i+j*m];
 
-      if( IsNumeric<Type>::value ) {
+      if( IsVectorizable<Type>::value ) {
          for( size_t i=m; i<mm_; ++i )
             v_[i+j*mm_] = Type();
       }
@@ -2787,7 +2787,7 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( const Other (&array)[M][N] )
       for( size_t i=0UL; i<M; ++i )
          v_[i+j*mm_] = array[i][j];
 
-      if( IsNumeric<Type>::value ) {
+      if( IsVectorizable<Type>::value ) {
          for( size_t i=M; i<mm_; ++i )
             v_[i+j*mm_] = Type();
       }
@@ -2839,10 +2839,10 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( const Matrix<MT,SO>& m )
    , capacity_( mm_*n_ )                       // The maximum capacity of the matrix
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
 {
-   if( IsNumeric<Type>::value ) {
-      for( size_t j=0UL; j<n_; ++j ) {
-         for( size_t i=( IsSparseMatrix<MT>::value )?( 0UL ):( m_ ); i<mm_; ++i )
-            v_[i+j*mm_] = Type();
+   for( size_t j=0UL; j<n_; ++j ) {
+      for( size_t i=( IsSparseMatrix<MT>::value   ? 0UL : m_ );
+                  i<( IsVectorizable<Type>::value ? mm_ : m_ ); ++i ) {
+         v_[i+j*mm_] = Type();
       }
    }
 
@@ -3624,7 +3624,7 @@ void DynamicMatrix<Type,true>::resize( size_t m, size_t n, bool preserve )
       capacity_ = mm*n;
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t j=0UL; j<n; ++j )
          for( size_t i=m; i<mm; ++i )
             v_[i+j*mm] = Type();
@@ -3683,7 +3683,7 @@ inline void DynamicMatrix<Type,true>::reserve( size_t elements )
       // Initializing the new array
       std::copy( v_, v_+capacity_, tmp );
 
-      if( IsNumeric<Type>::value ) {
+      if( IsVectorizable<Type>::value ) {
          for( size_t i=capacity_; i<elements; ++i )
             tmp[i] = Type();
       }
@@ -3767,7 +3767,7 @@ inline void DynamicMatrix<Type,true>::swap( DynamicMatrix& m ) /* throw() */
 template< typename Type >  // Data type of the matrix
 inline size_t DynamicMatrix<Type,true>::adjustRows( size_t minRows ) const
 {
-   if( IsNumeric<Type>::value )
+   if( IsVectorizable<Type>::value )
       return minRows + ( IT::size - ( minRows % IT::size ) ) % IT::size;
    else return minRows;
 }

@@ -436,7 +436,7 @@ inline HybridVector<Type,N,TF>::HybridVector()
    : v_   ()       // The statically allocated vector elements
    , size_( 0UL )  // The current size/dimension of the vector
 {
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=0UL; i<NN; ++i )
          v_[i] = Type();
    }
@@ -464,7 +464,7 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n )
    if( n > N )
       throw std::invalid_argument( "Invalid size for hybrid vector" );
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=0UL; i<NN; ++i )
          v_[i] = Type();
    }
@@ -496,7 +496,7 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Type& init )
    for( size_t i=0UL; i<n; ++i )
       v_[i] = init;
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=n; i<NN; ++i )
          v_[i] = Type();
    }
@@ -541,7 +541,7 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Other* array )
    for( size_t i=0UL; i<n; ++i )
       v_[i] = array[i];
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=n; i<NN; ++i )
          v_[i] = Type();
    }
@@ -581,7 +581,7 @@ inline HybridVector<Type,N,TF>::HybridVector( const Other (&array)[M] )
    for( size_t i=0UL; i<M; ++i )
       v_[i] = array[i];
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=M; i<NN; ++i )
          v_[i] = Type();
    }
@@ -606,7 +606,7 @@ inline HybridVector<Type,N,TF>::HybridVector( const HybridVector& v )
    for( size_t i=0UL; i<size_; ++i )
       v_[i] = v.v_[i];
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=size_; i<NN; ++i )
          v_[i] = Type();
    }
@@ -637,9 +637,9 @@ inline HybridVector<Type,N,TF>::HybridVector( const Vector<VT,TF>& v )
    if( (~v).size() > N )
       throw std::invalid_argument( "Invalid setup of hybrid vector" );
 
-   if( IsNumeric<Type>::value ) {
-      for( size_t i=( IsSparseVector<VT>::value )?( 0UL ):( size_ ); i<NN; ++i )
-         v_[i] = Type();
+   for( size_t i=( IsSparseVector<VT>::value   ? 0UL : size_ );
+               i<( IsVectorizable<Type>::value ? NN  : size_ ); ++i ) {
+      v_[i] = Type();
    }
 
    assign( *this, ~v );
@@ -1236,7 +1236,7 @@ inline void HybridVector<Type,N,TF>::resize( size_t n, bool preserve )
    if( n > N )
       throw std::invalid_argument( "Invalid size for hybrid vector" );
 
-   if( IsNumeric<Type>::value && n < size_ ) {
+   if( IsVectorizable<Type>::value && n < size_ ) {
       for( size_t i=n; i<size_; ++i )
          v_[i] = Type();
    }

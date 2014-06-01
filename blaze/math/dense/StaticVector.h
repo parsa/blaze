@@ -443,7 +443,7 @@ template< typename Type  // Data type of the vector
 inline StaticVector<Type,N,TF>::StaticVector()
    : v_()  // The statically allocated vector elements
 {
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=0UL; i<NN; ++i )
          v_[i] = Type();
    }
@@ -465,7 +465,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& init )
    for( size_t i=0UL; i<N; ++i )
       v_[i] = init;
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=N; i<NN; ++i )
          v_[i] = Type();
    }
@@ -508,7 +508,7 @@ inline StaticVector<Type,N,TF>::StaticVector( size_t n, const Other* array )
    for( size_t i=0UL; i<n; ++i )
       v_[i] = array[i];
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=n; i<NN; ++i )
          v_[i] = Type();
    }
@@ -542,7 +542,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Other (&array)[N] )
    for( size_t i=0UL; i<N; ++i )
       v_[i] = array[i];
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=N; i<NN; ++i )
          v_[i] = Type();
    }
@@ -584,7 +584,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const StaticVector<Other,N,TF>& v 
    for( size_t i=0UL; i<N; ++i )
       v_[i] = v[i];
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=N; i<NN; ++i )
          v_[i] = Type();
    }
@@ -614,9 +614,9 @@ inline StaticVector<Type,N,TF>::StaticVector( const Vector<VT,TF>& v )
    if( (~v).size() != N )
       throw std::invalid_argument( "Invalid setup of static vector" );
 
-   if( IsNumeric<Type>::value ) {
-      for( size_t i=( IsSparseVector<VT>::value )?( 0UL ):( N ); i<NN; ++i )
-         v_[i] = Type();
+   for( size_t i=( IsSparseVector<VT>::value   ? 0UL : N );
+               i<( IsVectorizable<Type>::value ? NN  : N ); ++i ) {
+      v_[i] = Type();
    }
 
    assign( *this, ~v );
@@ -647,7 +647,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2 )
    v_[0] = v1;
    v_[1] = v2;
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=N; i<NN; ++i )
          v_[i] = Type();
    }
@@ -680,7 +680,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, co
    v_[1] = v2;
    v_[2] = v3;
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=N; i<NN; ++i )
          v_[i] = Type();
    }
@@ -716,7 +716,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2,
    v_[2] = v3;
    v_[3] = v4;
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=N; i<NN; ++i )
          v_[i] = Type();
    }
@@ -754,7 +754,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, co
    v_[3] = v4;
    v_[4] = v5;
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=N; i<NN; ++i )
          v_[i] = Type();
    }
@@ -794,7 +794,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, co
    v_[4] = v5;
    v_[5] = v6;
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=N; i<NN; ++i )
          v_[i] = Type();
    }
