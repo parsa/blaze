@@ -549,9 +549,11 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( size_t m, size_t n, const Other*
       }
    }
 
-   for( size_t i=m; i<M; ++i ) {
-      for( size_t j=0UL; j<NN; ++j )
-         v_[i*NN+j] = Type();
+   if( IsNumeric<Type>::value ) {
+      for( size_t i=m; i<M; ++i ) {
+         for( size_t j=0UL; j<NN; ++j )
+            v_[i*NN+j] = Type();
+      }
    }
 }
 //*************************************************************************************************
@@ -3356,9 +3358,11 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( size_t m, size_t n, const Othe
       }
    }
 
-   for( size_t j=n; j<N; ++j ) {
-      for( size_t i=0UL; i<M; ++i )
-         v_[i+j*MM] = Type();
+   if( IsNumeric<Type>::value ) {
+      for( size_t j=n; j<N; ++j ) {
+         for( size_t i=0UL; i<M; ++i )
+            v_[i+j*MM] = Type();
+      }
    }
 }
 /*! \endcond */
@@ -3481,8 +3485,8 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Matrix<MT,SO>& m )
       throw std::invalid_argument( "Invalid setup of static matrix" );
 
    if( IsNumeric<Type>::value ) {
-      for( size_t j=0UL; j<N; ++j )
-         for( size_t i=( IsSparseMatrix<MT>::value )?( 0UL ):( M ); i<MM; ++i ) {
+      for( size_t j=0UL; j<N; ++j ) {
+         for( size_t i=( IsSparseMatrix<MT>::value )?( 0UL ):( M ); i<MM; ++i )
             v_[i+j*MM] = Type();
       }
    }
