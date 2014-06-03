@@ -39,6 +39,8 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <blaze/math/DenseSubvector.h>
+#include <blaze/math/SparseSubvector.h>
 #include <blazetest/mathtest/dvecsvecadd/AliasingTest.h>
 
 
@@ -95,6 +97,9 @@ AliasingTest::AliasingTest()
 */
 void AliasingTest::testDVecSVecAdd()
 {
+   using blaze::subvector;
+
+
    //=====================================================================================
    // Addition
    //=====================================================================================
@@ -123,6 +128,18 @@ void AliasingTest::testDVecSVecAdd()
       checkResult( da4_, result_ );
    }
 
+   // Assignment to left-hand side subvector operand
+   {
+      test_ = "DVecSVecAdd - Assignment to left-hand side subvector operand";
+
+      initialize();
+
+      result_ = subvector( da4_, 1UL, 3UL ) + sb3_;
+      da4_    = subvector( da4_, 1UL, 3UL ) + sb3_;
+
+      checkResult( da4_, result_ );
+   }
+
    // Assignment to right-hand side operand
    {
       test_ = "DVecSVecAdd - Assignment to right-hand side operand";
@@ -143,6 +160,18 @@ void AliasingTest::testDVecSVecAdd()
 
       result_ = db3_ + ( sA3x4_ * sa4_ );
       sa4_    = db3_ + ( sA3x4_ * sa4_ );
+
+      checkResult( sa4_, result_ );
+   }
+
+   // Assignment to right-hand side subvector operand
+   {
+      test_ = "DVecSVecAdd - Assignment to right-hand side subvector operand";
+
+      initialize();
+
+      result_ = db3_ + subvector( sa4_, 1UL, 3UL );
+      sa4_    = db3_ + subvector( sa4_, 1UL, 3UL );
 
       checkResult( sa4_, result_ );
    }

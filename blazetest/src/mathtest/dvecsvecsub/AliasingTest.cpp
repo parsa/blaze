@@ -39,6 +39,8 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <blaze/math/DenseSubvector.h>
+#include <blaze/math/SparseSubvector.h>
 #include <blazetest/mathtest/dvecsvecsub/AliasingTest.h>
 
 
@@ -95,6 +97,9 @@ AliasingTest::AliasingTest()
 */
 void AliasingTest::testDVecSVecSub()
 {
+   using blaze::subvector;
+
+
    //=====================================================================================
    // Subtraction
    //=====================================================================================
@@ -105,8 +110,8 @@ void AliasingTest::testDVecSVecSub()
 
       initialize();
 
-      result_ = db3_ + sb3_;
-      db3_    = db3_ + sb3_;
+      result_ = db3_ - sb3_;
+      db3_    = db3_ - sb3_;
 
       checkResult( db3_, result_ );
    }
@@ -117,8 +122,20 @@ void AliasingTest::testDVecSVecSub()
 
       initialize();
 
-      result_ = ( dA3x4_ * da4_ ) + sb3_;
-      da4_   =  ( dA3x4_ * da4_ ) + sb3_;
+      result_ = ( dA3x4_ * da4_ ) - sb3_;
+      da4_   =  ( dA3x4_ * da4_ ) - sb3_;
+
+      checkResult( da4_, result_ );
+   }
+
+   // Assignment to left-hand side subvector operand
+   {
+      test_ = "DVecSVecSub - Assignment to left-hand side subvector operand";
+
+      initialize();
+
+      result_ = subvector( da4_, 1UL, 3UL ) - sb3_;
+      da4_    = subvector( da4_, 1UL, 3UL ) - sb3_;
 
       checkResult( da4_, result_ );
    }
@@ -129,8 +146,8 @@ void AliasingTest::testDVecSVecSub()
 
       initialize();
 
-      result_ = db3_ + sb3_;
-      sb3_    = db3_ + sb3_;
+      result_ = db3_ - sb3_;
+      sb3_    = db3_ - sb3_;
 
       checkResult( sb3_, result_ );
    }
@@ -141,8 +158,20 @@ void AliasingTest::testDVecSVecSub()
 
       initialize();
 
-      result_ = db3_ + ( sA3x4_ * sa4_ );
-      sa4_    = db3_ + ( sA3x4_ * sa4_ );
+      result_ = db3_ - ( sA3x4_ * sa4_ );
+      sa4_    = db3_ - ( sA3x4_ * sa4_ );
+
+      checkResult( sa4_, result_ );
+   }
+
+   // Assignment to right-hand side subvector operand
+   {
+      test_ = "DVecSVecSub - Assignment to right-hand side subvector operand";
+
+      initialize();
+
+      result_ = db3_ - subvector( sa4_, 1UL, 3UL );
+      sa4_    = db3_ - subvector( sa4_, 1UL, 3UL );
 
       checkResult( sa4_, result_ );
    }
@@ -159,8 +188,8 @@ void AliasingTest::testDVecSVecSub()
       initialize();
 
       result_ =  db3_;
-      result_ += db3_ + sb3_;
-      db3_    += db3_ + sb3_;
+      result_ += db3_ - sb3_;
+      db3_    += db3_ - sb3_;
 
       checkResult( db3_, result_ );
    }
@@ -172,8 +201,8 @@ void AliasingTest::testDVecSVecSub()
       initialize();
 
       result_ =  db3_;
-      result_ += ( dB3x3_ * db3_ ) + sb3_;
-      db3_    += ( dB3x3_ * db3_ ) + sb3_;
+      result_ += ( dB3x3_ * db3_ ) - sb3_;
+      db3_    += ( dB3x3_ * db3_ ) - sb3_;
 
       checkResult( db3_, result_ );
    }
@@ -185,8 +214,8 @@ void AliasingTest::testDVecSVecSub()
       initialize();
 
       result_ =  sb3_;
-      result_ += db3_ + sb3_;
-      sb3_    += db3_ + sb3_;
+      result_ += db3_ - sb3_;
+      sb3_    += db3_ - sb3_;
 
       checkResult( sb3_, result_ );
    }
@@ -198,8 +227,8 @@ void AliasingTest::testDVecSVecSub()
       initialize();
 
       result_ =  sb3_;
-      result_ += db3_ + ( sB3x3_ * sb3_ );
-      sb3_    += db3_ + ( sB3x3_ * sb3_ );
+      result_ += db3_ - ( sB3x3_ * sb3_ );
+      sb3_    += db3_ - ( sB3x3_ * sb3_ );
 
       checkResult( sb3_, result_ );
    }
@@ -216,8 +245,8 @@ void AliasingTest::testDVecSVecSub()
       initialize();
 
       result_ =  db3_;
-      result_ -= db3_ + sb3_;
-      db3_    -= db3_ + sb3_;
+      result_ -= db3_ - sb3_;
+      db3_    -= db3_ - sb3_;
 
       checkResult( db3_, result_ );
    }
@@ -229,8 +258,8 @@ void AliasingTest::testDVecSVecSub()
       initialize();
 
       result_ =  db3_;
-      result_ -= ( dB3x3_ * db3_ ) + sb3_;
-      db3_    -= ( dB3x3_ * db3_ ) + sb3_;
+      result_ -= ( dB3x3_ * db3_ ) - sb3_;
+      db3_    -= ( dB3x3_ * db3_ ) - sb3_;
 
       checkResult( db3_, result_ );
    }
@@ -242,8 +271,8 @@ void AliasingTest::testDVecSVecSub()
       initialize();
 
       result_ =  sb3_;
-      result_ -= db3_ + sb3_;
-      sb3_    -= db3_ + sb3_;
+      result_ -= db3_ - sb3_;
+      sb3_    -= db3_ - sb3_;
 
       checkResult( sb3_, result_ );
    }
@@ -255,8 +284,8 @@ void AliasingTest::testDVecSVecSub()
       initialize();
 
       result_ =  sb3_;
-      result_ -= db3_ + ( sB3x3_ * sb3_ );
-      sb3_    -= db3_ + ( sB3x3_ * sb3_ );
+      result_ -= db3_ - ( sB3x3_ * sb3_ );
+      sb3_    -= db3_ - ( sB3x3_ * sb3_ );
 
       checkResult( sb3_, result_ );
    }
@@ -273,8 +302,8 @@ void AliasingTest::testDVecSVecSub()
       initialize();
 
       result_ =  db3_;
-      result_ *= db3_ + sb3_;
-      db3_    *= db3_ + sb3_;
+      result_ *= db3_ - sb3_;
+      db3_    *= db3_ - sb3_;
 
       checkResult( db3_, result_ );
    }
@@ -286,8 +315,8 @@ void AliasingTest::testDVecSVecSub()
       initialize();
 
       result_ =  db3_;
-      result_ *= ( dB3x3_ * db3_ ) + sb3_;
-      db3_    *= ( dB3x3_ * db3_ ) + sb3_;
+      result_ *= ( dB3x3_ * db3_ ) - sb3_;
+      db3_    *= ( dB3x3_ * db3_ ) - sb3_;
 
       checkResult( db3_, result_ );
    }
@@ -299,8 +328,8 @@ void AliasingTest::testDVecSVecSub()
       initialize();
 
       result_ =  sb3_;
-      result_ *= db3_ + sb3_;
-      sb3_    *= db3_ + sb3_;
+      result_ *= db3_ - sb3_;
+      sb3_    *= db3_ - sb3_;
 
       checkResult( sb3_, result_ );
    }
@@ -312,8 +341,8 @@ void AliasingTest::testDVecSVecSub()
       initialize();
 
       result_ =  sb3_;
-      result_ *= db3_ + ( sB3x3_ * sb3_ );
-      sb3_    *= db3_ + ( sB3x3_ * sb3_ );
+      result_ *= db3_ - ( sB3x3_ * sb3_ );
+      sb3_    *= db3_ - ( sB3x3_ * sb3_ );
 
       checkResult( sb3_, result_ );
    }
