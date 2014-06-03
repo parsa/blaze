@@ -95,6 +95,9 @@ AliasingTest::AliasingTest()
 */
 void AliasingTest::testDVecDVecSub()
 {
+   using blaze::subvector;
+
+
    //=====================================================================================
    // Subtraction
    //=====================================================================================
@@ -135,6 +138,18 @@ void AliasingTest::testDVecDVecSub()
       checkResult( sa4_, result_ );
    }
 
+   // Assignment to left-hand side subvector operand
+   {
+      test_ = "DVecDVecSub - Assignment to left-hand side subvector operand";
+
+      initialize();
+
+      result_ = subvector( da4_, 1UL, 3UL ) - db3_;
+      da4_    = subvector( da4_, 1UL, 3UL ) - db3_;
+
+      checkResult( da4_, result_ );
+   }
+
    // Assignment to right-hand side operand
    {
       test_ = "DVecDVecSub - Assignment to right-hand side operand";
@@ -169,6 +184,18 @@ void AliasingTest::testDVecDVecSub()
       sa4_    = db3_ - ( dA3x4_ * sa4_ );
 
       checkResult( sa4_, result_ );
+   }
+
+   // Assignment to right-hand side subvector operand
+   {
+      test_ = "DVecDVecSub - Assignment to right-hand side subvector operand";
+
+      initialize();
+
+      result_ = db3_ - subvector( da4_, 1UL, 3UL );
+      da4_    = db3_ - subvector( da4_, 1UL, 3UL );
+
+      checkResult( da4_, result_ );
    }
 
    // Complex operation: a = b - ( a + A * c );

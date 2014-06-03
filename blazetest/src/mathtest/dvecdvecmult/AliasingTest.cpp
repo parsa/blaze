@@ -95,6 +95,9 @@ AliasingTest::AliasingTest()
 */
 void AliasingTest::testDVecDVecMult()
 {
+   using blaze::subvector;
+
+
    //=====================================================================================
    // Multiplication
    //=====================================================================================
@@ -135,6 +138,18 @@ void AliasingTest::testDVecDVecMult()
       checkResult( sa4_, result_ );
    }
 
+   // Assignment to left-hand side subvector operand
+   {
+      test_ = "DVecDVecMult - Assignment to left-hand side subvector operand";
+
+      initialize();
+
+      result_ = subvector( da4_, 1UL, 3UL ) * db3_;
+      da4_    = subvector( da4_, 1UL, 3UL ) * db3_;
+
+      checkResult( da4_, result_ );
+   }
+
    // Assignment to right-hand side operand
    {
       test_ = "DVecDVecMult - Assignment to right-hand side operand";
@@ -171,6 +186,18 @@ void AliasingTest::testDVecDVecMult()
       checkResult( sa4_, result_ );
    }
 
+   // Assignment to right-hand side subvector operand
+   {
+      test_ = "DVecDVecMult - Assignment to right-hand side subvector operand";
+
+      initialize();
+
+      result_ = db3_ * subvector( da4_, 1UL, 3UL );
+      da4_    = db3_ * subvector( da4_, 1UL, 3UL );
+
+      checkResult( da4_, result_ );
+   }
+
    // Complex operation: a = b * ( a + A * c );
    {
       test_ = "DVecDVecMult - Complex operation: a = b * ( a + A * c );";
@@ -193,20 +220,6 @@ void AliasingTest::testDVecDVecMult()
       db3_    = ( dA3x4_ * da4_ + db3_ ) * dc3_;
 
       checkResult( db3_, result_ );
-   }
-
-   // Assignment from subvectors
-   {
-      test_ = "DVecDVecAdd - Assignment from subvectors";
-
-      using blaze::subvector;
-
-      initialize();
-
-      result_ = subvector( da4_, 0UL, 3UL ) * subvector( da4_, 1UL, 3UL );
-      da4_    = subvector( da4_, 0UL, 3UL ) * subvector( da4_, 1UL, 3UL );
-
-      checkResult( da4_, result_ );
    }
 
 
