@@ -50,7 +50,9 @@
 #  include <boost/thread/thread.hpp>
 #endif
 
+#include <cstdlib>
 #include <blaze/math/constraints/Expression.h>
+#include <blaze/math/Functions.h>
 #include <blaze/system/SMP.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/ThreadPool.h>
@@ -285,19 +287,11 @@ class ThreadBackend
    //@{
    static ThreadPool<TT,MT,LT,CT> threadpool_;  //!< The pool of active threads of the backend system.
                                                 /*!< It is initialized with the number of threads
-                                                     specified via the command line argument
-                                                     \c BLAZE_CPP_THREADS. However, it can be
+                                                     specified via the environment variable
+                                                     \c BLAZE_NUM_THREADS. However, it can be
                                                      explicitly resized to arbitrary numbers of
                                                      threads. */
    //@}
-   //**********************************************************************************************
-
-   //**Compile time checks*************************************************************************
-#if BLAZE_CPP_THREADS_PARALLEL_MODE
-   BLAZE_STATIC_ASSERT( BLAZE_CPP_THREADS > 0UL );
-#elif BLAZE_BOOST_THREADS_PARALLEL_MODE
-   BLAZE_STATIC_ASSERT( BLAZE_BOOST_THREADS > 0UL );
-#endif
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -514,23 +508,29 @@ inline void ThreadBackend<TT,MT,LT,CT>::scheduleMultAssign( Target& target, cons
 //
 // \return The initial number of threads.
 //
-// This function determines the initial number of threads based on the compile time configuration
-// of the thread backend. In case the C++11 thread-based parallelization is selected, the initial
-// number of threads is given by the \c BLAZE_CPP_THREADS command line argument, else it is
-// given by the \c BLAZE_BOOST_THREADS command line argument.
+// This function determines the initial number of threads based on the \c BLAZE_NUM_THREADS
+// environment variable. In case the environment variable is not defined or not set, the
+// function returns 1. Otherwise it returns the specified number of threads.
 */
+#if (defined _MSC_VER)
+#  pragma warning(push)
+#  pragma warning(disable:4996)
+#endif
 template< typename TT    // Type of the encapsulated thread
         , typename MT    // Type of the synchronization mutex
         , typename LT    // Type of the mutex lock
         , typename CT >  // Type of the condition variable
 inline size_t ThreadBackend<TT,MT,LT,CT>::initPool()
 {
-#if BLAZE_CPP_THREADS_PARALLEL_MODE
-   return BLAZE_CPP_THREADS;
-#elif BLAZE_BOOST_THREADS_PARALLEL_MODE
-   return BLAZE_BOOST_THREADS;
-#endif
+   const char* env = std::getenv( "BLAZE_NUM_THREADS" );
+
+   if( env == NULL )
+      return 1UL;
+   else return max( 1, atoi( env ) );
 }
+#if (defined _MSC_VER)
+#  pragma warning(pop)
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
