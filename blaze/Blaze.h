@@ -3772,7 +3772,8 @@ namespace blaze {}
 // As common for OpenMP, the number of threads can be specified either via an environment variable
 
    \code
-   export OMP_NUM_THREADS=4
+   export OMP_NUM_THREADS=4  // Unix systems
+   set OMP_NUM_THREADS=4     // Windows systems
    \endcode
 
 // or via an explicit call to the \c omp_set_num_threads() function:
@@ -4001,13 +4002,11 @@ namespace blaze {}
 // \n \section cpp_threads_setup C++11 Thread Setup
 // <hr>
 //
-// In order to enable the C++11 thread-based parallelization, the \c BLAZE_CPP_THREADS command
-// line argument in combination with the desired initial number of threads has to be specified.
-// For instance, the following will enable the C++11 thread parallelization with four initial
-// threads:
+// In order to enable the C++11 thread-based parallelization, the \c BLAZE_USE_CPP_THREADS command
+// line argument has to be explicitly specified during compilation:
 
    \code
-   ... -DBLAZE_CPP_THREADS=4 ...
+   ... -DBLAZE_USE_CPP_THREADS ...
    \endcode
 
 // This simple action will cause the \b Blaze library to automatically try to run all operations
@@ -4015,8 +4014,14 @@ namespace blaze {}
 // threads are enabled on the command line, the OpenMP-based parallelization has priority and
 // is preferred.
 //
-// Alternatively, the number of threads can also be specified via the \c setNumThreads() function
-// provided by the \b Blaze library:
+// The number of threads can be either specified via the environment variable \c BLAZE_NUM_THREADS
+
+   \code
+   export BLAZE_NUM_THREADS=4  // Unix systems
+   set BLAZE_NUM_THREADS=4     // Windows systems
+   \endcode
+
+// or alternatively via the \c setNumThreads() function provided by the \b Blaze library:
 
    \code
    blaze::setNumThreads( 4 );
@@ -4076,12 +4081,11 @@ namespace blaze {}
 // <hr>
 //
 // In order to enable the Boost thread-based parallelization, two steps have to be taken: First,
-// the \c BLAZE_BOOST_THREADS command line argument in combination with the desired initial number
-// of threads has to be specified during compilation. For instance, the following will enable the
-// Boost thread parallelization with four initial threads:
+// the \c BLAZE_USE_BOOST_THREADS command line argument has to be explicitly specified during
+// compilation:
 
    \code
-   ... -DBLAZE_BOOST_THREADS=4 ...
+   ... -DBLAZE_USE_BOOST_THREADS ...
    \endcode
 
 // Second, the according Boost libraries have to be linked. These two simple actions will cause
@@ -4090,8 +4094,14 @@ namespace blaze {}
 // have priority, i.e. are preferred in case either is enabled in combination with the Boost
 // thread parallelization.
 //
-// Alternatively, the number of threads can also be specified via the \c setNumThreads() function
-// provided by the \b Blaze library:
+// The number of threads can be either specified via the environment variable \c BLAZE_NUM_THREADS
+
+   \code
+   export BLAZE_NUM_THREADS=4  // Unix systems
+   set BLAZE_NUM_THREADS=4     // Windows systems
+   \endcode
+
+// or alternatively via the \c setNumThreads() function provided by the \b Blaze library:
 
    \code
    blaze::setNumThreads( 4 );
