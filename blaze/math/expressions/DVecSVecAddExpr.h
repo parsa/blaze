@@ -220,7 +220,7 @@ class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const {
-      return ( IsComputation<VT1>::value && lhs_.canAlias( alias ) ) ||
+      return ( IsExpression<VT1>::value && lhs_.canAlias( alias ) ) ||
              ( rhs_.canAlias( alias ) );
    }
    //**********************************************************************************************

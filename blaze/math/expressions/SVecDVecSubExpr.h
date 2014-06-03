@@ -220,7 +220,8 @@ class SVecDVecSubExpr : public DenseVector< SVecDVecSubExpr<VT1,VT2,TF>, TF >
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const {
-      return ( lhs_.canAlias( alias ) || rhs_.canAlias( alias ) );
+      return ( lhs_.canAlias( alias ) ) ||
+             ( IsExpression<VT2>::value && rhs_.canAlias( alias ) );
    }
    //**********************************************************************************************
 
