@@ -172,7 +172,7 @@ void Logger::openLogFile()
    log_.open( filename.str().c_str(), std::ofstream::out | std::ofstream::trunc );
    if( !log_.is_open() ) {
       std::ostringstream oss;
-      oss << " Error opening log file '" << filename << "' !\n";
+      oss << " Error opening log file '" << filename.str() << "' !\n";
       throw std::runtime_error( oss.str() );
    }
 
