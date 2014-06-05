@@ -180,7 +180,7 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& 
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
    const size_t sizePerThread( (~lhs).size() / threads + addon );
 
-   for( int i=0UL; i<threads; ++i )
+   for( size_t i=0UL; i<threads; ++i )
    {
       const size_t index( i*sizePerThread );
 
@@ -398,7 +398,7 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
    const size_t sizePerThread( (~lhs).size() / threads + addon );
 
-   for( int i=0UL; i<threads; ++i )
+   for( size_t i=0UL; i<threads; ++i )
    {
       const size_t index( i*sizePerThread );
 
@@ -617,7 +617,7 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
    const size_t sizePerThread( (~lhs).size() / threads + addon );
 
-   for( int i=0UL; i<threads; ++i )
+   for( size_t i=0UL; i<threads; ++i )
    {
       const size_t index( i*sizePerThread );
 
@@ -837,7 +837,7 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
    const size_t sizePerThread( (~lhs).size() / threads + addon );
 
-   for( int i=0UL; i<threads; ++i )
+   for( size_t i=0UL; i<threads; ++i )
    {
       const size_t index( i*sizePerThread );
 

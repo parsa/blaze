@@ -113,7 +113,7 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor
    const size_t rest         ( equalShare & ( IT::size - 1UL ) );
    const size_t rowsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
 
-   for( int i=0UL; i<threads; ++i )
+   for( size_t i=0UL; i<threads; ++i )
    {
       const size_t row( i*rowsPerThread );
 
@@ -188,7 +188,7 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMa
    const size_t rest         ( equalShare & ( IT::size - 1UL ) );
    const size_t colsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
 
-   for( int i=0UL; i<threads; ++i )
+   for( size_t i=0UL; i<threads; ++i )
    {
       const size_t column( i*colsPerThread );
 
@@ -255,7 +255,7 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowMajo
    const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
    const size_t rowsPerThread( (~lhs).rows() / threads + addon );
 
-   for( int i=0UL; i<threads; ++i )
+   for( size_t i=0UL; i<threads; ++i )
    {
       const size_t row( i*rowsPerThread );
 
@@ -307,7 +307,7 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,columnM
    const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
    const size_t colsPerThread( (~lhs).columns() / threads + addon );
 
-   for( int i=0UL; i<threads; ++i )
+   for( size_t i=0UL; i<threads; ++i )
    {
       const size_t column( i*colsPerThread );
 
@@ -458,7 +458,7 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMa
    const size_t rest         ( equalShare & ( IT::size - 1UL ) );
    const size_t rowsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
 
-   for( int i=0UL; i<threads; ++i )
+   for( size_t i=0UL; i<threads; ++i )
    {
       const size_t row( i*rowsPerThread );
 
@@ -533,7 +533,7 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,colum
    const size_t rest         ( equalShare & ( IT::size - 1UL ) );
    const size_t colsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
 
-   for( int i=0UL; i<threads; ++i )
+   for( size_t i=0UL; i<threads; ++i )
    {
       const size_t column( i*colsPerThread );
 
@@ -600,7 +600,7 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowM
    const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
    const size_t rowsPerThread( (~lhs).rows() / threads + addon );
 
-   for( int i=0UL; i<threads; ++i )
+   for( size_t i=0UL; i<threads; ++i )
    {
       const size_t row( i*rowsPerThread );
 
@@ -652,7 +652,7 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,colu
    const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
    const size_t colsPerThread( (~lhs).columns() / threads + addon );
 
-   for( int i=0UL; i<threads; ++i )
+   for( size_t i=0UL; i<threads; ++i )
    {
       const size_t column( i*colsPerThread );
 
@@ -804,7 +804,7 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMa
    const size_t rest         ( equalShare & ( IT::size - 1UL ) );
    const size_t rowsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
 
-   for( int i=0UL; i<threads; ++i )
+   for( size_t i=0UL; i<threads; ++i )
    {
       const size_t row( i*rowsPerThread );
 
@@ -879,7 +879,7 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,colum
    const size_t rest         ( equalShare & ( IT::size - 1UL ) );
    const size_t colsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
 
-   for( int i=0UL; i<threads; ++i )
+   for( size_t i=0UL; i<threads; ++i )
    {
       const size_t column( i*colsPerThread );
 
@@ -946,7 +946,7 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowM
    const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
    const size_t rowsPerThread( (~lhs).rows() / threads + addon );
 
-   for( int i=0UL; i<threads; ++i )
+   for( size_t i=0UL; i<threads; ++i )
    {
       const size_t row( i*rowsPerThread );
 
@@ -998,7 +998,7 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,colu
    const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
    const size_t colsPerThread( (~lhs).columns() / threads + addon );
 
-   for( int i=0UL; i<threads; ++i )
+   for( size_t i=0UL; i<threads; ++i )
    {
       const size_t column( i*colsPerThread );
 
