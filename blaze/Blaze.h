@@ -4002,11 +4002,13 @@ namespace blaze {}
 // \n \section cpp_threads_setup C++11 Thread Setup
 // <hr>
 //
-// In order to enable the C++11 thread-based parallelization, the \c BLAZE_USE_CPP_THREADS command
-// line argument has to be explicitly specified during compilation:
+// In order to enable the C++11 thread-based parallelization, first the according C++11-specific
+// compiler flags have to be used and second the \c BLAZE_USE_CPP_THREADS command line argument
+// has to be explicitly specified. For instance, in case of the GNU C++ and Clang compilers the
+// compiler flags have to be extended by
 
    \code
-   ... -DBLAZE_USE_CPP_THREADS ...
+   ... -std=c++11 -DBLAZE_USE_CPP_THREADS ...
    \endcode
 
 // This simple action will cause the \b Blaze library to automatically try to run all operations
