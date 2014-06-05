@@ -86,6 +86,7 @@
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -1571,7 +1572,10 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline size_t DenseSubmatrix<MT,AF,SO>::capacity( size_t i ) const
 {
+   UNUSED_PARAMETER( i );
+
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
+
    return columns();
 }
 //*************************************************************************************************
@@ -3737,7 +3741,10 @@ inline size_t DenseSubmatrix<MT,unaligned,true>::capacity() const
 template< typename MT >  // Type of the dense matrix
 inline size_t DenseSubmatrix<MT,unaligned,true>::capacity( size_t j ) const
 {
+   UNUSED_PARAMETER( j );
+
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
+
    return rows();
 }
 /*! \endcond */
@@ -5613,7 +5620,10 @@ inline size_t DenseSubmatrix<MT,aligned,false>::capacity() const
 template< typename MT >  // Type of the dense matrix
 inline size_t DenseSubmatrix<MT,aligned,false>::capacity( size_t i ) const
 {
+   UNUSED_PARAMETER( i );
+
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
+
    return columns();
 }
 /*! \endcond */
@@ -7456,7 +7466,10 @@ inline size_t DenseSubmatrix<MT,aligned,true>::capacity() const
 template< typename MT >  // Type of the dense matrix
 inline size_t DenseSubmatrix<MT,aligned,true>::capacity( size_t j ) const
 {
+   UNUSED_PARAMETER( j );
+
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
+
    return rows();
 }
 /*! \endcond */
