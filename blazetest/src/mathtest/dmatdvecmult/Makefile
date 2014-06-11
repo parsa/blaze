@@ -331,4 +331,4 @@ endif
 
 
 # Setting the independent commands
-.PHONY: default all essential clean
+.PHONY: default all essential single clean

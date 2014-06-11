@@ -449,7 +449,7 @@ clean:
 
 
 # Setting the independent commands
-.PHONY: default all essential clean \
+.PHONY: default all essential single clean \
         functions intrinsics \
         staticvector hybridvector dynamicvector compressedvector \
         staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
