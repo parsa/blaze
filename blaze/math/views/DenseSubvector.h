@@ -415,7 +415,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    //! Pointer to a constant subvector value.
    typedef const ElementType*  ConstPointer;
 
-   //! Pointer to a constant subvector value.
+   //! Pointer to a non-constant subvector value.
    typedef typename SelectType< useConst, ConstPointer, ElementType* >::Type  Pointer;
    //**********************************************************************************************
 

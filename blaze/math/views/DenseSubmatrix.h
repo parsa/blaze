@@ -420,10 +420,10 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    //! Reference to a non-constant submatrix value.
    typedef typename SelectType< useConst, ConstReference, typename MT::Reference >::Type  Reference;
 
-   //! Pointer to a constant row value.
+   //! Pointer to a constant submatrix value.
    typedef const ElementType*  ConstPointer;
 
-   //! Pointer to a constant row value.
+   //! Pointer to a non-constant submatrix value.
    typedef typename SelectType< useConst, ConstPointer, ElementType* >::Type  Pointer;
    //**********************************************************************************************
 
@@ -2627,10 +2627,10 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    //! Reference to a non-constant submatrix value.
    typedef typename SelectType< useConst, ConstReference, typename MT::Reference >::Type  Reference;
 
-   //! Pointer to a constant row value.
+   //! Pointer to a constant submatrix value.
    typedef const ElementType*  ConstPointer;
 
-   //! Pointer to a constant row value.
+   //! Pointer to a non-constant submatrix value.
    typedef typename SelectType< useConst, ConstPointer, ElementType* >::Type  Pointer;
    //**********************************************************************************************
 
@@ -4783,10 +4783,10 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    //! Reference to a non-constant submatrix value.
    typedef typename SelectType< useConst, ConstReference, typename MT::Reference >::Type  Reference;
 
-   //! Pointer to a constant row value.
+   //! Pointer to a constant submatrix value.
    typedef const ElementType*  ConstPointer;
 
-   //! Pointer to a constant row value.
+   //! Pointer to a non-constant submatrix value.
    typedef typename SelectType< useConst, ConstPointer, ElementType* >::Type  Pointer;
 
    //! Iterator over constant elements.
@@ -6666,10 +6666,10 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    //! Reference to a non-constant submatrix value.
    typedef typename SelectType< useConst, ConstReference, typename MT::Reference >::Type  Reference;
 
-   //! Pointer to a constant row value.
+   //! Pointer to a constant submatrix value.
    typedef const ElementType*  ConstPointer;
 
-   //! Pointer to a constant row value.
+   //! Pointer to a non-constant submatrix value.
    typedef typename SelectType< useConst, ConstPointer, ElementType* >::Type  Pointer;
 
    //! Iterator over constant elements.

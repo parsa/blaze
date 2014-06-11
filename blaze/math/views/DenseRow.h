@@ -347,7 +347,7 @@ class DenseRow : public DenseVector< DenseRow<MT,SO>, true >
    //! Pointer to a constant row value.
    typedef const ElementType*  ConstPointer;
 
-   //! Pointer to a constant row value.
+   //! Pointer to a non-constant row value.
    typedef typename SelectType< useConst, ConstPointer, ElementType* >::Type  Pointer;
 
    //! Iterator over constant elements.
