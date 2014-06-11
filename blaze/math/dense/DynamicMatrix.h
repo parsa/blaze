@@ -194,6 +194,8 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    typedef const This&                CompositeType;   //!< Data type for composite expression templates.
    typedef Type&                      Reference;       //!< Reference to a non-constant matrix value.
    typedef const Type&                ConstReference;  //!< Reference to a constant matrix value.
+   typedef Type*                      Pointer;         //!< Pointer to a non-constant matrix value.
+   typedef const Type*                ConstPointer;    //!< Pointer to a constant matrix value.
    typedef DenseIterator<Type>        Iterator;        //!< Iterator over non-constant elements.
    typedef DenseIterator<const Type>  ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
@@ -241,10 +243,10 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    //@{
    inline Reference      operator()( size_t i, size_t j );
    inline ConstReference operator()( size_t i, size_t j ) const;
-   inline Type*          data  ();
-   inline const Type*    data  () const;
-   inline Type*          data  ( size_t i );
-   inline const Type*    data  ( size_t i ) const;
+   inline Pointer        data  ();
+   inline ConstPointer   data  () const;
+   inline Pointer        data  ( size_t i );
+   inline ConstPointer   data  ( size_t i ) const;
    inline Iterator       begin ( size_t i );
    inline ConstIterator  begin ( size_t i ) const;
    inline ConstIterator  cbegin( size_t i ) const;
@@ -733,7 +735,7 @@ inline typename DynamicMatrix<Type,SO>::ConstReference
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline Type* DynamicMatrix<Type,SO>::data()
+inline typename DynamicMatrix<Type,SO>::Pointer DynamicMatrix<Type,SO>::data()
 {
    return v_;
 }
@@ -751,7 +753,7 @@ inline Type* DynamicMatrix<Type,SO>::data()
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline const Type* DynamicMatrix<Type,SO>::data() const
+inline typename DynamicMatrix<Type,SO>::ConstPointer DynamicMatrix<Type,SO>::data() const
 {
    return v_;
 }
@@ -768,7 +770,7 @@ inline const Type* DynamicMatrix<Type,SO>::data() const
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline Type* DynamicMatrix<Type,SO>::data( size_t i )
+inline typename DynamicMatrix<Type,SO>::Pointer DynamicMatrix<Type,SO>::data( size_t i )
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return v_ + i*nn_;
@@ -786,7 +788,7 @@ inline Type* DynamicMatrix<Type,SO>::data( size_t i )
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline const Type* DynamicMatrix<Type,SO>::data( size_t i ) const
+inline typename DynamicMatrix<Type,SO>::ConstPointer DynamicMatrix<Type,SO>::data( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return v_ + i*nn_;
@@ -2390,6 +2392,8 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    typedef const This&                CompositeType;   //!< Data type for composite expression templates.
    typedef Type&                      Reference;       //!< Reference to a non-constant matrix value.
    typedef const Type&                ConstReference;  //!< Reference to a constant matrix value.
+   typedef Type*                      Pointer;         //!< Pointer to a non-constant matrix value.
+   typedef const Type*                ConstPointer;    //!< Pointer to a constant matrix value.
    typedef DenseIterator<Type>        Iterator;        //!< Iterator over non-constant elements.
    typedef DenseIterator<const Type>  ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
@@ -2437,10 +2441,10 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    //@{
    inline Reference      operator()( size_t i, size_t j );
    inline ConstReference operator()( size_t i, size_t j ) const;
-   inline Type*          data  ();
-   inline const Type*    data  () const;
-   inline Type*          data  ( size_t j );
-   inline const Type*    data  ( size_t j ) const;
+   inline Pointer        data  ();
+   inline ConstPointer   data  () const;
+   inline Pointer        data  ( size_t j );
+   inline ConstPointer   data  ( size_t j ) const;
    inline Iterator       begin ( size_t j );
    inline ConstIterator  begin ( size_t j ) const;
    inline ConstIterator  cbegin( size_t j ) const;
@@ -2932,7 +2936,7 @@ inline typename DynamicMatrix<Type,true>::ConstReference
 // use techniques such as padding to improve the alignment of the data.
 */
 template< typename Type >  // Data type of the matrix
-inline Type* DynamicMatrix<Type,true>::data()
+inline typename DynamicMatrix<Type,true>::Pointer DynamicMatrix<Type,true>::data()
 {
    return v_;
 }
@@ -2951,7 +2955,7 @@ inline Type* DynamicMatrix<Type,true>::data()
 // use techniques such as padding to improve the alignment of the data.
 */
 template< typename Type >  // Data type of the matrix
-inline const Type* DynamicMatrix<Type,true>::data() const
+inline typename DynamicMatrix<Type,true>::ConstPointer DynamicMatrix<Type,true>::data() const
 {
    return v_;
 }
@@ -2969,7 +2973,7 @@ inline const Type* DynamicMatrix<Type,true>::data() const
 // This function returns a pointer to the internal storage for the elements in column \a j.
 */
 template< typename Type >  // Data type of the matrix
-inline Type* DynamicMatrix<Type,true>::data( size_t j )
+inline typename DynamicMatrix<Type,true>::Pointer DynamicMatrix<Type,true>::data( size_t j )
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return v_ + j*mm_;
@@ -2988,7 +2992,7 @@ inline Type* DynamicMatrix<Type,true>::data( size_t j )
 // This function returns a pointer to the internal storage for the elements in column \a j.
 */
 template< typename Type >  // Data type of the matrix
-inline const Type* DynamicMatrix<Type,true>::data( size_t j ) const
+inline typename DynamicMatrix<Type,true>::ConstPointer DynamicMatrix<Type,true>::data( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return v_ + j*mm_;

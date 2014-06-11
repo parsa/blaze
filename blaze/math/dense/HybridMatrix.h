@@ -206,6 +206,8 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    typedef const This&                 CompositeType;   //!< Data type for composite expression templates.
    typedef Type&                       Reference;       //!< Reference to a non-constant matrix value.
    typedef const Type&                 ConstReference;  //!< Reference to a constant matrix value.
+   typedef Type*                       Pointer;         //!< Pointer to a non-constant matrix value.
+   typedef const Type*                 ConstPointer;    //!< Pointer to a constant matrix value.
    typedef DenseIterator<Type>         Iterator;        //!< Iterator over non-constant elements.
    typedef DenseIterator<const Type>   ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
@@ -250,10 +252,10 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    //@{
    inline Reference      operator()( size_t i, size_t j );
    inline ConstReference operator()( size_t i, size_t j ) const;
-   inline Type*          data  ();
-   inline const Type*    data  () const;
-   inline Type*          data  ( size_t i );
-   inline const Type*    data  ( size_t i ) const;
+   inline Pointer        data  ();
+   inline ConstPointer   data  () const;
+   inline Pointer        data  ( size_t i );
+   inline ConstPointer   data  ( size_t i ) const;
    inline Iterator       begin ( size_t i );
    inline ConstIterator  begin ( size_t i ) const;
    inline ConstIterator  cbegin( size_t i ) const;
@@ -814,7 +816,8 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline Type* HybridMatrix<Type,M,N,SO>::data()
+inline typename HybridMatrix<Type,M,N,SO>::Pointer
+   HybridMatrix<Type,M,N,SO>::data()
 {
    return v_;
 }
@@ -834,7 +837,8 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline const Type* HybridMatrix<Type,M,N,SO>::data() const
+inline typename HybridMatrix<Type,M,N,SO>::ConstPointer
+   HybridMatrix<Type,M,N,SO>::data() const
 {
    return v_;
 }
@@ -853,7 +857,8 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline Type* HybridMatrix<Type,M,N,SO>::data( size_t i )
+inline typename HybridMatrix<Type,M,N,SO>::Pointer
+   HybridMatrix<Type,M,N,SO>::data( size_t i )
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return v_ + i*NN;
@@ -873,7 +878,8 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline const Type* HybridMatrix<Type,M,N,SO>::data( size_t i ) const
+inline typename HybridMatrix<Type,M,N,SO>::ConstPointer
+   HybridMatrix<Type,M,N,SO>::data( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return v_ + i*NN;
@@ -2573,6 +2579,8 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    typedef const This&                   CompositeType;   //!< Data type for composite expression templates.
    typedef Type&                         Reference;       //!< Reference to a non-constant matrix value.
    typedef const Type&                   ConstReference;  //!< Reference to a constant matrix value.
+   typedef Type*                         Pointer;         //!< Pointer to a non-constant matrix value.
+   typedef const Type*                   ConstPointer;    //!< Pointer to a constant matrix value.
    typedef DenseIterator<Type>           Iterator;        //!< Iterator over non-constant elements.
    typedef DenseIterator<const Type>     ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
@@ -2617,10 +2625,10 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    //@{
    inline Reference      operator()( size_t i, size_t j );
    inline ConstReference operator()( size_t i, size_t j ) const;
-   inline Type*          data  ();
-   inline const Type*    data  () const;
-   inline Type*          data  ( size_t j );
-   inline const Type*    data  ( size_t j ) const;
+   inline Pointer        data  ();
+   inline ConstPointer   data  () const;
+   inline Pointer        data  ( size_t j );
+   inline ConstPointer   data  ( size_t j ) const;
    inline Iterator       begin ( size_t j );
    inline ConstIterator  begin ( size_t j ) const;
    inline ConstIterator  cbegin( size_t j ) const;
@@ -3176,7 +3184,8 @@ inline typename HybridMatrix<Type,M,N,true>::ConstReference
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline Type* HybridMatrix<Type,M,N,true>::data()
+inline typename HybridMatrix<Type,M,N,true>::Pointer
+   HybridMatrix<Type,M,N,true>::data()
 {
    return v_;
 }
@@ -3197,7 +3206,8 @@ inline Type* HybridMatrix<Type,M,N,true>::data()
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline const Type* HybridMatrix<Type,M,N,true>::data() const
+inline typename HybridMatrix<Type,M,N,true>::ConstPointer
+   HybridMatrix<Type,M,N,true>::data() const
 {
    return v_;
 }
@@ -3217,7 +3227,8 @@ inline const Type* HybridMatrix<Type,M,N,true>::data() const
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline Type* HybridMatrix<Type,M,N,true>::data( size_t j )
+inline typename HybridMatrix<Type,M,N,true>::Pointer
+   HybridMatrix<Type,M,N,true>::data( size_t j )
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return v_ + j*MM;
@@ -3238,7 +3249,8 @@ inline Type* HybridMatrix<Type,M,N,true>::data( size_t j )
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline const Type* HybridMatrix<Type,M,N,true>::data( size_t j ) const
+inline typename HybridMatrix<Type,M,N,true>::ConstPointer
+   HybridMatrix<Type,M,N,true>::data( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return v_ + j*MM;

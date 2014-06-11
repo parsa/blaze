@@ -175,6 +175,8 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    typedef const DynamicVector&       CompositeType;   //!< Data type for composite expression templates.
    typedef Type&                      Reference;       //!< Reference to a non-constant vector value.
    typedef const Type&                ConstReference;  //!< Reference to a constant vector value.
+   typedef Type*                      Pointer;         //!< Pointer to a non-constant vector value.
+   typedef const Type*                ConstPointer;    //!< Pointer to a constant vector value.
    typedef DenseIterator<Type>        Iterator;        //!< Iterator over non-constant elements.
    typedef DenseIterator<const Type>  ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
@@ -222,8 +224,8 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    //@{
    inline Reference      operator[]( size_t index );
    inline ConstReference operator[]( size_t index ) const;
-   inline Type*          data  ();
-   inline const Type*    data  () const;
+   inline Pointer        data  ();
+   inline ConstPointer   data  () const;
    inline Iterator       begin ();
    inline ConstIterator  begin () const;
    inline ConstIterator  cbegin() const;
@@ -675,7 +677,7 @@ inline typename DynamicVector<Type,TF>::ConstReference
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline Type* DynamicVector<Type,TF>::data()
+inline typename DynamicVector<Type,TF>::Pointer DynamicVector<Type,TF>::data()
 {
    return v_;
 }
@@ -691,7 +693,7 @@ inline Type* DynamicVector<Type,TF>::data()
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline const Type* DynamicVector<Type,TF>::data() const
+inline typename DynamicVector<Type,TF>::ConstPointer DynamicVector<Type,TF>::data() const
 {
    return v_;
 }

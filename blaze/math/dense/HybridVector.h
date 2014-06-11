@@ -175,6 +175,8 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    typedef const HybridVector&        CompositeType;   //!< Data type for composite expression templates.
    typedef Type&                      Reference;       //!< Reference to a non-constant vector value.
    typedef const Type&                ConstReference;  //!< Reference to a constant vector value.
+   typedef Type*                      Pointer;         //!< Pointer to a non-constant vector value.
+   typedef const Type*                ConstPointer;    //!< Pointer to a constant vector value.
    typedef DenseIterator<Type>        Iterator;        //!< Iterator over non-constant elements.
    typedef DenseIterator<const Type>  ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
@@ -219,8 +221,8 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    //@{
    inline Reference      operator[]( size_t index );
    inline ConstReference operator[]( size_t index ) const;
-   inline Type*          data  ();
-   inline const Type*    data  () const;
+   inline Pointer        data  ();
+   inline ConstPointer   data  () const;
    inline Iterator       begin ();
    inline ConstIterator  begin () const;
    inline ConstIterator  cbegin() const;
@@ -705,7 +707,7 @@ inline typename HybridVector<Type,N,TF>::ConstReference
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline Type* HybridVector<Type,N,TF>::data()
+inline typename HybridVector<Type,N,TF>::Pointer HybridVector<Type,N,TF>::data()
 {
    return v_;
 }
@@ -722,7 +724,7 @@ inline Type* HybridVector<Type,N,TF>::data()
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline const Type* HybridVector<Type,N,TF>::data() const
+inline typename HybridVector<Type,N,TF>::ConstPointer HybridVector<Type,N,TF>::data() const
 {
    return v_;
 }
