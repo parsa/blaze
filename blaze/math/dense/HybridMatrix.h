@@ -1415,7 +1415,10 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline size_t HybridMatrix<Type,M,N,SO>::capacity( size_t i ) const
 {
+   UNUSED_PARAMETER( i );
+
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
+
    return NN;
 }
 //*************************************************************************************************
@@ -3774,7 +3777,10 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 inline size_t HybridMatrix<Type,M,N,true>::capacity( size_t j ) const
 {
+   UNUSED_PARAMETER( j );
+
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
+
    return MM;
 }
 /*! \endcond */

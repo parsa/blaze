@@ -341,6 +341,7 @@ template< typename T1    // Type of the left-hand side aligned allocator
         , typename T2 >  // Type of the right-hand side aligned allocator
 inline bool operator==( const AlignedAllocator<T1>& lhs, const AlignedAllocator<T2>& rhs )
 {
+   UNUSED_PARAMETER( lhs, rhs );
    return true;
 }
 //*************************************************************************************************
@@ -357,6 +358,7 @@ template< typename T1    // Type of the left-hand side aligned allocator
         , typename T2 >  // Type of the right-hand side aligned allocator
 inline bool operator!=( const AlignedAllocator<T1>& lhs, const AlignedAllocator<T2>& rhs )
 {
+   UNUSED_PARAMETER( lhs, rhs );
    return false;
 }
 //*************************************************************************************************
