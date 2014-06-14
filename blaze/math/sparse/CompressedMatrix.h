@@ -1438,9 +1438,10 @@ inline typename CompressedMatrix<Type,SO>::Iterator
 //
 // This function resizes the matrix using the given size to \f$ m \times n \f$. During this
 // operation, new dynamic memory may be allocated in case the capacity of the matrix is too
-// small. Therefore this function invalidates all existing views (rows, columns, ...) on
-// the matrix. Additionally, the resize operation potentially changes all matrix elements.
-// In order to preserve the old matrix values, the \a preserve flag can be set to \a true.
+// small. Note that this function may invalidate all existing views (submatrices, rows, columns,
+// ...) on the matrix if it is used to shrink the matrix. Additionally, the resize operation
+// potentially changes all matrix elements. In order to preserve the old matrix values, the
+// \a preserve flag can be set to \a true.
 */
 template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
@@ -3584,9 +3585,10 @@ inline typename CompressedMatrix<Type,true>::Iterator
 //
 // This function resizes the matrix using the given size to \f$ m \times n \f$. During this
 // operation, new dynamic memory may be allocated in case the capacity of the matrix is too
-// small. Therefore this function invalidates all existing views (rows, columns, ...) on
-// the matrix. Additionally, the resize operation potentially changes all matrix elements.
-// In order to preserve the old matrix values, the \a preserve flag can be set to \a true.
+// small. Note that this function may invalidate all existing views (submatrices, rows, columns,
+// ...) on the matrix if it is used to shrink the matrix. Additionally, the resize operation
+// potentially changes all matrix elements. In order to preserve the old matrix values, the
+// \a preserve flag can be set to \a true.
 */
 template< typename Type >  // Data type of the sparse matrix
 void CompressedMatrix<Type,true>::resize( size_t m, size_t n, bool preserve )

@@ -1553,9 +1553,11 @@ inline void HybridMatrix<Type,M,N,SO>::clear()
 // This function resizes the matrix using the given size to \f$ m \times n \f$. In case the given
 // number of rows \a m is larger than the maximum number of rows (i.e. if m > M) or in case the
 // given number of columns \a n is larger than the maximum number of column (i.e. if n > N) a
-// \a std::invalid_argument exception is thrown. During this operation, all matrix elements are
-// potentially changed. In order to preserve the old matrix values, the \a preserve flag can be
-// set to \a true.\n
+// \a std::invalid_argument exception is thrown. Note that this function may invalidate all
+// existing views (submatrices, rows, columns, ...) on the matrix if it is used to shrink the
+// matrix. Additionally, during this operation all matrix elements are potentially changed. In
+// order to preserve the old matrix values, the \a preserve flag can be set to \a true.
+//
 // Note that in case the number of rows or columns is increased new matrix elements are not
 // initialized! The following example illustrates the resize operation of a \f$ 2 \times 4 \f$
 // matrix to a \f$ 4 \times 2 \f$ matrix. The new, uninitialized elements are marked with \a x:
@@ -3915,9 +3917,11 @@ inline void HybridMatrix<Type,M,N,true>::clear()
 // This function resizes the matrix using the given size to \f$ m \times n \f$. In case the given
 // number of rows \a m is larger than the maximum number of rows (i.e. if m > M) or in case the
 // given number of columns \a n is larger than the maximum number of column (i.e. if n > N) a
-// \a std::invalid_argument exception is thrown. During this operation, all matrix elements are
-// potentially changed. In order to preserve the old matrix values, the \a preserve flag can be
-// set to \a true.\n
+// \a std::invalid_argument exception is thrown. Note that this function may invalidate all
+// existing views (submatrices, rows, columns, ...) on the matrix if it is used to shrink the
+// matrix. Additionally, during this operation all matrix elements are potentially changed. In
+// order to preserve the old matrix values, the \a preserve flag can be set to \a true.
+//
 // Note that in case the number of rows or columns is increased new matrix elements are not
 // initialized! The following example illustrates the resize operation of a \f$ 2 \times 4 \f$
 // matrix to a \f$ 4 \times 2 \f$ matrix. The new, uninitialized elements are marked with \a x:

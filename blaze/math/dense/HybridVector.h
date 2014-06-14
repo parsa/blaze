@@ -1210,8 +1210,11 @@ inline void HybridVector<Type,N,TF>::clear()
 //
 // This function resizes the vector to the given size \a n. In case the given size \a n is larger
 // than the maximum number of vector elements (i.e. if n > N) a \a std::invalid_argument exception
-// is thrown. During this operation, all vector elements are potentially changed. In order to
-// preserve the old vector values, the \a preserve flag can be set to \a true.\n
+// is thrown. Note that this function may invalidate all existing views (subvectors, ...) on the
+// vector if it used to shrink the vector. Additionally, during this operation all vector elements
+// are potentially changed. In order to preserve the old vector values, the \a preserve flag can be
+// set to \a true.
+//
 // Note that in case the size of the vector is increased new vector elements are not initialized!
 // This is illustrated by the following example, which demonstrates the resizing of a vector of
 // size 2 to a vector of size 4. The new, uninitialized elements are marked with \a x:

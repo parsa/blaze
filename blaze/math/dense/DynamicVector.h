@@ -1132,10 +1132,12 @@ inline void DynamicVector<Type,TF>::clear()
 // \return void
 //
 // This function resizes the vector using the given size to \a n. During this operation, new
-// dynamic memory may be allocated in case the capacity of the vector is too small. Therefore
-// this function potentially changes all vector elements. In order to preserve the old vector
-// values, the \a preserve flag can be set to \a true. However, new vector elements are not
-// initialized!\n
+// dynamic memory may be allocated in case the capacity of the vector is too small. Note that
+// this function may invalidate all existing views (subvectors, ...) on the vector if it is
+// used to shrink the vector. Additionally, the resize operation potentially changes all vector
+// elements. In order to preserve the old vector values, the \a preserve flag can be set to
+// \a true. However, new vector elements are not initialized!
+//
 // The following example illustrates the resize operation of a vector of size 2 to a vector of
 // size 4. The new, uninitialized elements are marked with \a x:
 

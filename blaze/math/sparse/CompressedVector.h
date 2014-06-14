@@ -1139,10 +1139,12 @@ inline typename CompressedVector<Type,TF>::Iterator
 // \param preserve \a true if the old values of the vector should be preserved, \a false if not.
 // \return void
 //
-// This function resizes the compressed vector using the given size to \a n. During this operation,
-// new dynamic memory may be allocated in case the capacity of the compressed vector is too small.
-// Therefore this function potentially changes all vector elements. In order to preserve the old
-// vector values, the \a preserve flag can be set to \a true.
+// This function resizes the compressed vector using the given size to \a n. During this
+// operation, new dynamic memory may be allocated in case the capacity of the compressed
+// vector is too small. Note that this function may invalidate all existing views (subvectors,
+// ...) on the vector if it is used to shrink the vector. Additionally, the resize operation
+// potentially changes all vector elements. In order to preserve the old vector values, the
+// \a preserve flag can be set to \a true.
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
