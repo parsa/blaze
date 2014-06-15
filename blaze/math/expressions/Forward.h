@@ -150,6 +150,18 @@ template< typename, typename > class TSVecTDMatMultExpr;
 template< typename, typename > class TSVecTSMatMultExpr;
 template< typename, bool > struct Vector;
 
+template< typename VT, bool TF >
+inline const DVecSerialExpr<VT,TF> serial( const DenseVector<VT,TF>& );
+
+template< typename MT, bool SO >
+inline const DMatSerialExpr<MT,SO> serial( const DenseMatrix<MT,SO>& );
+
+template< typename VT, bool TF >
+inline const SVecSerialExpr<VT,TF> serial( const SparseVector<VT,TF>& );
+
+template< typename MT, bool SO >
+inline const SMatSerialExpr<MT,SO> serial( const SparseMatrix<MT,SO>& );
+
 } // namespace blaze
 
 #endif
