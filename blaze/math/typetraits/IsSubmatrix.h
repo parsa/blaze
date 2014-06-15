@@ -71,7 +71,7 @@ struct IsSubmatrixHelper
 
  public:
    //**********************************************************************************************
-   enum { value = boost::is_base_of<Submatrix,T>::value && !boost::is_base_of<T,Submatrix>::value };
+   enum { value = boost::is_base_of<Submatrix,T2>::value && !boost::is_base_of<T2,Submatrix>::value };
    typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
    //**********************************************************************************************
 };

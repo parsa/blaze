@@ -71,7 +71,7 @@ struct IsSubvectorHelper
 
  public:
    //**********************************************************************************************
-   enum { value = boost::is_base_of<Subvector,T>::value && !boost::is_base_of<T,Subvector>::value };
+   enum { value = boost::is_base_of<Subvector,T2>::value && !boost::is_base_of<T2,Subvector>::value };
    typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
    //**********************************************************************************************
 };

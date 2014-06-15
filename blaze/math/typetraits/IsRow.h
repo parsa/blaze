@@ -71,7 +71,7 @@ struct IsRowHelper
 
  public:
    //**********************************************************************************************
-   enum { value = boost::is_base_of<Row,T>::value && !boost::is_base_of<T,Row>::value };
+   enum { value = boost::is_base_of<Row,T2>::value && !boost::is_base_of<T2,Row>::value };
    typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
    //**********************************************************************************************
 };

@@ -71,7 +71,7 @@ struct IsViewHelper
 
  public:
    //**********************************************************************************************
-   enum { value = boost::is_base_of<View,T>::value && !boost::is_base_of<T,View>::value };
+   enum { value = boost::is_base_of<View,T2>::value && !boost::is_base_of<T2,View>::value };
    typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
    //**********************************************************************************************
 };
