@@ -3954,14 +3954,16 @@ namespace blaze {}
 // concurrently. Thereby each of the \c sections is executed by exactly one thread.
 //
 // Unfortunately \b Blaze does not support concurrent parallel computations and therefore this
-// approach does not work with the \b Blaze OpenMP parallelization. The OpenMP implementation of
-// \b Blaze is optimized for the parallel computation of an operation within a single thread of
-// execution. This means that \b Blaze tries to use all available OpenMP threads to compute the
-// result of a single operation as efficiently as possible. Therefore, for this special case, it
-// is advisable to disable the \b Blaze OpenMP parallelization and to let \b Blaze compute all
-// operations within a \c sections directive in serial. This can be done by either completely
-// disabling the \b Blaze OpenMP parallelization (see \ref serial_execution) or by selectively
-// serializing all operations within a \c sections directive via the \c serial() function:
+// approach does not work with any of the \b Blaze parallelization techniques. All techniques
+// (including the C++11 and Boost thread parallelizations; see \ref cpp_threads_parallelization
+// and \ref boost_threads_parallelization) are optimized for the parallel computation of an
+// operation within a single thread of execution. This means that \b Blaze tries to use all
+// available threads to compute the result of a single operation as efficiently as possible.
+// Therefore, for this special case, it is advisable to disable all \b Blaze parallelizations
+// and to let \b Blaze compute all operations within a \c sections directive in serial. This can
+// be done by either completely disabling the \b Blaze parallelization (see \ref serial_execution)
+// or by selectively serializing all operations within a \c sections directive via the \c serial()
+// function:
 
    \code
    blaze::DynamicVector x, y1, y2;
