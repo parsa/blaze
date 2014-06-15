@@ -90,6 +90,8 @@ struct IsViewHelper
 // from \a FalseType.
 
    \code
+   using blaze::columnVector;
+
    typedef blaze::DynamicVector<double,columnVector>  VectorType;
    typedef blaze::DenseSubvector<VectorType>          SubvectorType;
 
