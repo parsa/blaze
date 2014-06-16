@@ -810,7 +810,10 @@ inline typename HybridMatrix<Type,M,N,SO>::ConstReference
 //
 // This function returns a pointer to the internal storage of the hybrid matrix. Note that you
 // can NOT assume that all matrix elements lie adjacent to each other! The hybrid matrix may
-// use techniques such as padding to improve the alignment of the data.
+// use techniques such as padding to improve the alignment of the data. Whereas the number of
+// elements within a row/column are given by the \c rows() and \c columns() member functions,
+// respectively, the total number of elements including padding is given by the \c spacing()
+// member function.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -831,7 +834,10 @@ inline typename HybridMatrix<Type,M,N,SO>::Pointer
 //
 // This function returns a pointer to the internal storage of the hybrid matrix. Note that you
 // can NOT assume that all matrix elements lie adjacent to each other! The hybrid matrix may
-// use techniques such as padding to improve the alignment of the data.
+// use techniques such as padding to improve the alignment of the data. Whereas the number of
+// elements within a row/column are given by the \c rows() and \c columns() member functions,
+// respectively, the total number of elements including padding is given by the \c spacing()
+// member function.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -3184,7 +3190,9 @@ inline typename HybridMatrix<Type,M,N,true>::ConstReference
 //
 // This function returns a pointer to the internal storage of the hybrid matrix. Note that you
 // can NOT assume that all matrix elements lie adjacent to each other! The hybrid matrix may
-// use techniques such as padding to improve the alignment of the data.
+// use techniques such as padding to improve the alignment of the data. Whereas the number of
+// elements within a column are given by the \c columns() member functions, the total number
+// of elements including padding is given by the \c spacing() member function.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -3206,7 +3214,9 @@ inline typename HybridMatrix<Type,M,N,true>::Pointer
 //
 // This function returns a pointer to the internal storage of the hybrid matrix. Note that you
 // can NOT assume that all matrix elements lie adjacent to each other! The hybrid matrix may
-// use techniques such as padding to improve the alignment of the data.
+// use techniques such as padding to improve the alignment of the data. Whereas the number of
+// elements within a column are given by the \c columns() member functions, the total number
+// of elements including padding is given by the \c spacing() member function.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows

@@ -731,7 +731,10 @@ inline typename DynamicMatrix<Type,SO>::ConstReference
 //
 // This function returns a pointer to the internal storage of the dynamic matrix. Note that you
 // can NOT assume that all matrix elements lie adjacent to each other! The dynamic matrix may
-// use techniques such as padding to improve the alignment of the data.
+// use techniques such as padding to improve the alignment of the data. Whereas the number of
+// elements within a row/column are given by the \c rows() and \c columns() member functions,
+// respectively, the total number of elements including padding is given by the \c spacing()
+// member function.
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
@@ -749,7 +752,10 @@ inline typename DynamicMatrix<Type,SO>::Pointer DynamicMatrix<Type,SO>::data()
 //
 // This function returns a pointer to the internal storage of the dynamic matrix. Note that you
 // can NOT assume that all matrix elements lie adjacent to each other! The dynamic matrix may
-// use techniques such as padding to improve the alignment of the data.
+// use techniques such as padding to improve the alignment of the data. Whereas the number of
+// elements within a row/column are given by the \c rows() and \c columns() member functions,
+// respectively, the total number of elements including padding is given by the \c spacing()
+// member function.
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
@@ -2934,7 +2940,9 @@ inline typename DynamicMatrix<Type,true>::ConstReference
 //
 // This function returns a pointer to the internal storage of the dynamic matrix. Note that you
 // can NOT assume that all matrix elements lie adjacent to each other! The dynamic matrix may
-// use techniques such as padding to improve the alignment of the data.
+// use techniques such as padding to improve the alignment of the data. Whereas the number of
+// elements within a column are given by the \c columns() member functions, the total number
+// of elements including padding is given by the \c spacing() member function.
 */
 template< typename Type >  // Data type of the matrix
 inline typename DynamicMatrix<Type,true>::Pointer DynamicMatrix<Type,true>::data()
@@ -2953,7 +2961,9 @@ inline typename DynamicMatrix<Type,true>::Pointer DynamicMatrix<Type,true>::data
 //
 // This function returns a pointer to the internal storage of the dynamic matrix. Note that you
 // can NOT assume that all matrix elements lie adjacent to each other! The dynamic matrix may
-// use techniques such as padding to improve the alignment of the data.
+// use techniques such as padding to improve the alignment of the data. Whereas the number of
+// elements within a column are given by the \c columns() member functions, the total number
+// of elements including padding is given by the \c spacing() member function.
 */
 template< typename Type >  // Data type of the matrix
 inline typename DynamicMatrix<Type,true>::ConstPointer DynamicMatrix<Type,true>::data() const
