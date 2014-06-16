@@ -4047,7 +4047,7 @@ namespace blaze {}
 // threads.
 //
 //
-// \n \section openmp_configuration C++11 Thread Configuration
+// \n \section cpp_threads_configuration C++11 Thread Configuration
 // <hr>
 //
 // As in case of the OpenMP-based parallelization \b Blaze is not unconditionally running an
@@ -4127,7 +4127,7 @@ namespace blaze {}
 // threads.
 //
 //
-// \n \section openmp_configuration Boost Thread Configuration
+// \n \section boost_threads_configuration Boost Thread Configuration
 // <hr>
 //
 // As in case of the other shared memory parallelizations \b Blaze is not unconditionally running
