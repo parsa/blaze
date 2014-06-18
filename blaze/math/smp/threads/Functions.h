@@ -95,6 +95,41 @@ inline size_t setNumThreads( size_t number )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Provides a reliable shutdown of C++11 threads for Visual Studio compilers.
+// \ingroup smp
+//
+// \return void
+//
+// There is a known issue in Visual Studio 2012 and 2013 that may cause C++11 threads to hang
+// if their destructor is executed after the \c main() function:
+//
+//    http://connect.microsoft.com/VisualStudio/feedback/details/747145
+//
+// This function, which has only an effect for Visual Studio compilers, provides a reliable way
+// to circumvent this problem. If called directly before the end of the \c main() function it
+// blocks until all threads have been destroyed:
+
+   \code
+   int main()
+   {
+      // ... Using the C++11 thread parallelization of Blaze
+
+      shutDownThreads();
+   }
+   \endcode
+*/
+inline void shutDownThreads()
+{
+#if (defined _MSC_VER)
+   TheThreadBackend::resize( 0UL, true );
+#endif
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================

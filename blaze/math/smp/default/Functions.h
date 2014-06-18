@@ -56,8 +56,9 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name SMP utility functions */
 //@{
-inline size_t getNumThreads();
-inline void   setNumThreads( size_t number );
+inline size_t getNumThreads  ();
+inline void   setNumThreads  ( size_t number );
+inline void   shutDownThreads();
 //@}
 //*************************************************************************************************
 
@@ -95,6 +96,35 @@ inline void setNumThreads( size_t number )
 {
    UNUSED_PARAMETER( number );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Provides a reliable shutdown of C++11 threads for Visual Studio compilers.
+// \ingroup smp
+//
+// \return void
+//
+// There is a known issue in Visual Studio 2012 and 2013 that may cause C++11 threads to hang
+// if their destructor is executed after the \c main() function:
+//
+//    http://connect.microsoft.com/VisualStudio/feedback/details/747145
+//
+// This function, which has only an effect for Visual Studio compilers, provides a reliable way
+// to circumvent this problem. If called directly before the end of the \c main() function it
+// blocks until all threads have been destroyed:
+
+   \code
+   int main()
+   {
+      // ... Using the C++11 thread parallelization of Blaze
+
+      shutDownThreads();
+   }
+   \endcode
+*/
+inline void shutDownThreads()
+{}
 //*************************************************************************************************
 
 
