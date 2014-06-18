@@ -237,7 +237,7 @@ namespace blaze {
    swap( sv, sv2 );   // Compilation error: Swap operation not allowed
    \endcode
 
-// \n \section sparse_subvector_arithmetic_operations Arithmetic Operations
+// \n \section dense_subvector_arithmetic_operations Arithmetic Operations
 //
 // The following example gives an impression of the use of DenseSubvector within arithmetic
 // operations. All operations (addition, subtraction, multiplication, scaling, ...) can be
