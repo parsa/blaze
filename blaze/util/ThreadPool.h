@@ -192,7 +192,7 @@ namespace blaze {
 // for the given functions/functors.
 //
 //
-// \section thread_exception Throwing exceptions in a thread parallel environment
+// \section threadpool_exception Throwing exceptions in a thread parallel environment
 //
 // It can happen that during the execution of a given task a thread encounters an erroneous
 // situation and has to throw an exception. However, exceptions thrown in the usual way
@@ -212,7 +212,7 @@ namespace blaze {
    // inside a try-catch-block, the exception cannot be caught and results in an abortion of the
    // program.
    try {
-      Threadpool threadpool( 2 );
+      StdThreadpool threadpool( 2 );
       thread.schedule( task );
       threadpool.wait();
    }
@@ -272,6 +272,32 @@ namespace blaze {
    }
    \endcode
 
+// \section threadpool_known_issues Known issues
+//
+// There is a known issue in Visual Studio 2012 and 2013 that may cause C++11 threads to hang
+// if their destructor is executed after the \c main() function:
+//
+//    http://connect.microsoft.com/VisualStudio/feedback/details/747145
+//
+// In order to circumvent this problem, for Visual Studio compilers only, it is possible to
+// explicitly resize a ThreadPool instance to 0 threads and to block until all threads have
+// been destroyed:
+
+   \code
+   int main()
+   {
+      static StdThreadPool threadpool( 4 );
+
+      // ... Using the thread pool
+
+      threadpool( 0, true );
+   }
+   \endcode
+
+// Note that this should ONLY be used before the end of the \c main() function and ONLY if the
+// threadpool will not be used anymore.
+//
+//
 // \section threadpool_references References
 //
 // [1] A. Williams: C++ Concurrency in Action, Manning, 2012, ISBN: 978-1933988771\n
@@ -344,7 +370,7 @@ class ThreadPool : private NonCopyable
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   void resize( size_t n );
+   void resize( size_t n, bool block=false );
    void wait();
    void clear();
    //@}
@@ -456,9 +482,7 @@ ThreadPool<TT,MT,LT,CT>::~ThreadPool()
    }
 
    // Joining all threads
-   typedef typename Threads::Iterator  Iterator;
-   const Iterator end( threads_.end() );
-   for( Iterator thread=threads_.begin(); thread!=end; ++thread ) {
+   for( typename Threads::Iterator thread=threads_.begin(); thread!=threads_.end(); ++thread ) {
       thread->join();
    }
 
@@ -732,23 +756,53 @@ void ThreadPool<TT,MT,LT,CT>::schedule( Callable func, A1 a1, A2 a2, A3 a3, A4 a
 /*!\brief Changes the total number of threads in the thread pool.
 //
 // \param n The new number of threads \f$[1..\infty)\f$.
+// \param block \a true if the function shall block, \a false if not.
 // \return void
 // \exception std::invalid_argument Invalid number of threads.
 //
 // This function changes the size of the thread pool, i.e. changes the total number of threads
 // contained in the pool. If \a n is smaller than the current size of the thread pool, the
 // according number of threads is removed from the pool, otherwise new threads are added to
-// the pool.
+// the pool. Via the \a block flag it is possible to block the function until the desired
+// number of threads is available.
+//
+// Note that there is a known issue in Visual Studio 2012 and 2013 that may cause C++11 threads
+// to hang if their destructor is executed after the \c main() function:
+//
+//    http://connect.microsoft.com/VisualStudio/feedback/details/747145
+//
+// In order to circumvent this problem, for Visual Studio compilers only, it is possible to
+// explicitly resize a ThreadPool instance to 0 threads and to block until all threads have
+// been destroyed:
+
+   \code
+   int main()
+   {
+      static ThreadPool< std::thread
+                       , std::mutex
+                       , std::unique_lock< std::mutex >
+                       , std::condition_variable > threadpool( 4 );
+
+      // ... Using the thread pool
+
+      threadpool( 0, true );
+   }
+   \endcode
+
+// Note that this should ONLY be used before the end of the \c main() function and ONLY if the
+// threadpool will not be used anymore.
 */
 template< typename TT    // Type of the encapsulated thread
         , typename MT    // Type of the synchronization mutex
         , typename LT    // Type of the mutex lock
         , typename CT >  // Type of the condition variable
-void ThreadPool<TT,MT,LT,CT>::resize( size_t n )
+void ThreadPool<TT,MT,LT,CT>::resize( size_t n, bool block )
 {
    // Checking the given number of threads
+#if !(defined _MSC_VER)
    if( n == 0 )
       throw std::invalid_argument( "Invalid number of threads" );
+#endif
 
    // Adjusting the number of threads
    {
@@ -764,17 +818,20 @@ void ThreadPool<TT,MT,LT,CT>::resize( size_t n )
       else {
          expected_ = n;
          waitForTask_.notify_all();
-      }
-   }
 
-   // Joining and destroying any terminated thread
-   typedef typename Threads::Iterator  Iterator;
-   for( Iterator thread=threads_.begin(); thread!=threads_.end(); ) {
-      if( thread->hasTerminated() ) {
-         thread->join();
-         thread = threads_.erase( thread );
+         while( block && total_ != expected_ ) {
+            waitForThread_.wait( lock );
+         }
       }
-      else ++thread;
+
+      // Joining and destroying any terminated thread
+      for( typename Threads::Iterator thread=threads_.begin(); thread!=threads_.end(); ) {
+         if( thread->hasTerminated() ) {
+            thread->join();
+            thread = threads_.erase( thread );
+         }
+         else ++thread;
+      }
    }
 }
 //*************************************************************************************************
