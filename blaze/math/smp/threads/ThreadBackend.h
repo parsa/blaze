@@ -88,7 +88,7 @@ class ThreadBackend
    /*!\name Utility functions */
    //@{
    static inline size_t size  ();
-   static inline void   resize( size_t n );
+   static inline void   resize( size_t n, bool block=false );
    static inline void   wait  ();
    //@}
    //**********************************************************************************************
@@ -345,6 +345,7 @@ inline size_t ThreadBackend<TT,MT,LT,CT>::size()
 /*!\brief Changes the total number of threads managed by the thread backend system.
 //
 // \param n The new number of threads \f$[1..\infty)\f$.
+// \param block \a true if the function shall block, \a false if not.
 // \return void
 // \exception std::invalid_argument Invalid number of threads.
 //
@@ -352,15 +353,16 @@ inline size_t ThreadBackend<TT,MT,LT,CT>::size()
 // \a n is smaller than the current size of the thread pool, the according number of threads is
 // removed from the backend system, otherwise new threads are added to the backend system. In
 // case an invalid number of threads is specified, an \a std::invalid_argument exception is
-// thrown.
+// thrown. Via the \a block flag it is possible to block the function until the desired
+// number of threads is available.
 */
 template< typename TT    // Type of the encapsulated thread
         , typename MT    // Type of the synchronization mutex
         , typename LT    // Type of the mutex lock
         , typename CT >  // Type of the condition variable
-inline void ThreadBackend<TT,MT,LT,CT>::resize( size_t n )
+inline void ThreadBackend<TT,MT,LT,CT>::resize( size_t n, bool block )
 {
-   return threadpool_.resize( n );
+   return threadpool_.resize( n, block );
 }
 /*! \endcond */
 //*************************************************************************************************
