@@ -98,6 +98,7 @@ inline size_t setNumThreads( size_t number )
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Provides a reliable shutdown of C++11 threads for Visual Studio compilers.
 // \ingroup smp
 //
@@ -123,6 +124,7 @@ inline size_t setNumThreads( size_t number )
 */
 inline void shutDownThreads()
 {}
+/*! \endcond */
 //*************************************************************************************************
 
 
