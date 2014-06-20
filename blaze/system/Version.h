@@ -58,9 +58,9 @@
 // \ingroup system
 //
 // This value corresponds to the minor version of the Blaze library. For instance, for Blaze
-// version 2.0, the BLAZE_MINOR_VERSION corresponds to 0.
+// version 2.1, the BLAZE_MINOR_VERSION corresponds to 1.
 */
-#define BLAZE_MINOR_VERSION 0
+#define BLAZE_MINOR_VERSION 1
 //*************************************************************************************************
 
 #endif
