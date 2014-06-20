@@ -75,6 +75,7 @@
 #include <blaze/math/constraints/SubExpr.h>
 #include <blaze/math/constraints/Submatrix.h>
 #include <blaze/math/constraints/Subvector.h>
+#include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/TVecMatMultExpr.h>
