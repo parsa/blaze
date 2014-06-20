@@ -4067,6 +4067,32 @@ namespace blaze {}
 // have been determined using the OpenMP parallelization and require individual adaption for
 // the C++11 thread parallelization.
 //
+//
+// \n \section cpp_threads_known_issues Known Issues
+// <hr>
+//
+// There is a known issue in Visual Studio 2012 and 2013 that may cause C++11 threads to hang
+// if their destructor is executed after the \c main() function:
+//
+//    http://connect.microsoft.com/VisualStudio/feedback/details/747145
+//
+// Unfortunately, the C++11 parallelization of the \b Blaze library is affected from this bug.
+// In order to circumvent this problem, \b Blaze provides the \c shutDownThreads() function,
+// which can be used to manually destroy all threads at the end of the \c main() function:
+
+   \code
+   int main()
+   {
+      // ... Using the C++11 thread parallelization of Blaze
+
+      shutDownThreads();
+   }
+   \endcode
+
+// Please note that this function may only be used at the end of the \c main() function. After
+// this function no further computation may be executed! Also note that this function has an
+// effect for Visual Studio compilers only and doesn't need to be used with any other compiler.
+//
 // \n <center> Previous: \ref openmp_parallelization &nbsp; &nbsp; Next: \ref boost_threads_parallelization </center>
 */
 //*************************************************************************************************
