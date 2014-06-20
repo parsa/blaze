@@ -110,6 +110,7 @@ class ClassTest
    void testUpperBound  ();
    void testIsDefault   ();
    void testIsNan       ();
+   void testIsQuadratic ();
    void testIsDiagonal  ();
    void testIsSymmetric ();
    void testMinimum     ();

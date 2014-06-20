@@ -79,6 +79,7 @@ UnalignedTest::UnalignedTest()
    testIsDefault();
    testIsNan();
    testIsSame();
+   testIsQuadratic();
    testIsDiagonal();
    testIsSymmetric();
    testMinimum();
@@ -6503,6 +6504,105 @@ void UnalignedTest::testIsSame()
                 << " Details:\n"
                 << "   First submatrix:\n" << sm1 << "\n"
                 << "   Second submatrix:\n" << sm2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c isQuadratic() function with the SparseSubmatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isQuadratic() function with the SparseSubmatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void UnalignedTest::testIsQuadratic()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isQuadratic()";
+
+      // Quadratic matrix
+      {
+         SMT sm = submatrix( mat_, 0UL, 0UL, 3UL, 3UL );
+
+         checkRows   ( sm, 3UL );
+         checkColumns( sm, 3UL );
+
+         if( isQuadratic( sm ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isQuadratic evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-quadratic matrix
+      {
+         SMT sm = submatrix( mat_, 0UL, 0UL, 2UL, 3UL );
+
+         checkRows   ( sm, 2UL );
+         checkColumns( sm, 3UL );
+
+         if( isQuadratic( sm ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isQuadratic evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isQuadratic()";
+
+      // Quadratic matrix
+      {
+         TSMT sm = submatrix( tmat_, 0UL, 0UL, 3UL, 3UL );
+
+         checkRows   ( sm, 3UL );
+         checkColumns( sm, 3UL );
+
+         if( isQuadratic( sm ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isQuadratic evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-quadratic matrix
+      {
+         TSMT sm = submatrix( tmat_, 0UL, 0UL, 3UL, 2UL );
+
+         checkRows   ( sm, 3UL );
+         checkColumns( sm, 2UL );
+
+         if( isQuadratic( sm ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isQuadratic evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }

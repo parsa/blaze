@@ -100,6 +100,7 @@ class UnalignedTest
    void testIsDefault   ();
    void testIsNan       ();
    void testIsSame      ();
+   void testIsQuadratic ();
    void testIsDiagonal  ();
    void testIsSymmetric ();
    void testMinimum     ();

@@ -89,6 +89,7 @@ ClassTest::ClassTest()
    testUpperBound();
    testIsDefault();
    testIsNan();
+   testIsQuadratic();
    testIsDiagonal();
    testIsSymmetric();
    testMinimum();
@@ -7400,6 +7401,105 @@ void ClassTest::testIsNan()
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c isQuadratic() function with the CompressedMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isQuadratic() function with the CompressedMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testIsQuadratic()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isQuadratic()";
+
+      // Quadratic matrix
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL );
+
+         checkRows   ( mat, 3UL );
+         checkColumns( mat, 3UL );
+
+         if( isQuadratic( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isQuadratic evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-quadratic matrix
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 0 );
+
+         checkRows   ( mat, 2UL );
+         checkColumns( mat, 3UL );
+
+         if( isQuadratic( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isQuadratic evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isQuadratic()";
+
+      // Quadratic matrix
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
+
+         checkRows   ( mat, 3UL );
+         checkColumns( mat, 3UL );
+
+         if( isQuadratic( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isQuadratic evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-quadratic matrix
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 0 );
+
+         checkRows   ( mat, 3UL );
+         checkColumns( mat, 2UL );
+
+         if( isQuadratic( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isQuadratic evaluation\n"
                 << " Details:\n"
                 << "   Matrix:\n" << mat << "\n";
             throw std::runtime_error( oss.str() );
