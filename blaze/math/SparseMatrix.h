@@ -77,6 +77,7 @@
 #include <blaze/math/smp/DenseMatrix.h>
 #include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/StorageOrder.h>
+#include <blaze/math/typetraits/IsQuadratic.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -281,6 +282,9 @@ template< typename MT, bool SO >
 bool isnan( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
+bool isQuadratic( const SparseMatrix<MT,SO>& sm );
+
+template< typename MT, bool SO >
 bool isDiagonal( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
@@ -338,6 +342,25 @@ bool isnan( const SparseMatrix<MT,SO>& sm )
    }
 
    return false;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given sparse matrix is quadratic.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix to be checked.
+// \return \a true if the matrix is quadratic, \a false if not.
+//
+// This function checks if the number of rows and columns of the given dense matrix are equal.
+// If they are, the function returns \a true, otherwise it returns \a false.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+bool isQuadratic( const SparseMatrix<MT,SO>& sm )
+{
+   return ( IsQuadratic<MT>::value || (~sm).rows() == (~sm).columns() );
 }
 //*************************************************************************************************
 
