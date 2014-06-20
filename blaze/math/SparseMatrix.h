@@ -78,6 +78,7 @@
 #include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/typetraits/IsQuadratic.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -428,13 +429,17 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
 {
    typedef typename MT::ConstIterator  ConstIterator;
 
-   const size_t rows   ( (~sm).rows()    );
-   const size_t columns( (~sm).columns() );
+   // Early exit in case the matrix is guaranteed to be symmetric at compile time
+   if( IsSymmetric<MT>::value )
+      return true;
 
-   if( rows != columns ) return false;
+   // Early exit in case the matrix is not quadratic
+   if( !isQuadratic( ~sm ) )
+      return false;
 
+   // Run time evaluation if the matrix is symmetric
    if( SO == rowMajor ) {
-      for( size_t i=0UL; i<rows; ++i ) {
+      for( size_t i=0UL; i<(~sm).rows(); ++i ) {
          for( ConstIterator element=(~sm).begin(i); element!=(~sm).end(i); ++element )
          {
             const size_t index( element->index() );
@@ -449,7 +454,7 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
       }
    }
    else {
-      for( size_t j=0UL; j<columns; ++j ) {
+      for( size_t j=0UL; j<(~sm).columns(); ++j ) {
          for( ConstIterator element=(~sm).begin(j); element!=(~sm).end(j); ++element )
          {
             const size_t index( element->index() );

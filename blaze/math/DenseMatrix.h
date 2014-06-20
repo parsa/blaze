@@ -91,6 +91,7 @@
 #include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/typetraits/IsQuadratic.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
@@ -745,13 +746,17 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isSymmetric( const DenseMatrix<MT,SO>& dm )
 {
-   const size_t rows   ( (~dm).rows()    );
-   const size_t columns( (~dm).columns() );
+   // Early exit in case the matrix is guaranteed to be symmetric at compile time
+   if( IsSymmetric<MT>::value )
+      return true;
 
-   if( rows != columns ) return false;
+   // Early exit in case the matrix is not quadratic
+   if( !isQuadratic( ~dm ) )
+      return false;
 
+   // Run time evaluation if the matrix is symmetric
    if( SO == rowMajor ) {
-      for( size_t i=1UL; i<rows; ++i ) {
+      for( size_t i=1UL; i<(~dm).rows(); ++i ) {
          for( size_t j=0UL; j<i; ++j ) {
             if( !equal( (~dm)(i,j), (~dm)(j,i) ) )
                return false;
@@ -759,7 +764,7 @@ bool isSymmetric( const DenseMatrix<MT,SO>& dm )
       }
    }
    else {
-      for( size_t j=1UL; j<columns; ++j ) {
+      for( size_t j=1UL; j<(~dm).columns(); ++j ) {
          for( size_t i=0UL; i<j; ++i ) {
             if( !equal( (~dm)(i,j), (~dm)(j,i) ) )
                return false;
