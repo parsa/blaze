@@ -4625,27 +4625,6 @@ struct IsResizable< CompressedMatrix<T,SO> > : public TrueType
    enum { value = 1 };
    typedef TrueType  Type;
 };
-
-template< typename T, bool SO >
-struct IsResizable< const CompressedMatrix<T,SO> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
-
-template< typename T, bool SO >
-struct IsResizable< volatile CompressedMatrix<T,SO> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
-
-template< typename T, bool SO >
-struct IsResizable< const volatile CompressedMatrix<T,SO> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
 /*! \endcond */
 //*************************************************************************************************
 

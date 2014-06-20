@@ -1817,27 +1817,6 @@ struct IsResizable< CompressedVector<T,TF> > : public TrueType
    enum { value = 1 };
    typedef TrueType  Type;
 };
-
-template< typename T, bool TF >
-struct IsResizable< const CompressedVector<T,TF> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
-
-template< typename T, bool TF >
-struct IsResizable< volatile CompressedVector<T,TF> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
-
-template< typename T, bool TF >
-struct IsResizable< const volatile CompressedVector<T,TF> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
 /*! \endcond */
 //*************************************************************************************************
 

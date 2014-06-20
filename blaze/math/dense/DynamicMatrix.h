@@ -4691,27 +4691,6 @@ struct IsResizable< DynamicMatrix<T,SO> > : public TrueType
    enum { value = 1 };
    typedef TrueType  Type;
 };
-
-template< typename T, bool SO >
-struct IsResizable< const DynamicMatrix<T,SO> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
-
-template< typename T, bool SO >
-struct IsResizable< volatile DynamicMatrix<T,SO> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
-
-template< typename T, bool SO >
-struct IsResizable< const volatile DynamicMatrix<T,SO> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
 /*! \endcond */
 //*************************************************************************************************
 

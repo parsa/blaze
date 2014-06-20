@@ -84,6 +84,60 @@ struct IsResizable : public FalseType
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsResizable type trait for const types.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsResizable< const T > : public IsResizable<T>::Type
+{
+ public:
+   //**********************************************************************************************
+   enum { value = IsResizable<T>::value };
+   typedef typename IsResizable<T>::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsResizable type trait for volatile types.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsResizable< volatile T > : public IsResizable<T>::Type
+{
+ public:
+   //**********************************************************************************************
+   enum { value = IsResizable<T>::value };
+   typedef typename IsResizable<T>::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsResizable type trait for cv qualified types.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsResizable< const volatile T > : public IsResizable<T>::Type
+{
+ public:
+   //**********************************************************************************************
+   enum { value = IsResizable<T>::value };
+   typedef typename IsResizable<T>::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

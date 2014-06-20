@@ -2052,27 +2052,6 @@ struct IsResizable< DynamicVector<T,TF> > : public TrueType
    enum { value = 1 };
    typedef TrueType  Type;
 };
-
-template< typename T, bool TF >
-struct IsResizable< const DynamicVector<T,TF> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
-
-template< typename T, bool TF >
-struct IsResizable< volatile DynamicVector<T,TF> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
-
-template< typename T, bool TF >
-struct IsResizable< const volatile DynamicVector<T,TF> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
 /*! \endcond */
 //*************************************************************************************************
 
