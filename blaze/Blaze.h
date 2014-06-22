@@ -620,9 +620,9 @@ namespace blaze {}
 // rules to take care of:
 //  - In case the last template parameter (the transpose flag) is omitted, the vector is per
 //    default a column vector.
-//  - The elements of a StaticVector are default initialized (i.e. built-in data types are
-//    initialized to 0, class types are initialized via the default constructor).
-//  - Newly allocated elements of a DynamicVector or CompressedVector remain uninitialized
+//  - The elements of a \c StaticVector or \c HybridVector are default initialized (i.e. built-in
+//    data types are initialized to 0, class types are initialized via the default constructor).
+//  - Newly allocated elements of a \c DynamicVector or \c CompressedVector remain uninitialized
 //    if they are of built-in type and are default constructed if they are of class type.
 //
 // \n \subsection vector_operations_default_construction Default Construction
@@ -652,19 +652,20 @@ namespace blaze {}
 
 // \n \subsection vector_operations_size_construction Construction with Specific Size
 //
-// The DynamicVector and CompressedVector classes offer a constructor that allows to immediately
-// give the vector the required size. Whereas DynamicVector uses this information to allocate
-// memory for all vector elements, CompressedVector merely acquires the size but remains empty.
+// The \c DynamicVector, \c HybridVector and \c CompressedVector classes offer a constructor that
+// allows to immediately give the vector the required size. Whereas both dense vectors (i.e.
+// \c DynamicVector and \c HybridVector) use this information to allocate memory for all vector
+// elements, \c CompressedVector merely acquires the size but remains empty.
 
    \code
-   DynamicVector<int,columnVector> v7( 9UL );   // Instantiation of an integer dynamic column vector
-                                                // of size 9. The elements are NOT initialized!
-   DynamicVector< complex<float> > v8( 2UL );   // Instantiation of a column vector with two single
-                                                // precision complex values. The elements are
-                                                // default constructed.
-   CompressedVector<int,rowVector> v9( 10UL );  // Instantiation of a compressed row vector with
-                                                // size 10. Initially, the vector provides no
-                                                // capacity for non-zero elements.
+   DynamicVector<int,columnVector> v7( 9UL );      // Instantiation of an integer dynamic column vector
+                                                   // of size 9. The elements are NOT initialized!
+   HybridVector< complex<float>, 5UL > v8( 2UL );  // Instantiation of a column vector with two single
+                                                   // precision complex values. The elements are
+                                                   // default constructed.
+   CompressedVector<int,rowVector> v9( 10UL );     // Instantiation of a compressed row vector with
+                                                   // size 10. Initially, the vector provides no
+                                                   // capacity for non-zero elements.
    \endcode
 
 // \n \subsection vector_operations_initialization_constructors Initialization Constructors
@@ -684,8 +685,8 @@ namespace blaze {}
                                                         // space for at least 3 non-zero elements.
    \endcode
 
-// The StaticVector class offers a special initialization constructor. For StaticVectors of up
-// to 6 elements (i.e. 6D vectors) the vector elements can be individually specified in the
+// The \c StaticVector class offers a special initialization constructor. For \c StaticVectors of
+// up to 6 elements (i.e. 6D vectors) the vector elements can be individually specified in the
 // constructor:
 
    \code
@@ -734,7 +735,7 @@ namespace blaze {}
                                                   // copy of the row vector v12.
    \endcode
 
-// Note that it is not possible to create a StaticVector as a copy of a vector with a different
+// Note that it is not possible to create a \c StaticVector as a copy of a vector with a different
 // size:
 
    \code
@@ -783,9 +784,9 @@ namespace blaze {}
 // \n \subsection vector_operations_copy_assignment Copy Assignment
 //
 // For all vector types it is generally possible to assign another vector with the same transpose
-// flag (i.e. blaze::columnVector or blaze::rowVector). Note that in case of StaticVectors, the
-// assigned vector is required to have the same size as the StaticVector since the size of a
-// StaticVector cannot be adapted!
+// flag (i.e. blaze::columnVector or blaze::rowVector). Note that in case of \c StaticVectors, the
+// assigned vector is required to have the same size as the \c StaticVector since the size of a
+// \c StaticVector cannot be adapted!
 
    \code
    blaze::StaticVector<int,3UL,columnVector> v1;
@@ -824,113 +825,6 @@ namespace blaze {}
    v4 *= v5;  // OK: Multiplication assignment between two row vectors of the same size
    \endcode
 
-// \n \section vector_operations_common_vector_operations Common Vector Operations
-// <hr>
-//
-// \subsection vector_operations_size Size of a Vector
-//
-// Via the \c size() (member) function, the current size of a vector can be queried:
-
-   \code
-   // Instantiating a dynamic vector with size 10
-   blaze::DynamicVector<int> v1( 10UL );
-   v1.size();   // Returns 10
-   size( v1 );  // Has the same effect as the member function
-
-   // Instantiating a compressed vector with size 12 and capacity for 3 non-zero elements
-   blaze::CompressedVector<double> v2( 12UL, 3UL );
-   v2.size();   // Returns 12
-   size( v2 );  // Has the same effect as the member function
-   \endcode
-
-// \n \subsection vector_operations_capacity Capacity of a Vector
-//
-// Via the \c capacity() (member) function the internal capacity of a dense or sparse vector
-// can be queried. Note that the capacity of a vector doesn't have to be equal to the size
-// of a vector. In case of a dense vector the capacity will always be greater or equal than
-// the size of the vector, in case of a sparse vector the capacity may even be less than
-// the size.
-
-   \code
-   blaze::DynamicVector<int> v1( 10UL );
-   v1.capacity();   // Returns at least 10
-   capacity( v1 );  // Has the same effect as the member function
-   \endcode
-
-// \n \subsection vector_operations_nonzeros Number of Non-Zero Elements
-//
-// For both dense and sparse vectors the number of non-zero elements can be determined via the
-// \c nonZeros() (member) function. Sparse vectors directly return their number of non-zero
-// elements, dense vectors traverse their elements and count the number of non-zero elements.
-
-   \code
-   blaze::DynamicVector<int> v1( 10UL );
-   blaze::CompressedVector<double> v2( 20UL );
-
-   // ... Initializing the vectors
-
-   // Returns the number of non-zero elements in the dense vector
-   v1.nonZeros();
-   nonZeros( v1 );
-
-   // Returns the number of non-zero elements in the sparse vector
-   v2.nonZeros();
-   nonZeros( v2 );
-   \endcode
-
-// \n \section vector_operations_resize_reserve Resize/Reserve
-// <hr>
-//
-// The size of a StaticVector is fixed by the second template parameter. In contrast, the size
-// of DynamicVectors as well as CompressedVectors can be changed via the \c resize() function:
-
-   \code
-   using blaze::DynamicVector;
-   using blaze::CompressedVector;
-
-   DynamicVector<int,columnVector> v1;
-   CompressedVector<int,rowVector> v2( 4 );
-   v2[1] = -2;
-   v2[3] = 11;
-
-   // Adapting the size of the dynamic and compressed vectors. The (optional) second parameter
-   // specifies whether the existing elements should be preserved. Per default, the existing
-   // elements are not preserved.
-   v1.resize( 5UL );         // Resizing vector v1 to 5 elements. Elements of built-in type remain
-                             // uninitialized, elements of class type are default constructed.
-   v1.resize( 3UL, false );  // Resizing vector v1 to 3 elements. The old elements are lost, the
-                             // new elements are NOT initialized!
-   v2.resize( 8UL, true );   // Resizing vector v2 to 8 elements. The old elements are preserved.
-   v2.resize( 5UL, false );  // Resizing vector v2 to 5 elements. The old elements are lost.
-   \endcode
-
-// Note that resizing a vector invalidates all existing views (see e.g. \ref views_subvectors)
-// on the vector:
-
-   \code
-   typedef blaze::DynamicVector<int,rowVector>  VectorType;
-   typedef blaze::DenseSubvector<VectorType>    SubvectorType;
-
-   VectorType v1( 10UL );                         // Creating a dynamic vector of size 10
-   SubvectorType sv = subvector( v1, 2UL, 5UL );  // Creating a view on the range [2..6]
-   v1.resize( 6UL );                              // Resizing the vector invalidates the view
-   \endcode
-
-// When the internal capacity of a vector is no longer sufficient, the allocation of a larger
-// junk of memory is triggered. In order to avoid frequent reallocations, the \c reserve()
-// function can be used up front to set the internal capacity:
-
-   \code
-   blaze::DynamicVector<int> v1;
-   v1.reserve( 100 );
-   v1.size();      // Returns 0
-   v1.capacity();  // Returns at least 100
-   \endcode
-//
-// Note that the size of the vector remains unchanged, but only the internal capacity is set
-// according to the specified value!
-//
-//
 // \n \section vector_operations_element_access Element Access
 // <hr>
 //
@@ -1035,8 +929,144 @@ namespace blaze {}
    // ...
    \endcode
 
-// \n \section vector_operations_reset_clear Reset/Clear
+// \n \section vector_operations_member_functions Member Functions
 // <hr>
+//
+// \subsection vector_operations_size Size of a Vector
+//
+// Via the \c size() member function, the current size of a dense or sparse vector can be queried:
+
+   \code
+   // Instantiating a dynamic vector with size 10
+   blaze::DynamicVector<int> v1( 10UL );
+   v1.size();  // Returns 10
+
+   // Instantiating a compressed vector with size 12 and capacity for 3 non-zero elements
+   blaze::CompressedVector<double> v2( 12UL, 3UL );
+   v2.size();  // Returns 12
+   \endcode
+
+// Alternatively, the free function \c size() can be used to query to current size of a vector.
+// In contrast to the member function, the free function can also be used to query the size of
+// vector expressions:
+
+   \code
+   size( v1 );  // Returns 10, i.e. has the same effect as the member function
+   size( v2 );  // Returns 12, i.e. has the same effect as the member function
+
+   blaze::DynamicMatrix<int> A( 15UL, 12UL );
+   size( A * v2 );  // Returns 15, i.e. the size of the resulting vector
+   \endcode
+
+// \n \subsection vector_operations_capacity Capacity of a Vector
+//
+// Via the \c capacity() (member) function the internal capacity of a dense or sparse vector
+// can be queried. Note that the capacity of a vector doesn't have to be equal to the size
+// of a vector. In case of a dense vector the capacity will always be greater or equal than
+// the size of the vector, in case of a sparse vector the capacity may even be less than
+// the size.
+
+   \code
+   v1.capacity();   // Returns at least 10
+   \endcode
+
+// For symmetry reasons, there is also a free function /c capacity() available that can be used
+// to query the capacity:
+
+   \code
+   capacity( v1 );  // Returns at least 10, i.e. has the same effect as the member function
+   \endcode
+
+// Note, however, that it is not possible to query the capacity of a vector expression:
+
+   \code
+   capacity( A * v1 );  // Compilation error!
+   \endcode
+
+// \n \subsection vector_operations_nonzeros Number of Non-Zero Elements
+//
+// For both dense and sparse vectors the number of non-zero elements can be determined via the
+// \c nonZeros() member function. Sparse vectors directly return their number of non-zero
+// elements, dense vectors traverse their elements and count the number of non-zero elements.
+
+   \code
+   v1.nonZeros();  // Returns the number of non-zero elements in the dense vector
+   v2.nonZeros();  // Returns the number of non-zero elements in the sparse vector
+   \endcode
+
+// There is also a free function \c nonZeros() available to query the current number of non-zero
+// elements:
+
+   \code
+   nonZeros( v1 );  // Returns the number of non-zero elements in the dense vector
+   nonZeros( v2 );  // Returns the number of non-zero elements in the sparse vector
+   \endcode
+
+// The free \c nonZeros() function can also be used to query the number of non-zero elements in
+// a vector expression. However, the result is not the exact number of non-zero elements, but
+// may be a rough estimation:
+
+   \code
+   nonZeros( A * v1 );  // Estimates the number of non-zero elements in the vector expression
+   \endcode
+
+// \n \subsection vector_operations_resize_reserve Resize/Reserve
+//
+// The size of a \c StaticVector is fixed by the second template parameter. In contrast, the size
+// of \c DynamicVectors, \c HybridVectors as well as \c CompressedVectors can be changed via the
+// \c resize() function:
+
+   \code
+   using blaze::DynamicVector;
+   using blaze::CompressedVector;
+
+   DynamicVector<int,columnVector> v1;
+   CompressedVector<int,rowVector> v2( 4 );
+   v2[1] = -2;
+   v2[3] = 11;
+
+   // Adapting the size of the dynamic and compressed vectors. The (optional) second parameter
+   // specifies whether the existing elements should be preserved. Per default, the existing
+   // elements are not preserved.
+   v1.resize( 5UL );         // Resizing vector v1 to 5 elements. Elements of built-in type remain
+                             // uninitialized, elements of class type are default constructed.
+   v1.resize( 3UL, false );  // Resizing vector v1 to 3 elements. The old elements are lost, the
+                             // new elements are NOT initialized!
+   v2.resize( 8UL, true );   // Resizing vector v2 to 8 elements. The old elements are preserved.
+   v2.resize( 5UL, false );  // Resizing vector v2 to 5 elements. The old elements are lost.
+   \endcode
+
+// Note that resizing a vector invalidates all existing views (see e.g. \ref views_subvectors)
+// on the vector:
+
+   \code
+   typedef blaze::DynamicVector<int,rowVector>  VectorType;
+   typedef blaze::DenseSubvector<VectorType>    SubvectorType;
+
+   VectorType v1( 10UL );                         // Creating a dynamic vector of size 10
+   SubvectorType sv = subvector( v1, 2UL, 5UL );  // Creating a view on the range [2..6]
+   v1.resize( 6UL );                              // Resizing the vector invalidates the view
+   \endcode
+
+// When the internal capacity of a vector is no longer sufficient, the allocation of a larger
+// junk of memory is triggered. In order to avoid frequent reallocations, the \c reserve()
+// function can be used up front to set the internal capacity:
+
+   \code
+   blaze::DynamicVector<int> v1;
+   v1.reserve( 100 );
+   v1.size();      // Returns 0
+   v1.capacity();  // Returns at least 100
+   \endcode
+
+// Note that the size of the vector remains unchanged, but only the internal capacity is set
+// according to the specified value!
+//
+//
+// \n \section vector_operations_free_functions Free Functions
+// <hr>
+//
+// \subsection vector_operations_reset_clear Reset/Clear
 //
 // In order to reset all elements of a vector, the \c reset() function can be used:
 
@@ -1065,41 +1095,46 @@ namespace blaze {}
 // of the vectors.
 //
 //
-// \n \section vector_operations_vector_transpose Vector Transpose
-// <hr>
+// \n \subsection vector_operations_isnan isnan
 //
-// As already mentioned, vectors can either be column vectors (blaze::columnVector) or row vectors
-// (blaze::rowVector). A column vector cannot be assigned to a row vector and vice versa. However,
-// vectors can be transposed via the \c trans() function:
+// The \c isnan() function provides the means to check a dense or sparse vector for non-a-number
+// elements:
 
    \code
-   blaze::DynamicVector<int,columnVector> v1( 4UL );
-   blaze::CompressedVector<int,rowVector> v2( 4UL );
-
-   v1 = v2;            // Compilation error: Cannot assign a row vector to a column vector
-   v1 = trans( v2 );   // OK: Transposing the row vector to a column vector and assigning it
-                       //     to the column vector v1
-   v2 = trans( v1 );   // OK: Transposing the column vector v1 and assigning it to the row vector v2
-   v1 += trans( v2 );  // OK: Addition assignment of two column vectors
+   blaze::DynamicVector<double> a;
+   // ... Resizing and initialization
+   if( isnan( a ) ) { ... }
    \endcode
-
-// \n \section vector_operations_length Vector Length
-// <hr>
-//
-// In order to calculate the length of a vector, both the \c length() and \c sqrLength() function
-// can be used:
 
    \code
-   blaze::StaticVector<float,3UL,rowVector> v( -1.2F, 2.7F, -2.3F );
-
-   const float len    = length   ( v );  // Computes the current length of the vector
-   const float sqrlen = sqrLength( v );  // Computes the square length of the vector
+   blaze::CompressedVector<double> a;
+   // ... Resizing and initialization
+   if( isnan( a ) ) { ... }
    \endcode
 
-// Note that both functions can only be used for vectors with built-in or complex element type!
+// If at least one element of the vector is not-a-number, the function returns \a true, otherwise
+// it returns \a false. Please note that this function only works for vectors with floating point
+// elements. The attempt to use it for a vector with a non-floating point element type results in
+// a compile time error.
 //
-// \n \section vector_operators_abs Absolute Values
-// <hr>
+//
+// \n \subsection vector_operations_isdefault isDefault
+//
+// The \c isDefault() function returns whether the given dense or sparse vector is in default state:
+
+   \code
+   blaze::HybridVector<int,20UL> a;
+   // ... Resizing and initialization
+   if( isDefault( a ) ) { ... }
+   \endcode
+
+// A vector is in default state if all its elements are in default state. For instance, in case
+// the vector is instantiated for a built-in integral or floating point data type, the function
+// returns \a true in case all vector elements are 0 and \a false in case any vector element is
+// not 0.
+//
+//
+// \n \subsection vector_operators_abs Absolute Values
 //
 // The \c abs() function can be used to compute the absolute values of each element of a vector.
 // For instance, the following computation
@@ -1117,8 +1152,76 @@ namespace blaze {}
                           3 \\
                           \end{array}\right)\f$
 
-// \n \section vector_operations_normalize Normalize
-// <hr>
+// \n \subsection vector_operations_min_max Minimum/Maximum Values
+//
+// The \c min() and the \c max() functions return the smallest and largest element of the given
+// dense or sparse vector, respectively:
+
+   \code
+   blaze::StaticVector<int,4UL,rowVector> a( -5, 2,  7,  4 );
+   blaze::StaticVector<int,4UL,rowVector> b( -5, 2, -7, -4 );
+
+   min( a );  // Returns -5
+   min( b );  // Returns -7
+
+   max( a );  // Returns 7
+   max( b );  // Returns 2
+   \endcode
+
+// In case the vector currently has a size of 0, both functions return 0. Additionally, in case
+// a given sparse vector is not completely filled, the zero elements are taken into account. For
+// example: the following compressed vector has only 2 non-zero elements. However, the minimum
+// of this vector is 0:
+
+   \code
+   blaze::CompressedVector<int> c( 4UL, 2UL );
+   c[0] = 1;
+   c[2] = 3;
+
+   min( c );  // Returns 0
+   \endcode
+
+// Also note that the \c min() and \c max() functions can be used to compute the smallest and
+// largest element of a vector expression:
+
+   \code
+   min( a + b + c );  // Returns -9, i.e. the smallest value of the resulting vector
+   max( a - b - c );  // Returns 11, i.e. the largest value of the resulting vector
+   \endcode
+
+// \n \subsection vector_operations_length Vector Length
+//
+// In order to calculate the length of a vector, both the \c length() and \c sqrLength() function
+// can be used:
+
+   \code
+   blaze::StaticVector<float,3UL,rowVector> v( -1.2F, 2.7F, -2.3F );
+
+   const float len    = length   ( v );  // Computes the current length of the vector
+   const float sqrlen = sqrLength( v );  // Computes the square length of the vector
+   \endcode
+
+// Note that both functions can only be used for vectors with built-in or complex element type!
+//
+//
+// \n \subsection vector_operations_vector_transpose Vector Transpose
+//
+// As already mentioned, vectors can either be column vectors (blaze::columnVector) or row vectors
+// (blaze::rowVector). A column vector cannot be assigned to a row vector and vice versa. However,
+// vectors can be transposed via the \c trans() function:
+
+   \code
+   blaze::DynamicVector<int,columnVector> v1( 4UL );
+   blaze::CompressedVector<int,rowVector> v2( 4UL );
+
+   v1 = v2;            // Compilation error: Cannot assign a row vector to a column vector
+   v1 = trans( v2 );   // OK: Transposing the row vector to a column vector and assigning it
+                       //     to the column vector v1
+   v2 = trans( v1 );   // OK: Transposing the column vector v1 and assigning it to the row vector v2
+   v1 += trans( v2 );  // OK: Addition assignment of two column vectors
+   \endcode
+
+// \n \subsection vector_operations_normalize Normalize
 //
 // The \c normalize() function can be used to scale any non-zero vector to a length of 1. In
 // case the vector does not contain a single non-zero element (i.e. is a zero vector), the
@@ -1137,8 +1240,7 @@ namespace blaze {}
 // Note that the \c normalize() function only works for floating point vectors. The attempt to
 // use it for an integral vector results in a compile time error.
 //
-// \n \section vector_operations_swap Swap
-// <hr>
+// \n \subsection vector_operations_swap Swap
 //
 // Via the \c swap() function it is possible to completely swap the contents of two vectors of
 // the same type:
@@ -1299,9 +1401,9 @@ namespace blaze {}
 // to be aware of:
 //  - In case the last template parameter (the storage order) is omitted, the matrix is per
 //    default stored in row-major order.
-//  - The elements of a StaticMatrix are default initialized (i.e. built-in data types are
-//    initialized to 0, class types are initialized via the default constructor).
-//  - Newly allocated elements of a DynamicMatrix or CompressedMatrix remain uninitialized
+//  - The elements of a \c StaticMatrix or \c HybridMatrix are default initialized (i.e. built-in
+//    data types are initialized to 0, class types are initialized via the default constructor).
+//  - Newly allocated elements of a \c DynamicMatrix or \c CompressedMatrix remain uninitialized
 //    if they are of built-in type and are default constructed if they are of class type.
 //
 // \n \subsection matrix_operations_default_construction Default Construction
@@ -1329,21 +1431,21 @@ namespace blaze {}
 
 // \n \subsection matrix_operations_size_construction Construction with Specific Size
 //
-// The DynamicMatrix and CompressedMatrix classes offer a constructor that allows to immediately
-// give the matrices a specific number of rows and columns:
+// The \c DynamicMatrix, \c HybridMatrix, and \c CompressedMatrix classes offer a constructor
+// that allows to immediately give the matrices a specific number of rows and columns:
 
    \code
-   DynamicMatrix<int> M6( 5UL, 4UL );                 // Instantiation of a 5x4 dynamic row-major
-                                                      // matrix. The elements are not initialized.
-   DynamicMatrix<double,columnMajor> M7( 3UL, 7UL );  // Instantiation of a 3x7 dynamic column-major
-                                                      // matrix. The elements are not initialized.
-   CompressedMatrix<float,rowMajor> M8( 8UL, 6UL );   // Instantiation of a 8x6 compressed row-major
-                                                      // matrix. The elements are not initialized.
+   DynamicMatrix<int> M6( 5UL, 4UL );                    // Instantiation of a 5x4 dynamic row-major
+                                                         // matrix. The elements are not initialized.
+   HybridMatrix<double,5UL,9UL> M7( 3UL, 7UL );          // Instantiation of a 3x7 dynamic row-major
+                                                         // matrix. The elements are not initialized.
+   CompressedMatrix<float,columnMajor> M8( 8UL, 6UL );   // Instantiation of a 8x6 compressed column-major
+                                                         // matrix. The elements are not initialized.
    \endcode
 
-// Note that dense matrices (in this case DynamicMatrix) immediately allocate enough capacity
-// for all matrix elements. Sparse matrices on the other hand (in this example CompressedMatrix)
-// merely acquire the size, but don't necessarily allocate memory.
+// Note that dense matrices (in this case \c DynamicMatrix and \c HybridMatrix) immediately
+// allocate enough capacity for all matrix elements. Sparse matrices on the other hand (in this
+// example \c CompressedMatrix) merely acquire the size, but don't necessarily allocate memory.
 //
 //
 // \n \subsection matrix_operations_initialization_constructors Initialization Constructors
@@ -1361,8 +1463,8 @@ namespace blaze {}
                                                     // matrix. All elements are initialized to 4.
    \endcode
 
-// The StaticMatrix class offers a special initialization constructor. For StaticMatrix of up
-// to 10 elements the vector elements can be individually specified in the constructor:
+// The \c StaticMatrix class offers a special initialization constructor. For \c StaticMatrix of
+// up to 10 elements the vector elements can be individually specified in the constructor:
 
    \code
    using blaze::StaticMatrix;
@@ -1409,7 +1511,7 @@ namespace blaze {}
                                                   // M18 as copy of the compressed row-major matrix M9.
    \endcode
 
-// Note that it is not possible to create a StaticMatrix as a copy of a matrix with a different
+// Note that it is not possible to create a \c StaticMatrix as a copy of a matrix with a different
 // number of rows and/or columns:
 
    \code
@@ -1425,6 +1527,7 @@ namespace blaze {}
 // There are several types of assignment to dense and sparse matrices:
 // \ref matrix_operations_homogeneous_assignment, \ref matrix_operations_array_assignment,
 // \ref matrix_operations_copy_assignment, and \ref matrix_operations_compound_assignment.
+//
 //
 // \n \subsection matrix_operations_homogeneous_assignment Homogeneous Assignment
 //
@@ -1471,8 +1574,8 @@ namespace blaze {}
                           2 & 4 \\
                           \end{array}\right)\f$
 
-// Also note that the dimensions of the static array have to match the size of a StaticMatrix,
-// whereas a DynamicMatrix is resized according to the array dimensions:
+// Also note that the dimensions of the static array have to match the size of a \c StaticMatrix,
+// whereas a \c DynamicMatrix is resized according to the array dimensions:
 
                           \f$ M1 = \left(\begin{array}{*{2}{c}}
                            3.1 &  6.4 \\
@@ -1483,7 +1586,7 @@ namespace blaze {}
 // \n \subsection matrix_operations_copy_assignment Copy Assignment
 //
 // All kinds of matrices can be assigned to each other. The only restriction is that since a
-// StaticMatrix cannot change its size, the assigned matrix must match both in the number of
+// \c StaticMatrix cannot change its size, the assigned matrix must match both in the number of
 // rows and in the number of columns.
 
    \code
@@ -1541,153 +1644,10 @@ namespace blaze {}
                           3 & 6 \\
                           \end{array}\right)\f$
 
-// Since a StaticMatrix cannot change its size, only a quadratic StaticMatrix can be used in a
-// multiplication assignment with other quadratic matrices of the same dimensions.
+// Since a \c StaticMatrix cannot change its size, only a quadratic StaticMatrix can be used in
+// a multiplication assignment with other quadratic matrices of the same dimensions.
 //
 //
-// \n \section matrix_operations_common_matrix_operations Common Matrix Operations
-// <hr>
-//
-// \subsection matrix_operations_rows Number of Rows of a Matrix
-//
-// The current number of rows of a matrix can be acquired via the \c rows() (member) function:
-
-   \code
-   // Instantiating a dynamic matrix with 10 rows and 8 columns
-   blaze::DynamicMatrix<int> M1( 10UL, 8UL );
-   M1.rows();   // Returns 10
-   rows( M1 );  // Has the same effect as the member function
-
-   // Instantiating a compressed matrix with 5 rows and 12 columns
-   blaze::CompressedMatrix<double> M2( 5UL, 12UL );
-   M2.rows();   // Returns 5
-   rows( M2 );  // Has the same effect as the member function
-   \endcode
-
-// \n \subsection matrix_operations_columns Number of Columns of a Matrix
-//
-// The current number of columns of a matrix can be acquired via the \c columns() (member) function:
-
-   \code
-   // Instantiating a dynamic matrix with 6 rows and 8 columns
-   blaze::DynamicMatrix<int> M1( 6UL, 8UL );
-   M1.columns();   // Returns 8
-   columns( M1 );  // Has the same effect as the member function
-
-   // Instantiating a compressed matrix with 4 rows and 7 columns
-   blaze::CompressedMatrix<double> M2( 4UL, 7UL );
-   M2.columns();   // Returns 7
-   columns( M2 );  // Has the same effect as the member function
-   \endcode
-
-// \n \subsection matrix_operations_capacity Capacity of a Matrix
-//
-// The \c capacity() (member) function returns the internal capacity of a dense or sparse matrix.
-// Note that the capacity of a matrix doesn't have to be equal to the size of a matrix. In case of
-// a dense matrix the capacity will always be greater or equal than the total number of elements
-// of the matrix. In case of a sparse matrix, the capacity will usually be much less than the
-// total number of elements.
-
-   \code
-   blaze::DynamicMatrix<float> M1( 5UL, 7UL );
-   M1.capacity();   // Returns at least 35
-   capacity( M1 );  // Has the same effect as the member function
-   \endcode
-
-// \n \subsection matrix_operations_nonzeros Number of Non-Zero Elements
-//
-// For both dense and sparse matrices the current number of non-zero elements can be queried
-// via the \c nonZeros() (member) function. In case of matrices there are two flavors of the
-// \c nonZeros() function: One returns the total number of non-zero elements in the matrix,
-// the second returns the number of non-zero elements in a specific row (in case of a row-major
-// matrix) or column (in case of a column-major matrix). Sparse matrices directly return their
-// number of non-zero elements, dense matrices traverse their elements and count the number of
-// non-zero elements.
-
-   \code
-   blaze::DynamicMatrix<int,rowMajor> M1( 3UL, 5UL );
-
-   // ... Initializing the dense matrix
-
-   // Returns the total number of non-zero elements in the dense matrix
-   M1.nonZeros();
-   nonZeros( M1 );
-
-   // Returns the number of non-zero elements in row 2
-   M1.nonZeros( 2 );
-   nonZeros( M1, 2 );
-   \endcode
-
-   \code
-   blaze::CompressedMatrix<double,columnMajor> M2( 4UL, 7UL );
-
-   // ... Initializing the sparse matrix
-
-   // Returns the total number of non-zero elements in the sparse matrix
-   M2.nonZeros();
-   nonZeros( M2 );
-
-   // Returns the number of non-zero elements in column 3
-   M2.nonZeros( 3 );
-   nonZeros( M2, 3 );
-   \endcode
-
-// \n \section matrix_operations_resize_reserve Resize/Reserve
-// <hr>
-//
-// The dimensions of a StaticMatrix are fixed at compile time by the second and third template
-// parameter. In contrast, the number or rows and/or columns of DynamicMatrix and CompressedMatrix
-// can be changed at runtime:
-
-   \code
-   using blaze::DynamicMatrix;
-   using blaze::CompressedMatrix;
-
-   DynamicMatrix<int,rowMajor> M1;
-   CompressedMatrix<int,columnMajor> M2( 3UL, 2UL );
-
-   // Adapting the number of rows and columns via the resize() function. The (optional)
-   // third parameter specifies whether the existing elements should be preserved.
-   M1.resize( 2UL, 2UL );         // Resizing matrix M1 to 2x2 elements. Elements of built-in type
-                                  // remain uninitialized, elements of class type are default
-                                  // constructed.
-   M1.resize( 3UL, 1UL, false );  // Resizing M1 to 3x1 elements. The old elements are lost, the
-                                  // new elements are NOT initialized!
-   M2.resize( 5UL, 7UL, true );   // Resizing M2 to 5x7 elements. The old elements are preserved.
-   M2.resize( 3UL, 2UL, false );  // Resizing M2 to 3x2 elements. The old elements are lost.
-   \endcode
-
-// Note that resizing a matrix invalidates all existing views (see e.g. \ref views_submatrices)
-// on the matrix:
-
-   \code
-   typedef blaze::DynamicMatrix<int,rowMajor>  MatrixType;
-   typedef blaze::DenseRow<MatrixType>         RowType;
-
-   MatrixType M1( 10UL, 20UL );    // Creating a 10x20 matrix
-   RowType row8 = row( M1, 8UL );  // Creating a view on the 8th row of the matrix
-   M1.resize( 6UL, 20UL );         // Resizing the matrix invalidates the view
-   \endcode
-
-// When the internal capacity of a matrix is no longer sufficient, the allocation of a larger
-// junk of memory is triggered. In order to avoid frequent reallocations, the \c reserve()
-// function can be used up front to set the internal capacity:
-
-   \code
-   blaze::DynamicMatrix<int> M1;
-   M1.reserve( 100 );
-   M1.rows();      // Returns 0
-   M1.capacity();  // Returns at least 100
-   \endcode
-
-// Additionally it is possible to reserve memory in a specific row (for a row-major matrix) or
-// column (for a column-major matrix):
-
-   \code
-   blaze::CompressedMatrix<int> M1( 4UL, 6UL );
-   M1.reserve( 1, 4 );  // Reserving enough space for four non-zero elements in row 4
-   \endcode
-
 // \n \section matrix_operations_element_access Element Access
 // <hr>
 //
@@ -1814,8 +1774,184 @@ namespace blaze {}
    M1.finalize( 2 );      // Finalizing row 2
    \endcode
 
-// \n \section matrix_operations_reset_clear Reset/Clear
+// \n \section matrix_operations_member_functions Member Functions
 // <hr>
+//
+// \subsection matrix_operations_rows Number of Rows of a Matrix
+//
+// The current number of rows of a matrix can be acquired via the \c rows() member function:
+
+   \code
+   // Instantiating a dynamic matrix with 10 rows and 8 columns
+   blaze::DynamicMatrix<int> M1( 10UL, 8UL );
+   M1.rows();  // Returns 10
+
+   // Instantiating a compressed matrix with 8 rows and 12 columns
+   blaze::CompressedMatrix<double> M2( 8UL, 12UL );
+   M2.rows();  // Returns 8
+   \endcode
+
+// Alternatively, the free functions \c rows() can be used to query the current number of rows of
+// a matrix. In contrast to the member function, the free function can also be used to query the
+// number of rows of a matrix expression:
+
+   \code
+   rows( M1 );  // Returns 10, i.e. has the same effect as the member function
+   rows( M2 );  // Returns 8, i.e. has the same effect as the member function
+
+   rows( M1 * M2 );  // Returns 10, i.e. the number of rows of the resulting matrix
+   \endcode
+
+// \n \subsection matrix_operations_columns Number of Columns of a Matrix
+//
+// The current number of columns of a matrix can be acquired via the \c columns() member function:
+
+   \code
+   // Instantiating a dynamic matrix with 6 rows and 8 columns
+   blaze::DynamicMatrix<int> M1( 6UL, 8UL );
+   M1.columns();   // Returns 8
+
+   // Instantiating a compressed matrix with 8 rows and 7 columns
+   blaze::CompressedMatrix<double> M2( 8UL, 7UL );
+   M2.columns();   // Returns 7
+   \endcode
+
+// There is also a free function \c columns() available, which can also be used to query the number
+// of columns of a matrix expression:
+
+   \code
+   columns( M1 );  // Returns 8, i.e. has the same effect as the member function
+   columns( M2 );  // Returns 7, i.e. has the same effect as the member function
+
+   columns( M1 * M2 );  // Returns 7, i.e. the number of columns of the resulting matrix
+   \endcode
+
+// \n \subsection matrix_operations_capacity Capacity of a Matrix
+//
+// The \c capacity() member function returns the internal capacity of a dense or sparse matrix.
+// Note that the capacity of a matrix doesn't have to be equal to the size of a matrix. In case of
+// a dense matrix the capacity will always be greater or equal than the total number of elements
+// of the matrix. In case of a sparse matrix, the capacity will usually be much less than the
+// total number of elements.
+
+   \code
+   blaze::DynamicMatrix<float> M1( 5UL, 7UL );
+   blaze::StaticMatrix<float,7UL,4UL> M2;
+   M1.capacity();  // Returns at least 35
+   M2.capacity();  // Returns at least 28
+   \endcode
+
+// There is also a free function \c capacity() available to query the capacity. However, please
+// note that this function cannot be used to query the capacity of a matrix expression:
+
+   \code
+   capacity( M1 );  // Returns at least 35, i.e. has the same effect as the member function
+   capacity( M2 );  // Returns at least 28, i.e. has the same effect as the member function
+
+   capacity( M1 * M2 );  // Compilation error!
+   \endcode
+
+// \n \subsection matrix_operations_nonzeros Number of Non-Zero Elements
+//
+// For both dense and sparse matrices the current number of non-zero elements can be queried
+// via the \c nonZeros() member function. In case of matrices there are two flavors of the
+// \c nonZeros() function: One returns the total number of non-zero elements in the matrix,
+// the second returns the number of non-zero elements in a specific row (in case of a row-major
+// matrix) or column (in case of a column-major matrix). Sparse matrices directly return their
+// number of non-zero elements, dense matrices traverse their elements and count the number of
+// non-zero elements.
+
+   \code
+   blaze::DynamicMatrix<int,rowMajor> M1( 3UL, 5UL );
+
+   // ... Initializing the dense matrix
+
+   M1.nonZeros();     // Returns the total number of non-zero elements in the dense matrix
+   M1.nonZeros( 2 );  // Returns the number of non-zero elements in row 2
+   \endcode
+
+   \code
+   blaze::CompressedMatrix<double,columnMajor> M2( 4UL, 7UL );
+
+   // ... Initializing the sparse matrix
+
+   M2.nonZeros();     // Returns the total number of non-zero elements in the sparse matrix
+   M2.nonZeros( 3 );  // Returns the number of non-zero elements in column 3
+   \endcode
+
+// The free \c nonZeros() function can also be used to query the number of non-zero elements in a
+// matrix expression. However, the result is not the exact number of non-zero elements, but may be
+// a rough estimation:
+
+   \code
+   nonZeros( M1 );     // Has the same effect as the member function
+   nonZeros( M1, 2 );  // Has the same effect as the member function
+
+   nonZeros( M2 );     // Has the same effect as the member function
+   nonZeros( M2, 3 );  // Has the same effect as the member function
+
+   nonZeros( M1 * M2 );  // Estimates the number of non-zero elements in the matrix expression
+   \endcode
+
+// \n \subsection matrix_operations_resize_reserve Resize/Reserve
+//
+// The dimensions of a \c StaticMatrix are fixed at compile time by the second and third template
+// parameter. In contrast, the number or rows and/or columns of \c DynamicMatrix, \c HybridMatrix,
+// and \c CompressedMatrix can be changed at runtime:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::CompressedMatrix;
+
+   DynamicMatrix<int,rowMajor> M1;
+   CompressedMatrix<int,columnMajor> M2( 3UL, 2UL );
+
+   // Adapting the number of rows and columns via the resize() function. The (optional)
+   // third parameter specifies whether the existing elements should be preserved.
+   M1.resize( 2UL, 2UL );         // Resizing matrix M1 to 2x2 elements. Elements of built-in type
+                                  // remain uninitialized, elements of class type are default
+                                  // constructed.
+   M1.resize( 3UL, 1UL, false );  // Resizing M1 to 3x1 elements. The old elements are lost, the
+                                  // new elements are NOT initialized!
+   M2.resize( 5UL, 7UL, true );   // Resizing M2 to 5x7 elements. The old elements are preserved.
+   M2.resize( 3UL, 2UL, false );  // Resizing M2 to 3x2 elements. The old elements are lost.
+   \endcode
+
+// Note that resizing a matrix invalidates all existing views (see e.g. \ref views_submatrices)
+// on the matrix:
+
+   \code
+   typedef blaze::DynamicMatrix<int,rowMajor>  MatrixType;
+   typedef blaze::DenseRow<MatrixType>         RowType;
+
+   MatrixType M1( 10UL, 20UL );    // Creating a 10x20 matrix
+   RowType row8 = row( M1, 8UL );  // Creating a view on the 8th row of the matrix
+   M1.resize( 6UL, 20UL );         // Resizing the matrix invalidates the view
+   \endcode
+
+// When the internal capacity of a matrix is no longer sufficient, the allocation of a larger
+// junk of memory is triggered. In order to avoid frequent reallocations, the \c reserve()
+// function can be used up front to set the internal capacity:
+
+   \code
+   blaze::DynamicMatrix<int> M1;
+   M1.reserve( 100 );
+   M1.rows();      // Returns 0
+   M1.capacity();  // Returns at least 100
+   \endcode
+
+// Additionally it is possible to reserve memory in a specific row (for a row-major matrix) or
+// column (for a column-major matrix):
+
+   \code
+   blaze::CompressedMatrix<int> M1( 4UL, 6UL );
+   M1.reserve( 1, 4 );  // Reserving enough space for four non-zero elements in row 4
+   \endcode
+
+// \n \section matrix_operations_free_functions Free Functions
+// <hr>
+//
+// \subsection matrix_operations_reset_clear Reset/Clear
 //
 // In order to reset all elements of a dense or sparse matrix, the \c reset() function can be
 // used. The number of rows and columns of the matrix are preserved:
@@ -1841,23 +1977,72 @@ namespace blaze {}
    M1.rows();    // Returns 0: size is reset, but capacity remains unchanged
    \endcode
 
-// \n \section matrix_operations_matrix_transpose Matrix Transpose
-// <hr>
+// \n \subsection matrix_operations_isnan isnan
 //
-// Matrices can be transposed via the \c trans() function. Row-major matrices are transposed into
-// a column-major matrix and vice versa:
+// The \c isnan() function provides the means to check a dense or sparse matrix for non-a-number
+// elements:
 
    \code
-   blaze::DynamicMatrix<int,rowMajor> M1( 5UL, 2UL );
-   blaze::CompressedMatrix<int,columnMajor> M2( 3UL, 7UL );
-
-   M1 = M2;            // Assigning a column-major matrix to a row-major matrix
-   M1 = trans( M2 );   // Assigning the transpose of M2 (i.e. a row-major matrix) to M1
-   M1 += trans( M2 );  // Addition assignment of two row-major matrices
+   blaze::DynamicMatrix<double> A( 3UL, 4UL );
+   // ... Initialization
+   if( isnan( A ) ) { ... }
    \endcode
 
-// \n \section matrix_operators_abs Absolute Values
-// <hr>
+   \code
+   blaze::CompressedMatrix<double> A( 3UL, 4UL );
+   // ... Initialization
+   if( isnan( A ) ) { ... }
+   \endcode
+
+// If at least one element of the matrix is not-a-number, the function returns \a true, otherwise
+// it returns \a false. Please note that this function only works for matrices with floating point
+// elements. The attempt to use it for a matrix with a non-floating point element type results in
+// a compile time error.
+//
+//
+// \n \subsection matrix_operations_isdefault isDefault
+//
+// The \c isDefault() function returns whether the given dense or sparse matrix is in default state:
+
+   \code
+   blaze::HybridMatrix<int,5UL,4UL> A;
+   // ... Resizing and initialization
+   if( isDefault( A ) ) { ... }
+   \endcode
+
+// A matrix is in default state if all its elements are in default state. For instance, in case
+// the matrix is instantiated for a built-in integral or floating point data type, the function
+// returns \a true in case all matrix elements are 0 and \a false in case any matrix element is
+// not 0.
+//
+//
+// \n \subsection matrix_operations_isdiagonal isDiagonal
+//
+// The \c isDiagonal() function checks if the given dense or sparse matrix is a diagonal matrix,
+// i.e. if it has only elements on its diagonal and if the non-diagonal elements are default
+// elements:
+
+   \code
+   blaze::CompressedMatrix<float> A;
+   // ... Resizing and initialization
+   if( isDiagonal( A ) ) { ... }
+   \endcode
+
+// \n \subsection matrix_operations_issymmetric isSymmetric
+//
+// Via the \c isSymmetric() function it is possible to check whether a dense or sparse matrix
+// is symmetric:
+
+   \code
+   blaze::DynamicMatrix<float> A;
+   // ... Resizing and initialization
+   if( isSymmetric( A ) ) { ... }
+   \endcode
+
+// Note that non-quadratic matrices are never considered to be symmetric!
+//
+//
+// \n \subsection matrix_operators_abs Absolute Values
 //
 // The \c abs() function can be used to compute the absolute values of each element of a matrix.
 // For instance, the following computation
@@ -1874,7 +2059,60 @@ namespace blaze {}
                           4 & 5 & 6 \\
                           \end{array}\right)\f$
 
-// \n \section matrix_operations_swap Swap
+// \n \subsection matrix_operations_min_max Minimum/Maximum Values
+//
+// The \c min() and the \c max() functions return the smallest and largest element of the given
+// dense or sparse matrix, respectively:
+
+   \code
+   blaze::StaticMatrix<int,2UL,3UL,rowMajor> A( -5, 2,  7,
+                                                 4, 0,  1 );
+   blaze::StaticMatrix<int,2UL,3UL,rowMajor> B( -5, 2, -7,
+                                                -4, 0, -1 );
+
+   min( A );  // Returns -5
+   min( B );  // Returns -7
+
+   max( A );  // Returns 7
+   max( B );  // Returns 2
+   \endcode
+
+// In case the matrix currently has 0 rows or 0 columns, both functions return 0. Additionally, in
+// case a given sparse matrix is not completely filled, the zero elements are taken into account.
+// For example: the following compressed matrix has only 2 non-zero elements. However, the minimum
+// of this matrix is 0:
+
+   \code
+   blaze::CompressedMatrix<int> C( 2UL, 3UL );
+   C(0,0) = 1;
+   C(0,2) = 3;
+
+   min( C );  // Returns 0
+   \endcode
+
+// Also note that the \c min() and \c max() functions can be used to compute the smallest and
+// largest element of a matrix expression:
+
+   \code
+   min( A + B + C );  // Returns -9, i.e. the smallest value of the resulting matrix
+   max( A - B - C );  // Returns 11, i.e. the largest value of the resulting matrix
+   \endcode
+
+// \n \subsection matrix_operations_matrix_transpose Matrix Transpose
+//
+// Matrices can be transposed via the \c trans() function. Row-major matrices are transposed into
+// a column-major matrix and vice versa:
+
+   \code
+   blaze::DynamicMatrix<int,rowMajor> M1( 5UL, 2UL );
+   blaze::CompressedMatrix<int,columnMajor> M2( 3UL, 7UL );
+
+   M1 = M2;            // Assigning a column-major matrix to a row-major matrix
+   M1 = trans( M2 );   // Assigning the transpose of M2 (i.e. a row-major matrix) to M1
+   M1 += trans( M2 );  // Addition assignment of two row-major matrices
+   \endcode
+
+// \n \subsection matrix_operations_swap Swap
 //
 // Via the \c \c swap() function it is possible to completely swap the contents of two matrices
 // of the same type:
