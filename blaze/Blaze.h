@@ -2016,6 +2016,17 @@ namespace blaze {}
 // not 0.
 //
 //
+// \n \subsection matrix_operations_isQuadratic isQuadratic
+//
+// If a dense or sparse matrix is a quadratic matrix (i.e. if the number of rows is equal to the
+// number of columns) can be checked via the \c isQuadratic() function:
+
+   \code
+   blaze::DynamicMatrix<double> A;
+   // ... Resizing and initialization
+   if( isQuadratic( A ) ) { ... }
+   \endcode
+
 // \n \subsection matrix_operations_isdiagonal isDiagonal
 //
 // The \c isDiagonal() function checks if the given dense or sparse matrix is a diagonal matrix,
