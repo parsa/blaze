@@ -437,33 +437,36 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
    if( !isQuadratic( ~sm ) )
       return false;
 
+   // Evaluation of the sparse matrix operand
+   typename MT::CompositeType A( ~sm );
+
    // Run time evaluation if the matrix is symmetric
    if( SO == rowMajor ) {
-      for( size_t i=0UL; i<(~sm).rows(); ++i ) {
-         for( ConstIterator element=(~sm).begin(i); element!=(~sm).end(i); ++element )
+      for( size_t i=0UL; i<A.rows(); ++i ) {
+         for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
          {
             const size_t index( element->index() );
 
             if( isDefault( element->value() ) )
                continue;
 
-            const ConstIterator pos( (~sm).lowerBound( index, i ) );
-            if( pos == (~sm).end(index) || pos->index() != i || !equal( pos->value(), element->value() ) )
+            const ConstIterator pos( A.lowerBound( index, i ) );
+            if( pos == A.end(index) || pos->index() != i || !equal( pos->value(), element->value() ) )
                return false;
          }
       }
    }
    else {
-      for( size_t j=0UL; j<(~sm).columns(); ++j ) {
-         for( ConstIterator element=(~sm).begin(j); element!=(~sm).end(j); ++element )
+      for( size_t j=0UL; j<A.columns(); ++j ) {
+         for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
          {
             const size_t index( element->index() );
 
             if( isDefault( element->value() ) )
                continue;
 
-            const ConstIterator pos( (~sm).lowerBound( j, index ) );
-            if( pos == (~sm).end(index) || pos->index() != j || !equal( pos->value(), element->value() ) )
+            const ConstIterator pos( A.lowerBound( j, index ) );
+            if( pos == A.end(index) || pos->index() != j || !equal( pos->value(), element->value() ) )
                return false;
          }
       }

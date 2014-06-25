@@ -754,19 +754,22 @@ bool isSymmetric( const DenseMatrix<MT,SO>& dm )
    if( !isQuadratic( ~dm ) )
       return false;
 
+   // Evaluation of the dense matrix operand
+   typename MT::CompositeType A( ~dm );
+
    // Run time evaluation if the matrix is symmetric
    if( SO == rowMajor ) {
-      for( size_t i=1UL; i<(~dm).rows(); ++i ) {
+      for( size_t i=1UL; i<A.rows(); ++i ) {
          for( size_t j=0UL; j<i; ++j ) {
-            if( !equal( (~dm)(i,j), (~dm)(j,i) ) )
+            if( !equal( A(i,j), A(j,i) ) )
                return false;
          }
       }
    }
    else {
-      for( size_t j=1UL; j<(~dm).columns(); ++j ) {
+      for( size_t j=1UL; j<A.columns(); ++j ) {
          for( size_t i=0UL; i<j; ++i ) {
-            if( !equal( (~dm)(i,j), (~dm)(j,i) ) )
+            if( !equal( A(i,j), A(j,i) ) )
                return false;
          }
       }
