@@ -391,21 +391,24 @@ bool isDiagonal( const SparseMatrix<MT,SO>& sm )
 {
    typedef typename MT::ConstIterator  ConstIterator;
 
-   const size_t rows   ( (~sm).rows()    );
-   const size_t columns( (~sm).columns() );
+   // Early exit in case the matrix is not quadratic
+   if( !isQuadratic( ~sm ) )
+      return false;
 
-   if( rows != columns ) return false;
+   // Evaluation of the sparse matrix operand
+   typename MT::CompositeType A( ~sm );
 
+   // Run time evaluation whether the matrix is symmetric
    if( SO == rowMajor ) {
-      for( size_t i=0UL; i<rows; ++i ) {
-         for( ConstIterator element=(~sm).begin(i); element!=(~sm).end(i); ++element )
+      for( size_t i=0UL; i<A.rows(); ++i ) {
+         for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
             if( element->index() != i && !isDefault( element->value() ) )
                return false;
       }
    }
    else {
-      for( size_t j=0UL; j<columns; ++j ) {
-         for( ConstIterator element=(~sm).begin(j); element!=(~sm).end(j); ++element )
+      for( size_t j=0UL; j<A.columns(); ++j ) {
+         for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
             if( element->index() != j && !isDefault( element->value() ) )
                return false;
       }
@@ -440,7 +443,7 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
    // Evaluation of the sparse matrix operand
    typename MT::CompositeType A( ~sm );
 
-   // Run time evaluation if the matrix is symmetric
+   // Run time evaluation whether the matrix is symmetric
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
          for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
