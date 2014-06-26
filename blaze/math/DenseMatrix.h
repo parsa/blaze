@@ -703,6 +703,23 @@ bool isQuadratic( const DenseMatrix<MT,SO>& dm )
                         \vdots & \vdots & \vdots & \ddots & 0  \\
                         0      & 0      & 0      & 0      & xx \\
                         \end{array}\right)\f]
+
+// The following example demonstrates the use of the function:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( IsDiagonal( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in a diagonal matrix:
+
+   \code
+   if( IsDiagonal( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
@@ -744,6 +761,24 @@ bool isDiagonal( const DenseMatrix<MT,SO>& dm )
 //
 // \param dm The dense matrix to be checked.
 // \return \a true if the matrix is symmetric, \a false if not.
+//
+// This function checks if the given dense matrix is symmetric. The matrix is considered to be
+// symmetric if it is a square matrix whose transpose is equal to itself (\f$ A = A^T \f$):
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isSymmetric( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in a symmetric matrix:
+
+   \code
+   if( isSymmetric( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
