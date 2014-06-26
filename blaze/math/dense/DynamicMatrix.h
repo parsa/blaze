@@ -48,7 +48,6 @@
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
-#include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -263,7 +262,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    inline DynamicMatrix& operator=( const Other (&array)[M][N] );
 
                                      inline DynamicMatrix& operator= ( Type set );
-                                     inline DynamicMatrix& operator= ( const DynamicMatrix& set );
+                                     inline DynamicMatrix& operator= ( const DynamicMatrix&  rhs );
    template< typename MT, bool SO2 > inline DynamicMatrix& operator= ( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline DynamicMatrix& operator+=( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline DynamicMatrix& operator-=( const Matrix<MT,SO2>& rhs );
@@ -1607,7 +1606,7 @@ inline size_t DynamicMatrix<Type,SO>::adjustColumns( size_t minColumns ) const
 // \param alias The alias to be checked.
 // \return \a true in case the alias corresponds to this matrix, \a false if not.
 //
-// This function returns whether the given address can alias with the vector. In contrast
+// This function returns whether the given address can alias with the matrix. In contrast
 // to the isAliased() function this function is allowed to use compile time expressions
 // to optimize the evaluation.
 */
@@ -1627,7 +1626,7 @@ inline bool DynamicMatrix<Type,SO>::canAlias( const Other* alias ) const
 // \param alias The alias to be checked.
 // \return \a true in case the alias corresponds to this matrix, \a false if not.
 //
-// This function returns whether the given address is aliased with the vector. In contrast
+// This function returns whether the given address is aliased with the matrix. In contrast
 // to the conAlias() function this function is not allowed to use compile time expressions
 // to optimize the evaluation.
 */
@@ -2468,7 +2467,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    inline DynamicMatrix& operator=( const Other (&array)[M][N] );
 
                                     inline DynamicMatrix& operator= ( Type set );
-                                    inline DynamicMatrix& operator= ( const DynamicMatrix& set );
+                                    inline DynamicMatrix& operator= ( const DynamicMatrix& rhs );
    template< typename MT, bool SO > inline DynamicMatrix& operator= ( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline DynamicMatrix& operator+=( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline DynamicMatrix& operator-=( const Matrix<MT,SO>& rhs );
@@ -3806,7 +3805,7 @@ inline size_t DynamicMatrix<Type,true>::adjustRows( size_t minRows ) const
 // \param alias The alias to be checked.
 // \return \a true in case the alias corresponds to this matrix, \a false if not.
 //
-// This function returns whether the given address can alias with the vector. In contrast
+// This function returns whether the given address can alias with the matrix. In contrast
 // to the isAliased() function this function is allowed to use compile time expressions
 // to optimize the evaluation.
 */
@@ -3827,7 +3826,7 @@ inline bool DynamicMatrix<Type,true>::canAlias( const Other* alias ) const
 // \param alias The alias to be checked.
 // \return \a true in case the alias corresponds to this matrix, \a false if not.
 //
-// This function returns whether the given address is aliased with the vector. In contrast
+// This function returns whether the given address is aliased with the matrix. In contrast
 // to the conAlias() function this function is not allowed to use compile time expressions
 // to optimize the evaluation.
 */
