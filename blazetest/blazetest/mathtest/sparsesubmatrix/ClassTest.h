@@ -108,7 +108,7 @@ class ClassTest
    void testIsDefault   ();
    void testIsNan       ();
    void testIsSame      ();
-   void testIsQuadratic ();
+   void testIsSquare    ();
    void testIsDiagonal  ();
    void testIsSymmetric ();
    void testMinimum     ();

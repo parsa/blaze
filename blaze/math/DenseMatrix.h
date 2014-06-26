@@ -603,7 +603,7 @@ template< typename MT, bool SO >
 bool isnan( const DenseMatrix<MT,SO>& dm );
 
 template< typename MT, bool SO >
-bool isQuadratic( const DenseMatrix<MT,SO>& dm );
+bool isSquare( const DenseMatrix<MT,SO>& dm );
 
 template< typename MT, bool SO >
 bool isDiagonal( const DenseMatrix<MT,SO>& dm );
@@ -667,18 +667,18 @@ bool isnan( const DenseMatrix<MT,SO>& dm )
 
 
 //*************************************************************************************************
-/*!\brief Checks if the given dense matrix is quadratic.
+/*!\brief Checks if the given dense matrix is a square matrix.
 // \ingroup dense_matrix
 //
 // \param dm The dense matrix to be checked.
-// \return \a true if the matrix is quadratic, \a false if not.
+// \return \a true if the matrix is a square matrix, \a false if not.
 //
 // This function checks if the number of rows and columns of the given dense matrix are equal.
 // If they are, the function returns \a true, otherwise it returns \a false.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-bool isQuadratic( const DenseMatrix<MT,SO>& dm )
+bool isSquare( const DenseMatrix<MT,SO>& dm )
 {
    return ( IsSquare<MT>::value || (~dm).rows() == (~dm).columns() );
 }
@@ -725,8 +725,8 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isDiagonal( const DenseMatrix<MT,SO>& dm )
 {
-   // Early exit in case the matrix is not quadratic
-   if( !isQuadratic( ~dm ) )
+   // Early exit in case the matrix is not square
+   if( !isSquare( ~dm ) )
       return false;
 
    // Evaluation of the dense matrix operand
@@ -788,8 +788,8 @@ bool isSymmetric( const DenseMatrix<MT,SO>& dm )
    if( IsSymmetric<MT>::value )
       return true;
 
-   // Early exit in case the matrix is not quadratic
-   if( !isQuadratic( ~dm ) )
+   // Early exit in case the matrix is not square
+   if( !isSquare( ~dm ) )
       return false;
 
    // Evaluation of the dense matrix operand

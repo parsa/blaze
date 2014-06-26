@@ -283,7 +283,7 @@ template< typename MT, bool SO >
 bool isnan( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
-bool isQuadratic( const SparseMatrix<MT,SO>& sm );
+bool isSquare( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
 bool isDiagonal( const SparseMatrix<MT,SO>& sm );
@@ -348,18 +348,18 @@ bool isnan( const SparseMatrix<MT,SO>& sm )
 
 
 //*************************************************************************************************
-/*!\brief Checks if the given sparse matrix is quadratic.
+/*!\brief Checks if the given sparse matrix is a square matrix.
 // \ingroup sparse_matrix
 //
 // \param sm The sparse matrix to be checked.
-// \return \a true if the matrix is quadratic, \a false if not.
+// \return \a true if the matrix is a square matrix, \a false if not.
 //
 // This function checks if the number of rows and columns of the given dense matrix are equal.
 // If they are, the function returns \a true, otherwise it returns \a false.
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-bool isQuadratic( const SparseMatrix<MT,SO>& sm )
+bool isSquare( const SparseMatrix<MT,SO>& sm )
 {
    return ( IsSquare<MT>::value || (~sm).rows() == (~sm).columns() );
 }
@@ -408,8 +408,8 @@ bool isDiagonal( const SparseMatrix<MT,SO>& sm )
 {
    typedef typename MT::ConstIterator  ConstIterator;
 
-   // Early exit in case the matrix is not quadratic
-   if( !isQuadratic( ~sm ) )
+   // Early exit in case the matrix is not square
+   if( !isSquare( ~sm ) )
       return false;
 
    // Evaluation of the sparse matrix operand
@@ -471,8 +471,8 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
    if( IsSymmetric<MT>::value )
       return true;
 
-   // Early exit in case the matrix is not quadratic
-   if( !isQuadratic( ~sm ) )
+   // Early exit in case the matrix is not square
+   if( !isSquare( ~sm ) )
       return false;
 
    // Evaluation of the sparse matrix operand

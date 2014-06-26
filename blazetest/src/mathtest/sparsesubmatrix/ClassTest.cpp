@@ -87,7 +87,7 @@ ClassTest::ClassTest()
    testIsDefault();
    testIsNan();
    testIsSame();
-   testIsQuadratic();
+   testIsSquare();
    testIsDiagonal();
    testIsSymmetric();
    testMinimum();
@@ -8234,51 +8234,51 @@ void ClassTest::testIsSame()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c isQuadratic() function with the SparseSubmatrix class template.
+/*!\brief Test of the \c isSquare() function with the SparseSubmatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c isQuadratic() function with the SparseSubmatrix class
+// This function performs a test of the \c isSquare() function with the SparseSubmatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testIsQuadratic()
+void ClassTest::testIsSquare()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major isQuadratic()";
+      test_ = "Row-major isSquare()";
 
-      // Quadratic matrix
+      // Square matrix
       {
          SMT sm = submatrix( mat_, 0UL, 0UL, 3UL, 3UL );
 
          checkRows   ( sm, 3UL );
          checkColumns( sm, 3UL );
 
-         if( isQuadratic( sm ) != true ) {
+         if( isSquare( sm ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isQuadratic evaluation\n"
+                << " Error: Invalid isSquare evaluation\n"
                 << " Details:\n"
                 << "   Matrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // Non-quadratic matrix
+      // Non-square matrix
       {
          SMT sm = submatrix( mat_, 0UL, 0UL, 2UL, 3UL );
 
          checkRows   ( sm, 2UL );
          checkColumns( sm, 3UL );
 
-         if( isQuadratic( sm ) != false ) {
+         if( isSquare( sm ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isQuadratic evaluation\n"
+                << " Error: Invalid isSquare evaluation\n"
                 << " Details:\n"
                 << "   Matrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
@@ -8292,36 +8292,36 @@ void ClassTest::testIsQuadratic()
    //=====================================================================================
 
    {
-      test_ = "Column-major isQuadratic()";
+      test_ = "Column-major isSquare()";
 
-      // Quadratic matrix
+      // Square matrix
       {
          TSMT sm = submatrix( tmat_, 0UL, 0UL, 3UL, 3UL );
 
          checkRows   ( sm, 3UL );
          checkColumns( sm, 3UL );
 
-         if( isQuadratic( sm ) != true ) {
+         if( isSquare( sm ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isQuadratic evaluation\n"
+                << " Error: Invalid isSquare evaluation\n"
                 << " Details:\n"
                 << "   Matrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // Non-quadratic matrix
+      // Non-square matrix
       {
          TSMT sm = submatrix( tmat_, 0UL, 0UL, 3UL, 2UL );
 
          checkRows   ( sm, 3UL );
          checkColumns( sm, 2UL );
 
-         if( isQuadratic( sm ) != false ) {
+         if( isSquare( sm ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isQuadratic evaluation\n"
+                << " Error: Invalid isSquare evaluation\n"
                 << " Details:\n"
                 << "   Matrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
@@ -8354,7 +8354,7 @@ void ClassTest::testIsDiagonal()
       mat_(0,0) = 11;
       mat_(2,0) =  0;
 
-      // Non-quadratic submatrix
+      // Non-square submatrix
       {
          SMT sm = submatrix( mat_, 0UL, 0UL, 2UL, 3UL );
 
@@ -8450,7 +8450,7 @@ void ClassTest::testIsDiagonal()
       tmat_(0,0) = 11;
       tmat_(0,2) =  0;
 
-      // Non-quadratic submatrix
+      // Non-square submatrix
       {
          TSMT sm = submatrix( tmat_, 0UL, 0UL, 3UL, 2UL );
 
@@ -8561,7 +8561,7 @@ void ClassTest::testIsSymmetric()
       mat_(2,3) =  5;
       mat_(3,1) =  0;
 
-      // Non-quadratic matrix
+      // Non-square matrix
       {
          SMT sm = submatrix( mat_, 0UL, 0UL, 2UL, 3UL );
 
@@ -8681,7 +8681,7 @@ void ClassTest::testIsSymmetric()
       tmat_(3,2) =  5;
       tmat_(1,3) =  0;
 
-      // Non-quadratic matrix
+      // Non-square matrix
       {
          TSMT sm = submatrix( tmat_, 0UL, 0UL, 3UL, 2UL );
 
