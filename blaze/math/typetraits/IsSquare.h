@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/typetraits/IsQuadratic.h
-//  \brief Header file for the IsQuadratic type trait
+//  \file blaze/math/typetraits/IsSquare.h
+//  \brief Header file for the IsSquare type trait
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TYPETRAITS_ISQUADRATIC_H_
-#define _BLAZE_MATH_TYPETRAITS_ISQUADRATIC_H_
+#ifndef _BLAZE_MATH_TYPETRAITS_ISSQUARE_H_
+#define _BLAZE_MATH_TYPETRAITS_ISSQUARE_H_
 
 
 //*************************************************************************************************
@@ -53,38 +53,38 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Compile time check for quadratic matrices.
+/*!\brief Compile time check for square matrices.
 // \ingroup math_type_traits
 //
-// This type trait tests whether or not the given template parameter is a quadratic matrix type
-// (i.e. a matrix type that is guaranteed to be quadratic at compile time). In case the type is
-// a quadratic matrix type, the \a value member enumeration is set to 1, the nested type definition
-// \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to 0,
-// \a Type is \a FalseType, and the class derives from \a FalseType.
+// This type trait tests whether or not the given template parameter is a square matrix type
+// (i.e. a matrix type that is guaranteed to be square at compile time). In case the type is
+// a square matrix type, the \a value member enumeration is set to 1, the nested type definition
+// \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set
+// to 0, \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
    using blaze::rowMajor;
 
-   // Type definitions of quadratic matrix types
+   // Type definitions of square matrix types
    typedef blaze::StaticMatrix<double,2UL,2UL,rowMajor>  Mat2x2;
    typedef blaze::StaticMatrix<double,3UL,3UL,rowMajor>  Mat3x3;
    typedef blaze::StaticMatrix<double,4UL,4UL,rowMajor>  Mat4x4;
 
-   // Type definitions of non-quadratic matrix types
+   // Type definitions of non-square matrix types
    typedef blaze::StaticMatrix<double,2UL,3UL,rowMajor>  Mat2x3;
    typedef blaze::DynamicMatrix<double,rowMajor>         DynamicMatrixType;
    typedef blaze::HybridMatrix<double,3UL,3UL,rowMajor>  HybridMatrixType;
 
-   blaze::IsQuadratic< Mat2x2 >::value              // Evaluates to 1
-   blaze::IsQuadratic< const Mat3x3 >::Type         // Results in TrueType
-   blaze::IsQuadratic< volatile Mat4x4 >            // Is derived from TrueType
-   blaze::IsQuadratic< DynamicMatrixType >::value   // Evaluates to 0
-   blaze::IsQuadratic< const Mat2x3 >::Type         // Results in FalseType
-   blaze::IsQuadratic< volatile HybridMatrixType >  // Is derived from FalseType
+   blaze::IsSquare< Mat2x2 >::value              // Evaluates to 1
+   blaze::IsSquare< const Mat3x3 >::Type         // Results in TrueType
+   blaze::IsSquare< volatile Mat4x4 >            // Is derived from TrueType
+   blaze::IsSquare< DynamicMatrixType >::value   // Evaluates to 0
+   blaze::IsSquare< const Mat2x3 >::Type         // Results in FalseType
+   blaze::IsSquare< volatile HybridMatrixType >  // Is derived from FalseType
    \endcode
 */
 template< typename T >
-struct IsQuadratic : public FalseType
+struct IsSquare : public FalseType
 {
  public:
    //**********************************************************************************************
@@ -99,16 +99,16 @@ struct IsQuadratic : public FalseType
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsQuadratic type trait for const types.
+/*!\brief Specialization of the IsSquare type trait for const types.
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsQuadratic< const T > : public IsQuadratic<T>::Type
+struct IsSquare< const T > : public IsSquare<T>::Type
 {
  public:
    //**********************************************************************************************
-   enum { value = IsQuadratic<T>::value };
-   typedef typename IsQuadratic<T>::Type  Type;
+   enum { value = IsSquare<T>::value };
+   typedef typename IsSquare<T>::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -117,16 +117,16 @@ struct IsQuadratic< const T > : public IsQuadratic<T>::Type
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsQuadratic type trait for volatile types.
+/*!\brief Specialization of the IsSquare type trait for volatile types.
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsQuadratic< volatile T > : public IsQuadratic<T>::Type
+struct IsSquare< volatile T > : public IsSquare<T>::Type
 {
  public:
    //**********************************************************************************************
-   enum { value = IsQuadratic<T>::value };
-   typedef typename IsQuadratic<T>::Type  Type;
+   enum { value = IsSquare<T>::value };
+   typedef typename IsSquare<T>::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -135,16 +135,16 @@ struct IsQuadratic< volatile T > : public IsQuadratic<T>::Type
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsQuadratic type trait for cv qualified types.
+/*!\brief Specialization of the IsSquare type trait for cv qualified types.
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsQuadratic< const volatile T > : public IsQuadratic<T>::Type
+struct IsSquare< const volatile T > : public IsSquare<T>::Type
 {
  public:
    //**********************************************************************************************
-   enum { value = IsQuadratic<T>::value };
-   typedef typename IsQuadratic<T>::Type  Type;
+   enum { value = IsSquare<T>::value };
+   typedef typename IsSquare<T>::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

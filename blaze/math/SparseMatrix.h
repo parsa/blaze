@@ -77,7 +77,7 @@
 #include <blaze/math/smp/DenseMatrix.h>
 #include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/StorageOrder.h>
-#include <blaze/math/typetraits/IsQuadratic.h>
+#include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Types.h>
@@ -361,7 +361,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isQuadratic( const SparseMatrix<MT,SO>& sm )
 {
-   return ( IsQuadratic<MT>::value || (~sm).rows() == (~sm).columns() );
+   return ( IsSquare<MT>::value || (~sm).rows() == (~sm).columns() );
 }
 //*************************************************************************************************
 

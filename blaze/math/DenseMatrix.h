@@ -90,7 +90,7 @@
 #include <blaze/math/smp/DenseMatrix.h>
 #include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/StorageOrder.h>
-#include <blaze/math/typetraits/IsQuadratic.h>
+#include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -680,7 +680,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isQuadratic( const DenseMatrix<MT,SO>& dm )
 {
-   return ( IsQuadratic<MT>::value || (~dm).rows() == (~dm).columns() );
+   return ( IsSquare<MT>::value || (~dm).rows() == (~dm).columns() );
 }
 //*************************************************************************************************
 

@@ -62,7 +62,6 @@
 #include <blaze/math/constraints/MatTransExpr.h>
 #include <blaze/math/constraints/MatVecMultExpr.h>
 #include <blaze/math/constraints/MultExpr.h>
-#include <blaze/math/constraints/Quadratic.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/Resizable.h>
 #include <blaze/math/constraints/Row.h>
@@ -71,6 +70,7 @@
 #include <blaze/math/constraints/SparseElement.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
+#include <blaze/math/constraints/Square.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/SubExpr.h>
 #include <blaze/math/constraints/Submatrix.h>

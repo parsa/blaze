@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/constraints/Quadratic.h
+//  \file blaze/math/constraints/Square.h
 //  \brief Constraint on the data type
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -32,15 +32,15 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_CONSTRAINTS_QUADRATIC_H_
-#define _BLAZE_MATH_CONSTRAINTS_QUADRATIC_H_
+#ifndef _BLAZE_MATH_CONSTRAINTS_SQUARE_H_
+#define _BLAZE_MATH_CONSTRAINTS_SQUARE_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/IsQuadratic.h>
+#include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/util/constraints/ConstraintTest.h>
 #include <blaze/util/Suffix.h>
 
@@ -49,7 +49,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  MUST_BE_QUADRATIC CONSTRAINT
+//  MUST_BE_SQUARE CONSTRAINT
 //
 //=================================================================================================
 
@@ -63,8 +63,8 @@ namespace blaze {
 // or the specialization is selected. If the undefined basic template is selected, a compilation
 // error is created.
 */
-template< bool > struct CONSTRAINT_MUST_BE_QUADRATIC_FAILED;
-template<> struct CONSTRAINT_MUST_BE_QUADRATIC_FAILED<true> { enum { value = 1 }; };
+template< bool > struct CONSTRAINT_MUST_BE_SQUARE_FAILED;
+template<> struct CONSTRAINT_MUST_BE_SQUARE_FAILED<true> { enum { value = 1 }; };
 /*! \endcond */
 //*************************************************************************************************
 
@@ -73,13 +73,13 @@ template<> struct CONSTRAINT_MUST_BE_QUADRATIC_FAILED<true> { enum { value = 1 }
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
-// In case the given data type \a T is not a quadratic matrix type, a compilation error is created.
+// In case the given data type \a T is not a square matrix type, a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_BE_QUADRATIC(T) \
+#define BLAZE_CONSTRAINT_MUST_BE_SQUARE(T) \
    typedef \
       blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_BE_QUADRATIC_FAILED< blaze::IsQuadratic<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_BE_QUADRATIC_TYPEDEF, __LINE__ )
+         blaze::CONSTRAINT_MUST_BE_SQUARE_FAILED< blaze::IsSquare<T>::value >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_BE_SQUARE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 
@@ -87,7 +87,7 @@ template<> struct CONSTRAINT_MUST_BE_QUADRATIC_FAILED<true> { enum { value = 1 }
 
 //=================================================================================================
 //
-//  MUST_NOT_BE_QUADRATIC CONSTRAINT
+//  MUST_NOT_BE_SQUARE CONSTRAINT
 //
 //=================================================================================================
 
@@ -101,8 +101,8 @@ template<> struct CONSTRAINT_MUST_BE_QUADRATIC_FAILED<true> { enum { value = 1 }
 // or the specialization is selected. If the undefined basic template is selected, a compilation
 // error is created.
 */
-template< bool > struct CONSTRAINT_MUST_NOT_BE_QUADRATIC_FAILED;
-template<> struct CONSTRAINT_MUST_NOT_BE_QUADRATIC_FAILED<true> { enum { value = 1 }; };
+template< bool > struct CONSTRAINT_MUST_NOT_BE_SQUARE_FAILED;
+template<> struct CONSTRAINT_MUST_NOT_BE_SQUARE_FAILED<true> { enum { value = 1 }; };
 /*! \endcond */
 //*************************************************************************************************
 
@@ -111,13 +111,13 @@ template<> struct CONSTRAINT_MUST_NOT_BE_QUADRATIC_FAILED<true> { enum { value =
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
-// In case the given data type \a T is a quadratic matrix type, a compilation error is created.
+// In case the given data type \a T is a square matrix type, a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_NOT_BE_QUADRATIC(T) \
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_SQUARE(T) \
    typedef \
       blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_NOT_BE_QUADRATIC_FAILED< !blaze::IsQuadratic<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_QUADRATIC_TYPEDEF, __LINE__ )
+         blaze::CONSTRAINT_MUST_NOT_BE_SQUARE_FAILED< !blaze::IsSquare<T>::value >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_SQUARE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 } // namespace blaze
