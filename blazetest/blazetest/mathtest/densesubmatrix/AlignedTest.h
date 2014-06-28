@@ -98,13 +98,7 @@ class AlignedTest
    void testReset       ();
    void testTranspose   ();
    void testIsDefault   ();
-   void testIsNan       ();
    void testIsSame      ();
-   void testIsSquare    ();
-   void testIsDiagonal  ();
-   void testIsSymmetric ();
-   void testMinimum     ();
-   void testMaximum     ();
    void testSubmatrix   ();
    void testRow         ();
    void testColumn      ();
