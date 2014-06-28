@@ -107,10 +107,7 @@ class ClassTest
    void testLowerBound  ();
    void testUpperBound  ();
    void testIsDefault   ();
-   void testIsNan       ();
    void testIsSame      ();
-   void testMinimum     ();
-   void testMaximum     ();
    void testSubvector   ();
 
    template< typename Type >
