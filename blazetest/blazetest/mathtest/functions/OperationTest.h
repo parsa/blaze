@@ -104,7 +104,7 @@ class OperationTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the DenseRow class template.
+/*!\brief Testing the mathematical functions.
 //
 // \return void
 */
