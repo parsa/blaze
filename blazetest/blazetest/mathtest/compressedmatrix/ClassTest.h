@@ -109,12 +109,6 @@ class ClassTest
    void testLowerBound  ();
    void testUpperBound  ();
    void testIsDefault   ();
-   void testIsNan       ();
-   void testIsSquare    ();
-   void testIsDiagonal  ();
-   void testIsSymmetric ();
-   void testMinimum     ();
-   void testMaximum     ();
 
    template< typename Type >
    void checkRows( const Type& matrix, size_t expectedRows ) const;
