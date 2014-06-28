@@ -40,6 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/Functions.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
@@ -265,10 +267,10 @@ template< typename MT, bool SO >
 bool isUpper( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
-const typename MT::ElementType min( const SparseVector<MT,SO>& sm );
+const typename MT::ElementType min( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
-const typename MT::ElementType max( const SparseVector<MT,SO>& sm );
+const typename MT::ElementType max( const SparseMatrix<MT,SO>& sm );
 //@}
 //*************************************************************************************************
 
