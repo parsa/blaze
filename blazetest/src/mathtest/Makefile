@@ -36,7 +36,7 @@
 default: all
 
 all: functions intrinsics \
-     densevector sparsevector densematrix \
+     densevector sparsevector densematrix sparsematrix \
      staticvector hybridvector dynamicvector compressedvector \
      staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
      densesubvector sparsesubvector \
@@ -83,6 +83,11 @@ densematrix:
 	@echo
 	@echo "Building the DenseMatrix operation tests..."
 	@$(MAKE) --no-print-directory -C ./densematrix $(MAKECMDGOALS)
+
+sparsematrix:
+	@echo
+	@echo "Building the SparseMatrix operation tests..."
+	@$(MAKE) --no-print-directory -C ./sparsematrix $(MAKECMDGOALS)
 
 staticvector:
 	@echo
