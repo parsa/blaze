@@ -292,6 +292,12 @@ template< typename MT, bool SO >
 bool isSymmetric( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
+bool isLower( const SparseMatrix<MT,SO>& sm );
+
+template< typename MT, bool SO >
+bool isUpper( const SparseMatrix<MT,SO>& sm );
+
+template< typename MT, bool SO >
 const typename MT::ElementType min( const SparseVector<MT,SO>& sm );
 
 template< typename MT, bool SO >
@@ -444,7 +450,8 @@ bool isDiagonal( const SparseMatrix<MT,SO>& sm )
 // \return \a true if the matrix is symmetric, \a false if not.
 //
 // This function checks if the given sparse matrix is symmetric. The matrix is considered to be
-// symmetric if it is a square matrix whose transpose is equal to itself (\f$ A = A^T \f$):
+// symmetric if it is a square matrix whose transpose is equal to itself (\f$ A = A^T \f$). The
+// following code example demonstrates the use of the function:
 
    \code
    blaze::CompressedMatrix<int,blaze::rowMajor> A, B;
@@ -505,6 +512,150 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
 
             const ConstIterator pos( A.lowerBound( j, index ) );
             if( pos == A.end(index) || pos->index() != j || !equal( pos->value(), element->value() ) )
+               return false;
+         }
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given sparse matrix is a lower triangular matrix.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix to be checked.
+// \return \a true if the matrix is a lower triangular matrix, \a false if not.
+//
+// This function checks if the given sparse matrix is a lower triangular matrix of the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        l_(0,0) & 0       & 0       & \cdots & 0       \\
+                        l_(1,0) & l_(1,1) & 0       & \cdots & 0       \\
+                        l_(2,0) & l_(2,1) & l_(3,3) & \cdots & 0       \\
+                        \vdots  & \vdots  & \vdots  & \ddots & \vdots  \\
+                        l_(N,0) & l_(N,1) & l_(N,2) & \cdots & l_(N,N) \\
+                        \end{array}\right).\f]
+
+// The following code example demonstrates the use of the function:
+
+   \code
+   blaze::CompressedMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isLower( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in a lower triangular matrix:
+
+   \code
+   if( isLower( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+bool isLower( const SparseMatrix<MT,SO>& sm )
+{
+   typedef typename MT::ConstIterator  ConstIterator;
+
+   if( !isSquare( ~sm ) )
+      return false;
+
+   typename MT::CompositeType A( ~sm );  // Evaluation of the sparse matrix operand
+
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<A.rows()-1UL; ++i ) {
+         for( ConstIterator element=A.lowerBound(i,i+1UL); element!=A.end(i); ++element )
+         {
+            if( !isDefault( element->value() ) )
+               return false;
+         }
+      }
+   }
+   else {
+      for( size_t j=1UL; j<A.columns(); ++j ) {
+         for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
+         {
+            if( element->index() >= j )
+               break;
+
+            if( !isDefault( element->value() ) )
+               return false;
+         }
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given sparse matrix is an upper triangular matrix.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix to be checked.
+// \return \a true if the matrix is an upper triangular matrix, \a false if not.
+//
+// This function checks if the given sparse matrix is an upper triangular matrix of the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        l_(0,0) & l_(0,1) & l_(0,2) & \cdots & l_(0,N) \\
+                        0       & l_(1,1) & l_(1,2) & \cdots & l_(1,N) \\
+                        0       & 0       & 0       & \cdots & l_(2,N) \\
+                        \vdots  & \vdots  & \vdots  & \ddots & \vdots  \\
+                        0       & 0       & 0       & \cdots & l_(N,N) \\
+                        \end{array}\right).\f]
+
+// The following code example demonstrates the use of the function:
+
+   \code
+   blaze::CompressedMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isUpper( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in an upper triangular matrix:
+
+   \code
+   if( isUpper( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+bool isUpper( const SparseMatrix<MT,SO>& sm )
+{
+   typedef typename MT::ConstIterator  ConstIterator;
+
+   if( !isSquare( ~sm ) )
+      return false;
+
+   typename MT::CompositeType A( ~sm );  // Evaluation of the sparse matrix operand
+
+   if( SO == rowMajor ) {
+      for( size_t i=1UL; i<A.rows(); ++i ) {
+         for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
+         {
+            if( element->index() >= i )
+               break;
+
+            if( !isDefault( element->value() ) )
+               return false;
+         }
+      }
+   }
+   else {
+      for( size_t j=0UL; j<A.columns()-1UL; ++j ) {
+         for( ConstIterator element=A.lowerBound(j+1UL,j); element!=A.end(j); ++element )
+         {
+            if( !isDefault( element->value() ) )
                return false;
          }
       }
