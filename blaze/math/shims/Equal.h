@@ -41,6 +41,8 @@
 //*************************************************************************************************
 
 #include <cmath>
+#include <boost/math/special_functions/next.hpp>
+#include <blaze/math/Accuracy.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/util/Complex.h>
 
@@ -69,20 +71,8 @@ namespace blaze {
 */
 inline bool equal( float a, float b )
 {
-   // Computing the absolute error
-   if( std::fabs( a - b ) <= 1E-6F )
-      return true;
-
-   // Computing the relative error
-   float relativeError;
-   if( std::fabs(b) > std::fabs(a) )
-      relativeError = std::fabs( ( a - b ) / b );
-   else
-      relativeError = std::fabs( ( a - b ) / a );
-
-   if( relativeError <= 5E-4F )
-      return true;
-   return false;
+   return ( std::fabs( a - b ) <= 4E-6 ) ||
+          ( boost::math::float_distance( a, b ) <= 6.0F );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -170,7 +160,8 @@ inline bool equal( double a, float b )
 */
 inline bool equal( double a, double b )
 {
-   return std::fabs( a - b ) <= ( 1E-8 * std::fabs( a ) );
+   return ( std::fabs( a - b ) <= accuracy ) ||
+          ( boost::math::float_distance( a, b ) <= 4.0 );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -236,7 +227,7 @@ inline bool equal( long double a, float b )
 */
 inline bool equal( long double a, double b )
 {
-   return std::fabs( a - b ) <= ( 1E-8L * std::fabs( a ) );
+   return equal( static_cast<double>( a ), b );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -258,7 +249,8 @@ inline bool equal( long double a, double b )
 */
 inline bool equal( long double a, long double b )
 {
-   return std::fabs( a - b ) <= ( 1E-8L * std::fabs( a ) );
+   return ( std::fabs( a - b ) <= accuracy ) ||
+          ( boost::math::float_distance( a, b ) <= 4.0L );
 }
 /*! \endcond */
 //*************************************************************************************************
