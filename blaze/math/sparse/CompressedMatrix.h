@@ -4550,16 +4550,16 @@ inline void clear( CompressedMatrix<Type,SO>& m )
 
 
 //*************************************************************************************************
-/*!\brief Returns whether the given sparse matrix is in default state.
+/*!\brief Returns whether the given compressed matrix is in default state.
 // \ingroup compressed_matrix
 //
-// \param m The sparse matrix to be tested for its default state.
-// \return \a true in case the given matrix is component-wise zero, \a false otherwise.
+// \param m The compressed matrix to be tested for its default state.
+// \return \a true in case the given matrix's rows and columns are zero, \a false otherwise.
 //
-// This function checks whether the compressed matrix is in default state. For instance, in
-// case the matrix is instantiated for a built-in integral or floating point data type, the
-// function returns \a true in case all matrix elements are 0 and \a false in case any matrix
-// element is not 0. The following example demonstrates the use of the \a isDefault function:
+// This function checks whether the compressed matrix is in default (constructed) state, i.e. if
+// it's number of rows and columns is 0. In case it is in default state, the function returns
+// \a true, else it will return \a false. The following example demonstrates the use of the
+// \a isDefault() function:
 
    \code
    blaze::CompressedMatrix<int> A;
@@ -4571,22 +4571,7 @@ template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
 inline bool isDefault( const CompressedMatrix<Type,SO>& m )
 {
-   typedef typename CompressedMatrix<Type,SO>::ConstIterator  ConstIterator;
-
-   if( SO == rowMajor ) {
-      for( size_t i=0UL; i<m.rows(); ++i ) {
-         for( ConstIterator element=m.begin(i); element!=m.end(i); ++element )
-            if( !isDefault( element->value() ) ) return false;
-      }
-   }
-   else {
-      for( size_t j=0UL; j<m.columns(); ++j ) {
-         for( ConstIterator element=m.begin(j); element!=m.end(j); ++element )
-            if( !isDefault( element->value() ) ) return false;
-      }
-   }
-
-   return true;
+   return ( m.rows() == 0UL && m.columns() == 0UL );
 }
 //*************************************************************************************************
 

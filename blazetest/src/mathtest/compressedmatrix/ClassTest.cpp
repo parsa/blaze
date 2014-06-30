@@ -7177,7 +7177,7 @@ void ClassTest::testIsDefault()
       {
          blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 3UL );
 
-         if( isDefault( mat ) != true ) {
+         if( isDefault( mat ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
@@ -7229,7 +7229,7 @@ void ClassTest::testIsDefault()
       {
          blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 3UL );
 
-         if( isDefault( mat ) != true ) {
+         if( isDefault( mat ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
