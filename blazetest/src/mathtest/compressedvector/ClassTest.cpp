@@ -2374,7 +2374,7 @@ void ClassTest::testIsDefault()
    {
       blaze::CompressedVector<int,blaze::rowVector> vec( 3UL );
 
-      if( isDefault( vec ) != true ) {
+      if( isDefault( vec ) != false ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid isDefault evaluation\n"

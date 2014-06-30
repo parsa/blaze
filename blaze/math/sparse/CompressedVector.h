@@ -1756,13 +1756,11 @@ inline void clear( CompressedVector<Type,TF>& v )
 // \ingroup compressed_vector
 //
 // \param v The compressed vector to be tested for its default state.
-// \return \a true in case the given vector is component-wise zero, \a false otherwise.
+// \return \a true in case the given vector's size is zero, \a false otherwise.
 //
-// This function checks whether the N-dimensional compressed vector is in default state. For
-// instance, in case the vector is instantiated for a built-in integral or floating point data
-// type, the function returns \a true in case all vector elements are 0 and \a false in case
-// any vector element is not 0. The following example demonstrates the use of the \a isDefault
-// function:
+// This function checks whether the compressed vector is in default (constructed) state, i.e. if
+// it's size is 0. In case it is in default state, the function returns \a true, else it will
+// return \a false. The following example demonstrates the use of the \a isDefault() function:
 
    \code
    blaze::CompressedVector<double> a;
@@ -1774,11 +1772,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline bool isDefault( const CompressedVector<Type,TF>& v )
 {
-   typedef typename CompressedVector<Type,TF>::ConstIterator  ConstIterator;
-
-   for( ConstIterator element=v.begin(); element!=v.end(); ++element )
-      if( !isDefault( element->value() ) ) return false;
-   return true;
+   return ( v.size() == 0UL );
 }
 //*************************************************************************************************
 
