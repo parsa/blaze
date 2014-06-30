@@ -859,7 +859,7 @@ bool isLower( const DenseMatrix<MT,SO>& dm )
                         \f[\left(\begin{array}{*{5}{c}}
                         l_(0,0) & l_(0,1) & l_(0,2) & \cdots & l_(0,N) \\
                         0       & l_(1,1) & l_(1,2) & \cdots & l_(1,N) \\
-                        0       & 0       & 0       & \cdots & l_(2,N) \\
+                        0       & 0       & l_(2,2) & \cdots & l_(2,N) \\
                         \vdots  & \vdots  & \vdots  & \ddots & \vdots  \\
                         0       & 0       & 0       & \cdots & l_(N,N) \\
                         \end{array}\right).\f]
