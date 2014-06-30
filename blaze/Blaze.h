@@ -1644,8 +1644,8 @@ namespace blaze {}
                           3 & 6 \\
                           \end{array}\right)\f$
 
-// Since a \c StaticMatrix cannot change its size, only a quadratic StaticMatrix can be used in
-// a multiplication assignment with other quadratic matrices of the same dimensions.
+// Since a \c StaticMatrix cannot change its size, only a square StaticMatrix can be used in a
+// multiplication assignment with other square matrices of the same dimensions.
 //
 //
 // \n \section matrix_operations_element_access Element Access
@@ -2016,15 +2016,15 @@ namespace blaze {}
 // not 0.
 //
 //
-// \n \subsection matrix_operations_isQuadratic isQuadratic
+// \n \subsection matrix_operations_isSquare isSquare
 //
-// If a dense or sparse matrix is a quadratic matrix (i.e. if the number of rows is equal to the
-// number of columns) can be checked via the \c isQuadratic() function:
+// Whether a dense or sparse matrix is a square matrix (i.e. if the number of rows is equal to the
+// number of columns) can be checked via the \c isSquare() function:
 
    \code
    blaze::DynamicMatrix<double> A;
    // ... Resizing and initialization
-   if( isQuadratic( A ) ) { ... }
+   if( isSquare( A ) ) { ... }
    \endcode
 
 // \n \subsection matrix_operations_isdiagonal isDiagonal
@@ -2050,7 +2050,7 @@ namespace blaze {}
    if( isSymmetric( A ) ) { ... }
    \endcode
 
-// Note that non-quadratic matrices are never considered to be symmetric!
+// Note that non-square matrices are never considered to be symmetric!
 //
 //
 // \n \subsection matrix_operators_abs Absolute Values
