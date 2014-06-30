@@ -2156,17 +2156,16 @@ inline void clear( HybridVector<Type,N,TF>& v )
 /*!\brief Returns whether the given hybrid vector is in default state.
 // \ingroup hybrid_vector
 //
-// \param v The vector to be tested for its default state.
-// \return \a true in case the given vector is component-wise zero, \a false otherwise.
+// \param v The hybrid vector to be tested for its default state.
+// \return \a true in case the given vector's size is zero, \a false otherwise.
 //
-// This function checks whether the hybrid vector is in default state. For instance, in case
-// the hybrid vector is instantiated for a built-in integral or floating point data type, the
-// function returns \a true in case all vector elements are 0 and \a false in case any vector
-// element is not 0. Following example demonstrates the use of the \a isDefault function:
+// This function checks whether the hybrid vector is in default (constructed) state, i.e. if
+// it's size is 0. In case it is in default state, the function returns \a true, else it will
+// return \a false. The following example demonstrates the use of the \a isDefault() function:
 
    \code
    blaze::HybridVector<double,3> a;
-   // ... Initialization
+   // ... Resizing and initialization
    if( isDefault( a ) ) { ... }
    \endcode
 */
@@ -2175,9 +2174,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline bool isDefault( const HybridVector<Type,N,TF>& v )
 {
-   for( size_t i=0UL; i<v.size(); ++i )
-      if( !isDefault( v[i] ) ) return false;
-   return true;
+   return ( v.size() == 0UL );
 }
 //*************************************************************************************************
 

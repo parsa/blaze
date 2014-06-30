@@ -1658,7 +1658,7 @@ void ClassTest::testIsDefault()
    {
       blaze::HybridVector<int,3UL,blaze::rowVector> vec( 3UL, 0 );
 
-      if( isDefault( vec ) != true ) {
+      if( isDefault( vec ) != false ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid isDefault evaluation\n"
