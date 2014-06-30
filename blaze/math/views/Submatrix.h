@@ -56,6 +56,7 @@
 #include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/typetraits/IsVecTVecMultExpr.h>
 #include <blaze/math/views/AlignmentFlag.h>
+#include <blaze/math/views/Subvector.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>

@@ -42,6 +42,7 @@
 
 #include <cmath>
 #include <blaze/math/expressions/DenseVector.h>
+#include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>

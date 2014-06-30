@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -574,10 +575,10 @@ template< typename MT, bool SO >
 bool isUpper( const DenseMatrix<MT,SO>& dm );
 
 template< typename MT, bool SO >
-const typename MT::ElementType min( const DenseVector<MT,SO>& dm );
+const typename MT::ElementType min( const DenseMatrix<MT,SO>& dm );
 
 template< typename MT, bool SO >
-const typename MT::ElementType max( const DenseVector<MT,SO>& dm );
+const typename MT::ElementType max( const DenseMatrix<MT,SO>& dm );
 //@}
 //*************************************************************************************************
 
