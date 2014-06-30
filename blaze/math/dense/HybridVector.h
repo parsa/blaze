@@ -49,6 +49,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
+#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/system/TransposeFlag.h>
 #include <blaze/util/AlignedArray.h>
@@ -2184,6 +2185,26 @@ inline void swap( HybridVector<Type,N,TF>& a, HybridVector<Type,N,TF>& b ) /* th
 {
    a.swap( b );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISRESIZABLE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t N, bool TF >
+struct IsResizable< HybridVector<T,N,TF> > : public TrueType
+{
+   enum { value = 1 };
+   typedef TrueType  Type;
+};
+/*! \endcond */
 //*************************************************************************************************
 
 
