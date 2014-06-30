@@ -4619,16 +4619,16 @@ inline void clear( DynamicMatrix<Type,SO>& m )
 
 
 //*************************************************************************************************
-/*!\brief Returns whether the given dense matrix is in default state.
+/*!\brief Returns whether the given dynamic matrix is in default state.
 // \ingroup dynamic_matrix
 //
-// \param m The dense matrix to be tested for its default state.
-// \return \a true in case the given matrix is component-wise zero, \a false otherwise.
+// \param m The dynamic matrix to be tested for its default state.
+// \return \a true in case the given matrix's rows and columns are zero, \a false otherwise.
 //
-// This function checks whether the matrix is in default state. For instance, in case the
-// matrix is instantiated for a built-in integral or floating point data type, the function
-// returns \a true in case all matrix elements are 0 and \a false in case any matrix element
-// is not 0. The following example demonstrates the use of the \a isDefault function:
+// This function checks whether the dynamic matrix is in default (constructed) state, i.e. if
+// it's number of rows and columns is 0. In case it is in default state, the function returns
+// \a true, else it will return \a false. The following example demonstrates the use of the
+// \a isDefault() function:
 
    \code
    blaze::DynamicMatrix<int> A;
@@ -4640,18 +4640,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline bool isDefault( const DynamicMatrix<Type,SO>& m )
 {
-   if( SO == rowMajor ) {
-      for( size_t i=0UL; i<m.rows(); ++i )
-         for( size_t j=0UL; j<m.columns(); ++j )
-            if( !isDefault( m(i,j) ) ) return false;
-   }
-   else {
-      for( size_t j=0UL; j<m.columns(); ++j )
-         for( size_t i=0UL; i<m.rows(); ++i )
-            if( !isDefault( m(i,j) ) ) return false;
-   }
-
-   return true;
+   return ( m.rows() == 0UL && m.columns() == 0UL );
 }
 //*************************************************************************************************
 

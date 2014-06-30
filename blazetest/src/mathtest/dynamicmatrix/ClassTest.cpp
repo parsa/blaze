@@ -4493,7 +4493,7 @@ void ClassTest::testIsDefault()
       {
          blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 0 );
 
-         if( isDefault( mat ) != true ) {
+         if( isDefault( mat ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
@@ -4545,7 +4545,7 @@ void ClassTest::testIsDefault()
       {
          blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 0 );
 
-         if( isDefault( mat ) != true ) {
+         if( isDefault( mat ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
