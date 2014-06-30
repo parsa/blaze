@@ -1128,9 +1128,12 @@ namespace blaze {}
    if( isDefault( a ) ) { ... }
    \endcode
 
-// A vector is in default state if all its elements are in default state. For instance, in case
+// A vector is in default state if it appears to just have been default constructed. A resizable
+// vector (\c HybridVector, \c DynamicVector, or \c CompressedVector) is in default state if its
+// size is equal to zero. A non-resizable vector (\c StaticVector, all subvectors, rows, and
+// columns) is in default state if all its elements are in default state. For instance, in case
 // the vector is instantiated for a built-in integral or floating point data type, the function
-// returns \a true in case all vector elements are 0 and \a false in case any vector element is
+// returns \c true in case all vector elements are 0 and \c false in case any vector element is
 // not 0.
 //
 //
@@ -2010,10 +2013,12 @@ namespace blaze {}
    if( isDefault( A ) ) { ... }
    \endcode
 
-// A matrix is in default state if all its elements are in default state. For instance, in case
-// the matrix is instantiated for a built-in integral or floating point data type, the function
-// returns \a true in case all matrix elements are 0 and \a false in case any matrix element is
-// not 0.
+// A matrix is in default state if it appears to just have been default constructed. A resizable
+// matrix (\c HybridMatrix, \c DynamicMatrix, or \c CompressedMatrix) is in default state if its
+// size is equal to zero. A non-resizable matrix (\c StaticMatrix and all submatrices) is in
+// default state if all its elements are in default state. For instance, in case the matrix is
+// instantiated for a built-in integral or floating point data type, the function returns \c true
+// in case all matrix elements are 0 and \c false in case any vector element is not 0.
 //
 //
 // \n \subsection matrix_operations_isSquare isSquare
