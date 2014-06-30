@@ -476,4 +476,23 @@ clean:
 
 
 # Setting the independent commands
-.PHONY: default all essential single clean
+.PHONY: default all essential single clean \
+        functions intrinsics \
+        densevector sparsevector densematrix sparsematrix \
+        staticvector hybridvector dynamicvector compressedvector \
+        staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
+        densesubvector sparsesubvector \
+        densesubmatrix sparsesubmatrix \
+        denserow densecolumn sparserow sparsecolumn \
+        dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
+        dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
+        dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \
+        dvecdveccross dvecsveccross svecdveccross svecsveccross \
+        tdvecdvecmult tdvecsvecmult tsvecdvecmult tsvecsvecmult \
+        dvectdvecmult dvectsvecmult svectdvecmult svectsvecmult \
+        dmatdvecmult dmatsvecmult smatdvecmult smatsvecmult \
+        tdvecdmatmult tsvecdmatmult tdvecsmatmult tsvecsmatmult \
+        dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
+        dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
+        dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
+        vectorserializer matrixserializer

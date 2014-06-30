@@ -224,7 +224,8 @@ clean:
 
 
 # Setting the independent commands
-.PHONY: default all essential single clean
+.PHONY: default all essential single clean \
+        mathtest utiltest
 EOF
 
 

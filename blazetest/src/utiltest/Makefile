@@ -66,4 +66,5 @@ clean:
 
 
 # Setting the independent commands
-.PHONY: default all essential single clean alignedallocator uniqueptr uniquearray
+.PHONY: default all essential single clean \
+        alignedallocator uniqueptr uniquearray
