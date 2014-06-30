@@ -1584,7 +1584,7 @@ void ClassTest::testIsDefault()
    {
       blaze::DynamicVector<int,blaze::rowVector> vec( 3UL, 0 );
 
-      if( isDefault( vec ) != true ) {
+      if( isDefault( vec ) != false ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid isDefault evaluation\n"

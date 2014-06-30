@@ -1958,7 +1958,7 @@ inline void swap( DynamicVector<Type,TF>& a, DynamicVector<Type,TF>& b ) /* thro
 
 //*************************************************************************************************
 /*!\brief Resetting the given dynamic vector.
-// \ingroup dense_vector_N
+// \ingroup dynamic_vector
 //
 // \param v The dynamic vector to be resetted.
 // \return void
@@ -1974,7 +1974,7 @@ inline void reset( DynamicVector<Type,TF>& v )
 
 //*************************************************************************************************
 /*!\brief Clearing the given dynamic vector.
-// \ingroup dense_vector_N
+// \ingroup dynamic_vector
 //
 // \param v The dynamic vector to be cleared.
 // \return void
@@ -1990,16 +1990,14 @@ inline void clear( DynamicVector<Type,TF>& v )
 
 //*************************************************************************************************
 /*!\brief Returns whether the given dynamic vector is in default state.
-// \ingroup dense_vector_N
+// \ingroup dynamic_vector
 //
 // \param v The dynamic vector to be tested for its default state.
-// \return \a true in case the given vector is component-wise zero, \a false otherwise.
+// \return \a true in case the given vector's size is zero, \a false otherwise.
 //
-// This function checks whether the N-dimensional vector is in default state. For instance,
-// in case the vector is instantiated for a built-in integral or floating point data type,
-// the function returns \a true in case all vector elements are 0 and \a false in case any
-// vector element is not 0. The following example demonstrates the use of the \a isDefault
-// function:
+// This function checks whether the dynamic vector is in default (constructed) state, i.e. if
+// it's size is 0. In case it is in default state, the function returns \a true, else it will
+// return \a false. The following example demonstrates the use of the \a isDefault() function:
 
    \code
    blaze::DynamicVector<int> a;
@@ -2011,16 +2009,14 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline bool isDefault( const DynamicVector<Type,TF>& v )
 {
-   for( size_t i=0UL; i<v.size(); ++i )
-      if( !isDefault( v[i] ) ) return false;
-   return true;
+   return ( v.size() == 0UL );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*!\brief Swapping the contents of two vectors.
-// \ingroup dense_vector_N
+// \ingroup dynamic_vector
 //
 // \param a The first vector to be swapped.
 // \param b The second vector to be swapped.
