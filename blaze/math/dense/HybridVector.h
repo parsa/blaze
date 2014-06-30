@@ -439,7 +439,9 @@ inline HybridVector<Type,N,TF>::HybridVector()
    : v_   ()       // The statically allocated vector elements
    , size_( 0UL )  // The current size/dimension of the vector
 {
-   if( IsVectorizable<Type>::value ) {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
+   if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<NN; ++i )
          v_[i] = Type();
    }
@@ -464,10 +466,12 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n )
    : v_   ()     // The statically allocated vector elements
    , size_( n )  // The current size/dimension of the vector
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
    if( n > N )
       throw std::invalid_argument( "Invalid size for hybrid vector" );
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<NN; ++i )
          v_[i] = Type();
    }
@@ -493,13 +497,15 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Type& init )
    : v_   ()     // The statically allocated vector elements
    , size_( n )  // The current size/dimension of the vector
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
    if( n > N )
       throw std::invalid_argument( "Invalid size for hybrid vector" );
 
    for( size_t i=0UL; i<n; ++i )
       v_[i] = init;
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=n; i<NN; ++i )
          v_[i] = Type();
    }
@@ -538,13 +544,15 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Other* array )
    : v_   ()     // The statically allocated vector elements
    , size_( n )  // The current size/dimension of the vector
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
    if( n > N )
       throw std::invalid_argument( "Invalid setup of hybrid vector" );
 
    for( size_t i=0UL; i<n; ++i )
       v_[i] = array[i];
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=n; i<NN; ++i )
          v_[i] = Type();
    }
@@ -580,11 +588,12 @@ inline HybridVector<Type,N,TF>::HybridVector( const Other (&array)[M] )
    , size_( M )  // The current size/dimension of the vector
 {
    BLAZE_STATIC_ASSERT( M <= N );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
    for( size_t i=0UL; i<M; ++i )
       v_[i] = array[i];
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=M; i<NN; ++i )
          v_[i] = Type();
    }
@@ -606,10 +615,12 @@ inline HybridVector<Type,N,TF>::HybridVector( const HybridVector& v )
    : v_   ()           // The statically allocated vector elements
    , size_( v.size_ )  // The current size/dimension of the vector
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
    for( size_t i=0UL; i<size_; ++i )
       v_[i] = v.v_[i];
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=size_; i<NN; ++i )
          v_[i] = Type();
    }
@@ -637,11 +648,13 @@ inline HybridVector<Type,N,TF>::HybridVector( const Vector<VT,TF>& v )
 {
    using blaze::assign;
 
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
    if( (~v).size() > N )
       throw std::invalid_argument( "Invalid setup of hybrid vector" );
 
-   for( size_t i=( IsSparseVector<VT>::value   ? 0UL : size_ );
-               i<( IsVectorizable<Type>::value ? NN  : size_ ); ++i ) {
+   for( size_t i=( IsSparseVector<VT>::value ? 0UL : size_ );
+               i<( IsNumeric<Type>::value    ? NN  : size_ ); ++i ) {
       v_[i] = Type();
    }
 

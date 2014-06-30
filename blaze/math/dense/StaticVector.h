@@ -446,7 +446,9 @@ template< typename Type  // Data type of the vector
 inline StaticVector<Type,N,TF>::StaticVector()
    : v_()  // The statically allocated vector elements
 {
-   if( IsVectorizable<Type>::value ) {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
+   if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<NN; ++i )
          v_[i] = Type();
    }
@@ -465,13 +467,13 @@ template< typename Type  // Data type of the vector
 inline StaticVector<Type,N,TF>::StaticVector( const Type& init )
    : v_()  // The statically allocated vector elements
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
    for( size_t i=0UL; i<N; ++i )
       v_[i] = init;
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t i=N; i<NN; ++i )
-         v_[i] = Type();
-   }
+   for( size_t i=N; i<NN; ++i )
+      v_[i] = Type();
 }
 //*************************************************************************************************
 
@@ -505,13 +507,15 @@ template< typename Other >  // Data type of the initialization array
 inline StaticVector<Type,N,TF>::StaticVector( size_t n, const Other* array )
    : v_()  // The statically allocated vector elements
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
    if( n > N )
       throw std::invalid_argument( "Invalid setup of static vector" );
 
    for( size_t i=0UL; i<n; ++i )
       v_[i] = array[i];
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=n; i<NN; ++i )
          v_[i] = Type();
    }
@@ -542,13 +546,13 @@ template< typename Other >  // Data type of the initialization array
 inline StaticVector<Type,N,TF>::StaticVector( const Other (&array)[N] )
    : v_()  // The statically allocated vector elements
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
    for( size_t i=0UL; i<N; ++i )
       v_[i] = array[i];
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t i=N; i<NN; ++i )
-         v_[i] = Type();
-   }
+   for( size_t i=N; i<NN; ++i )
+      v_[i] = Type();
 }
 //*************************************************************************************************
 
@@ -566,6 +570,8 @@ template< typename Type  // Data type of the vector
 inline StaticVector<Type,N,TF>::StaticVector( const StaticVector& v )
    : v_()  // The statically allocated vector elements
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
    for( size_t i=0UL; i<NN; ++i )
       v_[i] = v.v_[i];
 }
@@ -584,13 +590,13 @@ template< typename Other >  // Data type of the foreign vector
 inline StaticVector<Type,N,TF>::StaticVector( const StaticVector<Other,N,TF>& v )
    : v_()  // The statically allocated vector elements
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
    for( size_t i=0UL; i<N; ++i )
       v_[i] = v[i];
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t i=N; i<NN; ++i )
-         v_[i] = Type();
-   }
+   for( size_t i=N; i<NN; ++i )
+      v_[i] = Type();
 }
 //*************************************************************************************************
 
@@ -614,11 +620,12 @@ inline StaticVector<Type,N,TF>::StaticVector( const Vector<VT,TF>& v )
 {
    using blaze::assign;
 
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
    if( (~v).size() != N )
       throw std::invalid_argument( "Invalid setup of static vector" );
 
-   for( size_t i=( IsSparseVector<VT>::value   ? 0UL : N );
-               i<( IsVectorizable<Type>::value ? NN  : N ); ++i ) {
+   for( size_t i=( IsSparseVector<VT>::value ? 0UL : N ); i<NN; ++i ) {
       v_[i] = Type();
    }
 
@@ -646,14 +653,13 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2 )
    : v_()  // The statically allocated vector elements
 {
    BLAZE_STATIC_ASSERT( N == 2UL );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
    v_[0] = v1;
    v_[1] = v2;
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t i=N; i<NN; ++i )
-         v_[i] = Type();
-   }
+   for( size_t i=N; i<NN; ++i )
+      v_[i] = Type();
 }
 //*************************************************************************************************
 
@@ -678,15 +684,14 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, co
    : v_()  // The statically allocated vector elements
 {
    BLAZE_STATIC_ASSERT( N == 3UL );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
    v_[0] = v1;
    v_[1] = v2;
    v_[2] = v3;
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t i=N; i<NN; ++i )
-         v_[i] = Type();
-   }
+   for( size_t i=N; i<NN; ++i )
+      v_[i] = Type();
 }
 //*************************************************************************************************
 
@@ -713,16 +718,15 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2,
    : v_()  // The statically allocated vector elements
 {
    BLAZE_STATIC_ASSERT( N == 4UL );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
    v_[0] = v1;
    v_[1] = v2;
    v_[2] = v3;
    v_[3] = v4;
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t i=N; i<NN; ++i )
-         v_[i] = Type();
-   }
+   for( size_t i=N; i<NN; ++i )
+      v_[i] = Type();
 }
 //*************************************************************************************************
 
@@ -750,6 +754,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, co
    : v_()  // The statically allocated vector elements
 {
    BLAZE_STATIC_ASSERT( N == 5UL );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
    v_[0] = v1;
    v_[1] = v2;
@@ -757,10 +762,8 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, co
    v_[3] = v4;
    v_[4] = v5;
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t i=N; i<NN; ++i )
-         v_[i] = Type();
-   }
+   for( size_t i=N; i<NN; ++i )
+      v_[i] = Type();
 }
 //*************************************************************************************************
 
@@ -789,6 +792,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, co
    : v_()  // The statically allocated vector elements
 {
    BLAZE_STATIC_ASSERT( N == 6UL );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
    v_[0] = v1;
    v_[1] = v2;
@@ -797,10 +801,8 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, co
    v_[4] = v5;
    v_[5] = v6;
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t i=N; i<NN; ++i )
-         v_[i] = Type();
-   }
+   for( size_t i=N; i<NN; ++i )
+      v_[i] = Type();
 }
 //*************************************************************************************************
 

@@ -469,7 +469,9 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix()
    , m_( 0UL )  // The current number of rows of the matrix
    , n_( 0UL )  // The current number of columns of the matrix
 {
-   if( IsVectorizable<Type>::value ) {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
+   if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<M*NN; ++i )
          v_[i] = Type();
    }
@@ -499,13 +501,15 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n )
    , m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
    if( m > M )
       throw std::invalid_argument( "Invalid number of rows for hybrid matrix" );
 
    if( n > N )
       throw std::invalid_argument( "Invalid number of columns for hybrid matrix" );
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<M*NN; ++i )
          v_[i] = Type();
    }
@@ -536,6 +540,8 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Type& 
    , m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
    if( m > M )
       throw std::invalid_argument( "Invalid number of rows for hybrid matrix" );
 
@@ -546,13 +552,13 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Type& 
       for( size_t j=0UL; j<n; ++j )
          v_[i*NN+j] = init;
 
-      if( IsVectorizable<Type>::value ) {
+      if( IsNumeric<Type>::value ) {
          for( size_t j=n; j<NN; ++j )
             v_[i*NN+j] = Type();
       }
    }
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=m; i<M; ++i )
          for( size_t j=0UL; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -598,6 +604,8 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Other*
    , m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
    if( m > M )
       throw std::invalid_argument( "Invalid number of rows for hybrid matrix" );
 
@@ -608,13 +616,13 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Other*
       for( size_t j=0UL; j<n; ++j )
          v_[i*NN+j] = array[i*n+j];
 
-      if( IsVectorizable<Type>::value ) {
+      if( IsNumeric<Type>::value ) {
          for( size_t j=n; j<NN; ++j )
             v_[i*NN+j] = Type();
       }
    }
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=m; i<M; ++i )
          for( size_t j=0UL; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -658,18 +666,19 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const Other (&array)[M2][N2] )
 {
    BLAZE_STATIC_ASSERT( M2 <= M );
    BLAZE_STATIC_ASSERT( N2 <= N );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
    for( size_t i=0UL; i<M2; ++i ) {
       for( size_t j=0UL; j<N2; ++j )
          v_[i*NN+j] = array[i][j];
 
-      if( IsVectorizable<Type>::value ) {
+      if( IsNumeric<Type>::value ) {
          for( size_t j=N2; j<NN; ++j )
             v_[i*NN+j] = Type();
       }
    }
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=M2; i<M; ++i )
          for( size_t j=0UL; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -695,17 +704,19 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const HybridMatrix& m )
    , m_( m.m_ )  // The current number of rows of the matrix
    , n_( m.n_ )  // The current number of columns of the matrix
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<n_; ++j )
          v_[i*NN+j] = m.v_[i*NN+j];
 
-      if( IsVectorizable<Type>::value ) {
+      if( IsNumeric<Type>::value ) {
          for( size_t j=n_; j<NN; ++j )
             v_[i*NN+j] = Type();
       }
    }
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=m_; i<M; ++i )
          for( size_t j=0UL; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -733,17 +744,20 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const Matrix<MT,SO2>& m )
 {
    using blaze::assign;
 
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
    if( (~m).rows() > M || (~m).columns() > N )
       throw std::invalid_argument( "Invalid setup of hybrid matrix" );
 
    for( size_t i=0UL; i<m_; ++i ) {
-      for( size_t j=( IsSparseMatrix<MT>::value   ? 0UL : n_ );
-                  j<( IsVectorizable<Type>::value ? NN  : n_ ); ++j ) {
+      for( size_t j=( IsSparseMatrix<MT>::value ? 0UL : n_ );
+                  j<( IsNumeric<Type>::value    ? NN  : n_ );
+                  ++j ) {
          v_[i*NN+j] = Type();
       }
    }
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=m_; i<M; ++i )
          for( size_t j=0UL; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -2839,7 +2853,9 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix()
    , m_( 0UL )  // The current number of rows of the matrix
    , n_( 0UL )  // The current number of columns of the matrix
 {
-   if( IsVectorizable<Type>::value ) {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+
+   if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<MM*N; ++i )
          v_[i] = Type();
    }
@@ -2870,13 +2886,15 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n )
    , m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+
    if( m > M )
       throw std::invalid_argument( "Invalid number of rows for hybrid matrix" );
 
    if( n > N )
       throw std::invalid_argument( "Invalid number of columns for hybrid matrix" );
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<MM*N; ++i )
          v_[i] = Type();
    }
@@ -2908,6 +2926,8 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Type
    , m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+
    if( m > M )
       throw std::invalid_argument( "Invalid number of rows for hybrid matrix" );
 
@@ -2918,13 +2938,13 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Type
       for( size_t i=0UL; i<m; ++i )
          v_[i+j*MM] = init;
 
-      if( IsVectorizable<Type>::value ) {
+      if( IsNumeric<Type>::value ) {
          for( size_t i=m; i<MM; ++i )
             v_[i+j*MM] = Type();
       }
    }
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t j=n; j<N; ++j )
          for( size_t i=0UL; i<MM; ++i )
             v_[i+j*MM] = Type();
@@ -2971,6 +2991,8 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Othe
    , m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+
    if( m > M )
       throw std::invalid_argument( "Invalid number of rows for hybrid matrix" );
 
@@ -2981,13 +3003,13 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Othe
       for( size_t i=0UL; i<m; ++i )
          v_[i+j*MM] = array[i+j*m];
 
-      if( IsVectorizable<Type>::value ) {
+      if( IsNumeric<Type>::value ) {
          for( size_t i=m; i<MM; ++i )
             v_[i+j*MM] = Type();
       }
    }
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t j=n; j<N; ++j )
          for( size_t i=0UL; i<MM; ++i )
             v_[i+j*MM] = Type();
@@ -3032,18 +3054,19 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( const Other (&array)[M2][N2] )
 {
    BLAZE_STATIC_ASSERT( M2 <= M );
    BLAZE_STATIC_ASSERT( N2 <= N );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
 
    for( size_t j=0UL; j<N2; ++j ) {
       for( size_t i=0UL; i<M2; ++i )
          v_[i+j*MM] = array[i][j];
 
-      if( IsVectorizable<Type>::value ) {
+      if( IsNumeric<Type>::value ) {
          for( size_t i=M2; i<MM; ++i )
             v_[i+j*MM] = Type();
       }
    }
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t j=N2; j<N; ++j )
          for( size_t i=0UL; i<MM; ++i )
             v_[i+j*MM] = Type();
@@ -3070,17 +3093,19 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( const HybridMatrix& m )
    , m_( m.m_ )  // The current number of rows of the matrix
    , n_( m.n_ )  // The current number of columns of the matrix
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<m_; ++i )
          v_[i+j*MM] = m.v_[i+j*MM];
 
-      if( IsVectorizable<Type>::value ) {
+      if( IsNumeric<Type>::value ) {
          for( size_t i=m_; i<MM; ++i )
             v_[i+j*MM] = Type();
       }
    }
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t j=n_; j<N; ++j )
          for( size_t i=0UL; i<MM; ++i )
             v_[i+j*MM] = Type();
@@ -3109,17 +3134,20 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( const Matrix<MT,SO2>& m )
 {
    using blaze::assign;
 
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+
    if( (~m).rows() > M || (~m).columns() > N )
       throw std::invalid_argument( "Invalid setup of hybrid matrix" );
 
    for( size_t j=0UL; j<n_; ++j ) {
-      for( size_t i=( IsSparseMatrix<MT>::value   ? 0UL : m_ );
-                  i<( IsVectorizable<Type>::value ? MM  : m_ ); ++i ) {
+      for( size_t i=( IsSparseMatrix<MT>::value ? 0UL : m_ );
+                  i<( IsNumeric<Type>::value    ? MM  : m_ );
+                  ++i ) {
          v_[i+j*MM] = Type();
       }
    }
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t j=n_; j<N; ++j )
          for( size_t i=0UL; i<MM; ++i )
             v_[i+j*MM] = Type();

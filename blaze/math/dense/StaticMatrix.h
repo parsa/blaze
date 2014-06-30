@@ -472,7 +472,9 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix()
    : v_()  // The statically allocated matrix elements
 {
-   if( IsVectorizable<Type>::value ) {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
+   if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<M*NN; ++i )
          v_[i] = Type();
    }
@@ -492,14 +494,14 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& init )
    : v_()  // The statically allocated matrix elements
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; ++j )
          v_[i*NN+j] = init;
 
-      if( IsVectorizable<Type>::value ) {
-         for( size_t j=N; j<NN; ++j )
-            v_[i*NN+j] = Type();
-      }
+      for( size_t j=N; j<NN; ++j )
+         v_[i*NN+j] = Type();
    }
 }
 //*************************************************************************************************
@@ -539,6 +541,8 @@ template< typename Other >  // Data type of the initialization array
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( size_t m, size_t n, const Other* array )
    : v_()  // The statically allocated matrix elements
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
    if( m > M || n > N )
       throw std::invalid_argument( "Invalid setup of static matrix" );
 
@@ -546,13 +550,13 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( size_t m, size_t n, const Other*
       for( size_t j=0UL; j<n; ++j )
          v_[i*NN+j] = array[i*n+j];
 
-      if( IsVectorizable<Type>::value ) {
+      if( IsNumeric<Type>::value ) {
          for( size_t j=n; j<NN; ++j )
             v_[i*NN+j] = Type();
       }
    }
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=m; i<M; ++i ) {
          for( size_t j=0UL; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -590,14 +594,14 @@ template< typename Other >  // Data type of the initialization array
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Other (&array)[M][N] )
    : v_()  // The statically allocated matrix elements
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; ++j )
          v_[i*NN+j] = array[i][j];
 
-      if( IsVectorizable<Type>::value ) {
-         for( size_t j=N; j<NN; ++j )
+      for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
-      }
    }
 }
 //*************************************************************************************************
@@ -617,6 +621,8 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const StaticMatrix& m )
    : v_()  // The statically allocated matrix elements
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
    for( size_t i=0UL; i<M*NN; ++i )
       v_[i] = m.v_[i];
 }
@@ -637,14 +643,14 @@ template< typename Other  // Data type of the foreign matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const StaticMatrix<Other,M,N,SO2>& m )
    : v_()  // The statically allocated matrix elements
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; ++j )
          v_[i*NN+j] = m(i,j);
 
-      if( IsVectorizable<Type>::value ) {
-         for( size_t j=N; j<NN; ++j )
-            v_[i*NN+j] = Type();
-      }
+      for( size_t j=N; j<NN; ++j )
+         v_[i*NN+j] = Type();
    }
 }
 //*************************************************************************************************
@@ -671,12 +677,13 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Matrix<MT,SO2>& m )
 {
    using blaze::assign;
 
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
    if( (~m).rows() != M || (~m).columns() != N )
       throw std::invalid_argument( "Invalid setup of static matrix" );
 
    for( size_t i=0UL; i<M; ++i ) {
-      for( size_t j=( IsSparseMatrix<MT>::value   ? 0UL : N );
-                  j<( IsVectorizable<Type>::value ? NN  : N ); ++j ) {
+      for( size_t j=( IsSparseMatrix<MT>::value ? 0UL : N ); j<NN; ++j ) {
          v_[i*NN+j] = Type();
       }
    }
@@ -711,6 +718,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2 )
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 2UL );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
    // Initialization of a 1x2 matrix
    if( M == 1UL ) {
@@ -724,11 +732,9 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2 )
       v_[ NN] = v2;
    }
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t i=0UL; i<M; ++i ) {
-         for( size_t j=N; j<NN; ++j )
-            v_[i*NN+j] = Type();
-      }
+   for( size_t i=0UL; i<M; ++i ) {
+      for( size_t j=N; j<NN; ++j )
+         v_[i*NN+j] = Type();
    }
 }
 //*************************************************************************************************
@@ -760,6 +766,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 3UL );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
    // Initialization of a 1x3 matrix
    if( M == 1UL ) {
@@ -775,11 +782,9 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
       v_[2UL*NN] = v3;
    }
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t i=0UL; i<M; ++i ) {
-         for( size_t j=N; j<NN; ++j )
-            v_[i*NN+j] = Type();
-      }
+   for( size_t i=0UL; i<M; ++i ) {
+      for( size_t j=N; j<NN; ++j )
+         v_[i*NN+j] = Type();
    }
 }
 //*************************************************************************************************
@@ -815,6 +820,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2,
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 4UL );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
    // Initialization of a 1x4 matrix
    if( M == 1UL ) {
@@ -840,11 +846,9 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2,
       v_[3UL*NN] = v4;
    }
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t i=0UL; i<M; ++i ) {
-         for( size_t j=N; j<NN; ++j )
-            v_[i*NN+j] = Type();
-      }
+   for( size_t i=0UL; i<M; ++i ) {
+      for( size_t j=N; j<NN; ++j )
+         v_[i*NN+j] = Type();
    }
 }
 //*************************************************************************************************
@@ -879,6 +883,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 5UL );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
    // Initialization of a 1x5 matrix
    if( M == 1UL ) {
@@ -898,11 +903,9 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
       v_[4UL*NN] = v5;
    }
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t i=0UL; i<M; ++i ) {
-         for( size_t j=N; j<NN; ++j )
-            v_[i*NN+j] = Type();
-      }
+   for( size_t i=0UL; i<M; ++i ) {
+      for( size_t j=N; j<NN; ++j )
+         v_[i*NN+j] = Type();
    }
 }
 //*************************************************************************************************
@@ -941,6 +944,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 6UL );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
    // Initialization of a 1x6 matrix
    if( M == 1UL ) {
@@ -982,11 +986,9 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
       v_[5UL*NN] = v6;
    }
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t i=0UL; i<M; ++i ) {
-         for( size_t j=N; j<NN; ++j )
-            v_[i*NN+j] = Type();
-      }
+   for( size_t i=0UL; i<M; ++i ) {
+      for( size_t j=N; j<NN; ++j )
+         v_[i*NN+j] = Type();
    }
 }
 //*************************************************************************************************
@@ -1024,6 +1026,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 7UL );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
    // Initialization of a 1x7 matrix
    if( M == 1UL ) {
@@ -1047,11 +1050,9 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
       v_[6UL*NN] = v7;
    }
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t i=0UL; i<M; ++i ) {
-         for( size_t j=N; j<NN; ++j )
-            v_[i*NN+j] = Type();
-      }
+   for( size_t i=0UL; i<M; ++i ) {
+      for( size_t j=N; j<NN; ++j )
+         v_[i*NN+j] = Type();
    }
 }
 //*************************************************************************************************
@@ -1092,6 +1093,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 8UL );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
    // Initialization of a 1x8 matrix
    if( M == 1UL ) {
@@ -1141,11 +1143,9 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
       v_[7UL*NN] = v8;
    }
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t i=0UL; i<M; ++i ) {
-         for( size_t j=N; j<NN; ++j )
-            v_[i*NN+j] = Type();
-      }
+   for( size_t i=0UL; i<M; ++i ) {
+      for( size_t j=N; j<NN; ++j )
+         v_[i*NN+j] = Type();
    }
 }
 //*************************************************************************************************
@@ -1188,6 +1188,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 9UL );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
    // Initialization of a 1x9 matrix
    if( M == 1UL ) {
@@ -1228,11 +1229,9 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
       v_[8UL*NN] = v9;
    }
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t i=0UL; i<M; ++i ) {
-         for( size_t j=N; j<NN; ++j )
-            v_[i*NN+j] = Type();
-      }
+   for( size_t i=0UL; i<M; ++i ) {
+      for( size_t j=N; j<NN; ++j )
+         v_[i*NN+j] = Type();
    }
 }
 //*************************************************************************************************
@@ -1277,6 +1276,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 10UL );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
    // Initialization of a 1x10 matrix
    if( M == 1UL ) {
@@ -1334,11 +1334,9 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
       v_[9UL*NN] = v10;
    }
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t i=0UL; i<M; ++i ) {
-         for( size_t j=N; j<NN; ++j )
-            v_[i*NN+j] = Type();
-      }
+   for( size_t i=0UL; i<M; ++i ) {
+      for( size_t j=N; j<NN; ++j )
+         v_[i*NN+j] = Type();
    }
 }
 //*************************************************************************************************
@@ -3302,7 +3300,9 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,true>::StaticMatrix()
    : v_()  // The statically allocated matrix elements
 {
-   if( IsVectorizable<Type>::value ) {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+
+   if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<MM*N; ++i )
          v_[i] = Type();
    }
@@ -3323,14 +3323,14 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& init )
    : v_()  // The statically allocated matrix elements
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; ++i )
          v_[i+j*MM] = init;
 
-      if( IsVectorizable<Type>::value ) {
-         for( size_t i=M; i<MM; ++i )
-            v_[i+j*MM] = Type();
-      }
+      for( size_t i=M; i<MM; ++i )
+         v_[i+j*MM] = Type();
    }
 }
 /*! \endcond */
@@ -3371,6 +3371,8 @@ template< typename Other >  // Data type of the initialization array
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( size_t m, size_t n, const Other* array )
    : v_()  // The statically allocated matrix elements
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+
    if( m > M || n > N )
       throw std::invalid_argument( "Invalid setup of static matrix" );
 
@@ -3378,13 +3380,13 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( size_t m, size_t n, const Othe
       for( size_t i=0UL; i<m; ++i )
          v_[i+j*MM] = array[i+j*m];
 
-      if( IsVectorizable<Type>::value ) {
+      if( IsNumeric<Type>::value ) {
          for( size_t i=m; i<MM; ++i )
             v_[i+j*MM] = Type();
       }
    }
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t j=n; j<N; ++j ) {
          for( size_t i=0UL; i<M; ++i )
             v_[i+j*MM] = Type();
@@ -3423,14 +3425,14 @@ template< typename Other >  // Data type of the initialization array
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Other (&array)[M][N] )
    : v_()  // The statically allocated matrix elements
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; ++i )
          v_[i+j*MM] = array[i][j];
 
-      if( IsVectorizable<Type>::value ) {
-         for( size_t i=M; i<MM; ++i )
-            v_[i+j*MM] = Type();
-      }
+      for( size_t i=M; i<MM; ++i )
+         v_[i+j*MM] = Type();
    }
 }
 /*! \endcond */
@@ -3451,6 +3453,8 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const StaticMatrix& m )
    : v_()  // The statically allocated matrix elements
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+
    for( size_t i=0UL; i<MM*N; ++i )
       v_[i] = m.v_[i];
 }
@@ -3472,14 +3476,14 @@ template< typename Other  // Data type of the foreign matrix
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const StaticMatrix<Other,M,N,SO>& m )
    : v_()  // The statically allocated matrix elements
 {
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; ++i )
          v_[i+j*MM] = m(i,j);
 
-      if( IsVectorizable<Type>::value ) {
-         for( size_t i=M; i<MM; ++i )
-            v_[i+j*MM] = Type();
-      }
+      for( size_t i=M; i<MM; ++i )
+         v_[i+j*MM] = Type();
    }
 }
 /*! \endcond */
@@ -3507,12 +3511,13 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Matrix<MT,SO>& m )
 {
    using blaze::assign;
 
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+
    if( (~m).rows() != M || (~m).columns() != N )
       throw std::invalid_argument( "Invalid setup of static matrix" );
 
    for( size_t j=0UL; j<N; ++j ) {
-      for( size_t i=( IsSparseMatrix<MT>::value   ? 0UL : M );
-                  i<( IsVectorizable<Type>::value ? MM  : M ); ++i ) {
+      for( size_t i=( IsSparseMatrix<MT>::value ? 0UL : M ); i<MM; ++i ) {
          v_[i+j*MM] = Type();
       }
    }
@@ -3548,6 +3553,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 2UL );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
 
    // Initialization of a 2x1 matrix
    if( N == 1UL ) {
@@ -3561,11 +3567,9 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[ MM] = v2;
    }
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t j=0UL; j<N; ++j )
-         for( size_t i=M; i<MM; ++i ) {
-            v_[i+j*MM] = Type();
-      }
+   for( size_t j=0UL; j<N; ++j )
+      for( size_t i=M; i<MM; ++i ) {
+         v_[i+j*MM] = Type();
    }
 }
 /*! \endcond */
@@ -3598,6 +3602,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 3UL );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
 
    // Initialization of a 3x1 matrix
    if( N == 1UL ) {
@@ -3613,11 +3618,9 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[2UL*MM] = v3;
    }
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t j=0UL; j<N; ++j )
-         for( size_t i=M; i<MM; ++i ) {
-            v_[i+j*MM] = Type();
-      }
+   for( size_t j=0UL; j<N; ++j )
+      for( size_t i=M; i<MM; ++i ) {
+         v_[i+j*MM] = Type();
    }
 }
 /*! \endcond */
@@ -3654,6 +3657,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 4UL );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
 
    // Initialization of a 4x1 matrix
    if( N == 1UL ) {
@@ -3679,11 +3683,9 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[3UL*MM] = v4;
    }
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t j=0UL; j<N; ++j )
-         for( size_t i=M; i<MM; ++i ) {
-            v_[i+j*MM] = Type();
-      }
+   for( size_t j=0UL; j<N; ++j )
+      for( size_t i=M; i<MM; ++i ) {
+         v_[i+j*MM] = Type();
    }
 }
 /*! \endcond */
@@ -3719,6 +3721,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 5UL );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
 
    // Initialization of a 5x1 matrix
    if( N == 1UL ) {
@@ -3738,11 +3741,9 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[4UL*MM] = v5;
    }
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t j=0UL; j<N; ++j )
-         for( size_t i=M; i<MM; ++i ) {
-            v_[i+j*MM] = Type();
-      }
+   for( size_t j=0UL; j<N; ++j )
+      for( size_t i=M; i<MM; ++i ) {
+         v_[i+j*MM] = Type();
    }
 }
 /*! \endcond */
@@ -3782,6 +3783,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 6UL );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
 
    // Initialization of a 6x1 matrix
    if( N == 1UL ) {
@@ -3823,11 +3825,9 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[5UL*MM] = v6;
    }
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t j=0UL; j<N; ++j )
-         for( size_t i=M; i<MM; ++i ) {
-            v_[i+j*MM] = Type();
-      }
+   for( size_t j=0UL; j<N; ++j )
+      for( size_t i=M; i<MM; ++i ) {
+         v_[i+j*MM] = Type();
    }
 }
 /*! \endcond */
@@ -3866,6 +3866,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 7UL );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
 
    // Initialization of a 7x1 matrix
    if( N == 1UL ) {
@@ -3889,11 +3890,9 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[6UL*MM] = v7;
    }
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t j=0UL; j<N; ++j )
-         for( size_t i=M; i<MM; ++i ) {
-            v_[i+j*MM] = Type();
-      }
+   for( size_t j=0UL; j<N; ++j )
+      for( size_t i=M; i<MM; ++i ) {
+         v_[i+j*MM] = Type();
    }
 }
 /*! \endcond */
@@ -3936,6 +3935,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 8UL );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
 
    // Initialization of a 8x1 matrix
    if( N == 1UL ) {
@@ -3985,11 +3985,9 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[7UL*MM] = v8;
    }
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t j=0UL; j<N; ++j )
-         for( size_t i=M; i<MM; ++i ) {
-            v_[i+j*MM] = Type();
-      }
+   for( size_t j=0UL; j<N; ++j )
+      for( size_t i=M; i<MM; ++i ) {
+         v_[i+j*MM] = Type();
    }
 }
 /*! \endcond */
@@ -4033,6 +4031,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 9UL );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
 
    // Initialization of a 9x1 matrix
    if( N == 1 ) {
@@ -4073,11 +4072,9 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[8UL*MM] = v9;
    }
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t j=0UL; j<N; ++j )
-         for( size_t i=M; i<MM; ++i ) {
-            v_[i+j*MM] = Type();
-      }
+   for( size_t j=0UL; j<N; ++j )
+      for( size_t i=M; i<MM; ++i ) {
+         v_[i+j*MM] = Type();
    }
 }
 /*! \endcond */
@@ -4123,6 +4120,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( M*N == 10UL );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
 
    // Initialization of a 10x1 matrix
    if( N == 1UL ) {
@@ -4180,11 +4178,9 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
       v_[9UL*MM] = v10;
    }
 
-   if( IsVectorizable<Type>::value ) {
-      for( size_t j=0UL; j<N; ++j )
-         for( size_t i=M; i<MM; ++i ) {
-            v_[i+j*MM] = Type();
-      }
+   for( size_t j=0UL; j<N; ++j )
+      for( size_t i=M; i<MM; ++i ) {
+         v_[i+j*MM] = Type();
    }
 }
 /*! \endcond */
