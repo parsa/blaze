@@ -193,7 +193,7 @@ cat > Makefile <<EOF
 #==================================================================================================
 
 
-# General rules
+# Build rules
 default: all
 
 all: mathtest utiltest
@@ -202,6 +202,8 @@ essential: mathtest utiltest
 
 single: mathtest utiltest
 
+
+# Internal rules
 mathtest:
 	@echo
 	@\$(MAKE) --no-print-directory -C $INSTALL_PATH/src/mathtest \$(MAKECMDGOALS)
@@ -222,7 +224,7 @@ clean:
 
 
 # Setting the independent commands
-.PHONY: default clean
+.PHONY: default all essential single clean
 EOF
 
 

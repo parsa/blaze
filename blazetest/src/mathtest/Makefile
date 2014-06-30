@@ -32,7 +32,7 @@
 #==================================================================================================
 
 
-# General rules
+# Build rules
 default: all
 
 all: functions intrinsics \
@@ -59,6 +59,8 @@ essential: all
 
 single: all
 
+
+# Internal rules
 functions:
 	@echo
 	@echo "Building the mathematical functions operation tests..."
@@ -404,6 +406,10 @@ matrixserializer:
 clean:
 	@$(MAKE) --no-print-directory -C ./functions clean
 	@$(MAKE) --no-print-directory -C ./intrinsics clean
+	@$(MAKE) --no-print-directory -C ./densevector clean
+	@$(MAKE) --no-print-directory -C ./sparsevector clean
+	@$(MAKE) --no-print-directory -C ./densematrix clean
+	@$(MAKE) --no-print-directory -C ./sparsematrix clean
 	@$(MAKE) --no-print-directory -C ./staticvector clean
 	@$(MAKE) --no-print-directory -C ./hybridvector clean
 	@$(MAKE) --no-print-directory -C ./dynamicvector clean
@@ -470,22 +476,4 @@ clean:
 
 
 # Setting the independent commands
-.PHONY: default all essential single clean \
-        functions intrinsics \
-        staticvector hybridvector dynamicvector compressedvector \
-        staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
-        densesubvector sparsesubvector \
-        densesubmatrix sparsesubmatrix \
-        denserow densecolumn sparserow sparsecolumn \
-        dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
-        dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
-        dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \
-        dvecdveccross dvecsveccross svecdveccross svecsveccross \
-        tdvecdvecmult tdvecsvecmult tsvecdvecmult tsvecsvecmult \
-        dvectdvecmult dvectsvecmult svectdvecmult svectsvecmult \
-        dmatdvecmult dmatsvecmult smatdvecmult smatsvecmult \
-        tdvecdmatmult tsvecdmatmult tdvecsmatmult tsvecsmatmult \
-        dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
-        dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
-        dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
-        vectorserializer matrixserializer
+.PHONY: default all essential single clean
