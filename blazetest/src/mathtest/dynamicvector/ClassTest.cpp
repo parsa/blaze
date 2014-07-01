@@ -1316,7 +1316,7 @@ void ClassTest::testClear()
    }
 
    // Clearing the vector
-   vec.clear();
+   clear( vec );
 
    checkSize    ( vec, 0UL );
    checkNonZeros( vec, 0UL );

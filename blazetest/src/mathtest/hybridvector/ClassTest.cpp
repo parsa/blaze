@@ -1425,7 +1425,7 @@ void ClassTest::testClear()
    }
 
    // Clearing the vector
-   vec.clear();
+   clear( vec );
 
    checkSize    ( vec, 0UL );
    checkCapacity( vec, 4UL );

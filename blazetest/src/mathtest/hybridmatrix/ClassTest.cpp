@@ -3548,7 +3548,7 @@ void ClassTest::testClear()
       }
 
       // Clearing the matrix
-      mat.clear();
+      clear( mat );
 
       checkRows    ( mat, 0UL );
       checkColumns ( mat, 0UL );
@@ -3592,7 +3592,7 @@ void ClassTest::testClear()
       }
 
       // Clearing the matrix
-      mat.clear();
+      clear( mat );
 
       checkRows    ( mat, 0UL );
       checkColumns ( mat, 0UL );
