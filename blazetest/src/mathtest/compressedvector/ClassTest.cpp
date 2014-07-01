@@ -74,6 +74,7 @@ ClassTest::ClassTest()
    testMultAssign();
    testScaling();
    testSubscript();
+   testIterator();
    testNonZeros();
    testReset();
    testClear();
@@ -963,6 +964,181 @@ void ClassTest::testSubscript()
           << "   Result:\n" << vec << "\n"
           << "   Expected result:\n( 4 0 1 3 0 2 0 )\n";
       throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the CompressedVector iterator implementation.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the iterator implementation of the CompressedVector class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testIterator()
+{
+   typedef blaze::CompressedVector<int>  VectorType;
+   typedef VectorType::Iterator          Iterator;
+   typedef VectorType::ConstIterator     ConstIterator;
+
+   VectorType vec( 4UL, 2UL );
+   vec[1] = -2;
+   vec[2] = -3;
+
+   // Counting the number of elements
+   {
+      test_ = "Iterator subtraction";
+
+      const size_t number( end( vec ) - begin( vec ) );
+
+      if( number != 2UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid number of elements detected\n"
+             << " Details:\n"
+             << "   Number of elements         : " << number << "\n"
+             << "   Expected number of elements: 2\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Testing read-only access via ConstIterator
+   {
+      test_ = "Read-only access via ConstIterator";
+
+      ConstIterator it ( cbegin( vec ) );
+      ConstIterator end( cend( vec ) );
+
+      if( it == end || it->value() != -2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid initial iterator detected\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      ++it;
+
+      if( it == end || it->value() != -3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Iterator pre-increment failed\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      it++;
+
+      if( it != end ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Iterator post-increment failed\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Testing assignment via Iterator
+   {
+      test_ = "Assignment via Iterator";
+
+      int value = 6;
+
+      for( Iterator it=begin( vec ); it!=end( vec ); ++it ) {
+         *it = value++;
+      }
+
+      if( vec[0] != 0 || vec[1] != 6 || vec[2] != 7 || vec[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment via iterator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 6 7 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Testing addition assignment via Iterator
+   {
+      test_ = "Addition assignment via Iterator";
+
+      int value = 2;
+
+      for( Iterator it=begin( vec ); it!=end( vec ); ++it ) {
+         *it += value++;
+      }
+
+      if( vec[0] != 0 || vec[1] != 8 || vec[2] != 10 || vec[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment via iterator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 8 10 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Testing subtraction assignment via Iterator
+   {
+      test_ = "Subtraction assignment via Iterator";
+
+      int value = 2;
+
+      for( Iterator it=begin( vec ); it!=end( vec ); ++it ) {
+         *it -= value++;
+      }
+
+      if( vec[0] != 0 || vec[1] != 6 || vec[2] != 7 || vec[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment via iterator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 6 7 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Testing multiplication assignment via Iterator
+   {
+      test_ = "Multiplication assignment via Iterator";
+
+      int value = 1;
+
+      for( Iterator it=begin( vec ); it!=end( vec ); ++it ) {
+         *it *= value++;
+      }
+
+      if( vec[0] != 0 || vec[1] != 6 || vec[2] != 14 || vec[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment via iterator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 6 14 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Testing division assignment via Iterator
+   {
+      test_ = "Division assignment via Iterator";
+
+      for( Iterator it=begin( vec ); it!=end( vec ); ++it ) {
+         *it /= 2;
+      }
+
+      if( vec[0] != 0 || vec[1] != 3 || vec[2] != 7 || vec[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment via iterator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 3 7 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 }
 //*************************************************************************************************

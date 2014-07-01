@@ -93,6 +93,7 @@ class ClassTest
    void testMultAssign  ();
    void testScaling     ();
    void testSubscript   ();
+   void testIterator    ();
    void testNonZeros    ();
    void testReset       ();
    void testClear       ();
