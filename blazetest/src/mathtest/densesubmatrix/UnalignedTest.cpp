@@ -4504,7 +4504,7 @@ void UnalignedTest::testIterator()
       {
          test_ = "Row-major iterator subtraction";
 
-         const size_t number( sm.end(0) - sm.begin(0) );
+         const size_t number( end( sm, 0UL ) - begin( sm, 0UL ) );
 
          if( number != 3UL ) {
             std::ostringstream oss;
@@ -4521,7 +4521,7 @@ void UnalignedTest::testIterator()
       {
          test_ = "Row-major iterator subtraction";
 
-         const size_t number( sm.end(1) - sm.begin(1) );
+         const size_t number( end( sm, 1UL ) - begin( sm, 1UL ) );
 
          if( number != 3UL ) {
             std::ostringstream oss;
@@ -4538,7 +4538,7 @@ void UnalignedTest::testIterator()
       {
          test_ = "Row-major iterator subtraction";
 
-         const size_t number( sm.end(2) - sm.begin(2) );
+         const size_t number( end( sm, 2UL ) - begin( sm, 2UL ) );
 
          if( number != 3UL ) {
             std::ostringstream oss;
@@ -4555,8 +4555,8 @@ void UnalignedTest::testIterator()
       {
          test_ = "Row-major read-only access via ConstIterator";
 
-         SMT::ConstIterator it ( sm.cbegin(2) );
-         SMT::ConstIterator end( sm.cend(2) );
+         SMT::ConstIterator it ( cbegin( sm, 2UL ) );
+         SMT::ConstIterator end( cend( sm, 2UL ) );
 
          if( it == end || *it != 0 ) {
             std::ostringstream oss;
@@ -4653,7 +4653,7 @@ void UnalignedTest::testIterator()
 
          int value = 7;
 
-         for( SMT::Iterator it=sm.begin(2); it!=sm.end(2); ++it ) {
+         for( SMT::Iterator it=begin( sm, 2UL ); it!=end( sm, 2UL ); ++it ) {
             *it = value++;
          }
 
@@ -4694,7 +4694,7 @@ void UnalignedTest::testIterator()
 
          int value = 4;
 
-         for( SMT::Iterator it=sm.begin(1); it!=sm.end(1); ++it ) {
+         for( SMT::Iterator it=begin( sm, 1UL ); it!=end( sm, 1UL ); ++it ) {
             *it += value++;
          }
 
@@ -4735,7 +4735,7 @@ void UnalignedTest::testIterator()
 
          int value = 4;
 
-         for( SMT::Iterator it=sm.begin(1); it!=sm.end(1); ++it ) {
+         for( SMT::Iterator it=begin( sm, 1UL ); it!=end( sm, 1UL ); ++it ) {
             *it -= value++;
          }
 
@@ -4776,7 +4776,7 @@ void UnalignedTest::testIterator()
 
          int value = 2;
 
-         for( SMT::Iterator it=sm.begin(1); it!=sm.end(1); ++it ) {
+         for( SMT::Iterator it=begin( sm, 1UL ); it!=end( sm, 1UL ); ++it ) {
             *it *= value++;
          }
 
@@ -4815,7 +4815,7 @@ void UnalignedTest::testIterator()
       {
          test_ = "Row-major division assignment via Iterator";
 
-         for( SMT::Iterator it=sm.begin(1); it!=sm.end(1); ++it ) {
+         for( SMT::Iterator it=begin( sm, 1UL ); it!=end( sm, 1UL ); ++it ) {
             *it /= 2;
          }
 
@@ -4865,7 +4865,7 @@ void UnalignedTest::testIterator()
       {
          test_ = "Column-major iterator subtraction";
 
-         const size_t number( sm.end(0) - sm.begin(0) );
+         const size_t number( end( sm, 0UL ) - begin( sm, 0UL ) );
 
          if( number != 3UL ) {
             std::ostringstream oss;
@@ -4882,7 +4882,7 @@ void UnalignedTest::testIterator()
       {
          test_ = "Column-major iterator subtraction";
 
-         const size_t number( sm.end(1) - sm.begin(1) );
+         const size_t number( end( sm, 1UL ) - begin( sm, 1UL ) );
 
          if( number != 3UL ) {
             std::ostringstream oss;
@@ -4899,7 +4899,7 @@ void UnalignedTest::testIterator()
       {
          test_ = "Column-major iterator subtraction";
 
-         const size_t number( sm.end(2) - sm.begin(2) );
+         const size_t number( end( sm, 2UL ) - begin( sm, 2UL ) );
 
          if( number != 3UL ) {
             std::ostringstream oss;
@@ -4916,8 +4916,8 @@ void UnalignedTest::testIterator()
       {
          test_ = "Column-major read-only access via ConstIterator";
 
-         TSMT::ConstIterator it ( sm.cbegin(2) );
-         TSMT::ConstIterator end( sm.cend(2) );
+         TSMT::ConstIterator it ( cbegin( sm, 2UL ) );
+         TSMT::ConstIterator end( cend( sm, 2UL ) );
 
          if( it == end || *it != 0 ) {
             std::ostringstream oss;
@@ -5014,7 +5014,7 @@ void UnalignedTest::testIterator()
 
          int value = 7;
 
-         for( TSMT::Iterator it=sm.begin(2); it!=sm.end(2); ++it ) {
+         for( TSMT::Iterator it=begin( sm, 2UL ); it!=end( sm, 2UL ); ++it ) {
             *it = value++;
          }
 
@@ -5053,7 +5053,7 @@ void UnalignedTest::testIterator()
 
          int value = 4;
 
-         for( TSMT::Iterator it=sm.begin(1); it!=sm.end(1); ++it ) {
+         for( TSMT::Iterator it=begin( sm, 1UL ); it!=end( sm, 1UL ); ++it ) {
             *it += value++;
          }
 
@@ -5092,7 +5092,7 @@ void UnalignedTest::testIterator()
 
          int value = 4;
 
-         for( TSMT::Iterator it=sm.begin(1); it!=sm.end(1); ++it ) {
+         for( TSMT::Iterator it=begin( sm, 1UL ); it!=end( sm, 1UL ); ++it ) {
             *it -= value++;
          }
 
@@ -5131,7 +5131,7 @@ void UnalignedTest::testIterator()
 
          int value = 2;
 
-         for( TSMT::Iterator it=sm.begin(1); it!=sm.end(1); ++it ) {
+         for( TSMT::Iterator it=begin( sm, 1UL ); it!=end( sm, 1UL ); ++it ) {
             *it *= value++;
          }
 
@@ -5168,7 +5168,7 @@ void UnalignedTest::testIterator()
       {
          test_ = "Column-major division assignment via Iterator";
 
-         for( TSMT::Iterator it=sm.begin(1); it!=sm.end(1); ++it ) {
+         for( TSMT::Iterator it=begin( sm, 1UL ); it!=end( sm, 1UL ); ++it ) {
             *it /= 2;
          }
 

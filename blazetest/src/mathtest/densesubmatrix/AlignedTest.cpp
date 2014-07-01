@@ -2998,7 +2998,7 @@ void AlignedTest::testIterator()
          test_ = "Row-major iterator subtraction";
 
          ASMT sm = submatrix<aligned>( mat1_, 8UL, 16UL, 8UL, 16UL );
-         const size_t number( sm.end(0) - sm.begin(0) );
+         const size_t number( end( sm, 0UL ) - begin( sm, 0UL ) );
 
          if( number != 16UL ) {
             std::ostringstream oss;
@@ -3016,7 +3016,7 @@ void AlignedTest::testIterator()
          test_ = "Row-major iterator subtraction";
 
          ASMT sm = submatrix<aligned>( mat1_, 16UL, 8UL, 16UL, 8UL );
-         const size_t number( sm.end(15) - sm.begin(15) );
+         const size_t number( end( sm, 15UL ) - begin( sm, 15UL ) );
 
          if( number != 8UL ) {
             std::ostringstream oss;
@@ -3034,8 +3034,8 @@ void AlignedTest::testIterator()
          test_ = "Row-major read-only access via ConstIterator";
 
          ASMT sm = submatrix<aligned>( mat1_, 8UL, 16UL, 8UL, 16UL );
-         ASMT::ConstIterator it ( sm.cbegin(2) );
-         ASMT::ConstIterator end( sm.cend(2) );
+         ASMT::ConstIterator it ( cbegin( sm, 2UL ) );
+         ASMT::ConstIterator end( cend( sm, 2UL ) );
 
          if( it == end || *it != sm(2,0) ) {
             std::ostringstream oss;
@@ -3134,10 +3134,10 @@ void AlignedTest::testIterator()
          USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
          int value = 7;
 
-         ASMT::Iterator it1( sm1.begin(2) );
-         USMT::Iterator it2( sm2.begin(2) );
+         ASMT::Iterator it1( begin( sm1, 2UL ) );
+         USMT::Iterator it2( begin( sm2, 2UL ) );
 
-         for( ; it1!=sm1.end(2); ++it1, ++it2 ) {
+         for( ; it1!=end( sm1, 2UL ); ++it1, ++it2 ) {
             *it1 = value;
             *it2 = value;
             ++value;
@@ -3162,10 +3162,10 @@ void AlignedTest::testIterator()
          USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
          int value = 4;
 
-         ASMT::Iterator it1( sm1.begin(2) );
-         USMT::Iterator it2( sm2.begin(2) );
+         ASMT::Iterator it1( begin( sm1, 2UL ) );
+         USMT::Iterator it2( begin( sm2, 2UL ) );
 
-         for( ; it1!=sm1.end(2); ++it1, ++it2 ) {
+         for( ; it1!=end( sm1, 2UL ); ++it1, ++it2 ) {
             *it1 += value;
             *it2 += value;
             ++value;
@@ -3190,10 +3190,10 @@ void AlignedTest::testIterator()
          USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
          int value = 4;
 
-         ASMT::Iterator it1( sm1.begin(2) );
-         USMT::Iterator it2( sm2.begin(2) );
+         ASMT::Iterator it1( begin( sm1, 2UL ) );
+         USMT::Iterator it2( begin( sm2, 2UL ) );
 
-         for( ; it1!=sm1.end(2); ++it1, ++it2 ) {
+         for( ; it1!=end( sm1, 2UL ); ++it1, ++it2 ) {
             *it1 -= value;
             *it2 -= value;
             ++value;
@@ -3218,10 +3218,10 @@ void AlignedTest::testIterator()
          USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
          int value = 2;
 
-         ASMT::Iterator it1( sm1.begin(2) );
-         USMT::Iterator it2( sm2.begin(2) );
+         ASMT::Iterator it1( begin( sm1, 2UL ) );
+         USMT::Iterator it2( begin( sm2, 2UL ) );
 
-         for( ; it1!=sm1.end(2); ++it1, ++it2 ) {
+         for( ; it1!=end( sm1, 2UL ); ++it1, ++it2 ) {
             *it1 *= value;
             *it2 *= value;
             ++value;
@@ -3245,10 +3245,10 @@ void AlignedTest::testIterator()
          ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
          USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
 
-         ASMT::Iterator it1( sm1.begin(2) );
-         USMT::Iterator it2( sm2.begin(2) );
+         ASMT::Iterator it1( begin( sm1, 2UL ) );
+         USMT::Iterator it2( begin( sm2, 2UL ) );
 
-         for( ; it1!=sm1.end(2); ++it1, ++it2 ) {
+         for( ; it1!=end( sm1, 2UL ); ++it1, ++it2 ) {
             *it1 /= 2;
             *it2 /= 2;
          }
@@ -3278,7 +3278,7 @@ void AlignedTest::testIterator()
          test_ = "Column-major iterator subtraction";
 
          ATSMT sm = submatrix<aligned>( tmat1_, 16UL, 8UL, 16UL, 8UL );
-         const size_t number( sm.end(0) - sm.begin(0) );
+         const size_t number( end( sm, 0UL ) - begin( sm, 0UL ) );
 
          if( number != 16UL ) {
             std::ostringstream oss;
@@ -3296,7 +3296,7 @@ void AlignedTest::testIterator()
          test_ = "Column-major iterator subtraction";
 
          ATSMT sm = submatrix<aligned>( tmat1_, 8UL, 16UL, 8UL, 16UL );
-         const size_t number( sm.end(15) - sm.begin(15) );
+         const size_t number( end( sm, 15UL ) - begin( sm, 15UL ) );
 
          if( number != 8UL ) {
             std::ostringstream oss;
@@ -3314,8 +3314,8 @@ void AlignedTest::testIterator()
          test_ = "Column-major read-only access via ConstIterator";
 
          ATSMT sm = submatrix<aligned>( tmat1_, 16UL, 8UL, 16UL, 8UL );
-         ATSMT::ConstIterator it ( sm.cbegin(2) );
-         ATSMT::ConstIterator end( sm.cend(2) );
+         ATSMT::ConstIterator it ( cbegin( sm, 2UL ) );
+         ATSMT::ConstIterator end( cend( sm, 2UL ) );
 
          if( it == end || *it != sm(0,2) ) {
             std::ostringstream oss;
@@ -3414,10 +3414,10 @@ void AlignedTest::testIterator()
          UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
          int value = 7;
 
-         ATSMT::Iterator it1( sm1.begin(2) );
-         UTSMT::Iterator it2( sm2.begin(2) );
+         ATSMT::Iterator it1( begin( sm1, 2UL ) );
+         UTSMT::Iterator it2( begin( sm2, 2UL ) );
 
-         for( ; it1!=sm1.end(2); ++it1, ++it2 ) {
+         for( ; it1!=end( sm1, 2UL ); ++it1, ++it2 ) {
             *it1 = value;
             *it2 = value;
             ++value;
@@ -3442,10 +3442,10 @@ void AlignedTest::testIterator()
          UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
          int value = 4;
 
-         ATSMT::Iterator it1( sm1.begin(2) );
-         UTSMT::Iterator it2( sm2.begin(2) );
+         ATSMT::Iterator it1( begin( sm1, 2UL ) );
+         UTSMT::Iterator it2( begin( sm2, 2UL ) );
 
-         for( ; it1!=sm1.end(2); ++it1, ++it2 ) {
+         for( ; it1!=end( sm1, 2UL ); ++it1, ++it2 ) {
             *it1 += value;
             *it2 += value;
             ++value;
@@ -3470,10 +3470,10 @@ void AlignedTest::testIterator()
          UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
          int value = 4;
 
-         ATSMT::Iterator it1( sm1.begin(2) );
-         UTSMT::Iterator it2( sm2.begin(2) );
+         ATSMT::Iterator it1( begin( sm1, 2UL ) );
+         UTSMT::Iterator it2( begin( sm2, 2UL ) );
 
-         for( ; it1!=sm1.end(2); ++it1, ++it2 ) {
+         for( ; it1!=end( sm1, 2UL ); ++it1, ++it2 ) {
             *it1 -= value;
             *it2 -= value;
             ++value;
@@ -3498,10 +3498,10 @@ void AlignedTest::testIterator()
          UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
          int value = 2;
 
-         ATSMT::Iterator it1( sm1.begin(2) );
-         UTSMT::Iterator it2( sm2.begin(2) );
+         ATSMT::Iterator it1( begin( sm1, 2UL ) );
+         UTSMT::Iterator it2( begin( sm2, 2UL ) );
 
-         for( ; it1!=sm1.end(2); ++it1, ++it2 ) {
+         for( ; it1!=end( sm1, 2UL ); ++it1, ++it2 ) {
             *it1 *= value;
             *it2 *= value;
             ++value;
@@ -3525,10 +3525,10 @@ void AlignedTest::testIterator()
          ATSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
          UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
 
-         ATSMT::Iterator it1( sm1.begin(2) );
-         UTSMT::Iterator it2( sm2.begin(2) );
+         ATSMT::Iterator it1( begin( sm1, 2UL ) );
+         UTSMT::Iterator it2( begin( sm2, 2UL ) );
 
-         for( ; it1!=sm1.end(2); ++it1, ++it2 ) {
+         for( ; it1!=end( sm1, 2UL ); ++it1, ++it2 ) {
             *it1 /= 2;
             *it2 /= 2;
          }
