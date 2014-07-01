@@ -32,7 +32,7 @@
 #==================================================================================================
 
 
-# General rules
+# Build rules
 default: all
 
 all: alignedallocator uniqueptr uniquearray
@@ -41,6 +41,10 @@ essential: all
 
 single: all
 
+noop: all
+
+
+# Internal rules
 alignedallocator:
 	@echo
 	@echo "Building the aligned allocator tests..."

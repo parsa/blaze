@@ -59,6 +59,15 @@ essential: all
 
 single: all
 
+noop: functions intrinsics \
+      densevector sparsevector densematrix sparsematrix \
+      staticvector hybridvector dynamicvector compressedvector \
+      staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
+      densesubvector sparsesubvector \
+      densesubmatrix sparsesubmatrix \
+      denserow densecolumn sparserow sparsecolumn \
+      vectorserializer matrixserializer
+
 
 # Internal rules
 functions:
@@ -476,7 +485,7 @@ clean:
 
 
 # Setting the independent commands
-.PHONY: default all essential single clean \
+.PHONY: default all essential single noop clean \
         functions intrinsics \
         densevector sparsevector densematrix sparsematrix \
         staticvector hybridvector dynamicvector compressedvector \

@@ -50,6 +50,7 @@ default: all
 all: $(BIN)
 essential: $(BIN)
 single: $(BIN)
+noop: $(BIN)
 
 
 # Build rules
@@ -74,4 +75,4 @@ endif
 
 
 # Setting the independent commands
-.PHONY: default all essential single clean
+.PHONY: default all essential single noop clean
