@@ -197,12 +197,12 @@ class ClassTest
 template< typename Type >  // Type of the dense column
 void ClassTest::checkSize( const Type& column, size_t expectedSize ) const
 {
-   if( column.size() != expectedSize ) {
+   if( size( column ) != expectedSize ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid size detected\n"
           << " Details:\n"
-          << "   Size         : " << column.size() << "\n"
+          << "   Size         : " << size( column ) << "\n"
           << "   Expected size: " << expectedSize << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -225,12 +225,12 @@ void ClassTest::checkSize( const Type& column, size_t expectedSize ) const
 template< typename Type >  // Type of the dynamic matrix
 void ClassTest::checkRows( const Type& matrix, size_t expectedRows ) const
 {
-   if( matrix.rows() != expectedRows ) {
+   if( rows( matrix ) != expectedRows ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid number of rows detected\n"
           << " Details:\n"
-          << "   Number of rows         : " << matrix.rows() << "\n"
+          << "   Number of rows         : " << rows( matrix ) << "\n"
           << "   Expected number of rows: " << expectedRows << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -253,12 +253,12 @@ void ClassTest::checkRows( const Type& matrix, size_t expectedRows ) const
 template< typename Type >  // Type of the dynamic matrix
 void ClassTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 {
-   if( matrix.columns() != expectedColumns ) {
+   if( columns( matrix ) != expectedColumns ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid number of columns detected\n"
           << " Details:\n"
-          << "   Number of columns         : " << matrix.columns() << "\n"
+          << "   Number of columns         : " << columns( matrix ) << "\n"
           << "   Expected number of columns: " << expectedColumns << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -281,12 +281,12 @@ void ClassTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 template< typename Type >  // Type of the dense row or dynamic matrix
 void ClassTest::checkCapacity( const Type& object, size_t minCapacity ) const
 {
-   if( object.capacity() < minCapacity ) {
+   if( capacity( object ) < minCapacity ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid capacity detected\n"
           << " Details:\n"
-          << "   Capacity                 : " << object.capacity() << "\n"
+          << "   Capacity                 : " << capacity( object ) << "\n"
           << "   Expected minimum capacity: " << minCapacity << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -309,23 +309,23 @@ void ClassTest::checkCapacity( const Type& object, size_t minCapacity ) const
 template< typename Type >  // Type of the dense column or dynamic matrix
 void ClassTest::checkNonZeros( const Type& object, size_t expectedNonZeros ) const
 {
-   if( object.nonZeros() != expectedNonZeros ) {
+   if( nonZeros( object ) != expectedNonZeros ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid number of non-zero elements\n"
           << " Details:\n"
-          << "   Number of non-zeros         : " << object.nonZeros() << "\n"
+          << "   Number of non-zeros         : " << nonZeros( object ) << "\n"
           << "   Expected number of non-zeros: " << expectedNonZeros << "\n";
       throw std::runtime_error( oss.str() );
    }
 
-   if( object.capacity() < object.nonZeros() ) {
+   if( capacity( object ) < nonZeros( object ) ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid capacity detected\n"
           << " Details:\n"
-          << "   Number of non-zeros: " << object.nonZeros() << "\n"
-          << "   Capacity           : " << object.capacity() << "\n";
+          << "   Number of non-zeros: " << nonZeros( object ) << "\n"
+          << "   Capacity           : " << capacity( object ) << "\n";
       throw std::runtime_error( oss.str() );
    }
 }
@@ -348,25 +348,25 @@ void ClassTest::checkNonZeros( const Type& object, size_t expectedNonZeros ) con
 template< typename Type >  // Type of the dynamic matrix
 void ClassTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
 {
-   if( matrix.nonZeros( index ) != expectedNonZeros ) {
+   if( nonZeros( matrix, index ) != expectedNonZeros ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid number of non-zero elements in "
           << ( blaze::IsRowMajorMatrix<Type>::value ? "row " : "column " ) << index << "\n"
           << " Details:\n"
-          << "   Number of non-zeros         : " << matrix.nonZeros( index ) << "\n"
+          << "   Number of non-zeros         : " << nonZeros( matrix, index ) << "\n"
           << "   Expected number of non-zeros: " << expectedNonZeros << "\n";
       throw std::runtime_error( oss.str() );
    }
 
-   if( matrix.capacity( index ) < matrix.nonZeros( index ) ) {
+   if( capacity( matrix, index ) < nonZeros( matrix, index ) ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid capacity detected in "
           << ( blaze::IsRowMajorMatrix<Type>::value ? "row " : "column " ) << index << "\n"
           << " Details:\n"
-          << "   Number of non-zeros: " << matrix.nonZeros( index ) << "\n"
-          << "   Capacity           : " << matrix.capacity( index ) << "\n";
+          << "   Number of non-zeros: " << nonZeros( matrix, index ) << "\n"
+          << "   Capacity           : " << capacity( matrix, index ) << "\n";
       throw std::runtime_error( oss.str() );
    }
 }

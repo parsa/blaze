@@ -186,12 +186,12 @@ class AlignedTest
 template< typename Type >  // Type of the dense matrix
 void AlignedTest::checkRows( const Type& matrix, size_t expectedRows ) const
 {
-   if( matrix.rows() != expectedRows ) {
+   if( rows( matrix ) != expectedRows ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid number of rows detected\n"
           << " Details:\n"
-          << "   Number of rows         : " << matrix.rows() << "\n"
+          << "   Number of rows         : " << rows( matrix ) << "\n"
           << "   Expected number of rows: " << expectedRows << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -214,12 +214,12 @@ void AlignedTest::checkRows( const Type& matrix, size_t expectedRows ) const
 template< typename Type >  // Type of the dense matrix
 void AlignedTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 {
-   if( matrix.columns() != expectedColumns ) {
+   if( columns( matrix ) != expectedColumns ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid number of columns detected\n"
           << " Details:\n"
-          << "   Number of columns         : " << matrix.columns() << "\n"
+          << "   Number of columns         : " << columns( matrix ) << "\n"
           << "   Expected number of columns: " << expectedColumns << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -242,23 +242,23 @@ void AlignedTest::checkColumns( const Type& matrix, size_t expectedColumns ) con
 template< typename Type >  // Type of the dense matrix
 void AlignedTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
 {
-   if( matrix.nonZeros() != expectedNonZeros ) {
+   if( nonZeros( matrix ) != expectedNonZeros ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid number of non-zero elements\n"
           << " Details:\n"
-          << "   Number of non-zeros         : " << matrix.nonZeros() << "\n"
+          << "   Number of non-zeros         : " << nonZeros( matrix ) << "\n"
           << "   Expected number of non-zeros: " << expectedNonZeros << "\n";
       throw std::runtime_error( oss.str() );
    }
 
-   if( matrix.capacity() < matrix.nonZeros() ) {
+   if( capacity( matrix ) < nonZeros( matrix ) ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid capacity detected\n"
           << " Details:\n"
-          << "   Number of non-zeros: " << matrix.nonZeros() << "\n"
-          << "   Capacity           : " << matrix.capacity() << "\n";
+          << "   Number of non-zeros: " << nonZeros( matrix ) << "\n"
+          << "   Capacity           : " << capacity( matrix ) << "\n";
       throw std::runtime_error( oss.str() );
    }
 }
@@ -281,25 +281,25 @@ void AlignedTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) c
 template< typename Type >  // Type of the dense matrix
 void AlignedTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
 {
-   if( matrix.nonZeros( index ) != expectedNonZeros ) {
+   if( nonZeros( matrix, index ) != expectedNonZeros ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid number of non-zero elements in "
           << ( blaze::IsRowMajorMatrix<Type>::value ? "row " : "column " ) << index << "\n"
           << " Details:\n"
-          << "   Number of non-zeros         : " << matrix.nonZeros( index ) << "\n"
+          << "   Number of non-zeros         : " << nonZeros( matrix, index ) << "\n"
           << "   Expected number of non-zeros: " << expectedNonZeros << "\n";
       throw std::runtime_error( oss.str() );
    }
 
-   if( matrix.capacity( index ) < matrix.nonZeros( index ) ) {
+   if( capacity( matrix, index ) < nonZeros( matrix, index ) ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid capacity detected in "
           << ( blaze::IsRowMajorMatrix<Type>::value ? "row " : "column " ) << index << "\n"
           << " Details:\n"
-          << "   Number of non-zeros: " << matrix.nonZeros( index ) << "\n"
-          << "   Capacity           : " << matrix.capacity( index ) << "\n";
+          << "   Number of non-zeros: " << nonZeros( matrix, index ) << "\n"
+          << "   Capacity           : " << capacity( matrix, index ) << "\n";
       throw std::runtime_error( oss.str() );
    }
 }

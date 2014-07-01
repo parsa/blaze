@@ -261,12 +261,12 @@ void ClassTest::testAlignment( const std::string& type )
 template< typename Type >  // Type of the dynamic vector
 void ClassTest::checkSize( const Type& vector, size_t expectedSize ) const
 {
-   if( vector.size() != expectedSize ) {
+   if( size( vector ) != expectedSize ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid size detected\n"
           << " Details:\n"
-          << "   Size         : " << vector.size() << "\n"
+          << "   Size         : " << size( vector ) << "\n"
           << "   Expected size: " << expectedSize << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -289,12 +289,12 @@ void ClassTest::checkSize( const Type& vector, size_t expectedSize ) const
 template< typename Type >  // Type of the dynamic vector
 void ClassTest::checkCapacity( const Type& vector, size_t minCapacity ) const
 {
-   if( vector.capacity() < minCapacity ) {
+   if( capacity( vector ) < minCapacity ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid capacity detected\n"
           << " Details:\n"
-          << "   Capacity                 : " << vector.capacity() << "\n"
+          << "   Capacity                 : " << capacity( vector ) << "\n"
           << "   Expected minimum capacity: " << minCapacity << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -317,12 +317,12 @@ void ClassTest::checkCapacity( const Type& vector, size_t minCapacity ) const
 template< typename Type >  // Type of the dynamic vector
 void ClassTest::checkNonZeros( const Type& vector, size_t expectedNonZeros ) const
 {
-   if( vector.nonZeros() != expectedNonZeros ) {
+   if( nonZeros( vector ) != expectedNonZeros ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid number of non-zero elements\n"
           << " Details:\n"
-          << "   Number of non-zeros         : " << vector.nonZeros() << "\n"
+          << "   Number of non-zeros         : " << nonZeros( vector ) << "\n"
           << "   Expected number of non-zeros: " << expectedNonZeros << "\n";
       throw std::runtime_error( oss.str() );
    }
