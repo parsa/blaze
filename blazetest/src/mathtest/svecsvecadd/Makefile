@@ -46,7 +46,7 @@ BIN = $(SRC:.cpp=)
 
 
 # General rules
-default: all
+default: VCaVCa VCaVCb VCbVCa VCbVCb AliasingTest
 all: $(BIN)
 essential: VCaVCa AliasingTest
 single: VCaVCa

@@ -46,7 +46,7 @@ BIN = $(SRC:.cpp=)
 
 
 # General rules
-default: all
+default: MCaM3x3a MCaM3x3b MCbM3x3a MCbM3x3b MCaMHa MCaMHb MCbMHa MCbMHb MCaMDa MCaMDb MCbMDa MCbMDb AliasingTest
 all: $(BIN)
 essential: MCaM3x3a MCaMHa MCaMDa AliasingTest
 single: MCaMDa

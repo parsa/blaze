@@ -46,7 +46,7 @@ BIN = $(SRC:.cpp=)
 
 
 # General rules
-default: all
+default: VCaVCa VCaVCb VCbVCa VCbVCb
 all: $(BIN)
 essential: VCaVCa
 single: VCaVCa

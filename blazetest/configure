@@ -194,7 +194,7 @@ cat > Makefile <<EOF
 
 
 # Build rules
-default: all
+default: mathtest utiltest
 
 all: mathtest utiltest
 
@@ -226,7 +226,7 @@ clean:
 
 
 # Setting the independent commands
-.PHONY: default all essential single clean \
+.PHONY: default all essential single noop clean \
         mathtest utiltest
 EOF
 
