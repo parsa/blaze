@@ -5116,7 +5116,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline void clear( HybridMatrix<Type,M,N,SO>& m )
 {
-   m.reset();
+   m.clear();
 }
 //*************************************************************************************************
 
