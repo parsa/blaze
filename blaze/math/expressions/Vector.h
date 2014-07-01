@@ -108,6 +108,24 @@ struct Vector
 /*!\name Vector global functions */
 //@{
 template< typename VT, bool TF >
+inline typename VT::Iterator begin( Vector<VT,TF>& v );
+
+template< typename VT, bool TF >
+inline typename VT::ConstIterator begin( const Vector<VT,TF>& v );
+
+template< typename VT, bool TF >
+inline typename VT::ConstIterator cbegin( const Vector<VT,TF>& v );
+
+template< typename VT, bool TF >
+inline typename VT::Iterator end( Vector<VT,TF>& v );
+
+template< typename VT, bool TF >
+inline typename VT::ConstIterator end( const Vector<VT,TF>& v );
+
+template< typename VT, bool TF >
+inline typename VT::ConstIterator cend( const Vector<VT,TF>& v );
+
+template< typename VT, bool TF >
 inline size_t size( const Vector<VT,TF>& v );
 
 template< typename VT, bool TF >
@@ -131,6 +149,90 @@ inline void multAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
 inline bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>& b );
 //@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first element of the given vector.
+//
+// \param v The given dense or sparse vector.
+// \return Iterator to the first element of the given vector.
+*/
+template< typename VT, bool TF >
+inline typename VT::Iterator begin( Vector<VT,TF>& v )
+{
+   return (~v).begin();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first element of the given vector.
+//
+// \param v The given dense or sparse vector.
+// \return Iterator to the first element of the given vector.
+*/
+template< typename VT, bool TF >
+inline typename VT::ConstIterator begin( const Vector<VT,TF>& v )
+{
+   return (~v).begin();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first element of the given vector.
+//
+// \param v The given dense or sparse vector.
+// \return Iterator to the first element of the given vector.
+*/
+template< typename VT, bool TF >
+inline typename VT::ConstIterator cbegin( const Vector<VT,TF>& v )
+{
+   return (~v).begin();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator just past the last element of the given vector.
+//
+// \param v The given dense or sparse vector.
+// \return Iterator just past the last element of the given vector.
+*/
+template< typename VT, bool TF >
+inline typename VT::Iterator end( Vector<VT,TF>& v )
+{
+   return (~v).end();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator just past the last element of the given vector.
+//
+// \param v The given dense or sparse vector.
+// \return Iterator just past the last element of the given vector.
+*/
+template< typename VT, bool TF >
+inline typename VT::ConstIterator end( const Vector<VT,TF>& v )
+{
+   return (~v).end();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator just past the last element of the given vector.
+//
+// \param v The given dense or sparse vector.
+// \return Iterator just past the last element of the given vector.
+*/
+template< typename VT, bool TF >
+inline typename VT::ConstIterator cend( const Vector<VT,TF>& v )
+{
+   return (~v).end();
+}
 //*************************************************************************************************
 
 

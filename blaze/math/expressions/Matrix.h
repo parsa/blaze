@@ -107,6 +107,24 @@ struct Matrix
 /*!\name Matrix global functions */
 //@{
 template< typename MT, bool SO >
+inline typename MT::Iterator begin( Matrix<MT,SO>& m, size_t i );
+
+template< typename MT, bool SO >
+inline typename MT::ConstIterator begin( const Matrix<MT,SO>& m, size_t i );
+
+template< typename MT, bool SO >
+inline typename MT::ConstIterator cbegin( const Matrix<MT,SO>& m, size_t i );
+
+template< typename MT, bool SO >
+inline typename MT::Iterator end( Matrix<MT,SO>& m, size_t i );
+
+template< typename MT, bool SO >
+inline typename MT::ConstIterator end( const Matrix<MT,SO>& m, size_t i );
+
+template< typename MT, bool SO >
+inline typename MT::ConstIterator cend( const Matrix<MT,SO>& m, size_t i );
+
+template< typename MT, bool SO >
 inline size_t rows( const Matrix<MT,SO>& m );
 
 template< typename MT, bool SO >
@@ -139,6 +157,132 @@ inline void multAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
 inline bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>& b );
 //@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first element of row/column \a i.
+//
+// \param m The given dense or sparse matrix.
+// \param i The row/column index.
+// \return Iterator to the first element of row/column \a i.
+//
+// This function returns a row/column iterator to the first element of row/column \a i. In case
+// the given matrix is a row-major matrix the function returns an iterator to the first element
+// of row \a i, in case it is a column-major matrix the function returns an iterator to the first
+// element of column \a i.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline typename MT::Iterator begin( Matrix<MT,SO>& m, size_t i )
+{
+   return (~m).begin(i);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first element of row/column \a i.
+//
+// \param m The given dense or sparse matrix.
+// \param i The row/column index.
+// \return Iterator to the first element of row/column \a i.
+//
+// This function returns a row/column iterator to the first element of row/column \a i. In case
+// the given matrix is a row-major matrix the function returns an iterator to the first element
+// of row \a i, in case it is a column-major matrix the function returns an iterator to the first
+// element of column \a i.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline typename MT::ConstIterator begin( const Matrix<MT,SO>& m, size_t i )
+{
+   return (~m).begin(i);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first element of row/column \a i.
+//
+// \param m The given dense or sparse matrix.
+// \param i The row/column index.
+// \return Iterator to the first element of row/column \a i.
+//
+// This function returns a row/column iterator to the first element of row/column \a i. In case
+// the given matrix is a row-major matrix the function returns an iterator to the first element
+// of row \a i, in case it is a column-major matrix the function returns an iterator to the first
+// element of column \a i.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline typename MT::ConstIterator cbegin( const Matrix<MT,SO>& m, size_t i )
+{
+   return (~m).cbegin(i);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator just past the last element of row/column \a i.
+//
+// \param m The given dense or sparse matrix.
+// \param i The row/column index.
+// \return Iterator just past the last element of row/column \a i.
+//
+// This function returns an row/column iterator just past the last element of row/column \a i.
+// In case the given matrix is a row-major matrix the function returns an iterator just past
+// the last element of row \a i, in case it is a column-major matrix the function returns an
+// iterator just past the last element of column \a i.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline typename MT::Iterator end( Matrix<MT,SO>& m, size_t i )
+{
+   return (~m).end(i);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator just past the last element of row/column \a i.
+//
+// \param m The given dense or sparse matrix.
+// \param i The row/column index.
+// \return Iterator just past the last element of row/column \a i.
+//
+// This function returns an row/column iterator just past the last element of row/column \a i.
+// In case the given matrix is a row-major matrix the function returns an iterator just past
+// the last element of row \a i, in case it is a column-major matrix the function returns an
+// iterator just past the last element of column \a i.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline typename MT::ConstIterator end( const Matrix<MT,SO>& m, size_t i )
+{
+   return (~m).end(i);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator just past the last element of row/column \a i.
+//
+// \param m The given dense or sparse matrix.
+// \param i The row/column index.
+// \return Iterator just past the last element of row/column \a i.
+//
+// This function returns an row/column iterator just past the last element of row/column \a i.
+// In case the given matrix is a row-major matrix the function returns an iterator just past
+// the last element of row \a i, in case it is a column-major matrix the function returns an
+// iterator just past the last element of column \a i.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline typename MT::ConstIterator cend( const Matrix<MT,SO>& m, size_t i )
+{
+   return (~m).cend(i);
+}
 //*************************************************************************************************
 
 
