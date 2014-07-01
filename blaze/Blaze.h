@@ -1968,6 +1968,19 @@ namespace blaze {}
    M1.rows();    // Returns 4: size and capacity remain unchanged
    \endcode
 
+// Alternatively, only a single row or column of the matrix can be resetted:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor>    M1( 7UL, 6UL, 5 );  // Setup of a row-major matrix
+   blaze::DynamicMatrix<int,blaze::columnMajor> M2( 4UL, 5UL, 4 );  // Setup of a column-major matrix
+
+   reset( M1, 2UL );  // Resetting the 2nd row of the row-major matrix
+   reset( M2, 3UL );  // Resetting the 3rd column of the column-major matrix
+   \endcode
+
+// In order to reset a row of a column-major matrix or a column of a row-major matrix, use a
+// row or column view (see \ref views_rows and views_colums).
+//
 // In order to return a matrix to its default state (i.e. the state of a default constructed
 // matrix), the \c clear() function can be used:
 
