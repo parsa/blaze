@@ -2600,7 +2600,7 @@ void ClassTest::testIterator()
          test_ = "Row-major iterator subtraction";
 
          CT col0 = column( mat_, 0UL );
-         const size_t number( col0.end() - col0.begin() );
+         const size_t number( end( col0 ) - begin( col0 ) );
 
          if( number != 4UL ) {
             std::ostringstream oss;
@@ -2618,7 +2618,7 @@ void ClassTest::testIterator()
          test_ = "Row-major iterator subtraction";
 
          CT col1 = column( mat_, 1UL );
-         const size_t number( col1.end() - col1.begin() );
+         const size_t number( end( col1 ) - begin( col1 ) );
 
          if( number != 4UL ) {
             std::ostringstream oss;
@@ -2636,7 +2636,7 @@ void ClassTest::testIterator()
          test_ = "Row-major iterator subtraction";
 
          CT col2 = column( mat_, 2UL );
-         const size_t number( col2.end() - col2.begin() );
+         const size_t number( end( col2 ) - begin( col2 ) );
 
          if( number != 4UL ) {
             std::ostringstream oss;
@@ -2654,7 +2654,7 @@ void ClassTest::testIterator()
          test_ = "Row-major iterator subtraction";
 
          CT col3 = column( mat_, 3UL );
-         const size_t number( col3.end() - col3.begin() );
+         const size_t number( end( col3 ) - begin( col3 ) );
 
          if( number != 4UL ) {
             std::ostringstream oss;
@@ -2672,7 +2672,7 @@ void ClassTest::testIterator()
          test_ = "Row-major iterator subtraction";
 
          CT col4 = column( mat_, 4UL );
-         const size_t number( col4.end() - col4.begin() );
+         const size_t number( end( col4 ) - begin( col4 ) );
 
          if( number != 4UL ) {
             std::ostringstream oss;
@@ -2690,8 +2690,8 @@ void ClassTest::testIterator()
          test_ = "Row-major read-only access via ConstIterator";
 
          CT col3 = column( mat_, 3UL );
-         CT::ConstIterator it ( col3.cbegin() );
-         CT::ConstIterator end( col3.cend() );
+         CT::ConstIterator it ( cbegin( col3 ) );
+         CT::ConstIterator end( cend( col3 ) );
 
          if( it == end || *it != 0 ) {
             std::ostringstream oss;
@@ -2789,7 +2789,7 @@ void ClassTest::testIterator()
          CT col0 = column( mat_, 0UL );
          int value = 6;
 
-         for( CT::Iterator it=col0.begin(); it!=col0.end(); ++it ) {
+         for( CT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it = value++;
          }
 
@@ -2827,7 +2827,7 @@ void ClassTest::testIterator()
          CT col0 = column( mat_, 0UL );
          int value = 2;
 
-         for( CT::Iterator it=col0.begin(); it!=col0.end(); ++it ) {
+         for( CT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it += value++;
          }
 
@@ -2865,7 +2865,7 @@ void ClassTest::testIterator()
          CT col0 = column( mat_, 0UL );
          int value = 2;
 
-         for( CT::Iterator it=col0.begin(); it!=col0.end(); ++it ) {
+         for( CT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it -= value++;
          }
 
@@ -2903,7 +2903,7 @@ void ClassTest::testIterator()
          CT col0 = column( mat_, 0UL );
          int value = 1;
 
-         for( CT::Iterator it=col0.begin(); it!=col0.end(); ++it ) {
+         for( CT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it *= value++;
          }
 
@@ -2940,7 +2940,7 @@ void ClassTest::testIterator()
 
          CT col0 = column( mat_, 0UL );
 
-         for( CT::Iterator it=col0.begin(); it!=col0.end(); ++it ) {
+         for( CT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it /= 2;
          }
 
@@ -2985,7 +2985,7 @@ void ClassTest::testIterator()
          test_ = "Row-major iterator subtraction";
 
          TCT col0 = column( tmat_, 0UL );
-         const size_t number( col0.end() - col0.begin() );
+         const size_t number( end( col0 ) - begin( col0 ) );
 
          if( number != 4UL ) {
             std::ostringstream oss;
@@ -3003,7 +3003,7 @@ void ClassTest::testIterator()
          test_ = "Row-major iterator subtraction";
 
          TCT col1 = column( tmat_, 1UL );
-         const size_t number( col1.end() - col1.begin() );
+         const size_t number( end( col1 ) - begin( col1 ) );
 
          if( number != 4UL ) {
             std::ostringstream oss;
@@ -3021,7 +3021,7 @@ void ClassTest::testIterator()
          test_ = "Row-major iterator subtraction";
 
          TCT col2 = column( tmat_, 2UL );
-         const size_t number( col2.end() - col2.begin() );
+         const size_t number( end( col2 ) - begin( col2 ) );
 
          if( number != 4UL ) {
             std::ostringstream oss;
@@ -3039,7 +3039,7 @@ void ClassTest::testIterator()
          test_ = "Row-major iterator subtraction";
 
          TCT col3 = column( tmat_, 3UL );
-         const size_t number( col3.end() - col3.begin() );
+         const size_t number( end( col3 ) - begin( col3 ) );
 
          if( number != 4UL ) {
             std::ostringstream oss;
@@ -3057,7 +3057,7 @@ void ClassTest::testIterator()
          test_ = "Row-major iterator subtraction";
 
          TCT col4 = column( tmat_, 4UL );
-         const size_t number( col4.end() - col4.begin() );
+         const size_t number( end( col4 ) - begin( col4 ) );
 
          if( number != 4UL ) {
             std::ostringstream oss;
@@ -3075,8 +3075,8 @@ void ClassTest::testIterator()
          test_ = "Column-major read-only access via ConstIterator";
 
          TCT col3 = column( tmat_, 3UL );
-         TCT::ConstIterator it ( col3.cbegin() );
-         TCT::ConstIterator end( col3.cend() );
+         TCT::ConstIterator it ( cbegin( col3 ) );
+         TCT::ConstIterator end( cend( col3 ) );
 
          if( it == end || *it != 0 ) {
             std::ostringstream oss;
@@ -3174,7 +3174,7 @@ void ClassTest::testIterator()
          TCT col0 = column( tmat_, 0UL );
          int value = 6;
 
-         for( TCT::Iterator it=col0.begin(); it!=col0.end(); ++it ) {
+         for( TCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it = value++;
          }
 
@@ -3212,7 +3212,7 @@ void ClassTest::testIterator()
          TCT col0 = column( tmat_, 0UL );
          int value = 2;
 
-         for( TCT::Iterator it=col0.begin(); it!=col0.end(); ++it ) {
+         for( TCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it += value++;
          }
 
@@ -3250,7 +3250,7 @@ void ClassTest::testIterator()
          TCT col0 = column( tmat_, 0UL );
          int value = 2;
 
-         for( TCT::Iterator it=col0.begin(); it!=col0.end(); ++it ) {
+         for( TCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it -= value++;
          }
 
@@ -3288,7 +3288,7 @@ void ClassTest::testIterator()
          TCT col0 = column( tmat_, 0UL );
          int value = 1;
 
-         for( TCT::Iterator it=col0.begin(); it!=col0.end(); ++it ) {
+         for( TCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it *= value++;
          }
 
@@ -3325,7 +3325,7 @@ void ClassTest::testIterator()
 
          TCT col0 = column( tmat_, 0UL );
 
-         for( TCT::Iterator it=col0.begin(); it!=col0.end(); ++it ) {
+         for( TCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it /= 2;
          }
 

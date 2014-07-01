@@ -1286,7 +1286,7 @@ void ClassTest::testIterator()
       test_ = "Iterator subtraction";
 
       SVT sv = subvector( vec_, 0UL, 4UL );
-      const size_t number( sv.end() - sv.begin() );
+      const size_t number( end( sv ) - begin( sv ) );
 
       if( number != 2UL ) {
          std::ostringstream oss;
@@ -1304,7 +1304,7 @@ void ClassTest::testIterator()
       test_ = "Iterator subtraction";
 
       SVT sv = subvector( vec_, 4UL, 4UL );
-      const size_t number( sv.end() - sv.begin() );
+      const size_t number( end( sv ) - begin( sv ) );
 
       if( number != 2UL ) {
          std::ostringstream oss;
@@ -1322,8 +1322,8 @@ void ClassTest::testIterator()
       test_ = "Read-only access via ConstIterator";
 
       SVT sv = subvector( vec_, 1UL, 3UL );
-      SVT::ConstIterator it ( sv.cbegin() );
-      SVT::ConstIterator end( sv.cend() );
+      SVT::ConstIterator it ( cbegin( sv ) );
+      SVT::ConstIterator end( cend( sv ) );
 
       if( it == end || it->value() != 1 ) {
          std::ostringstream oss;
@@ -1358,7 +1358,7 @@ void ClassTest::testIterator()
       SVT sv = subvector( vec_, 2UL, 4UL );
       int value = 6;
 
-      for( SVT::Iterator it=sv.begin(); it!=sv.end(); ++it ) {
+      for( SVT::Iterator it=begin( sv ); it!=end( sv ); ++it ) {
          *it = value++;
       }
 
@@ -1391,7 +1391,7 @@ void ClassTest::testIterator()
       SVT sv = subvector( vec_, 2UL, 4UL );
       int value = 2;
 
-      for( SVT::Iterator it=sv.begin(); it!=sv.end(); ++it ) {
+      for( SVT::Iterator it=begin( sv ); it!=end( sv ); ++it ) {
          *it += value++;
       }
 
@@ -1424,7 +1424,7 @@ void ClassTest::testIterator()
       SVT sv = subvector( vec_, 2UL, 4UL );
       int value = 2;
 
-      for( SVT::Iterator it=sv.begin(); it!=sv.end(); ++it ) {
+      for( SVT::Iterator it=begin( sv ); it!=end( sv ); ++it ) {
          *it -= value++;
       }
 
@@ -1457,7 +1457,7 @@ void ClassTest::testIterator()
       SVT sv = subvector( vec_, 2UL, 4UL );
       int value = 1;
 
-      for( SVT::Iterator it=sv.begin(); it!=sv.end(); ++it ) {
+      for( SVT::Iterator it=begin( sv ); it!=end( sv ); ++it ) {
          *it *= value++;
       }
 
@@ -1489,7 +1489,7 @@ void ClassTest::testIterator()
 
       SVT sv = subvector( vec_, 2UL, 4UL );
 
-      for( SVT::Iterator it=sv.begin(); it!=sv.end(); ++it ) {
+      for( SVT::Iterator it=begin( sv ); it!=end( sv ); ++it ) {
          *it /= 2;
       }
 

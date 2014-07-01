@@ -1102,7 +1102,7 @@ void AlignedTest::testIterator()
       test_ = "Iterator subtraction";
 
       ASVT sv = subvector<aligned>( vec1_, 0UL, 16UL );
-      const size_t number( sv.end() - sv.begin() );
+      const size_t number( end( sv ) - begin( sv ) );
 
       if( number != 16UL ) {
          std::ostringstream oss;
@@ -1120,7 +1120,7 @@ void AlignedTest::testIterator()
       test_ = "Iterator subtraction";
 
       ASVT sv = subvector<aligned>( vec1_, 16UL, 48UL );
-      const size_t number( sv.end() - sv.begin() );
+      const size_t number( end( sv ) - begin( sv ) );
 
       if( number != 48UL ) {
          std::ostringstream oss;
@@ -1138,8 +1138,8 @@ void AlignedTest::testIterator()
       test_ = "Read-only access via ConstIterator";
 
       ASVT sv = subvector<aligned>( vec1_, 8UL, 8UL );
-      ASVT::ConstIterator it ( sv.cbegin() );
-      ASVT::ConstIterator end( sv.cend() );
+      ASVT::ConstIterator it ( cbegin( sv ) );
+      ASVT::ConstIterator end( cend( sv ) );
 
       if( it == end || *it != sv[0] ) {
          std::ostringstream oss;
@@ -1238,10 +1238,10 @@ void AlignedTest::testIterator()
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
       int value = 6;
 
-      ASVT::Iterator it1( sv1.begin() );
-      USVT::Iterator it2( sv2.begin() );
+      ASVT::Iterator it1( begin( sv1 ) );
+      USVT::Iterator it2( begin( sv2 ) );
 
-      for( ; it1!=sv1.end(); ++it1, ++it2 ) {
+      for( ; it1!=end( sv1 ); ++it1, ++it2 ) {
          *it1 = value;
          *it2 = value;
          ++value;
@@ -1266,10 +1266,10 @@ void AlignedTest::testIterator()
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
       int value = 6;
 
-      ASVT::Iterator it1( sv1.begin() );
-      USVT::Iterator it2( sv2.begin() );
+      ASVT::Iterator it1( begin( sv1 ) );
+      USVT::Iterator it2( begin( sv2 ) );
 
-      for( ; it1!=sv1.end(); ++it1, ++it2 ) {
+      for( ; it1!=end( sv1 ); ++it1, ++it2 ) {
          *it1 += value;
          *it2 += value;
          ++value;
@@ -1294,10 +1294,10 @@ void AlignedTest::testIterator()
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
       int value = 6;
 
-      ASVT::Iterator it1( sv1.begin() );
-      USVT::Iterator it2( sv2.begin() );
+      ASVT::Iterator it1( begin( sv1 ) );
+      USVT::Iterator it2( begin( sv2 ) );
 
-      for( ; it1!=sv1.end(); ++it1, ++it2 ) {
+      for( ; it1!=end( sv1 ); ++it1, ++it2 ) {
          *it1 -= value;
          *it2 -= value;
          ++value;
@@ -1322,10 +1322,10 @@ void AlignedTest::testIterator()
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
       int value = 1;
 
-      ASVT::Iterator it1( sv1.begin() );
-      USVT::Iterator it2( sv2.begin() );
+      ASVT::Iterator it1( begin( sv1 ) );
+      USVT::Iterator it2( begin( sv2 ) );
 
-      for( ; it1!=sv1.end(); ++it1, ++it2 ) {
+      for( ; it1!=end( sv1 ); ++it1, ++it2 ) {
          *it1 *= value;
          *it2 *= value;
          ++value;
@@ -1349,10 +1349,10 @@ void AlignedTest::testIterator()
       ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
-      ASVT::Iterator it1( sv1.begin() );
-      USVT::Iterator it2( sv2.begin() );
+      ASVT::Iterator it1( begin( sv1 ) );
+      USVT::Iterator it2( begin( sv2 ) );
 
-      for( ; it1!=sv1.end(); ++it1, ++it2 ) {
+      for( ; it1!=end( sv1 ); ++it1, ++it2 ) {
          *it1 /= 2;
          *it2 /= 2;
       }
