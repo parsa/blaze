@@ -1729,7 +1729,7 @@ void UnalignedTest::testReset()
    // Resetting the range [0,3]
    {
       SVT sv = subvector( vec_, 0UL, 4UL );
-      sv.reset();
+      reset( sv );
 
       checkSize    ( sv  , 4UL );
       checkNonZeros( sv  , 0UL );
@@ -1750,7 +1750,7 @@ void UnalignedTest::testReset()
    // Resetting the range [4,7]
    {
       SVT sv = subvector( vec_, 4UL, 4UL );
-      sv.reset();
+      reset( sv );
 
       checkSize    ( sv  , 4UL );
       checkNonZeros( sv  , 0UL );

@@ -1469,8 +1469,8 @@ void AlignedTest::testReset()
    {
       ASVT sv1 = subvector<aligned>  ( vec1_, 0UL, 16UL );
       USVT sv2 = subvector<unaligned>( vec2_, 0UL, 16UL );
-      sv1.reset();
-      sv2.reset();
+      reset( sv1 );
+      reset( sv2 );
 
       checkSize( sv1, 16UL );
       checkSize( sv2, 16UL );
@@ -1490,8 +1490,8 @@ void AlignedTest::testReset()
    {
       ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 48UL );
       USVT sv2 = subvector<unaligned>( vec2_, 16UL, 48UL );
-      sv1.reset();
-      sv2.reset();
+      reset( sv1 );
+      reset( sv2 );
 
       checkSize( sv1, 48UL );
       checkSize( sv2, 48UL );

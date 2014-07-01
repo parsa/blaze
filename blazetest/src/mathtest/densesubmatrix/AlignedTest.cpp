@@ -3686,8 +3686,8 @@ void AlignedTest::testReset()
       ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
 
-      sm1.reset();
-      sm2.reset();
+      reset( sm1 );
+      reset( sm2 );
 
       checkRows   ( sm1,  8UL );
       checkColumns( sm1, 16UL );
@@ -3720,8 +3720,8 @@ void AlignedTest::testReset()
 
       for( size_t i=0UL; i<sm1.rows(); ++i )
       {
-         sm1.reset( i );
-         sm2.reset( i );
+         reset( sm1, i );
+         reset( sm2, i );
 
          if( sm1 != sm2 || mat1_ != mat2_ ) {
             std::ostringstream oss;
@@ -3748,8 +3748,8 @@ void AlignedTest::testReset()
       ATSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
       UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
 
-      sm1.reset();
-      sm2.reset();
+      reset( sm1 );
+      reset( sm2 );
 
       checkRows   ( sm1, 16UL );
       checkColumns( sm1,  8UL );
@@ -3782,8 +3782,8 @@ void AlignedTest::testReset()
 
       for( size_t j=0UL; j<sm1.columns(); ++j )
       {
-         sm1.reset( j );
-         sm2.reset( j );
+         reset( sm1, j );
+         reset( sm2, j );
 
          if( sm1 != sm2 || mat1_ != mat2_ ) {
             std::ostringstream oss;

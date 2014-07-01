@@ -3151,7 +3151,7 @@ void ClassTest::testReset()
       }
 
       // Resetting row 1
-      mat.reset( 1UL );
+      reset( mat, 1UL );
 
       checkRows    ( mat, 4UL );
       checkColumns ( mat, 3UL );
@@ -3173,7 +3173,7 @@ void ClassTest::testReset()
       }
 
       // Resetting the entire matrix
-      mat.reset();
+      reset( mat );
 
       checkRows    ( mat, 4UL );
       checkColumns ( mat, 3UL );
@@ -3218,7 +3218,7 @@ void ClassTest::testReset()
       }
 
       // Resetting column 1
-      mat.reset( 1UL );
+      reset( mat, 1UL );
 
       checkRows    ( mat, 4UL );
       checkColumns ( mat, 3UL );
@@ -3239,7 +3239,7 @@ void ClassTest::testReset()
       }
 
       // Resetting the entire matrix
-      mat.reset();
+      reset( mat );
 
       checkRows    ( mat, 4UL );
       checkColumns ( mat, 3UL );

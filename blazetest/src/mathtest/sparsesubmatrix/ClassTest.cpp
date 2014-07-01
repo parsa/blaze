@@ -4891,7 +4891,7 @@ void ClassTest::testReset()
 
       SMT sm = submatrix( mat_, 1UL, 0UL, 3UL, 2UL );
 
-      sm.reset();
+      reset( sm );
 
       checkRows    ( sm  , 3UL );
       checkColumns ( sm  , 2UL );
@@ -4943,7 +4943,7 @@ void ClassTest::testReset()
 
       // Resetting the 0th row
       {
-         sm.reset( 0UL );
+         reset( sm, 0UL );
 
          checkRows    ( sm  , 3UL );
          checkColumns ( sm  , 2UL );
@@ -4967,7 +4967,7 @@ void ClassTest::testReset()
 
       // Resetting the 1st row
       {
-         sm.reset( 1UL );
+         reset( sm, 1UL );
 
          checkRows    ( sm  , 3UL );
          checkColumns ( sm  , 2UL );
@@ -4991,7 +4991,7 @@ void ClassTest::testReset()
 
       // Resetting the 2nd row
       {
-         sm.reset( 2UL );
+         reset( sm, 2UL );
 
          checkRows    ( sm  , 3UL );
          checkColumns ( sm  , 2UL );
@@ -5026,7 +5026,7 @@ void ClassTest::testReset()
 
       TSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 3UL );
 
-      sm.reset();
+      reset( sm );
 
       checkRows    ( sm   , 2UL );
       checkColumns ( sm   , 3UL );
@@ -5076,7 +5076,7 @@ void ClassTest::testReset()
 
       // Resetting the 0th column
       {
-         sm.reset( 0UL );
+         reset( sm, 0UL );
 
          checkRows    ( sm   , 2UL );
          checkColumns ( sm   , 3UL );
@@ -5099,7 +5099,7 @@ void ClassTest::testReset()
 
       // Resetting the 1st column
       {
-         sm.reset( 1UL );
+         reset( sm, 1UL );
 
          checkRows    ( sm   , 2UL );
          checkColumns ( sm   , 3UL );
@@ -5122,7 +5122,7 @@ void ClassTest::testReset()
 
       // Resetting the 2nd column
       {
-         sm.reset( 2UL );
+         reset( sm, 2UL );
 
          checkRows    ( sm   , 2UL );
          checkColumns ( sm   , 3UL );

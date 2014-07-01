@@ -1371,7 +1371,7 @@ void ClassTest::testReset()
    }
 
    // Resetting the vector
-   vec.reset();
+   reset( vec );
 
    checkSize    ( vec, 4UL );
    checkCapacity( vec, 4UL );

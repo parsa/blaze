@@ -1041,7 +1041,7 @@ void ClassTest::testReset()
    }
 
    // Resetting the vector
-   vec.reset();
+   reset( vec );
 
    checkSize    ( vec, 11UL );
    checkNonZeros( vec,  0UL );
@@ -1083,7 +1083,7 @@ void ClassTest::testClear()
    }
 
    // Clearing the vector
-   vec.clear();
+   clear( vec );
 
    checkSize    ( vec, 0UL );
    checkNonZeros( vec, 0UL );

@@ -3355,7 +3355,7 @@ void ClassTest::testReset()
       // Resetting the 0th row
       {
          RT row0 = row( mat_, 0UL );
-         row0.reset();
+         reset( row0 );
 
          checkSize    ( row0,  4UL );
          checkNonZeros( row0,  0UL );
@@ -3377,7 +3377,7 @@ void ClassTest::testReset()
       // Resetting the 1st row
       {
          RT row1 = row( mat_, 1UL );
-         row1.reset();
+         reset( row1 );
 
          checkSize    ( row1, 4UL );
          checkNonZeros( row1, 0UL );
@@ -3399,7 +3399,7 @@ void ClassTest::testReset()
       // Resetting the 2nd row
       {
          RT row2 = row( mat_, 2UL );
-         row2.reset();
+         reset( row2 );
 
          checkSize    ( row2, 4UL );
          checkNonZeros( row2, 0UL );
@@ -3421,7 +3421,7 @@ void ClassTest::testReset()
       // Resetting the 3rd row
       {
          RT row3 = row( mat_, 3UL );
-         row3.reset();
+         reset( row3 );
 
          checkSize    ( row3, 4UL );
          checkNonZeros( row3, 0UL );
@@ -3443,7 +3443,7 @@ void ClassTest::testReset()
       // Resetting the 4th row
       {
          RT row4 = row( mat_, 4UL );
-         row4.reset();
+         reset( row4 );
 
          checkSize    ( row4, 4UL );
          checkNonZeros( row4, 0UL );
@@ -3476,7 +3476,7 @@ void ClassTest::testReset()
       // Resetting the 0th row
       {
          TRT row0 = row( tmat_, 0UL );
-         row0.reset();
+         reset( row0 );
 
          checkSize    ( row0 ,  4UL );
          checkNonZeros( row0 ,  0UL );
@@ -3498,7 +3498,7 @@ void ClassTest::testReset()
       // Resetting the 1st row
       {
          TRT row1 = row( tmat_, 1UL );
-         row1.reset();
+         reset( row1 );
 
          checkSize    ( row1 , 4UL );
          checkNonZeros( row1 , 0UL );
@@ -3520,7 +3520,7 @@ void ClassTest::testReset()
       // Resetting the 2nd row
       {
          TRT row2 = row( tmat_, 2UL );
-         row2.reset();
+         reset( row2 );
 
          checkSize    ( row2 , 4UL );
          checkNonZeros( row2 , 0UL );
@@ -3542,7 +3542,7 @@ void ClassTest::testReset()
       // Resetting the 3rd row
       {
          TRT row3 = row( tmat_, 3UL );
-         row3.reset();
+         reset( row3 );
 
          checkSize    ( row3 , 4UL );
          checkNonZeros( row3 , 0UL );
@@ -3564,7 +3564,7 @@ void ClassTest::testReset()
       // Resetting the 4th row
       {
          TRT row4 = row( tmat_, 4UL );
-         row4.reset();
+         reset( row4 );
 
          checkSize    ( row4 , 4UL );
          checkNonZeros( row4 , 0UL );

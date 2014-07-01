@@ -3520,7 +3520,7 @@ void ClassTest::testReset()
       // Resetting the 0th column
       {
          CT col0 = column( mat_, 0UL );
-         col0.reset();
+         reset( col0 );
 
          checkSize    ( col0,  4UL );
          checkCapacity( col0,  4UL );
@@ -3543,7 +3543,7 @@ void ClassTest::testReset()
       // Resetting the 1st column
       {
          CT col1 = column( mat_, 1UL );
-         col1.reset();
+         reset( col1 );
 
          checkSize    ( col1, 4UL );
          checkCapacity( col1, 4UL );
@@ -3566,7 +3566,7 @@ void ClassTest::testReset()
       // Resetting the 2nd column
       {
          CT col2 = column( mat_, 2UL );
-         col2.reset();
+         reset( col2 );
 
          checkSize    ( col2, 4UL );
          checkCapacity( col2, 4UL );
@@ -3589,7 +3589,7 @@ void ClassTest::testReset()
       // Resetting the 3rd column
       {
          CT col3 = column( mat_, 3UL );
-         col3.reset();
+         reset( col3 );
 
          checkSize    ( col3, 4UL );
          checkCapacity( col3, 4UL );
@@ -3612,7 +3612,7 @@ void ClassTest::testReset()
       // Resetting the 4th column
       {
          CT col4 = column( mat_, 4UL );
-         col4.reset();
+         reset( col4 );
 
          checkSize    ( col4, 4UL );
          checkCapacity( col4, 4UL );
@@ -3646,7 +3646,7 @@ void ClassTest::testReset()
       // Resetting the 0th column
       {
          TCT col0 = column( tmat_, 0UL );
-         col0.reset();
+         reset( col0 );
 
          checkSize    ( col0,  4UL );
          checkCapacity( col0,  4UL );
@@ -3669,7 +3669,7 @@ void ClassTest::testReset()
       // Resetting the 1st column
       {
          TCT col1 = column( tmat_, 1UL );
-         col1.reset();
+         reset( col1 );
 
          checkSize    ( col1, 4UL );
          checkCapacity( col1, 4UL );
@@ -3692,7 +3692,7 @@ void ClassTest::testReset()
       // Resetting the 2nd column
       {
          TCT col2 = column( tmat_, 2UL );
-         col2.reset();
+         reset( col2 );
 
          checkSize    ( col2, 4UL );
          checkCapacity( col2, 4UL );
@@ -3715,7 +3715,7 @@ void ClassTest::testReset()
       // Resetting the 3rd column
       {
          TCT col3 = column( tmat_, 3UL );
-         col3.reset();
+         reset( col3 );
 
          checkSize    ( col3, 4UL );
          checkCapacity( col3, 4UL );
@@ -3738,7 +3738,7 @@ void ClassTest::testReset()
       // Resetting the 4th column
       {
          TCT col4 = column( tmat_, 4UL );
-         col4.reset();
+         reset( col4 );
 
          checkSize    ( col4, 4UL );
          checkCapacity( col4, 4UL );
