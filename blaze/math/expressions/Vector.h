@@ -143,7 +143,7 @@ inline bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>& b );
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-inline size_t size( Vector<VT,TF>& v )
+inline size_t size( const Vector<VT,TF>& v )
 {
    return (~v).size();
 }
@@ -159,7 +159,7 @@ inline size_t size( Vector<VT,TF>& v )
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-inline size_t capacity( Vector<VT,TF>& v )
+inline size_t capacity( const Vector<VT,TF>& v )
 {
    return (~v).capacity();
 }
@@ -178,7 +178,7 @@ inline size_t capacity( Vector<VT,TF>& v )
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-inline size_t nonZeros( Vector<VT,TF>& v )
+inline size_t nonZeros( const Vector<VT,TF>& v )
 {
    return (~v).nonZeros();
 }
