@@ -1434,7 +1434,7 @@ void ClassTest::testIterator()
              << " Error: Subtraction assignment via iterator failed\n"
              << " Details:\n"
              << "   Result:\n" << sv << "\n"
-             << "   Expected result:\n( 0 8 10 0 )\n";
+             << "   Expected result:\n( 0 6 7 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -1467,7 +1467,7 @@ void ClassTest::testIterator()
              << " Error: Multiplication assignment via iterator failed\n"
              << " Details:\n"
              << "   Result:\n" << sv << "\n"
-             << "   Expected result:\n( 0 8 10 0 )\n";
+             << "   Expected result:\n( 0 6 14 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -1499,7 +1499,7 @@ void ClassTest::testIterator()
              << " Error: Division assignment via iterator failed\n"
              << " Details:\n"
              << "   Result:\n" << sv << "\n"
-             << "   Expected result:\n( 0 8 10 0 )\n";
+             << "   Expected result:\n( 0 3 7 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
