@@ -4506,6 +4506,9 @@ template< typename Type, bool SO >
 inline void reset( CompressedMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
+inline void reset( CompressedMatrix<Type,SO>& m, size_t i );
+
+template< typename Type, bool SO >
 inline void clear( CompressedMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
@@ -4518,10 +4521,10 @@ inline void swap( CompressedMatrix<Type,SO>& a, CompressedMatrix<Type,SO>& b ) /
 
 
 //*************************************************************************************************
-/*!\brief Resetting the given sparse matrix.
+/*!\brief Resetting the given compressed matrix.
 // \ingroup compressed_matrix
 //
-// \param m The sparse matrix to be resetted.
+// \param m The matrix to be resetted.
 // \return void
 */
 template< typename Type  // Data type of the sparse matrix
@@ -4534,10 +4537,32 @@ inline void reset( CompressedMatrix<Type,SO>& m )
 
 
 //*************************************************************************************************
-/*!\brief Clearing the given sparse matrix.
+/*!\brief Reset the specified row/column of the given compressed matrix.
 // \ingroup compressed_matrix
 //
-// \param m The sparse matrix to be cleared.
+// \param m The matrix to be resetted.
+// \param i The index of the row/column to be resetted.
+// \return void
+//
+// This function resets the values in the specified row/column of the given compressed matrix to
+// their default value. In case the given matrix is a \a rowMajor matrix the function resets the
+// values in row \a i, if it is a \a columnMajor matrix the function resets the values in column
+// \a i. Note that the capacity of the row/column remains unchanged.
+*/
+template< typename Type  // Data type of the sparse matrix
+        , bool SO >      // Storage order
+inline void reset( CompressedMatrix<Type,SO>& m, size_t i )
+{
+   m.reset( i );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Clearing the given compressed matrix.
+// \ingroup compressed_matrix
+//
+// \param m The matrix to be cleared.
 // \return void
 */
 template< typename Type  // Data type of the sparse matrix
@@ -4553,7 +4578,7 @@ inline void clear( CompressedMatrix<Type,SO>& m )
 /*!\brief Returns whether the given compressed matrix is in default state.
 // \ingroup compressed_matrix
 //
-// \param m The compressed matrix to be tested for its default state.
+// \param m The matrix to be tested for its default state.
 // \return \a true in case the given matrix's rows and columns are zero, \a false otherwise.
 //
 // This function checks whether the compressed matrix is in default (constructed) state, i.e. if
@@ -4577,11 +4602,11 @@ inline bool isDefault( const CompressedMatrix<Type,SO>& m )
 
 
 //*************************************************************************************************
-/*!\brief Swapping the contents of two sparse matrices.
+/*!\brief Swapping the contents of two compressed matrices.
 // \ingroup compressed_matrix
 //
-// \param a The first sparse matrix to be swapped.
-// \param b The second sparse matrix to be swapped.
+// \param a The first matrix to be swapped.
+// \param b The second matrix to be swapped.
 // \return void
 // \exception no-throw guarantee.
 */

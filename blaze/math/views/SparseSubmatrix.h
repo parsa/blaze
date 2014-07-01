@@ -4447,6 +4447,9 @@ template< typename MT, bool AF, bool SO >
 inline void reset( SparseSubmatrix<MT,AF,SO>& sm );
 
 template< typename MT, bool AF, bool SO >
+inline void reset( SparseSubmatrix<MT,AF,SO>& sm, size_t i );
+
+template< typename MT, bool AF, bool SO >
 inline void clear( SparseSubmatrix<MT,AF,SO>& sm );
 
 template< typename MT, bool AF, bool SO >
@@ -4477,6 +4480,29 @@ template< typename MT  // Type of the sparse matrix
 inline void reset( SparseSubmatrix<MT,AF,SO>& sm )
 {
    sm.reset();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Reset the specified row/column of the given sparse submatrix.
+// \ingroup sparse_submatrix
+//
+// \param sm The sparse submatrix to be resetted.
+// \param i The index of the row/column to be resetted.
+// \return void
+//
+// This function resets the values in the specified row/column of the given sparse submatrix to
+// their default value. In case the given submatrix is a \a rowMajor matrix the function resets
+// the values in row \a i, if it is a \a columnMajor matrix the function resets the values in
+// column \a i. Note that the capacity of the row/column remains unchanged.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline void reset( SparseSubmatrix<MT,AF,SO>& sm, size_t i )
+{
+   sm.reset( i );
 }
 //*************************************************************************************************
 

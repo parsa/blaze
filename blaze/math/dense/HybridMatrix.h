@@ -5045,6 +5045,9 @@ template< typename Type, size_t M, size_t N, bool SO >
 inline void reset( HybridMatrix<Type,M,N,SO>& m );
 
 template< typename Type, size_t M, size_t N, bool SO >
+inline void reset( HybridMatrix<Type,M,N,SO>& m, size_t i );
+
+template< typename Type, size_t M, size_t N, bool SO >
 inline void clear( HybridMatrix<Type,M,N,SO>& m );
 
 template< typename Type, size_t M, size_t N, bool SO >
@@ -5070,6 +5073,30 @@ template< typename Type  // Data type of the matrix
 inline void reset( HybridMatrix<Type,M,N,SO>& m )
 {
    m.reset();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Reset the specified row/column of the given hybrid matrix.
+// \ingroup hybrid_matrix
+//
+// \param m The matrix to be resetted.
+// \param i The index of the row/column to be resetted.
+// \return void
+//
+// This function resets the values in the specified row/column of the given hybrid matrix to
+// their default value. In case the given matrix is a \a rowMajor matrix the function resets the
+// values in row \a i, if it is a \a columnMajor matrix the function resets the values in column
+// \a i. Note that the capacity of the row/column remains unchanged.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline void reset( HybridMatrix<Type,M,N,SO>& m, size_t i )
+{
+   m.reset( i );
 }
 //*************************************************************************************************
 

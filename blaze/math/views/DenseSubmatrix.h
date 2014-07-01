@@ -8456,6 +8456,9 @@ template< typename MT, bool AF, bool SO >
 inline void reset( DenseSubmatrix<MT,AF,SO>& dm );
 
 template< typename MT, bool AF, bool SO >
+inline void reset( DenseSubmatrix<MT,AF,SO>& dm, size_t i );
+
+template< typename MT, bool AF, bool SO >
 inline void clear( DenseSubmatrix<MT,AF,SO>& dm );
 
 template< typename MT, bool AF, bool SO >
@@ -8486,6 +8489,29 @@ template< typename MT  // Type of the dense matrix
 inline void reset( DenseSubmatrix<MT,AF,SO>& dm )
 {
    dm.reset();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Reset the specified row/column of the given dense submatrix.
+// \ingroup dense_submatrix
+//
+// \param dm The dense submatrix to be resetted.
+// \param i The index of the row/column to be resetted.
+// \return void
+//
+// This function resets the values in the specified row/column of the given dense submatrix to
+// their default value. In case the given submatrix is a \a rowMajor matrix the function resets
+// the values in row \a i, if it is a \a columnMajor matrix the function resets the values in
+// column \a i. Note that the capacity of the row/column remains unchanged.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline void reset( DenseSubmatrix<MT,AF,SO>& dm, size_t i )
+{
+   dm.reset( i );
 }
 //*************************************************************************************************
 
